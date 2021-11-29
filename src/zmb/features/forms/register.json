@@ -160,6 +160,7 @@
                           "description": "Placeholder for example of relationship",
                           "id": "form.field.label.relationshipPlaceHolder"
                         },
+                        "maxLength": 32,
                         "required": true,
                         "initialValue": "",
                         "validate": [],
@@ -198,6 +199,7 @@
                           "description": "Placeholder for example of relationship",
                           "id": "form.field.label.relationshipPlaceHolder"
                         },
+                        "maxLength": 32,
                         "required": true,
                         "initialValue": "",
                         "validate": [
@@ -689,6 +691,7 @@
                           "description": "Placeholder for example of relationship",
                           "id": "form.field.label.relationshipPlaceHolder"
                         },
+                        "maxLength": 32,
                         "required": true,
                         "initialValue": "",
                         "validate": [
@@ -8629,6 +8632,7 @@
                           "description": "Placeholder for example of relationship",
                           "id": "form.field.label.relationshipPlaceHolder"
                         },
+                        "maxLength": 32,
                         "required": true,
                         "initialValue": "",
                         "validate": [
@@ -8782,6 +8786,7 @@
                           "description": "Placeholder for example of relationship",
                           "id": "form.field.label.relationshipPlaceHolder"
                         },
+                        "maxLength": 32,
                         "required": true,
                         "initialValue": "",
                         "validate": [
@@ -12545,6 +12550,7 @@
                     "description": "Label for form field: Given names in english",
                     "id": "form.field.label.deceasedFathersGivenNamesEng"
                   },
+                  "maxLength": 32,
                   "required": false,
                   "initialValue": "",
                   "validate": [
@@ -12578,6 +12584,7 @@
                     "description": "Label for form field: Family name in english",
                     "id": "form.field.label.deceasedFathersFamilyNameEng"
                   },
+                  "maxLength": 32,
                   "required": true,
                   "initialValue": "",
                   "validate": [
@@ -12650,6 +12657,7 @@
                     "description": "Label for form field: Given names in english",
                     "id": "form.field.label.deceasedMothersGivenNamesEng"
                   },
+                  "maxLength": 32,
                   "required": false,
                   "initialValue": "",
                   "validate": [
@@ -12683,6 +12691,7 @@
                     "description": "Label for form field: Family name in english",
                     "id": "form.field.label.deceasedMothersFamilyNameEng"
                   },
+                  "maxLength": 32,
                   "required": true,
                   "initialValue": "",
                   "validate": [
@@ -12783,6 +12792,7 @@
                           "description": "Label for form field: Given names in english",
                           "id": "form.field.label.deceasedSpousesGivenNamesEng"
                         },
+                        "maxLength": 32,
                         "required": false,
                         "initialValue": "",
                         "extraValue": "Yes",
@@ -12827,6 +12837,7 @@
                           "description": "Label for form field: Family name in english",
                           "id": "form.field.label.deceasedSpousesFamilyNameEng"
                         },
+                        "maxLength": 32,
                         "required": true,
                         "initialValue": "",
                         "extraValue": "Yes",
