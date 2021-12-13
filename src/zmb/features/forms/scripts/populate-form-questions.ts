@@ -8,6 +8,7 @@ const sourceJSON = `${QUESTIONS_SOURCE}register.json`
 
 export default function prepareFormQuestionsFromSourceJSON() {
   const source = JSON.parse(fs.readFileSync(sourceJSON).toString())
+  // tslint:disable-next-line: no-console
   console.log(
     `${chalk.magentaBright(
       '/////////////////////////// POPULATING QUESTIONS FROM JSON ///////////////////////////'

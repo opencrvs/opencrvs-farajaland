@@ -49,24 +49,18 @@ export interface IForms {
   }
 }
 
-export enum FieldType {
-  Input = 'input',
-  Select = 'select',
-  Date = 'date'
-}
-
-export class Question {
+export interface IQuestion {
   label: object
   placeholder: string
   maxLength?: number
   required: boolean
   fieldName: string
-  fieldType: FieldType
+  fieldType: string
   fieldId: string
   sectionPositionForField: number
   fhirSchema: string
   enabled: boolean
-  custom: boolean
+  custom?: boolean
 }
 
 export async function getForms(): Promise<IForms> {
@@ -84,16 +78,17 @@ export function populateQuestionsFromSource(source: any) {
     registerForm[event].sections.forEach((section: any) => {
       section.groups.forEach((group: any, groupIndex: number) => {
         group.fields.forEach(async (field: any, fieldIndex: number) => {
-          const question = new Question()
-          question.enabled = true
-          question.placeholder = field.placeholder
-          question.fieldId = `${event}.${section.id}.${field.name}`
-          question.fieldName = field.name
-          question.label = field.label
-          question.required = field.required
-          question.fieldType = FieldType.Input
-          question.fhirSchema = 'Observation[0].value'
-          question.sectionPositionForField = groupIndex + fieldIndex
+          const question: IQuestion = {
+            enabled: true,
+            placeholder: field.placeholder,
+            fieldId: `${event}.${section.id}.${field.name}`,
+            fieldName: field.name,
+            label: field.label,
+            required: field.required,
+            fieldType: field.type,
+            fhirSchema: 'Observation[0].value',
+            sectionPositionForField: groupIndex + fieldIndex
+          }
 
           try {
             const res = await fetch('http://localhost:2021/createQuestion', {
@@ -103,7 +98,7 @@ export function populateQuestionsFromSource(source: any) {
                 'Content-Type': 'application/json'
               }
             })
-            if (res.status != 201) {
+            if (res.status !== 201) {
               throw new Error(res.statusText)
             }
           } catch (error) {
