@@ -5,5 +5,6 @@
   "viewportWidth": 1024,
   "viewportHeight": 768,
   "defaultCommandTimeout": 60000,
-  "videoCompression": 0
+  "videoCompression": 0,
+  "ignoreTestFiles": ["certificate.spec.ts", "death.spec.ts", "menu.spec.ts", "performance.spec.ts", "reports.spec.ts", "search.spec.ts", "user.spec.ts"]
 }

@@ -75,7 +75,7 @@ Cypress.Commands.add('login', (userType, options = {}) => {
           cy.visit(`${Cypress.env('CLIENT_URL')}?token=${body.token}`)
         })
     })
-  cy.clock()
+  // cy.clock()
   // Wait for app to load so token can be stored
   cy.get('#createPinBtn')
 })
