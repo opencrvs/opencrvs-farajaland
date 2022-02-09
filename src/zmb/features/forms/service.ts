@@ -49,18 +49,81 @@ export interface IForms {
   }
 }
 
+export interface IOptions {
+  label: string
+  value: string
+}
+
+export interface IFhirResourceData {
+  valueQuantity: IFhirResourceDataValueQuantity
+}
+
+export interface IFhirResourceDataValueQuantity {
+  unit?: string
+  system?: string
+  code?: string
+  value?: string
+}
+export interface IMessageDescriptor {
+    defaultMessage: string
+    description: string
+    id: string
+}
+
+export interface IFhirResource {
+  type: string
+  code?: string
+  description?: string
+  categoryCode?: string
+  categoryDescription?: string
+  data: IFhirResourceData
+  valueField: string // valueField defines the path in the data object where the field value is written
+}
+
+export enum FieldType {
+  TEXT = 'TEXT',
+  TEL = 'TEL',
+  NUMBER = 'NUMBER',
+  BIG_NUMBER = 'BIG_NUMBER',
+  RADIO_GROUP = 'RADIO_GROUP',
+  RADIO_GROUP_WITH_NESTED_FIELDS = 'RADIO_GROUP_WITH_NESTED_FIELDS',
+  INFORMATIVE_RADIO_GROUP = 'INFORMATIVE_RADIO_GROUP',
+  CHECKBOX_GROUP = 'CHECKBOX_GROUP',
+  DATE = 'DATE',
+  TEXTAREA = 'TEXTAREA',
+  SUBSECTION = 'SUBSECTION',
+  FIELD_GROUP_TITLE = 'FIELD_GROUP_TITLE',
+  LIST = 'LIST',
+  PARAGRAPH = 'PARAGRAPH',
+  DOCUMENTS = 'DOCUMENTS',
+  SELECT_WITH_OPTIONS = 'SELECT_WITH_OPTIONS',
+  SELECT_WITH_DYNAMIC_OPTIONS = 'SELECT_WITH_DYNAMIC_OPTIONS',
+  FIELD_WITH_DYNAMIC_DEFINITIONS = 'FIELD_WITH_DYNAMIC_DEFINITIONS',
+  IMAGE_UPLOADER_WITH_OPTIONS = 'IMAGE_UPLOADER_WITH_OPTIONS',
+  DOCUMENT_UPLOADER_WITH_OPTION = 'DOCUMENT_UPLOADER_WITH_OPTION',
+  SIMPLE_DOCUMENT_UPLOADER = 'SIMPLE_DOCUMENT_UPLOADER',
+  WARNING = 'WARNING',
+  LINK = 'LINK',
+  PDF_DOCUMENT_VIEWER = 'PDF_DOCUMENT_VIEWER',
+  DYNAMIC_LIST = 'DYNAMIC_LIST',
+  FETCH_BUTTON = 'FETCH_BUTTON',
+  LOCATION_SEARCH_INPUT = 'LOCATION_SEARCH_INPUT'
+}
+
 export interface IQuestion {
-  label: object
-  placeholder: string
-  maxLength?: number
-  required: boolean
-  fieldName: string
-  fieldType: string
   fieldId: string
+  fhirSectionCode: string
+  fhirResource: IFhirResource
+  label: IMessageDescriptor
+  placeholder?: string
+  maxLength?: number
+  options?: IOptions[]
+  fieldName: string
+  fieldType: FieldType
   sectionPositionForField: number
-  fhirSchema: string
   enabled: boolean
-  custom?: boolean
+  required: boolean
+  custom: boolean
 }
 
 export async function getForms(): Promise<IForms> {
@@ -73,7 +136,7 @@ export async function getForms(): Promise<IForms> {
 }
 
 export function populateQuestionsFromSource(source: any) {
-  const registerForm = source.registerForm
+  /*const registerForm = source.registerForm
   Object.keys(registerForm).forEach(event => {
     registerForm[event].sections.forEach((section: any) => {
       section.groups.forEach((group: any, groupIndex: number) => {
@@ -107,5 +170,5 @@ export function populateQuestionsFromSource(source: any) {
         })
       })
     })
-  })
+  })*/
 }
