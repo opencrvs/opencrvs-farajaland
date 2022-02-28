@@ -1,6 +1,7 @@
 import {
   createBirthDeclaration,
   createDeathDeclaration,
+  fetchAlreadyGeneratedInterval,
   fetchDeathRegistration,
   fetchRegistration,
   sendBirthNotification
@@ -30,7 +31,8 @@ import {
   differenceInDays,
   sub,
   add,
-  startOfDay
+  startOfDay,
+  isWithinInterval
 } from 'date-fns'
 
 import { getToken, readToken, updateToken } from './auth'
@@ -220,6 +222,25 @@ async function main() {
    */
 
   for (const location of locations) {
+    log('Fetching already generated interval')
+    const generatedInterval = await fetchAlreadyGeneratedInterval(
+      token,
+      crvsOffices
+        .filter(({ partOf }) => partOf === `Location/${location.id}`)
+        .map(({ id }) => id)
+    )
+
+    if (generatedInterval.length === 0) {
+      log('No events have been generated for this location')
+    } else {
+      log(
+        'Events already exist for this location between',
+        generatedInterval[0],
+        '-',
+        generatedInterval[1]
+      )
+    }
+
     /*
      *
      * Create required users & authorization tokens
@@ -314,6 +335,17 @@ async function main() {
        */
       for (let d = days.length - 1; d >= 0; d--) {
         const submissionDate = addDays(startOfYear(setYear(new Date(), y)), d)
+
+        if (
+          generatedInterval.length === 2 &&
+          isWithinInterval(submissionDate, {
+            start: generatedInterval[0],
+            end: generatedInterval[1]
+          })
+        ) {
+          log('Data for', submissionDate, 'already exists. Skipping.')
+          continue
+        }
 
         /*
          *

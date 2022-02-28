@@ -725,3 +725,58 @@ export async function fetchDeathRegistration(
 
   return res.data.fetchDeathRegistration
 }
+
+export async function fetchAlreadyGeneratedInterval(
+  token: string,
+  locationIds: string[]
+) {
+  const fetchFirst = async (sort: 'desc' | 'asc') => {
+    const res = await fetch(GATEWAY_HOST, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+        'x-correlation': `fetch-interval-oldest`
+      },
+      body: JSON.stringify({
+        query: `query data($sort: String, $locationIds: [String]) {
+          searchEvents(sort: $sort, locationIds: $locationIds, sortColumn: "dateOfApplication", count: 1) {
+            results {
+              registration {
+                dateOfApplication
+              }
+            }
+          }
+        }
+        `,
+        variables: {
+          sort,
+          locationIds
+        }
+      })
+    })
+    const body = await res.json()
+
+    if (body.errors) {
+      log(body.errors)
+      throw new Error('Fetching generated intervals failed')
+    }
+
+    const data = body.data as {
+      searchEvents: {
+        results: Array<{
+          registration: {
+            dateOfApplication: string
+          }
+        }>
+      }
+    }
+    return data.searchEvents.results.map(
+      ({ registration }) => new Date(registration.dateOfApplication)
+    )[0]
+  }
+
+  return (await Promise.all([fetchFirst('asc'), fetchFirst('desc')])).filter(
+    Boolean
+  )
+}
