@@ -2,10 +2,12 @@
   "certificates": {
     "birth": {
       "definition": {
-        "pageSize": {
-          "width": 595.28,
-          "height": 791.89
-        },
+        "pageMargins": [
+          0,
+          0,
+          0,
+          0
+        ],
         "info": {
           "title": "Birth Registration Certificate"
         },
@@ -158,10 +160,12 @@
     },
     "death": {
       "definition": {
-        "pageSize": {
-          "width": 595.28,
-          "height": 791.89
-        },
+        "pageMargins": [
+          0,
+          0,
+          0,
+          0
+        ],
         "info": {
           "title": "Death Registration Certificate"
         },
