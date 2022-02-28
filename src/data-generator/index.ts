@@ -65,17 +65,17 @@ const START_YEAR = 2018
 const END_YEAR = 2022
 
 const BIRTH_COMPLETION_DISTRIBUTION = [
-  { range: [0, 44], weight: 0.7 },
-  { range: [45, 365], weight: 0.2 },
-  { range: [365, 365 * 5], weight: 0.05 },
-  { range: [365 * 5, 365 * 20], weight: 0.05 }
+  { range: [0, 45], weight: 0.7 },
+  { range: [46, 365], weight: 0.2 },
+  { range: [366, 365 * 5], weight: 0.05 },
+  { range: [365 * 5 + 1, 365 * 20], weight: 0.05 }
 ]
 const BIRTH_OVERALL_REGISTRATIONS_COMPARED_TO_ESTIMATE = 0.8
 
 const DEATH_COMPLETION_DISTRIBUTION = [
-  { range: [0, 44], weight: 0.75 },
-  { range: [45, 365], weight: 0.125 },
-  { range: [365, 365 * 5], weight: 0.125 }
+  { range: [0, 45], weight: 0.75 },
+  { range: [46, 365], weight: 0.125 },
+  { range: [366, 365 * 5], weight: 0.125 }
 ]
 const DEATH_OVERALL_REGISTRATIONS_COMPARED_TO_ESTIMATE = 0.4
 
@@ -204,7 +204,7 @@ async function main() {
   log('Fetching locations')
   const locations = await (await getLocations(token))
     // TODO, remove
-    .filter(({ id }) => '0fc529b4-4099-4b71-a26d-e367652b6921' === id)
+    .filter(({ id }) => '364f89b0-39ea-4ea9-b0b4-96b12af27242' === id)
   const facilities = await getFacilities(token)
   const crvsOffices = facilities.filter(({ type }) => type === 'CRVS_OFFICE')
   const healthFacilities = facilities.filter(
@@ -278,11 +278,6 @@ async function main() {
 
       const days = Array.from({ length: getDaysInYear(y) }).map(() => 0)
 
-      birthRates.female =
-        birthRates.female * BIRTH_OVERALL_REGISTRATIONS_COMPARED_TO_ESTIMATE
-      birthRates.male =
-        birthRates.male * BIRTH_OVERALL_REGISTRATIONS_COMPARED_TO_ESTIMATE
-
       if (isCurrentYear) {
         // If we're processing the current year, only take into account
         // the days until today
@@ -295,6 +290,11 @@ async function main() {
         // Remove future dates from the arrays
         days.splice(currentDayNumber - 1)
       }
+
+      birthRates.female =
+        birthRates.female * BIRTH_OVERALL_REGISTRATIONS_COMPARED_TO_ESTIMATE
+      birthRates.male =
+        birthRates.male * BIRTH_OVERALL_REGISTRATIONS_COMPARED_TO_ESTIMATE
 
       const femalesPerDay = days.slice(0)
       const malesPerDay = days.slice(0)
