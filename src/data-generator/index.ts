@@ -59,8 +59,8 @@ export const FIELD_AGENTS = 15
 export const HOSPITAL_FIELD_AGENTS = 10
 export const REGISTRATION_AGENTS = 4
 export const LOCAL_REGISTRARS = 1
-
-const CONCURRENCY = 5
+const DEMO_DISTRICTS = ['Ibombo']
+const CONCURRENCY = 3
 const START_YEAR = 2018
 const END_YEAR = 2022
 
@@ -194,9 +194,10 @@ async function main() {
 
   log('Got token for system administrator')
   log('Fetching locations')
-  const locations = await (await getLocations(token))
-    // TODO, remove
-    .filter(({ id }) => '0fc529b4-4099-4b71-a26d-e367652b6921' === id)
+  const locations = await (await getLocations(token)).filter(({ name }) =>
+    DEMO_DISTRICTS.includes(name)
+  )
+
   const facilities = await getFacilities(token)
   const crvsOffices = facilities.filter(({ type }) => type === 'CRVS_OFFICE')
   const healthFacilities = facilities.filter(
