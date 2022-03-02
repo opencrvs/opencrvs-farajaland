@@ -1,6 +1,7 @@
 import {
   createBirthDeclaration,
   createDeathDeclaration,
+  fetchAlreadyGeneratedInterval,
   fetchDeathRegistration,
   fetchRegistration,
   sendBirthNotification
@@ -30,7 +31,8 @@ import {
   differenceInDays,
   sub,
   add,
-  startOfDay
+  startOfDay,
+  isWithinInterval
 } from 'date-fns'
 
 import { getToken, readToken, updateToken } from './auth'
@@ -64,12 +66,20 @@ const CONCURRENCY = 3
 const START_YEAR = 2018
 const END_YEAR = 2022
 
-const completionBrackets = [
-  { range: [0, 44], weight: 0.3 },
-  { range: [45, 365], weight: 0.3 },
-  { range: [365, 365 * 5], weight: 0.2 },
-  { range: [365 * 5, 365 * 20], weight: 0.2 }
+const BIRTH_COMPLETION_DISTRIBUTION = [
+  { range: [0, 45], weight: 0.7 },
+  { range: [46, 365], weight: 0.2 },
+  { range: [366, 365 * 5], weight: 0.05 },
+  { range: [365 * 5 + 1, 365 * 20], weight: 0.05 }
 ]
+const BIRTH_OVERALL_REGISTRATIONS_COMPARED_TO_ESTIMATE = 0.8
+
+const DEATH_COMPLETION_DISTRIBUTION = [
+  { range: [0, 45], weight: 0.75 },
+  { range: [46, 365], weight: 0.125 },
+  { range: [366, 365 * 5], weight: 0.125 }
+]
+const DEATH_OVERALL_REGISTRATIONS_COMPARED_TO_ESTIMATE = 0.4
 
 const today = new Date()
 const currentYear = today.getFullYear()
@@ -213,6 +223,25 @@ async function main() {
    */
 
   for (const location of locations) {
+    log('Fetching already generated interval')
+    const generatedInterval = await fetchAlreadyGeneratedInterval(
+      token,
+      crvsOffices
+        .filter(({ partOf }) => partOf === `Location/${location.id}`)
+        .map(({ id }) => id)
+    )
+
+    if (generatedInterval.length === 0) {
+      log('No events have been generated for this location')
+    } else {
+      log(
+        'Events already exist for this location between',
+        generatedInterval[0],
+        '-',
+        generatedInterval[1]
+      )
+    }
+
     /*
      *
      * Create required users & authorization tokens
@@ -254,12 +283,13 @@ async function main() {
 
     for (let y = END_YEAR; y >= START_YEAR; y--) {
       const isCurrentYear = y === currentYear
-      const totalDeathsThisYear = calculateCrudeDeathRateForYear(
-        location.id,
-        isCurrentYear ? currentYear - 1 : y,
-        crudeDeathRate,
-        statistics
-      )
+      const totalDeathsThisYear =
+        calculateCrudeDeathRateForYear(
+          location.id,
+          isCurrentYear ? currentYear - 1 : y,
+          crudeDeathRate,
+          statistics
+        ) * DEATH_OVERALL_REGISTRATIONS_COMPARED_TO_ESTIMATE
 
       // Calculate crude birth & death rates for this district for both men and women
       const birthRates = calculateCrudeBirthRatesForYear(
@@ -283,6 +313,11 @@ async function main() {
         days.splice(currentDayNumber - 1)
       }
 
+      birthRates.female =
+        birthRates.female * BIRTH_OVERALL_REGISTRATIONS_COMPARED_TO_ESTIMATE
+      birthRates.male =
+        birthRates.male * BIRTH_OVERALL_REGISTRATIONS_COMPARED_TO_ESTIMATE
+
       const femalesPerDay = days.slice(0)
       const malesPerDay = days.slice(0)
 
@@ -301,6 +336,17 @@ async function main() {
        */
       for (let d = days.length - 1; d >= 0; d--) {
         const submissionDate = addDays(startOfYear(setYear(new Date(), y)), d)
+
+        if (
+          generatedInterval.length === 2 &&
+          isWithinInterval(submissionDate, {
+            start: generatedInterval[0],
+            end: generatedInterval[1]
+          })
+        ) {
+          log('Data for', submissionDate, 'already exists. Skipping.')
+          continue
+        }
 
         /*
          *
@@ -327,12 +373,17 @@ async function main() {
                   deathDeclarers[
                     Math.floor(Math.random() * deathDeclarers.length)
                   ]
+                const completionDays = getRandomFromBrackets(
+                  DEATH_COMPLETION_DISTRIBUTION
+                )
                 const submissionTime = add(startOfDay(submissionDate), {
                   seconds: 24 * 60 * 60 * Math.random()
                 })
+                const deathTime = sub(submissionTime, { days: completionDays })
                 log('Declaring')
                 const compositionId = await createDeathDeclaration(
                   randomUser,
+                  deathTime,
                   Math.random() > 0.4 ? 'male' : 'female',
                   submissionTime,
                   location
@@ -429,7 +480,9 @@ async function main() {
                 const submissionTime = add(startOfDay(submissionDate), {
                   seconds: 24 * 60 * 60 * Math.random()
                 })
-                const completionDays = getRandomFromBrackets(completionBrackets)
+                const completionDays = getRandomFromBrackets(
+                  BIRTH_COMPLETION_DISTRIBUTION
+                )
                 const birthDate = sub(submissionTime, { days: completionDays })
 
                 const crvsOffice = crvsOffices.find(
