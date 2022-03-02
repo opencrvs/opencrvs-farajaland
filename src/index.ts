@@ -26,9 +26,12 @@ import {
   AUTH_URL,
   COUNTRY_WIDE_CRUDE_DEATH_RATE
 } from '@countryconfig/constants'
-import { locationsHandler as farajalandLocationsHandler } from '@countryconfig/farajaland/features/administrative/handler'
+import {
+  locationsHandler as farajalandLocationsHandler,
+  statisticsHandler as farajalandStatisticsHandler
+} from '@countryconfig/farajaland/features/administrative/handler'
 import { facilitiesHandler as farajalandFacilitiesHandler } from '@countryconfig/farajaland/features/facilities/handler'
-import { definitionsHandler as farajalandDefinitionsHandler } from '@countryconfig/farajaland/features/definitions/handler'
+import { contentHandler as farajalandContentHandler } from '@countryconfig/farajaland/features/content/handler'
 import { assetHandler as farajalandAssetHandler } from '@countryconfig/farajaland/features/assets/handler'
 import {
   generatorHandler as farajalandGeneratorHandler,
@@ -38,6 +41,7 @@ import {
 import { farajalandValidateRegistrationHandler } from '@countryconfig/farajaland/features/validate/handler'
 
 import { join } from 'path'
+import { birthNotificationHandler } from './farajaland/features/dhis2/features/notification/birth/handler'
 
 const publicCert = readFileSync(CERT_PUBLIC_KEY_PATH)
 
@@ -197,12 +201,12 @@ export async function createServer() {
 
   server.route({
     method: 'GET',
-    path: '/definitions/{application}',
-    handler: farajalandDefinitionsHandler,
+    path: '/content/{application}',
+    handler: farajalandContentHandler,
     options: {
       tags: ['api'],
       description:
-        'Serves definitional metadata like form definitions, language files and pdf templates'
+        'Serves language content'
     }
   })
 
@@ -256,6 +260,27 @@ export async function createServer() {
     }
   })
 
+  server.route({
+    method: 'GET',
+    path: '/statistics',
+    handler: farajalandStatisticsHandler,
+    options: {
+      tags: ['api'],
+      description:
+        'Returns population and crude birth rate statistics for each location'
+    }
+  })
+
+  server.route({
+    method: 'POST',
+    path: '/dhis2-notification/birth',
+    handler: birthNotificationHandler,
+    options: {
+      tags: ['api'],
+      description: 'Handles transformation and submission of birth notification'
+    }
+  })
+
   server.ext({
     type: 'onRequest',
     method(request: Hapi.Request & { sentryScope: any }, h) {
@@ -273,7 +298,10 @@ export async function createServer() {
   async function start() {
     await server.start()
     await usrMgntDB.connect()
-    server.log('info', `server started on ${COUNTRY_CONFIG_HOST}:${COUNTRY_CONFIG_PORT}`)
+    server.log(
+      'info',
+      `server started on ${COUNTRY_CONFIG_HOST}:${COUNTRY_CONFIG_PORT}`
+    )
   }
 
   return { server, start, stop }

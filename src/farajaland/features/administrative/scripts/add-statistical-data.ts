@@ -11,13 +11,18 @@
  */
 import chalk from 'chalk'
 import { getFromFhir } from '../../utils'
-import { getStatistics, LocationStatistic } from '../statistics'
+import {
+  getStatistics,
+  getStatisticsForProvinces,
+  LocationStatistic
+} from '../statistics'
 import fetch from 'node-fetch'
 import { FHIR_URL } from '../../../constants'
 async function getLocationsByIdentifier(identifier: string) {
   const locationSearchResult = await getFromFhir(
     `/Location/?identifier=${identifier}&_count=0`
   )
+
   return (
     (locationSearchResult &&
       locationSearchResult.entry &&
@@ -87,7 +92,7 @@ export async function matchAndAssignStatisticalData(
 
   for (const location of fhirLocations) {
     const matchingStatistics = statistics.find(
-      (stat) => location.name === stat.name
+      stat => location.description === stat.statisticalID
     )
     if (!matchingStatistics) {
       // tslint:disable-next-line:no-console
@@ -97,12 +102,23 @@ export async function matchAndAssignStatisticalData(
         }`
       )
     } else {
-      const statisticalExtensions =
-        generateStatisticalExtensions(matchingStatistics)
+      const statisticalExtensions = generateStatisticalExtensions(
+        matchingStatistics
+      )
+
+      const statisticsKeys = statisticalExtensions.map(
+        extension => extension.url
+      )
+
       if (!location.extension) {
         location.extension = []
       }
-      location.extension = [...location.extension, ...statisticalExtensions]
+      location.extension = [
+        ...location.extension.filter(
+          ({ url }) => !statisticsKeys.includes(url)
+        ),
+        ...statisticalExtensions
+      ]
       locationsWithStatistics.push(location)
     }
   }
@@ -117,10 +133,10 @@ const sendToFhir = (doc: fhir.Location, suffix: string, method: string) => {
       'Content-Type': 'application/json+fhir'
     }
   })
-    .then((response) => {
+    .then(response => {
       return response
     })
-    .catch((error) => {
+    .catch(error => {
       return Promise.reject(
         new Error(`FHIR ${method} failed: ${error.message}`)
       )
@@ -132,20 +148,44 @@ async function addStatisticalData() {
   // tslint:disable-next-line:no-console
   console.log(
     `${chalk.blueBright(
-      '/////////////////////////// UPDATING LOCATIONS WITH STATISTICAL DATA IN FHIR ///////////////////////////'
+      '/////////////////////////// UPDATING DISTRICTS WITH STATISTICAL DATA IN FHIR ///////////////////////////'
     )}`
   )
+
+  const locations = await getLocationsByIdentifier('DISTRICT').catch(err => {
+    console.log("Couldn't fetch locations", err)
+    throw err
+  })
+
   const stats = {
-    districts: await matchAndAssignStatisticalData(
-      await getLocationsByIdentifier('DISTRICT'),
-      statistics
-    )
+    districts: await matchAndAssignStatisticalData(locations, statistics)
   }
 
   for (const location of stats.districts) {
     // tslint:disable-next-line:no-console
     console.log(`Updating location: ${location.id}`)
     await sendToFhir(location, `/Location/${location.id}`, 'PUT')
+  }
+
+  // tslint:disable-next-line:no-console
+  console.log(
+    `${chalk.blueBright(
+      '/////////////////////////// UPDATING PROVINCES WITH STATISTICAL DATA IN FHIR ///////////////////////////'
+    )}`
+  )
+  const provinceStatistics = await getStatisticsForProvinces()
+  const provinces = await getLocationsByIdentifier('STATE').catch(err => {
+    console.log("Couldn't fetch provinces", err)
+    throw err
+  })
+
+  for (const province of await matchAndAssignStatisticalData(
+    provinces,
+    provinceStatistics
+  )) {
+    // tslint:disable-next-line:no-console
+    console.log(`Updating province: ${province.id}`)
+    await sendToFhir(province, `/Location/${province.id}`, 'PUT')
   }
 }
 
