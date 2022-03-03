@@ -1346,18 +1346,14 @@
   "configCertificateUploadCertificateDialogCancel": "config.certificate.uploadCertificateDialogCancel",
   "configApplicationApplicationNameLabel": "config.application.applicationNameLabel",
   "configApplicationGovermentLogoLabel": "config.application.govermentLogoLabel",
-  "configApplicationUserTimeoutLabel": "config.application.userTimeoutLabel",
   "configApplicationCurrencyLable": "config.application.currencyLable",
   "configApplicationPhoneNumberLabel": "config.application.phoneNumberLabel",
-  "configApplicationLogrocketLabel": "config.application.logrocketLabel",
-  "configApplicationSentryLabel": "config.application.sentryLabel",
+  "configApplicationUniqueIdentificationNumberLabel": "config.application.uniqueIdentificationNumberLabel",
   "configApplicationLegallySpecifiedLabel": "config.application.legallySpecifiedLabel",
   "configApplicationLateRegistrationLabel": "config.application.lateRegistrationLabel",
   "configApplicationDelayedRegistrationLabel": "config.application.delayedRegistrationLabel",
   "configApplicationWithinLegallySpecifiedTimeLabel": "config.application.withinLegallySpecifiedTimeLabel",
   "configApplicationGeneralTabTitle": "config.application.generalTabTitle",
   "configApplicationBirthTabTitle": "config.application.birthTabTitle",
-  "configApplicationDeathTabTitle": "config.application.deathTabTitle",
-  "configApplicationPhoneNumberPatternLabel": "config.application.phoneNumberPatternLabel",
-  "configApplicationPhoneNumberExampleLabel": "config.application.phoneNumberExampleLabel"
+  "configApplicationDeathTabTitle": "config.application.deathTabTitle"
 }
