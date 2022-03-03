@@ -25,9 +25,9 @@ export async function definitionsHandler(
   request: Hapi.Request,
   h: Hapi.ResponseToolkit
 ): Promise<IDefinitionsResponse> {
-  const application = request.params.application
+  const declaration = request.params.declaration
   return {
     forms: await getForms(),
-    languages: (await getLanguages(application)).data
+    languages: (await getLanguages(declaration)).data
   }
 }

@@ -49,7 +49,7 @@ enum BirthSection {
   Child = 'child',
   Mother = 'mother',
   Father = 'father',
-  Applicant = 'informant',
+  Informant = 'informant',
   Parent = 'primaryCaregiver',
   Registration = 'registration',
   Documents = 'documents',
@@ -60,7 +60,7 @@ enum DeathSection {
   Deceased = 'deceased',
   Event = 'deathEvent',
   CauseOfDeath = 'causeOfDeath',
-  Applicants = 'informant',
+  Informants = 'informant',
   DeathDocuments = 'documents',
   Preview = 'preview'
 }
@@ -167,7 +167,7 @@ type ExecutorKey = 'CURRENT_DATE'
 type TransformerPayload =
   | IIntLabelPayload
   | IConditionExecutorPayload
-  | IApplicantNamePayload
+  | IInformantNamePayload
   | IFeildValuePayload
   | IDateFeildValuePayload
   | IFormattedFeildValuePayload
@@ -711,7 +711,7 @@ interface ICondition {
   operation?: ConditionOperation
   values: string[]
 }
-interface IApplicantNameCondition {
+interface IInformantNameCondition {
   condition?: ICondition
   key: {
     [event: string]: string // data key: child || deceased
@@ -721,8 +721,8 @@ interface IApplicantNameCondition {
   }
 }
 
-interface IApplicantNamePayload {
-  conditions: IApplicantNameCondition[]
+interface IInformantNamePayload {
+  conditions: IInformantNameCondition[]
   language?: string
   allCapital?: boolean
 }

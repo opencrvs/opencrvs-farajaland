@@ -236,7 +236,7 @@ export async function createDeathDeclaration(
   const details = {
     createdAt: declarationTime.toISOString(),
     registration: {
-      contact: 'APPLICANT',
+      contact: 'INFORMANT',
       contactPhoneNumber:
         '+2607' + faker.datatype.number({ min: 10000000, max: 99999999 }),
       contactRelationship: 'Mother',

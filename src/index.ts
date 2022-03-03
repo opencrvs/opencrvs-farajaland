@@ -201,7 +201,7 @@ export async function createServer() {
 
   server.route({
     method: 'GET',
-    path: '/definitions/{application}',
+    path: '/definitions/{declaration}',
     handler: farajalandDefinitionsHandler,
     options: {
       tags: ['api'],
