@@ -43,7 +43,7 @@ context('Death Integration Test', () => {
      //register declaration
     cy.submitForm()
     // LOG OUT
-    // cy.logOut()
+    //cy.logOut()
   }) 
   
   it('Tests from declaration to registration using maximum input', () => {
