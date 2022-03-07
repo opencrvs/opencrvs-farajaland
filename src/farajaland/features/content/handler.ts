@@ -23,8 +23,8 @@ export async function contentHandler(
   request: Hapi.Request,
   h: Hapi.ResponseToolkit
 ): Promise<IDefinitionsResponse> {
-  const declaration = request.params.declaration
+  const application = request.params.application
   return {
-    languages: (await getLanguages(declaration)).data
+    languages: (await getLanguages(application)).data
   }
 }

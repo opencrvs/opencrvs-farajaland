@@ -740,10 +740,10 @@ export async function fetchAlreadyGeneratedInterval(
       },
       body: JSON.stringify({
         query: `query data($sort: String, $locationIds: [String]) {
-          searchEvents(sort: $sort, locationIds: $locationIds, sortColumn: "dateOfApplication", count: 1) {
+          searchEvents(sort: $sort, locationIds: $locationIds, sortColumn: "dateOfDeclaration", count: 1) {
             results {
               registration {
-                dateOfApplication
+                dateOfDeclaration
               }
             }
           }
@@ -766,13 +766,13 @@ export async function fetchAlreadyGeneratedInterval(
       searchEvents: {
         results: Array<{
           registration: {
-            dateOfApplication: string
+            dateOfDeclaration: string
           }
         }>
       }
     }
     return data.searchEvents.results.map(
-      ({ registration }) => new Date(registration.dateOfApplication)
+      ({ registration }) => new Date(registration.dateOfDeclaration)
     )[0]
   }
 
