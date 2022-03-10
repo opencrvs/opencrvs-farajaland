@@ -60,7 +60,7 @@ export default async function importCertificates() {
       CERTIFICATE_PRINT_HIGHEST_CHARGE: 0,
       UI_POLLING_INTERVAL: 5000,
       FIELD_AGENT_AUDIT_LOCATIONS: 'DISTRICT',
-      APPLICATION_AUDIT_LOCATIONS: 'DISTRICT',
+      DECLARATION_AUDIT_LOCATIONS: 'DISTRICT',
       INFORMANT_MINIMUM_AGE: 16,
       HIDE_EVENT_REGISTER_INFORMATION: false,
       EXTERNAL_VALIDATION_WORKQUEUE: false,
@@ -94,7 +94,7 @@ export default async function importCertificates() {
         throw Error(
           `Cannot save ${JSON.stringify(
             values
-          )} to application config db ... ${err}`
+          )} to declaration config db ... ${err}`
         )
       }
     }
