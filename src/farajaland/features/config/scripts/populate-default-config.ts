@@ -66,6 +66,9 @@ export default async function importCertificates() {
       INFORMANT_MINIMUM_AGE: 16,
       HIDE_EVENT_REGISTER_INFORMATION: false,
       EXTERNAL_VALIDATION_WORKQUEUE: false,
+      BIRTH_REGISTRATION_TARGET : 45,
+      LATE_BIRTH_REGISTRATION_TARGET : 365,
+      DEATH_REGISTRATION_TARGET : 45,
       PHONE_NUMBER_PATTERN: {
           pattern: "^0(7|9)[0-9]{1}[0-9]{7}$",
           example: "0970545855",
