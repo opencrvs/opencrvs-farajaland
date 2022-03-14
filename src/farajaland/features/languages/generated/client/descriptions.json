@@ -860,6 +860,10 @@
     "config.application.phoneNumberPatternLabel": "Label for phone number pattern config",
     "config.application.phoneNumberExampleLabel": "Label for phone number example config",
     "config.application.applicationNameChangeNotification": "Application name change notification messages",
+    "config.application.govtLogoChangeNotification": "Message for government logo change notification",
+    "config.application.govtLogoChangeError": "Error message for country logo change",
+    "config.application.govtLogoFileLimitError": "Error message for large country logo file",
+    "config.application.uniqueIdentificationNumberLabel": "Unique Identification Number (UIN) config label",
     "settings.changePhone": "Change phone number title",
     "settings.verifyPhone": "Verify phone number title"
   }
