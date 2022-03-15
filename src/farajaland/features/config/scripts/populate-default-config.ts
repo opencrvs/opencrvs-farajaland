@@ -53,6 +53,10 @@ export default async function importCertificates() {
       COUNTRY_LOGO_FILE: 'logo.png',
       COUNTRY_LOGO_RENDER_WIDTH: 104,
       COUNTRY_LOGO_RENDER_HEIGHT: 104,
+      CURRENCY: {
+        isoCode: 'ZMW',
+        languagesAndCountry: ['en-ZM']
+      },
       DESKTOP_TIME_OUT_MILLISECONDS: 900000,
       LANGUAGES: 'en',
       CERTIFICATE_PRINT_CHARGE_FREE_PERIOD: 36500,
