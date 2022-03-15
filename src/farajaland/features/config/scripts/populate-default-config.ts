@@ -48,6 +48,15 @@ export default async function importCertificates() {
    const defaultConfig = new Config({
       APPLICATION_NAME: "OpenCRVS",
       BACKGROUND_SYNC_BROADCAST_CHANNEL: "backgroundSynBroadCastChannel",
+      BIRTH : {
+        REGISTRATION_TARGET: 45,
+        LATE_REGISTRATION_TARGET: 365,
+        FEE: {
+          ON_TIME: 0,
+          LATE: 0,
+          DELAYED: 0
+        }
+      },
       COUNTRY: "FAR",
       COUNTRY_LOGO_FILE: "logo.png",
       COUNTRY_LOGO_RENDER_WIDTH: 104,
@@ -55,6 +64,13 @@ export default async function importCertificates() {
       CURRENCY: {
         isoCode: 'ZMW',
         languagesAndCountry: ['en-ZM']
+      },
+      DEATH : {
+        REGISTRATION_TARGET: 45,
+        FEE: {
+          ON_TIME: 0,
+          DELAYED: 0
+        }
       },
       DESKTOP_TIME_OUT_MILLISECONDS: 900000,
       LANGUAGES: "en",
@@ -66,9 +82,6 @@ export default async function importCertificates() {
       INFORMANT_MINIMUM_AGE: 16,
       HIDE_EVENT_REGISTER_INFORMATION: false,
       EXTERNAL_VALIDATION_WORKQUEUE: false,
-      BIRTH_REGISTRATION_TARGET : 45,
-      LATE_BIRTH_REGISTRATION_TARGET : 365,
-      DEATH_REGISTRATION_TARGET : 45,
       PHONE_NUMBER_PATTERN: {
           pattern: "^0(7|9)[0-9]{1}[0-9]{7}$",
           example: "0970545855",
