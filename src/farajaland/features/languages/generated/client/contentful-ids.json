@@ -1460,5 +1460,12 @@
   "configApplicationTestNumber": "config.application.testNumber",
   "configApplicationValidExample": "config.application.validExample",
   "configApplicationInvalidExample": "config.application.invalidExample",
-  "configApplicationNidPatternChangeNotification": "config.application.nidPatternChangeNotification"
+  "configApplicationNidPatternTitle": "config.application.nidPatternTitle",
+  "configApplicationNidPatternChangeMessage": "config.application.nidPatternChangeMessage",
+  "configApplicationNidPatternChangeError": "config.application.nidPatternChangeError",
+  "configApplicationNidPatternChangeNotification": "config.application.nidPatternChangeNotification",
+  "configApplicationPhoneNumberPatternTitle": "config.application.phoneNumberPatternTitle",
+  "configApplicationPhoneNumberChangeMessage": "config.application.phoneNumberChangeMessage",
+  "configApplicationPhoneNumberChangeError": "config.application.phoneNumberChangeError",
+  "configApplicationPhoneNumberChangeNotification": "config.application.phoneNumberChangeNotification"
 }
