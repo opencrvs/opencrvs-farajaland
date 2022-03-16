@@ -22,13 +22,15 @@ interface IPhoneNumberPattern {
     endBefore: number
   }
 }
-
 interface INIDNumberPattern {
   pattern: RegExp
   example: string
   num: string
 }
-
+interface ICurrency {
+  isoCode: string
+  languagesAndCountry: string[]
+}
 export interface IApplicationConfigurationModel extends Document {
   APPLICATION_NAME: string,
   BACKGROUND_SYNC_BROADCAST_CHANNEL: string
@@ -36,6 +38,7 @@ export interface IApplicationConfigurationModel extends Document {
   COUNTRY_LOGO_FILE: string
   COUNTRY_LOGO_RENDER_WIDTH: number
   COUNTRY_LOGO_RENDER_HEIGHT: number
+  CURRENCY: ICurrency
   DESKTOP_TIME_OUT_MILLISECONDS: number
   LANGUAGES: string
   CERTIFICATE_PRINT_CHARGE_FREE_PERIOD: number
@@ -44,7 +47,7 @@ export interface IApplicationConfigurationModel extends Document {
   CERTIFICATE_PRINT_HIGHEST_CHARGE: number
   UI_POLLING_INTERVAL: number
   FIELD_AGENT_AUDIT_LOCATIONS: string
-  APPLICATION_AUDIT_LOCATIONS: string
+  DECLARATION_AUDIT_LOCATIONS: string
   INFORMANT_MINIMUM_AGE: number
   HIDE_EVENT_REGISTER_INFORMATION: boolean
   EXTERNAL_VALIDATION_WORKQUEUE: boolean
@@ -73,6 +76,11 @@ const phoneNumberSchema = new Schema<IPhoneNumberPattern>({
   }
 })
 
+const currencySchema = new Schema<IPhoneNumberPattern>({
+  isoCode: { type: String },
+  languagesAndCountry: [String]
+})
+
 const systemSchema = new Schema({
   APPLICATION_NAME: { type: String, require: false, default: 'OpenCRVS'},
   BACKGROUND_SYNC_BROADCAST_CHANNEL: { type: String, required: false },
@@ -80,6 +88,7 @@ const systemSchema = new Schema({
   COUNTRY_LOGO_FILE: { type: String, required: false },
   COUNTRY_LOGO_RENDER_WIDTH: { type: Number, required: false, default: 104 },
   COUNTRY_LOGO_RENDER_HEIGHT: { type: Number, required: false, default: 104 },
+  CURRENCY: { type: currencySchema, require: false },
   DESKTOP_TIME_OUT_MILLISECONDS: {
     type: Number,
     required: false,
@@ -112,7 +121,7 @@ const systemSchema = new Schema({
     required: false,
     default: 'DISTRICT'
   },
-  APPLICATION_AUDIT_LOCATIONS: {
+  DECLARATION_AUDIT_LOCATIONS: {
     type: String,
     required: false,
     default: 'DISTRICT'
