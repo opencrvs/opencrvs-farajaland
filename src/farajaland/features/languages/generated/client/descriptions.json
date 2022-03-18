@@ -869,6 +869,19 @@
     "config.application.phoneNumberPatternLabel": "Label for phone number pattern config",
     "config.application.phoneNumberExampleLabel": "Label for phone number example config",
     "config.application.applicationNameChangeNotification": "Application name change notification messages",
+    "config.application.pattern": "Label for Pattern",
+    "config.application.example": "Label for Example",
+    "config.application.testNumber": "Label for test number",
+    "config.application.validExample": "Label for valid example",
+    "config.application.invalidExample": "Label for Invalid example",
+    "config.application.nidPatternTitle": "Unique Identification Number (UIN) config title",
+    "config.application.nidPatternChangeMessage": "Unique Identification Number (UIN) config message",
+    "config.application.nidPatternChangeError": "Error message for invalid regular expression for NID number",
+    "config.application.nidPatternChangeNotification": "Message for NID Pattern change modal",
+    "config.application.phoneNumberPatternTitle": "Phone number config title",
+    "config.application.phoneNumberChangeMessage": "phone number config config message",
+    "config.application.phoneNumberChangeError": "Error message for invalid regular expression for phone number number",
+    "config.application.phoneNumberChangeNotification": "Message for phone number Pattern change modal",
     "config.application.govtLogoChangeNotification": "Message for government logo change notification",
     "config.application.govtLogoChangeError": "Error message for country logo change",
     "config.application.govtLogoFileLimitError": "Error message for large country logo file",
@@ -881,6 +894,5 @@
     "regHome.outbox.statusWaitingToBeArchived": "Label for application status waiting to be reinstated",
     "regHome.outbox.statusReinstating": "Label for application status Archiving",
     "regHome.outbox.statusWaitingToBeReinstated": "Label for application status waiting to be reinstated"
-
   }
 }
