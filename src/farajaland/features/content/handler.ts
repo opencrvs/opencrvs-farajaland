@@ -14,14 +14,9 @@ import {
   getLanguages,
   ILanguage
 } from '@countryconfig/farajaland/features/languages/service/service'
-import {
-  getTemplates,
-  ITemplates
-} from '@countryconfig/farajaland/features/templates/service'
 
 interface IDefinitionsResponse {
   languages: ILanguage[]
-  templates: ITemplates
 }
 
 export async function contentHandler(
@@ -30,7 +25,6 @@ export async function contentHandler(
 ): Promise<IDefinitionsResponse> {
   const application = request.params.application
   return {
-    languages: (await getLanguages(application)).data,
-    templates: await getTemplates()
+    languages: (await getLanguages(application)).data
   }
 }
