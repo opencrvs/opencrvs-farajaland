@@ -1467,5 +1467,8 @@
   "configApplicationPhoneNumberPatternTitle": "config.application.phoneNumberPatternTitle",
   "configApplicationPhoneNumberChangeMessage": "config.application.phoneNumberChangeMessage",
   "configApplicationPhoneNumberChangeError": "config.application.phoneNumberChangeError",
-  "configApplicationPhoneNumberChangeNotification": "config.application.phoneNumberChangeNotification"
+  "configApplicationPhoneNumberChangeNotification": "config.application.phoneNumberChangeNotification",
+  "configApplicationGovtLogoChangeNotification": "config.application.govtLogoChangeNotification",
+  "configApplicationGovtLogoChangeError": "config.application.govtLogoChangeError",
+  "configApplicationGovtLogoFileLimitError": "config.application.govtLogoFileLimitError"
 }
