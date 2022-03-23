@@ -867,7 +867,6 @@
     "config.application.deathDelayedFeeChangeNotification": "Message for application death delayed fee change notification",
     "config.application.currencyChangeMessage": "Message for application currency change modal",
     "config.application.phoneNumberLabel": "Phone number config label",
-    "config.application.uniqueIdentificationNumberLabel": "Unique Identification Number (UIN) config label",
     "config.application.birthLegallySpecifiedDialogTitle": "Legally specified dialog title for brith",
     "config.application.birthDelayedDialogTitle": "Delayed dialog title for brith",
     "config.application.deathLegallySpecifiedDialogTitle": "Legally specified dialog title for death",

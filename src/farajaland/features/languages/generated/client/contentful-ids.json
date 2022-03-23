@@ -1453,7 +1453,6 @@
   "configApplicationDeathDelayedFeeChangeNotification": "config.application.deathDelayedFeeChangeNotification",
   "configApplicationCurrencyChangeMessage": "config.application.currencyChangeMessage",
   "configApplicationPhoneNumberLabel": "config.application.phoneNumberLabel",
-  "configApplicationUniqueIdentificationNumberLabel": "config.application.uniqueIdentificationNumberLabel",
   "configApplicationBirthLegallySpecifiedDialogTitle": "config.application.birthLegallySpecifiedDialogTitle",
   "configApplicationBirthDelayedDialogTitle": "config.application.birthDelayedDialogTitle",
   "configApplicationDeathLegallySpecifiedDialogTitle": "config.application.deathLegallySpecifiedDialogTitle",

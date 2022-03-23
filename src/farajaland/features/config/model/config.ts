@@ -38,17 +38,12 @@ interface IPhoneNumberPattern {
     endBefore: number
   }
 }
-interface INIDNumberPattern {
-  pattern: RegExp
-  example: string
-  num: string
-}
 interface ICurrency {
   isoCode: string
   languagesAndCountry: string[]
 }
 export interface IApplicationConfigurationModel extends Document {
-  APPLICATION_NAME: string,
+  APPLICATION_NAME: string
   BACKGROUND_SYNC_BROADCAST_CHANNEL: string
   BIRTH : IBirth
   COUNTRY: string
@@ -67,8 +62,8 @@ export interface IApplicationConfigurationModel extends Document {
   EXTERNAL_VALIDATION_WORKQUEUE: boolean
   SENTRY: string
   LOGROCKET: string
-  PHONE_NUMBER_PATTERN: IPhoneNumberPattern
-  NID_NUMBER_PATTERN: INIDNumberPattern
+  PHONE_NUMBER_PATTERN: string
+  NID_NUMBER_PATTERN: string
 }
 
 const birthSchema = new Schema<IBirth>({
@@ -89,22 +84,6 @@ const deathSchema = new Schema<IDeath>({
   }
 })
 
-const nidPatternSchema = new Schema<INIDNumberPattern>({
-  pattern: { type: String },
-  example: String,
-  num: String
-})
-
-const phoneNumberSchema = new Schema<IPhoneNumberPattern>({
-  pattern: { type: String },
-  example: String,
-  start: String,
-  num: String,
-  mask: {
-    startForm: Number,
-    endBefore: Number
-  }
-})
 
 const currencySchema = new Schema<IPhoneNumberPattern>({
   isoCode: { type: String },
@@ -112,7 +91,7 @@ const currencySchema = new Schema<IPhoneNumberPattern>({
 })
 
 const systemSchema = new Schema({
-  APPLICATION_NAME: { type: String, require: false, default: 'OpenCRVS'},
+  APPLICATION_NAME: { type: String, require: false, default: 'OpenCRVS' },
   BACKGROUND_SYNC_BROADCAST_CHANNEL: { type: String, required: false },
   BIRTH: { type: birthSchema, required: false },
   COUNTRY: { type: String, required: false },
@@ -149,8 +128,18 @@ const systemSchema = new Schema({
     required: false,
     default: false
   },
-  PHONE_NUMBER_PATTERN: { type: phoneNumberSchema, required: false },
-  NID_NUMBER_PATTERN: { type: nidPatternSchema, required: false },
+  BIRTH_REGISTRATION_TARGET: {
+    type: Number,
+    required: false,
+    default: 45
+  },
+  DEATH_REGISTRATION_TARGET: {
+    type: Number,
+    required: false,
+    default: 45
+  },
+  PHONE_NUMBER_PATTERN: { type: String, required: false },
+  NID_NUMBER_PATTERN: { type: String, required: false },
   SENTRY: { type: String, required: false },
   LOGROCKET: { type: String, required: false }
 })

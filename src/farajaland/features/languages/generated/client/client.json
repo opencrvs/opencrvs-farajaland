@@ -1190,7 +1190,6 @@
         "config.application.phoneNumberChangeMessage": "Set the regex pattern for your country phone number. For guidance please refer to www.regex101.com",
         "config.application.phoneNumberChangeError": "Invalid regular expression for a phone number Number",
         "config.application.phoneNumberChangeNotification": "Phone Number Pattern Pattern of application updated",
-        "config.application.uniqueIdentificationNumberLabel": "Unique Identification Number (UIN) e.g. National ID",
         "config.application.birthLegallySpecifiedDialogTitle": "Legally specified time period for birth registration",
         "config.application.birthDelayedDialogTitle": "Delayed registration time period for birth registration",
         "config.application.deathLegallySpecifiedDialogTitle": "Legally specified time period for death registration",
