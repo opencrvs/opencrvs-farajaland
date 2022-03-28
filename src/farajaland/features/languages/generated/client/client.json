@@ -1424,7 +1424,7 @@
     },
     {
       "lang": "fr",
-      "displayName": "English",
+      "displayName": "Français",
       "messages": {
         "form.section.child.name": "Enfant",
         "form.section.child.title": "Détails de l'enfant",
