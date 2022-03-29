@@ -49,36 +49,43 @@ export default async function importCertificates() {
     const defaultConfig = new Config({
       APPLICATION_NAME: 'OpenCRVS',
       BACKGROUND_SYNC_BROADCAST_CHANNEL: 'backgroundSynBroadCastChannel',
+      BIRTH: {
+        REGISTRATION_TARGET: 45,
+        LATE_REGISTRATION_TARGET: 365,
+        FEE: {
+          ON_TIME: 0,
+          LATE: 0,
+          DELAYED: 0
+        }
+      },
       COUNTRY: 'FAR',
-      COUNTRY_LOGO_FILE: 'logo.png',
+      COUNTRY_LOGO: {
+        fileName: 'logo.png',
+        file: `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4
+        //8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==`
+      },
       COUNTRY_LOGO_RENDER_WIDTH: 104,
       COUNTRY_LOGO_RENDER_HEIGHT: 104,
       CURRENCY: {
         isoCode: 'ZMW',
         languagesAndCountry: ['en-ZM']
       },
+      DEATH: {
+        REGISTRATION_TARGET: 45,
+        FEE: {
+          ON_TIME: 0,
+          DELAYED: 0
+        }
+      },
       DESKTOP_TIME_OUT_MILLISECONDS: 900000,
       LANGUAGES: 'en',
-      CERTIFICATE_PRINT_CHARGE_FREE_PERIOD: 36500,
-      CERTIFICATE_PRINT_CHARGE_UP_LIMIT: 36500,
-      CERTIFICATE_PRINT_LOWEST_CHARGE: 0,
-      CERTIFICATE_PRINT_HIGHEST_CHARGE: 0,
       UI_POLLING_INTERVAL: 5000,
       FIELD_AGENT_AUDIT_LOCATIONS: 'DISTRICT',
       DECLARATION_AUDIT_LOCATIONS: 'DISTRICT',
       INFORMANT_MINIMUM_AGE: 16,
       HIDE_EVENT_REGISTER_INFORMATION: false,
       EXTERNAL_VALIDATION_WORKQUEUE: false,
-      PHONE_NUMBER_PATTERN: {
-        pattern: '^0(7|9)[0-9]{1}[0-9]{7}$',
-        example: '0970545855',
-        start: '0[7|9]',
-        num: '10',
-        mask: {
-          startForm: 4,
-          endBefore: 2
-        }
-      },
+      PHONE_NUMBER_PATTERN: '0970545855',
       SENTRY:
         'https://f892d643aab642108f44e2d1795706bc@o309867.ingest.sentry.io/1774604',
       LOGROCKET: 'opencrvs-foundation/opencrvs-farajaland',
