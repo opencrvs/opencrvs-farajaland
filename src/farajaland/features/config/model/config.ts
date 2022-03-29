@@ -105,7 +105,6 @@ const systemSchema = new Schema({
     required: false,
     default: 900000
   },
-  LANGUAGES: { type: String, required: false, default: 'en' },
   UI_POLLING_INTERVAL: { type: Number, required: false, default: 5000 },
   FIELD_AGENT_AUDIT_LOCATIONS: {
     type: String,

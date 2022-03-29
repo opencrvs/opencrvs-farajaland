@@ -78,7 +78,6 @@ export default async function importCertificates() {
         }
       },
       DESKTOP_TIME_OUT_MILLISECONDS: 900000,
-      LANGUAGES: 'en',
       UI_POLLING_INTERVAL: 5000,
       FIELD_AGENT_AUDIT_LOCATIONS: 'DISTRICT',
       DECLARATION_AUDIT_LOCATIONS: 'DISTRICT',
