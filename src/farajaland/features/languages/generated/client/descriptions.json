@@ -264,7 +264,7 @@
     "user.form.securityquestion.answer": "Label to show answer to a security question",
     "form.field.label.informantIDProof": "Option for radio group field: Type of Document To Upload",
     "form.section.informant.name": "Form section name for Informant",
-    "form.field.label.informantOtherRelationship": "Label for form field: Other relation",
+    "form.field.label.otherInformantType": "Label for form field: Other relation",
     "form.field.label.informantsDateOfBirth": "Label for form field: Date of birth",
     "form.field.label.informantsFamilyName": "Label for form field: Family name",
     "form.field.label.informantsFamilyNameEng": "Label for form field: Family name in english",
