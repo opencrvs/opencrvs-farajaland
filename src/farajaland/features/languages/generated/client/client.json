@@ -1194,7 +1194,7 @@
         "config.application.birthLegallySpecifiedDialogTitle": "Legally specified time period for birth registration",
         "config.application.birthDelayedDialogTitle": "Delayed registration time period for birth registration",
         "config.application.deathLegallySpecifiedDialogTitle": "Legally specified time period for death registration",
-        "config.application.onTimeFeeDialogTitle":"Registration fees within legally specified time",
+        "config.application.onTimeFeeDialogTitle": "Registration fees within legally specified time",
         "config.application.lateFeeDialogTitle": "Registration fees for late registrations",
         "config.application.delayedFeeDialogTitle": "Registration fees for delayed registrations",
         "config.application.legallySpecifiedLabel": "Legally specified",
@@ -1238,6 +1238,7 @@
         "form.config.navigation.deathEvent": "Event details",
         "form.config.navigation.causeOfDeath": "Cause of death",
         "form.config.navigation.spouse": "Spouse details",
+        "form.config.navigation.pages": "Pages",
         "form.config.tools.showHiddenFields": "Show hidden fields",
         "form.config.tools.textInput": "Text input",
         "form.config.tools.textAreaInput": "Text area input",
@@ -2921,20 +2922,19 @@
         "user.profile.audit.description.certified": "Certificat imprimé",
         "user.profile.auditList.showMore": "Afficher le prochain {pageSize} de {totalItems",
         "config.formConfigPageTitle": "Declaration Forms",
-        "config.birthFormConfigLabel":"Birth",
+        "config.birthFormConfigLabel": "Birth",
         "config.deathFormConfigLabel": "Death",
-        "config.formConfigPublishedTabLabel":"Published",
-        "config.formConfigDraftsTabLabel":"Drafts",
-        "config.formConfigInPreviewTabLabel":"In preview",
-        "config.formConfigPublishButtonLabel":"Publish",
-        "config.formConfigEditButtonLabel":"Edit",
+        "config.formConfigPublishedTabLabel": "Published",
+        "config.formConfigDraftsTabLabel": "Drafts",
+        "config.formConfigInPreviewTabLabel": "In preview",
+        "config.formConfigPublishButtonLabel": "Publish",
+        "config.formConfigEditButtonLabel": "Edit",
         "config.formConfigPageSubtitle": "This is some supporting copy",
         "config.formConfigDefaultConfig": "Default configuration",
-        "config.formConfigureButtonLabel":"Configure",
-        "config.previewFormConfiguration":"Preview",
-        "config.finalizeFormConfiguration":"Finalize",
-        "config.deleteDraftMenuButton":"Delete"
-
+        "config.formConfigureButtonLabel": "Configure",
+        "config.previewFormConfiguration": "Preview",
+        "config.finalizeFormConfiguration": "Finalize",
+        "config.deleteDraftMenuButton": "Delete"
       }
     }
   ]
