@@ -1497,7 +1497,21 @@
         "user.profile.audit.description.registered": "Registered vital event",
         "user.profile.audit.description.rejected": "Sent declaration for updates",
         "user.profile.audit.description.certified": "Printed certificate",
-        "user.profile.auditList.showMore": "Show next {pageSize} of {totalItems}"
+        "user.profile.auditList.showMore": "Show next {pageSize} of {totalItems}",
+        "config.formConfigPageTitle": "Declaration Forms",
+        "config.birthFormConfigLabel":"Birth",
+        "config.deathFormConfigLabel": "Death",
+        "config.formConfigPublishedTabLabel":"Published",
+        "config.formConfigDraftsTabLabel":"Drafts",
+        "config.formConfigInPreviewTabLabel":"In preview",
+        "config.formConfigPublishButtonLabel":"Publish",
+        "config.formConfigEditButtonLabel":"Edit",
+        "config.formConfigPageSubtitle": "This is some supporting copy",
+        "config.formConfigDefaultConfig": "Default configuration",
+        "config.formConfigureButtonLabel":"Configure",
+        "config.previewFormConfiguration":"Preview",
+        "config.finalizeFormConfiguration":"Finalize",
+        "config.deleteDraftMenuButton":"Delete"
       }
     },
     {
@@ -2920,20 +2934,20 @@
         "user.profile.audit.description.rejected": "Envoi de la déclaration pour mise à jour",
         "user.profile.audit.description.certified": "Certificat imprimé",
         "user.profile.auditList.showMore": "Afficher le prochain {pageSize} de {totalItems",
-        "config.formConfigPageTitle": "Declaration Forms",
-        "config.birthFormConfigLabel":"Birth",
-        "config.deathFormConfigLabel": "Death",
-        "config.formConfigPublishedTabLabel":"Published",
-        "config.formConfigDraftsTabLabel":"Drafts",
-        "config.formConfigInPreviewTabLabel":"In preview",
-        "config.formConfigPublishButtonLabel":"Publish",
-        "config.formConfigEditButtonLabel":"Edit",
-        "config.formConfigPageSubtitle": "This is some supporting copy",
-        "config.formConfigDefaultConfig": "Default configuration",
+        "config.formConfigPageTitle": "Formulaires de déclaration",
+        "config.birthFormConfigLabel":"Naissance",
+        "config.deathFormConfigLabel": "Décès",
+        "config.formConfigPublishedTabLabel":"Publié sur",
+        "config.formConfigDraftsTabLabel":"Brouillons",
+        "config.formConfigInPreviewTabLabel":"En avant-première",
+        "config.formConfigPublishButtonLabel":"Publier",
+        "config.formConfigEditButtonLabel":"Modifier",
+        "config.formConfigPageSubtitle": "Voici une copie de soutien",
+        "config.formConfigDefaultConfig": "Configuration par défaut",
         "config.formConfigureButtonLabel":"Configure",
-        "config.previewFormConfiguration":"Preview",
-        "config.finalizeFormConfiguration":"Finalize",
-        "config.deleteDraftMenuButton":"Delete"
+        "config.previewFormConfiguration":"Prévisualisation",
+        "config.finalizeFormConfiguration":"Finalisez",
+        "config.deleteDraftMenuButton":"Supprimer"
 
       }
     }
