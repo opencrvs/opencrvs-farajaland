@@ -3050,7 +3050,7 @@
         "validations.validDrivingLicenseNumber": "Le numéro de permis de conduire ne peut être qu'alphanumérique et doit comporter {longueur valide} caractères.",
         "validations.validNationalId": "Le numéro d'identification national ne peut être que numérique et doit avoir une longueur de {validLength} chiffres.",
         "validations.validNationalIDLengths": "9",
-        "validations.validPassportNumber": "Le numéro de passeport ne peut être qu'alphanumérique et doit comporter {validLength} caractères.",
+        "validations.validPassportNumber": "Le numéro de passeport ne peut être qu'alphanumérique et doit comporter {validLength} caractères."
       }
     }
   ]
