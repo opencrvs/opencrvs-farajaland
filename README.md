@@ -658,7 +658,7 @@ This object holds sections for birth declaration forms. All sections are contain
 
   Below are the address fields, work similarly like mentioned [earlier](#Address-fields). All these fields stand for the address where the informant resides.
 
-  - #### `permanentAddress`
+  - #### `primaryAddress`
 
   - #### `statePermanent`
 
@@ -792,7 +792,7 @@ This object holds sections for birth declaration forms. All sections are contain
     Below are the [address fields](#Address-fields). There are some classifications of the addresses.
     Following address fields stand for permanent address.
 
-    - #### `permanentAddress`
+    - #### `primaryAddress`
         Label for the permanent address subsection.
 
     -   #### `countryPermanent`
@@ -834,14 +834,14 @@ This object holds sections for birth declaration forms. All sections are contain
 
     -   #### `internationalPostcodePermanent`
 
-    -   #### currentAddressSameAsPermanent
+    -   #### secondaryAddressSameAsPermanent
         This is a radio group input that takes the choice of whether the current address is the same as a permanent address. If it is the same, all values from the permanent address are set into the current address.
 
 
 
     	Following are the fields for current address
 
-    	-  #### `currentAddress`
+    	-  #### `secondaryAddress`
 
     	-   #### `country`
 
@@ -934,14 +934,14 @@ This object holds sections for birth declaration forms. All sections are contain
 
     	The level of the educational qualification of the father.
 
-    -   #### `addressSameAsMother`
+    -   #### `secondaryAddressSameAsOtherSecondary`
         This is a radio option field, which checks whether the father’s address is the same as mother’s. If so, then the mother's address is copied into the father’s address.
 
 
 
     Following are the [address fields](#Address-fields) for the father which appear only if the father has a different address than the mother’s.
 
-    -   #### `currentAddress`
+    -   #### `secondaryAddress`
 
     -   #### `country`
 
@@ -979,9 +979,9 @@ This object holds sections for birth declaration forms. All sections are contain
 
     -   #### `internationalPostcode`
 
-    -   #### `permanentAddressSameAsMother`
+    -   #### `primaryAddressSameAsMother`
 
-    -   #### `permanentAddress`
+    -   #### `primaryAddress`
 
     -  #### `countryPermanent`
 
@@ -1050,7 +1050,7 @@ This object holds sections for birth declaration forms. All sections are contain
 
     If the informant is someone else and responsible for the child, the proof of assigned responsibility is needed. This field is used to take that documents.
 
-  - #### `uploadDocForParentPermanentAddress`
+  - #### `uploadDocForParentPrimaryAddress`
 
     If the child age is between (BIRTH_REGISTRATION_TARGET + 1) days to 5 years, the parent permanent address proof is needed. This conditional field appears only when the child age is within the above mentioned limit.
 
@@ -1139,7 +1139,7 @@ This object holds sections for death declaration forms. All sections are in sect
 
     Below are the [address fields](#Address-fields), which takes the address the deceased was used to reside.
 
-    - #### `currentAddress`
+    - #### `secondaryAddress`
 
     - #### `country`
 
@@ -1177,9 +1177,9 @@ This object holds sections for death declaration forms. All sections are in sect
 
     - #### `internationalPostcode`
 
-    - #### `permanentAddressSameAsMother`
+    - #### `primaryAddressSameAsMother`
 
-    - #### `permanentAddress`
+    - #### `primaryAddress`
 
     - #### `countryPermanent`
     - #### `statePermanent`
@@ -1537,7 +1537,7 @@ This object holds sections for death declaration forms. All sections are in sect
 
     This field takes proof of the death of the deceased. It has several options, which are: Certified Post Mortem Report, Hospital Discharge Certificate, Attested Letter of Death, Attested Certificate of Death, Certified Copy of Burial Receipt, Certified Copy of Funeral Receipt. The `extraValue` of this field `DECEASED_DEATH_PROOF`, which is self-descriptive.
 
-  - #### `uploadDocForDeceasedPermanentAddress`
+  - #### `uploadDocForDeceasedPrimaryAddress`
 
     This field stands for the proof of the deceased’s permanent address having extraValue of DECEASED_PARMANENT_ADDRESS_PROOF. The options are the same as the [uploadDocForDeceased](#uploadDocForDeceased).
 
