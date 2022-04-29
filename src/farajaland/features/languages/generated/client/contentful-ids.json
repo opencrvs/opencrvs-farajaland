@@ -169,6 +169,8 @@
   "configFormDraftSaveTitle": "config.form.draft.save.title",
   "configFormEditConfirmationDescription": "config.form.edit.confirmation.description",
   "configFormEditConfirmationTitle": "config.form.edit.confirmation.title",
+  "configFormMobileModalDesc": "config.form.mobile.modal.desc",
+  "cconfigFormMobileModalTitle": "config.form.edit.confirmation.title",
   "configFormNavigationCauseOfDeath": "config.form.navigation.causeOfDeath",
   "configFormNavigationChild": "config.form.navigation.child",
   "configFormNavigationDeathEvent": "config.form.navigation.deathEvent",
