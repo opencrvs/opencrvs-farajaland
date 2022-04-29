@@ -1663,6 +1663,7 @@
         "config.form.draft.save.title": "Sauvegarder le projet ?",
         "config.form.edit.confirmation.description": "Cela créera une nouvelle version préliminaire que vous pourrez mettre à jour. Votre formulaire prévisualisé reviendra à la configuration par défaut.",
         "config.form.edit.confirmation.title": "Modifier le formulaire de déclaration",
+        "config.form.hidden": "Caché",
         "config.form.navigation.causeOfDeath": "Cause du décès",
         "config.form.navigation.child": "Détails de l'enfant",
         "config.form.navigation.deathEvent": "Détails de l'événement",
