@@ -169,6 +169,7 @@
         "config.form.draft.save.title": "Save draft?",
         "config.form.edit.confirmation.description": "This will make a new draft version for you to make updates. Your previewed form will revert to the default configuration.",
         "config.form.edit.confirmation.title": "Edit declaration form",
+        "config.form.hidden": "Hidden",
         "config.form.navigation.causeOfDeath": "Cause of death",
         "config.form.navigation.child": "Child details",
         "config.form.navigation.deathEvent": "Event details",
