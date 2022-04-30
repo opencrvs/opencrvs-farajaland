@@ -148,6 +148,7 @@
     "config.form.draft.save.title": "Title for save draft modal",
     "config.form.edit.confirmation.description": "Description for edit confirmation",
     "config.form.edit.confirmation.title": "Title for edit confirmation",
+    "config.form.hidden": "Label for hidden field status pill in form tools",
     "config.form.mobile.modal.desc": "Modal description for mobile form configuration",
     "config.form.mobile.modal.title": "Modal title for mobile form configuration",
     "config.form.navigation.causeOfDeath": "Label for Cause of death in page navigation",
