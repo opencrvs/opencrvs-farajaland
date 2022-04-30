@@ -212,7 +212,7 @@
         "constants.declarations": "Declarations",
         "constants.declarationsCount": "Declarations ({totalItems})",
         "constants.declarationSentForExternalValidationOn": "Declaration sent for external validation on",
-        "constants.declarationStarted": "Declaration started",
+        "constants.declarationStarted": "Started",
         "constants.declarationStartedBy": "Started by",
         "constants.declarationStartedOn": "Started on",
         "constants.declarationState": "Declaration {action} on",
