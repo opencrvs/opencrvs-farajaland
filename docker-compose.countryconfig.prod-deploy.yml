@@ -50,12 +50,10 @@ services:
 
   auth:
     environment:
-      - QA_ENV=true
       - NODE_ENV=production
 
   user-mgnt:
     environment:
-      - QA_ENV=true
       - NODE_ENV=production
 
 secrets:
