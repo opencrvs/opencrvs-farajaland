@@ -561,6 +561,8 @@
     "duplicates.details.duplicateReview": "Duplicate review Page header",
     "duplicates.details.keep": "Button text for non duplicate",
     "duplicates.details.duplicate": "Button text for Duplicate",
+    "config.form.draft.defaultComment": "Default comment for drafts",
+    "config.form.settings.globalSettingsDescription": "Label for global form settings introduction",
     "config.form.navigation.pages": "Label for Pages in page navigation",
     "config.form.tools.showHiddenFields": "Label for Show hidden fields in form tools",
     "config.form.hidden": "Label for hidden status",
