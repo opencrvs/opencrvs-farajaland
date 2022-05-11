@@ -59,6 +59,7 @@
   "custom.field.form.maxLength",
   "custom.field.form.duplicateField",
   "config.form.draft.defaultComment",
+  "config.form.settings.globalSettingsDescription",
   "config.form.navigation.pages",
   "config.form.tools.showHiddenFields",
   "config.form.hidden",
