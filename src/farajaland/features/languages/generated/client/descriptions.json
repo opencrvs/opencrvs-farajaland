@@ -389,7 +389,6 @@
     "print.certificate.review.modal.body": "Print certificate modal body text",
     "print.certificate.toast.message": "Floating Toast message upon certificate ready to print",
     "print.certificate.collector.other.title": "Title for other collector form",
-    "print.certificate.collector.other.paragraph": "Paragraph for other collector form",
     "print.certificate.collector.form.error": "Form level error for collector form",
     "print.certificate.collector.other.form.error": "Form level error for other collector information form",
     "print.cert.coll.other.aff.form.title": "Form title for other collector affidavit form",
