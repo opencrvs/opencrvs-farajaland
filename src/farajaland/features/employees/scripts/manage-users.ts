@@ -53,6 +53,7 @@ export function getScope(role: string, environment: string): string[] {
 }
 
 export function createUsers(users: IUserModel[]) {
+  console.log("SHould create users!!")
   mongoose.connect(MONGO_URL)
   const fieldAgentRole = new Role({
     title: 'Field Agent',
