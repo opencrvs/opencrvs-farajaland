@@ -244,6 +244,7 @@
   "constantsWithin45DaysTo1Year": "constants.within45DaysTo1Year",
   "constantsRequireUpdatesLoading": "constants.requireUpdatesLoading",
   "constantsNoRecords": "constants.noRecords",
+  "constantsNoConnection": "constants.noConnection",
   "correctionCorrectorAnotherAgent": "correction.corrector.anotherAgent",
   "correctionCorrectorBirthNote": "correction.corrector.birth.note",
   "correctionCorrectorChild": "correction.corrector.child",
@@ -1510,5 +1511,5 @@
   "navigationPerformance": "navigation.performance",
   "navigationTeam": "navigation.team",
   "navigationConfig": "navigation.config",
-  "navigationCertificate": "navigation.certificates"
+  "navigationCertificate": "navigation.certificate"
 }

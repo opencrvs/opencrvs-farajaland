@@ -1,27 +1,44 @@
 import fetch from 'node-fetch'
 import { User } from './users'
 
-import { idsToFHIRIds, log } from './util'
+import { idsToFHIRIds, log, removeEmptyFields } from './util'
 import { readFileSync } from 'fs'
 import { join } from 'path'
 import {
-  BirthRegistration,
   BirthRegistrationInput,
-  DeathRegistration
+  MarkBirthAsCertifiedMutation,
+  MarkDeathAsCertifiedMutation,
+  PaymentOutcomeType,
+  PaymentType
 } from './gateway'
-import { cloneDeep, omit } from 'lodash'
+import { omit } from 'lodash'
 import { GATEWAY_HOST } from './constants'
+import { markAsRegistered, markDeathAsRegistered } from './register'
+import { MARK_BIRTH_AS_CERTIFIED, MARK_DEATH_AS_CERTIFIED } from './queries'
 
 export function createBirthCertificationDetails(
   createdAt: Date,
-  declaration: BirthRegistration
+  declaration: Awaited<ReturnType<typeof markAsRegistered>>
 ) {
   const withIdsRemoved = idsToFHIRIds(
-    omit(declaration, ['id', 'eventLocation.id', 'registration.type']),
-    ['id', 'mother.id', 'father.id', 'child.id', 'registration.id']
+    omit(declaration, [
+      '__typename',
+      'id',
+      'eventLocation.id',
+      'registration.type'
+    ]),
+    [
+      'id',
+      'mother.id',
+      'father.id',
+      'child.id',
+      'registration.id',
+      'informant.individual.id',
+      'informant.id'
+    ]
   )
-
-  return {
+  delete withIdsRemoved.history
+  const data = {
     ...withIdsRemoved,
     registration: {
       ...withIdsRemoved.registration,
@@ -35,10 +52,10 @@ export function createBirthCertificationDetails(
           hasShowedVerifiedDocument: false,
           payments: [
             {
-              type: 'MANUAL',
+              type: PaymentType.Manual,
               total: 10,
               amount: 10,
-              outcome: 'COMPLETED',
+              outcome: PaymentOutcomeType.Completed,
               date: createdAt
             }
           ],
@@ -52,14 +69,20 @@ export function createBirthCertificationDetails(
       ]
     }
   }
+  return removeEmptyFields(data)
 }
 
 export function createDeathCertificationDetails(
   createdAt: Date,
-  declaration: DeathRegistration
+  declaration: Awaited<ReturnType<typeof markDeathAsRegistered>>
 ) {
   const withIdsRemoved = idsToFHIRIds(
-    omit(declaration, ['id', 'eventLocation.id', 'registration.type']),
+    omit(declaration, [
+      '__typename',
+      'id',
+      'eventLocation.id',
+      'registration.type'
+    ]),
     [
       'id',
       'mother.id',
@@ -75,19 +98,28 @@ export function createDeathCertificationDetails(
     ...withIdsRemoved,
     deceased: {
       ...withIdsRemoved.deceased,
-      identifier: withIdsRemoved.deceased.identifier.filter(
-        ({ type }: { type: string }) => type != 'DEATH_REGISTRATION_NUMBER'
+      identifier: withIdsRemoved.deceased?.identifier?.filter(
+        id => id?.type != 'DEATH_REGISTRATION_NUMBER'
       )
     },
     registration: {
       ...withIdsRemoved.registration,
-      draftId: withIdsRemoved._fhirIDMap.composition,
+      draftId: withIdsRemoved._fhirIDMap?.composition,
       certificates: [
         {
           hasShowedVerifiedDocument: false,
           data:
             'data:application/pdf;base64,' +
             readFileSync(join(__dirname, './signature.pdf')).toString('base64'),
+          payments: [
+            {
+              type: PaymentType.Manual,
+              total: 10,
+              amount: 10,
+              outcome: PaymentOutcomeType.Completed,
+              date: createdAt
+            }
+          ],
           collector: {
             relationship: 'INFORMANT'
           }
@@ -102,17 +134,7 @@ export function createDeathCertificationDetails(
     }
   }
 
-  return data
-}
-
-function withoutCertData(data: BirthRegistrationInput) {
-  const details = cloneDeep(data)
-  details.registration?.certificates?.forEach(cert => {
-    if (cert) {
-      cert.data = 'REDACTED'
-    }
-  })
-  return details
+  return removeEmptyFields(data)
 }
 
 export async function markAsCertified(
@@ -123,7 +145,6 @@ export async function markAsCertified(
   const { token, username } = user
 
   const requestStart = Date.now()
-  console.log(JSON.stringify(withoutCertData(details)))
 
   const certifyDeclarationRes = await fetch(GATEWAY_HOST, {
     method: 'POST',
@@ -133,10 +154,7 @@ export async function markAsCertified(
       'x-correlation-id': `certification-${id}`
     },
     body: JSON.stringify({
-      query: `
-        mutation submitMutation($id: ID!, $details: BirthRegistrationInput!) {
-          markBirthAsCertified(id: $id, details: $details)
-        }`,
+      query: MARK_BIRTH_AS_CERTIFIED,
       variables: {
         id: id,
         details
@@ -144,11 +162,13 @@ export async function markAsCertified(
     })
   })
   const requestEnd = Date.now()
-  const result = await certifyDeclarationRes.json()
+  const result = (await certifyDeclarationRes.json()) as {
+    errors: any[]
+    data: MarkBirthAsCertifiedMutation
+  }
+
   if (result.errors) {
     console.error(JSON.stringify(result.errors, null, 2))
-
-    console.error(JSON.stringify(withoutCertData(details)))
     throw new Error('Birth declaration could not be certified')
   }
 
@@ -180,10 +200,7 @@ export async function markDeathAsCertified(
       'x-correlation-id': `death-certification-${id}`
     },
     body: JSON.stringify({
-      query: `
-        mutation submitMutation($id: ID!, $details: DeathRegistrationInput!) {
-          markDeathAsCertified(id: $id, details: $details)
-        }`,
+      query: MARK_DEATH_AS_CERTIFIED,
       variables: {
         id,
         details
@@ -191,7 +208,10 @@ export async function markDeathAsCertified(
     })
   })
   const requestEnd = Date.now()
-  const result = await certifyDeclarationRes.json()
+  const result = (await certifyDeclarationRes.json()) as {
+    errors: any[]
+    data: MarkDeathAsCertifiedMutation
+  }
   if (result.errors) {
     console.error(JSON.stringify(result.errors, null, 2))
     details.registration?.certificates?.forEach(cert => {
