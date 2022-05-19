@@ -9,6 +9,10 @@
  * Copyright (C) The OpenCRVS Authors. OpenCRVS and the OpenCRVS
  * graphic logo are (registered/a) trademark(s) of Plan International.
  */
+type BirthDeclarationOptions = {
+  firstName?: string
+  familyName?: string
+}
 declare namespace Cypress {
   interface Chainable {
     login: (userType: string) => void
@@ -16,13 +20,20 @@ declare namespace Cypress {
     selectOption: (selector: string, text: string, option: string) => void
     goToNextFormSection: () => void
     createPin: () => void
+    reviewForm: () => void
+    clickUserListItemByName: (name: string, actionText: string) => void
+    submitForm: () => void
     submitDeclaration: () => void
+    createBirthRegistrationAs: (
+      role: string,
+      options?: BirthDeclarationOptions
+    ) => void
+    printDeclaration: () => void
     rejectDeclaration: () => void
     registerDeclaration: () => void
     verifyLandingPageVisible: () => void
-    initializeFakeTimers: () => void
     downloadFirstDeclaration: () => void
-    enterMaximumInput: (firstName: string, lastName: string) => void
+    enterMaximumInput: () => void
     enterDeathMaximumInput: () => void
     registerDeclarationWithMinimumInput: (
       firstName: string,
@@ -32,10 +43,7 @@ declare namespace Cypress {
       firstName: string,
       lastName: string
     ) => void
-    declareDeclarationWithMinimumInput: (
-      firstName: string,
-      lastName: string
-    ) => void
+    declareDeclarationWithMinimumInput: () => void
     declareDeclarationWithMaximumInput: (
       firstName: string,
       lastName: string

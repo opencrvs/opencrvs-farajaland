@@ -17,29 +17,13 @@ context('Certificate Integration Test', () => {
     indexedDB.deleteDatabase('OpenCRVS')
   })
 
-  it('Tests from declaration to certification using minimum input', () => {
-    
-    cy.declareDeclarationWithMinimumInput('AZ', 'Antor')
-  
-  })
+  it('Prints minimum input declaration showing the pdf form', () => {
+    // Create declaration with an API call
+    cy.createBirthRegistrationAs('registrar')
 
-  it('Registers Minimum input declaration',() => {
-   
-    cy.login('registrar')
-      // CREATE PIN
-    cy.createPin()
-      //review declaration
-    cy.reviewForm()
-
-     //register Declaration
-    cy.submitForm()
-  })
-
-  it('Prints minimum input declaration showing the pdf form',() => {
-   
     cy.login('registrar')
     // CREATE PIN
     cy.createPin()
-    cy.printDeclaration() 
+    cy.printDeclaration()
   })
 })
