@@ -72,7 +72,7 @@ One of the key dependencies and enablers for OpenCRVS is country configuration a
 
 - Backups _(Backup zips of default reference data for a nation, for a factory reset, clean installation or for local development purposes.)_
 
-2. The [src](https://github.com/opencrvs/opencrvs-tree/master/src) folder contians the code required to run the configuration server.  
+2. The [src](https://github.com/opencrvs/opencrvs-farajaland/master/src) folder contians the code required to run the configuration server.  
 
 - Endpoints for receiving some base config variables into the OpenCRVS declaration such as your country's mobile number RegExp, or how long you wsh your login session sto last before expiring.  **This configuration will be deprecated in favour of an easy to use GUI in the Beta v1 release of OpenCRVS Core in June 2022.**
 
@@ -150,7 +150,7 @@ Some simple commands should be able to be run by a continuous integration system
 Essentially, this is the process of creating a factory reset database population and backup of reference data for either your development or production environment.
 
 Before commencing, you must have customised the source reference data for your needs in CSV files or alternatively via custom scripts that you write for 3rd party APIs.
-You should feel free to amend the approach we have taken and the scripts if you need to integrate with APIs, but your output should be CSV files, identical in style to ours in the features folders for [administrative locations](https://github.com/opencrvs/opencrvs-tree/master/src/features/administrative/source), [employees](https://github.com/opencrvs/opencrvs-tree/master/src/features/employees/generated) and [facilities](https://github.com/opencrvs/opencrvs-tree/master/src/features/facilities/source).
+You should feel free to amend the approach we have taken and the scripts if you need to integrate with APIs, but your output should be CSV files, identical in style to ours in the features folders for [administrative locations](https://github.com/opencrvs/opencrvs-farajaland/master/src/features/administrative/source), [employees](https://github.com/opencrvs/opencrvs-farajaland/master/src/features/employees/generated) and [facilities](https://github.com/opencrvs/opencrvs-farajaland/master/src/features/facilities/source).
 
 1. Ensure that OpenCRVS Core is running.
 
@@ -179,7 +179,7 @@ If you pass the environment code "DEV", your test password will be the same for 
 
 **Test users must NEVER be installed on production as they all use the same password. You will be warned about this.**
 
-If you pass the environment code "PRODUCTION", your test password will be ignored. Instead we create strong passwords for each user using [niceware](https://github.com/diracdeltas/niceware) and save the usernames and passwords along with contact details for the users in a file: "login-details.json" in this [folder](https://github.com/opencrvs/opencrvs-tree/master/src/features/employees/generated). You can then contact the users and tell them their production password which they can change to something else strong and memorable to them when they login - WARNING: The niceware wordlist has not been rigorously checked for offensive words. Use at your own risk. You may need to login as one of these users and change a password if it is deemed offensive. This approach makes it easy to set up active employees initially in bulk for a production deployment without users having to verify their account. Alternatively a national system administrator can always use OpenCRVS' UI to create new users in the "Team" configuration at any time follwoing the standard process.
+If you pass the environment code "PRODUCTION", your test password will be ignored. Instead we create strong passwords for each user using [niceware](https://github.com/diracdeltas/niceware) and save the usernames and passwords along with contact details for the users in a file: "login-details.json" in this [folder](https://github.com/opencrvs/opencrvs-farajaland/master/src/features/employees/generated). You can then contact the users and tell them their production password which they can change to something else strong and memorable to them when they login - WARNING: The niceware wordlist has not been rigorously checked for offensive words. Use at your own risk. You may need to login as one of these users and change a password if it is deemed offensive. This approach makes it easy to set up active employees initially in bulk for a production deployment without users having to verify their account. Alternatively a national system administrator can always use OpenCRVS' UI to create new users in the "Team" configuration at any time follwoing the standard process.
 
 The populate script is only run once when creating your factory reset backups. **The populate script is never used live in production, only when generating reference data factory reset backups locally for production use.**
 
