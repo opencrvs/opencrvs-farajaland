@@ -44,7 +44,6 @@ export const COUNTRY_WIDE_CRUDE_DEATH_RATE =
 
   import * as path from 'path'
 import { readFileSync } from 'fs'
-export const FHIR_URL = process.env.FHIR_URL || 'http://localhost:3447/fhir'
 
 export const LANGUAGES_SOURCE = path.join(
   process.cwd(),

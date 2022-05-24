@@ -10,7 +10,7 @@
  * graphic logo are (registered/a) trademark(s) of Plan International.
  */
 // tslint:disable no-var-requires
-require('app-module-path').addPath(require('path').join(__dirname, '../'))
+require('app-module-path').addPath(require('path').join(__dirname))
 
 // tslint:enable no-var-requires
 import fetch from 'node-fetch'
@@ -152,8 +152,9 @@ export async function createServer() {
     handler: (request, h) => {
       const file =
         process.env.NODE_ENV === 'production'
-          ? './config/client-config.prod.js'
-          : './config/client-config.js'
+          ? '/client-configs/client-config.prod.js'
+          : '/client-configs/client-config.js'
+      console.log("HEY: ",join(__dirname, file))
       // @ts-ignore
       return h.file(join(__dirname, file))
     },
@@ -170,8 +171,8 @@ export async function createServer() {
     handler: (request, h) => {
       const file =
         process.env.NODE_ENV === 'production'
-          ? './config/login-config.prod.js'
-          : './config/login-config.js'
+          ? '/client-configs/login-config.prod.js'
+          : '/client-configs/login-config.js'
       // @ts-ignore
       return h.file(join(__dirname, file))
     },
