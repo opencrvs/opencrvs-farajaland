@@ -175,13 +175,12 @@ Cypress.Commands.add('submitForm', () => {
   cy.get('#submit_confirm').click()
   cy.get('#notification').should('is.visible')
   cy.get('#notification').should('not.exist')
-  cy.reload()
 })
 
 Cypress.Commands.add('printDeclaration', () => {
   cy.get('#navigation_print').click()
-  cy.get('#ListItemAction-0-icon').click()
-  cy.get('#ListItemAction-0-Print').click()
+  cy.get('#ListItemAction-0-icon', { timeout: 30000 }).click()
+  cy.get('#ListItemAction-0-Print', { timeout: 30000 }).click()
   cy.get('#type_MOTHER').click()
   cy.get('#confirm_form').click()
   cy.get('#verifyPositive').click()
@@ -191,14 +190,18 @@ Cypress.Commands.add('printDeclaration', () => {
   cy.get('.react-pdf__message react-pdf__message--no-data').should('not.exist')
 
   cy.get('#print-certificate').click()
+  cy.get('#notification').should('is.visible')
+  cy.get('#notification').should('not.exist')
 })
 
 Cypress.Commands.add('clickUserListItemByName', (name, actionText) => {
   cy.get(
-    `[data-test-id='list-view-label']:contains("${name}") ~ [data-test-id='list-view-actions'] button`
+    `div:has([data-test-id='list-view-label']:contains("${name}")) ~ [data-test-id='list-view-actions'] button`
   )
     .first()
     .click({ force: true })
+
+  cy.get('[id$=-menuSubMenu]').should('is.visible')
   const actionsMenu = cy.get('[id$=-menuSubMenu]')
   actionsMenu.scrollIntoView().should('is.visible')
   const action = actionsMenu.get('li').contains(actionText)
@@ -349,8 +352,8 @@ Cypress.Commands.add('createBirthRegistrationAs', (role, options = {}) => {
     details.child.name = [
       {
         use: 'en',
-        firstNames: options.firstName,
-        familyName: options.familyName
+        firstNames: options.firstName || faker.name.firstName(),
+        familyName: options.familyName || faker.name.lastName()
       }
     ]
   }
@@ -381,7 +384,9 @@ Cypress.Commands.add('createBirthRegistrationAs', (role, options = {}) => {
           'mutation createBirthRegistration($details: BirthRegistrationInput!) {\n  createBirthRegistration(details: $details) {\n    trackingId\n    compositionId\n    __typename\n  }\n}\n'
       }
     }).as('createRegistration')
-    cy.get('@createRegistration')
+    cy.get('@createRegistration').should(response => {
+      expect((response as any).status).to.eq(200)
+    })
   })
 })
 
