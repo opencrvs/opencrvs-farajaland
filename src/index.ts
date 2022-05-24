@@ -97,11 +97,7 @@ export async function createServer() {
   if (HOSTNAME[0] !== '*') {
     whitelist = [
       `https://login.${HOSTNAME}`,
-      `https://register.${HOSTNAME}`,
-      'http://metrics:1050',
-      'http://notification:2020',
-      'http://gateway:7070',
-      'http://workflow:5050'
+      `https://register.${HOSTNAME}`
     ]
   }
   logger.info('Whitelist: ', JSON.stringify(whitelist))
