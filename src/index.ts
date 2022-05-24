@@ -24,24 +24,26 @@ import {
   CERT_PUBLIC_KEY_PATH,
   CHECK_INVALID_TOKEN,
   AUTH_URL,
-  COUNTRY_WIDE_CRUDE_DEATH_RATE
+  COUNTRY_WIDE_CRUDE_DEATH_RATE,
+  HOSTNAME
 } from '@countryconfig/constants'
 import {
-  locationsHandler as farajalandLocationsHandler,
-  statisticsHandler as farajalandStatisticsHandler
-} from '@countryconfig/farajaland/features/administrative/handler'
-import { facilitiesHandler as farajalandFacilitiesHandler } from '@countryconfig/farajaland/features/facilities/handler'
-import { contentHandler as farajalandContentHandler } from '@countryconfig/farajaland/features/content/handler'
-import { assetHandler as farajalandAssetHandler } from '@countryconfig/farajaland/features/assets/handler'
+  locationsHandler,
+  statisticsHandler
+} from '@countryconfig/features/administrative/handler'
+import { facilitiesHandler } from '@countryconfig/features/facilities/handler'
+import { contentHandler } from '@countryconfig/features/content/handler'
+import { assetHandler } from '@countryconfig/features/assets/handler'
 import {
-  generatorHandler as farajalandGeneratorHandler,
-  requestSchema as farajalandGeneratorRequestSchema,
-  responseSchema as farajalandGeneratorResponseSchema
-} from '@countryconfig/farajaland/features/generate/handler'
-import { farajalandValidateRegistrationHandler } from '@countryconfig/farajaland/features/validate/handler'
+  generatorHandler,
+  requestSchema as generatorRequestSchema,
+  responseSchema as generatorResponseSchema
+} from '@countryconfig/features/generate/handler'
+import { validateRegistrationHandler } from '@countryconfig/features/validate/handler'
 
 import { join } from 'path'
-import { birthNotificationHandler } from './farajaland/features/dhis2/features/notification/birth/handler'
+import { birthNotificationHandler } from '@countryconfig/features/dhis2/features/notification/birth/handler'
+import { logger } from '@countryconfig/logger'
 
 const publicCert = readFileSync(CERT_PUBLIC_KEY_PATH)
 
@@ -91,11 +93,23 @@ const validateFunc = async (
 }
 
 export async function createServer() {
+  let whitelist: string[] = [HOSTNAME]
+  if (HOSTNAME[0] !== '*') {
+    whitelist = [
+      `https://login.${HOSTNAME}`,
+      `https://register.${HOSTNAME}`,
+      'http://metrics:1050',
+      'http://notification:2020',
+      'http://gateway:7070',
+      'http://workflow:5050'
+    ]
+  }
+  logger.info('Whitelist: ', JSON.stringify(whitelist))
   const server = new Hapi.Server({
     host: COUNTRY_CONFIG_HOST,
     port: COUNTRY_CONFIG_PORT,
     routes: {
-      cors: { origin: ['*'] }
+      cors: { origin: whitelist }
     }
   })
 
@@ -138,8 +152,8 @@ export async function createServer() {
     handler: (request, h) => {
       const file =
         process.env.NODE_ENV === 'production'
-          ? './farajaland/config/client-config.prod.js'
-          : './farajaland/config/client-config.js'
+          ? './config/client-config.prod.js'
+          : './config/client-config.js'
       // @ts-ignore
       return h.file(join(__dirname, file))
     },
@@ -156,8 +170,8 @@ export async function createServer() {
     handler: (request, h) => {
       const file =
         process.env.NODE_ENV === 'production'
-          ? './farajaland/config/login-config.prod.js'
-          : './farajaland/config/login-config.js'
+          ? './config/login-config.prod.js'
+          : './config/login-config.js'
       // @ts-ignore
       return h.file(join(__dirname, file))
     },
@@ -171,7 +185,7 @@ export async function createServer() {
   server.route({
     method: 'GET',
     path: '/locations',
-    handler: farajalandLocationsHandler,
+    handler: locationsHandler,
     options: {
       tags: ['api'],
       description: 'Returns Farajaland locations.json'
@@ -181,7 +195,7 @@ export async function createServer() {
   server.route({
     method: 'GET',
     path: '/facilities',
-    handler: farajalandFacilitiesHandler,
+    handler: facilitiesHandler,
     options: {
       tags: ['api'],
       description: 'Returns Farajaland facilities.json'
@@ -191,7 +205,7 @@ export async function createServer() {
   server.route({
     method: 'GET',
     path: '/assets/{file}',
-    handler: farajalandAssetHandler,
+    handler: assetHandler,
     options: {
       auth: false,
       tags: ['api'],
@@ -202,7 +216,7 @@ export async function createServer() {
   server.route({
     method: 'GET',
     path: '/content/{application}',
-    handler: farajalandContentHandler,
+    handler: contentHandler,
     options: {
       auth: false,
       tags: ['api'],
@@ -213,7 +227,7 @@ export async function createServer() {
   server.route({
     method: 'POST',
     path: '/validate/registration',
-    handler: farajalandValidateRegistrationHandler,
+    handler: validateRegistrationHandler,
     options: {
       tags: ['api'],
       description:
@@ -224,14 +238,14 @@ export async function createServer() {
   server.route({
     method: 'POST',
     path: '/generate/{type}',
-    handler: farajalandGeneratorHandler,
+    handler: generatorHandler,
     options: {
       tags: ['api'],
       validate: {
-        payload: farajalandGeneratorRequestSchema
+        payload: generatorRequestSchema
       },
       response: {
-        schema: farajalandGeneratorResponseSchema
+        schema: generatorResponseSchema
       },
       description:
         'Generates registration numbers based on country specific implementation logic'
@@ -263,7 +277,7 @@ export async function createServer() {
   server.route({
     method: 'GET',
     path: '/statistics',
-    handler: farajalandStatisticsHandler,
+    handler: statisticsHandler,
     options: {
       tags: ['api'],
       description:

@@ -22,5 +22,8 @@ jobs:
         env:
           DOCKERHUB_ACCOUNT: ${{ secrets.DOCKERHUB_ACCOUNT }}
           DOCKERHUB_REPO: ${{ secrets.DOCKERHUB_REPO }}
+          STAGING_DOMAIN: ${{ secrets.STAGING_DOMAIN }}
+          PRODUCTION_DOMAIN: ${{ secrets.PRODUCTION_DOMAIN }}
+          QA_DOMAIN: ${{ secrets.QA_DOMAIN }}
         run: |
           export COUNTRY_CONFIG_VERSION=`git log -1 --pretty=format:%h` && bash build-and-push.sh && unset COUNTRY_CONFIG_VERSION
