@@ -1,0 +1,1084 @@
+{
+  "data": [
+    {
+      "id": "23dfa43a-57eb-4e72-93b9-27456d397a7d",
+      "name": "Central",
+      "alias": "Central",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "STATE",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/0"
+    },
+    {
+      "id": "e32ac4a7-55aa-4e43-941a-30e3a243bdb8",
+      "name": "Tinbelt",
+      "alias": "Tinbelt",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "STATE",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/0"
+    },
+    {
+      "id": "a1c95436-be4b-4291-9699-aabfd49d1b6f",
+      "name": "Eastern",
+      "alias": "Eastern",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "STATE",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/0"
+    },
+    {
+      "id": "6ac6b19f-bdd2-4155-be6b-54add327b48b",
+      "name": "Sulaka",
+      "alias": "Sulaka",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "STATE",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/0"
+    },
+    {
+      "id": "9f708ef8-03c0-4380-a375-54416ed63952",
+      "name": "Pualula",
+      "alias": "Pualula",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "STATE",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/0"
+    },
+    {
+      "id": "e3c155e8-3798-4720-9179-17704d089799",
+      "name": "Chuminga",
+      "alias": "Chuminga",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "STATE",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/0"
+    },
+    {
+      "id": "34b98571-b3e3-4e1b-9ee5-ceb031044237",
+      "name": "Northern",
+      "alias": "Northern",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "STATE",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/0"
+    },
+    {
+      "id": "23c1d0ea-ff2b-4388-8344-2bfd02ab7b87",
+      "name": "North Western",
+      "alias": "North Western",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "STATE",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/0"
+    },
+    {
+      "id": "cf574005-e3f2-4248-8645-2cbbb7efb80a",
+      "name": "Southern",
+      "alias": "Southern",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "STATE",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/0"
+    },
+    {
+      "id": "2ffc2ca5-b474-4fac-8f4b-ec37d5d3394c",
+      "name": "Western",
+      "alias": "Western",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "STATE",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/0"
+    },
+    {
+      "id": "31f6ba90-911a-49ad-bfd1-54fa0828627d",
+      "name": "Ibombo",
+      "alias": "Ibombo",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/23dfa43a-57eb-4e72-93b9-27456d397a7d"
+    },
+    {
+      "id": "35bca88b-472e-48ba-8961-f2804e4dd736",
+      "name": "Isamba",
+      "alias": "Isamba",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/23dfa43a-57eb-4e72-93b9-27456d397a7d"
+    },
+    {
+      "id": "395cacba-47ed-4b0f-bd7c-7a95623074f3",
+      "name": "Itambo",
+      "alias": "Itambo",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/23dfa43a-57eb-4e72-93b9-27456d397a7d"
+    },
+    {
+      "id": "0c94277d-eb6f-456b-980f-05260aec51f4",
+      "name": "Ezhi",
+      "alias": "Ezhi",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/23dfa43a-57eb-4e72-93b9-27456d397a7d"
+    },
+    {
+      "id": "9821a5cb-508a-4d1c-bb9f-2555a9ee8432",
+      "name": "Abwe",
+      "alias": "Abwe",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/23dfa43a-57eb-4e72-93b9-27456d397a7d"
+    },
+    {
+      "id": "422ad21e-b2a6-4509-b31d-00ea1ad7989d",
+      "name": "Piri",
+      "alias": "Piri",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/23dfa43a-57eb-4e72-93b9-27456d397a7d"
+    },
+    {
+      "id": "91245fca-8658-4a01-98c9-6e40b899748b",
+      "name": "Uano",
+      "alias": "Uano",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/23dfa43a-57eb-4e72-93b9-27456d397a7d"
+    },
+    {
+      "id": "6f4b7935-2a93-40c8-8ef9-d8f62f04f55c",
+      "name": "Kushi",
+      "alias": "Kushi",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/23dfa43a-57eb-4e72-93b9-27456d397a7d"
+    },
+    {
+      "id": "e9c2adc9-fa05-4f0b-b153-9d02266fb3cb",
+      "name": "Umbwa",
+      "alias": "Umbwa",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/23dfa43a-57eb-4e72-93b9-27456d397a7d"
+    },
+    {
+      "id": "fc24a43e-1625-455c-8050-8a2a7658b3de",
+      "name": "Gabwe",
+      "alias": "Gabwe",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/23dfa43a-57eb-4e72-93b9-27456d397a7d"
+    },
+    {
+      "id": "949c9194-ffa5-49be-a69d-dc43717940b1",
+      "name": "Renje",
+      "alias": "Renje",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/23dfa43a-57eb-4e72-93b9-27456d397a7d"
+    },
+    {
+      "id": "281f9917-141c-4fbd-ab82-c163baf74825",
+      "name": "Bomwe",
+      "alias": "Bomwe",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/e32ac4a7-55aa-4e43-941a-30e3a243bdb8"
+    },
+    {
+      "id": "0372f1e7-f2ff-47b7-bd57-8d2d86b8f83a",
+      "name": "Ingola",
+      "alias": "Ingola",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/e32ac4a7-55aa-4e43-941a-30e3a243bdb8"
+    },
+    {
+      "id": "d70aed98-f55b-433e-939a-bdea7d46a59b",
+      "name": "Lulushi",
+      "alias": "Lulushi",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/e32ac4a7-55aa-4e43-941a-30e3a243bdb8"
+    },
+    {
+      "id": "5cf4dddf-195e-4eb3-86fb-da28a56ac93d",
+      "name": "Itwe",
+      "alias": "Itwe",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/e32ac4a7-55aa-4e43-941a-30e3a243bdb8"
+    },
+    {
+      "id": "537f89d7-6d40-449b-b735-281cce3879f6",
+      "name": "Anshya",
+      "alias": "Anshya",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/e32ac4a7-55aa-4e43-941a-30e3a243bdb8"
+    },
+    {
+      "id": "0eee5283-4f73-47b6-8b4a-353cc884c2e5",
+      "name": "Wanyama",
+      "alias": "Wanyama",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/e32ac4a7-55aa-4e43-941a-30e3a243bdb8"
+    },
+    {
+      "id": "7e9419b3-522d-4c09-b738-51ef507569e1",
+      "name": "Asaiti",
+      "alias": "Asaiti",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/e32ac4a7-55aa-4e43-941a-30e3a243bdb8"
+    },
+    {
+      "id": "24b1c73b-b1ae-43e0-b3d0-748ddbbbae89",
+      "name": "Ongwe",
+      "alias": "Ongwe",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/e32ac4a7-55aa-4e43-941a-30e3a243bdb8"
+    },
+    {
+      "id": "ccbafc03-7cc0-42ed-9556-16c5daa17352",
+      "name": "Fulira",
+      "alias": "Fulira",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/e32ac4a7-55aa-4e43-941a-30e3a243bdb8"
+    },
+    {
+      "id": "976115d3-3889-45c5-ad1e-bc3eaa7bb6ca",
+      "name": "Dola",
+      "alias": "Dola",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/e32ac4a7-55aa-4e43-941a-30e3a243bdb8"
+    },
+    {
+      "id": "a725b34d-62dd-4844-8f43-07c13a46d5d1",
+      "name": "Adiza",
+      "alias": "Adiza",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/a1c95436-be4b-4291-9699-aabfd49d1b6f"
+    },
+    {
+      "id": "d98de35c-a703-47a8-8e3a-360431a5b2ec",
+      "name": "Pata",
+      "alias": "Pata",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/a1c95436-be4b-4291-9699-aabfd49d1b6f"
+    },
+    {
+      "id": "3679449e-742b-4c92-bc27-a2219a8a473a",
+      "name": "Tete",
+      "alias": "Tete",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/a1c95436-be4b-4291-9699-aabfd49d1b6f"
+    },
+    {
+      "id": "0eed4bad-3e8a-4f90-9302-194a2a82e91f",
+      "name": "Undazi",
+      "alias": "Undazi",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/a1c95436-be4b-4291-9699-aabfd49d1b6f"
+    },
+    {
+      "id": "26e9f28d-0e14-4a59-b509-591ff52c8f9d",
+      "name": "Ambwe",
+      "alias": "Ambwe",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/a1c95436-be4b-4291-9699-aabfd49d1b6f"
+    },
+    {
+      "id": "0f2eee80-3cfc-4f9a-8be8-d1e444bfcec3",
+      "name": "Yimba",
+      "alias": "Yimba",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/a1c95436-be4b-4291-9699-aabfd49d1b6f"
+    },
+    {
+      "id": "72eea66c-ed4c-4958-9442-b3861db2ba00",
+      "name": "Tauke",
+      "alias": "Tauke",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/a1c95436-be4b-4291-9699-aabfd49d1b6f"
+    },
+    {
+      "id": "62c5a8c7-eac9-4e8a-a7cd-ffdda8d4d3cf",
+      "name": "Inda",
+      "alias": "Inda",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/a1c95436-be4b-4291-9699-aabfd49d1b6f"
+    },
+    {
+      "id": "d3c7d3ed-31f0-4dc0-8fbe-dfa7b67e4ab2",
+      "name": "Bwi",
+      "alias": "Bwi",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/a1c95436-be4b-4291-9699-aabfd49d1b6f"
+    },
+    {
+      "id": "bfb7c699-f798-411e-a595-3f764a706fcc",
+      "name": "Ilanga",
+      "alias": "Ilanga",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/6ac6b19f-bdd2-4155-be6b-54add327b48b"
+    },
+    {
+      "id": "320ec541-6459-4663-90ce-18d34aa9df4a",
+      "name": "Irundu",
+      "alias": "Irundu",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/6ac6b19f-bdd2-4155-be6b-54add327b48b"
+    },
+    {
+      "id": "8a152899-8ac4-4506-a24f-c83006fb7f5c",
+      "name": "Zobwe",
+      "alias": "Zobwe",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/6ac6b19f-bdd2-4155-be6b-54add327b48b"
+    },
+    {
+      "id": "076eda5c-e09a-4c53-a6f7-a3942f279c83",
+      "name": "Afue",
+      "alias": "Afue",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/6ac6b19f-bdd2-4155-be6b-54add327b48b"
+    },
+    {
+      "id": "943bae22-0562-4d25-a3bc-6ecca1f38f3d",
+      "name": "Angwa",
+      "alias": "Angwa",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/6ac6b19f-bdd2-4155-be6b-54add327b48b"
+    },
+    {
+      "id": "277f3a67-08ec-4b78-ac71-91de7931ffef",
+      "name": "Sulaka",
+      "alias": "Sulaka",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/6ac6b19f-bdd2-4155-be6b-54add327b48b"
+    },
+    {
+      "id": "415dab15-fa89-4c00-b8c1-b15d285185ee",
+      "name": "Funsa",
+      "alias": "Funsa",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/6ac6b19f-bdd2-4155-be6b-54add327b48b"
+    },
+    {
+      "id": "dec3b26d-d728-4156-a66e-93f82e06f1a8",
+      "name": "Buyunji",
+      "alias": "Buyunji",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/6ac6b19f-bdd2-4155-be6b-54add327b48b"
+    },
+    {
+      "id": "748c8ec4-e2d8-4b85-a0e7-f40b9647583b",
+      "name": "Embe",
+      "alias": "Embe",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/9f708ef8-03c0-4380-a375-54416ed63952"
+    },
+    {
+      "id": "2a1b89fd-11b7-493f-bbd4-f184d45428a4",
+      "name": "Ienge",
+      "alias": "Ienge",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/9f708ef8-03c0-4380-a375-54416ed63952"
+    },
+    {
+      "id": "0093e1d2-d1b3-4277-afec-e4d2dd7c1e03",
+      "name": "Funabuli",
+      "alias": "Funabuli",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/9f708ef8-03c0-4380-a375-54416ed63952"
+    },
+    {
+      "id": "532f0723-2a2b-412f-9e9a-a20044ff9135",
+      "name": "Pili",
+      "alias": "Pili",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/9f708ef8-03c0-4380-a375-54416ed63952"
+    },
+    {
+      "id": "0595281a-e53a-4583-a122-2b67d4e93edc",
+      "name": "Wambwa",
+      "alias": "Wambwa",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/9f708ef8-03c0-4380-a375-54416ed63952"
+    },
+    {
+      "id": "67273b82-7c8a-4a9e-9ecb-c602db6153d0",
+      "name": "Unga",
+      "alias": "Unga",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/9f708ef8-03c0-4380-a375-54416ed63952"
+    },
+    {
+      "id": "ca13eee2-cdd2-4925-9ab2-71df15680085",
+      "name": "Ansa",
+      "alias": "Ansa",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/9f708ef8-03c0-4380-a375-54416ed63952"
+    },
+    {
+      "id": "5a5b4869-1306-46ac-8a50-48a2823ab278",
+      "name": "Lenge",
+      "alias": "Lenge",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/9f708ef8-03c0-4380-a375-54416ed63952"
+    },
+    {
+      "id": "c9646968-601c-4315-8dbd-89b7189c36c6",
+      "name": "Bombwe",
+      "alias": "Bombwe",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/9f708ef8-03c0-4380-a375-54416ed63952"
+    },
+    {
+      "id": "ff7f66eb-008a-4f15-849c-c7814e04d19c",
+      "name": "Wense",
+      "alias": "Wense",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/9f708ef8-03c0-4380-a375-54416ed63952"
+    },
+    {
+      "id": "3a755a5a-e16e-465c-928e-3ce28ac3158f",
+      "name": "Chelenge",
+      "alias": "Chelenge",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/9f708ef8-03c0-4380-a375-54416ed63952"
+    },
+    {
+      "id": "ac852a23-99cf-4b60-9b81-252cdbcec394",
+      "name": "Amfya",
+      "alias": "Amfya",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/9f708ef8-03c0-4380-a375-54416ed63952"
+    },
+    {
+      "id": "607e4f26-2742-4bfb-b32a-e8c7fbbd1698",
+      "name": "Ama",
+      "alias": "Ama",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/e3c155e8-3798-4720-9179-17704d089799"
+    },
+    {
+      "id": "61b535a2-e49c-4e90-979d-3c6bcc26a903",
+      "name": "Nsali",
+      "alias": "Nsali",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/e3c155e8-3798-4720-9179-17704d089799"
+    },
+    {
+      "id": "35afa5e2-f47d-44cf-a44f-9af9c647b687",
+      "name": "Soka",
+      "alias": "Soka",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/e3c155e8-3798-4720-9179-17704d089799"
+    },
+    {
+      "id": "e16e218c-2aa7-4bdd-a74c-c86dfb867731",
+      "name": "Chibiya",
+      "alias": "Chibiya",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/e3c155e8-3798-4720-9179-17704d089799"
+    },
+    {
+      "id": "323fc226-0e83-4b94-a1ad-cb8b0a6e934a",
+      "name": "Shimanda",
+      "alias": "Shimanda",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/e3c155e8-3798-4720-9179-17704d089799"
+    },
+    {
+      "id": "b1d3b555-d2ae-4a29-b7c2-e184ef3ce0e3",
+      "name": "Finga",
+      "alias": "Finga",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/e3c155e8-3798-4720-9179-17704d089799"
+    },
+    {
+      "id": "89ab105a-7ced-482d-929a-829a4544a1ae",
+      "name": "Pika",
+      "alias": "Pika",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/e3c155e8-3798-4720-9179-17704d089799"
+    },
+    {
+      "id": "6882e3a2-8ac5-4ed0-81e2-e0cfba397e14",
+      "name": "Konde",
+      "alias": "Konde",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/e3c155e8-3798-4720-9179-17704d089799"
+    },
+    {
+      "id": "8b60531b-ec00-41bf-a7a9-22ef38d4fbc1",
+      "name": "Wangandu",
+      "alias": "Wangandu",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/e3c155e8-3798-4720-9179-17704d089799"
+    },
+    {
+      "id": "790e29bc-ba3d-4de4-95b2-8bb5fb3898e4",
+      "name": "Lamba",
+      "alias": "Lamba",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/34b98571-b3e3-4e1b-9ee5-ceb031044237"
+    },
+    {
+      "id": "fa42ce04-2cff-434b-8ee3-fbd2d9d641c0",
+      "name": "Runswe",
+      "alias": "Runswe",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/34b98571-b3e3-4e1b-9ee5-ceb031044237"
+    },
+    {
+      "id": "49511a93-b160-4f12-bb11-079b12db46be",
+      "name": "Fudsfu",
+      "alias": "Fudsfu",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/34b98571-b3e3-4e1b-9ee5-ceb031044237"
+    },
+    {
+      "id": "579cc372-0117-4371-871f-b29cb6598ce8",
+      "name": "Mllari",
+      "alias": "Mllari",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/34b98571-b3e3-4e1b-9ee5-ceb031044237"
+    },
+    {
+      "id": "572dad67-fdd0-415f-a638-7b3357d7e323",
+      "name": "Vurilao",
+      "alias": "Vurilao",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/34b98571-b3e3-4e1b-9ee5-ceb031044237"
+    },
+    {
+      "id": "9006c078-839b-456d-a185-fa8c6b8edfcd",
+      "name": "Chypenfi",
+      "alias": "Chypenfi",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/34b98571-b3e3-4e1b-9ee5-ceb031044237"
+    },
+    {
+      "id": "98ac2ebc-4faf-48f6-8f22-3a8888328eb6",
+      "name": "Masli",
+      "alias": "Masli",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/34b98571-b3e3-4e1b-9ee5-ceb031044237"
+    },
+    {
+      "id": "e62dc497-910b-47fa-a54c-926c5f229b35",
+      "name": "Jasabi",
+      "alias": "Jasabi",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/34b98571-b3e3-4e1b-9ee5-ceb031044237"
+    },
+    {
+      "id": "d166873d-c5d2-4693-b485-769e4a09d5fc",
+      "name": "Lawelaala",
+      "alias": "Lawelaala",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/34b98571-b3e3-4e1b-9ee5-ceb031044237"
+    },
+    {
+      "id": "4d313cfb-9975-4102-9550-67ba2267d1b5",
+      "name": "Kani",
+      "alias": "Kani",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/34b98571-b3e3-4e1b-9ee5-ceb031044237"
+    },
+    {
+      "id": "d6e505e5-2d27-4c89-b33b-e16265a43640",
+      "name": "Qati",
+      "alias": "Qati",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/34b98571-b3e3-4e1b-9ee5-ceb031044237"
+    },
+    {
+      "id": "b717bec3-a813-4e92-adc1-0d2f1c6db820",
+      "name": "Dathmi",
+      "alias": "Dathmi",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/23c1d0ea-ff2b-4388-8344-2bfd02ab7b87"
+    },
+    {
+      "id": "41886e66-2c2d-42f7-b454-47f49502643f",
+      "name": "Nesayi",
+      "alias": "Nesayi",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/23c1d0ea-ff2b-4388-8344-2bfd02ab7b87"
+    },
+    {
+      "id": "a038773c-fc5b-457c-9637-71ebb2c59d52",
+      "name": "Nome",
+      "alias": "Nome",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/23c1d0ea-ff2b-4388-8344-2bfd02ab7b87"
+    },
+    {
+      "id": "0ea014fc-1a51-46b2-9549-5b2ea46cc8ac",
+      "name": "Namsad",
+      "alias": "Namsad",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/23c1d0ea-ff2b-4388-8344-2bfd02ab7b87"
+    },
+    {
+      "id": "91331171-ea96-4123-bba0-cdd36cedbc50",
+      "name": "Namtee",
+      "alias": "Namtee",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/23c1d0ea-ff2b-4388-8344-2bfd02ab7b87"
+    },
+    {
+      "id": "1db075f0-eef7-4738-84a8-d2be7a22620a",
+      "name": "Mousita",
+      "alias": "Mousita",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/23c1d0ea-ff2b-4388-8344-2bfd02ab7b87"
+    },
+    {
+      "id": "13429bfd-c0d6-4c9b-bafe-f214250f3603",
+      "name": "Ratno",
+      "alias": "Ratno",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/23c1d0ea-ff2b-4388-8344-2bfd02ab7b87"
+    },
+    {
+      "id": "86b2e3de-a815-4654-a378-226ad3ddfdb8",
+      "name": "Yseda",
+      "alias": "Yseda",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/23c1d0ea-ff2b-4388-8344-2bfd02ab7b87"
+    },
+    {
+      "id": "c15b4b74-35fd-42b7-b971-7a3044f8edf6",
+      "name": "Nilunga",
+      "alias": "Nilunga",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/23c1d0ea-ff2b-4388-8344-2bfd02ab7b87"
+    },
+    {
+      "id": "3fee2796-c3f3-4273-ab13-2e2203ff32e5",
+      "name": "Wezi",
+      "alias": "Wezi",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/23c1d0ea-ff2b-4388-8344-2bfd02ab7b87"
+    },
+    {
+      "id": "0e944b5f-a1db-49f4-a524-48f21f2fc627",
+      "name": "Mbezi",
+      "alias": "Mbezi",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/23c1d0ea-ff2b-4388-8344-2bfd02ab7b87"
+    },
+    {
+      "id": "e3b509f4-f02f-4713-8beb-ded88f001558",
+      "name": "Kankata",
+      "alias": "Kankata",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/cf574005-e3f2-4248-8645-2cbbb7efb80a"
+    },
+    {
+      "id": "ae5526fa-715c-4633-b5f9-4c118d8c2714",
+      "name": "Loma",
+      "alias": "Loma",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/cf574005-e3f2-4248-8645-2cbbb7efb80a"
+    },
+    {
+      "id": "6edf8b4f-a1eb-4fa3-bdc9-cc7051a005e8",
+      "name": "Wembe",
+      "alias": "Wembe",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/cf574005-e3f2-4248-8645-2cbbb7efb80a"
+    },
+    {
+      "id": "596ef636-9b89-44cd-8559-12e15ca4ab30",
+      "name": "Lomo",
+      "alias": "Lomo",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/cf574005-e3f2-4248-8645-2cbbb7efb80a"
+    },
+    {
+      "id": "e26a8b91-07ed-403f-bdd5-7dbc2d9e2ea7",
+      "name": "Zungula",
+      "alias": "Zungula",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/cf574005-e3f2-4248-8645-2cbbb7efb80a"
+    },
+    {
+      "id": "b7159141-b9c7-4795-9bad-c87cbcefdc4c",
+      "name": "Livine",
+      "alias": "Livine",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/cf574005-e3f2-4248-8645-2cbbb7efb80a"
+    },
+    {
+      "id": "00b19632-4ae5-438e-90fa-ddafa77fb714",
+      "name": "Zabuka",
+      "alias": "Zabuka",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/cf574005-e3f2-4248-8645-2cbbb7efb80a"
+    },
+    {
+      "id": "0d7a26b1-7b7a-42a5-8f46-c63ef39746a9",
+      "name": "Onze",
+      "alias": "Onze",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/cf574005-e3f2-4248-8645-2cbbb7efb80a"
+    },
+    {
+      "id": "bcefdde4-e1bb-46de-976e-94f3ecda59f3",
+      "name": "Mwala",
+      "alias": "Mwala",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/cf574005-e3f2-4248-8645-2cbbb7efb80a"
+    },
+    {
+      "id": "e8dae3d3-808a-49b6-a20c-5e188b256cc3",
+      "name": "Emba",
+      "alias": "Emba",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/cf574005-e3f2-4248-8645-2cbbb7efb80a"
+    },
+    {
+      "id": "83fd95a0-efeb-47d9-94e8-63224fcf7e77",
+      "name": "Vonga",
+      "alias": "Vonga",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/cf574005-e3f2-4248-8645-2cbbb7efb80a"
+    },
+    {
+      "id": "76d15f6f-d6d3-4cf4-80a0-4bc27d93ff51",
+      "name": "Zongwe",
+      "alias": "Zongwe",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/cf574005-e3f2-4248-8645-2cbbb7efb80a"
+    },
+    {
+      "id": "7ca34f2e-7c9e-4877-8cd2-01ea12d83bb6",
+      "name": "Imba",
+      "alias": "Imba",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/cf574005-e3f2-4248-8645-2cbbb7efb80a"
+    },
+    {
+      "id": "425f8407-7191-4042-8b91-8849dd5af90d",
+      "name": "Labo",
+      "alias": "Labo",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/2ffc2ca5-b474-4fac-8f4b-ec37d5d3394c"
+    },
+    {
+      "id": "f82c234e-9f9a-4668-bfac-1c6671b64713",
+      "name": "Oma",
+      "alias": "Oma",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/2ffc2ca5-b474-4fac-8f4b-ec37d5d3394c"
+    },
+    {
+      "id": "2b37a72e-74ab-48e2-94ec-dbec91aa6341",
+      "name": "Mulunga",
+      "alias": "Mulunga",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/2ffc2ca5-b474-4fac-8f4b-ec37d5d3394c"
+    },
+    {
+      "id": "28fb8a9d-9174-4f4a-aaa9-7396dcca5495",
+      "name": "Ampa",
+      "alias": "Ampa",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/2ffc2ca5-b474-4fac-8f4b-ec37d5d3394c"
+    },
+    {
+      "id": "5414ce78-f0f2-4cb0-9bf9-91f46e1e8150",
+      "name": "Kulu",
+      "alias": "Kulu",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/2ffc2ca5-b474-4fac-8f4b-ec37d5d3394c"
+    },
+    {
+      "id": "e9e6ea67-bc9d-4afc-9e0b-09f97c03875b",
+      "name": "Itete",
+      "alias": "Itete",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/2ffc2ca5-b474-4fac-8f4b-ec37d5d3394c"
+    },
+    {
+      "id": "64861660-9b66-4f8c-b65d-c96830e2ee1f",
+      "name": "Ongu",
+      "alias": "Ongu",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/2ffc2ca5-b474-4fac-8f4b-ec37d5d3394c"
+    },
+    {
+      "id": "ff39fccf-c5c5-4dca-9056-ebfd65ab3210",
+      "name": "Lobezi",
+      "alias": "Lobezi",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/2ffc2ca5-b474-4fac-8f4b-ec37d5d3394c"
+    },
+    {
+      "id": "1aefb686-e518-4542-9fe6-79aadfbb7ac2",
+      "name": "Wandi",
+      "alias": "Wandi",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/2ffc2ca5-b474-4fac-8f4b-ec37d5d3394c"
+    },
+    {
+      "id": "a92efe4c-734b-40e1-ad58-d45db255f911",
+      "name": "Alolo",
+      "alias": "Alolo",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/2ffc2ca5-b474-4fac-8f4b-ec37d5d3394c"
+    },
+    {
+      "id": "53fb7390-e07d-49d0-9d67-23afbdb364d2",
+      "name": "Yema",
+      "alias": "Yema",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/2ffc2ca5-b474-4fac-8f4b-ec37d5d3394c"
+    },
+    {
+      "id": "62e6919e-f303-4056-8c82-8b5e4bf819c8",
+      "name": "Nanga",
+      "alias": "Nanga",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/2ffc2ca5-b474-4fac-8f4b-ec37d5d3394c"
+    },
+    {
+      "id": "0bb2a79a-d91e-468a-a298-b25a269fe2ac",
+      "name": "Sheke",
+      "alias": "Sheke",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/2ffc2ca5-b474-4fac-8f4b-ec37d5d3394c"
+    },
+    {
+      "id": "a1bb4814-173d-4db4-a379-5b62623e744b",
+      "name": "Gombo",
+      "alias": "Gombo",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/2ffc2ca5-b474-4fac-8f4b-ec37d5d3394c"
+    },
+    {
+      "id": "9e0eda03-cdea-4bac-b75d-553a2d249b1a",
+      "name": "Kongo",
+      "alias": "Kongo",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/2ffc2ca5-b474-4fac-8f4b-ec37d5d3394c"
+    },
+    {
+      "id": "4ad44ea7-4a02-4ea7-a3ff-f950d4618f2b",
+      "name": "Boma",
+      "alias": "Boma",
+      "physicalType": "Jurisdiction",
+      "jurisdictionType": "DISTRICT",
+      "type": "ADMIN_STRUCTURE",
+      "partOf": "Location/2ffc2ca5-b474-4fac-8f4b-ec37d5d3394c"
+    }
+  ]
+}

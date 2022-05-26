@@ -1,0 +1,12 @@
+[
+{"statisticalID":"AWn3s2RqgAN","name":"Central","partOf":"Location/0","code":"ADMIN_STRUCTURE","physicalType":"Jurisdiction"},
+{"statisticalID":"utIjliUdjp8","name":"Tinbelt","partOf":"Location/0","code":"ADMIN_STRUCTURE","physicalType":"Jurisdiction"},
+{"statisticalID":"J7PQPWAeRUk","name":"Eastern","partOf":"Location/0","code":"ADMIN_STRUCTURE","physicalType":"Jurisdiction"},
+{"statisticalID":"KozcEjeTyuD","name":"Sulaka","partOf":"Location/0","code":"ADMIN_STRUCTURE","physicalType":"Jurisdiction"},
+{"statisticalID":"B1u1bVtIA92","name":"Pualula","partOf":"Location/0","code":"ADMIN_STRUCTURE","physicalType":"Jurisdiction"},
+{"statisticalID":"dbTLdTi7s8F","name":"Chuminga","partOf":"Location/0","code":"ADMIN_STRUCTURE","physicalType":"Jurisdiction"},
+{"statisticalID":"SwwuteU1Ajk","name":"Northern","partOf":"Location/0","code":"ADMIN_STRUCTURE","physicalType":"Jurisdiction"},
+{"statisticalID":"q5hODNmn021","name":"North Western","partOf":"Location/0","code":"ADMIN_STRUCTURE","physicalType":"Jurisdiction"},
+{"statisticalID":"oPLMrarKeEY","name":"Southern","partOf":"Location/0","code":"ADMIN_STRUCTURE","physicalType":"Jurisdiction"},
+{"statisticalID":"g1bv2xjtV0w","name":"Western","partOf":"Location/0","code":"ADMIN_STRUCTURE","physicalType":"Jurisdiction"}
+]
