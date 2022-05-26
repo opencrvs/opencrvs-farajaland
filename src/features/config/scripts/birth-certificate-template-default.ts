@@ -34,7 +34,7 @@ export default `<svg width="420" height="595" viewBox="0 0 420 595" fill="none" 
     <tspan x= "50%" y="367.828" text-anchor="middle">{{placeOfBirth}}&#10;</tspan>
   </text>
   <text fill="#35495D" xml:space="default" style="white-space: pre" font-family="Noto Sans" font-size="12" font-weight="600" letter-spacing="0px">
-    <tspan x= "50%" y="245.828" text-anchor="middle">{{informantFirstName}} {{informantFamilyName}}&#10;</tspan>
+    <tspan x= "50%" y="245.828" text-anchor="middle">{{childFirstName}} {{childFamilyName}}&#10;</tspan>
   </text>
   <text fill="#35495D" xml:space="default" style="white-space: pre" font-family="Noto Sans" font-size="10" font-weight="300" letter-spacing="0px">
     <tspan x= "50%" y="224.69" text-anchor="middle">This is to certify that&#10;</tspan>
