@@ -16,5 +16,6 @@ window.config = {
   AUTH_URL: 'http://localhost:4040',
   COUNTRY_CONFIG_URL: 'http://localhost:3040',
   COUNTRY: 'FAR',
-  LANGUAGES: 'en,fr'
+  LANGUAGES: 'en,fr',
+  ACCUMULATED_FILE_SIZE: '20MB'
 }
