@@ -10,10 +10,10 @@
 name: Generate demo data for production
 
 env:
-  COUNTRY_CONFIG_HOST: https://countryconfig.farajaland.opencrvs.org
-  AUTH_API_HOST: https://auth.farajaland.opencrvs.org
-  GATEWAY_HOST: https://gateway.farajaland.opencrvs.org/graphql
-  CONCURRENCY: 7
+  COUNTRY_CONFIG_HOST: https://countryconfig.farajaland-staging.opencrvs.org
+  AUTH_API_HOST: https://auth.farajaland-staging.opencrvs.org
+  GATEWAY_HOST: https://gateway.farajaland-staging.opencrvs.org/graphql
+  CONCURRENCY: 3
 
 on:
   workflow_dispatch:
@@ -25,7 +25,6 @@ on:
 jobs:
   manual-deploy-staging-e2e:
     runs-on: ubuntu-20.04
-    timeout-minutes: 240 # 4 hours
     strategy:
       matrix:
         node-version: [14.17.0]
