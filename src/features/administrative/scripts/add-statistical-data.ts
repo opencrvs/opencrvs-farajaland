@@ -55,7 +55,7 @@ function generateStatisticalExtensions(sourceStatistic: LocationStatistic) {
       [year.year]: year.male_female_ratio
     })
     birthRates.push({
-      [year.year]: year.crude_birth_rate
+      [year.year]: year.crude_birth_rate / 2
     })
   }
 

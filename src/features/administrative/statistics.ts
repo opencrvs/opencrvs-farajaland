@@ -74,7 +74,7 @@ export async function getStatisticsForStates() {
 export async function getStatistics() {
   const data = await readCSVToJSON<
     Array<Record<string, string> & { statisticalID: string }>
-  >('./source/crude_birth_rates_by_division.csv')
+  >('./source/statistics.csv')
 
   return data.map<LocationStatistic>(item => {
     const { statisticalID, ...yearKeys } = item
