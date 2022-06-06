@@ -906,6 +906,7 @@
     "sysAdHome.resendSMS": "The label for menu option resend SMS",
     "sysAdHome.resendSMSSuccess": "The label for success notification of resend sms invite",
     "sysAdHome.resendSMSError": "The label for error notification of resend sms invite",
+    "system.user.newUser": "This text will show to create new user button",
     "misc.newPass.header": "New Password header",
     "settings.user.label.assignedOffice": "Assigned office",
     "error.required.password": "New password required",

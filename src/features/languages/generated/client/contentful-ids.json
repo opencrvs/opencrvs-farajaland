@@ -1325,6 +1325,7 @@
   "systemUserSettingsSystemLanguage": "system.user.settings.systemLanguage",
   "systemUserSettingsProfileImage": "system.user.settings.profileImage",
   "systemUserDuplicateMobileError": "system.user.duplicateMobileError",
+  "systemUserNewUser": "system.user.newUser",
   "recordAuditNoName": "recordAudit.noName",
   "recordAuditStatus": "recordAudit.status",
   "recordAuditNoStatus": "recordAudit.noStatus",
