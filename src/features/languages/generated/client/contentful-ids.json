@@ -198,6 +198,7 @@
   "constantsInReviewStatus": "constants.inReview.status",
   "constantsIncompleteStatus": "constants.incomplete.status",
   "constantsRequiresUpdatesStatus": "constants.requiresUpdates.status",
+  "constantsRegisteredStatus": "constants.registered.status",
   "constantsRegisteredInTargetd": "constants.registeredInTargetd",
   "constantsRegisteredWithinTargetd": "constants.registeredWithinTargetd",
   "constantsRegistrationAgent": "constants.registrationAgent",

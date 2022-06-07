@@ -136,6 +136,7 @@
     "constants.inReview.status": "A label for In Review",
     "constants.incomplete.status": "A label for Incomplete",
     "constants.requiresUpdates.status": "A label for Requires updates",
+    "constants.registered.status": "A label for registered",
     "constants.rejected": "A label for rejected",
     "constants.rejectedDays": "The title of rejected days of declaration",
     "constants.relationship": "Relationship Label for death",
