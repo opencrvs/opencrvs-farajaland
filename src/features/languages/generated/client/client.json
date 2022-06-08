@@ -1581,7 +1581,7 @@
         "review.modal.title.registerConfirmation": "Register the {event}?",
         "review.modal.title.submitConfirmation": "{completeDeclaration, select, true {Send notification?} other {Send notification?}}",
         "review.rej.form.reasons.missSupDoc": "Missing supporting documents",
-        "review.rejection.form.commentInstruction": "Register this {event}?",
+        "review.rejection.form.commentInstruction": "",
         "review.rejection.form.commentLabel": "Comments",
         "review.rejection.form.instruction": "Please document specific details of required updates for follow up action.",
         "review.rejection.form.reasons.duplicate": "Duplicate declaration",
