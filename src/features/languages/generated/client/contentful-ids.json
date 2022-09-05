@@ -193,6 +193,7 @@
   "constantsPhoneNumber": "constants.phoneNumber",
   "constantsRateOfRegistrationWithinTargetd": "constants.rateOfRegistrationWithinTargetd",
   "constantsReason": "constants.reason",
+  "constantsRequestReason": "constants.requestReason",
   "constantsRegistered": "constants.registered",
   "constantsInReviewStatus": "constants.inReview.status",
   "constantsIncompleteStatus": "constants.incomplete.status",
