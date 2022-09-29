@@ -558,6 +558,7 @@
   "customFieldDormConditionalFieldHeader": "custom.field.form.conditionalFieldHeader",
   "customFieldDormConditionalField": "custom.field.form.conditionalField",
   "customFieldDormConditionalFieldDesc": "custom.field.form.conditionalFieldDesc",
+  "customFieldFormConditionalRegex": "custom.field.form.conditionalRegex",
   "errorCode": "error.code",
   "errorDraftFailed": "error.draftFailed",
   "errorOccurred": "error.occurred",
