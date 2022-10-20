@@ -200,5 +200,7 @@
   "sysAdHome.user.resetPasswordModal.title",
   "sysAdHome.resendSMS",
   "sysAdHome.resendSMSSuccess",
-  "sysAdHome.resendSMSError"
+  "sysAdHome.resendSMSError",
+  "sysAdHome.resentPasswordSMSSuccess",
+  "sysAdHome.resentPasswordSMSError"
 ]
