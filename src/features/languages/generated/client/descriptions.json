@@ -671,6 +671,7 @@
     "home.header.helpTitle": "Help title",
     "home.header.teamTitle": "Team title",
     "home.header.typeName": "Search menu name type",
+    "home.header.advancedSearch": "Search menu advanced search type",
     "home.header.placeholderName": "Search menu name placeholder",
     "imageUploadOption.upload.error": "Show error messages while uploading",
     "imageUploadOption.upload.imageFormat": "Show error message if the selected image type is not supported",
