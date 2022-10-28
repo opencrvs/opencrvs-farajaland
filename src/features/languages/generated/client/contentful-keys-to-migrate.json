@@ -131,6 +131,7 @@
   "config.form.settings.fieldWithDynamicDef",
   "config.form.settings.radioGroup",
   "config.form.settings.radioGroupWithNestedField",
+  "config.form.settings.accordionWithNestedField",
   "config.form.settings.informativeRadio",
   "config.form.settings.checkboxGroup",
   "config.form.settings.checkbox",
