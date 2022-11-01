@@ -49,6 +49,7 @@
   "record.certificate.collector",
   "record.certificate.collectedInAdvance",
   "config.advanced.search",
+  "config.advanced.search.instruction",
   "config.application.nameChangeMessage",
   "config.application.govtLogoChangeMessage",
   "config.certificateConfiguration",
@@ -205,5 +206,17 @@
   "form.field.label.informantRelation.others",
   "sysAdHome.resendSMS",
   "sysAdHome.resendSMSSuccess",
-  "sysAdHome.resendSMSError"
+  "sysAdHome.resendSMSError",
+  "form.section.advancedSearch.birth.title", 
+  "form.field.label.birth.placeOfRegistration",
+  "form.field.label.birth.placeOfRegistrationHelperText",
+  "form.field.label.birth.dateOfRegistration", 
+  "form.field.label.birth.statusOfRecordLabel",
+  "form.field.label.recordStatusAny",
+  "form.field.label.recordStatusInprogress",
+  "form.field.label.recordStatusInReview",
+  "form.field.label.recordStatusRequireUpdate",
+  "form.field.label.recordStatusRegistered",
+  "form.field.label.recordStatusCertified",
+  "form.field.label.recordStatusAchived"
 ]
