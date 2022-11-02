@@ -44,7 +44,6 @@
   "validations.isMoVisitAfterDeath",
   "validations.isInformantOfLegalAge",
   "validations.requiredBasic",
-  "validations.correctionReason",
   "validations.correction.reason.required",
   "validations.nonDecimalPointNumber",
   "record.certificate.collector",
@@ -56,9 +55,6 @@
   "config.advanced.search.instruction",
   "config.advanced.search",
   "config.advanced.search.instruction",
-  "config.application.vsexport",
-  "config.application.vitalStatistics",
-  "config.application.export",
   "config.application.nameChangeMessage",
   "config.application.govtLogoChangeMessage",
   "config.certificateConfiguration",
@@ -91,7 +87,6 @@
   "custom.field.form.errorMessage",
   "custom.field.form.maxLength",
   "custom.field.form.duplicateField",
-  "config.form.tooltip.fieldId",
   "config.form.draft.defaultComment",
   "config.form.settings.globalSettingsDescription",
   "config.form.navigation.pages",
@@ -216,7 +211,6 @@
   "form.field.label.informantRelation.sister",
   "form.field.label.informantRelation.legalGuardian",
   "form.field.label.informantRelation.others",
-  "sysAdHome.user.resetPasswordModal.title",
   "sysAdHome.resendSMS",
   "sysAdHome.resendSMSSuccess",
   "sysAdHome.resendSMSError",
@@ -261,5 +255,6 @@
   "form.field.label.recordStatusRegistered",
   "form.field.label.recordStatusCertified",
   "form.field.label.recordStatusAchived",
-  "user.profile.auditList.usernameRequested"
+  "user.profile.auditList.usernameRequested",
+  "sysAdHome.resendSMSError"
 ]
