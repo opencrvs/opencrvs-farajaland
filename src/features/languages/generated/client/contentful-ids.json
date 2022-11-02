@@ -975,6 +975,7 @@
   "formSectionUserTitle": "form.section.user.title",
   "formSectionUserDetails": "form.section.userDetails",
   "formSectionAdvancedSearchBirthTitle": "form.section.advancedSearch.birth.title", 
+  "formSectionAdvancedSearchBirthInformantDetails": "form.section.advancedSearch.birth.informantDetails",
   "formFieldLabelBirthPlaceOfRegistration": "form.field.label.birth.placeOfRegistration",
   "formFieldLabelBirthPlaceOfRegistrationHelperText": "form.field.label.birth.placeOfRegistrationHelperText",
   "formFieldLabelBirthDateOfRegistration": "form.field.label.birth.dateOfRegistration", 
