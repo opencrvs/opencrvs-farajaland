@@ -52,6 +52,7 @@
     "buttons.upload": "Upload buttton",
     "buttons.verify": "Label for verify password button",
     "buttons.yes": "Yes button text",
+    "buttons.exactDateUnknown": "Exact Date Unknown button text",
     "buttons.editRecord": "Correct record button text on review certificate",
     "buttons.makeCorrection": "Make correction button text on correction summary",
     "buttons.view": "Label for link button view",
