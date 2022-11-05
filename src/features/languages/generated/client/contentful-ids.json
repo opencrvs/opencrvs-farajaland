@@ -12,6 +12,7 @@
   "advancedSearchRecordStatusRegistered": "advancedSearch.birth.recordStatusRegistered",
   "advancedSearchRecordStatusCertified": "advancedSearch.birth.recordStatusCertified",
   "advancedSearchRecordStatusAchived": "advancedSearch.birth.recordStatusAchived",
+  "advancedSearchDeathPlaceOfDeath": "advancedSearch.death.placeOfDeath",
   "buttonsArchive": "buttons.archive",
   "buttonsApply": "buttons.apply",
   "buttonsApprove": "buttons.approve",
