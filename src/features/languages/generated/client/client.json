@@ -62,6 +62,7 @@
         "buttons.update": "Update",
         "buttons.upload": "Upload",
         "buttons.verify": "Verify",
+        "buttons.refresh": "Refresh",
         "buttons.view": "View",
         "buttons.yes": "Yes",
         "certificate.confirmCorrect": "Please confirm that the informant has reviewed that the information on the certificate is correct and that you are ready to print.",
@@ -1281,6 +1282,12 @@
         "imageUploadOption.upload.imageFormat": "File format not supported. Please upload a .png or .jpg (max 5mb)",
         "imageUploadOption.upload.overSized": "File is too large. Please upload a file less than 5mb",
         "informant.name": "Informant",
+
+        "integrations.clientId": "Client ID",
+        "integrations.clientSecret": "Client Secret",
+        "integrations.shaSecret": "SHA Secret",
+        "integrations.uniqueKeyDescription": "These unique keys will be required by the client integrating...",
+
         "informant.title": "Informant type",
         "location.jurisdictionType.CITY": "City",
         "location.jurisdictionType.DISTRICT": "District",
@@ -1913,6 +1920,7 @@
         "buttons.unassign": "Désaffecter",
         "buttons.update": "Mise à jour",
         "buttons.upload": "Télécharger",
+        "buttons.refresh": "Rafraîchir",
         "buttons.verify": "Vérifier",
         "buttons.view": "Voir",
         "buttons.yes": "Oui",
@@ -3140,6 +3148,12 @@
         "imageUploadOption.upload.overSized": "Le fichier est trop volumineux. Veuillez joindre un fichier de moins de 5mb",
         "informant.name": "Informateur",
         "informant.title": "Sélectionner l'informateur",
+
+        "integrations.clientId": "ID du client",
+        "integrations.clientSecret": "Secret du client",
+        "integrations.shaSecret": "SHA Secret",
+        "integrations.uniqueKeyDescription": "Ces clés uniques seront requises par le client intégrant...",
+
         "location.jurisdictionType.CITY": "Ville",
         "location.jurisdictionType.DISTRICT": "District",
         "location.jurisdictionType.DIVISION": "Division",
