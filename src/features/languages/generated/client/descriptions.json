@@ -376,6 +376,7 @@
     "advancedSearch.birth.recordStatusRegistered": "Option for form field: status of record",
     "advancedSearch.birth.recordStatusCertified": "Option for form field: status of record",
     "advancedSearch.birth.recordStatusAchived": "Option for form field: status of record",
+    "advancedSearch.death.placeOfDeath": "Label for input place of death",
     "print.certificate.section.title": "The title of print certificate action",
     "certificate.confirmCorrect": "Edit",
     "certificate.isCertificateCorrect": "Question asking the user if the information on the  certificate is correct",
