@@ -137,6 +137,7 @@
   "config.form.settings.checkboxGroup",
   "config.form.settings.checkbox",
   "config.form.settings.date",
+  "config.form.settings.dateRangePickerForFormField",
   "config.form.settings.dynamicList",
   "config.form.draft.label",
   "config.form.preview.created",
