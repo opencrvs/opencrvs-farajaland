@@ -1719,7 +1719,7 @@
         "sysAdHome.user.edit.commonGroupTitle": "Edit user",
         "sysAdHome.user.resetpassword.title": "Reset Password",
         "sysAdHome.user.resetPasswordModal.title": "Reset password?",
-        "sysAdHome.user.resetPasswordModal.message": "The user will recieve a temporary password via SMS sent to {phoneNumber}. They will then be prompted to create a new password on succcessful login",
+        "sysAdHome.user.resetPasswordModal.message": "The user will receive a temporary password via SMS sent to {phoneNumber}. They will then be prompted to create a new password on successful login",
         "sysAdHome.user.header": "Edit details",
         "sysAdHome.user.reactivate": "Reactivate",
         "sysAdHome.users": "Users",
