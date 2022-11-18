@@ -1697,7 +1697,7 @@
         "sysAdHome.sendUsernameReminderSMSSuccess": "Username reminder sent to {name}",
         "sysAdHome.sendUsernameReminderSMSError": "Username reminder could not be sent",
         "sysAdHome.sendUsernameReminderSMSModalTitle": "Send username reminder?",
-        "sysAdHome.sendUsernameReminderSMSModalMessage": "The user will recieve a username reminder via an SMS sent to {phoneNumber}",
+        "sysAdHome.sendUsernameReminderSMSModalMessage": "The user will receive a username reminder via an SMS sent to {phoneNumber}",
         "sysAdHome.resendSMS": "Resend SMS invite",
         "sysAdHome.resendSMSError": "Invite could not be sent",
         "sysAdHome.resendSMSSuccess": "Invite sent",
