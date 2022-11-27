@@ -226,5 +226,8 @@
   "user.profile.auditList.userCreated",
   "user.profile.auditList.userEdited",
   "user.profile.auditList.passwordReset",
-  "user.profile.auditList.usernameRequested"
+  "user.profile.auditList.usernameRequested",
+  "user.profile.auditList.viewed",
+  "user.profile.auditList.retrieved"
+
 ]
