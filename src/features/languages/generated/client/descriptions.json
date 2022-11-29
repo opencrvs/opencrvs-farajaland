@@ -390,7 +390,7 @@
     "advancedSearchResult.pill.regNumber": "The label for registration number in active advancedSearchParams",
     "advancedSearchResult.pill.trackingId": "The label for tracking id in active advancedSearchParams",
     "advancedSearchResult.pill.regDate": "The label for  registration date in active advancedSearchParams",
-    "advancedSearchResult.pill.eventlocation": "The label for event location in active advancedSearchParams",
+    "advancedSearchResult.pill.eventLocation": "The label for event location in active advancedSearchParams",
     "advancedSearchResult.pill.regLocation": "The label for event location in active advancedSearchParams",
     "advancedSearchResult.pill.childFirstName": "The label for child firstname in active advancedSearchParams",
     "advancedSearchResult.pill.childLastName": "The label for child lastname in active advancedSearchParams",
