@@ -1770,7 +1770,7 @@
         "user.profile.audit.description.waiting_validation": "Sent for external system validation",
         "user.profile.audit.list.noDataFound": "No audits to display",
         "user.profile.auditList.showMore": "Show next {pageSize} of {totalItems}",
-        "user.profile.auditList.corrected": "Corrected",
+        "user.profile.auditList.corrected": "Corrected Record",
         "user.profile.auditList.assigned": "Assigned",
         "user.profile.auditList.unAssigned": "Unassigned",
         "user.profile.auditList.archived": "Archived",
@@ -3650,18 +3650,15 @@
         "user.profile.audit.description.declared": "Déclaration envoyée pour révision - complète",
         "user.profile.audit.description.inProgress": "Déclaration envoyée pour révision - incomplète",
         "user.profile.audit.description.registered": "Événement vital enregistré",
-        "user.profile.auditList.corrected": "Corrigé",
-<<<<<<< HEAD
+        "user.profile.auditList.corrected": "Enregistrement corrigé",
         "user.profile.auditList.retrieved": "Récupéré",
         "user.profile.auditList.viewed": "Vu",
         "user.profile.auditList.sentForApproval": "Envoyé pour approbation",
         "user.profile.auditList.reInstatedToUpdate" : "Rétabli pour exiger des mises à jour",
         "user.profile.auditList.reInstatedToInReview":"Réintégré dans En cours d'examen",
         "user.profile.auditList.reInstatedToInProgress": "Rétabli en cours",
-=======
         "user.profile.auditList.sentUsernameReminder": "Rappel du nom d'utilisateur envoyé",
         "user.profile.auditList.sentPassword": "Mot de passe envoyé",
->>>>>>> 530b50eaecc6fd09427aa356b1112a871028b7f5
         "user.profile.audit.description.rejected": "Envoi de la déclaration pour mise à jour",
         "user.profile.audit.description.validated": "Déclaration envoyée pour approbation",
         "user.profile.audit.description.waiting_validation": "Déclaration envoyée pour validation par un système externe",
