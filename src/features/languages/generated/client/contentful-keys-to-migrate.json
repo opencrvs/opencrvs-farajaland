@@ -230,4 +230,8 @@
   "user.profile.auditList.passwordReset",
   "user.profile.auditList.usernameRequested",
   "user.profile.auditList.retrieved",
-  "user.profile.auditList.viewed"]
+  "user.profile.auditList.viewed",
+  "user.profile.auditList.reInstatedToInProgress",
+  "user.profile.auditList.reInstatedToInReview",
+  "user.profile.auditList.reInstatedToUpdate"
+]
