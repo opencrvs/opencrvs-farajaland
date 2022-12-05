@@ -166,7 +166,7 @@ context('Team Integration Test', () => {
     cy.get('#userAuditSuccessToast').should('be.visible')
   })
 
-  it('Tests Local admin can reset password of an user', () => {
+  it('Tests Local admin can send reset password request to a user', () => {
     // LOG IN AS SYSTEM ADMIN
     cy.login('sysAdmin')
     cy.createPin()
@@ -176,7 +176,7 @@ context('Team Integration Test', () => {
     cy.get('#reset_password_success').should('be.visible')
   })
 
-  it('Tests Local admin can send username reminder of an user', () => {
+  it('Tests Local admin can send username reminder to a user', () => {
     // LOG IN AS SYSTEM ADMIN
     cy.login('sysAdmin')
     cy.createPin()
