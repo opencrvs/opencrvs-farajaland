@@ -18,9 +18,9 @@ context('Team Integration Test', () => {
     indexedDB.deleteDatabase('OpenCRVS')
   })
 
-  const testUserFirstname = faker.name.firstName()
-  const testUserLastname = faker.name.lastName()
-  const fullName = `${testUserFirstname} ${testUserLastname}`
+  let testUserFirstname = faker.name.firstName()
+  let testUserLastname = faker.name.lastName()
+  let fullName = `${testUserFirstname} ${testUserLastname}`
 
   it('Tests Local admin can create a new user', () => {
     // LOG IN AS SYSTEM ADMIN
@@ -83,7 +83,8 @@ context('Team Integration Test', () => {
     cy.get('#navigation_team').click()
     cy.clickUserListItemByName(fullName, 'Edit details')
     cy.get('#btn_change_firstNamesEng').click()
-    cy.get('#firstNamesEng').type(' Sheikh')
+    cy.get('#firstNamesEng').clear().type('Sheikh')
+    testUserFirstname = 'Sheikh'
     cy.get('#confirm_form').click()
 
     //submit user
