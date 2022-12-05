@@ -30,7 +30,7 @@ context('Team Integration Test', () => {
     cy.get('#add-user').click({ force: true })
     cy.get('#firstNamesEng').type(testUserFirstname)
     cy.get('#familyNameEng').type(testUserLastname)
-    cy.get('#phoneNumber').type('0752658545')
+    cy.get('#phoneNumber').type('0755658545')
     cy.selectOption('#role', 'Field Agent', 'Field Agent')
     cy.selectOption('#type', 'Healthcare Worker', 'Healthcare Worker')
     cy.get('#device').type('Xiamoi MI 8')
@@ -164,5 +164,25 @@ context('Team Integration Test', () => {
     cy.get('#comment').type(' a member now')
     cy.get('#reactivate-action').click()
     cy.get('#userAuditSuccessToast').should('be.visible')
+  })
+
+  it('Tests Local admin can reset password of an user', () => {
+    // LOG IN AS SYSTEM ADMIN
+    cy.login('sysAdmin')
+    cy.createPin()
+    cy.get('#navigation_team').click()
+    cy.clickUserListItemByName(`${testUserFirstname} ${testUserLastname}`, 'Reset Password')
+    cy.get('#reset-password-send').click()
+    cy.get('#reset_password_success').should('be.visible')
+  })
+
+  it('Tests Local admin can send username reminder of an user', () => {
+    // LOG IN AS SYSTEM ADMIN
+    cy.login('sysAdmin')
+    cy.createPin()
+    cy.get('#navigation_team').click()
+    cy.clickUserListItemByName(`${testUserFirstname} ${testUserLastname}`, 'Send username reminder')
+    cy.get('#username-reminder-send').click()
+    cy.get('#username_reminder_success').should('be.visible')
   })
 })
