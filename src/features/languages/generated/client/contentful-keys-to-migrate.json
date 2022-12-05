@@ -282,6 +282,7 @@
   "sysAdHome.sendUsernameReminderSMSModalMessage",
   "sysAdHome.resentPasswordSMSSuccess",
   "sysAdHome.resentPasswordSMSError",
+  "user.profile.audit.description.updated",
   "user.profile.auditList.loggedIn",
   "user.profile.auditList.loggedOut",
   "user.profile.auditList.phoneNumberChanged",

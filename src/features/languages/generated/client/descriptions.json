@@ -1068,7 +1068,7 @@
     "user.profile.audit.description.inProgress": "Description for incomplete declaration",
     "user.profile.audit.description.declared": "Description for complete declaration",
     "user.profile.audit.description.validated": "Description for validated declaration",
-    "user.profile.audit.description.waiting_validation": "Description for waiting for external validation declaration",
+    "user.profile.audit.description.updated": "Description for updated declaration",
     "user.profile.audit.description.registered": "Description for registered declaration",
     "user.profile.audit.description.rejected": "Description for rejected declaration",
     "user.profile.audit.description.certified": "Description for certified declaration",
