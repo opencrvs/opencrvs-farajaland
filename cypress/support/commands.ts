@@ -38,6 +38,7 @@
 import { faker } from '@faker-js/faker'
 import { createBirthDeclarationData } from '../../src/data-generator/declare'
 import { Facility, Location } from '../../src/data-generator/location'
+import 'cypress-file-upload';
 
 const users = {
   fieldWorker: {
