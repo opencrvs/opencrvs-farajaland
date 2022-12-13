@@ -186,7 +186,6 @@ async function main() {
       registrarToken,
       location.id
     )
-    log('location', location.id)
 
     if (generatedInterval.length === 0) {
       log('No events have been generated for this location')
