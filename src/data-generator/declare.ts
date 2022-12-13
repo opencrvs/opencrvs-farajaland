@@ -527,7 +527,7 @@ export async function fetchDeathRegistration(
 
 export async function fetchAlreadyGeneratedInterval(
   token: string,
-  locationIds: string[]
+  locationId: string
 ): Promise<Date[]> {
   const fetchFirst = async (sort: 'desc' | 'asc') => {
     const res = await fetch(GATEWAY_HOST, {
@@ -541,7 +541,9 @@ export async function fetchAlreadyGeneratedInterval(
         query: SEARCH_EVENTS,
         variables: {
           sort,
-          locationIds
+          advancedSearchParameters: {
+            declarationJurisdictionId: locationId
+          }
         }
       })
     })
