@@ -77,8 +77,8 @@ declare namespace Cypress {
     registerDeclaration: () => void
     verifyLandingPageVisible: () => void
     downloadFirstDeclaration: () => void
-    enterMaximumInput: () => void
-    enterDeathMaximumInput: () => void
+    enterMaximumInput: (options?: DeclarationOptions) => void
+    enterDeathMaximumInput: (options?: DeclarationOptions) => void
     registerDeclarationWithMinimumInput: (
       firstName: string,
       lastName: string
@@ -92,7 +92,9 @@ declare namespace Cypress {
       firstName: string,
       lastName: string
     ) => void
-    declareDeathDeclarationWithMinimumInput: () => void
+    declareDeathDeclarationWithMinimumInput: (
+      options?: DeclarationOptions
+    ) => void
     registerDeathDeclarationWithMinimumInput: () => void
     declareDeathDeclarationWithMaximumInput: (
       options?: DeclarationOptions
