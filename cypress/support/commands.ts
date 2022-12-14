@@ -36,7 +36,6 @@
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 
 import { faker } from '@faker-js/faker'
-import { Declaration } from 'typescript'
 import { createBirthDeclarationData } from '../../src/data-generator/declare'
 import { Facility, Location } from '../../src/data-generator/location'
 
