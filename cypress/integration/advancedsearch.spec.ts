@@ -14,7 +14,7 @@
 import faker from '@faker-js/faker'
 import { getDateMonthYearFromString } from '../support/commands'
 
-context('Search Integration Test', () => {
+context('Advanced Search Integration Test', () => {
   beforeEach(() => {
     indexedDB.deleteDatabase('OpenCRVS')
   })
