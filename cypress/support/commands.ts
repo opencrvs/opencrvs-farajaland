@@ -453,7 +453,16 @@ Cypress.Commands.add('enterMaximumInput', (options) => {
   // EVENT INFO
   cy.get('#continue').click()
 
-  cy.get('#informantType_FATHER').click()
+  if (
+    options.informantDoB &&
+    options.informantFirstNames &&
+    options.informantFamilyName
+  ) {
+    //TO CREATE INFORMANT INPUTFLOW
+    cy.get('#informantType_GRANDFATHER').click()
+  } else {
+    cy.get('#informantType_FATHER').click()
+  }
 
   cy.goToNextFormSection()
 
@@ -483,14 +492,42 @@ Cypress.Commands.add('enterMaximumInput', (options) => {
   cy.get('#weightAtBirth').type('1.5')
   cy.selectOption('#placeOfBirth', 'Private_Home', 'Residential address')
   cy.selectOption('#country', 'Farajaland', 'Farajaland')
-  cy.selectOption('#state', 'Pualula', 'Pualula')
-  cy.selectOption('#district', 'Embe', 'Embe')
+  cy.selectOption(
+    '#state',
+    options.eventLocationLevel1 || 'Pualula',
+    options.eventLocationLevel1 || 'Pualula'
+  )
+  cy.selectOption(
+    '#district',
+    options.eventLocationLevel2 || 'Embe',
+    options.eventLocationLevel2 || 'Embe'
+  )
   cy.get('#cityUrbanOption').type('My city')
   cy.get('#addressLine3UrbanOption').type('My residential area')
   cy.get('#addressLine2UrbanOption').type('My street')
   cy.get('#numberUrbanOption').type('40')
 
   cy.goToNextFormSection()
+
+  //INFORMANT DETAILS(IF informant data is available)
+  if (
+    options.informantDoB &&
+    options.informantFirstNames &&
+    options.informantFamilyName
+  ) {
+    // INFORMANT'S DETAILS
+    cy.selectOption('#nationality', 'Farajaland', 'Farajaland')
+    cy.get('#informantID').type('1234567111')
+    cy.get('#informantBirthDate-dd').type(informantDoBSplit.dd || '23')
+    cy.get('#informantBirthDate-mm').type(informantDoBSplit.mm || '10')
+    cy.get('#informantBirthDate-yyyy').type(informantDoBSplit.yyyy || '1975')
+    cy.get('#firstNamesEng').type(options.informantFirstNames || 'Alom')
+    cy.get('#familyNameEng').type(options.informantFamilyName || 'Mia')
+    cy.selectOption('#countryPrimary-form-input', 'Farajaland', 'Farajaland')
+    cy.selectOption('#statePrimary', 'Pualula', 'Pualula')
+    cy.selectOption('#districtPrimary', 'Embe', 'Embe')
+    cy.goToNextFormSection()
+  }
 
   // MOTHER DETAILS
   cy.selectOption('#nationality', 'Farajaland', 'Farajaland')
@@ -717,8 +754,16 @@ Cypress.Commands.add('enterDeathMaximumInput', (options) => {
   cy.selectOption('#placeOfDeath', '', 'Other')
 
   cy.selectOption('#country', 'Farajaland', 'Farajaland')
-  cy.selectOption('#state', 'Pualula', 'Pualula')
-  cy.selectOption('#district', 'Embe', 'Embe')
+  cy.selectOption(
+    '#state',
+    options.eventLocationLevel1 || 'Pualula',
+    options.eventLocationLevel1 || 'Pualula'
+  )
+  cy.selectOption(
+    '#district',
+    options.eventLocationLevel2 || 'Embe',
+    options.eventLocationLevel2 || 'Embe'
+  )
   cy.get('#cityUrbanOption').type('My city')
   cy.get('#addressLine3UrbanOption').type('My residential area')
   cy.get('#addressLine2UrbanOption').type('My street')

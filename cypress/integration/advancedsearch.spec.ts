@@ -62,6 +62,9 @@ context('Search Integration Test', () => {
     const motherDoBSplit = getDateMonthYearFromString(motherDoB)
     const fatherDoBSplit = getDateMonthYearFromString(fatherDoB)
     const informantDoBSplit = getDateMonthYearFromString(informantDoB)
+    const eventCountry = 'Farajaland'
+    const eventLocationLevel1 = 'Pualula'
+    const eventLocationLevel2 = 'Embe'
 
     //LOGIN
     cy.login('registrar')
@@ -82,7 +85,10 @@ context('Search Integration Test', () => {
       fatherDoB,
       informantFirstNames,
       informantFamilyName,
-      informantDoB
+      informantDoB,
+      eventCountry,
+      eventLocationLevel1,
+      eventLocationLevel2
     })
     //register declaration
     cy.get('#registerDeclarationBtn').click()
@@ -107,6 +113,25 @@ context('Search Integration Test', () => {
     cy.get('#childFirstNames').type(childFirstNames)
     cy.get('#childLastName').type(childLastName)
     cy.selectOption('#childGender', childGender, childGender)
+
+    //ENTER EVENT DETAILS FOR SEARCH
+    cy.get('#BirthEventDetails-accordion').click()
+    cy.selectOption(
+      '#eventLocationType',
+      'Residential address',
+      'Residential address'
+    )
+    cy.selectOption('#eventCountry', eventCountry, eventCountry)
+    cy.selectOption(
+      '#eventLocationLevel1',
+      eventLocationLevel1,
+      eventLocationLevel1
+    )
+    cy.selectOption(
+      '#eventLocationLevel2',
+      eventLocationLevel2,
+      eventLocationLevel2
+    )
 
     //ENTER MOTHER DETAILS FOR SEARCH
     cy.get('#BirthMotherDetails-accordion').click()
@@ -176,6 +201,9 @@ context('Search Integration Test', () => {
     const informantDoB = '1998-08-20'
     const deceasedDoBSplit = getDateMonthYearFromString(deceasedDoB)
     const informantDoBSplit = getDateMonthYearFromString(informantDoB)
+    const eventCountry = 'Farajaland'
+    const eventLocationLevel1 = 'Pualula'
+    const eventLocationLevel2 = 'Embe'
 
     cy.declareDeathDeclarationWithMaximumInput({
       deceasedFirstNames,
@@ -184,7 +212,10 @@ context('Search Integration Test', () => {
       deceasedGender,
       informantFirstNames,
       informantFamilyName,
-      informantDoB
+      informantDoB,
+      eventCountry,
+      eventLocationLevel1,
+      eventLocationLevel2
     })
 
     cy.login('registrar')
@@ -208,6 +239,24 @@ context('Search Integration Test', () => {
     cy.get('#deceasedFirstNames').type(deceasedFirstNames)
     cy.get('#deceasedFamilyName').type(deceasedFamilyName)
     cy.selectOption('#deceasedGender', deceasedGender, deceasedGender)
+    //ENTER EVENT DETAILS FOR SEARCH
+    cy.get('#DeathEventDetails-accordion').click()
+    cy.selectOption(
+      '#eventLocationType',
+      'Residential address',
+      'Residential address'
+    )
+    cy.selectOption('#eventCountry', eventCountry, eventCountry)
+    cy.selectOption(
+      '#eventLocationLevel1',
+      eventLocationLevel1,
+      eventLocationLevel1
+    )
+    cy.selectOption(
+      '#eventLocationLevel2',
+      eventLocationLevel2,
+      eventLocationLevel2
+    )
     //ENTER INFORMANT DETAILS FOR SEARCH
     cy.get('#DeathInformantDetails-accordion-header').click()
     cy.get('#informantDoBexact-dd').type(informantDoBSplit.dd)
