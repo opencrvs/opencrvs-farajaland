@@ -934,6 +934,7 @@
     "misc.pinSeqDigitsError": "The error displayed if PIN contains sequential digits.",
     "misc.pinMatchError": "The error displayed if PINs don't match",
     "misc.reEnterTitle": "The title displayed while creating a PIN",
+    "misc.confirmPinTitle": "Confirm PIN",
     "misc.reEnterDescription": "",
     "recordAudit.archive.status": "Archived status",
     "recordAudit.regStatus.declared.sentNotification": "Field agent sent notification",
