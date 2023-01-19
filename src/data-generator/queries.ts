@@ -437,3 +437,15 @@ export const FETCH_DEATH_REGISTRATION_QUERY = print(gql`
     }
   }
 `)
+
+export const getSystemRolesQuery = print(gql`
+  query getSystemRoles {
+    getSystemRoles(active: true) {
+      value
+      roles {
+        value
+      }
+    }
+  }
+`
+)

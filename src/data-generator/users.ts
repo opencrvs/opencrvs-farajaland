@@ -1,13 +1,12 @@
 import faker from '@faker-js/faker'
 import { log } from './util'
 import { Facility, getFacilities, Location } from './location'
-
 import fetch from 'node-fetch'
 import { getToken, getTokenForSystemClient } from './auth'
 import { GATEWAY_GQL_HOST } from './constants'
 import { expand } from 'regex-to-strings'
 import { convertToMSISDN } from '@countryconfig/features/utils'
-import { FIELD_AGENT_TYPES } from '@countryconfig/features/employees/scripts/utils'
+import { getAgentRoles } from '@countryconfig/features/employees/scripts/utils'
 
 export type User = {
   username: string
@@ -80,8 +79,8 @@ export async function createUser(
     email: faker.internet.email(),
     primaryOffice: primaryOfficeId,
     ...overrides
-  }
-
+  }  
+  
   const createUserRes = await fetch(GATEWAY_GQL_HOST, {
     method: 'POST',
     headers: {
@@ -108,6 +107,7 @@ export async function createUser(
   const { data } = resp as {
     data: { createOrUpdateUser: { username: string; id: string } }
   }
+  
   const userToken = await getToken(data.createOrUpdateUser.username, 'test')
 
   const res = await fetch(GATEWAY_GQL_HOST, {
@@ -204,12 +204,12 @@ export async function getUserByRole(token: string, role: string) {
     body: JSON.stringify({
       operationName: null,
       variables: {
-        role: role,
+        systemRole: role,
         count: 100
       },
       query: `
-        query ($count: Int, $skip: Int, $role: String) {
-          searchUsers(count: $count, skip: $skip, role: $role) {
+        query ($count: Int, $skip: Int, $systemRole: String) {
+          searchUsers(count: $count, skip: $skip, systemRole: $systemRole) {
             totalItems
             results {
               id
@@ -217,7 +217,7 @@ export async function getUserByRole(token: string, role: string) {
                 id
               }
               username
-              role
+              systemRole
             }
           }
         }
@@ -237,7 +237,7 @@ export async function getUserByRole(token: string, role: string) {
       }
     }
   }
-
+  
   return res.data.searchUsers.results
 }
 
@@ -381,22 +381,35 @@ export async function createUsers(
   if (crvsOffices.length === 0) {
     throw new Error(`Cannot find any CRVS offices for ${location.name}`)
   }
+
+
+  const userRoles = (await getAgentRoles(token)).reduce((rolesObj: any, userRole:any) => {
+    return {
+      ...rolesObj,
+      [userRole.value]: userRole.roles.map((role:any) => role.value)
+    }
+  },{})
+
+  const FIELD_AGENT_TYPES = userRoles.FIELD_AGENT
+  
   const randomOffice =
-    crvsOffices[Math.floor(Math.random() * crvsOffices.length)]
-  const randomFieldAgentType =
-    FIELD_AGENT_TYPES[Math.floor(Math.random() * FIELD_AGENT_TYPES.length)]
+    crvsOffices[Math.floor(Math.random() * crvsOffices.length)]  
+
   log('Creating field agents')
   for (let i = fieldAgents.length; i < config.fieldAgents; i++) {
+    const randomFieldAgentType =
+      FIELD_AGENT_TYPES[Math.floor(Math.random() * FIELD_AGENT_TYPES.length)]
     fieldAgents.push(
       await createUser(token, randomOffice.id, countryCode, phoneNumberRegex, {
-        role: 'FIELD_AGENT',
-        type: randomFieldAgentType
+        systemRole: 'FIELD_AGENT',
+        role: randomFieldAgentType
       })
     )
   }
-  log('Field agents created')
 
+  log('Field agents created')
   log('Creating', config.hospitalFieldAgents, 'hospitals')
+
   const natlSystemAdminUser = nationalSystemAdmin[0] 
 
   for (let i = 0; i < config.hospitalFieldAgents; i++) {
@@ -409,23 +422,32 @@ export async function createUsers(
   }
 
   log('Hospitals created')
+
+  const REGISTRATION_AGENT_TYPES = userRoles.REGISTRATION_AGENT
+
   log('Creating registration agents')
   for (let i = registrationAgents.length; i < config.registrationAgents; i++) {
+    const randomRegistrationAgentType = 
+      REGISTRATION_AGENT_TYPES[Math.floor(Math.random() * REGISTRATION_AGENT_TYPES.length)]
     registrationAgents.push(
       await createUser(token, randomOffice.id, countryCode, phoneNumberRegex, {
-        role: 'REGISTRATION_AGENT',
-        type: ''
+        systemRole: 'REGISTRATION_AGENT',
+        role: randomRegistrationAgentType
       })
     )
   }
-  log('Registration agents created')
-  log('Creating local registrars')
+  log('Registration agents created')  
 
+  const LOCAL_REGISTRAR_TYPES = userRoles.LOCAL_REGISTRAR
+  const randomLocalRegTypes = 
+    LOCAL_REGISTRAR_TYPES[Math.floor(Math.random() * LOCAL_REGISTRAR_TYPES.length)]
+
+  log('Creating local registrars')
   for (let i = registrars.length; i < config.localRegistrars; i++) {
     registrars.push(
       await createUser(token, randomOffice.id, countryCode, phoneNumberRegex, {
-        role: 'LOCAL_REGISTRAR',
-        type: ''
+        systemRole: 'LOCAL_REGISTRAR',
+        role: randomLocalRegTypes
       })
     )
   }
