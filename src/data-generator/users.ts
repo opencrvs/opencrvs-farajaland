@@ -24,7 +24,7 @@ type Config = {
   localRegistrars: number
 }
 
-enum Role {
+enum SystemRole {
   NationalSystemAdmin = 'NATIONAL_SYSTEM_ADMIN',
   FieldAgent = 'FIELD_AGENT',
   LocalRegistrar = 'LOCAL_REGISTRAR',
@@ -182,8 +182,8 @@ export async function getUsers(token: string, locationId: string) {
       searchUsers: {
         results: Array<{
           username: string
-          role: Role
-          type: string
+          systemRole: SystemRole // possibly has to be renamed
+          role: string
           primaryOffice: { id: string }
         }>
       }
@@ -193,7 +193,7 @@ export async function getUsers(token: string, locationId: string) {
   return res.data.searchUsers.results
 }
 
-export async function getUserByRole(token: string, role: string) {
+export async function getUserByRole(token: string, systemRole: string) {
   const getUsersRes = await fetch(GATEWAY_GQL_HOST, {
     method: 'POST',
     headers: {
@@ -204,7 +204,7 @@ export async function getUserByRole(token: string, role: string) {
     body: JSON.stringify({
       operationName: null,
       variables: {
-        systemRole: role,
+        systemRole,
         count: 100
       },
       query: `
@@ -230,8 +230,8 @@ export async function getUserByRole(token: string, role: string) {
       searchUsers: {
         results: Array<{
           username: string
-          role: Role
-          type: string
+          systemRole: SystemRole
+          role: string
           primaryOffice: { id: string }
         }>
       }
@@ -271,7 +271,6 @@ const registerSystemClient = async(name: string, type:string, token: string) => 
       variables: {system :{ name, type } }
     })
   })
-
   
   return await createUserRes.json()
 }
@@ -320,7 +319,7 @@ export async function createUsers(
 
   const fieldAgents: User[] = await Promise.all(
     existingUsers
-      .filter(({ role }) => role === 'FIELD_AGENT')
+      .filter(({ systemRole }) => systemRole === 'FIELD_AGENT')
       .map(async (user) => ({
         username: user.username,
         password: 'test',
@@ -332,7 +331,7 @@ export async function createUsers(
   )
   const registrationAgents: User[] = await Promise.all(
     existingUsers
-      .filter(({ role }) => role === 'REGISTRATION_AGENT')
+      .filter(({ systemRole }) => systemRole === 'REGISTRATION_AGENT')
       .map(async (user) => ({
         username: user.username,
         password: 'test',
@@ -344,7 +343,7 @@ export async function createUsers(
   )
   const registrars: User[] = await Promise.all(
     existingUsers
-      .filter(({ role }) => role === 'LOCAL_REGISTRAR')
+      .filter(({ systemRole }) => systemRole === 'LOCAL_REGISTRAR')
       .map(async (user) => ({
         username: user.username,
         password: 'test',
@@ -370,7 +369,6 @@ export async function createUsers(
     nationalSystemAdmin.push(mappedNatlUserRes[0])
   }
 
-
   // These cannot be fetched through gateway, so we'll always have to regenerate them
   const hospitals: User[] = []
   
@@ -382,13 +380,12 @@ export async function createUsers(
     throw new Error(`Cannot find any CRVS offices for ${location.name}`)
   }
 
-
-  const userRoles = (await getAgentRoles(token)).reduce((rolesObj: any, userRole:any) => {
+  const userRoles = (await getAgentRoles(token))?.reduce((rolesObj, userRole) => {
     return {
       ...rolesObj,
-      [userRole.value]: userRole.roles.map((role:any) => role.value)
+      [userRole.value]: userRole.roles.map((role) => role.value)
     }
-  },{})
+  },{}) as Record<string, string[]> 
 
   const FIELD_AGENT_TYPES = userRoles.FIELD_AGENT
   
@@ -439,11 +436,11 @@ export async function createUsers(
   log('Registration agents created')  
 
   const LOCAL_REGISTRAR_TYPES = userRoles.LOCAL_REGISTRAR
-  const randomLocalRegTypes = 
-    LOCAL_REGISTRAR_TYPES[Math.floor(Math.random() * LOCAL_REGISTRAR_TYPES.length)]
-
+  
   log('Creating local registrars')
   for (let i = registrars.length; i < config.localRegistrars; i++) {
+    const randomLocalRegTypes = 
+      LOCAL_REGISTRAR_TYPES[Math.floor(Math.random() * LOCAL_REGISTRAR_TYPES.length)]
     registrars.push(
       await createUser(token, randomOffice.id, countryCode, phoneNumberRegex, {
         systemRole: 'LOCAL_REGISTRAR',

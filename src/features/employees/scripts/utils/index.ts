@@ -32,6 +32,7 @@ import fetch from 'node-fetch'
 // import { getUserByRole } from '@countryconfig/data-generator/users'
 import { GATEWAY_GQL_HOST } from '@countryconfig/data-generator/constants'
 import { getSystemRolesQuery } from '@countryconfig/data-generator/queries'
+import { SystemRole } from '@countryconfig/data-generator/gateway'
 
 export const FIELD_AGENT_TYPES = [
   'HEALTHCARE_WORKER',
@@ -40,7 +41,7 @@ export const FIELD_AGENT_TYPES = [
   'LOCAL_LEADER'
 ]
 
-export async function getAgentRoles(token: string) {
+export async function getAgentRoles(token: string): Promise<SystemRole[]> {
     const res = await fetch(GATEWAY_GQL_HOST, {
       method: 'POST',
       headers: {
