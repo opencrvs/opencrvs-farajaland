@@ -3441,7 +3441,7 @@
         "performance.reports.header.totalPayments": "Droits perçus",
         "performance.reports.header.totalRegistrations": "Enregistrements",
         "performance.reports.header.applicationSources": "Sources des déclarations",
-        "performance.reports.subHeader.applicationSources": "Le nombre et le pourcentage de déclarations lancées par les chaque rôles du système qui ont été enregistrées.",
+        "performance.reports.subHeader.applicationSources": "Le nombre et le pourcentage de déclarations lancées par chaque rôle du système qui ont été enregistrées.",
         "performance.reports.select.item.operational": "Opérationnel",
         "performance.reports.select.item.reports": "Rapports",
         "performance.reports.subHeader.completenessRates": "Le nombre d'enregistrements, exprimé en % du nombre total estimé de {event, select, BIRTH{naissance}}. DEATH{décès} other{naissances}} survenus.",
