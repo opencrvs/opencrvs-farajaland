@@ -1430,7 +1430,7 @@
         "performance.reports.header.totalPayments": "Fees collected",
         "performance.reports.header.totalRegistrations": "Registrations",
         "performance.reports.header.applicationSources": "Sources of registrations",
-        "performance.reports.subHeader.applicationSources": "The number and percentage of declarations started by the each system role that has been registered",
+        "performance.reports.subHeader.applicationSources": "The number and percentage of declarations started by each system role that has been registered",
         "performance.reports.select.item.operational": "Operational",
         "performance.reports.select.item.reports": "Reports",
         "performance.reports.subHeader.completenessRates": "The no. of registrations, expressed as a % of the total estimated no. of {event, select, BIRTH{birth} DEATH{death} other{birth}}s occurring",
