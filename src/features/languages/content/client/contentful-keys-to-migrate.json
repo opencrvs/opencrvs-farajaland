@@ -163,6 +163,7 @@
   "duplicates.content.subtitle",
   "duplicates.button.notDuplicate",
   "duplicates.button.markAsDuplicate",
+  "duplicates.content.notDuplicateConfirmationTitle",
   "config.form.draft.defaultComment",
   "config.form.settings.globalSettingsDescription",
   "config.form.navigation.pages",
