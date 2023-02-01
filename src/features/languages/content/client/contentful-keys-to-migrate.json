@@ -129,6 +129,8 @@
   "config.informantNotification.success",
   "config.certificate.template",
   "config.certificate.allowPrinting",
+  "config.certificate.options",
+  "config.certificate.printDescription",
   "conflicts.modal.assign.description",
   "conflicts.modal.assigned.description",
   "conflicts.modal.assigned.title",
