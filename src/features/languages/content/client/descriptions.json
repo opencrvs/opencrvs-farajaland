@@ -214,6 +214,7 @@
     "constants.noConnection": "No Connection hover text",
     "constants.totalFileSizeExceed": "Accumulated File size exceed message",
     "constants.refresh": "label for refresh",
+    "constants.duplicateOf": "table header for `duplicate of` in record audit",
     "constants.updated": "Application has been updated",
     "constants.sent_incomplete": "Declaration submitted without completing the required fields",
     "constants.updated_declaration": "Declaration has been updated",
