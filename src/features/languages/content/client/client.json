@@ -868,7 +868,7 @@
         "custom.field.form.errorMessage": "Error message",
         "custom.field.form.maxLength": "Max length",
         "custom.field.form.duplicateField": "Label already exists in this form section. Please create a unique label",
-        "duplicates.warning": "Potential duplicate with record {trackingId}",
+        "duplicates.warning": "Potential duplicate of record {trackingId}",
         "duplicates.review.header": "Potential {event} duplicate review",
         "duplicates.content.title": "Is {name} ({trackingId}) a duplicate?",
         "duplicates.content.subtitle": "This record was flagged as a potential duplicate with: {trackingIds}. Please review these existing records and confirm if this record is a duplicate",
