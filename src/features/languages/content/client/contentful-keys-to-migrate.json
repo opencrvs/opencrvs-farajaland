@@ -131,6 +131,7 @@
   "config.certificate.allowPrinting",
   "config.certificate.options",
   "config.certificate.printDescription",
+  "config.certificate.allowPrintingNotification",
   "conflicts.modal.assign.description",
   "conflicts.modal.assigned.description",
   "conflicts.modal.assigned.title",
