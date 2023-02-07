@@ -329,6 +329,7 @@
   "regHome.outbox.statusWaitingToValidate",
   "misc.notif.unassign",
   "misc.notif.onlineUserStatus",
+  "misc.notif.duplicateRecord",
   "performance.reports.header.completenessRates",
   "performance.reports.subHeader.completenessRates",
   "performance.reports.header.totalRegistrations",

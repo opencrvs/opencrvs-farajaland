@@ -888,6 +888,7 @@
     "regHome.workqueue.downloadDeclarationFailed": "Label for declaration downloading failed",
     "misc.notif.unassign": "Label for unassigned toast notification",
     "misc.notif.onlineUserStatus": "Label for online user status toast notification",
+    "misc.notif.duplicateRecord": "Label for when a duplicate record is detected when registering a record.",
     "performance.reports.header.completenessRates": "Header for report completeness rates",
     "performance.reports.subHeader.completenessRates": "Sub header for report completeness rates",
     "performance.reports.header.totalRegistrations": "Header for report total registrations",
