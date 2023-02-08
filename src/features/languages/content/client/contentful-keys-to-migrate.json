@@ -307,6 +307,7 @@
   "navigation.communications",
   "navigation.informantNotification",
   "navigation.outbox",
+  "navigation.readyToIssue",
   "misc.notif.updatePINSuccess",
   "regHome.outbox.statusCertifying",
   "regHome.outbox.statusSendingForApproval",
