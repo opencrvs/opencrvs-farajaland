@@ -4,6 +4,7 @@
   "buttons.create",
   "buttons.forgotPassword",
   "buttons.forgottenPIN",
+  "buttons.issue",
   "buttons.reinstate",
   "buttons.refresh",
   "buttons.saving",
@@ -22,6 +23,7 @@
   "constants.downloaded",
   "constants.noResultsOutbox",
   "constants.record",
+  "constants.registrationNumber",
   "constants.assignRecord",
   "constants.skipToMainContent",
   "constants.history",
@@ -415,5 +417,6 @@
   "user.profile.auditList.reInstatedToInProgress",
   "user.profile.auditList.reInstatedToInReview",
   "user.profile.auditList.reInstatedToUpdate",
-  "user.profile.auditList.sentForApproval"
+  "user.profile.auditList.sentForApproval",
+  "wq.noRecords.readyToIssue"
 ]

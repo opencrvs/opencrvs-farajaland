@@ -27,6 +27,7 @@
     "buttons.no": "No button text",
     "buttons.preview": "Preview button",
     "buttons.print": "Print button text",
+    "buttons.issue": "Issue button text",
     "buttons.reinstate": "Label for reinstate button",
     "buttons.register": "Label for button on register confirmation modal",
     "buttons.reject": "A label for reject link",
@@ -141,6 +142,7 @@
     "constants.performance": "Performance title",
     "constants.reason": "Label for Reason the declaration was rejected",
     "constants.record": "Label for header table header Record",
+    "constants.registrationNumber": "Label for registered number",
     "constants.requestReason": "Label for Reason the declaration was corrected",
     "constants.registered": "A label for registered",
     "constants.inReview.status": "A label for In Review",
@@ -1202,6 +1204,7 @@
     "wq.noRecords.externalValidation": "No records messages for empty external validation tab",
     "wq.noRecords.readyForReview": "No records messages for ready for review tab",
     "wq.noRecords.readyToPrint": "No records messages for ready to print tab",
+    "wq.noRecords.readyToIssue": "No records messages for ready to issue tab",
     "wq.noRecords.requiresUpdate": "No records messages for require updates tab",
     "wq.noRecords.sentForApproval": "No records messages for sent for approval tab",
     "wq.noRecords.sentForReview": "No records messages for sent for review tab"
