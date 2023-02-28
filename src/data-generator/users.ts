@@ -169,7 +169,7 @@ export async function getUsers(token: string, locationId: string) {
                 id
               }
               username
-              role
+              systemRole
             }
           }
         }
