@@ -169,7 +169,13 @@ const birthRegistrationFragment = gql`
       }
       user {
         id
-        role
+        role {
+          _id
+          labels {
+            lang
+            label
+          }
+        }
         systemRole
         name {
           firstNames
@@ -443,7 +449,10 @@ export const getSystemRolesQuery = print(gql`
     getSystemRoles(active: true) {
       value
       roles {
-        value
+        _id
+        labels {
+          label
+        }
       }
     }
   }

@@ -79,8 +79,8 @@ export async function createUser(
     email: faker.internet.email(),
     primaryOffice: primaryOfficeId,
     ...overrides
-  }  
-  
+  }
+
   const createUserRes = await fetch(GATEWAY_GQL_HOST, {
     method: 'POST',
     headers: {
@@ -182,7 +182,7 @@ export async function getUsers(token: string, locationId: string) {
       searchUsers: {
         results: Array<{
           username: string
-          systemRole: SystemRole // possibly has to be renamed
+          systemRole: SystemRole
           role: string
           primaryOffice: { id: string }
         }>
@@ -371,7 +371,6 @@ export async function createUsers(
 
   // These cannot be fetched through gateway, so we'll always have to regenerate them
   const hospitals: User[] = []
-  
   const crvsOffices = (await getFacilities(token))
     .filter(({ type }: Facility) => type === 'CRVS_OFFICE')
     .filter(({ partOf }: Facility) => partOf === 'Location/' + location.id)
@@ -383,32 +382,28 @@ export async function createUsers(
   const userRoles = (await getAgentRoles(token))?.reduce((rolesObj, userRole) => {
     return {
       ...rolesObj,
-      [userRole.value]: userRole.roles.map((role) => role.value)
+      [userRole.value]: userRole.roles.map((role) => role._id)
     }
   },{}) as Record<string, string[]> 
 
-  const FIELD_AGENT_TYPES = userRoles.FIELD_AGENT
-  
+  const FIELD_AGENT_ROLES = userRoles.FIELD_AGENT
   const randomOffice =
     crvsOffices[Math.floor(Math.random() * crvsOffices.length)]  
-
   log('Creating field agents')
   for (let i = fieldAgents.length; i < config.fieldAgents; i++) {
-    const randomFieldAgentType =
-      FIELD_AGENT_TYPES[Math.floor(Math.random() * FIELD_AGENT_TYPES.length)]
+    const randomFieldAgentRole =
+      FIELD_AGENT_ROLES[Math.floor(Math.random() * FIELD_AGENT_ROLES.length)]
     fieldAgents.push(
       await createUser(token, randomOffice.id, countryCode, phoneNumberRegex, {
         systemRole: 'FIELD_AGENT',
-        role: randomFieldAgentType
+        role: randomFieldAgentRole
       })
     )
   }
 
   log('Field agents created')
   log('Creating', config.hospitalFieldAgents, 'hospitals')
-
   const natlSystemAdminUser = nationalSystemAdmin[0] 
-
   for (let i = 0; i < config.hospitalFieldAgents; i++) {
     const user = await createSystemClient(
       randomOffice.id,
@@ -420,31 +415,29 @@ export async function createUsers(
 
   log('Hospitals created')
 
-  const REGISTRATION_AGENT_TYPES = userRoles.REGISTRATION_AGENT
-
+  const REGISTRATION_AGENT_ROLES = userRoles.REGISTRATION_AGENT
   log('Creating registration agents')
   for (let i = registrationAgents.length; i < config.registrationAgents; i++) {
-    const randomRegistrationAgentType = 
-      REGISTRATION_AGENT_TYPES[Math.floor(Math.random() * REGISTRATION_AGENT_TYPES.length)]
+    const randomRegistrationAgentRole = 
+      REGISTRATION_AGENT_ROLES[Math.floor(Math.random() * REGISTRATION_AGENT_ROLES.length)]
     registrationAgents.push(
       await createUser(token, randomOffice.id, countryCode, phoneNumberRegex, {
         systemRole: 'REGISTRATION_AGENT',
-        role: randomRegistrationAgentType
+        role: randomRegistrationAgentRole
       })
     )
   }
   log('Registration agents created')  
 
-  const LOCAL_REGISTRAR_TYPES = userRoles.LOCAL_REGISTRAR
-  
+  const LOCAL_REGISTRAR_ROLES = userRoles.LOCAL_REGISTRAR
   log('Creating local registrars')
   for (let i = registrars.length; i < config.localRegistrars; i++) {
-    const randomLocalRegTypes = 
-      LOCAL_REGISTRAR_TYPES[Math.floor(Math.random() * LOCAL_REGISTRAR_TYPES.length)]
+    const randomLocalRegRole = 
+      LOCAL_REGISTRAR_ROLES[Math.floor(Math.random() * LOCAL_REGISTRAR_ROLES.length)]
     registrars.push(
       await createUser(token, randomOffice.id, countryCode, phoneNumberRegex, {
         systemRole: 'LOCAL_REGISTRAR',
-        role: randomLocalRegTypes
+        role: randomLocalRegRole
       })
     )
   }
