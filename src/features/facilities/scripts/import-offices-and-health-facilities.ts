@@ -13,11 +13,12 @@ import chalk from 'chalk'
 import { internal } from '@hapi/boom'
 import { composeAndSaveFacilities } from '@countryconfig/features/facilities/scripts/utils'
 import { readCSVToJSON } from '@countryconfig/features/utils'
+import { connect, disconnect } from '@countryconfig/database'
 
 export default async function importFacilities() {
   const crvsOffices: any = await readCSVToJSON(process.argv[2])
   const healthFacilities: any = await readCSVToJSON(process.argv[3])
-
+  await connect('mongodb://localhost/hearth-dev')
   try {
     // tslint:disable-next-line:no-console
     console.log(
@@ -29,6 +30,8 @@ export default async function importFacilities() {
     await composeAndSaveFacilities(healthFacilities)
   } catch (err) {
     return internal(err)
+  } finally {
+    await disconnect()
   }
 
   return true
