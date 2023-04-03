@@ -80,7 +80,6 @@
     "contentful": "^8.1.1",
     "country-data": "^0.0.31",
     "cross-env": "^6.0.3",
-    "crypto": "^1.0.1",
     "csv2json": "^1.4.2",
     "cypress": "9.6.1",
     "date-fns": "^2.28.0",
