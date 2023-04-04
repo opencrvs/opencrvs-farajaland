@@ -79,16 +79,16 @@ services:
       - SENTRY_DSN=https://f892d643aab642108f44e2d1795706bc@o309867.ingest.sentry.io/1774604
   
   webhook-mediator:
-    image: opencrvs/webhook-mediator:355ace3
+    image: opencrvs/webhook-mediator:91aca1e
     build:
       context: .
       dockerfile: ./packages/api/Dockerfile
     restart: unless-stopped
     environment:
       - NODE_ENV=development
-      - WEBHOOK_URL=https://webhooks.farajaland-demo.opencrvs.org/webhooks
-      - AUTH_URL=https://auth.farajaland-demo.opencrvs.org
-      - CALLBACK_URL=https://webhook-mediator.farajaland-demo.opencrvs.org/webhooks
+      - WEBHOOK_URL=http://webhook-mediator:4545/webhooks
+      - AUTH_URL=http://auth:4040
+      - CALLBACK_URL=http://webhook-mediator:4545/webhooks
       - SHA_SECRET_PATH=/run/secrets/sha-secret
       - CLIENT_SECRET_PATH=/run/secrets/client-secret
       - CLIENT_ID_PATH=/run/secrets/client-id
@@ -100,7 +100,7 @@ services:
     deploy:
       labels:
         - 'traefik.enable=true'
-        - 'traefik.http.routers.webhook-mediator.rule=Host(`webhook-mediator.{{hostname}}`)'
+        - 'traefik.http.routers.webhook-mediator.rule=Host(`webhook-mediator.farajaland-demo.opencrvs.org`)'
         - 'traefik.http.services.webhook-mediator.loadbalancer.server.port=4040'
         - 'traefik.http.routers.webhook-mediator.tls=true'
         - 'traefik.http.routers.webhook-mediator.tls.certresolver=certResolver'
@@ -112,7 +112,7 @@ services:
         - 'traefik.http.middlewares.webhook-mediator.headers.stsseconds=31536000'
         - 'traefik.http.middlewares.webhook-mediator.headers.stsincludesubdomains=true'
         - 'traefik.http.middlewares.webhook-mediator.headers.stspreload=true'
-      replicas: 2
+      replicas: 1
     networks:
       - overlay_net
     logging:
