@@ -13,7 +13,10 @@ import * as Hapi from '@hapi/hapi'
 import fetch from 'node-fetch'
 import * as Pino from 'pino'
 import { CONFIRM_REGISTRATION_URL } from '@countryconfig/constants'
-import { createWebHookResponseFromBundle } from '@countryconfig/features/validate/service'
+import {
+  createWebHookResponseFromBundle,
+  getIntegrationConfig
+} from '@countryconfig/features/validate/service'
 
 const logger = Pino()
 
@@ -23,8 +26,13 @@ export async function validateRegistrationHandler(
 ) {
   try {
     const bundle = request.payload as fhir.Bundle
+    const authToken = request.headers.authorization
+    const integrations = await getIntegrationConfig(authToken)
 
-    const webHookResponse = await createWebHookResponseFromBundle(bundle)
+    const webHookResponse = await createWebHookResponseFromBundle(
+      bundle,
+      integrations
+    )
 
     // This fetch can be moved to a custom task when validating externally
     fetch(CONFIRM_REGISTRATION_URL, {

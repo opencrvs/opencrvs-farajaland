@@ -66,3 +66,9 @@ export const CONTENTFUL_SPACE_ID =
   ''
 export const CMS = process.env.CMS // || 'contentful'
 export const DEFAULT_TIMEOUT = 600000
+
+export const OSIA_UIN_MANAGEMENT_URL = process.env.OSIA_UIN_MANAGEMENT_URL
+export const INGROUPE_UIN_MANAGEMENT_URL =
+  process.env.INGROUPE_UIN_MANAGEMENT_URL
+export const OSIA_JWT = process.env.OSIA_JWT
+export const OSIA_UIN_REQUEST_AUTHORITY = 'CRVS'
