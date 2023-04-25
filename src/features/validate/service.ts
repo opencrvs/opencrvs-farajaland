@@ -75,11 +75,12 @@ export async function createWebHookResponseFromBundle(
 
   const person = getChildDetailsFromBundleForOsiaUinGeneration(bundle)
 
-  if (getEventType(bundle) === EVENT_TYPE.DEATH) {
-    const OsiaIntegrationEnabled = integrations.some(
+  if (getEventType(bundle) === EVENT_TYPE.BIRTH) {
+    const osiaIntegration = integrations.find(
       (integration) => integration.integratingSystemType === 'OSIA'
     )
-    if (OsiaIntegrationEnabled) {
+
+    if (osiaIntegration && osiaIntegration.status === 'active') {
       const OSIA_UIN = await generarateOsiaUinNidVid(person, trackingId)
       additionalPropertiesOfResponse.OSIA_UIN_VID_NID = OSIA_UIN
     }
