@@ -43,6 +43,7 @@ import {
 } from './features/notification/handler'
 import { mosipMediatorHandler } from './features/mediators/mosip-openhim-mediator/handler'
 import { ErrorContext } from 'hapi-auth-jwt2'
+import { sendOSIATopicNotificationHandler } from './features/OSIA/handler'
 
 export interface ITokenPayload {
   sub: string
@@ -326,6 +327,16 @@ export async function createServer() {
     options: {
       tags: ['api'],
       description: 'Handles submission of mosip generaed NID'
+    }
+  })
+
+  server.route({
+    method: 'POST',
+    path: '/osia-topic-notification',
+    handler: sendOSIATopicNotificationHandler,
+    options: {
+      tags: ['api'],
+      description: 'Notify topic to OSIA after registered'
     }
   })
 
