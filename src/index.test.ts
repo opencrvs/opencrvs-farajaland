@@ -108,10 +108,10 @@ describe('Route authorization', () => {
     expect(res.statusCode).toBe(401)
   })
 
-  it('blocks requests signed with wrong algorithm (HS512)', async () => {
+  it('blocks requests signed with wrong algorithm (RS384)', async () => {
     const server = await createServer()
     const token = jwt.sign({}, readFileSync('./test/cert.key'), {
-      algorithm: 'HS512',
+      algorithm: 'RS384',
       issuer: 'opencrvs:auth-service',
       audience: 'opencrvs:countryconfig-user'
     })
