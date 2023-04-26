@@ -160,6 +160,16 @@ export function getEventDateFromBundle(bundle: fhir.Bundle): string {
   return patient[personInfo.eventDateFieldKey] as string
 }
 
+export function getChildDetailsFromBundleForOsiaUinGeneration(
+  bundle: fhir.Bundle
+): fhir.Patient {
+  const patient = findPersonEntryFromBundle(CHILD_CODE, bundle)
+  if (!patient) {
+    throw new Error('Unable to find person from given bundle')
+  }
+  return patient
+}
+
 export function getEventType(bundle: fhir.Bundle) {
   if (
     !bundle ||
