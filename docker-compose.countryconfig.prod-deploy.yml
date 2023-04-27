@@ -28,7 +28,6 @@ services:
       - CONFIRM_REGISTRATION_URL=http://openhim-core:5001/confirm/registration
       - CHECK_INVALID_TOKEN=true
       - HOSTNAME=${HOSTNAME}
-      #- SMS_PROVIDER=
       #- CLICKATELL_USER_PATH=
       #- CLICKATELL_PASSWORD_PATH=
       #- CLICKATELL_API_ID_PATH=

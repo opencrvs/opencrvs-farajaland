@@ -11,25 +11,47 @@
  */
 import * as Hapi from '@hapi/hapi'
 import * as Joi from 'joi'
-import { sendSMS } from './service'
+import { sendSMSClickatell, sendSMSInfobip } from './sms-service'
+import { sendEmail } from './email-service'
 
-interface INotificationPayload {
+type InfobipPayload = {
+  type: 'infobip'
+  msisdn: string
+  message: string
+}
+
+type ClickatellPayload = {
+  type: 'clickatell'
   msisdn: string
   message: string
   convertUnicode?: boolean
 }
 
-export const notificationScheme = Joi.object({
-  msisdn: Joi.string(),
-  message: Joi.string(),
-  convertUnicode: Joi.boolean()
-})
+type EmailPayload = {
+  type: 'email'
+  email: string
+  language: string
+}
 
-export async function notificationHandler(
-  request: Hapi.Request,
-  h: Hapi.ResponseToolkit
-) {
-  const { msisdn, message, convertUnicode } =
-    request.payload as INotificationPayload
-  return sendSMS(msisdn, message, convertUnicode)
+type NotificationPayload = InfobipPayload | ClickatellPayload | EmailPayload
+
+export const notificationSchema = Joi.object({
+  type: Joi.string().valid('infobip', 'clickatell', 'email')
+}).unknown(true)
+
+export async function notificationHandler(request: Hapi.Request) {
+  const payload = request.payload as NotificationPayload
+
+  switch (payload.type) {
+    case 'email':
+      return sendEmail(payload.email)
+    case 'infobip':
+      return sendSMSInfobip(payload.msisdn, payload.message)
+    case 'clickatell':
+      return sendSMSClickatell(
+        payload.msisdn,
+        payload.message,
+        payload.convertUnicode
+      )
+  }
 }

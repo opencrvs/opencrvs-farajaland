@@ -1,7 +1,5 @@
 import { readFileSync } from 'fs'
 
-export const SMS_PROVIDER = process.env.SMS_PROVIDER || 'infobip'
-
 export const CLICKATELL_USER = process.env.CLICKATELL_USER_PATH
   ? readFileSync(process.env.CLICKATELL_USER_PATH).toString()
   : ''
