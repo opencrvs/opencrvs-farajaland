@@ -36,9 +36,6 @@ services:
       #- INFOBIP_API_KEY_PATH=
       #- INFOBIP_SENDER_ID_PATH=
       - SENTRY_DSN=https://f892d643aab642108f44e2d1795706bc@o309867.ingest.sentry.io/1774604
-      - OSIA_UIN_MANAGEMENT_URL= ${OSIA_UIN_MANAGEMENT_URL}
-      - INGROUPE_UIN_MANAGEMENT_URL= ${INGROUPE_UIN_MANAGEMENT_URL}
-      - OSIA_JWT= ${OSIA_JWT}
 
     deploy:
       replicas: 1

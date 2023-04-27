@@ -19,6 +19,9 @@ services:
     image: ${DOCKERHUB_ACCOUNT}/${DOCKERHUB_REPO}:${COUNTRY_CONFIG_VERSION:-latest}
     restart: unless-stopped
     secrets:
+      - osia-jwt
+      - osia-mgnt-url
+      - in-groupe-mgnt-url
       - jwt-public-key.{{ts}}
     environment:
       - NODE_ENV=production
@@ -29,9 +32,9 @@ services:
       - CHECK_INVALID_TOKEN=true
       - HOSTNAME=${HOSTNAME}
       - SENTRY_DSN=https://f892d643aab642108f44e2d1795706bc@o309867.ingest.sentry.io/1774604
-      - OSIA_UIN_MANAGEMENT_URL= ${OSIA_UIN_MANAGEMENT_URL}
-      - INGROUPE_UIN_MANAGEMENT_URL= ${INGROUPE_UIN_MANAGEMENT_URL}
-      - OSIA_JWT= ${OSIA_JWT}
+      - OSIA_UIN_MANAGEMENT_URL_PATH=/run/secrets/osia-mgnt-url
+      - INGROUPE_UIN_MANAGEMENT_URL_PATH=/run/secrets/in-groupe-mgnt-url
+      - OSIA_JWT_PATH=/run/secrets/osia-jwt
 
     deploy:
       replicas: 1
@@ -128,31 +131,14 @@ services:
       options:
         gelf-address: 'udp://127.0.0.1:12201'
         tag: 'webhook-mediator'
-  
-  mosiptokenseeder:
-    image: mosipdev/mosip-token-seeder:develop
-    ports:
-      - '8085:8080'
-    deploy:
-      replicas: 1
-    networks:
-      - overlay_net
-    volumes:
-      - /data/secrets/mosip:/seeder/certs
-    restart: unless-stopped
-    environment:
-      - TOKENSEEDER_MOSIP_AUTH__PARTNER_APIKEY=${TOKENSEEDER_MOSIP_AUTH__PARTNER_APIKEY}
-      - TOKENSEEDER_MOSIP_AUTH__PARTNER_MISP_LK=${TOKENSEEDER_MOSIP_AUTH__PARTNER_MISP_LK}
-      - TOKENSEEDER_MOSIP_AUTH__PARTNER_ID=opencrvs-auth-partner
-      - TOKENSEEDER_MOSIP_AUTH_SERVER__IDA_AUTH_DOMAIN_URI=https://api-internal.mec.mosip.net
-      - TOKENSEEDER_MOSIP_AUTH_SERVER__IDA_AUTH_URL=https://api.mec.mosip.net/idauthentication/v1/auth
-      - TOKENSEEDER_CRYPTO_SIGNATURE__SIGN_P12_FILE_PASSWORD=${TOKENSEEDER_CRYPTO_SIGNATURE__SIGN_P12_FILE_PASSWORD}
-      - TOKENSEEDER_AUTHTOKEN__MANDATORY_VALIDATION_AUTH_FIELDS="name,gender,dob"
-      - TOKENSEEDER_CRYPTO_ENCRYPT__ENCRYPT_CERT_PATH=/seeder/certs/ida.partner.crt
-      - TOKENSEEDER_CRYPTO_SIGNATURE__SIGN_P12_FILE_PATH=/seeder/certs/keystore.p12
-      - TOKENSEEDER_ROOT__SYNC_OPERATION_MODE=true
 
 secrets:
+  osia-jwt:
+    external: true
+  osia-mgnt-url:
+    external: true
+  in-groupe-mgnt-url:
+    external: true
   openhim-user:
     external: true
   openhim-password:
