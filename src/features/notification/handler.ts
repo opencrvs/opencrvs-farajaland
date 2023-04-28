@@ -12,7 +12,7 @@
 import * as Hapi from '@hapi/hapi'
 import * as Joi from 'joi'
 import { sendSMSClickatell, sendSMSInfobip } from './sms-service'
-import { sendEmail } from './email-service'
+import { TemplateType, sendEmail } from './email-service'
 
 type InfobipPayload = {
   type: 'infobip'
@@ -29,8 +29,12 @@ type ClickatellPayload = {
 
 type EmailPayload = {
   type: 'email'
-  email: string
-  language: string
+  template: TemplateType
+  recipient: string
+  firstNames: string
+  username: string
+  password: string
+  completeSetupUrl: string
 }
 
 type NotificationPayload = InfobipPayload | ClickatellPayload | EmailPayload
@@ -44,7 +48,7 @@ export async function notificationHandler(request: Hapi.Request) {
 
   switch (payload.type) {
     case 'email':
-      return sendEmail(payload.email)
+      return sendEmail(payload.template, payload)
     case 'infobip':
       return sendSMSInfobip(payload.msisdn, payload.message)
     case 'clickatell':
