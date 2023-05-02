@@ -17,7 +17,9 @@ import { join } from 'path'
 const readTemplate = <T extends Record<string, any>>(templateName: string) =>
   Handlebars.compile<T>(
     fs
-      .readFileSync(join(__dirname, `../email-templates/${templateName}.html`))
+      .readFileSync(
+        join(__dirname, `../../email-templates/${templateName}.html`)
+      )
       .toString()
   )
 

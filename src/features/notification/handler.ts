@@ -39,7 +39,7 @@ type EmailPayload = {
 
 type NotificationPayload = InfobipPayload | ClickatellPayload | EmailPayload
 
-export const notificationSchema = Joi.object({
+export const notificationScheme = Joi.object({
   type: Joi.string().valid('infobip', 'clickatell', 'email')
 }).unknown(true)
 
