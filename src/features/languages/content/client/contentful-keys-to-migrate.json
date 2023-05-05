@@ -508,6 +508,8 @@
   "user.profile.auditList.reInstatedToInReview",
   "user.profile.auditList.reInstatedToUpdate",
   "user.profile.auditList.sentForApproval",
+  "user.profile.auditList.markedAsDuplicate",
+  "user.profile.auditList.markedAsNotDuplicate",
   "verifyCertificate.loading",
   "verifyCertificate.timeOut",
   "verifyCertificate.successTitle",
