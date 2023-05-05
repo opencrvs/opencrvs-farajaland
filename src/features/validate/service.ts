@@ -58,7 +58,24 @@ interface IAdditionalPropsForWebhookResponse {
   OSIA_UIN_VID_NID?: string
 }
 
-export async function createWebHookResponseFromBundle(
+export async function createWebHookResponseFromBundle(bundle: fhir.Bundle) {
+  const taskResource = getTaskResource(bundle)
+
+  if (!taskResource || !taskResource.extension) {
+    throw new Error(
+      'Failed to validate registration: could not find task resource in bundle or task resource had no extensions'
+    )
+  }
+
+  const trackingId = getTrackingIdFromTaskResource(taskResource)
+
+  return {
+    trackingId,
+    registrationNumber: await generateRegistrationNumber(trackingId)
+  }
+}
+
+export async function createWebHookResponseFromBirthBundle(
   bundle: fhir.Bundle,
   integrations: IIntegration[]
 ) {

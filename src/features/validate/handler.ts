@@ -14,9 +14,11 @@ import fetch from 'node-fetch'
 import * as Pino from 'pino'
 import { CONFIRM_REGISTRATION_URL } from '@countryconfig/constants'
 import {
+  createWebHookResponseFromBirthBundle,
   createWebHookResponseFromBundle,
   getIntegrationConfig
 } from '@countryconfig/features/validate/service'
+import { EVENT_TYPE, getEventType } from '../utils'
 
 const logger = Pino()
 
@@ -26,20 +28,34 @@ export async function validateRegistrationHandler(
 ) {
   try {
     const bundle = request.payload as fhir.Bundle
-    const authToken = request.headers.authorization
-    const integrations = await getIntegrationConfig(authToken)
 
-    const webHookResponse = await createWebHookResponseFromBundle(
-      bundle,
-      integrations
-    )
+    if (getEventType(bundle) === EVENT_TYPE.BIRTH) {
+      const authToken = request.headers.authorization
+      const integrations = await getIntegrationConfig(authToken)
 
-    // This fetch can be moved to a custom task when validating externally
-    fetch(CONFIRM_REGISTRATION_URL, {
-      method: 'POST',
-      body: JSON.stringify(webHookResponse),
-      headers: request.headers
-    })
+      const webHookResponse = await createWebHookResponseFromBirthBundle(
+        bundle,
+        integrations
+      )
+
+      // This fetch can be moved to a custom task when validating externally
+      fetch(CONFIRM_REGISTRATION_URL, {
+        method: 'POST',
+        body: JSON.stringify(webHookResponse),
+        headers: request.headers
+      })
+    } else {
+      const bundle = request.payload as fhir.Bundle
+
+      const webHookResponse = await createWebHookResponseFromBundle(bundle)
+
+      // This fetch can be moved to a custom task when validating externally
+      fetch(CONFIRM_REGISTRATION_URL, {
+        method: 'POST',
+        body: JSON.stringify(webHookResponse),
+        headers: request.headers
+      })
+    }
   } catch (err) {
     fetch(CONFIRM_REGISTRATION_URL, {
       method: 'POST',
