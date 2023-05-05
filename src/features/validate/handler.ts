@@ -19,6 +19,7 @@ import {
   getIntegrationConfig
 } from '@countryconfig/features/validate/service'
 import { EVENT_TYPE, getEventType } from '../utils'
+import { badImplementation } from '@hapi/boom'
 
 const logger = Pino()
 
@@ -57,13 +58,13 @@ export async function validateRegistrationHandler(
       })
     }
   } catch (err) {
-    fetch(CONFIRM_REGISTRATION_URL, {
-      method: 'POST',
-      body: JSON.stringify({ error: err.message }),
-      headers: request.headers
-    })
-
     logger.error(err)
+
+    // returning a boom error with a 'boomCustromMessage' property
+    // as Boom.badImplementation always overrides message with the default 'Internal error occured' message
+    const boomError = badImplementation()
+    boomError.output.payload.boomCustromMessage = `Could not generate registration number in country configuration due to error: ${err}`
+    throw boomError
   }
 
   return h.response().code(202)

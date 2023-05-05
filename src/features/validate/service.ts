@@ -19,8 +19,10 @@ import { CONFIG_HOST } from '@countryconfig/data-generator/constants'
 import { generateRegistrationNumber } from '@countryconfig/features/generateRegistrationNumber/service'
 import {
   EVENT_TYPE,
+  findCompositionSection,
   getChildDetailsFromBundleForOsiaUinGeneration,
   getEventType,
+  getFromFhir,
   getTaskResource,
   getTrackingIdFromTaskResource
 } from '@countryconfig/features/utils'
@@ -57,6 +59,8 @@ interface IOsiaIngroupeUinResponse {
 interface IAdditionalPropsForWebhookResponse {
   OSIA_UIN_VID_NID?: string
 }
+
+const BIRTH_ENCOUNTER_CODE = 'birth-encounter'
 
 export async function createWebHookResponseFromBundle(bundle: fhir.Bundle) {
   const taskResource = getTaskResource(bundle)
@@ -98,7 +102,7 @@ export async function createWebHookResponseFromBirthBundle(
     )
 
     if (osiaIntegration && osiaIntegration.status === 'active') {
-      const OSIA_UIN = await generarateOsiaUinNidVid(person, trackingId)
+      const OSIA_UIN = await generarateOsiaUinNidVid(person, trackingId, bundle)
       additionalPropertiesOfResponse.OSIA_UIN_VID_NID = OSIA_UIN
     }
   }
@@ -130,7 +134,8 @@ export async function getIntegrationConfig(
 
 export async function generarateOsiaUinNidVid(
   person: fhir.Patient,
-  trackingId: string
+  trackingId: string,
+  bundle: fhir.Bundle
 ): Promise<string> {
   const personName = person?.name?.find((n: fhir.HumanName) => n.use === 'en')
   const firstName = (personName?.given && personName?.given[0]) || ''
@@ -148,7 +153,7 @@ export async function generarateOsiaUinNidVid(
       legalName: '',
       gender: gender.toUpperCase(),
       birthDate: dateOfBirth,
-      birthPlace: 'XXX',
+      birthPlace: await generatePlaceOfBirthForIngroupUinPayload(bundle),
       authority: OSIA_UIN_REQUEST_AUTHORITY
     })
 
@@ -212,4 +217,79 @@ export async function generateInGroupeSpecificOsiaUin(
   }
 
   return res.json()
+}
+
+export async function generatePlaceOfBirthForIngroupUinPayload(
+  bundle: fhir.Bundle
+): Promise<string> {
+  let location
+
+  const bundleEntries = bundle.entry
+  const composition = (bundleEntries &&
+    bundleEntries[0].resource) as fhir.Composition
+  if (!composition) {
+    throw new Error('Composition not found')
+  }
+
+  const encounterSection = findCompositionSection(
+    BIRTH_ENCOUNTER_CODE,
+    composition
+  )
+  if (!encounterSection || !encounterSection.entry) {
+    throw new Error(`Encounter not found from Hearth!`)
+  }
+
+  const data = await getFromFhir(
+    `/Encounter/${encounterSection.entry[0].reference}`
+  )
+  if (data && data.location && data.location[0].location) {
+    location = await getFromFhir(`/${data.location[0].location.reference}`)
+  }
+
+  if (!location) {
+    throw new Error(
+      `Encounter location not found from Hearth with id ${encounterSection.entry[0].reference}!`
+    )
+  }
+
+  const isLocationHealthFacility =
+    location.type &&
+    location.type.coding &&
+    location.type.coding.find(
+      (obCode: { code: string }) => obCode.code === 'HEALTH_FACILITY'
+    )
+
+  if (isLocationHealthFacility) {
+    const parentLocationReference = location.partOf?.reference
+    if (parentLocationReference) {
+      const parentLocation = await getFromFhir(`/${parentLocationReference}`)
+      if (!parentLocation) {
+        throw new Error(
+          `PartOf location not found from Hearth with id ${parentLocationReference}!`
+        )
+      }
+      return [location.name, parentLocation.name].join(',')
+    }
+    return location.name
+  } else {
+    if (location.address.country === 'FAR') {
+      const state = await getFromFhir(`/Location/${location.address.state}`)
+      if (!state) {
+        throw new Error(
+          `location not found from Hearth with id ${location.address.state}!`
+        )
+      }
+      const district = await getFromFhir(
+        `/Location/${location.address.district}`
+      )
+      if (!district) {
+        throw new Error(
+          `location not found from Hearth with id ${location.address.district}!`
+        )
+      }
+      return [state.name, district.name].join(',')
+    } else {
+      return [location.address.state, location.address.district].join(',')
+    }
+  }
 }
