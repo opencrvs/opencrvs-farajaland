@@ -405,3 +405,22 @@ export async function readCSVToJSON<T>(filename: string) {
       })
   })
 }
+
+export interface ITemplatedComposition extends fhir.Composition {
+  section?: fhir.CompositionSection[]
+}
+
+export function findCompositionSection(
+  code: string,
+  composition: ITemplatedComposition
+) {
+  return (
+    composition.section &&
+    composition.section.find((section: fhir.CompositionSection) => {
+      if (!section.code || !section.code.coding || !section.code.coding.some) {
+        return false
+      }
+      return section.code.coding.some((coding) => coding.code === code)
+    })
+  )
+}
