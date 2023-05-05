@@ -39,7 +39,6 @@ export async function validateRegistrationHandler(
         integrations
       )
 
-      // This fetch can be moved to a custom task when validating externally
       fetch(CONFIRM_REGISTRATION_URL, {
         method: 'POST',
         body: JSON.stringify(webHookResponse),
@@ -50,7 +49,6 @@ export async function validateRegistrationHandler(
 
       const webHookResponse = await createWebHookResponseFromBundle(bundle)
 
-      // This fetch can be moved to a custom task when validating externally
       fetch(CONFIRM_REGISTRATION_URL, {
         method: 'POST',
         body: JSON.stringify(webHookResponse),
@@ -59,9 +57,6 @@ export async function validateRegistrationHandler(
     }
   } catch (err) {
     logger.error(err)
-
-    // returning a boom error with a 'boomCustromMessage' property
-    // as Boom.badImplementation always overrides message with the default 'Internal error occured' message
     const boomError = badImplementation()
     boomError.output.payload.boomCustromMessage = `Could not generate registration number in country configuration due to error: ${err}`
     throw boomError
