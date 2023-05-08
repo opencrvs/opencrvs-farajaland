@@ -31,7 +31,8 @@ export interface ISaltedHash {
 
 export enum EVENT_TYPE {
   BIRTH = 'BIRTH',
-  DEATH = 'DEATH'
+  DEATH = 'DEATH',
+  MARRIAGE = 'MARRIAGE'
 }
 
 export interface ILocation {
@@ -191,8 +192,13 @@ export function getEventType(bundle: fhir.Bundle) {
 
   if (eventType === 'death-declaration' || eventType === 'death-notification') {
     return EVENT_TYPE.DEATH
-  } else {
+  } else if (
+    eventType === 'birth-declaration' ||
+    eventType === 'birth-notification'
+  ) {
     return EVENT_TYPE.BIRTH
+  } else {
+    return EVENT_TYPE.MARRIAGE
   }
 }
 
