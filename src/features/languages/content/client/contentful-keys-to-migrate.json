@@ -184,6 +184,8 @@
   "conflicts.modal.unassign.title",
   "correction.request",
   "correction.corrector.title",
+  "correction.corrector.bride",
+  "correction.corrector.groom",
   "correction.certificate.corrector.idCheck",
   "correction.certificate.corrector.otherIdCheck",
   "correction.certificate.corrector.idCheckVerify",

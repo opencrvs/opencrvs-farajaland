@@ -649,6 +649,8 @@
     "correction.corrector.error": "Error for corrector form",
     "correction.corrector.mother": "Label for mother option in certificate correction form",
     "correction.corrector.father": "Label for father option in certificate correction form",
+    "correction.corrector.bride": "Label for bride option in certificate correction form",
+    "correction.corrector.groom": "Label for groom option in certificate correction form",
     "correction.corrector.child": "Label for child option in certificate correction form",
     "correction.corrector.legalGuardian": "Label for legal guardian option in certificate correction form",
     "correction.corrector.anotherAgent": "Label for another registration or field agent option in certificate correction form",

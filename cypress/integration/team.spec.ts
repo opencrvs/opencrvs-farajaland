@@ -95,7 +95,6 @@ context('Team Integration Test', () => {
     cy.login('nsysAdmin')
     cy.createPin()
     cy.get('#navigation_team').click()
-    cy.get('#navigation_team').click()
     cy.get('#location-range-picker-action').click()
     cy.get('#locationSearchInput').type('Ibombo')
     cy.contains('Ibombo').click()
@@ -115,7 +114,6 @@ context('Team Integration Test', () => {
     // LOG IN AS national SYSTEM ADMIN
     cy.login('nsysAdmin')
     cy.createPin()
-    cy.get('#navigation_team').click()
     cy.get('#navigation_team').click()
     cy.get('#location-range-picker-action').click()
     cy.get('#locationSearchInput').type('Ibombo')
