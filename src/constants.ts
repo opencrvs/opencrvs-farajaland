@@ -69,7 +69,7 @@ export const DEFAULT_TIMEOUT = 600000
 
 export const OSIA_UIN_MANAGEMENT_URL = process.env.OSIA_UIN_MANAGEMENT_URL_PATH
   ? readFileSync(process.env.OSIA_UIN_MANAGEMENT_URL_PATH).toString()
-  : ''
+  : 'http://localhost:8020/'
 export const INGROUPE_UIN_MANAGEMENT_URL = process.env
   .INGROUPE_UIN_MANAGEMENT_URL_PATH
   ? readFileSync(process.env.INGROUPE_UIN_MANAGEMENT_URL_PATH).toString()

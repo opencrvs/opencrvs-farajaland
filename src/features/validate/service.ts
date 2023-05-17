@@ -171,6 +171,7 @@ export async function generateGenericOsiaUin(
   trackingId: string
 ): Promise<string> {
   const url = new URL('/v1/uin', OSIA_UIN_MANAGEMENT_URL)
+  console.log('OSIA_UIN_GENERATOR_URL: ', url)
   url.search = new URLSearchParams({
     transactionId: trackingId
   }).toString()
@@ -178,8 +179,7 @@ export async function generateGenericOsiaUin(
   const res = await fetch(url.href, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
-      authorization: `Bearer ${OSIA_JWT}`
+      'Content-Type': 'application/json'
     },
     body: JSON.stringify(payload)
   })
