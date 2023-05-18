@@ -28,6 +28,7 @@ import {
 } from '@countryconfig/features/utils'
 import fetch from 'node-fetch'
 import { URL, URLSearchParams } from 'url'
+import { logger } from '@countryconfig/logger'
 
 interface IIntegration {
   name: string
@@ -197,6 +198,9 @@ export async function generateGenericOsiaUin(
 export async function generateInGroupeSpecificOsiaUin(
   payload: IOsiaIngroupeUinPayload
 ): Promise<IOsiaIngroupeUinResponse> {
+  logger.info(
+    `Posting the following payload to INGroupe: ${JSON.stringify(payload)}`
+  )
   if (!OSIA_UIN_MANAGEMENT_URL) {
     throw new Error(`Osia uin management url not found`)
   }
