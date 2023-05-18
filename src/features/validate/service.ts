@@ -272,7 +272,7 @@ export async function generatePlaceOfBirthForIngroupUinPayload(
           `PartOf location not found from Hearth with id ${parentLocationReference}!`
         )
       }
-      return [location.name, parentLocation.name].join(',')
+      return [location.name, parentLocation.name].join(',').substring(0, 34)
     }
     return location.name
   } else {
@@ -291,9 +291,11 @@ export async function generatePlaceOfBirthForIngroupUinPayload(
           `location not found from Hearth with id ${location.address.district}!`
         )
       }
-      return [state.name, district.name].join(',')
+      return [state.name, district.name].join(',').substring(0, 34)
     } else {
-      return [location.address.state, location.address.district].join(',')
+      return [location.address.state, location.address.district]
+        .join(',')
+        .substring(0, 34)
     }
   }
 }
