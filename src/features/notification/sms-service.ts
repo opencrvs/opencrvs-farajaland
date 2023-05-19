@@ -21,17 +21,47 @@ import { Iconv } from 'iconv'
 import { logger } from '@countryconfig/logger'
 import { stringify } from 'querystring'
 import fetch from 'node-fetch'
+import { readFileSync } from 'fs'
+import * as Handlebars from 'handlebars'
+import { join } from 'path'
+
+const templates = {
+  birthInProgressNotification: 'birthInProgressNotification',
+  birthDeclarationNotification: 'birthDeclarationNotification',
+  birthRegistrationNotification: 'birthRegistrationNotification',
+  birthRejectionNotification: 'birthRejectionNotification',
+  deathInProgressNotification: 'deathInProgressNotification',
+  deathDeclarationNotification: 'deathDeclarationNotification',
+  deathRegistrationNotification: 'deathRegistrationNotification',
+  deathRejectionNotification: 'deathRejectionNotification',
+  authenticationCodeNotification: 'authenticationCodeNotification',
+  userCredentialsNotification: 'userCredentialsNotification',
+  retieveUserNameNotification: 'retieveUserNameNotification',
+  updateUserNameNotification: 'updateUserNameNotification',
+  resetUserPasswordNotification: 'resetUserPasswordNotification'
+}
+
+export type SMSTemplateType = keyof typeof templates
+
+interface ISMSNotificationTemplate {
+  lang: string
+  displayName: string
+  messages: Record<SMSTemplateType, string>
+}
 
 export async function sendSMSClickatell(
-  msisdn: string,
-  message: string,
+  type: SMSTemplateType,
+  variables: Record<string, string>,
+  recipient: string,
+  locale: string,
   convertUnicode?: boolean
 ) {
+  const message = compileMessages(type, variables, locale)
   let params = {
     user: CLICKATELL_USER,
     password: CLICKATELL_PASSWORD,
     api_id: CLICKATELL_API_ID,
-    to: msisdn,
+    to: recipient,
     text: message,
     unicode: 0
   }
@@ -63,17 +93,23 @@ export async function sendSMSClickatell(
   logger.info('Received success response from Clickatell: Success')
 }
 
-export async function sendSMSInfobip(to: string, text: string) {
+export async function sendSMSInfobip(
+  type: SMSTemplateType,
+  variables: Record<string, string>,
+  recipient: string,
+  locale: string
+) {
+  const message = compileMessages(type, variables, locale)
   const body = JSON.stringify({
     messages: [
       {
         destinations: [
           {
-            to
+            recipient
           }
         ],
         from: INFOBIP_SENDER_ID,
-        text
+        text: message
       }
     ]
   })
@@ -97,7 +133,26 @@ export async function sendSMSInfobip(to: string, text: string) {
   const responseBody = await response.text()
   logger.info(`Response from Infobip: ${JSON.stringify(responseBody)}`)
   if (!response.ok) {
-    logger.error(`Failed to send sms to ${to}`)
-    throw new Error(`Failed to send sms to ${to}`)
+    logger.error(`Failed to send sms to ${recipient}`)
+    throw new Error(`Failed to send sms to ${recipient}`)
   }
+}
+
+function compileMessages(
+  templateName: SMSTemplateType,
+  variables: Record<string, string>,
+  locale: string
+): string {
+  const smsNotificationTemplate = JSON.parse(
+    readFileSync(
+      join(__dirname, '../languages/content/notification/notification.json')
+    ).toString()
+  ).data as ISMSNotificationTemplate[]
+
+  const language = smsNotificationTemplate.filter((obj) => {
+    return obj.lang === locale
+  })[0]
+
+  const template = Handlebars.compile(language.messages[templateName])
+  return template(variables)
 }

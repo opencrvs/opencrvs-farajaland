@@ -11,51 +11,100 @@
  */
 import * as Hapi from '@hapi/hapi'
 import * as Joi from 'joi'
-import { sendSMSClickatell, sendSMSInfobip } from './sms-service'
-import { TemplateType, sendEmail } from './email-service'
+import {
+  SMSTemplateType,
+  sendSMSClickatell,
+  sendSMSInfobip
+} from './sms-service'
+import {
+  EmailTemplateType,
+  TemplateVariables,
+  sendEmail
+} from './email-service'
+import { SMS_PROVIDER } from './constant'
+import { APPLICATION_CONFIG_URL } from '@countryconfig/constants'
+import fetch from 'node-fetch'
+import { URL } from 'url'
+import { logger } from '@countryconfig/logger'
 
-type InfobipPayload = {
-  type: 'infobip'
-  msisdn: string
-  message: string
-}
-
-type ClickatellPayload = {
-  type: 'clickatell'
-  msisdn: string
-  message: string
+type NotificationPayload = {
+  type: 'email' | 'sms'
+  templateName: EmailTemplateType | SMSTemplateType
+  recipient: string
+  locale: string
+  variables: TemplateVariables
   convertUnicode?: boolean
 }
 
-type EmailPayload = {
-  type: 'email'
-  template: TemplateType
-  recipient: string
-  firstNames: string
-  username: string
-  password: string
-  completeSetupUrl: string
+interface ILoginBackground {
+  backgroundColor: string
+  backgroundImage: string
+  imageFit: string
+}
+interface ICountryLogo {
+  fileName: string
+  file: string
+}
+interface IApplicationConfig {
+  APPLICATION_NAME: string
+  COUNTRY: string
+  COUNTRY_LOGO: ICountryLogo
+  SENTRY: string
+  LOGROCKET: string
+  LOGIN_BACKGROUND: ILoginBackground
+}
+interface IApplicationConfigResponse {
+  config: IApplicationConfig
 }
 
-type NotificationPayload = InfobipPayload | ClickatellPayload | EmailPayload
-
 export const notificationScheme = Joi.object({
-  type: Joi.string().valid('infobip', 'clickatell', 'email')
+  type: Joi.string().valid('sms', 'email')
 }).unknown(true)
 
 export async function notificationHandler(request: Hapi.Request) {
   const payload = request.payload as NotificationPayload
-
+  const applicationName = await getApplicationName()
+  payload.variables = { ...payload.variables, applicationName }
   switch (payload.type) {
     case 'email':
-      return sendEmail(payload.template, payload)
-    case 'infobip':
-      return sendSMSInfobip(payload.msisdn, payload.message)
-    case 'clickatell':
-      return sendSMSClickatell(
-        payload.msisdn,
-        payload.message,
-        payload.convertUnicode
+      return sendEmail(
+        payload.templateName as EmailTemplateType,
+        payload.variables,
+        payload.recipient
       )
+    case 'sms':
+      if (SMS_PROVIDER === 'infobip') {
+        return sendSMSInfobip(
+          payload.templateName as SMSTemplateType,
+          payload.variables,
+          payload.recipient,
+          payload.locale
+        )
+      } else if (SMS_PROVIDER === 'clickatell') {
+        return sendSMSClickatell(
+          payload.templateName as SMSTemplateType,
+          payload.variables,
+          payload.recipient,
+          payload.locale,
+          payload.convertUnicode
+        )
+      }
+  }
+}
+
+async function getApplicationName() {
+  try {
+    const configURL = new URL('publicConfig', APPLICATION_CONFIG_URL).toString()
+    const res = await fetch(configURL, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    const configData = (await res.json()) as IApplicationConfigResponse
+    return configData.config.APPLICATION_NAME
+  } catch (err) {
+    logger.error(`Unable to get public application config for error : ${err}`)
+    throw err
   }
 }
