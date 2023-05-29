@@ -51,6 +51,7 @@ import {
   markBirthAsIssued,
   markDeathAsIssued
 } from './issue'
+// import { callVSExportAPIToGenerateDeclarationData } from './vsExport'
 /*
  *
  * Configuration
@@ -79,7 +80,7 @@ const CONCURRENCY = process.env.CONCURRENCY
   : 3
 
 const START_YEAR = 2021
-const END_YEAR = 2022
+const END_YEAR = 2023
 
 const REGISTER = process.env.REGISTER !== 'false'
 const CERTIFY = process.env.CERTIFY !== 'false'
@@ -176,72 +177,72 @@ async function main() {
 
   /*
    *
-   * Loop through all locations
+   * Loop through years (END_YEAR -> START_YEAR)
    *
    */
 
-  for (const location of locations) {
-    log('Fetching already generated interval')
-    const generatedInterval = await fetchAlreadyGeneratedInterval(
-      registrarToken,
-      location.id
-    )
+  for (let y = END_YEAR; y >= START_YEAR; y--) {
+    /*
+     *
+     * Loop through all locations
+     *
+     */
 
-    if (generatedInterval.length === 0) {
-      log('No events have been generated for this location')
-    } else {
-      log(
-        'Events already exist for this location between',
-        generatedInterval[0],
-        '-',
-        generatedInterval[1]
+    for (const location of locations) {
+      log('Fetching already generated interval')
+      const generatedInterval = await fetchAlreadyGeneratedInterval(
+        registrarToken,
+        location.id
       )
-    }
 
-    /*
-     *
-     * Create required users & authorization tokens
-     *
-     */
-    log('Creating users for', location.name, '(', location.id, ')')
-
-    const users = await createUsers(
-      localSYSAdminToken,
-      location,
-      countryAlpha3,
-      config.config.PHONE_NUMBER_PATTERN,
-      {
-        fieldAgents: FIELD_AGENTS,
-        hospitalFieldAgents: HOSPITAL_FIELD_AGENTS,
-        registrationAgents: REGISTRATION_AGENTS,
-        localRegistrars: LOCAL_REGISTRARS
+      if (generatedInterval.length === 0) {
+        log('No events have been generated for this location')
+      } else {
+        log(
+          'Events already exist for this location between',
+          generatedInterval[0],
+          '-',
+          generatedInterval[1]
+        )
       }
-    )
-    const allUsers = [
-      ...users.fieldAgents,
-      ...users.hospitals,
-      ...users.registrationAgents,
-      ...users.registrars
-    ]
 
-    // User tokens expire after 20 minutes, so we need to
-    // keep on refreshing them as long as the user is in use
-    keepTokensValid(allUsers)
+      /*
+       *
+       * Create required users & authorization tokens
+       *
+       */
+      log('Creating users for', location.name, '(', location.id, ')')
 
-    const deathDeclarers = [...users.fieldAgents, ...users.registrationAgents]
-    const birthDeclararers = [
-      ...users.fieldAgents,
-      ...users.hospitals,
-      ...users.registrationAgents
-    ]
+      const users = await createUsers(
+        localSYSAdminToken,
+        location,
+        countryAlpha3,
+        config.config.PHONE_NUMBER_PATTERN,
+        {
+          fieldAgents: FIELD_AGENTS,
+          hospitalFieldAgents: HOSPITAL_FIELD_AGENTS,
+          registrationAgents: REGISTRATION_AGENTS,
+          localRegistrars: LOCAL_REGISTRARS
+        }
+      )
+      const allUsers = [
+        ...users.fieldAgents,
+        ...users.hospitals,
+        ...users.registrationAgents,
+        ...users.registrars
+      ]
 
-    /*
-     *
-     * Loop through years (END_YEAR -> START_YEAR)
-     *
-     */
+      // User tokens expire after 20 minutes, so we need to
+      // keep on refreshing them as long as the user is in use
+      keepTokensValid(allUsers)
 
-    for (let y = END_YEAR; y >= START_YEAR; y--) {
+      const deathDeclarers = [...users.fieldAgents, ...users.registrationAgents]
+      const birthDeclararers = [
+        ...users.fieldAgents,
+        ...users.hospitals,
+        ...users.registrationAgents
+      ]
+
       const isCurrentYear = y === currentYear
 
       const randomRegistrar =
@@ -331,6 +332,7 @@ async function main() {
           deathsToday
         )
 
+        // Create death declarations
         const operations = []
         for (let ix = 0; ix < deathsToday; ix++) {
           const completionDays = getRandomFromBrackets(
@@ -398,6 +400,8 @@ async function main() {
           )
         }
         await queue.addAll(operations)
+        // Doesnt work because the API isnt exposed in deployed environments: https://github.com/opencrvs/opencrvs-core/issues/4761
+        // await callVSExportAPIToGenerateDeclarationData(submissionDate)
       }
 
       /*
@@ -531,11 +535,11 @@ async function main() {
         )
       }
       await queue.addAll(operations)
-    }
 
-    allUsers.forEach((user) => {
-      user.stillInUse = false
-    })
+      allUsers.forEach((user) => {
+        user.stillInUse = false
+      })
+    }
   }
 
   process.exit(0)

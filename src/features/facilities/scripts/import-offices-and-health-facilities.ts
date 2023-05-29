@@ -20,7 +20,6 @@ export default async function importFacilities() {
   const healthFacilities: any = await readCSVToJSON(process.argv[3])
   await connect('mongodb://localhost/hearth-dev')
   try {
-    // tslint:disable-next-line:no-console
     console.log(
       `${chalk.blueBright(
         '/////////////////////////// MAPPING CR OFFICES TO LOCATIONS AND SAVING TO FHIR ///////////////////////////'

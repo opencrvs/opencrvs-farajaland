@@ -109,7 +109,6 @@ export async function composeAndSaveFacilities(
       facility,
       `Location/${parentLocationID}`
     )
-
     locations.push(newLocation)
   }
   await mongoose.connection.db.collection('Location').insertMany(locations)
