@@ -61,27 +61,31 @@ export const notificationScheme = Joi.object({
   type: Joi.string().valid('sms', 'email')
 }).unknown(true)
 
-export async function notificationHandler(request: Hapi.Request) {
+export async function notificationHandler(
+  request: Hapi.Request,
+  h: Hapi.ResponseToolkit
+) {
   const payload = request.payload as NotificationPayload
   const applicationName = await getApplicationName()
   payload.variables = { ...payload.variables, applicationName }
   switch (payload.type) {
     case 'email':
-      return sendEmail(
+      sendEmail(
         payload.templateName as EmailTemplateType,
         payload.variables,
         payload.recipient
       )
+      break
     case 'sms':
       if (SMS_PROVIDER === 'infobip') {
-        return sendSMSInfobip(
+        await sendSMSInfobip(
           payload.templateName as SMSTemplateType,
           payload.variables,
           payload.recipient,
           payload.locale
         )
       } else if (SMS_PROVIDER === 'clickatell') {
-        return sendSMSClickatell(
+        await sendSMSClickatell(
           payload.templateName as SMSTemplateType,
           payload.variables,
           payload.recipient,
@@ -89,7 +93,9 @@ export async function notificationHandler(request: Hapi.Request) {
           payload.convertUnicode
         )
       }
+      break
   }
+  return h.response().code(200)
 }
 
 async function getApplicationName() {

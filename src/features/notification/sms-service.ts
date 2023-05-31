@@ -24,6 +24,7 @@ import fetch from 'node-fetch'
 import { readFileSync } from 'fs'
 import * as Handlebars from 'handlebars'
 import { join } from 'path'
+import { internal } from '@hapi/boom'
 
 const templates = {
   birthInProgressNotification: 'birthInProgressNotification',
@@ -87,8 +88,8 @@ export async function sendSMSClickatell(
 
   const body = await res.text()
   if (body.includes('ERR')) {
-    logger.error(body)
-    throw new Error(body)
+    logger.error(`Failed to send sms to ${recipient}. Error: ${body}`)
+    throw internal('Failed to send notification', body)
   }
   logger.info('Received success response from Clickatell: Success')
 }
@@ -133,8 +134,12 @@ export async function sendSMSInfobip(
   const responseBody = await response.text()
   logger.info(`Response from Infobip: ${JSON.stringify(responseBody)}`)
   if (!response.ok) {
-    logger.error(`Failed to send sms to ${recipient}`)
-    throw new Error(`Failed to send sms to ${recipient}`)
+    logger.error(
+      `Failed to send sms to ${recipient}. Reason: ${response.text()}`
+    )
+    throw internal(
+      `Failed to send notification to ${recipient}. Reason: ${response.text()}`
+    )
   }
 }
 
