@@ -58,9 +58,11 @@
   "login.stepTwoTitle",
   "login.stepTwoResendTitle",
   "login.resendMobile",
-  "login.stepTwoInstruction",
+  "login.stepTwoInstruction.sms",
+  "login.stepTwoInstruction.email",
   "login.verify",
   "login.codeSubmissionError",
   "login.resentSMS",
+  "login.resentEMAIL",
   "login.verficationCodeLabel"
 ]
