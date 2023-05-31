@@ -8,7 +8,7 @@
         "buttons.continue": "Continue",
         "buttons.login": "Login",
         "constants.phoneNumber": "Phone number",
-        "constants.emailAddress": "Email Address",
+        "constants.emailAddress": "Email address",
         "error.networkError": "Unable to connect to server",
         "error.required.password": "Invalid password",
         "error.errorPhoneNumberNotFound": "Phone number not found",
