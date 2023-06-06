@@ -35,3 +35,5 @@ export const INFOBIP_SENDER_ID = process.env.INFOBIP_SENDER_ID_PATH
 
 export const USER_NOTIFICATION_DELIVERY_METHOD =
   process.env.USER_NOTIFICATION_DELIVERY_METHOD || 'sms'
+
+export const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY

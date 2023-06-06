@@ -13,6 +13,7 @@ import * as Hapi from '@hapi/hapi'
 import * as Joi from 'joi'
 import {
   SMSTemplateType,
+  informantTemplates,
   sendSMSClickatell,
   sendSMSInfobip
 } from './sms-service'
@@ -77,33 +78,39 @@ export async function notificationHandler(
   request: Hapi.Request,
   h: Hapi.ResponseToolkit
 ) {
-  const notificationMethod = USER_NOTIFICATION_DELIVERY_METHOD
-  const payload = request.payload as NotificationPayload
+  const { templateName, variables, recipient, locale, convertUnicode } =
+    request.payload as NotificationPayload
+
+  const isInformantNotification =
+    !templateName?.email && templateName.sms in informantTemplates
+  const notificationMethod = isInformantNotification
+    ? 'sms'
+    : USER_NOTIFICATION_DELIVERY_METHOD
+  logger.log(`Notification method is ${notificationMethod}`)
   const applicationName = await getApplicationName()
-  payload.variables = { ...payload.variables, applicationName }
   switch (notificationMethod) {
     case 'email':
-      sendEmail(
-        payload.templateName.email as EmailTemplateType,
-        payload.variables,
-        payload.recipient.email as string
+      await sendEmail(
+        templateName.email as EmailTemplateType,
+        { ...variables, applicationName },
+        recipient.email as string
       )
       break
     case 'sms':
       if (SMS_PROVIDER === 'infobip') {
         await sendSMSInfobip(
-          payload.templateName.sms as SMSTemplateType,
-          payload.variables,
-          payload.recipient.sms as string,
-          payload.locale
+          templateName.sms as SMSTemplateType,
+          { ...variables, applicationName },
+          recipient.sms as string,
+          locale
         )
       } else if (SMS_PROVIDER === 'clickatell') {
         await sendSMSClickatell(
-          payload.templateName.sms as SMSTemplateType,
-          payload.variables,
-          payload.recipient.sms as string,
-          payload.locale,
-          payload.convertUnicode
+          templateName.sms as SMSTemplateType,
+          { ...variables, applicationName },
+          recipient.sms as string,
+          locale,
+          convertUnicode
         )
       }
       break
