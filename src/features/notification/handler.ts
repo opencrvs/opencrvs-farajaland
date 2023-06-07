@@ -22,11 +22,13 @@ import {
   TemplateVariables,
   sendEmail
 } from './email-service'
-import { SMS_PROVIDER, USER_NOTIFICATION_DELIVERY_METHOD } from './constant'
-import { APPLICATION_CONFIG_URL } from '@countryconfig/constants'
-import fetch from 'node-fetch'
-import { URL } from 'url'
+import {
+  SMS_PROVIDER,
+  USER_NOTIFICATION_DELIVERY_METHOD,
+  COUNTRY_LOGO_URL
+} from './constant'
 import { logger } from '@countryconfig/logger'
+import { getApplicationConfig } from '../utils'
 
 type NotificationPayload = {
   templateName: {
@@ -40,27 +42,6 @@ type NotificationPayload = {
   locale: string
   variables: TemplateVariables
   convertUnicode?: boolean
-}
-
-interface ILoginBackground {
-  backgroundColor: string
-  backgroundImage: string
-  imageFit: string
-}
-interface ICountryLogo {
-  fileName: string
-  file: string
-}
-interface IApplicationConfig {
-  APPLICATION_NAME: string
-  COUNTRY: string
-  COUNTRY_LOGO: ICountryLogo
-  SENTRY: string
-  LOGROCKET: string
-  LOGIN_BACKGROUND: ILoginBackground
-}
-interface IApplicationConfigResponse {
-  config: IApplicationConfig
 }
 
 export const notificationScheme = Joi.object({
@@ -86,13 +67,16 @@ export async function notificationHandler(
   const notificationMethod = isInformantNotification
     ? 'sms'
     : USER_NOTIFICATION_DELIVERY_METHOD
-  logger.log(`Notification method is ${notificationMethod}`)
-  const applicationName = await getApplicationName()
+  logger.info(
+    `Notification method is ${notificationMethod} and recipient ${recipient.email}`
+  )
+  const applicationName = (await getApplicationConfig()).APPLICATION_NAME
+  const countryLogo = COUNTRY_LOGO_URL
   switch (notificationMethod) {
     case 'email':
       await sendEmail(
         templateName.email as EmailTemplateType,
-        { ...variables, applicationName },
+        { ...variables, applicationName, countryLogo },
         recipient.email as string
       )
       break
@@ -100,14 +84,14 @@ export async function notificationHandler(
       if (SMS_PROVIDER === 'infobip') {
         await sendSMSInfobip(
           templateName.sms as SMSTemplateType,
-          { ...variables, applicationName },
+          { ...variables, applicationName, countryLogo },
           recipient.sms as string,
           locale
         )
       } else if (SMS_PROVIDER === 'clickatell') {
         await sendSMSClickatell(
           templateName.sms as SMSTemplateType,
-          { ...variables, applicationName },
+          { ...variables, applicationName, countryLogo },
           recipient.sms as string,
           locale,
           convertUnicode
@@ -116,21 +100,4 @@ export async function notificationHandler(
       break
   }
   return h.response().code(200)
-}
-
-async function getApplicationName() {
-  try {
-    const configURL = new URL('publicConfig', APPLICATION_CONFIG_URL).toString()
-    const res = await fetch(configURL, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
-    const configData = (await res.json()) as IApplicationConfigResponse
-    return configData.config.APPLICATION_NAME
-  } catch (err) {
-    logger.error(`Unable to get public application config for error : ${err}`)
-    throw err
-  }
 }

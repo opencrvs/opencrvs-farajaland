@@ -14,7 +14,7 @@ import * as fs from 'fs'
 import * as Handlebars from 'handlebars'
 import { join } from 'path'
 import * as sgMail from '@sendgrid/mail'
-import { SENDGRID_API_KEY } from './constant'
+import { SENDER_EMAIL_ADDRESS, SENDGRID_API_KEY } from './constant'
 import { logger } from '@countryconfig/logger'
 sgMail.setApiKey(SENDGRID_API_KEY)
 
@@ -33,42 +33,50 @@ type OnboardingInviteVariables = {
   password: string
   applicationName: string
   completeSetupUrl: string
+  countryLogo: string
 }
 type TwoFactorAuthenticationVariables = {
   firstNames: string
   authCode: string
   applicationName: string
+  countryLogo: string
 }
 type ChangePhoneNumberVariables = {
   firstNames: string
   authCode: string
   applicationName: string
+  countryLogo: string
 }
 type ChangeEmailAddressVariables = {
   firstNames: string
   authCode: string
   applicationName: string
+  countryLogo: string
 }
 type ResetPasswordBySysAdminVariables = {
   firstNames: string
   password: string
   applicationName: string
+  countryLogo: string
 }
 type ResetPasswordVariables = {
   firstNames: string
   authCode: string
   applicationName: string
+  countryLogo: string
 }
 type UsernameReminderVariables = {
   firstNames: string
   username: string
   applicationName: string
+  countryLogo: string
 }
 
 type UsernameUpdateVariables = {
   firstNames: string
   username: string
   applicationName: string
+  countryLogo: string
 }
 
 const templates = {
@@ -96,24 +104,24 @@ const templates = {
   },
   'password-reset-by-system-admin': {
     type: 'password-reset-by-system-admin',
-    subject: 'OpenCRVS account password reset invitation',
+    subject: 'Account password reset invitation',
     template: readTemplate<ResetPasswordBySysAdminVariables>(
       'password-reset-by-system-admin'
     )
   },
   'password-reset': {
     type: 'password-reset',
-    subject: 'OpenCRVS account password reset request',
+    subject: 'Account password reset request',
     template: readTemplate<ResetPasswordVariables>('password-reset')
   },
   'username-reminder': {
     type: 'username-reminder',
-    subject: 'OpenCRV account username reminder',
+    subject: 'Account username reminder',
     template: readTemplate<UsernameReminderVariables>('username-reminder')
   },
   'username-updated': {
     type: 'username-updated',
-    subject: 'OpenCRV account username updated',
+    subject: 'Account username updated',
     template: readTemplate<UsernameUpdateVariables>('username-reminder')
   }
 }
@@ -172,13 +180,13 @@ export const sendEmail = async (
 
   const msg = {
     to: recipient,
-    from: 'team@opencrvs.org',
+    from: SENDER_EMAIL_ADDRESS,
     subject: emailSubject,
     html: emailBody
   }
 
   try {
-    logger.log(`Sending email to ${msg.to}`)
+    logger.info(`Sending email to ${msg.to}`)
     await sgMail.send(msg)
   } catch (error) {
     logger.error(`Unable to send email to ${recipient} for error : ${error}`)
