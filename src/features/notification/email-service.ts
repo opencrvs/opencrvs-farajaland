@@ -14,9 +14,12 @@ import * as fs from 'fs'
 import * as Handlebars from 'handlebars'
 import { join } from 'path'
 import * as sgMail from '@sendgrid/mail'
-import { SENDER_EMAIL_ADDRESS, SENDGRID_API_KEY } from './constant'
+import { SENDER_EMAIL_ADDRESS, EMAIL_API_KEY } from './constant'
 import { logger } from '@countryconfig/logger'
-sgMail.setApiKey(SENDGRID_API_KEY)
+
+if (EMAIL_API_KEY) {
+  sgMail.setApiKey(EMAIL_API_KEY)
+}
 
 const readTemplate = <T extends Record<string, string>>(templateName: string) =>
   Handlebars.compile<T>(

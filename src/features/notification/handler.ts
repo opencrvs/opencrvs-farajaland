@@ -68,7 +68,9 @@ export async function notificationHandler(
     ? 'sms'
     : USER_NOTIFICATION_DELIVERY_METHOD
   logger.info(
-    `Notification method is ${notificationMethod} and recipient ${recipient.email}`
+    `Notification method is ${notificationMethod} and recipient ${
+      notificationMethod === 'email' ? recipient.email : recipient.sms
+    }`
   )
   const applicationName = (await getApplicationConfig()).APPLICATION_NAME
   const countryLogo = COUNTRY_LOGO_URL
