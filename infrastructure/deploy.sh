@@ -163,11 +163,6 @@ if [ -z "$MINIO_ROOT_PASSWORD" ] ; then
     print_usage_and_exit
 fi
 
-if [ -z "$EMAIL_API_KEY" ] ; then
-    echo 'Error: Missing environment variable EMAIL_API_KEY.'
-    print_usage_and_exit
-fi
-
 if [ -z "$MONGODB_ADMIN_USER" ] ; then
     echo 'Error: Missing environment variable MONGODB_ADMIN_USER.'
     print_usage_and_exit
@@ -229,6 +224,10 @@ fi
 
 if [ -z "$NATIONAL_ID_OIDP_JWT_AUD_CLAIM" ] ; then
   echo 'Info: Missing optional National ID verification environment variable NATIONAL_ID_OIDP_CLIENT_PRIVATE_KEY'
+fi
+
+if [ -z "$EMAIL_API_KEY" ] ; then
+    echo 'Info: Missing optional environment variable EMAIL_API_KEY.'
 fi
 
 SSH_USER=${SSH_USER:-root}
