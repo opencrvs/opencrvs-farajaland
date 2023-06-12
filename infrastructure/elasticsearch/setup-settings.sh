@@ -20,4 +20,4 @@ echo "-------- $(date) --------"
 log 'Waiting for availability of Elasticsearch'
 wait_for_elasticsearch
 
-ensure_settings "{\"index\":{\"number_of_replicas\":0}}"
+ensure_settings "{\"settings\":{\"number_of_replicas\":0}}" "${SEARCH_ELASTIC_INDEX_NAME}"

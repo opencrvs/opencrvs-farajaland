@@ -203,15 +203,16 @@ function ensure_role {
 
 function ensure_settings {
   local body=$1
+  local index_name=$2
 
   local elasticsearch_host="${ELASTICSEARCH_HOST:-elasticsearch}"
 
   local -a args=( '-s' '-D-' '-m15' '-w' '%{http_code}'
-    "http://${elasticsearch_host}:9200/_settings"
+    "http://${elasticsearch_host}:9200/${index_name}"
     '-X' 'PUT'
     '-H' 'Content-Type: application/json'
     '-d' "$body"
-    )
+  )
 
   if [[ -n "${ELASTIC_PASSWORD:-}" ]]; then
     args+=( '-u' "elastic:${ELASTIC_PASSWORD}" )
