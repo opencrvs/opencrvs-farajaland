@@ -4004,7 +4004,7 @@
         "register.eventInfo.marriage.listItem0": "Je suis ici pour remplir la déclaration d'enregistrement du mariage pour vous. ",
         "register.eventInfo.marriage.listItem1": "Une fois que j'aurai complété la déclaration, elle sera envoyée au bureau d'enregistrement pour examen.",
         "register.eventInfo.marriage.listItem2": "Attendez un SMS vous indiquant quand vous rendre au bureau pour retirer le certificat - Prenez votre pièce d'identité avec vous",
-        "register.eventInfo.event.title": "Présentez le processus d'enregistrement des {eventType, select, birth{Naissance} death{Décès} other{mariage}} à l'informateur.",
+        "register.eventInfo.event.title": "Présentez le processus d'enregistrement des {eventType, select, birth{naissance} death{décès} other{mariage}} à l'informateur.",
         "register.form.informationMissing": "Informations manquantes",
         "register.form.missingFieldsDescription": "Les informations suivantes seront soumises pour validation. Veuillez vous assurer que tous les détails requis ont été remplis correctement. Il y a  {numberOfErrors} de champs obligatoires manquants dans votre formulaire :",
         "register.form.modal.areYouReadyToSubmit": "Êtes-vous prêt à soumettre ?",
