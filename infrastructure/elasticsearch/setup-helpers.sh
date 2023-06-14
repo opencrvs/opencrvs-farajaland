@@ -232,6 +232,7 @@ function ensure_settings {
   return $result
 }
 
+
 function create_elastic_index {
   local index_name=$1
   local elasticsearch_host="${ELASTICSEARCH_HOST:-elasticsearch}"
