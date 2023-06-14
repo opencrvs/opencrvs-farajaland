@@ -20,4 +20,8 @@ echo "-------- $(date) --------"
 log 'Waiting for availability of Elasticsearch'
 wait_for_elasticsearch
 
-ensure_settings "{\"settings\":{\"number_of_replicas\":0}}" "${SEARCH_ELASTIC_INDEX_NAME}"
+log "Creating index for Elasticsearch. Index: ocrvs"
+create_elastic_index "ocrvs"
+
+log "Updating replicas for Elasticsearch"
+ensure_settings "{\"index\":{\"number_of_replicas\":0}}"
