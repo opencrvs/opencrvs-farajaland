@@ -260,6 +260,20 @@ export async function createServer() {
 
   server.route({
     method: 'GET',
+    path: '/conditionals.js',
+    handler: (_, h) => {
+      const file = '/features/config/form/conditionals.js'
+      return h.file(join(__dirname, file))
+    },
+    options: {
+      auth: false,
+      tags: ['api'],
+      description: 'Serves conditionals as JS'
+    }
+  })
+
+  server.route({
+    method: 'GET',
     path: '/content/{application}',
     handler: contentHandler,
     options: {
