@@ -173,7 +173,15 @@ export const birthRegisterForms: ISerializedForm = {
           fields: [
             {
               name: 'paragraph',
-              type: 'PARAGRAPH',
+              type: 'LIST',
+              items: [
+                {
+                  defaultMessage:
+                    'I am going to help you make a declaration of birth.',
+                  description: 'Form information for birth',
+                  id: 'form.section.information.birth.bullet1'
+                }
+              ],
               label: {
                 defaultMessage:
                   'I am going to help you make a declaration of birth.',
@@ -185,7 +193,15 @@ export const birthRegisterForms: ISerializedForm = {
             },
             {
               name: 'paragraph',
-              type: 'PARAGRAPH',
+              type: 'LIST',
+              items: [
+                {
+                  defaultMessage:
+                    'As the legal Informant it is important that all the information provided by you is accurate.',
+                  description: 'Form information for birth',
+                  id: 'form.section.information.birth.bullet2'
+                }
+              ],
               label: {
                 defaultMessage:
                   'As the legal Informant it is important that all the information provided by you is accurate.',
@@ -197,7 +213,15 @@ export const birthRegisterForms: ISerializedForm = {
             },
             {
               name: 'paragraph',
-              type: 'PARAGRAPH',
+              type: 'LIST',
+              items: [
+                {
+                  defaultMessage:
+                    'Once the declaration is processed you will receive you will receive an SMS to tell you when to visit the office to collect the certificate - Take your ID with you.',
+                  description: 'Form information for birth',
+                  id: 'form.section.information.birth.bullet3'
+                }
+              ],
               label: {
                 defaultMessage:
                   'Once the declaration is processed you will receive you will receive an SMS to tell you when to visit the office to collect the certificate - Take your ID with you.',
@@ -209,7 +233,15 @@ export const birthRegisterForms: ISerializedForm = {
             },
             {
               name: 'paragraph',
-              type: 'PARAGRAPH',
+              type: 'LIST',
+              items: [
+                {
+                  defaultMessage:
+                    'Make sure you collect the certificate. A birth certificate is critical for this child, especially to make their life easy later on. It will help to access health services, school examinations and government benefits.',
+                  description: 'Form information for birth',
+                  id: 'form.section.information.birth.bullet4'
+                }
+              ],
               label: {
                 defaultMessage:
                   'Make sure you collect the certificate. A birth certificate is critical for this child, especially to make their life easy later on. It will help to access health services, school examinations and government benefits.',
