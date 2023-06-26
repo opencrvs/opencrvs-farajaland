@@ -10,10 +10,11 @@
  * graphic logo are (registered/a) trademark(s) of Plan International.
  */
 
-export const conditionals = {
-  // This is an example how you can override the conditionals found from opencrvs-core
-  iDType: {
-    action: 'hide',
-    expression: "!values.iDType || (values.iDType !== 'OTHER')"
+import { MessageDescriptor } from 'react-intl'
+import { IValidationResult } from './validations-and-conditionals'
+
+export function testValidator(input: MessageDescriptor): IValidationResult {
+  return {
+    message: input
   }
 }
