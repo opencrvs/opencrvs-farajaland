@@ -9,7 +9,7 @@
     }
   },
   "scripts": {
-    "dev": "bash dev.sh",
+    "dev": "yarn start",
     "e2e": "cypress run",
     "open:e2e": "CYPRESS_COUNTRYCONFIG_URL=http://localhost:3040/ CYPRESS_GATEWAY_URL=http://localhost:7070/ CYPRESS_LOGIN_URL=http://localhost:3020/ CYPRESS_CLIENT_URL=http://localhost:3000/ CYPRESS_AUTH_URL=http://localhost:4040/ cypress open",
     "openqa:e2e": "CYPRESS_COUNTRYCONFIG_URL=https://countryconfig.farajaland-qa.opencrvs.org/ CYPRESS_GATEWAY_URL=https://gateway.farajaland-qa.opencrvs.org/ CYPRESS_LOGIN_URL=https://login.farajaland-qa.opencrvs.org/ CYPRESS_CLIENT_URL=https://register.farajaland-qa.opencrvs.org/ CYPRESS_AUTH_URL=https://auth.farajaland-qa.opencrvs.org/ cypress open",
@@ -119,9 +119,9 @@
     "pino": "^5.14.0",
     "regex-to-strings": "^2.1.0",
     "short-uuid": "^4.1.0",
-    "ts-node": "6.1.1",
+    "ts-node": "^10.9.1",
     "tsconfig-paths": "^3.8.0",
-    "typescript": "^4.5.5",
+    "typescript": "^5.1.6",
     "uuid": "^3.3.2",
     "whatwg-fetch": "^3.0.0"
   },

@@ -11,7 +11,7 @@
  */
 
 import { MessageDescriptor } from 'react-intl'
-import { IValidationResult } from './validations-and-conditionals'
+import { IValidationResult } from './types'
 
 export function testValidator(input: MessageDescriptor): IValidationResult {
   return {

@@ -13,7 +13,7 @@
 import { MessageDescriptor } from 'react-intl'
 import { formMessageDescriptors } from '../formatjs-messages'
 import { IConditional, SerializedFormField } from '../types'
-import { hideIfInformantMotherOrFather } from '../validations-and-conditionals'
+import { hideIfInformantMotherOrFather } from './utils'
 
 export const attendantAtBirth: SerializedFormField = {
   name: 'attendantAtBirth',
@@ -260,8 +260,9 @@ export const exactDateOfBirthUnknown: SerializedFormField = {
     {
       action: 'hide',
       expression: '!window.config.DATE_OF_BIRTH_UNKNOWN || !values.detailsExist'
-    }
-  ].concat(hideIfInformantMotherOrFather),
+    },
+    ...hideIfInformantMotherOrFather
+  ],
   mapping: {
     query: {
       operation: 'booleanTransformer'

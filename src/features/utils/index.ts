@@ -177,9 +177,11 @@ export function getEventDateFromBundle(bundle: fhir.Bundle): string {
           eventDateFieldKey: 'birthDate'
         }
   const patient = findPersonEntryFromBundle(personInfo.sectionCode, bundle)
+  // @ts-ignore
   if (!patient || !patient[personInfo.eventDateFieldKey]) {
     throw new Error('Unable to find event date from given bundle')
   }
+  // @ts-ignore
   return patient[personInfo.eventDateFieldKey] as string
 }
 
@@ -336,6 +338,7 @@ export function checkDuplicate(
   inputArray: ISupportedType[]
 ): boolean {
   const valueArr = inputArray.map((item: ISupportedType) => {
+    // @ts-ignore TODO: A typing error here
     return item[propertyName]
   })
   const isDuplicate = valueArr.some((item, index) => {
