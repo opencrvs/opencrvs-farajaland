@@ -57,14 +57,9 @@ export const QUESTIONS_SOURCE = path.join(
   'src/zmb/features/forms/'
 )
 
-export const CMS_API_KEY =
-  process.env.CMS_API_KEY ||
-  (process.env.CMS_API_KEY && readFileSync(process.env.CMS_API_KEY)) ||
-  ''
 export const CONTENTFUL_SPACE_ID =
   process.env.CONTENTFUL_SPACE_ID ||
   (process.env.CONTENTFUL_SPACE_ID &&
     readFileSync(process.env.CONTENTFUL_SPACE_ID)) ||
   ''
-export const CMS = process.env.CMS // || 'contentful'
 export const DEFAULT_TIMEOUT = 600000
