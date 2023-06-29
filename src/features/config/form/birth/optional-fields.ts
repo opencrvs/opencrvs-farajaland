@@ -12,7 +12,7 @@
 
 import { MessageDescriptor } from 'react-intl'
 import { formMessageDescriptors } from '../formatjs-messages'
-import { IConditional, SerializedFormField } from '../types'
+import { Conditional, SerializedFormField } from '../types/types'
 import { hideIfInformantMotherOrFather } from './utils'
 
 export const attendantAtBirth: SerializedFormField = {
@@ -207,7 +207,7 @@ export const registrationEmail: SerializedFormField = {
 
 export const getNIDVerificationButton = (
   fieldName: string,
-  conditionals: IConditional[],
+  conditionals: Conditional[],
   validator: any[]
 ): SerializedFormField => ({
   name: fieldName,
@@ -275,7 +275,7 @@ export const exactDateOfBirthUnknown: SerializedFormField = {
 
 export const getAgeOfIndividualInYears = (
   label: MessageDescriptor,
-  conditionals: IConditional[]
+  conditionals: Conditional[]
 ): SerializedFormField => ({
   name: 'ageOfIndividualInYears',
   type: 'NUMBER',

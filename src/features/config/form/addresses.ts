@@ -15,7 +15,7 @@ import {
   SerializedFormField,
   IPreviewGroup,
   ISerializedForm
-} from './types'
+} from './types/types'
 import { formMessageDescriptors } from './formatjs-messages'
 import { MessageDescriptor } from 'react-intl'
 import {

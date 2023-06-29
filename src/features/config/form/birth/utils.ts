@@ -12,13 +12,14 @@
 
 import { sentenceCase } from '../address-utils'
 import { EventLocationAddressCases, ADMIN_LEVELS } from '../addresses'
-import { IConditional, IntegratingSystemType } from '../types'
+import { Conditional, IntegratingSystemType } from '../types/types'
+import { Validator } from '../types/validators'
 
 export const isValidChildBirthDate = [
   {
     operation: 'isValidChildBirthDate'
   }
-]
+] satisfies Validator[]
 
 export const hideIfNidIntegrationDisabled = [
   {
@@ -84,7 +85,7 @@ export const parentsBirthDateValidators = [
     operation: 'isValidParentsBirthDate',
     parameters: [5]
   }
-]
+] satisfies Validator[]
 
 export function getNationalIDValidators(configCase: string) {
   if (configCase === 'informant') {
@@ -430,9 +431,9 @@ export function getPlaceOfEventConditionals(
 
 export function getRuralOrUrbanConditionals(
   useCase: string,
-  defaultConditionals: IConditional[]
+  defaultConditionals: Conditional[]
 ) {
-  let customConditionals: IConditional[] = []
+  let customConditionals: Conditional[] = []
   switch (ADMIN_LEVELS) {
     case 1:
       customConditionals = [

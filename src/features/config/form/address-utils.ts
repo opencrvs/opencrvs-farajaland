@@ -11,7 +11,7 @@
  */
 
 import { MessageDescriptor } from 'react-intl'
-import { ISerializedForm, SerializedFormField, Event } from './types'
+import { ISerializedForm, SerializedFormField, Event } from './types/types'
 import {
   AddressCases,
   AddressCopyConfigCases,
