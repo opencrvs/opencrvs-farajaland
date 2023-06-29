@@ -10,11 +10,18 @@
  * graphic logo are (registered/a) trademark(s) of Plan International.
  */
 
-import { MessageDescriptor } from 'react-intl'
-import { IValidationResult } from './types'
+import { IFormFieldValue, ValidationResult } from './types/types'
 
-export function testValidator(input: MessageDescriptor): IValidationResult {
-  return {
-    message: input
+export function isNumberLessThan21(value: IFormFieldValue) {
+  if (Number(value) < 21) {
+    return {
+      message: {
+        defaultMessage: 'Must be less than 21',
+        description:
+          'The error message appears when the the given value is less than 21'
+      }
+    } satisfies ValidationResult
   }
+
+  return {}
 }
