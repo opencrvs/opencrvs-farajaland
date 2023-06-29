@@ -13,13 +13,41 @@
 import { MessageDescriptor } from 'react-intl'
 import * as labels from './formatjs-messages'
 import { identityTypeMapper } from './options'
-import {
-  IConditionals,
-  ValidationInitializer
-} from './validations-and-conditionals'
 
 // TODO: only list out supported mappings in core include custom form field mappings
 // replace string with the names of all the functions.
+
+export interface IConditional {
+  description?: string
+  action: string
+  expression: string
+}
+
+export interface IConditionals {
+  isDefaultCountry: IConditional
+  causeOfDeathEstablished: IConditional
+}
+export interface IValidationResult {
+  message: MessageDescriptor
+  props?: { [key: string]: any }
+}
+
+export type RangeValidation = (
+  min: number,
+  max: number
+) => (value: IFormFieldValue) => IValidationResult | undefined
+
+export type MaxLengthValidation = (
+  customisation: number
+) => (value: IFormFieldValue) => IValidationResult | undefined
+
+export type Validation = (
+  value: IFormFieldValue,
+  drafts?: IFormData,
+  offlineCountryConfig?: any
+) => IValidationResult | undefined
+
+export type ValidationInitializer = (...value: any[]) => Validation
 
 export enum Event {
   Birth = 'birth',

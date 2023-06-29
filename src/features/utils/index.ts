@@ -19,7 +19,7 @@ import { PhoneNumberFormat, PhoneNumberUtil } from 'google-libphonenumber'
 import * as bcrypt from 'bcryptjs'
 import { URL } from 'url'
 import { build } from 'esbuild'
-import { join } from 'path'
+import { memoize } from 'lodash'
 export const GENERATE_TYPE_RN = 'registrationNumber'
 export const CHILD_CODE = 'child-details'
 export const DECEASED_CODE = 'deceased-details'
@@ -428,14 +428,14 @@ export async function getApplicationConfig() {
   return configData.config
 }
 
-export const buildTypeScriptToJavaScript = async (path: string) => {
+export const buildTypeScriptToJavaScript = memoize(async (path: string) => {
   const result = await build({
     entryPoints: [path],
     write: false,
     loader: { '.ts': 'ts' },
-    format: 'cjs',
+    format: 'esm',
     platform: 'browser'
   })
 
   return result.outputFiles[0].text
-}
+})

@@ -43,34 +43,34 @@ import {
   weightAtBirth
 } from './birth/optional-fields'
 import {
-  isValidChildBirthDate,
-  informantFamilyNameConditionals,
-  informantFirstNameConditionals,
-  informantBirthDateConditionals,
-  hideIfNidIntegrationEnabled,
-  hideIfNidIntegrationDisabled,
-  mothersDetailsExistConditionals,
-  getNationalIDValidators,
-  motherNationalIDVerfication,
-  mothersBirthDateConditionals,
-  parentsBirthDateValidators,
-  motherFirstNameConditionals,
-  motherFamilyNameConditionals,
-  fatherNationalIDVerfication,
-  fatherFamilyNameConditionals,
-  fatherFirstNameConditionals,
-  fathersBirthDateConditionals,
-  fathersDetailsExistConditionals,
-  detailsExist,
-  hideIfInformantMotherOrFather,
-  exactDateOfBirthUnknownConditional
-} from './validations-and-conditionals'
-import {
   childNameInEnglish,
   fatherNameInEnglish,
   informantNameInEnglish,
   motherNameInEnglish
 } from './birth/preview-groups'
+import {
+  isValidChildBirthDate,
+  informantFirstNameConditionals,
+  hideIfInformantMotherOrFather,
+  informantFamilyNameConditionals,
+  informantBirthDateConditionals,
+  exactDateOfBirthUnknownConditional,
+  hideIfNidIntegrationEnabled,
+  getNationalIDValidators,
+  hideIfNidIntegrationDisabled,
+  mothersDetailsExistConditionals,
+  mothersBirthDateConditionals,
+  parentsBirthDateValidators,
+  detailsExist,
+  motherFirstNameConditionals,
+  motherFamilyNameConditionals,
+  motherNationalIDVerfication,
+  fathersDetailsExistConditionals,
+  fathersBirthDateConditionals,
+  fatherFirstNameConditionals,
+  fatherFamilyNameConditionals,
+  fatherNationalIDVerfication
+} from './birth/utils'
 
 export const birthRegisterForms: ISerializedForm = {
   sections: [

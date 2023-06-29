@@ -19,8 +19,7 @@ import {
   formMessageDescriptors,
   informantMessageDescriptors
 } from '../formatjs-messages'
-import { SerializedFormField } from '../types'
-import { IConditional } from '../validations-and-conditionals'
+import { IConditional, SerializedFormField } from '../types'
 
 export const getBirthDate = (
   fieldName: string,
