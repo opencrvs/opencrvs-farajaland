@@ -22,7 +22,7 @@ import {
 import { Conditional, SerializedFormField } from '../types/types'
 import { Validator } from '../types/validators'
 
-export const birthDate = (
+export const getBirthDate = (
   fieldName: string,
   conditionals: Conditional[],
   validator: Validator[],
@@ -53,7 +53,7 @@ export const birthDate = (
     }
   } satisfies SerializedFormField)
 
-export const gender = (certificateHandlebar: string) =>
+export const getGender = (certificateHandlebar: string) =>
   ({
     name: 'gender', // A field with this name MUST exist
     type: 'SELECT_WITH_OPTIONS',
@@ -84,7 +84,7 @@ export const gender = (certificateHandlebar: string) =>
     ]
   } satisfies SerializedFormField)
 
-export const familyName = (
+export const getFamilyName = (
   previewGroup: string,
   conditionals: Conditional[],
   certificateHandlebar: string
@@ -120,7 +120,7 @@ export const familyName = (
     }
   } satisfies SerializedFormField)
 
-export const firstName = (
+export const getFirstName = (
   previewGroup: string,
   conditionals: Conditional[],
   certificateHandlebar: string
@@ -160,7 +160,7 @@ export const firstName = (
     }
   } satisfies SerializedFormField)
 
-export const nationality = (
+export const getNationality = (
   certificateHandlebar: string,
   conditionals: Conditional[]
 ) =>
@@ -196,7 +196,7 @@ export const nationality = (
     }
   } satisfies SerializedFormField)
 
-export const nationalId = (
+export const getNationalId = (
   fieldName: string,
   conditionals: Conditional[],
   validator: any[],
@@ -227,7 +227,7 @@ export const nationalId = (
     }
   } satisfies SerializedFormField)
 
-export const placeOfBirth = () =>
+export const getPlaceOfBirth = () =>
   [
     {
       name: 'placeOfBirthTitle',
@@ -430,7 +430,7 @@ export const getDetailsExist = (
     }
   } satisfies SerializedFormField)
 
-export const reasonNotExisting = (certificateHandlebar: string) =>
+export const getReasonNotExisting = (certificateHandlebar: string) =>
   ({
     name: 'reasonNotApplying',
     conditionals: [

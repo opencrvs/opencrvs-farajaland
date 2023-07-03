@@ -17,14 +17,14 @@ import {
 } from './options'
 import { formMessageDescriptors } from './formatjs-messages'
 import {
-  birthDate,
+  getBirthDate,
   getDetailsExist,
-  familyName,
-  firstName,
-  gender,
-  nationalId,
-  nationality,
-  reasonNotExisting,
+  getFamilyName,
+  getFirstName,
+  getGender,
+  getNationalId,
+  getNationality,
+  getReasonNotExisting,
   informantType,
   otherInformantType
 } from './birth/required-fields'
@@ -232,10 +232,15 @@ export const birthRegisterForms: ISerializedForm = {
         {
           id: 'child-view-group',
           fields: [
-            firstName('childNameInEnglish', [], 'childFirstName'), // Required field.  Names in Latin characters must be provided for international passport
-            familyName('childNameInEnglish', [], 'childFamilyName'), // Required field.  Names in Latin characters must be provided for international passport
-            gender('childGender'), // Required field.
-            birthDate('childBirthDate', [], isValidChildBirthDate, 'eventDate'), // Required field.
+            getFirstName('childNameInEnglish', [], 'childFirstName'), // Required field.  Names in Latin characters must be provided for international passport
+            getFamilyName('childNameInEnglish', [], 'childFamilyName'), // Required field.  Names in Latin characters must be provided for international passport
+            getGender('childGender'), // Required field.
+            getBirthDate(
+              'childBirthDate',
+              [],
+              isValidChildBirthDate,
+              'eventDate'
+            ), // Required field.
             {
               name: 'seperator',
               type: 'SUBSECTION',
@@ -281,21 +286,21 @@ export const birthRegisterForms: ISerializedForm = {
             otherInformantType, // Required field.
             registrationPhone,
             registrationEmail,
-            firstName(
+            getFirstName(
               'informantNameInEnglish',
               informantFirstNameConditionals.concat(
                 hideIfInformantMotherOrFather
               ),
               'informantFirstName'
             ), // Required field. In Farajaland, we have built the option to integrate with MOSIP. So we have different conditionals for each name to check MOSIP responses.  You could always refactor firstNamesEng for a basic setup
-            familyName(
+            getFamilyName(
               'informantNameInEnglish',
               informantFamilyNameConditionals.concat(
                 hideIfInformantMotherOrFather
               ),
               'informantFamilyName'
             ), // Required field.
-            birthDate(
+            getBirthDate(
               'informantBirthDate',
               informantBirthDateConditionals.concat(
                 hideIfInformantMotherOrFather
@@ -310,8 +315,11 @@ export const birthRegisterForms: ISerializedForm = {
                 hideIfInformantMotherOrFather
               )
             ),
-            nationality('informantNationality', hideIfInformantMotherOrFather),
-            nationalId(
+            getNationality(
+              'informantNationality',
+              hideIfInformantMotherOrFather
+            ),
+            getNationalId(
               'informantID',
               hideIfNidIntegrationEnabled.concat(hideIfInformantMotherOrFather),
               getNationalIDValidators('informant'),
@@ -350,8 +358,8 @@ export const birthRegisterForms: ISerializedForm = {
               formMessageDescriptors.mothersDetailsExist,
               mothersDetailsExistConditionals
             ), // Strongly recommend is required if you want to register abandoned / orphaned children!
-            reasonNotExisting('motherReasonNotApplying'), // Strongly recommend is required if you want to register abandoned / orphaned children!
-            birthDate(
+            getReasonNotExisting('motherReasonNotApplying'), // Strongly recommend is required if you want to register abandoned / orphaned children!
+            getBirthDate(
               'motherBirthDate',
               mothersBirthDateConditionals,
               parentsBirthDateValidators,
@@ -362,18 +370,18 @@ export const birthRegisterForms: ISerializedForm = {
               formMessageDescriptors.ageOfMother,
               detailsExist
             ),
-            firstName(
+            getFirstName(
               'motherNameInEnglish',
               motherFirstNameConditionals,
               'motherFirstName'
             ), // Required field. In Farajaland, we have built the option to integrate with MOSIP. So we have different conditionals for each name to check MOSIP responses.  You could always refactor firstNamesEng for a basic setup
-            familyName(
+            getFamilyName(
               'motherNameInEnglish',
               motherFamilyNameConditionals,
               'motherFamilyName'
             ), // Required field.
-            nationality('motherNationality', detailsExist), // Required field.
-            nationalId(
+            getNationality('motherNationality', detailsExist), // Required field.
+            getNationalId(
               'iD',
               hideIfNidIntegrationEnabled.concat(detailsExist),
               getNationalIDValidators('mother'),
@@ -437,8 +445,8 @@ export const birthRegisterForms: ISerializedForm = {
               formMessageDescriptors.fathersDetailsExist,
               fathersDetailsExistConditionals
             ), // Strongly recommend is required if you want to register abandoned / orphaned children!
-            reasonNotExisting('fatherReasonNotApplying'), // Strongly recommend is required if you want to register abandoned / orphaned children!
-            birthDate(
+            getReasonNotExisting('fatherReasonNotApplying'), // Strongly recommend is required if you want to register abandoned / orphaned children!
+            getBirthDate(
               'fatherBirthDate',
               fathersBirthDateConditionals,
               parentsBirthDateValidators,
@@ -449,18 +457,18 @@ export const birthRegisterForms: ISerializedForm = {
               formMessageDescriptors.ageOfFather,
               detailsExist
             ),
-            firstName(
+            getFirstName(
               'fatherNameInEnglish',
               fatherFirstNameConditionals,
               'fatherFirstName'
             ), // Required field. In Farajaland, we have built the option to integrate with MOSIP. So we have different conditionals for each name to check MOSIP responses.  You could always refactor firstNamesEng for a basic setup
-            familyName(
+            getFamilyName(
               'fatherNameInEnglish',
               fatherFamilyNameConditionals,
               'fatherFamilyName'
             ), // Required field.
-            nationality('fatherNationality', detailsExist), // Required field.
-            nationalId(
+            getNationality('fatherNationality', detailsExist), // Required field.
+            getNationalId(
               'iD',
               hideIfNidIntegrationEnabled.concat(detailsExist),
               getNationalIDValidators('father'),
