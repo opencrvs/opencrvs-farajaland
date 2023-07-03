@@ -173,7 +173,7 @@ export const birthRegisterForms: ISerializedForm = {
           fields: [
             {
               name: 'list',
-              type: 'LIST',
+              type: 'BULLET_LIST',
               items: [
                 {
                   defaultMessage:
