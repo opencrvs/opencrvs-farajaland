@@ -892,7 +892,7 @@ export const deathRegisterForms = {
               mapping: {
                 mutation: {
                   operation: 'deathEventLocationMutationTransformer',
-                  parameters: []
+                  parameters: [{}]
                 },
                 query: {
                   operation: 'eventLocationTypeQueryTransformer',
@@ -936,7 +936,7 @@ export const deathRegisterForms = {
                 },
                 mutation: {
                   operation: 'deathEventLocationMutationTransformer',
-                  parameters: []
+                  parameters: [{}]
                 },
                 query: {
                   operation: 'eventLocationIDQueryTransformer',

@@ -12,20 +12,15 @@
 
 import { MessageDescriptor } from 'react-intl'
 import {
-  getPlaceOfEventAddressFields,
-  EventLocationAddressCases
-} from '../addresses'
-import {
   formMessageDescriptors,
   informantMessageDescriptors
 } from '../formatjs-messages'
 import { Conditional, SerializedFormField } from '../types/types'
-import { Validator } from '../types/validators'
 
 export const getBirthDate = (
   fieldName: string,
   conditionals: Conditional[],
-  validator: Validator[],
+  validator: any[],
   certificateHandlebar: string
 ) =>
   ({
@@ -53,7 +48,7 @@ export const getBirthDate = (
     }
   } satisfies SerializedFormField)
 
-export const getGender = (certificateHandlebar: string) =>
+export const getGender = (certificateHandlebar: string): SerializedFormField =>
   ({
     name: 'gender', // A field with this name MUST exist
     type: 'SELECT_WITH_OPTIONS',
@@ -84,7 +79,7 @@ export const getGender = (certificateHandlebar: string) =>
     ]
   } satisfies SerializedFormField)
 
-export const getFamilyName = (
+export const getFamilyNameField = (
   previewGroup: string,
   conditionals: Conditional[],
   certificateHandlebar: string
@@ -120,7 +115,7 @@ export const getFamilyName = (
     }
   } satisfies SerializedFormField)
 
-export const getFirstName = (
+export const getFirstNameField = (
   previewGroup: string,
   conditionals: Conditional[],
   certificateHandlebar: string
@@ -177,11 +172,10 @@ export const getNationality = (
     },
     conditionals: [
       {
-        action: 'hide' as const,
+        action: 'hide',
         expression: '!values.detailsExist'
-      },
-      ...conditionals
-    ],
+      }
+    ].concat(conditionals),
     mapping: {
       template: {
         fieldName: certificateHandlebar,
@@ -196,7 +190,7 @@ export const getNationality = (
     }
   } satisfies SerializedFormField)
 
-export const getNationalId = (
+export const getNationalID = (
   fieldName: string,
   conditionals: Conditional[],
   validator: any[],
@@ -227,7 +221,7 @@ export const getNationalId = (
     }
   } satisfies SerializedFormField)
 
-export const getPlaceOfBirth = () =>
+export const getPlaceOfBirthFields = () =>
   [
     {
       name: 'placeOfBirthTitle',
@@ -265,7 +259,7 @@ export const getPlaceOfBirth = () =>
       mapping: {
         mutation: {
           operation: 'birthEventLocationMutationTransformer',
-          parameters: []
+          parameters: [{}]
         },
         query: {
           operation: 'eventLocationTypeQueryTransformer',
@@ -304,15 +298,14 @@ export const getPlaceOfBirth = () =>
         },
         mutation: {
           operation: 'birthEventLocationMutationTransformer',
-          parameters: []
+          parameters: [{}]
         },
         query: {
           operation: 'eventLocationIDQueryTransformer',
           parameters: []
         }
       }
-    },
-    ...getPlaceOfEventAddressFields(EventLocationAddressCases.PLACE_OF_BIRTH)
+    }
   ] satisfies SerializedFormField[]
 
 export const informantType = {

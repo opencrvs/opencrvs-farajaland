@@ -66,6 +66,11 @@ type ISubMapper = {
   parameters?: (string | number)[]
 }
 
+type IAddressLineMapper = {
+  transformedFieldName?: string
+  lineNumber?: number
+}
+
 type IQueryMapper = {
   operation: string
   parameters?: (
@@ -74,12 +79,20 @@ type IQueryMapper = {
     | (string | number | IIgnoreFields)
     | ISubMapper
     | string[]
+    | IAddressLineMapper
   )[]
 }
 
 type IMutationMapper = {
   operation: string
-  parameters?: (string | number | (string | number) | ISubMapper | string[])[]
+  parameters?: (
+    | string
+    | number
+    | (string | number)
+    | ISubMapper
+    | IAddressLineMapper
+    | string[]
+  )[]
 }
 
 export type ISectionMapping = {
