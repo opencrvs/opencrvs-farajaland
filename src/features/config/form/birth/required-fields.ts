@@ -12,10 +12,6 @@
 
 import { MessageDescriptor } from 'react-intl'
 import {
-  getPlaceOfEventAddressFields,
-  EventLocationAddressCases
-} from '../addresses'
-import {
   formMessageDescriptors,
   informantMessageDescriptors
 } from '../formatjs-messages'
@@ -259,7 +255,7 @@ export const getPlaceOfBirthFields = (): SerializedFormField[] => [
     mapping: {
       mutation: {
         operation: 'birthEventLocationMutationTransformer',
-        parameters: []
+        parameters: [{}]
       },
       query: {
         operation: 'eventLocationTypeQueryTransformer',
@@ -298,15 +294,14 @@ export const getPlaceOfBirthFields = (): SerializedFormField[] => [
       },
       mutation: {
         operation: 'birthEventLocationMutationTransformer',
-        parameters: []
+        parameters: [{}]
       },
       query: {
         operation: 'eventLocationIDQueryTransformer',
         parameters: []
       }
     }
-  },
-  ...getPlaceOfEventAddressFields(EventLocationAddressCases.PLACE_OF_BIRTH)
+  }
 ]
 
 export const informantType: SerializedFormField = {
