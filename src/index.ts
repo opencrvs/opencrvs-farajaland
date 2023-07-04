@@ -44,6 +44,7 @@ import { ErrorContext } from 'hapi-auth-jwt2'
 import { mapGeojsonHandler } from '@countryconfig/features/map/handler'
 import { formHandler } from '@countryconfig/features/config/form'
 import { countryLogoHandler } from '@countryconfig/features/countryLogo/handler'
+import { locationsHandler } from './features/locations/handler'
 
 export interface ITokenPayload {
   sub: string
@@ -386,6 +387,17 @@ export async function createServer() {
     options: {
       tags: ['api'],
       description: 'Handles submission of mosip generaed NID'
+    }
+  })
+
+  server.route({
+    method: 'GET',
+    path: '/locations',
+    handler: locationsHandler,
+    options: {
+      auth: false,
+      tags: ['api', 'locations'],
+      description: 'Returns the locations metadata'
     }
   })
 

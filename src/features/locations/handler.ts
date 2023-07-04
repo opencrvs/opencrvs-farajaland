@@ -1,0 +1,102 @@
+/*
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ *
+ * OpenCRVS is also distributed under the terms of the Civil Registration
+ * & Healthcare Disclaimer located at http://opencrvs.org/license.
+ *
+ * Copyright (C) The OpenCRVS Authors. OpenCRVS and the OpenCRVS
+ * graphic logo are (registered/a) trademark(s) of Plan International.
+ */
+import { readCSVToJSON } from '@countryconfig/features/utils'
+import { Request, ResponseToolkit } from '@hapi/hapi'
+
+type HumdataLocation = {
+  admin0Pcode: string
+  admin0Name_en: string
+  admin0Name_alias?: string
+
+  admin1Pcode?: string
+  admin1Name_en?: string
+  admin1Name_alias?: string
+
+  admin2Pcode?: string
+  admin2Name_en?: string
+  admin2Name_alias?: string
+
+  admin3Pcode?: string
+  admin3Name_en?: string
+  admin3Name_alias?: string
+
+  admin4Pcode?: string
+  admin4Name_en?: string
+  admin4Name_alias?: string
+}
+
+type Facility = {
+  id: string
+  name: string
+  partOf: string
+  code: 'HEALTH_FACILITY' | 'CRVS_OFFICE'
+}
+
+type Location = {
+  statisticalID: string
+  name: string
+  alias: string
+  partOf: string
+  code: 'ADMIN_STRUCTURE' | 'HEALTH_FACILITY' | 'CRVS_OFFICE'
+  physicalType: 'Jurisdiction' | 'Building'
+  jurisdictionType?: typeof JURISDICTION_TYPE[number]
+}
+
+const JURISDICTION_TYPE = [
+  'STATE',
+  'DISTRICT',
+  'LOCATION_LEVEL_3',
+  'LOCATION_LEVEL_4',
+  'LOCATION_LEVEL_5'
+] as const
+
+export async function locationsHandler(_: Request, h: ResponseToolkit) {
+  const [humdataLocations, healthFacilities, crvsFacilities] =
+    await Promise.all([
+      readCSVToJSON<HumdataLocation[]>(
+        './src/features/locations/locations.csv'
+      ),
+      readCSVToJSON<Facility[]>(
+        './src/features/locations/health-facilities.csv'
+      ),
+      readCSVToJSON<Facility[]>('./src/features/locations/crvs-facilities.csv')
+    ])
+  const locations = new Set<Location>()
+  humdataLocations.forEach((humdataLocation) => {
+    ;([1, 2, 3, 4] as const).forEach((locationLevel) => {
+      if (humdataLocation[`admin${locationLevel}Pcode`]) {
+        locations.add({
+          statisticalID: humdataLocation[`admin${locationLevel}Pcode`]!,
+          name: humdataLocation[`admin${locationLevel}Name_en`]!,
+          alias: humdataLocation[`admin${locationLevel}Name_alias`]!,
+          partOf:
+            locationLevel == 1
+              ? 'Location/0'
+              : `Location/${humdataLocation[`admin${locationLevel - 1}Pcode`]}`,
+          code: 'ADMIN_STRUCTURE',
+          physicalType: 'Jurisdiction',
+          jurisdictionType: JURISDICTION_TYPE[locationLevel - 1]
+        })
+      }
+    })
+  })
+  ;[...healthFacilities, ...crvsFacilities]
+    .map(({ id, ...rest }) => ({ statisticalID: id, ...rest }))
+    .forEach((healthFacility) => {
+      locations.add({
+        ...healthFacility,
+        alias: healthFacility.name,
+        physicalType: 'Building'
+      })
+    })
+  return h.response(Array.from(locations))
+}
