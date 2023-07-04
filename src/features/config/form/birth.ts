@@ -274,13 +274,6 @@ export const birthRegisterForms: ISerializedForm = {
       groups: [
         {
           id: 'informant-view-group',
-          conditionals: [
-            {
-              action: 'hide',
-              expression:
-                "(draftData && draftData.registration && draftData.registration.informantType && selectedInformantAndContactType.selectedInformantType && (selectedInformantAndContactType.selectedInformantType === 'MOTHER' || selectedInformantAndContactType.selectedInformantType === 'FATHER'))"
-            }
-          ],
           fields: [
             informantType, // Required field.
             otherInformantType, // Required field.
