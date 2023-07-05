@@ -44,6 +44,7 @@ import { ErrorContext } from 'hapi-auth-jwt2'
 import { mapGeojsonHandler } from '@countryconfig/features/map/handler'
 import { formHandler } from '@countryconfig/features/config/form'
 import { countryLogoHandler } from '@countryconfig/features/countryLogo/handler'
+import { certificateHandler } from './features/certificates/handler'
 
 export interface ITokenPayload {
   sub: string
@@ -386,6 +387,17 @@ export async function createServer() {
     options: {
       tags: ['api'],
       description: 'Handles submission of mosip generaed NID'
+    }
+  })
+
+  server.route({
+    method: 'GET',
+    path: '/certificates',
+    handler: certificateHandler,
+    options: {
+      auth: false,
+      tags: ['api', 'certificates'],
+      description: 'Returns certificate metadata'
     }
   })
 
