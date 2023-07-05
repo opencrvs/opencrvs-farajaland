@@ -48,7 +48,7 @@ const nidIntegrationConditionals = {
 export const deathRegisterForms: ISerializedForm = {
   sections: [
     {
-      id: 'registration', // A hidden 'registration' section must be included to store identifiers in a form draft that are used in certificates
+      id: 'registration',
       viewType: 'hidden',
       name: {
         defaultMessage: 'Registration',
@@ -65,14 +65,6 @@ export const deathRegisterForms: ISerializedForm = {
           {
             fieldName: 'qrCode',
             operation: 'QRCodeTransformerTransformer'
-          },
-          {
-            fieldName: 'mosipAid',
-            operation: 'mosipAidTransformer'
-          },
-          {
-            fieldName: 'mosipAIDLabel',
-            operation: 'mosipAidLabelTransformer'
           },
           {
             fieldName: 'certificateDate',
@@ -133,14 +125,14 @@ export const deathRegisterForms: ISerializedForm = {
           id: 'information-group',
           title: {
             defaultMessage:
-              'Introduce the birth registration process to the informant',
+              'Introduce the death registration process to the informant',
             description: 'Event information title for the birth',
-            id: 'register.eventInfo.birth.title'
+            id: 'register.eventInfo.death.title'
           },
           conditionals: [
             {
               action: 'hide',
-              expression: 'window.config.HIDE_BIRTH_EVENT_REGISTER_INFORMATION'
+              expression: 'window.config.HIDE_DEATH_EVENT_REGISTER_INFORMATION'
             }
           ],
           fields: [
@@ -150,30 +142,29 @@ export const deathRegisterForms: ISerializedForm = {
               items: [
                 {
                   defaultMessage:
-                    'I am going to help you make a declaration of birth.',
+                    'I am going to help you make a declaration of death.',
                   description: 'Form information for birth',
-                  id: 'form.section.information.birth.bullet1'
+                  id: 'form.section.information.death.bullet1'
                 },
                 {
                   defaultMessage:
                     'As the legal Informant it is important that all the information provided by you is accurate.',
                   description: 'Form information for birth',
-                  id: 'form.section.information.birth.bullet2'
+                  id: 'form.section.information.death.bullet2'
                 },
                 {
                   defaultMessage:
                     'Once the declaration is processed you will receive you will receive an SMS to tell you when to visit the office to collect the certificate - Take your ID with you.',
                   description: 'Form information for birth',
-                  id: 'form.section.information.birth.bullet3'
+                  id: 'form.section.information.death.bullet3'
                 },
                 {
                   defaultMessage:
-                    'Make sure you collect the certificate. A birth certificate is critical for this child, especially to make their life easy later on. It will help to access health services, school examinations and government benefits.',
+                    'Make sure you collect the certificate. A death certificate is critical to support with inheritance claims and to resolve the affairs of the deceased e.g. closing bank accounts and setting loans.',
                   description: 'Form information for birth',
-                  id: 'form.section.information.birth.bullet4'
+                  id: 'form.section.information.death.bullet4'
                 }
               ],
-              // this is to set the title of the page
               label: {
                 id: 'register.eventInfo.death.title'
               },
@@ -185,7 +176,7 @@ export const deathRegisterForms: ISerializedForm = {
       ]
     },
     {
-      id: 'registration',
+      id: 'applicant',
       viewType: 'form',
       name: formMessageDescriptors.registrationName,
       title: formMessageDescriptors.registrationTitle,
@@ -411,62 +402,7 @@ export const deathRegisterForms: ISerializedForm = {
             }
           ]
         }
-      ],
-      mapping: {
-        template: [
-          {
-            fieldName: 'registrationNumber',
-            operation: 'registrationNumberTransformer'
-          },
-          {
-            fieldName: 'qrCode',
-            operation: 'QRCodeTransformerTransformer'
-          },
-          {
-            fieldName: 'certificateDate',
-            operation: 'certificateDateTransformer',
-            parameters: ['en', 'dd MMMM yyyy']
-          },
-          {
-            fieldName: 'registrar',
-            operation: 'userTransformer',
-            parameters: ['REGISTERED']
-          },
-          {
-            fieldName: 'registrationAgent',
-            operation: 'userTransformer',
-            parameters: ['VALIDATED']
-          },
-          // backward compatibility
-          {
-            fieldName: 'registrarName',
-            operation: 'registrarNameUserTransformer'
-          },
-          {
-            fieldName: 'role',
-            operation: 'roleUserTransformer'
-          },
-          {
-            fieldName: 'registrarSignature',
-            operation: 'registrarSignatureUserTransformer'
-          },
-          {
-            fieldName: 'registrationDate',
-            operation: 'registrationDateTransformer',
-            parameters: ['en', 'dd MMMM yyyy']
-          },
-          {
-            fieldName: 'registrationLocation',
-            operation: 'registrationLocationUserTransformer'
-          }
-        ],
-        mutation: {
-          operation: 'setDeathRegistrationSectionTransformer'
-        },
-        query: {
-          operation: 'getDeathRegistrationSectionTransformer'
-        }
-      }
+      ]
     },
     {
       id: 'deceased',

@@ -1219,6 +1219,10 @@
         "form.section.information.birth.bullet2": "As the legal Informant it is important that all the information provided by you is accurate.",
         "form.section.information.birth.bullet3": "Once the declaration is processed you will receive you will receive an SMS to tell you when to visit the office to collect the certificate - Take your ID with you.",
         "form.section.information.birth.bullet4": "Make sure you collect the certificate. A birth certificate is critical for this child, especially to make their life easy later on. It will help to access health services, school examinations and government benefits.",
+        "form.section.information.death.bullet1": "I am going to help you make a declaration of death.",
+        "form.section.information.death.bullet2": "As the legal Informant it is important that all the information provided by you is accurate.",
+        "form.section.information.death.bullet3": "Once the declaration is processed you will receive you will receive an SMS to tell you when to visit the office to collect the certificate - Take your ID with you.",
+        "form.section.information.death.bullet4": "Make sure you collect the certificate. A death certificate is critical to support with inheritance claims and to resolve the affairs of the deceased e.g. closing bank accounts and setting loans.",
         "form.section.declaration.title": "Declaration details",
         "form.section.documents.birth.requirements": "The following documents are required",
         "form.section.documents.list.attestedBirthRecord": "Attested copy of hospital document or birth record, or",
@@ -1672,10 +1676,7 @@
         "register.eventInfo.birth.title": "Introduce the birth registration process to the informant",
         "register.eventInfo.death.title": "Introduce the death registration process to the informant",
         "register.eventInfo.marriage.title": "Introduce the marriage registration process to the informant",
-        
-        
-        
-        
+
         "register.form.informationMissing": "Information missing",
         "register.form.missingFieldsDescription": "The following information will be submitted for validation. Please\n    make sure all required details have been filled in correctly. There\n    are {numberOfErrors} missing mandatory fields in your form:",
         "register.form.modal.areYouReadyToSubmit": "Are you ready to submit?",
@@ -3062,7 +3063,7 @@
         "form.field.label.fetchRegistrationModalErrorText": "Aucun enregistrement trouvé pour le BRN fourni",
         "form.field.label.fetchRegistrationModalInfo": "Numéro d'enregistrement de naissance",
         "form.field.label.fileUploadError": "{type} supporté uniquement",
-        "form.field.label.fileSizeError" : "La taille du fichier doit être inférieure à 2 Mo",
+        "form.field.label.fileSizeError": "La taille du fichier doit être inférieure à 2 Mo",
         "form.field.label.firstName": "Prénom",
         "form.field.label.firstNames": "Prénom(s)",
         "form.field.label.firstNameEN": "Prénom anglais",
@@ -3292,6 +3293,10 @@
         "form.section.information.birth.bullet2": "En tant qu'informateur légal, il est important que toutes les informations que vous fournissez soient exactes.",
         "form.section.information.birth.bullet3": "Une fois la déclaration traitée, vous recevrez un SMS vous indiquant quand vous rendre au bureau pour retirer le certificat - Munissez-vous d'une pièce d'identité.",
         "form.section.information.birth.bullet4": "Veillez à récupérer le certificat. Un certificat de naissance est essentiel pour cet enfant, notamment pour lui faciliter la vie plus tard. Il l'aidera à accéder aux services de santé, aux examens scolaires et aux prestations de l'État.",
+        "form.section.information.death.bullet1": "Je vais vous aider à faire une déclaration de décès.",
+        "form.section.information.death.bullet2": "En tant qu'informateur légal, il est important que toutes les informations que vous fournissez soient exactes.",
+        "form.section.information.death.bullet3": "Une fois la déclaration traitée, vous recevrez un SMS vous indiquant quand vous rendre au bureau pour retirer le certificat - Munissez-vous d'une pièce d'identité.",
+        "form.section.information.death.bullet4": "Veillez à récupérer le certificat. Le certificat de décès est essentiel pour les demandes d'héritage et pour régler les affaires de la personne décédée, par exemple la fermeture des comptes bancaires et la mise en place des prêts.",
         "form.section.declaration.title": "Détails de la déclaration",
         "form.section.documents.birth.requirements": "Pour l'enregistrement de la naissance, les documents suivants sont requis :",
         "form.section.documents.list.attestedBirthRecord": "Copie certifiée conforme du document de l'hôpital ou de l'acte de naissance, ou",
