@@ -11,15 +11,9 @@
  */
 
 import { MessageDescriptor } from 'react-intl'
-import {
-  formMessageDescriptors,
-  informantMessageDescriptors
-} from '../formatjs-messages'
+import { formMessageDescriptors } from '../formatjs-messages'
 import { SerializedFormField } from '../types'
-import {
-  IConditional,
-  hideIfInformantMotherOrFather
-} from '../validations-and-conditionals'
+import { IConditional } from '../validations-and-conditionals'
 
 export const getPlaceOfBirthFields = (): SerializedFormField[] => [
   {
