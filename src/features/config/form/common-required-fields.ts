@@ -10,75 +10,12 @@
  * graphic logo are (registered/a) trademark(s) of Plan International.
  */
 
-import { MessageDescriptor } from 'react-intl'
 import {
   formMessageDescriptors,
   informantMessageDescriptors
-} from '../formatjs-messages'
-import { SerializedFormField } from '../types'
-import { IConditional } from '../validations-and-conditionals'
-
-export const getBirthDate = (
-  fieldName: string,
-  conditionals: IConditional[],
-  validator: any[],
-  certificateHandlebar: string
-): SerializedFormField => ({
-  name: fieldName, // A field with this name MUST exist
-  type: 'DATE',
-  label: formMessageDescriptors.dateOfBirth,
-  required: true,
-  conditionals,
-  initialValue: '',
-  validator,
-  mapping: {
-    template: {
-      operation: 'dateFormatTransformer',
-      fieldName: certificateHandlebar,
-      parameters: ['birthDate', 'en', 'do MMMM yyyy']
-    },
-    mutation: {
-      operation: 'longDateTransformer',
-      parameters: ['birthDate']
-    },
-    query: {
-      operation: 'fieldValueTransformer',
-      parameters: ['birthDate']
-    }
-  }
-})
-
-export const getGender = (
-  certificateHandlebar: string
-): SerializedFormField => ({
-  name: 'gender', // A field with this name MUST exist
-  type: 'SELECT_WITH_OPTIONS',
-  label: formMessageDescriptors.sex,
-  required: true,
-  initialValue: '',
-  validator: [],
-  placeholder: formMessageDescriptors.formSelectPlaceholder,
-  mapping: {
-    template: {
-      fieldName: certificateHandlebar,
-      operation: 'selectTransformer'
-    }
-  },
-  options: [
-    {
-      value: 'male',
-      label: formMessageDescriptors.sexMale
-    },
-    {
-      value: 'female',
-      label: formMessageDescriptors.sexFemale
-    },
-    {
-      value: 'unknown',
-      label: formMessageDescriptors.sexUnknown
-    }
-  ]
-})
+} from './formatjs-messages'
+import { SerializedFormField } from './types'
+import { IConditional } from './validations-and-conditionals'
 
 export const getFamilyNameField = (
   previewGroup: string,
@@ -218,92 +155,6 @@ export const getNationalID = (
   }
 })
 
-export const getPlaceOfBirthFields = (): SerializedFormField[] => [
-  {
-    name: 'placeOfBirthTitle',
-    type: 'SUBSECTION',
-    label: formMessageDescriptors.placeOfBirthPreview,
-    previewGroup: 'placeOfBirth',
-    ignoreBottomMargin: true,
-    initialValue: '',
-    validator: []
-  },
-  {
-    name: 'placeOfBirth',
-    type: 'SELECT_WITH_OPTIONS',
-    previewGroup: 'placeOfBirth',
-    ignoreFieldLabelOnErrorMessage: true,
-    label: formMessageDescriptors.placeOfBirth,
-    required: true,
-    initialValue: '',
-    validator: [],
-    placeholder: formMessageDescriptors.formSelectPlaceholder,
-    options: [
-      {
-        value: 'HEALTH_FACILITY',
-        label: formMessageDescriptors.healthInstitution
-      },
-      {
-        value: 'PRIVATE_HOME',
-        label: formMessageDescriptors.privateHome
-      },
-      {
-        value: 'OTHER',
-        label: formMessageDescriptors.otherInstitution
-      }
-    ],
-    mapping: {
-      mutation: {
-        operation: 'birthEventLocationMutationTransformer',
-        parameters: [{}]
-      },
-      query: {
-        operation: 'eventLocationTypeQueryTransformer',
-        parameters: []
-      }
-    }
-  },
-  {
-    name: 'birthLocation',
-    type: 'LOCATION_SEARCH_INPUT',
-    label: formMessageDescriptors.healthInstitution,
-    previewGroup: 'placeOfBirth',
-    required: true,
-    initialValue: '',
-    searchableResource: ['facilities'],
-    searchableType: ['HEALTH_FACILITY'],
-    dynamicOptions: {
-      resource: 'facilities'
-    },
-    validator: [
-      {
-        operation: 'facilityMustBeSelected'
-      }
-    ],
-    conditionals: [
-      {
-        action: 'hide',
-        expression: '(values.placeOfBirth!="HEALTH_FACILITY")'
-      }
-    ],
-    mapping: {
-      template: {
-        fieldName: 'placeOfBirth',
-        operation: 'eventLocationNameQueryOfflineTransformer',
-        parameters: ['facilities', 'placeOfBirth']
-      },
-      mutation: {
-        operation: 'birthEventLocationMutationTransformer',
-        parameters: [{}]
-      },
-      query: {
-        operation: 'eventLocationIDQueryTransformer',
-        parameters: []
-      }
-    }
-  }
-]
-
 export const informantType: SerializedFormField = {
   name: 'informantType',
   type: 'SELECT_WITH_OPTIONS',
@@ -396,47 +247,3 @@ export const otherInformantType: SerializedFormField = {
     }
   }
 }
-
-export const getDetailsExist = (
-  label: MessageDescriptor,
-  conditionals: IConditional[]
-): SerializedFormField => ({
-  name: 'detailsExist',
-  type: 'CHECKBOX',
-  label,
-  required: true,
-  checkedValue: false,
-  uncheckedValue: true,
-  hideHeader: true,
-  initialValue: true,
-  validator: [],
-  conditionals,
-  mapping: {
-    query: {
-      operation: 'booleanTransformer'
-    }
-  }
-})
-
-export const getReasonNotExisting = (
-  certificateHandlebar: string
-): SerializedFormField => ({
-  name: 'reasonNotApplying',
-  conditionals: [
-    {
-      action: 'hide',
-      expression: 'values.detailsExist'
-    }
-  ],
-  type: 'TEXT',
-  label: formMessageDescriptors.reasonNA,
-  validator: [],
-  initialValue: '',
-  required: true,
-  mapping: {
-    template: {
-      fieldName: certificateHandlebar,
-      operation: 'plainInputTransformer'
-    }
-  }
-})

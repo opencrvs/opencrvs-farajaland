@@ -17,29 +17,33 @@ import {
 } from './options'
 import { formMessageDescriptors } from './formatjs-messages'
 import {
-  getBirthDate,
   getDetailsExist,
+  getPlaceOfBirthFields,
+  getReasonNotExisting
+} from './birth/required-fields-birth'
+import {
   getFamilyNameField,
   getFirstNameField,
-  getGender,
   getNationalID,
   getNationality,
-  getPlaceOfBirthFields,
-  getReasonNotExisting,
   informantType,
   otherInformantType
-} from './birth/required-fields'
+} from './common-required-fields'
+import {
+  getBirthDate,
+  getGender,
+  exactDateOfBirthUnknown,
+  getAgeOfIndividualInYears,
+  getMaritalStatus,
+  registrationEmail
+} from './common-optional-fields'
 import {
   attendantAtBirth,
   birthType,
-  exactDateOfBirthUnknown,
-  getAgeOfIndividualInYears,
   getEducation,
-  getMaritalStatus,
   getNIDVerificationButton,
   getOccupation,
   multipleBirth,
-  registrationEmail,
   registrationPhone,
   weightAtBirth
 } from './birth/optional-fields'
