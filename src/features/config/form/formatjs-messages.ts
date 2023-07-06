@@ -510,6 +510,11 @@ export const formMessageDescriptors = {
     description: 'Form section name for Deceased',
     id: 'form.section.deceased.name'
   },
+  relationshipToDeceased: {
+    defaultMessage: 'Relationship to deceased',
+    description: 'Relationship of applicant to the deceased person',
+    id: 'form.section.deceased.relationship'
+  },
   deceasedTitle: {
     defaultMessage: 'What are the deceased details?',
     description: 'Form section title for Deceased',

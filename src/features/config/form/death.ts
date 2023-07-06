@@ -17,11 +17,13 @@ import {
   getGender
 } from './common-optional-fields'
 import {
+  deathInformantType,
   getFamilyNameField,
   getFirstNameField,
   getNationalID,
   getNationality,
-  getPlaceOfBirthOrDeathFields
+  getPlaceOfBirthOrDeathFields,
+  otherInformantType
 } from './common-required-fields'
 import {
   getCauseOfDeath,
@@ -34,10 +36,7 @@ import {
   placeOfDeathMappingObjForLocation,
   placeOfDeathSelectOptions
 } from './death/required-fields-death'
-import {
-  formMessageDescriptors,
-  informantMessageDescriptors
-} from './formatjs-messages'
+import { formMessageDescriptors } from './formatjs-messages'
 import {
   deathDocumentForWhomFhirMapping,
   deathDocumentTypeFhirMapping
@@ -47,6 +46,9 @@ import {
   exactDateOfBirthUnknownConditional,
   getNationalIDValidators,
   hideIfInformantMotherOrFather,
+  hideIfNidIntegrationEnabled,
+  informantBirthDateConditionals,
+  informantFamilyNameConditionals,
   isValidChildBirthDate
 } from './validations-and-conditionals'
 
@@ -205,235 +207,6 @@ export const deathRegisterForms: ISerializedForm = {
         }
       ]
     },
-    // {
-    //   id: 'applicant',
-    //   viewType: 'form',
-    //   name: formMessageDescriptors.registrationName,
-    //   title: formMessageDescriptors.registrationTitle,
-    //   groups: [
-    //     {
-    //       id: 'who-is-applying-view-group',
-    //       title: informantMessageDescriptors.deathInformantTitle,
-    //       conditionals: [],
-    //       preventContinueIfError: true,
-    //       showExitButtonOnly: true,
-    //       fields: [
-    //         {
-    //           name: 'informantType',
-    //           type: 'SELECT_WITH_OPTIONS',
-    //           label: informantMessageDescriptors.birthInformantTitle,
-    //           required: true,
-    //           hideInPreview: false,
-    //           initialValue: '',
-    //           validator: [],
-    //           placeholder: formMessageDescriptors.formSelectPlaceholder,
-    //           mapping: {
-    //             mutation: {
-    //               operation: 'sectionFieldToBundleFieldTransformer',
-    //               parameters: ['registration.informantType']
-    //             },
-    //             query: {
-    //               operation: 'bundleFieldToSectionFieldTransformer',
-    //               parameters: ['registration.informantType']
-    //             },
-    //             template: {
-    //               fieldName: 'informantType',
-    //               operation: 'selectTransformer'
-    //             }
-    //           },
-    //           options: [
-    //             {
-    //               value: 'SPOUSE',
-    //               label: informantMessageDescriptors.SPOUSE
-    //             },
-    //             {
-    //               value: 'SON',
-    //               label: informantMessageDescriptors.SON
-    //             },
-    //             {
-    //               value: 'DAUGHTER',
-    //               label: informantMessageDescriptors.DAUGHTER
-    //             },
-    //             {
-    //               value: 'SON_IN_LAW',
-    //               label: informantMessageDescriptors.SON_IN_LAW
-    //             },
-    //             {
-    //               value: 'DAUGHTER_IN_LAW',
-    //               label: informantMessageDescriptors.DAUGHTER_IN_LAW
-    //             },
-    //             {
-    //               value: 'MOTHER',
-    //               label: informantMessageDescriptors.MOTHER
-    //             },
-    //             {
-    //               value: 'FATHER',
-    //               label: informantMessageDescriptors.FATHER
-    //             },
-    //             {
-    //               value: 'GRANDSON',
-    //               label: informantMessageDescriptors.GRANDSON
-    //             },
-    //             {
-    //               value: 'GRANDDAUGHTER',
-    //               label: informantMessageDescriptors.GRANDDAUGHTER
-    //             },
-    //             {
-    //               value: 'OTHER',
-    //               label: informantMessageDescriptors.OTHER
-    //             }
-    //           ]
-    //         },
-    //         {
-    //           name: 'otherInformantType',
-    //           type: 'TEXT',
-    //           label: formMessageDescriptors.informantsRelationWithChild,
-    //           placeholder: formMessageDescriptors.relationshipPlaceHolder,
-    //           required: true,
-    //           initialValue: '',
-    //           validator: [
-    //             {
-    //               operation: 'englishOnlyNameFormat'
-    //             }
-    //           ],
-    //           conditionals: [
-    //             {
-    //               action: 'hide',
-    //               expression: 'values.informantType !== "OTHER"'
-    //             }
-    //           ],
-    //           mapping: {
-    //             mutation: {
-    //               operation: 'sectionFieldToBundleFieldTransformer',
-    //               parameters: ['registration.otherInformantType']
-    //             },
-    //             query: {
-    //               operation: 'bundleFieldToSectionFieldTransformer',
-    //               parameters: ['registration.otherInformantType']
-    //             }
-    //           }
-    //         }
-    //       ]
-    //     },
-    //     {
-    //       id: 'contact-view-group',
-    //       title: informantMessageDescriptors.selectContactPoint,
-    //       conditionals: [],
-    //       preventContinueIfError: true,
-    //       showExitButtonOnly: true,
-    //       previewGroups: [
-    //         {
-    //           id: 'contactPointGroup',
-    //           label: formMessageDescriptors.reviewLabelMainContact,
-    //           required: false,
-    //           initialValue: '',
-    //           fieldToRedirect: 'contactPoint'
-    //         }
-    //       ],
-    //       fields: [
-    //         {
-    //           name: 'contactPoint',
-    //           type: 'SELECT_WITH_OPTIONS',
-    //           label: formMessageDescriptors.selectContactPoint,
-    //           required: true,
-    //           previewGroup: 'contactPointGroup',
-    //           hideInPreview: false,
-    //           initialValue: '',
-    //           validator: [],
-    //           placeholder: formMessageDescriptors.formSelectPlaceholder,
-    //           mapping: {
-    //             mutation: {
-    //               operation: 'sectionFieldToBundleFieldTransformer',
-    //               parameters: ['registration.contact']
-    //             },
-    //             query: {
-    //               operation: 'bundleFieldToSectionFieldTransformer',
-    //               parameters: ['registration.contact']
-    //             },
-    //             template: {
-    //               fieldName: 'contactPoint',
-    //               operation: 'selectTransformer'
-    //             }
-    //           },
-    //           options: [
-    //             {
-    //               value: 'SPOUSE',
-    //               label: informantMessageDescriptors.SPOUSE
-    //             },
-    //             {
-    //               value: 'SON',
-    //               label: informantMessageDescriptors.SON
-    //             },
-    //             {
-    //               value: 'DAUGHTER',
-    //               label: informantMessageDescriptors.DAUGHTER
-    //             },
-    //             {
-    //               value: 'SON_IN_LAW',
-    //               label: informantMessageDescriptors.SON_IN_LAW
-    //             },
-    //             {
-    //               value: 'DAUGHTER_IN_LAW',
-    //               label: informantMessageDescriptors.DAUGHTER_IN_LAW
-    //             },
-    //             {
-    //               value: 'MOTHER',
-    //               label: informantMessageDescriptors.MOTHER
-    //             },
-    //             {
-    //               value: 'FATHER',
-    //               label: informantMessageDescriptors.FATHER
-    //             },
-    //             {
-    //               value: 'GRANDSON',
-    //               label: informantMessageDescriptors.GRANDSON
-    //             },
-    //             {
-    //               value: 'GRANDDAUGHTER',
-    //               label: informantMessageDescriptors.GRANDDAUGHTER
-    //             },
-    //             {
-    //               value: 'OTHER',
-    //               label: informantMessageDescriptors.OTHER
-    //             }
-    //           ]
-    //         },
-    //         {
-    //           name: 'registrationPhone',
-    //           type: 'TEL',
-    //           label: formMessageDescriptors.phoneNumber,
-    //           required: true,
-    //           initialValue: '',
-    //           validator: [
-    //             {
-    //               operation: 'phoneNumberFormat'
-    //             }
-    //           ],
-    //           conditionals: [
-    //             {
-    //               action: 'hide',
-    //               expression: 'values.contactPoint !== "OTHER"'
-    //             }
-    //           ],
-    //           mapping: {
-    //             mutation: {
-    //               operation: 'sectionFieldToBundleFieldTransformer',
-    //               parameters: ['registration.contactPhoneNumber']
-    //             },
-    //             query: {
-    //               operation: 'bundleFieldToSectionFieldTransformer',
-    //               parameters: ['registration.contactPhoneNumber']
-    //             },
-    //             template: {
-    //               fieldName: 'contactPhoneNumber',
-    //               operation: 'selectTransformer'
-    //             }
-    //           }
-    //         }
-    //       ]
-    //     }
-    //   ]
-    // },
     {
       id: 'deceased',
       viewType: 'form',
@@ -531,139 +304,22 @@ export const deathRegisterForms: ISerializedForm = {
         {
           id: 'informant-view-group',
           fields: [
-            {
-              name: 'nationality',
-              type: 'SELECT_WITH_OPTIONS',
-              label: formMessageDescriptors.nationality,
-              required: true,
-              initialValue: 'FAR',
-              validator: [],
-              placeholder: formMessageDescriptors.formSelectPlaceholder,
-              options: {
-                resource: 'countries'
-              },
-              mapping: {
-                mutation: {
-                  operation: 'fieldValueNestingTransformer',
-                  parameters: [
-                    'individual',
-                    {
-                      operation: 'fieldToArrayTransformer'
-                    }
-                  ]
-                },
-                query: {
-                  operation: 'nestedValueToFieldTransformer',
-                  parameters: [
-                    'individual',
-                    {
-                      operation: 'arrayToFieldTransformer'
-                    }
-                  ]
-                },
-                template: {
-                  fieldName: 'informantNationality',
-                  operation: 'nationalityTransformer'
-                }
-              }
-            },
-            {
-              name: 'informantID',
-              type: 'TEXT',
-              label: formMessageDescriptors.iDTypeNationalID,
-              required: false,
-              initialValue: '',
-              validator: [
-                {
-                  operation: 'validIDNumber',
-                  parameters: ['NATIONAL_ID']
-                },
-                {
-                  operation: 'duplicateIDNumber',
-                  parameters: ['deceased.iD']
-                }
-              ],
-              conditionals: [
-                nidIntegrationConditionals.hideIfNidIntegrationEnabled
-              ],
-              mapping: {
-                mutation: {
-                  operation: 'fieldValueNestingTransformer',
-                  parameters: [
-                    'individual',
-                    {
-                      operation: 'fieldToIdentityTransformer',
-                      parameters: ['id', 'NATIONAL_ID']
-                    }
-                  ]
-                },
-                query: {
-                  operation: 'nestedValueToFieldTransformer',
-                  parameters: [
-                    'individual',
-                    {
-                      operation: 'identityToFieldTransformer',
-                      parameters: ['id', 'NATIONAL_ID']
-                    }
-                  ]
-                },
-                template: {
-                  fieldName: 'informantNID',
-                  operation: 'identityToFieldTransformer',
-                  parameters: ['id', 'NATIONAL_ID', 'individual']
-                }
-              }
-            },
-            {
-              name: 'informantNidVerification',
-              type: 'NID_VERIFICATION_BUTTON',
-              label: formMessageDescriptors.iDTypeNationalID,
-              required: true,
-              initialValue: '',
-              validator: [],
-              conditionals: [
-                nidIntegrationConditionals.hideIfNidIntegrationDisabled,
-                {
-                  action: 'disable',
-                  expression: `values.informantNidVerification`
-                }
-              ],
-              mapping: {
-                mutation: {
-                  operation: 'fieldValueNestingTransformer',
-                  parameters: [
-                    'individual',
-                    {
-                      operation: 'nidVerificationFieldToIdentityTransformer'
-                    }
-                  ]
-                },
-                query: {
-                  operation: 'nestedIdentityValueToFieldTransformer',
-                  parameters: ['individual']
-                }
-              },
-              labelForVerified: formMessageDescriptors.nidVerified,
-              labelForUnverified: formMessageDescriptors.nidNotVerified,
-              labelForOffline: formMessageDescriptors.nidOffline
-            },
-            {
-              name: 'informantBirthDate',
-              type: 'DATE',
-              label: formMessageDescriptors.dateOfBirth,
-              required: true,
-              initialValue: '',
-              conditionals: [
-                {
-                  action: 'disable',
-                  expression: 'values.exactDateOfBirthUnknown'
-                },
-                {
-                  action: 'disable',
-                  expression: `draftData?.informant?.fieldsModifiedByNidUserInfo?.includes('informantBirthDate')`
-                }
-              ],
-              validator: [
+            deathInformantType,
+            otherInformantType,
+            getFirstNameField(
+              'informantNameInEnglish',
+              [],
+              'informantFirstName'
+            ), // Required field. In Farajaland, we have built the option to integrate with MOSIP. So we have different conditionals for each name to check MOSIP responses.  You could always refactor firstNamesEng for a basic setup
+            getFamilyNameField(
+              'informantNameInEnglish',
+              informantFamilyNameConditionals,
+              'informantFamilyName'
+            ), // Required field.
+            getBirthDate(
+              'informantBirthDate',
+              informantBirthDateConditionals,
+              [
                 {
                   operation: 'dateFormatIsCorrect',
                   parameters: []
@@ -673,200 +329,21 @@ export const deathRegisterForms: ISerializedForm = {
                   parameters: []
                 }
               ],
-              mapping: {
-                mutation: {
-                  operation: 'fieldValueNestingTransformer',
-                  parameters: [
-                    'individual',
-                    {
-                      operation: 'longDateTransformer',
-                      parameters: ['birthDate']
-                    },
-                    'birthDate'
-                  ]
-                },
-                query: {
-                  operation: 'nestedValueToFieldTransformer',
-                  parameters: [
-                    'individual',
-                    {
-                      operation: 'fieldValueTransformer',
-                      parameters: ['birthDate']
-                    }
-                  ]
-                },
-                template: {
-                  operation: 'dateFormatTransformer',
-                  fieldName: 'informantBirthDate',
-                  parameters: ['birthDate', 'en', 'do MMMM yyyy', 'individual']
-                }
-              }
-            },
-            {
-              name: 'exactDateOfBirthUnknown',
-              type: 'CHECKBOX',
-              label: {
-                defaultMessage: 'Exact date of birth unknown',
-                description: 'Checkbox for exact date of birth unknown',
-                id: 'form.field.label.exactDateOfBirthUnknown'
-              },
-              hideInPreview: true,
-              required: false,
-              hideHeader: true,
-              initialValue: false,
-              validator: [],
-              conditionals: [
-                {
-                  action: 'hide',
-                  expression: '!window.config.DATE_OF_BIRTH_UNKNOWN'
-                }
-              ],
-              mapping: {
-                mutation: {
-                  operation: 'ignoreFieldTransformer'
-                },
-                query: {
-                  operation: 'nestedValueToFieldTransformer',
-                  parameters: [
-                    'individual',
-                    {
-                      operation: 'booleanTransformer'
-                    }
-                  ]
-                }
-              }
-            },
-            {
-              name: 'ageOfIndividualInYears',
-              type: 'NUMBER',
-              label: formMessageDescriptors.ageOfInformant,
-              required: true,
-              initialValue: '',
-              validator: [
-                {
-                  operation: 'range',
-                  parameters: [12, 120]
-                },
-                {
-                  operation: 'maxLength',
-                  parameters: [3]
-                }
-              ],
-              conditionals: [
-                {
-                  action: 'hide',
-                  expression: '!values.exactDateOfBirthUnknown'
-                }
-              ],
-              postfix: 'years',
-              inputFieldWidth: '78px',
-              mapping: {
-                mutation: {
-                  operation: 'fieldValueNestingTransformer',
-                  parameters: ['individual']
-                },
-                query: {
-                  operation: 'nestedValueToFieldTransformer',
-                  parameters: ['individual']
-                }
-              }
-            },
-            {
-              name: 'firstNamesEng',
-              previewGroup: 'informantNameInEnglish',
-              type: 'TEXT',
-              label: formMessageDescriptors.firstName,
-              maxLength: 32,
-              required: true,
-              initialValue: '',
-              validator: [
-                {
-                  operation: 'englishOnlyNameFormat'
-                }
-              ],
-              conditionals: [
-                {
-                  action: 'disable',
-                  expression: `draftData?.informant?.fieldsModifiedByNidUserInfo?.includes('firstNamesEng')`
-                }
-              ],
-              mapping: {
-                mutation: {
-                  operation: 'fieldValueNestingTransformer',
-                  parameters: [
-                    'individual',
-                    {
-                      operation: 'fieldToNameTransformer',
-                      parameters: ['en', 'firstNames']
-                    },
-                    'name'
-                  ]
-                },
-                query: {
-                  operation: 'nestedValueToFieldTransformer',
-                  parameters: [
-                    'individual',
-                    {
-                      operation: 'nameToFieldTransformer',
-                      parameters: ['en', 'firstNames']
-                    }
-                  ]
-                },
-                template: {
-                  fieldName: 'informantFirstName',
-                  operation: 'nameToFieldTransformer',
-                  parameters: ['en', 'firstNames', 'informant', 'individual']
-                }
-              }
-            },
-            {
-              name: 'familyNameEng',
-              previewGroup: 'informantNameInEnglish',
-              type: 'TEXT',
-              label: formMessageDescriptors.familyName,
-              maxLength: 32,
-              required: true,
-              initialValue: '',
-              validator: [
-                {
-                  operation: 'englishOnlyNameFormat'
-                }
-              ],
-              conditionals: [
-                {
-                  action: 'disable',
-                  expression: `draftData?.informant?.fieldsModifiedByNidUserInfo?.includes('familyNameEng')`
-                }
-              ],
-              mapping: {
-                mutation: {
-                  operation: 'fieldValueNestingTransformer',
-                  parameters: [
-                    'individual',
-                    {
-                      operation: 'fieldToNameTransformer',
-                      parameters: ['en', 'familyName']
-                    },
-                    'name'
-                  ]
-                },
-                query: {
-                  operation: 'nestedValueToFieldTransformer',
-                  parameters: [
-                    'individual',
-                    {
-                      operation: 'nameToFieldTransformer',
-                      parameters: ['en', 'familyName']
-                    }
-                  ]
-                },
-                template: {
-                  fieldName: 'informantFamilyName',
-                  operation: 'nameToFieldTransformer',
-                  parameters: ['en', 'familyName', 'informant', 'individual']
-                }
-              }
-            }
+              'eventDate'
+            ), // Required field.
+            exactDateOfBirthUnknown,
+            getAgeOfIndividualInYears(
+              formMessageDescriptors.ageOfInformant,
+              exactDateOfBirthUnknownConditional
+            ),
+            getNationality('informantNationality', []),
+            getNationalID(
+              'informantID',
+              hideIfNidIntegrationEnabled,
+              getNationalIDValidators('informant'),
+              'informantNID'
+            )
+
             // PRIMARY ADDRESS SUBSECTION
             // PRIMARY ADDRESS
             // SECONDARY ADDRESS SAME AS PRIMARY
