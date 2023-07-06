@@ -150,7 +150,8 @@ export const getAgeOfIndividualInYears = (
 })
 
 export const getMaritalStatus = (
-  certificateHandlebar: string
+  certificateHandlebar: string,
+  conditionals: IConditional[]
 ): SerializedFormField => ({
   name: 'maritalStatus',
   type: 'SELECT_WITH_OPTIONS',
@@ -169,12 +170,7 @@ export const getMaritalStatus = (
       operation: 'selectTransformer'
     }
   },
-  conditionals: [
-    {
-      action: 'hide',
-      expression: '!values.detailsExist'
-    }
-  ],
+  conditionals: conditionals,
   options: [
     {
       value: 'SINGLE',
@@ -253,4 +249,46 @@ export const registrationEmail: SerializedFormField = {
       operation: 'plainInputTransformer'
     }
   }
+}
+
+export const registrationPhone: SerializedFormField = {
+  name: 'registrationPhone',
+  type: 'TEL',
+  label: formMessageDescriptors.phoneNumber,
+  required: false,
+  initialValue: '',
+  validator: [
+    {
+      operation: 'phoneNumberFormat'
+    }
+  ],
+  conditionals: [],
+  mapping: {
+    mutation: {
+      operation: 'sectionFieldToBundleFieldTransformer',
+      parameters: ['registration.contactPhoneNumber']
+    },
+    query: {
+      operation: 'bundleFieldToSectionFieldTransformer',
+      parameters: ['registration.contactPhoneNumber']
+    },
+    template: {
+      fieldName: 'contactPhoneNumber',
+      operation: 'selectTransformer'
+    }
+  }
+}
+
+export const seperatorSubsection: SerializedFormField = {
+  name: 'seperator',
+  type: 'SUBSECTION',
+  label: {
+    defaultMessage: ' ',
+    description: 'empty string',
+    id: 'form.field.label.empty'
+  },
+  initialValue: '',
+  ignoreBottomMargin: true,
+  validator: [],
+  conditionals: []
 }

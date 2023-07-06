@@ -165,7 +165,7 @@ export const defaultAddressConfiguration: IAddressConfiguration[] = [
     ]
   },
   {
-    precedingFieldId: 'death.deceased.deceased-view-group.deceasedID',
+    precedingFieldId: 'death.deceased.deceased-view-group.maritalStatus',
     configurations: [
       {
         config: AddressSubsections.PRIMARY_ADDRESS_SUBSECTION,

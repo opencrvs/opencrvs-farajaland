@@ -149,34 +149,6 @@ export const weightAtBirth: SerializedFormField = {
   inputFieldWidth: '78px'
 }
 
-export const registrationPhone: SerializedFormField = {
-  name: 'registrationPhone',
-  type: 'TEL',
-  label: formMessageDescriptors.phoneNumber,
-  required: false,
-  initialValue: '',
-  validator: [
-    {
-      operation: 'phoneNumberFormat'
-    }
-  ],
-  conditionals: [],
-  mapping: {
-    mutation: {
-      operation: 'sectionFieldToBundleFieldTransformer',
-      parameters: ['registration.contactPhoneNumber']
-    },
-    query: {
-      operation: 'bundleFieldToSectionFieldTransformer',
-      parameters: ['registration.contactPhoneNumber']
-    },
-    template: {
-      fieldName: 'contactPhoneNumber',
-      operation: 'selectTransformer'
-    }
-  }
-}
-
 export const getNIDVerificationButton = (
   fieldName: string,
   conditionals: IConditional[],

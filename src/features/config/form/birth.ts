@@ -39,7 +39,8 @@ import {
   exactDateOfBirthUnknown,
   getAgeOfIndividualInYears,
   getMaritalStatus,
-  registrationEmail
+  registrationEmail,
+  registrationPhone
 } from './common-optional-fields'
 import {
   attendantAtBirth,
@@ -48,7 +49,6 @@ import {
   getNIDVerificationButton,
   getOccupation,
   multipleBirth,
-  registrationPhone,
   weightAtBirth
 } from './birth/optional-fields'
 import {
@@ -415,7 +415,7 @@ export const birthRegisterForms: ISerializedForm = {
                 }
               ]
             },
-            getMaritalStatus('motherMaritalStatus'),
+            getMaritalStatus('motherMaritalStatus', []),
             multipleBirth,
             getOccupation('motherOccupation'),
             getEducation('motherEducationalAttainment')
@@ -502,7 +502,7 @@ export const birthRegisterForms: ISerializedForm = {
                 }
               ]
             },
-            getMaritalStatus('fatherMaritalStatus'),
+            getMaritalStatus('fatherMaritalStatus', []),
             multipleBirth,
             getOccupation('fatherOccupation'),
             getEducation('fatherEducationalAttainment')

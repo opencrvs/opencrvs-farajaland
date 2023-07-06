@@ -14,7 +14,11 @@ import {
   exactDateOfBirthUnknown,
   getAgeOfIndividualInYears,
   getBirthDate,
-  getGender
+  getGender,
+  getMaritalStatus,
+  registrationEmail,
+  registrationPhone,
+  seperatorSubsection
 } from './common-optional-fields'
 import {
   deathInformantType,
@@ -242,7 +246,9 @@ export const deathRegisterForms: ISerializedForm = {
               [],
               getNationalIDValidators('deceased'),
               'deceasedNID'
-            )
+            ),
+            seperatorSubsection,
+            getMaritalStatus('deceasedMaritalStatus', [])
             // PRIMARY ADDRESS SUBSECTION
             // PRIMARY ADDRESS
             // SECONDARY ADDRESS SAME AS PRIMARY
@@ -342,8 +348,10 @@ export const deathRegisterForms: ISerializedForm = {
               hideIfNidIntegrationEnabled,
               getNationalIDValidators('informant'),
               'informantNID'
-            )
-
+            ),
+            seperatorSubsection,
+            registrationPhone,
+            registrationEmail
             // PRIMARY ADDRESS SUBSECTION
             // PRIMARY ADDRESS
             // SECONDARY ADDRESS SAME AS PRIMARY
