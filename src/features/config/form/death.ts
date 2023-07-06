@@ -20,8 +20,20 @@ import {
   getFamilyNameField,
   getFirstNameField,
   getNationalID,
-  getNationality
+  getNationality,
+  getPlaceOfBirthOrDeathFields
 } from './common-required-fields'
+import {
+  getCauseOfDeath,
+  getCauseOfDeathMethod,
+  getDeathDate,
+  getDeathDescription,
+  getMannerOfDeath,
+  placeOfDeathHealthFacilityConditionals,
+  placeOfDeathMappingObj,
+  placeOfDeathMappingObjForLocation,
+  placeOfDeathSelectOptions
+} from './death/required-fields-death'
 import {
   formMessageDescriptors,
   informantMessageDescriptors
@@ -484,265 +496,28 @@ export const deathRegisterForms: ISerializedForm = {
         {
           id: 'death-event-details',
           fields: [
-            {
-              name: 'deathDate',
-              type: 'DATE',
-              label: formMessageDescriptors.deathEventDate,
-              required: true,
-              initialValue: '',
-              validator: [
+            getDeathDate(
+              'deathDate',
+              [],
+              [
                 {
                   operation: 'isValidDeathOccurrenceDate'
                 }
               ],
-              mapping: {
-                template: {
-                  operation: 'deceasedDateFormatTransformation',
-                  fieldName: 'eventDate',
-                  parameters: ['en', 'do MMMM yyyy', 'deceased']
-                },
-                mutation: {
-                  operation: 'fieldToDeceasedDateTransformation',
-                  parameters: [
-                    'deceased',
-                    {
-                      operation: 'longDateTransformer',
-                      parameters: []
-                    }
-                  ]
-                },
-                query: {
-                  operation: 'deceasedDateToFieldTransformation',
-                  parameters: ['deceased']
-                }
-              }
-            },
-            {
-              name: 'mannerOfDeath',
-              type: 'SELECT_WITH_OPTIONS',
-              label: formMessageDescriptors.manner,
-              required: false,
-              initialValue: '',
-              validator: [],
-              placeholder: formMessageDescriptors.formSelectPlaceholder,
-              options: [
-                {
-                  value: 'NATURAL_CAUSES',
-                  label: formMessageDescriptors.mannerNatural
-                },
-                {
-                  value: 'ACCIDENT',
-                  label: formMessageDescriptors.mannerAccident
-                },
-                {
-                  value: 'SUICIDE',
-                  label: formMessageDescriptors.mannerSuicide
-                },
-                {
-                  value: 'HOMICIDE',
-                  label: formMessageDescriptors.mannerHomicide
-                },
-                {
-                  value: 'MANNER_UNDETERMINED',
-                  label: formMessageDescriptors.mannerUndetermined
-                }
-              ],
-              mapping: {
-                mutation: {
-                  operation: 'sectionFieldToBundleFieldTransformer',
-                  parameters: ['mannerOfDeath']
-                },
-                query: {
-                  operation: 'bundleFieldToSectionFieldTransformer',
-                  parameters: ['mannerOfDeath']
-                },
-                template: {
-                  fieldName: 'mannerOfDeath',
-                  operation: 'selectTransformer'
-                }
-              }
-            },
-            {
-              name: 'causeOfDeathEstablished',
-              type: 'CHECKBOX',
-              label: formMessageDescriptors.causeOfDeathEstablished,
-              required: true,
-              checkedValue: 'true',
-              uncheckedValue: 'false',
-              hideHeader: true,
-              initialValue: 'false',
-              validator: [],
-              mapping: {
-                mutation: {
-                  operation: 'sectionFieldToBundleFieldTransformer',
-                  parameters: ['causeOfDeathEstablished']
-                },
-                query: {
-                  operation: 'bundleFieldToSectionFieldTransformer',
-                  parameters: ['causeOfDeathEstablished']
-                },
-                template: {
-                  fieldName: 'causeOfDeathEstablished',
-                  operation: 'plainInputTransformer'
-                }
-              }
-            },
-            {
-              name: 'causeOfDeathMethod',
-              type: 'SELECT_WITH_OPTIONS',
-              label: formMessageDescriptors.causeOfDeathMethod,
-              required: true,
-              initialValue: '',
-              validator: [],
-              placeholder: formMessageDescriptors.formSelectPlaceholder,
-              conditionals: [
-                {
-                  action: 'hide',
-                  expression: 'values.causeOfDeathEstablished !== "true"'
-                }
-              ],
-              options: [
-                {
-                  value: 'PHYSICIAN',
-                  label: formMessageDescriptors.physician
-                },
-                {
-                  value: 'LAY_REPORTED',
-                  label: formMessageDescriptors.layReported
-                },
-                {
-                  value: 'VERBAL_AUTOPSY',
-                  label: formMessageDescriptors.verbalAutopsy
-                },
-                {
-                  value: 'MEDICALLY_CERTIFIED',
-                  label: formMessageDescriptors.medicallyCertified
-                }
-              ],
-              mapping: {
-                mutation: {
-                  operation: 'sectionFieldToBundleFieldTransformer',
-                  parameters: ['causeOfDeathMethod']
-                },
-                query: {
-                  operation: 'bundleFieldToSectionFieldTransformer',
-                  parameters: ['causeOfDeathMethod']
-                },
-                template: {
-                  fieldName: 'causeOfDeathMethod',
-                  operation: 'selectTransformer'
-                }
-              }
-            },
-            {
-              name: 'deathDescription',
-              type: TEXTAREA,
-              label: formMessageDescriptors.deathDescription,
-              conditionals: [
-                {
-                  action: 'hide',
-                  expression:
-                    'values.causeOfDeathEstablished !== "true" || values.causeOfDeathMethod !== "LAY_REPORTED" && values.causeOfDeathMethod !== "VERBAL_AUTOPSY"'
-                }
-              ],
-              initialValue: '',
-              validator: [],
-              required: true,
-              maxLength: 500,
-              mapping: {
-                mutation: {
-                  operation: 'sectionFieldToBundleFieldTransformer',
-                  parameters: ['deathDescription']
-                },
-                query: {
-                  operation: 'bundleFieldToSectionFieldTransformer',
-                  parameters: ['deathDescription']
-                },
-                template: {
-                  fieldName: 'deathDescription',
-                  operation: 'plainInputTransformer'
-                }
-              }
-            },
-            {
-              name: 'placeOfDeath',
-              type: 'SELECT_WITH_OPTIONS',
-              previewGroup: 'placeOfDeath',
-              ignoreFieldLabelOnErrorMessage: true,
-              label: formMessageDescriptors.placeOfDeath,
-              required: true,
-              initialValue: '',
-              validator: [],
-              placeholder: formMessageDescriptors.formSelectPlaceholder,
-              options: [
-                {
-                  value: 'HEALTH_FACILITY',
-                  label: formMessageDescriptors.healthInstitution
-                },
-                {
-                  value: 'DECEASED_USUAL_RESIDENCE',
-                  label: formMessageDescriptors.placeOfDeathSameAsPrimary
-                },
-                {
-                  value: 'OTHER',
-                  label: formMessageDescriptors.otherInstitution
-                }
-              ],
-              mapping: {
-                mutation: {
-                  operation: 'deathEventLocationMutationTransformer',
-                  parameters: [{}]
-                },
-                query: {
-                  operation: 'eventLocationTypeQueryTransformer',
-                  parameters: []
-                }
-              }
-            },
-
-            {
-              name: 'deathLocation',
-              type: 'LOCATION_SEARCH_INPUT',
-              label: {
-                defaultMessage: 'Health institution',
-                description: 'Label for form field: Health Institution',
-                id: 'form.field.label.healthInstitution'
-              },
-              previewGroup: 'placeOfDeath',
-              required: true,
-              initialValue: '',
-              searchableResource: ['facilities'],
-              searchableType: ['HEALTH_FACILITY'],
-              dynamicOptions: {
-                resource: 'facilities'
-              },
-              validator: [
-                {
-                  operation: 'facilityMustBeSelected'
-                }
-              ],
-              conditionals: [
-                {
-                  action: 'hide',
-                  expression: '(values.placeOfDeath!="HEALTH_FACILITY")'
-                }
-              ],
-              mapping: {
-                template: {
-                  fieldName: 'placeOfDeath',
-                  operation: 'eventLocationNameQueryOfflineTransformer',
-                  parameters: ['facilities', 'placeOfDeath']
-                },
-                mutation: {
-                  operation: 'deathEventLocationMutationTransformer',
-                  parameters: [{}]
-                },
-                query: {
-                  operation: 'eventLocationIDQueryTransformer',
-                  parameters: []
-                }
-              }
-            }
+              'eventDate'
+            ),
+            getMannerOfDeath,
+            getCauseOfDeath,
+            getCauseOfDeathMethod,
+            getDeathDescription,
+            ...getPlaceOfBirthOrDeathFields(
+              'placeOfDeath',
+              placeOfDeathSelectOptions,
+              placeOfDeathMappingObj,
+              'deathLocation',
+              placeOfDeathHealthFacilityConditionals,
+              placeOfDeathMappingObjForLocation
+            )
           ]
         }
       ]

@@ -18,9 +18,13 @@ import {
 import { formMessageDescriptors } from './formatjs-messages'
 import {
   getDetailsExist,
-  getPlaceOfBirthFields,
-  getReasonNotExisting
+  getReasonNotExisting,
+  placeOfBirthHealthFacilityConditionals,
+  placeOfBirthMappingObjForLocation,
+  placeOfBirthMappintObj,
+  placeOfBirthSelectOptions
 } from './birth/required-fields-birth'
+import { getPlaceOfBirthOrDeathFields } from './common-required-fields'
 import {
   getFamilyNameField,
   getFirstNameField,
@@ -234,7 +238,14 @@ export const birthRegisterForms: ISerializedForm = {
               isValidChildBirthDate,
               'eventDate'
             ), // Required field.
-            ...getPlaceOfBirthFields(),
+            ...getPlaceOfBirthOrDeathFields(
+              'placeOfBirth',
+              placeOfBirthSelectOptions,
+              placeOfBirthMappintObj,
+              'birthLocation',
+              placeOfBirthHealthFacilityConditionals,
+              placeOfBirthMappingObjForLocation
+            ),
             {
               name: 'seperator',
               type: 'SUBSECTION',

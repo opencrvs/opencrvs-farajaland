@@ -14,7 +14,7 @@ import {
   formMessageDescriptors,
   informantMessageDescriptors
 } from './formatjs-messages'
-import { SerializedFormField } from './types'
+import { IFormFieldMapping, ISelectOption, SerializedFormField } from './types'
 import { IConditional } from './validations-and-conditionals'
 
 export const getFamilyNameField = (
@@ -247,3 +247,55 @@ export const otherInformantType: SerializedFormField = {
     }
   }
 }
+
+export const getPlaceOfBirthOrDeathFields = (
+  fieldName: string,
+  options: ISelectOption[],
+  mappingObject: IFormFieldMapping,
+  locationName: string,
+  healthFacilityConditionals: IConditional[],
+  mappingObjectForLocation: IFormFieldMapping
+): SerializedFormField[] => [
+  {
+    name: fieldName + 'title',
+    type: 'SUBSECTION',
+    label: formMessageDescriptors[fieldName],
+    previewGroup: fieldName,
+    ignoreBottomMargin: true,
+    initialValue: '',
+    validator: []
+  },
+  {
+    name: fieldName,
+    type: 'SELECT_WITH_OPTIONS',
+    previewGroup: fieldName,
+    ignoreFieldLabelOnErrorMessage: true,
+    label: formMessageDescriptors[fieldName],
+    required: true,
+    initialValue: '',
+    validator: [],
+    placeholder: formMessageDescriptors.formSelectPlaceholder,
+    options: options,
+    mapping: mappingObject
+  },
+  {
+    name: locationName,
+    type: 'LOCATION_SEARCH_INPUT',
+    label: formMessageDescriptors.healthInstitution,
+    previewGroup: fieldName,
+    required: true,
+    initialValue: '',
+    searchableResource: ['facilities'],
+    searchableType: ['HEALTH_FACILITY'],
+    dynamicOptions: {
+      resource: 'facilities'
+    },
+    validator: [
+      {
+        operation: 'facilityMustBeSelected'
+      }
+    ],
+    conditionals: healthFacilityConditionals,
+    mapping: mappingObjectForLocation
+  }
+]
