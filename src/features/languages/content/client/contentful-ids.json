@@ -1265,6 +1265,7 @@
   "reviewHeaderTitleGovtName": "review.header.title.govtName",
   "reviewInputsAdditionalComments": "review.inputs.additionalComments",
   "reviewModalDescSubmitConfirmation": "review.modal.desc.submitConfirmation",
+  "reviewInputsSupportingDocuments": "review.inputs.supportingDocuments",
   "reviewModalTitleRegisterConfirmation": "review.modal.title.registerConfirmation",
   "reviewModalTitleSubmitConfirmation": "review.modal.title.submitConfirmation",
   "reviewRejFormReasonsMissSupDoc": "review.rej.form.reasons.missSupDoc",

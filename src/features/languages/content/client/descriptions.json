@@ -1039,6 +1039,7 @@
     "review.form.section.review.title": "Form section title for Review",
     "review.modal.desc.submitConfirmation": "Submit description text on modal",
     "review.modal.title.submitConfirmation": "Submit title text on modal",
+    "review.inputs.supportingDocuments": "Section heading title for supporting documents",
     "register.form.modal.desc.validateConfirmation": "Description for validate confirmation modal",
     "register.form.modal.title.validateConfirmation": "Title for validate confirmation modal",
     "review.button.approve": "Label for Send For Approval button",
