@@ -233,7 +233,6 @@ export function getPlaceOfEventLocationSelect(
         operation: 'eventLocationQueryTransformer',
         parameters: [
           { transformedFieldName: location, lineNumber: locationIndex },
-          location,
           {
             fieldsToIgnoreForLocalAddress: [
               'internationalDistrict',

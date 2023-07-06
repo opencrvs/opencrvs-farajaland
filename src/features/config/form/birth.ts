@@ -363,7 +363,7 @@ export const birthRegisterForms: ISerializedForm = {
             exactDateOfBirthUnknown,
             getAgeOfIndividualInYears(
               formMessageDescriptors.ageOfMother,
-              detailsExist
+              exactDateOfBirthUnknownConditional
             ),
             getFirstNameField(
               'motherNameInEnglish',
@@ -450,7 +450,7 @@ export const birthRegisterForms: ISerializedForm = {
             exactDateOfBirthUnknown,
             getAgeOfIndividualInYears(
               formMessageDescriptors.ageOfFather,
-              detailsExist
+              exactDateOfBirthUnknownConditional
             ),
             getFirstNameField(
               'fatherNameInEnglish',

@@ -94,20 +94,24 @@ export const defaultAddressConfiguration: IAddressConfiguration[] = [
       {
         config: AddressSubsections.PRIMARY_ADDRESS_SUBSECTION,
         label: formMessageDescriptors.primaryAddress,
-        conditionalCase: informantNotMotherOrFather
+        conditionalCase: JSON.stringify(informantNotMotherOrFather)
       },
       {
         config: AddressCases.PRIMARY_ADDRESS,
-        conditionalCase: informantNotMotherOrFather
+        conditionalCase: JSON.stringify(informantNotMotherOrFather)
       },
       {
         config: AddressSubsections.SECONDARY_ADDRESS_SUBSECTION,
         label: formMessageDescriptors.informantSecondaryAddress,
-        conditionalCase: `((${secondaryAddressesDisabled}) || (${informantNotMotherOrFather}))`
+        conditionalCase: JSON.stringify(
+          `((${secondaryAddressesDisabled}) || (${informantNotMotherOrFather}))`
+        )
       },
       {
         config: AddressCases.SECONDARY_ADDRESS,
-        conditionalCase: `((${secondaryAddressesDisabled}) || (${informantNotMotherOrFather}))`
+        conditionalCase: JSON.stringify(
+          `((${secondaryAddressesDisabled}) || (${informantNotMotherOrFather}))`
+        )
       }
     ]
   },
@@ -117,20 +121,24 @@ export const defaultAddressConfiguration: IAddressConfiguration[] = [
       {
         config: AddressSubsections.PRIMARY_ADDRESS_SUBSECTION,
         label: formMessageDescriptors.primaryAddress,
-        conditionalCase: `${MOTHER_DETAILS_DONT_EXIST}`
+        conditionalCase: JSON.stringify(MOTHER_DETAILS_DONT_EXIST)
       },
       {
         config: AddressCases.PRIMARY_ADDRESS,
-        conditionalCase: `${MOTHER_DETAILS_DONT_EXIST}`
+        conditionalCase: JSON.stringify(MOTHER_DETAILS_DONT_EXIST)
       },
       {
         config: AddressSubsections.SECONDARY_ADDRESS_SUBSECTION,
         label: formMessageDescriptors.secondaryAddress,
-        conditionalCase: `${MOTHER_DETAILS_DONT_EXIST} || ${secondaryAddressesDisabled}`
+        conditionalCase: JSON.stringify(
+          `${MOTHER_DETAILS_DONT_EXIST} || ${secondaryAddressesDisabled}`
+        )
       },
       {
         config: AddressCases.SECONDARY_ADDRESS,
-        conditionalCase: `${MOTHER_DETAILS_DONT_EXIST} || ${secondaryAddressesDisabled}`
+        conditionalCase: JSON.stringify(
+          `${MOTHER_DETAILS_DONT_EXIST} || ${secondaryAddressesDisabled}`
+        )
       }
     ]
   },
@@ -140,27 +148,35 @@ export const defaultAddressConfiguration: IAddressConfiguration[] = [
       {
         config: AddressSubsections.PRIMARY_ADDRESS_SUBSECTION,
         label: formMessageDescriptors.primaryAddress,
-        conditionalCase: `${FATHER_DETAILS_DONT_EXIST}`
+        conditionalCase: JSON.stringify(`${FATHER_DETAILS_DONT_EXIST}`)
       },
       {
         config: AddressCopyConfigCases.PRIMARY_ADDRESS_SAME_AS_OTHER_PRIMARY,
         label: formMessageDescriptors.primaryAddressSameAsOtherPrimary,
         xComparisonSection: 'father',
         yComparisonSection: 'mother',
-        conditionalCase: `(${fathersDetailsDontExist} || ${mothersDetailsDontExistOnOtherPage})`
+        conditionalCase: JSON.stringify(
+          `(${fathersDetailsDontExist} || ${mothersDetailsDontExistOnOtherPage})`
+        )
       },
       {
         config: AddressCases.PRIMARY_ADDRESS,
-        conditionalCase: `((${FATHER_DETAILS_DONT_EXIST} || ${primaryAddressSameAsOtherPrimaryAddress}) && !(${mothersDetailsDontExistOnOtherPage}) || ((${fathersDetailsDontExist}) && (${mothersDetailsDontExistOnOtherPage})))`
+        conditionalCase: JSON.stringify(
+          `((${FATHER_DETAILS_DONT_EXIST} || ${primaryAddressSameAsOtherPrimaryAddress}) && !(${mothersDetailsDontExistOnOtherPage}) || ((${fathersDetailsDontExist}) && (${mothersDetailsDontExistOnOtherPage})))`
+        )
       },
       {
         config: AddressSubsections.SECONDARY_ADDRESS_SUBSECTION,
         label: formMessageDescriptors.secondaryAddress,
-        conditionalCase: `${FATHER_DETAILS_DONT_EXIST} || ${secondaryAddressesDisabled}`
+        conditionalCase: JSON.stringify(
+          `${FATHER_DETAILS_DONT_EXIST} || ${secondaryAddressesDisabled}`
+        )
       },
       {
         config: AddressCases.SECONDARY_ADDRESS,
-        conditionalCase: `${FATHER_DETAILS_DONT_EXIST} || ${secondaryAddressesDisabled}`
+        conditionalCase: JSON.stringify(
+          `${FATHER_DETAILS_DONT_EXIST} || ${secondaryAddressesDisabled}`
+        )
       }
     ]
   },
@@ -175,11 +191,11 @@ export const defaultAddressConfiguration: IAddressConfiguration[] = [
       {
         config: AddressSubsections.SECONDARY_ADDRESS_SUBSECTION,
         label: formMessageDescriptors.deceasedSecondaryAddress,
-        conditionalCase: secondaryAddressesDisabled
+        conditionalCase: JSON.stringify(secondaryAddressesDisabled)
       },
       {
         config: AddressCases.SECONDARY_ADDRESS,
-        conditionalCase: secondaryAddressesDisabled
+        conditionalCase: JSON.stringify(secondaryAddressesDisabled)
       }
     ]
   },
@@ -195,20 +211,24 @@ export const defaultAddressConfiguration: IAddressConfiguration[] = [
       {
         config: AddressSubsections.PRIMARY_ADDRESS_SUBSECTION,
         label: formMessageDescriptors.informantPrimaryAddress,
-        conditionalCase: `${primaryAddressSameAsOtherPrimaryAddress}`
+        conditionalCase: JSON.stringify(
+          `${primaryAddressSameAsOtherPrimaryAddress}`
+        )
       },
       {
         config: AddressCases.PRIMARY_ADDRESS,
-        conditionalCase: `${primaryAddressSameAsOtherPrimaryAddress}`
+        conditionalCase: JSON.stringify(
+          `${primaryAddressSameAsOtherPrimaryAddress}`
+        )
       },
       {
         config: AddressSubsections.SECONDARY_ADDRESS_SUBSECTION,
         label: formMessageDescriptors.informantSecondaryAddress,
-        conditionalCase: secondaryAddressesDisabled
+        conditionalCase: JSON.stringify(secondaryAddressesDisabled)
       },
       {
         config: AddressCases.SECONDARY_ADDRESS,
-        conditionalCase: secondaryAddressesDisabled
+        conditionalCase: JSON.stringify(secondaryAddressesDisabled)
       }
     ]
   },
@@ -225,11 +245,11 @@ export const defaultAddressConfiguration: IAddressConfiguration[] = [
       {
         config: AddressSubsections.SECONDARY_ADDRESS_SUBSECTION,
         label: formMessageDescriptors.secondaryAddress,
-        conditionalCase: `${secondaryAddressesDisabled}`
+        conditionalCase: JSON.stringify(`${secondaryAddressesDisabled}`)
       },
       {
         config: AddressCases.SECONDARY_ADDRESS,
-        conditionalCase: `${secondaryAddressesDisabled}`
+        conditionalCase: JSON.stringify(`${secondaryAddressesDisabled}`)
       }
     ]
   },
@@ -246,11 +266,11 @@ export const defaultAddressConfiguration: IAddressConfiguration[] = [
       {
         config: AddressSubsections.SECONDARY_ADDRESS_SUBSECTION,
         label: formMessageDescriptors.secondaryAddress,
-        conditionalCase: `${secondaryAddressesDisabled}`
+        conditionalCase: JSON.stringify(`${secondaryAddressesDisabled}`)
       },
       {
         config: AddressCases.SECONDARY_ADDRESS,
-        conditionalCase: `${secondaryAddressesDisabled}`
+        conditionalCase: JSON.stringify(`${secondaryAddressesDisabled}`)
       }
     ]
   }
