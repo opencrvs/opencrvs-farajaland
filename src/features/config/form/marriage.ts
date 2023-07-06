@@ -10,10 +10,13 @@
  * graphic logo are (registered/a) trademark(s) of Plan International.
  */
 
+import { registrationEmail, registrationPhone } from './common-optional-fields'
+import { otherInformantType } from './common-required-fields'
 import {
   formMessageDescriptors,
   informantMessageDescriptors
 } from './formatjs-messages'
+import { marriageInformantType } from './marriage/required-fields-marriage'
 import {
   marriageDocumentForWhomFhirMapping,
   marriageDocumentTypeFhirMapping
@@ -88,7 +91,7 @@ export const marriageRegisterForms: ISerializedForm = {
       }
     },
     {
-      id: 'registrationName',
+      id: 'informant',
       viewType: 'form',
       name: formMessageDescriptors.registrationName,
       title: formMessageDescriptors.registrationTitle,
@@ -100,73 +103,10 @@ export const marriageRegisterForms: ISerializedForm = {
           preventContinueIfError: true,
           showExitButtonOnly: true,
           fields: [
-            {
-              name: 'informantType',
-              type: 'SELECT_WITH_OPTIONS',
-              label: informantMessageDescriptors.birthInformantTitle,
-              required: true,
-              hideInPreview: false,
-              initialValue: '',
-              validator: [],
-              placeholder: formMessageDescriptors.formSelectPlaceholder,
-              mapping: {
-                mutation: {
-                  operation: 'sectionFieldToBundleFieldTransformer',
-                  parameters: ['registration.informantType']
-                },
-                query: {
-                  operation: 'bundleFieldToSectionFieldTransformer',
-                  parameters: ['registration.informantType']
-                },
-                template: {
-                  fieldName: 'informantType',
-                  operation: 'selectTransformer'
-                }
-              },
-              options: [
-                {
-                  value: 'GROOM',
-                  label: informantMessageDescriptors.GROOM
-                },
-                {
-                  value: 'BRIDE',
-                  label: informantMessageDescriptors.BRIDE
-                },
-                {
-                  value: 'OTHER',
-                  label: informantMessageDescriptors.OTHER
-                }
-              ]
-            },
-            {
-              name: 'otherInformantType',
-              type: 'TEXT',
-              label: formMessageDescriptors.informantsRelationWithChild,
-              placeholder: formMessageDescriptors.relationshipPlaceHolder,
-              required: true,
-              initialValue: '',
-              validator: [
-                {
-                  operation: 'englishOnlyNameFormat'
-                }
-              ],
-              conditionals: [
-                {
-                  action: 'hide',
-                  expression: 'values.informantType !== "OTHER"'
-                }
-              ],
-              mapping: {
-                mutation: {
-                  operation: 'sectionFieldToBundleFieldTransformer',
-                  parameters: ['registration.otherInformantType']
-                },
-                query: {
-                  operation: 'bundleFieldToSectionFieldTransformer',
-                  parameters: ['registration.otherInformantType']
-                }
-              }
-            }
+            marriageInformantType,
+            otherInformantType,
+            registrationPhone,
+            registrationEmail
           ]
         },
         {

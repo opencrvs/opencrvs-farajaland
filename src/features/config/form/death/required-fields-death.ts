@@ -10,7 +10,10 @@
  * graphic logo are (registered/a) trademark(s) of Plan International.
  */
 
-import { formMessageDescriptors } from '../formatjs-messages'
+import {
+  formMessageDescriptors,
+  informantMessageDescriptors
+} from '../formatjs-messages'
 import {
   IFormFieldMapping,
   ISelectOption,
@@ -54,6 +57,74 @@ export const getDeathDate = (
     }
   }
 })
+
+export const deathInformantType: SerializedFormField = {
+  name: 'contactPoint',
+  type: 'SELECT_WITH_OPTIONS',
+  label: formMessageDescriptors.relationshipToDeceased,
+  required: true,
+  previewGroup: 'contactPointGroup',
+  hideInPreview: false,
+  initialValue: '',
+  validator: [],
+  placeholder: formMessageDescriptors.formSelectPlaceholder,
+  mapping: {
+    mutation: {
+      operation: 'sectionFieldToBundleFieldTransformer',
+      parameters: ['registration.contact']
+    },
+    query: {
+      operation: 'bundleFieldToSectionFieldTransformer',
+      parameters: ['registration.contact']
+    },
+    template: {
+      fieldName: 'contactPoint',
+      operation: 'selectTransformer'
+    }
+  },
+  options: [
+    {
+      value: 'SPOUSE',
+      label: informantMessageDescriptors.SPOUSE
+    },
+    {
+      value: 'SON',
+      label: informantMessageDescriptors.SON
+    },
+    {
+      value: 'DAUGHTER',
+      label: informantMessageDescriptors.DAUGHTER
+    },
+    {
+      value: 'SON_IN_LAW',
+      label: informantMessageDescriptors.SON_IN_LAW
+    },
+    {
+      value: 'DAUGHTER_IN_LAW',
+      label: informantMessageDescriptors.DAUGHTER_IN_LAW
+    },
+    {
+      value: 'MOTHER',
+      label: informantMessageDescriptors.MOTHER
+    },
+    {
+      value: 'FATHER',
+      label: informantMessageDescriptors.FATHER
+    },
+    {
+      value: 'GRANDSON',
+      label: informantMessageDescriptors.GRANDSON
+    },
+    {
+      value: 'GRANDDAUGHTER',
+      label: informantMessageDescriptors.GRANDDAUGHTER
+    },
+    {
+      value: 'OTHER',
+      label: informantMessageDescriptors.OTHER
+    }
+  ]
+}
 
 export const getMannerOfDeath: SerializedFormField = {
   name: 'mannerOfDeath',

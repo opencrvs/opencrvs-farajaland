@@ -21,7 +21,6 @@ import {
   seperatorSubsection
 } from './common-optional-fields'
 import {
-  deathInformantType,
   getFamilyNameField,
   getFirstNameField,
   getNationalID,
@@ -30,6 +29,7 @@ import {
   otherInformantType
 } from './common-required-fields'
 import {
+  deathInformantType,
   getCauseOfDeath,
   getCauseOfDeathMethod,
   getDeathDate,
