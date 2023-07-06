@@ -11,6 +11,11 @@
  */
 import { readCSVToJSON } from '@countryconfig/features/utils'
 import { Request, ResponseToolkit } from '@hapi/hapi'
+import {
+  extractStatisticsMap,
+  getStatistics,
+  LocationStatistic
+} from '../administrative/scripts/utils'
 
 type HumdataLocation = {
   admin0Pcode: string
@@ -49,6 +54,7 @@ type Location = {
   code: 'ADMIN_STRUCTURE' | 'HEALTH_FACILITY' | 'CRVS_OFFICE'
   physicalType: 'Jurisdiction' | 'Building'
   jurisdictionType?: typeof JURISDICTION_TYPE[number]
+  statistics?: LocationStatistic['years']
 }
 
 const JURISDICTION_TYPE = [
@@ -60,7 +66,7 @@ const JURISDICTION_TYPE = [
 ] as const
 
 export async function locationsHandler(_: Request, h: ResponseToolkit) {
-  const [humdataLocations, healthFacilities, crvsFacilities] =
+  const [humdataLocations, healthFacilities, crvsFacilities, statistics] =
     await Promise.all([
       readCSVToJSON<HumdataLocation[]>(
         './src/features/locations/locations.csv'
@@ -68,14 +74,17 @@ export async function locationsHandler(_: Request, h: ResponseToolkit) {
       readCSVToJSON<Facility[]>(
         './src/features/locations/health-facilities.csv'
       ),
-      readCSVToJSON<Facility[]>('./src/features/locations/crvs-facilities.csv')
+      readCSVToJSON<Facility[]>('./src/features/locations/crvs-facilities.csv'),
+      getStatistics()
     ])
   const locations = new Set<Location>()
+  const statisticsMap = extractStatisticsMap(statistics)
   humdataLocations.forEach((humdataLocation) => {
     ;([1, 2, 3, 4] as const).forEach((locationLevel) => {
-      if (humdataLocation[`admin${locationLevel}Pcode`]) {
+      const id = humdataLocation[`admin${locationLevel}Pcode`]
+      if (id) {
         locations.add({
-          statisticalID: humdataLocation[`admin${locationLevel}Pcode`]!,
+          statisticalID: id,
           name: humdataLocation[`admin${locationLevel}Name_en`]!,
           alias: humdataLocation[`admin${locationLevel}Name_alias`]!,
           partOf:
@@ -84,7 +93,8 @@ export async function locationsHandler(_: Request, h: ResponseToolkit) {
               : `Location/${humdataLocation[`admin${locationLevel - 1}Pcode`]}`,
           code: 'ADMIN_STRUCTURE',
           physicalType: 'Jurisdiction',
-          jurisdictionType: JURISDICTION_TYPE[locationLevel - 1]
+          jurisdictionType: JURISDICTION_TYPE[locationLevel - 1],
+          statistics: statisticsMap.get(id)?.years
         })
       }
     })
