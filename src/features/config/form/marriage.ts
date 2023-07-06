@@ -24,6 +24,71 @@ export const marriageRegisterForms: ISerializedForm = {
   sections: [
     {
       id: 'registration',
+      viewType: 'hidden',
+      name: {
+        defaultMessage: 'Registration',
+        description: 'Form section name for Registration',
+        id: 'form.section.declaration.name'
+      },
+      groups: [],
+      mapping: {
+        template: [
+          {
+            fieldName: 'registrationNumber',
+            operation: 'registrationNumberTransformer'
+          },
+          {
+            fieldName: 'qrCode',
+            operation: 'QRCodeTransformerTransformer'
+          },
+          {
+            fieldName: 'certificateDate',
+            operation: 'certificateDateTransformer',
+            parameters: ['en', 'dd MMMM yyyy']
+          },
+          {
+            fieldName: 'registrar',
+            operation: 'userTransformer',
+            parameters: ['REGISTERED']
+          },
+          {
+            fieldName: 'registrationAgent',
+            operation: 'userTransformer',
+            parameters: ['VALIDATED']
+          },
+          // backward compatibility
+          {
+            fieldName: 'registrarName',
+            operation: 'registrarNameUserTransformer'
+          },
+          {
+            fieldName: 'role',
+            operation: 'roleUserTransformer'
+          },
+          {
+            fieldName: 'registrarSignature',
+            operation: 'registrarSignatureUserTransformer'
+          },
+          {
+            fieldName: 'registrationDate',
+            operation: 'registrationDateTransformer',
+            parameters: ['en', 'dd MMMM yyyy']
+          },
+          {
+            fieldName: 'registrationLocation',
+            operation: 'registrationLocationUserTransformer'
+          }
+        ],
+        mutation: {
+          operation: 'setMarriageRegistrationSectionTransformer'
+        },
+        query: {
+          operation: 'getMarriageRegistrationSectionTransformer'
+        }
+      }
+    },
+    {
+      id: 'registrationName',
       viewType: 'form',
       name: formMessageDescriptors.registrationName,
       title: formMessageDescriptors.registrationTitle,
