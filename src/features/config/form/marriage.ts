@@ -36,7 +36,10 @@ import {
 import {
   brideOrGroomBirthDateValidators,
   getMarriageDate,
-  marriageInformantType
+  getRelationshipToSpousesForWitness,
+  marriageInformantType,
+  witnessName,
+  witnessRelationshipForOthers
 } from './marriage/required-fields-marriage'
 import {
   marriageDocumentForWhomFhirMapping,
@@ -335,130 +338,22 @@ export const marriageRegisterForms: ISerializedForm = {
         {
           id: 'witness-view-group',
           fields: [
-            {
-              name: 'firstNamesEng',
-              previewGroup: 'witnessOneNameInEnglish',
-              type: 'TEXT',
-              label: formMessageDescriptors.firstName,
-              maxLength: 32,
-              required: true,
-              initialValue: '',
-              validator: [
-                {
-                  operation: 'englishOnlyNameFormat'
-                }
-              ],
-              mapping: {
-                mutation: {
-                  operation: 'fieldValueNestingTransformer',
-                  parameters: [
-                    'individual',
-                    {
-                      operation: 'fieldToNameTransformer',
-                      parameters: ['en', 'firstNames']
-                    },
-                    'name'
-                  ]
-                },
-                query: {
-                  operation: 'nestedValueToFieldTransformer',
-                  parameters: [
-                    'individual',
-                    {
-                      operation: 'nameToFieldTransformer',
-                      parameters: ['en', 'firstNames']
-                    }
-                  ]
-                },
-                template: {
-                  fieldName: 'witnessOneFirstName',
-                  operation: 'nameToFieldTransformer',
-                  parameters: ['en', 'firstNames', 'informant', 'individual']
-                }
-              }
-            },
-            {
-              name: 'familyNameEng',
-              previewGroup: 'witnessOneNameInEnglish',
-              type: 'TEXT',
-              label: formMessageDescriptors.familyName,
-              maxLength: 32,
-              required: true,
-              initialValue: '',
-              validator: [
-                {
-                  operation: 'englishOnlyNameFormat'
-                }
-              ],
-              mapping: {
-                mutation: {
-                  operation: 'fieldValueNestingTransformer',
-                  parameters: [
-                    'individual',
-                    {
-                      operation: 'fieldToNameTransformer',
-                      parameters: ['en', 'familyName']
-                    },
-                    'name'
-                  ]
-                },
-                query: {
-                  operation: 'nestedValueToFieldTransformer',
-                  parameters: [
-                    'individual',
-                    {
-                      operation: 'nameToFieldTransformer',
-                      parameters: ['en', 'familyName']
-                    }
-                  ]
-                },
-                template: {
-                  fieldName: 'witnessOneFamilyName',
-                  operation: 'nameToFieldTransformer',
-                  parameters: ['en', 'familyName', 'informant', 'individual']
-                }
-              }
-            },
-            {
-              name: 'relationship',
-              type: 'SELECT_WITH_OPTIONS',
-              label: formMessageDescriptors.relationshipToSpouses,
-              required: true,
-              initialValue: '',
-              validator: [],
-              placeholder: formMessageDescriptors.formSelectPlaceholder,
-              mapping: {
-                template: {
-                  fieldName: 'witnessTwoRelationship',
-                  operation: 'selectTransformer'
-                }
-              },
-              options: [
-                {
-                  value: 'headOfGroomFamily',
-                  label: formMessageDescriptors.headOfGroomFamily
-                },
-                {
-                  value: 'other',
-                  label: formMessageDescriptors.other
-                }
-              ]
-            },
-            {
-              name: 'otherRelationship',
-              type: 'TEXT',
-              label: formMessageDescriptors.other,
-              maxLength: 32,
-              required: true,
-              initialValue: '',
-              validator: [],
-              conditionals: [
-                {
-                  action: 'hide',
-                  expression: '(values.relationship!="other")'
-                }
-              ]
-            }
+            witnessName(
+              'firstNamesEng',
+              'witnessOneNameInEnglish',
+              'witnessOneFirstName',
+              'firstNames',
+              'firstName'
+            ),
+            witnessName(
+              'familyNameEng',
+              'witnessOneNameInEnglish',
+              'witnessOneFamilyName',
+              'familyName',
+              'familyName'
+            ),
+            getRelationshipToSpousesForWitness,
+            witnessRelationshipForOthers
           ],
           previewGroups: [
             {
@@ -484,124 +379,22 @@ export const marriageRegisterForms: ISerializedForm = {
         {
           id: 'witness-view-group',
           fields: [
-            {
-              name: 'firstNamesEng',
-              previewGroup: 'witnessTwoNameInEnglish',
-              type: 'TEXT',
-              label: formMessageDescriptors.firstName,
-              maxLength: 32,
-              required: true,
-              initialValue: '',
-              validator: [
-                {
-                  operation: 'englishOnlyNameFormat'
-                }
-              ],
-              mapping: {
-                mutation: {
-                  operation: 'fieldValueNestingTransformer',
-                  parameters: [
-                    'individual',
-                    {
-                      operation: 'fieldToNameTransformer',
-                      parameters: ['en', 'firstNames']
-                    },
-                    'name'
-                  ]
-                },
-                query: {
-                  operation: 'nestedValueToFieldTransformer',
-                  parameters: [
-                    'individual',
-                    {
-                      operation: 'nameToFieldTransformer',
-                      parameters: ['en', 'firstNames']
-                    }
-                  ]
-                },
-                template: {
-                  fieldName: 'witnessTwoFirstName',
-                  operation: 'nameToFieldTransformer',
-                  parameters: ['en', 'firstNames', 'informant', 'individual']
-                }
-              }
-            },
-            {
-              name: 'familyNameEng',
-              previewGroup: 'witnessTwoNameInEnglish',
-              type: 'TEXT',
-              label: formMessageDescriptors.familyName,
-              maxLength: 32,
-              required: true,
-              initialValue: '',
-              validator: [
-                {
-                  operation: 'englishOnlyNameFormat'
-                }
-              ],
-              mapping: {
-                mutation: {
-                  operation: 'fieldValueNestingTransformer',
-                  parameters: [
-                    'individual',
-                    {
-                      operation: 'fieldToNameTransformer',
-                      parameters: ['en', 'familyName']
-                    },
-                    'name'
-                  ]
-                },
-                query: {
-                  operation: 'nestedValueToFieldTransformer',
-                  parameters: [
-                    'individual',
-                    {
-                      operation: 'nameToFieldTransformer',
-                      parameters: ['en', 'familyName']
-                    }
-                  ]
-                },
-                template: {
-                  fieldName: 'witnessTwoFamilyName',
-                  operation: 'nameToFieldTransformer',
-                  parameters: ['en', 'familyName', 'informant', 'individual']
-                }
-              }
-            },
-            {
-              name: 'relationship',
-              type: 'SELECT_WITH_OPTIONS',
-              label: formMessageDescriptors.relationshipToSpouses,
-              required: true,
-              initialValue: '',
-              validator: [],
-              placeholder: formMessageDescriptors.formSelectPlaceholder,
-              options: [
-                {
-                  value: 'headOfBrideFamily',
-                  label: formMessageDescriptors.headOfBrideFamily
-                },
-                {
-                  value: 'other',
-                  label: formMessageDescriptors.other
-                }
-              ]
-            },
-            {
-              name: 'otherRelationship',
-              type: 'TEXT',
-              label: formMessageDescriptors.other,
-              maxLength: 32,
-              required: true,
-              initialValue: '',
-              validator: [],
-              conditionals: [
-                {
-                  action: 'hide',
-                  expression: '(values.relationship!="other")'
-                }
-              ]
-            }
+            witnessName(
+              'firstNamesEng',
+              'witnessTwoNameInEnglish',
+              'witnessTwoFirstName',
+              'firstNames',
+              'firstName'
+            ),
+            witnessName(
+              'familyNameEng',
+              'witnessTwoNameInEnglish',
+              'witnessTwoFamilyName',
+              'familyName',
+              'familyName'
+            ),
+            getRelationshipToSpousesForWitness,
+            witnessRelationshipForOthers
           ],
           previewGroups: [
             {

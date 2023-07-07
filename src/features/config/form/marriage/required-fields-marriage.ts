@@ -112,3 +112,92 @@ export const getMarriageDate: SerializedFormField = {
     }
   }
 }
+
+export const witnessName = (
+  name: string,
+  previewGroup: string,
+  certificateHandlebar: string,
+  parameters: string,
+  label: string
+): SerializedFormField => ({
+  name,
+  previewGroup,
+  type: 'TEXT',
+  label: formMessageDescriptors[label],
+  maxLength: 32,
+  required: true,
+  initialValue: '',
+  validator: [
+    {
+      operation: 'englishOnlyNameFormat'
+    }
+  ],
+  mapping: {
+    mutation: {
+      operation: 'fieldValueNestingTransformer',
+      parameters: [
+        'individual',
+        {
+          operation: 'fieldToNameTransformer',
+          parameters: ['en', parameters]
+        },
+        'name'
+      ]
+    },
+    query: {
+      operation: 'nestedValueToFieldTransformer',
+      parameters: [
+        'individual',
+        {
+          operation: 'nameToFieldTransformer',
+          parameters: ['en', parameters]
+        }
+      ]
+    },
+    template: {
+      fieldName: certificateHandlebar,
+      operation: 'nameToFieldTransformer',
+      parameters: ['en', parameters, 'informant', 'individual']
+    }
+  }
+})
+
+export const getRelationshipToSpousesForWitness: SerializedFormField = {
+  name: 'relationship',
+  type: 'SELECT_WITH_OPTIONS',
+  label: formMessageDescriptors.relationshipToSpouses,
+  required: true,
+  initialValue: '',
+  validator: [],
+  placeholder: formMessageDescriptors.formSelectPlaceholder,
+  options: [
+    {
+      value: 'headOfGroomFamily',
+      label: formMessageDescriptors.headOfGroomFamily
+    },
+    {
+      value: 'headOfBrideFamily',
+      label: formMessageDescriptors.headOfBrideFamily
+    },
+    {
+      value: 'other',
+      label: formMessageDescriptors.other
+    }
+  ]
+}
+
+export const witnessRelationshipForOthers: SerializedFormField = {
+  name: 'otherRelationship',
+  type: 'TEXT',
+  label: formMessageDescriptors.other,
+  maxLength: 32,
+  required: true,
+  initialValue: '',
+  validator: [],
+  conditionals: [
+    {
+      action: 'hide',
+      expression: '(values.relationship!="other")'
+    }
+  ]
+}
