@@ -14,7 +14,12 @@ import {
   formMessageDescriptors,
   informantMessageDescriptors
 } from '../formatjs-messages'
-import { SerializedFormField } from '../types'
+import {
+  marriageDocumentForWhomFhirMapping,
+  marriageDocumentTypeFhirMapping
+} from '../options'
+import { ISelectOption, SerializedFormField } from '../types'
+import { IConditional } from '../validations-and-conditionals'
 
 export const marriageInformantType: SerializedFormField = {
   name: 'informantType',
@@ -201,3 +206,57 @@ export const witnessRelationshipForOthers: SerializedFormField = {
     }
   ]
 }
+
+export const getDocUploaderForMarriage = (
+  name: string,
+  label: string,
+  extraValueEnum: string,
+  options: ISelectOption[],
+  conditionals: IConditional[]
+): SerializedFormField => ({
+  name,
+  type: 'DOCUMENT_UPLOADER_WITH_OPTION',
+  label: formMessageDescriptors[label],
+  required: false,
+  initialValue: '',
+  extraValue: marriageDocumentForWhomFhirMapping[extraValueEnum],
+  hideAsterisk: true,
+  conditionals,
+  validator: [],
+  options,
+  mapping: {
+    mutation: {
+      operation: 'eventFieldToAttachmentTransformer'
+    },
+    query: {
+      operation: 'eventAttachmentToFieldTransformer'
+    }
+  }
+})
+
+export const getIdSelectOptions: ISelectOption[] = [
+  {
+    value: marriageDocumentTypeFhirMapping.NATIONAL_ID,
+    label: formMessageDescriptors.docTypeNID
+  },
+  {
+    value: marriageDocumentTypeFhirMapping.PASSPORT,
+    label: formMessageDescriptors.docTypePassport
+  },
+  {
+    value: marriageDocumentTypeFhirMapping.BIRTH_CERTIFICATE,
+    label: formMessageDescriptors.docTypeBirthCert
+  },
+  {
+    value: marriageDocumentTypeFhirMapping.OTHER,
+    label: formMessageDescriptors.docTypeOther
+  }
+]
+
+export const getInformantConditionalForDocUpload: IConditional[] = [
+  {
+    action: 'hide',
+    expression:
+      "(draftData && draftData.informant && draftData.informant.informantType && (draftData.informant.informantType === 'BRIDE' || draftData.informant.informantType === 'GROOM' ))"
+  }
+]

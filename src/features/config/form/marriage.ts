@@ -35,11 +35,14 @@ import {
 } from './marriage/optional-fields-marriage'
 import {
   brideOrGroomBirthDateValidators,
+  getDocUploaderForMarriage,
   getMarriageDate,
   getRelationshipToSpousesForWitness,
   marriageInformantType,
+  getIdSelectOptions,
   witnessName,
-  witnessRelationshipForOthers
+  witnessRelationshipForOthers,
+  getInformantConditionalForDocUpload
 } from './marriage/required-fields-marriage'
 import {
   marriageDocumentForWhomFhirMapping,
@@ -431,103 +434,39 @@ export const marriageRegisterForms: ISerializedForm = {
               initialValue: '',
               validator: []
             },
-            {
-              name: 'uploadDocForMarriageProof',
-              type: 'DOCUMENT_UPLOADER_WITH_OPTION',
-              label: formMessageDescriptors.proofOfMarriageNotice,
-              required: false,
-              initialValue: '',
-              extraValue:
-                marriageDocumentForWhomFhirMapping.MARRIAGE_NOTICE_PROOF,
-              hideAsterisk: true,
-              validator: [],
-              options: [
+            getDocUploaderForMarriage(
+              'uploadDocForMarriageProof',
+              'proofOfMarriageNotice',
+              'MARRIAGE_NOTICE_PROOF',
+              [
                 {
                   value: marriageDocumentTypeFhirMapping.MARRIAGE_NOTICE,
                   label: formMessageDescriptors.docTypeMarriageNotice
                 }
               ],
-              mapping: {
-                mutation: {
-                  operation: 'eventFieldToAttachmentTransformer'
-                },
-                query: {
-                  operation: 'eventAttachmentToFieldTransformer'
-                }
-              }
-            },
-            {
-              name: 'uploadDocForGroom',
-              type: 'DOCUMENT_UPLOADER_WITH_OPTION',
-              label: formMessageDescriptors.proofOfGroomsID,
-              initialValue: '',
-              extraValue: marriageDocumentForWhomFhirMapping.GROOM,
-              hideAsterisk: true,
-              required: false,
-              validator: [],
-              options: [
-                {
-                  value: marriageDocumentTypeFhirMapping.NATIONAL_ID,
-                  label: formMessageDescriptors.docTypeNID
-                },
-                {
-                  value: marriageDocumentTypeFhirMapping.PASSPORT,
-                  label: formMessageDescriptors.docTypePassport
-                },
-                {
-                  value: marriageDocumentTypeFhirMapping.BIRTH_CERTIFICATE,
-                  label: formMessageDescriptors.docTypeBirthCert
-                },
-                {
-                  value: marriageDocumentTypeFhirMapping.OTHER,
-                  label: formMessageDescriptors.docTypeOther
-                }
-              ],
-              mapping: {
-                mutation: {
-                  operation: 'eventFieldToAttachmentTransformer'
-                },
-                query: {
-                  operation: 'eventAttachmentToFieldTransformer'
-                }
-              }
-            },
-            {
-              name: 'uploadDocForBride',
-              type: 'DOCUMENT_UPLOADER_WITH_OPTION',
-              label: formMessageDescriptors.proofOfBridesID,
-              initialValue: '',
-              required: false,
-              extraValue: marriageDocumentForWhomFhirMapping.BRIDE,
-              hideAsterisk: true,
-              validator: [],
-              options: [
-                {
-                  value: marriageDocumentTypeFhirMapping.NATIONAL_ID,
-                  label: formMessageDescriptors.docTypeNID
-                },
-                {
-                  value: marriageDocumentTypeFhirMapping.PASSPORT,
-                  label: formMessageDescriptors.docTypePassport
-                },
-                {
-                  value: marriageDocumentTypeFhirMapping.BIRTH_CERTIFICATE,
-                  label: formMessageDescriptors.docTypeBirthCert
-                },
-                {
-                  value: marriageDocumentTypeFhirMapping.OTHER,
-                  label: formMessageDescriptors.docTypeOther
-                }
-              ],
-              mapping: {
-                mutation: {
-                  operation: 'eventFieldToAttachmentTransformer'
-                },
-                query: {
-                  operation: 'eventAttachmentToFieldTransformer'
-                }
-              }
-            }
+              []
+            ),
+            getDocUploaderForMarriage(
+              'uploadDocForGroom',
+              'proofOfGroomsID',
+              'GROOM',
+              getIdSelectOptions,
+              []
+            ),
+            getDocUploaderForMarriage(
+              'uploadDocForBride',
+              'proofOfBridesID',
+              'BRIDE',
+              getIdSelectOptions,
+              []
+            ),
+            getDocUploaderForMarriage(
+              'uploadDocForInformant',
+              'proofOfInformantsID',
+              'INFORMANT',
+              getIdSelectOptions,
+              getInformantConditionalForDocUpload
+            )
           ]
         }
       ]
