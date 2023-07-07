@@ -39,6 +39,7 @@ import {
   secondaryAddressesDisabled
 } from './validations-and-conditionals'
 import { getPreviewGroups } from './birth/preview-groups'
+import { marriageInformantConditional } from './marriage/optional-fields-marriage'
 
 // ADMIN_LEVELS must equate to the number of levels of administrative structure provided by your Humdata CSV import
 // For example, in Farajaland, we have 2 main administrative levels: State and District.
@@ -251,6 +252,36 @@ export const defaultAddressConfiguration: IAddressConfiguration[] = [
       {
         config: AddressCases.SECONDARY_ADDRESS,
         conditionalCase: `${secondaryAddressesDisabled}`
+      }
+    ]
+  },
+  {
+    precedingFieldId:
+      'marriage.informant.who-is-applying-view-group.informantID',
+    configurations: [
+      {
+        config: AddressSubsections.PRIMARY_ADDRESS_SUBSECTION,
+        label: formMessageDescriptors.primaryAddress,
+        conditionalCase: marriageInformantConditional[0].expression
+      },
+      {
+        config: AddressCases.PRIMARY_ADDRESS,
+        conditionalCase: marriageInformantConditional[0].expression
+      },
+      {
+        config: AddressSubsections.SECONDARY_ADDRESS_SUBSECTION,
+        label: formMessageDescriptors.secondaryAddress,
+        conditionalCase: `${
+          secondaryAddressesDisabled ||
+          marriageInformantConditional[0].expression
+        }`
+      },
+      {
+        config: AddressCases.SECONDARY_ADDRESS,
+        conditionalCase: `${
+          secondaryAddressesDisabled ||
+          marriageInformantConditional[0].expression
+        }`
       }
     ]
   }

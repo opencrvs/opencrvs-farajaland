@@ -12,6 +12,7 @@
 
 import { formMessageDescriptors } from '../formatjs-messages'
 import { SerializedFormField } from '../types'
+import { IConditional } from '../validations-and-conditionals'
 
 export const getMarriedLastName: SerializedFormField = {
   name: 'marriedLastNameEng',
@@ -86,3 +87,11 @@ export const placeOfMarriageSubsection: SerializedFormField = {
   initialValue: '',
   validator: []
 }
+
+export const marriageInformantConditional: IConditional[] = [
+  {
+    action: 'hide',
+    expression:
+      '(values.informantType === "" || values.informantType === "BRIDE" || values.informantType === "GROOM")'
+  }
+]

@@ -31,6 +31,7 @@ import {
 import {
   getMarriedLastName,
   getTypeOfMarriage,
+  marriageInformantConditional,
   placeOfMarriageSubsection
 } from './marriage/optional-fields-marriage'
 import {
@@ -49,7 +50,10 @@ import {
   marriageDocumentTypeFhirMapping
 } from './options'
 import { ISerializedForm } from './types'
-import { exactDateOfBirthUnknownConditional } from './validations-and-conditionals'
+import {
+  exactDateOfBirthUnknownConditional,
+  getNationalIDValidators
+} from './validations-and-conditionals'
 
 export const marriageRegisterForms: ISerializedForm = {
   sections: [
@@ -133,6 +137,48 @@ export const marriageRegisterForms: ISerializedForm = {
           fields: [
             marriageInformantType,
             otherInformantType,
+            getFirstNameField(
+              'informantNameInEnglish',
+              marriageInformantConditional,
+              'informantFirstName'
+            ),
+            getFamilyNameField(
+              'informantNameInEnglish',
+              marriageInformantConditional,
+              'informantFamilyName'
+            ),
+            getBirthDate(
+              'informantBirthDate',
+              marriageInformantConditional,
+              [
+                {
+                  operation: 'dateFormatIsCorrect',
+                  parameters: []
+                },
+                {
+                  operation: 'dateInPast',
+                  parameters: []
+                }
+              ],
+              'eventDate'
+            ),
+            exactDateOfBirthUnknown,
+            getAgeOfIndividualInYears(
+              formMessageDescriptors.ageOfInformant,
+              exactDateOfBirthUnknownConditional.concat(
+                marriageInformantConditional
+              )
+            ),
+            getNationality(
+              'informantNationality',
+              marriageInformantConditional
+            ),
+            getNationalID(
+              'informantID',
+              marriageInformantConditional,
+              getNationalIDValidators('informant'),
+              'informantNID'
+            ),
             registrationPhone,
             registrationEmail
           ]
