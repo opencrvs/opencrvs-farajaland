@@ -28,9 +28,14 @@ import {
   formMessageDescriptors,
   informantMessageDescriptors
 } from './formatjs-messages'
-import { getMarriedLastName } from './marriage/optional-fields-marriage'
+import {
+  getMarriedLastName,
+  getTypeOfMarriage,
+  placeOfMarriageSubsection
+} from './marriage/optional-fields-marriage'
 import {
   brideOrGroomBirthDateValidators,
+  getMarriageDate,
   marriageInformantType
 } from './marriage/required-fields-marriage'
 import {
@@ -314,82 +319,9 @@ export const marriageRegisterForms: ISerializedForm = {
         {
           id: 'marriage-event-details',
           fields: [
-            {
-              name: 'marriageDate',
-              type: 'DATE',
-              label: formMessageDescriptors.marriageEventDate,
-              required: true,
-              initialValue: '',
-              validator: [
-                {
-                  operation: 'checkMarriageDate',
-                  parameters: [18]
-                }
-              ],
-              mapping: {
-                template: {
-                  operation: 'marriageDateFormatTransformation',
-                  fieldName: 'eventDate',
-                  parameters: ['en', 'do MMMM yyyy', ['bride', 'groom']]
-                },
-                mutation: {
-                  operation: 'fieldToMarriageDateTransformation',
-                  parameters: [
-                    ['bride', 'groom'],
-                    {
-                      operation: 'longDateTransformer',
-                      parameters: []
-                    }
-                  ]
-                },
-                query: {
-                  operation: 'marriageDateToFieldTransformation',
-                  parameters: [['bride', 'groom']]
-                }
-              }
-            },
-            {
-              name: 'typeOfMarriage',
-              type: 'SELECT_WITH_OPTIONS',
-              label: formMessageDescriptors.typeOfMarriage,
-              required: false,
-              initialValue: '',
-              validator: [],
-              placeholder: formMessageDescriptors.formSelectPlaceholder,
-              options: [
-                {
-                  value: 'MONOGAMY',
-                  label: formMessageDescriptors.monogamy
-                },
-                {
-                  value: 'POLYGAMY',
-                  label: formMessageDescriptors.polygamy
-                }
-              ],
-              mapping: {
-                mutation: {
-                  operation: 'sectionFieldToBundleFieldTransformer',
-                  parameters: ['typeOfMarriage']
-                },
-                query: {
-                  operation: 'bundleFieldToSectionFieldTransformer',
-                  parameters: ['typeOfMarriage']
-                },
-                template: {
-                  fieldName: 'typeOfMarriage',
-                  operation: 'selectTransformer'
-                }
-              }
-            },
-            {
-              name: 'placeOfMarriageTitle',
-              type: 'SUBSECTION',
-              label: formMessageDescriptors.placeOfMarriage,
-              previewGroup: 'placeOfMarriage',
-              ignoreBottomMargin: true,
-              initialValue: '',
-              validator: []
-            }
+            getMarriageDate,
+            getTypeOfMarriage,
+            placeOfMarriageSubsection
           ]
         }
       ]

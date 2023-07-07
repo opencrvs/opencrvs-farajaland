@@ -77,3 +77,38 @@ export const brideOrGroomBirthDateValidators = (spouseType: string) => [
     parameters: [spouseType, 18]
   }
 ]
+
+export const getMarriageDate: SerializedFormField = {
+  name: 'marriageDate',
+  type: 'DATE',
+  label: formMessageDescriptors.marriageEventDate,
+  required: true,
+  initialValue: '',
+  validator: [
+    {
+      operation: 'checkMarriageDate',
+      parameters: [18]
+    }
+  ],
+  mapping: {
+    template: {
+      operation: 'marriageDateFormatTransformation',
+      fieldName: 'eventDate',
+      parameters: ['en', 'do MMMM yyyy', ['bride', 'groom']]
+    },
+    mutation: {
+      operation: 'fieldToMarriageDateTransformation',
+      parameters: [
+        ['bride', 'groom'],
+        {
+          operation: 'longDateTransformer',
+          parameters: []
+        }
+      ]
+    },
+    query: {
+      operation: 'marriageDateToFieldTransformation',
+      parameters: [['bride', 'groom']]
+    }
+  }
+}

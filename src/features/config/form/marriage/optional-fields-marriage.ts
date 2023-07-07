@@ -42,3 +42,47 @@ export const getMarriedLastName: SerializedFormField = {
     }
   }
 }
+
+export const getTypeOfMarriage: SerializedFormField = {
+  name: 'typeOfMarriage',
+  type: 'SELECT_WITH_OPTIONS',
+  label: formMessageDescriptors.typeOfMarriage,
+  required: false,
+  initialValue: '',
+  validator: [],
+  placeholder: formMessageDescriptors.formSelectPlaceholder,
+  options: [
+    {
+      value: 'MONOGAMY',
+      label: formMessageDescriptors.monogamy
+    },
+    {
+      value: 'POLYGAMY',
+      label: formMessageDescriptors.polygamy
+    }
+  ],
+  mapping: {
+    mutation: {
+      operation: 'sectionFieldToBundleFieldTransformer',
+      parameters: ['typeOfMarriage']
+    },
+    query: {
+      operation: 'bundleFieldToSectionFieldTransformer',
+      parameters: ['typeOfMarriage']
+    },
+    template: {
+      fieldName: 'typeOfMarriage',
+      operation: 'selectTransformer'
+    }
+  }
+}
+
+export const placeOfMarriageSubsection: SerializedFormField = {
+  name: 'placeOfMarriageTitle',
+  type: 'SUBSECTION',
+  label: formMessageDescriptors.placeOfMarriage,
+  previewGroup: 'placeOfMarriage',
+  ignoreBottomMargin: true,
+  initialValue: '',
+  validator: []
+}
