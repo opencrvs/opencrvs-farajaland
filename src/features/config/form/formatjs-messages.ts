@@ -708,6 +708,11 @@ export const formMessageDescriptors = {
     description: 'Label for married last name text input',
     id: 'form.field.label.marriedLastName'
   },
+  lastNameAtBirth: {
+    defaultMessage: 'Last name at birth (if different from above)',
+    description: 'Label for a different last name text input',
+    id: 'form.field.label.lastNameAtBirth'
+  },
   brideName: {
     defaultMessage: 'Bride',
     description: 'Form section name for Bride',

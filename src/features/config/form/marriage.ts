@@ -10,18 +10,35 @@
  * graphic logo are (registered/a) trademark(s) of Plan International.
  */
 
-import { registrationEmail, registrationPhone } from './common-optional-fields'
-import { otherInformantType } from './common-required-fields'
+import {
+  exactDateOfBirthUnknown,
+  getAgeOfIndividualInYears,
+  getBirthDate,
+  registrationEmail,
+  registrationPhone
+} from './common-optional-fields'
+import {
+  getFamilyNameField,
+  getFirstNameField,
+  getNationalID,
+  getNationality,
+  otherInformantType
+} from './common-required-fields'
 import {
   formMessageDescriptors,
   informantMessageDescriptors
 } from './formatjs-messages'
-import { marriageInformantType } from './marriage/required-fields-marriage'
+import { getMarriedLastName } from './marriage/optional-fields-marriage'
+import {
+  groomBirthDateValidators,
+  marriageInformantType
+} from './marriage/required-fields-marriage'
 import {
   marriageDocumentForWhomFhirMapping,
   marriageDocumentTypeFhirMapping
 } from './options'
 import { ISerializedForm } from './types'
+import { exactDateOfBirthUnknownConditional } from './validations-and-conditionals'
 
 export const marriageRegisterForms: ISerializedForm = {
   sections: [
@@ -176,37 +193,24 @@ export const marriageRegisterForms: ISerializedForm = {
         {
           id: 'groom-view-group',
           fields: [
-            {
-              name: 'nationality',
-              type: 'SELECT_WITH_OPTIONS',
-              label: formMessageDescriptors.nationality,
-              required: true,
-              initialValue: 'FAR',
-              validator: [],
-              placeholder: formMessageDescriptors.formSelectPlaceholder,
-              options: {
-                resource: 'countries'
-              },
-              mapping: {
-                template: {
-                  fieldName: 'groomNationality',
-                  operation: 'nationalityTransformer'
-                },
-                mutation: {
-                  operation: 'fieldToArrayTransformer'
-                },
-                query: {
-                  operation: 'arrayToFieldTransformer'
-                }
-              }
-            },
-            {
-              name: 'iD',
-              type: 'TEXT',
-              label: formMessageDescriptors.iDTypeNationalID,
-              required: false,
-              initialValue: '',
-              validator: [
+            getFirstNameField('groomNameInEnglish', [], 'groomFirstName'),
+            getFamilyNameField('groomNameInEnglish', [], 'groomFamilyName'),
+            getBirthDate(
+              'groomBirthDate',
+              [],
+              groomBirthDateValidators,
+              'groomBirthDate'
+            ),
+            exactDateOfBirthUnknown,
+            getAgeOfIndividualInYears(
+              formMessageDescriptors.ageOfGroom,
+              exactDateOfBirthUnknownConditional
+            ),
+            getNationality('groomNationality', []),
+            getNationalID(
+              'iD',
+              [],
+              [
                 {
                   operation: 'validIDNumber',
                   parameters: ['NATIONAL_ID']
@@ -216,204 +220,9 @@ export const marriageRegisterForms: ISerializedForm = {
                   parameters: ['bride.iD']
                 }
               ],
-              mapping: {
-                template: {
-                  fieldName: 'groomNID',
-                  operation: 'identityToFieldTransformer',
-                  parameters: ['id', 'NATIONAL_ID']
-                },
-                mutation: {
-                  operation: 'fieldToIdentityTransformer',
-                  parameters: ['id', 'NATIONAL_ID']
-                },
-                query: {
-                  operation: 'identityToFieldTransformer',
-                  parameters: ['id', 'NATIONAL_ID']
-                }
-              }
-            },
-            {
-              name: 'groomBirthDate',
-              type: 'DATE',
-              label: formMessageDescriptors.dateOfBirth,
-              conditionals: [
-                {
-                  action: 'disable',
-                  expression: 'values.exactDateOfBirthUnknown'
-                }
-              ],
-              required: true,
-              initialValue: '',
-              validator: [
-                {
-                  operation: 'dateFormatIsCorrect',
-                  parameters: []
-                },
-                {
-                  operation: 'dateInPast',
-                  parameters: []
-                },
-                {
-                  operation: 'isValidDateOfBirthForMarriage',
-                  parameters: ['groom', 18]
-                }
-              ],
-              mapping: {
-                template: {
-                  operation: 'dateFormatTransformer',
-                  fieldName: 'groomBirthDate',
-                  parameters: ['birthDate', 'en', 'do MMMM yyyy']
-                },
-                mutation: {
-                  operation: 'longDateTransformer',
-                  parameters: ['birthDate']
-                },
-                query: {
-                  operation: 'fieldValueTransformer',
-                  parameters: ['birthDate']
-                }
-              }
-            },
-            {
-              name: 'exactDateOfBirthUnknown',
-              type: 'CHECKBOX',
-              label: {
-                defaultMessage: 'Exact date of birth unknown',
-                description: 'Checkbox for exact date of birth unknown',
-                id: 'form.field.label.exactDateOfBirthUnknown'
-              },
-              required: false,
-              hideInPreview: true,
-              hideHeader: true,
-              initialValue: false,
-              validator: [],
-              conditionals: [
-                {
-                  action: 'hide',
-                  expression: '!window.config.DATE_OF_BIRTH_UNKNOWN'
-                }
-              ],
-              mapping: {
-                query: {
-                  operation: 'booleanTransformer'
-                },
-                mutation: {
-                  operation: 'ignoreFieldTransformer'
-                }
-              }
-            },
-            {
-              name: 'ageOfIndividualInYears',
-              type: 'NUMBER',
-              label: formMessageDescriptors.ageOfGroom,
-              required: true,
-              initialValue: '',
-              conditionals: [
-                {
-                  action: 'hide',
-                  expression: '!values.exactDateOfBirthUnknown'
-                }
-              ],
-              validator: [
-                {
-                  operation: 'range',
-                  parameters: [18, 120]
-                },
-                {
-                  operation: 'maxLength',
-                  parameters: [3]
-                }
-              ],
-              postfix: 'years',
-              inputFieldWidth: '78px'
-            },
-            {
-              name: 'firstNamesEng',
-              previewGroup: 'groomNameInEnglish',
-              type: 'TEXT',
-              label: formMessageDescriptors.firstName,
-              maxLength: 32,
-              required: true,
-              initialValue: '',
-              validator: [
-                {
-                  operation: 'englishOnlyNameFormat'
-                }
-              ],
-              mapping: {
-                template: {
-                  fieldName: 'groomFirstName',
-                  operation: 'nameToFieldTransformer',
-                  parameters: ['en', 'firstNames']
-                },
-                mutation: {
-                  operation: 'fieldToNameTransformer',
-                  parameters: ['en', 'firstNames']
-                },
-                query: {
-                  operation: 'nameToFieldTransformer',
-                  parameters: ['en', 'firstNames']
-                }
-              }
-            },
-            {
-              name: 'familyNameEng',
-              previewGroup: 'groomNameInEnglish',
-              type: 'TEXT',
-              label: formMessageDescriptors.familyName,
-              maxLength: 32,
-              required: true,
-              initialValue: '',
-              validator: [
-                {
-                  operation: 'englishOnlyNameFormat'
-                }
-              ],
-              mapping: {
-                template: {
-                  fieldName: 'groomFamilyName',
-                  operation: 'nameToFieldTransformer',
-                  parameters: ['en', 'familyName']
-                },
-                mutation: {
-                  operation: 'fieldToNameTransformer',
-                  parameters: ['en', 'familyName']
-                },
-                query: {
-                  operation: 'nameToFieldTransformer',
-                  parameters: ['en', 'familyName']
-                }
-              }
-            },
-            {
-              name: 'marriedLastNameEng',
-              previewGroup: 'marriedLastNameInEnglish',
-              type: 'TEXT',
-              label: formMessageDescriptors.marriedLastName,
-              maxLength: 32,
-              initialValue: '',
-              required: false,
-              validator: [
-                {
-                  operation: 'englishOnlyNameFormat'
-                }
-              ],
-              mapping: {
-                template: {
-                  fieldName: 'marriedLastNameEng',
-                  operation: 'nameToFieldTransformer',
-                  parameters: ['en', 'marriedLastName']
-                },
-                mutation: {
-                  operation: 'fieldToNameTransformer',
-                  parameters: ['en', 'marriedLastName']
-                },
-                query: {
-                  operation: 'nameToFieldTransformer',
-                  parameters: ['en', 'marriedLastName']
-                }
-              }
-            }
+              'groomNID'
+            ),
+            getMarriedLastName
             // PRIMARY ADDRESS SUBSECTION
             // PRIMARY ADDRESS
             // SECONDARY ADDRESS SAME AS PRIMARY

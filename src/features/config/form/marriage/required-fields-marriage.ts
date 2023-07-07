@@ -62,3 +62,18 @@ export const marriageInformantType: SerializedFormField = {
     }
   ]
 }
+
+export const groomBirthDateValidators = [
+  {
+    operation: 'dateFormatIsCorrect',
+    parameters: []
+  },
+  {
+    operation: 'dateInPast',
+    parameters: []
+  },
+  {
+    operation: 'isValidDateOfBirthForMarriage',
+    parameters: ['groom', 18]
+  }
+]

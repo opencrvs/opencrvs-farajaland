@@ -170,7 +170,7 @@ export const getMaritalStatus = (
       operation: 'selectTransformer'
     }
   },
-  conditionals: conditionals,
+  conditionals,
   options: [
     {
       value: 'SINGLE',
