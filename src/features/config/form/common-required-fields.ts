@@ -105,12 +105,7 @@ export const getNationality = (
   options: {
     resource: 'countries'
   },
-  conditionals: [
-    {
-      action: 'hide',
-      expression: '!values.detailsExist'
-    }
-  ].concat(conditionals),
+  conditionals,
   mapping: {
     template: {
       fieldName: certificateHandlebar,

@@ -63,7 +63,7 @@ export const marriageInformantType: SerializedFormField = {
   ]
 }
 
-export const groomBirthDateValidators = [
+export const brideOrGroomBirthDateValidators = (spouseType: string) => [
   {
     operation: 'dateFormatIsCorrect',
     parameters: []
@@ -74,6 +74,6 @@ export const groomBirthDateValidators = [
   },
   {
     operation: 'isValidDateOfBirthForMarriage',
-    parameters: ['groom', 18]
+    parameters: [spouseType, 18]
   }
 ]

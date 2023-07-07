@@ -30,7 +30,7 @@ import {
 } from './formatjs-messages'
 import { getMarriedLastName } from './marriage/optional-fields-marriage'
 import {
-  groomBirthDateValidators,
+  brideOrGroomBirthDateValidators,
   marriageInformantType
 } from './marriage/required-fields-marriage'
 import {
@@ -198,7 +198,7 @@ export const marriageRegisterForms: ISerializedForm = {
             getBirthDate(
               'groomBirthDate',
               [],
-              groomBirthDateValidators,
+              brideOrGroomBirthDateValidators('groom'),
               'groomBirthDate'
             ),
             exactDateOfBirthUnknown,
@@ -253,37 +253,26 @@ export const marriageRegisterForms: ISerializedForm = {
         {
           id: 'bride-view-group',
           fields: [
-            {
-              name: 'nationality',
-              type: 'SELECT_WITH_OPTIONS',
-              label: formMessageDescriptors.nationality,
-              required: true,
-              initialValue: 'FAR',
-              validator: [],
-              placeholder: formMessageDescriptors.formSelectPlaceholder,
-              options: {
-                resource: 'countries'
-              },
-              mapping: {
-                template: {
-                  fieldName: 'brideNationality',
-                  operation: 'nationalityTransformer'
-                },
-                mutation: {
-                  operation: 'fieldToArrayTransformer'
-                },
-                query: {
-                  operation: 'arrayToFieldTransformer'
-                }
+            getFirstNameField('brideNameInEnglish', [], 'brideFirstName'),
+            getFamilyNameField('brideNameInEnglish', [], 'brideFamilyName'),
+            getBirthDate(
+              'brideBirthDate',
+              [],
+              brideOrGroomBirthDateValidators('bride'),
+              'brideBirthDate'
+            ),
+            exactDateOfBirthUnknown,
+            getAgeOfIndividualInYears(formMessageDescriptors.ageOfBride, [
+              {
+                action: 'hide',
+                expression: '!values.exactDateOfBirthUnknown'
               }
-            },
-            {
-              name: 'iD',
-              type: 'TEXT',
-              label: formMessageDescriptors.iDTypeNationalID,
-              required: false,
-              initialValue: '',
-              validator: [
+            ]),
+            getNationality('brideNationality', []),
+            getNationalID(
+              'iD',
+              [],
+              [
                 {
                   operation: 'validIDNumber',
                   parameters: ['NATIONAL_ID']
@@ -293,205 +282,9 @@ export const marriageRegisterForms: ISerializedForm = {
                   parameters: ['groom.iD']
                 }
               ],
-              mapping: {
-                template: {
-                  fieldName: 'brideNID',
-                  operation: 'identityToFieldTransformer',
-                  parameters: ['id', 'NATIONAL_ID']
-                },
-                mutation: {
-                  operation: 'fieldToIdentityTransformer',
-                  parameters: ['id', 'NATIONAL_ID']
-                },
-                query: {
-                  operation: 'identityToFieldTransformer',
-                  parameters: ['id', 'NATIONAL_ID']
-                }
-              }
-            },
-            {
-              name: 'brideBirthDate',
-              type: 'DATE',
-              label: formMessageDescriptors.dateOfBirth,
-              conditionals: [
-                {
-                  action: 'disable',
-                  expression: 'values.exactDateOfBirthUnknown'
-                }
-              ],
-              required: true,
-              initialValue: '',
-              validator: [
-                {
-                  operation: 'dateFormatIsCorrect',
-                  parameters: []
-                },
-                {
-                  operation: 'dateInPast',
-                  parameters: []
-                },
-                {
-                  operation: 'isValidDateOfBirthForMarriage',
-                  parameters: ['bride', 18]
-                }
-              ],
-              mapping: {
-                template: {
-                  operation: 'dateFormatTransformer',
-                  fieldName: 'brideBirthDate',
-                  parameters: ['birthDate', 'en', 'do MMMM yyyy']
-                },
-                mutation: {
-                  operation: 'longDateTransformer',
-                  parameters: ['birthDate']
-                },
-                query: {
-                  operation: 'fieldValueTransformer',
-                  parameters: ['birthDate']
-                }
-              }
-            },
-            {
-              name: 'exactDateOfBirthUnknown',
-              type: 'CHECKBOX',
-              label: {
-                defaultMessage: 'Exact date of birth unknown',
-                description: 'Checkbox for exact date of birth unknown',
-                id: 'form.field.label.exactDateOfBirthUnknown'
-              },
-              required: false,
-              hideInPreview: true,
-              hideHeader: true,
-              initialValue: false,
-              validator: [],
-              conditionals: [
-                {
-                  action: 'hide',
-                  expression: '!window.config.DATE_OF_BIRTH_UNKNOWN'
-                }
-              ],
-              mapping: {
-                query: {
-                  operation: 'booleanTransformer'
-                },
-                mutation: {
-                  operation: 'ignoreFieldTransformer'
-                }
-              }
-            },
-            {
-              name: 'ageOfIndividualInYears',
-              type: 'NUMBER',
-              label: formMessageDescriptors.ageOfBride,
-              required: true,
-              initialValue: '',
-              conditionals: [
-                {
-                  action: 'hide',
-                  expression: '!values.exactDateOfBirthUnknown'
-                }
-              ],
-              validator: [
-                {
-                  operation: 'range',
-                  parameters: [18, 120]
-                },
-                {
-                  operation: 'maxLength',
-                  parameters: [3]
-                }
-              ],
-
-              postfix: 'years',
-              inputFieldWidth: '78px'
-            },
-            {
-              name: 'firstNamesEng',
-              previewGroup: 'brideNameInEnglish',
-              type: 'TEXT',
-              label: formMessageDescriptors.firstName,
-              maxLength: 32,
-              required: true,
-              initialValue: '',
-              validator: [
-                {
-                  operation: 'englishOnlyNameFormat'
-                }
-              ],
-              mapping: {
-                template: {
-                  fieldName: 'brideFirstName',
-                  operation: 'nameToFieldTransformer',
-                  parameters: ['en', 'firstNames']
-                },
-                mutation: {
-                  operation: 'fieldToNameTransformer',
-                  parameters: ['en', 'firstNames']
-                },
-                query: {
-                  operation: 'nameToFieldTransformer',
-                  parameters: ['en', 'firstNames']
-                }
-              }
-            },
-            {
-              name: 'familyNameEng',
-              previewGroup: 'brideNameInEnglish',
-              type: 'TEXT',
-              label: formMessageDescriptors.familyName,
-              maxLength: 32,
-              required: true,
-              initialValue: '',
-              validator: [
-                {
-                  operation: 'englishOnlyNameFormat'
-                }
-              ],
-              mapping: {
-                template: {
-                  fieldName: 'brideFamilyName',
-                  operation: 'nameToFieldTransformer',
-                  parameters: ['en', 'familyName']
-                },
-                mutation: {
-                  operation: 'fieldToNameTransformer',
-                  parameters: ['en', 'familyName']
-                },
-                query: {
-                  operation: 'nameToFieldTransformer',
-                  parameters: ['en', 'familyName']
-                }
-              }
-            },
-            {
-              name: 'marriedLastNameEng',
-              previewGroup: 'marriedLastNameInEnglish',
-              type: 'TEXT',
-              label: formMessageDescriptors.marriedLastName,
-              maxLength: 32,
-              initialValue: '',
-              required: false,
-              validator: [
-                {
-                  operation: 'englishOnlyNameFormat'
-                }
-              ],
-              mapping: {
-                template: {
-                  fieldName: 'marriedLastNameEng',
-                  operation: 'nameToFieldTransformer',
-                  parameters: ['en', 'marriedLastName']
-                },
-                mutation: {
-                  operation: 'fieldToNameTransformer',
-                  parameters: ['en', 'marriedLastName']
-                },
-                query: {
-                  operation: 'nameToFieldTransformer',
-                  parameters: ['en', 'marriedLastName']
-                }
-              }
-            }
+              'brideNID'
+            ),
+            getMarriedLastName
             // PRIMARY ADDRESS SUBSECTION
             // PRIMARY ADDRESS
             // SECONDARY ADDRESS SUBSECTION
