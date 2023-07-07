@@ -77,13 +77,13 @@ export async function locationsHandler(_: Request, h: ResponseToolkit) {
       readCSVToJSON<Facility[]>('./src/features/locations/crvs-facilities.csv'),
       getStatistics()
     ])
-  const locations = new Set<Location>()
+  const locations = new Map<string, Location>()
   const statisticsMap = extractStatisticsMap(statistics)
   humdataLocations.forEach((humdataLocation) => {
     ;([1, 2, 3, 4] as const).forEach((locationLevel) => {
       const id = humdataLocation[`admin${locationLevel}Pcode`]
       if (id) {
-        locations.add({
+        locations.set(id, {
           statisticalID: id,
           name: humdataLocation[`admin${locationLevel}Name_en`]!,
           alias: humdataLocation[`admin${locationLevel}Name_alias`]!,
@@ -102,11 +102,11 @@ export async function locationsHandler(_: Request, h: ResponseToolkit) {
   ;[...healthFacilities, ...crvsFacilities]
     .map(({ id, ...rest }) => ({ statisticalID: id, ...rest }))
     .forEach((healthFacility) => {
-      locations.add({
+      locations.set(healthFacility.statisticalID, {
         ...healthFacility,
         alias: healthFacility.name,
         physicalType: 'Building'
       })
     })
-  return h.response(Array.from(locations))
+  return h.response(Array.from(locations.values()))
 }
