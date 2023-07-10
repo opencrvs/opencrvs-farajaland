@@ -44,6 +44,8 @@ import { ErrorContext } from 'hapi-auth-jwt2'
 import { mapGeojsonHandler } from '@countryconfig/features/map/handler'
 import { formHandler } from '@countryconfig/features/config/form'
 import { countryLogoHandler } from '@countryconfig/features/countryLogo/handler'
+import { certificateHandler } from './features/certificates/handler'
+import { rolesHandler } from './features/roles/handler'
 import { applicationConfigHandler } from './features/config/application/handler'
 
 export interface ITokenPayload {
@@ -398,6 +400,28 @@ export async function createServer() {
       auth: false,
       tags: ['api', 'application-config'],
       description: 'Returns default application configuration'
+    }
+  })
+
+  server.route({
+    method: 'GET',
+    path: '/certificates',
+    handler: certificateHandler,
+    options: {
+      auth: false,
+      tags: ['api', 'certificates'],
+      description: 'Returns certificate metadata'
+    }
+  })
+
+  server.route({
+    method: 'GET',
+    path: '/roles',
+    handler: rolesHandler,
+    options: {
+      auth: false,
+      tags: ['api', 'user-roles'],
+      description: 'Returns user roles metadata'
     }
   })
 
