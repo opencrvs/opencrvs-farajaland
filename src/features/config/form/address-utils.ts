@@ -15,13 +15,9 @@ import { ISerializedForm, SerializedFormField, Event } from './types'
 import {
   getAddressConditionals,
   getPlaceOfEventConditionals
-} from './validations-and-conditionals'
-import {
-  AddressCases,
-  AddressCopyConfigCases,
-  AddressSubsections,
-  EventLocationAddressCases
-} from './addresses'
+} from './validationsAndConditionals'
+import { AddressCopyConfigCases, AddressSubsections } from './addresses'
+import { AddressCases, EventLocationAddressCases } from './address-settings'
 
 export interface IAddressConfiguration {
   precedingFieldId: string

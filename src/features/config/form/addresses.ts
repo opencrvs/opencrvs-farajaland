@@ -11,6 +11,16 @@
  */
 
 import {
+  FATHER_DETAILS_DONT_EXIST,
+  MOTHER_DETAILS_DONT_EXIST,
+  fathersDetailsDontExist,
+  getRuralOrUrbanConditionals,
+  informantNotMotherOrFather,
+  mothersDetailsDontExistOnOtherPage,
+  primaryAddressSameAsOtherPrimaryAddress,
+  secondaryAddressesDisabled
+} from './validationsAndConditionals'
+import {
   FLEX_DIRECTION,
   SerializedFormField,
   IPreviewGroup,
@@ -28,41 +38,12 @@ import {
   sentenceCase
 } from './address-utils'
 import { cloneDeep } from 'lodash'
-import {
-  FATHER_DETAILS_DONT_EXIST,
-  MOTHER_DETAILS_DONT_EXIST,
-  fathersDetailsDontExist,
-  getRuralOrUrbanConditionals,
-  informantNotMotherOrFather,
-  mothersDetailsDontExistOnOtherPage,
-  primaryAddressSameAsOtherPrimaryAddress,
-  secondaryAddressesDisabled
-} from './validations-and-conditionals'
 import { getPreviewGroups } from './birth/preview-groups'
-
-// ADMIN_LEVELS must equate to the number of levels of administrative structure provided by your Humdata CSV import
-// For example, in Farajaland, we have 2 main administrative levels: State and District.
-// Therefore our ADMIN_LEVELS property is 2.
-// You can set up to 5 supported administrative levels.
-
-export const ADMIN_LEVELS: Number = 2
-
-// Addresses take up a lot of repeated code in the forms, making the birth.ts, marriage.ts and death.ts files long and difficult to read
-// Therefore we apply the addresses dynamically to sections of the form using this configuration constant
-// Its possible to show and hide address fields for individuals using conditionals.
-// Its also possible to add 2 addresses per individual: PRIMARY_ADDRESS & SECONDARY_ADDRESS depending if the global config setting: secondaryAddressesDisabled is true/false
-
-export enum EventLocationAddressCases {
-  PLACE_OF_BIRTH = 'placeOfBirth',
-  PLACE_OF_DEATH = 'placeOfDeath',
-  PLACE_OF_MARRIAGE = 'placeOfMarriage'
-}
-
-export enum AddressCases {
-  // the below are UPPER_CASE because they map to GQLAddress type enums
-  PRIMARY_ADDRESS = 'PRIMARY_ADDRESS',
-  SECONDARY_ADDRESS = 'SECONDARY_ADDRESS'
-}
+import {
+  ADMIN_LEVELS,
+  EventLocationAddressCases,
+  AddressCases
+} from './address-settings'
 
 export enum AddressCopyConfigCases {
   PRIMARY_ADDRESS_SAME_AS_OTHER_PRIMARY = 'primaryAddressSameAsOtherPrimary'
@@ -89,29 +70,26 @@ export const defaultAddressConfiguration: IAddressConfiguration[] = [
     configurations: [{ config: EventLocationAddressCases.PLACE_OF_MARRIAGE }]
   },
   {
-    precedingFieldId: 'birth.informant.informant-view-group.familyNameEng',
+    precedingFieldId:
+      'birth.informant.informant-view-group.informantNidVerification',
     configurations: [
       {
         config: AddressSubsections.PRIMARY_ADDRESS_SUBSECTION,
         label: formMessageDescriptors.primaryAddress,
-        conditionalCase: JSON.stringify(informantNotMotherOrFather)
+        conditionalCase: informantNotMotherOrFather
       },
       {
         config: AddressCases.PRIMARY_ADDRESS,
-        conditionalCase: JSON.stringify(informantNotMotherOrFather)
+        conditionalCase: informantNotMotherOrFather
       },
       {
         config: AddressSubsections.SECONDARY_ADDRESS_SUBSECTION,
         label: formMessageDescriptors.informantSecondaryAddress,
-        conditionalCase: JSON.stringify(
-          `((${secondaryAddressesDisabled}) || (${informantNotMotherOrFather}))`
-        )
+        conditionalCase: `((${secondaryAddressesDisabled}) || (${informantNotMotherOrFather}))`
       },
       {
         config: AddressCases.SECONDARY_ADDRESS,
-        conditionalCase: JSON.stringify(
-          `((${secondaryAddressesDisabled}) || (${informantNotMotherOrFather}))`
-        )
+        conditionalCase: `((${secondaryAddressesDisabled}) || (${informantNotMotherOrFather}))`
       }
     ]
   },
@@ -121,24 +99,20 @@ export const defaultAddressConfiguration: IAddressConfiguration[] = [
       {
         config: AddressSubsections.PRIMARY_ADDRESS_SUBSECTION,
         label: formMessageDescriptors.primaryAddress,
-        conditionalCase: JSON.stringify(MOTHER_DETAILS_DONT_EXIST)
+        conditionalCase: MOTHER_DETAILS_DONT_EXIST
       },
       {
         config: AddressCases.PRIMARY_ADDRESS,
-        conditionalCase: JSON.stringify(MOTHER_DETAILS_DONT_EXIST)
+        conditionalCase: MOTHER_DETAILS_DONT_EXIST
       },
       {
         config: AddressSubsections.SECONDARY_ADDRESS_SUBSECTION,
         label: formMessageDescriptors.secondaryAddress,
-        conditionalCase: JSON.stringify(
-          `${MOTHER_DETAILS_DONT_EXIST} || ${secondaryAddressesDisabled}`
-        )
+        conditionalCase: secondaryAddressesDisabled
       },
       {
         config: AddressCases.SECONDARY_ADDRESS,
-        conditionalCase: JSON.stringify(
-          `${MOTHER_DETAILS_DONT_EXIST} || ${secondaryAddressesDisabled}`
-        )
+        conditionalCase: `${MOTHER_DETAILS_DONT_EXIST} || ${secondaryAddressesDisabled}`
       }
     ]
   },
@@ -148,35 +122,27 @@ export const defaultAddressConfiguration: IAddressConfiguration[] = [
       {
         config: AddressSubsections.PRIMARY_ADDRESS_SUBSECTION,
         label: formMessageDescriptors.primaryAddress,
-        conditionalCase: JSON.stringify(`${FATHER_DETAILS_DONT_EXIST}`)
+        conditionalCase: `${FATHER_DETAILS_DONT_EXIST}`
       },
       {
         config: AddressCopyConfigCases.PRIMARY_ADDRESS_SAME_AS_OTHER_PRIMARY,
         label: formMessageDescriptors.primaryAddressSameAsOtherPrimary,
         xComparisonSection: 'father',
         yComparisonSection: 'mother',
-        conditionalCase: JSON.stringify(
-          `(${fathersDetailsDontExist} || ${mothersDetailsDontExistOnOtherPage})`
-        )
+        conditionalCase: `(${fathersDetailsDontExist} || ${mothersDetailsDontExistOnOtherPage})`
       },
       {
         config: AddressCases.PRIMARY_ADDRESS,
-        conditionalCase: JSON.stringify(
-          `((${FATHER_DETAILS_DONT_EXIST} || ${primaryAddressSameAsOtherPrimaryAddress}) && !(${mothersDetailsDontExistOnOtherPage}) || ((${fathersDetailsDontExist}) && (${mothersDetailsDontExistOnOtherPage})))`
-        )
+        conditionalCase: `((${FATHER_DETAILS_DONT_EXIST} || ${primaryAddressSameAsOtherPrimaryAddress}) && !(${mothersDetailsDontExistOnOtherPage}) || ((${fathersDetailsDontExist}) && (${mothersDetailsDontExistOnOtherPage})))`
       },
       {
         config: AddressSubsections.SECONDARY_ADDRESS_SUBSECTION,
         label: formMessageDescriptors.secondaryAddress,
-        conditionalCase: JSON.stringify(
-          `${FATHER_DETAILS_DONT_EXIST} || ${secondaryAddressesDisabled}`
-        )
+        conditionalCase: `${FATHER_DETAILS_DONT_EXIST} || ${secondaryAddressesDisabled}`
       },
       {
         config: AddressCases.SECONDARY_ADDRESS,
-        conditionalCase: JSON.stringify(
-          `${FATHER_DETAILS_DONT_EXIST} || ${secondaryAddressesDisabled}`
-        )
+        conditionalCase: `${FATHER_DETAILS_DONT_EXIST} || ${secondaryAddressesDisabled}`
       }
     ]
   },
@@ -191,11 +157,11 @@ export const defaultAddressConfiguration: IAddressConfiguration[] = [
       {
         config: AddressSubsections.SECONDARY_ADDRESS_SUBSECTION,
         label: formMessageDescriptors.deceasedSecondaryAddress,
-        conditionalCase: JSON.stringify(secondaryAddressesDisabled)
+        conditionalCase: secondaryAddressesDisabled
       },
       {
         config: AddressCases.SECONDARY_ADDRESS,
-        conditionalCase: JSON.stringify(secondaryAddressesDisabled)
+        conditionalCase: secondaryAddressesDisabled
       }
     ]
   },
@@ -211,24 +177,20 @@ export const defaultAddressConfiguration: IAddressConfiguration[] = [
       {
         config: AddressSubsections.PRIMARY_ADDRESS_SUBSECTION,
         label: formMessageDescriptors.informantPrimaryAddress,
-        conditionalCase: JSON.stringify(
-          `${primaryAddressSameAsOtherPrimaryAddress}`
-        )
+        conditionalCase: `${primaryAddressSameAsOtherPrimaryAddress}`
       },
       {
         config: AddressCases.PRIMARY_ADDRESS,
-        conditionalCase: JSON.stringify(
-          `${primaryAddressSameAsOtherPrimaryAddress}`
-        )
+        conditionalCase: `${primaryAddressSameAsOtherPrimaryAddress}`
       },
       {
         config: AddressSubsections.SECONDARY_ADDRESS_SUBSECTION,
         label: formMessageDescriptors.informantSecondaryAddress,
-        conditionalCase: JSON.stringify(secondaryAddressesDisabled)
+        conditionalCase: secondaryAddressesDisabled
       },
       {
         config: AddressCases.SECONDARY_ADDRESS,
-        conditionalCase: JSON.stringify(secondaryAddressesDisabled)
+        conditionalCase: secondaryAddressesDisabled
       }
     ]
   },
@@ -245,11 +207,11 @@ export const defaultAddressConfiguration: IAddressConfiguration[] = [
       {
         config: AddressSubsections.SECONDARY_ADDRESS_SUBSECTION,
         label: formMessageDescriptors.secondaryAddress,
-        conditionalCase: JSON.stringify(`${secondaryAddressesDisabled}`)
+        conditionalCase: `${secondaryAddressesDisabled}`
       },
       {
         config: AddressCases.SECONDARY_ADDRESS,
-        conditionalCase: JSON.stringify(`${secondaryAddressesDisabled}`)
+        conditionalCase: `${secondaryAddressesDisabled}`
       }
     ]
   },
@@ -266,11 +228,11 @@ export const defaultAddressConfiguration: IAddressConfiguration[] = [
       {
         config: AddressSubsections.SECONDARY_ADDRESS_SUBSECTION,
         label: formMessageDescriptors.secondaryAddress,
-        conditionalCase: JSON.stringify(`${secondaryAddressesDisabled}`)
+        conditionalCase: `${secondaryAddressesDisabled}`
       },
       {
         config: AddressCases.SECONDARY_ADDRESS,
-        conditionalCase: JSON.stringify(`${secondaryAddressesDisabled}`)
+        conditionalCase: `${secondaryAddressesDisabled}`
       }
     ]
   }
@@ -423,7 +385,6 @@ export function populateRegisterFormsWithAddresses(
   event: string
 ): ISerializedForm {
   const newForm = cloneDeep(defaultEventForm)
-
   defaultAddressConfiguration.forEach(
     ({ precedingFieldId, configurations }: IAddressConfiguration) => {
       if (precedingFieldId.includes(event)) {
@@ -453,6 +414,7 @@ export function populateRegisterFormsWithAddresses(
       }
     }
   )
+
   return newForm
 }
 

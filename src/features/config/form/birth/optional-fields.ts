@@ -13,7 +13,7 @@
 import { MessageDescriptor } from 'react-intl'
 import { formMessageDescriptors } from '../formatjs-messages'
 import { IConditional, SerializedFormField } from '../types'
-import { hideIfInformantMotherOrFather } from '../validations-and-conditionals'
+import { hideIfInformantMotherOrFather } from '../validationsAndConditionals'
 
 export const attendantAtBirth: SerializedFormField = {
   name: 'attendantAtBirth',
@@ -167,8 +167,8 @@ export const registrationPhone: SerializedFormField = {
       parameters: ['registration.contactPhoneNumber']
     },
     query: {
-      operation: 'bundleFieldToSectionFieldTransformer',
-      parameters: ['registration.contactPhoneNumber']
+      operation: 'fieldValueSectionExchangeTransformer',
+      parameters: ['registration', 'contactPhoneNumber']
     },
     template: {
       fieldName: 'contactPhoneNumber',
@@ -195,8 +195,8 @@ export const registrationEmail: SerializedFormField = {
       parameters: ['registration.email']
     },
     query: {
-      operation: 'bundleFieldToSectionFieldTransformer',
-      parameters: ['registration.email']
+      operation: 'fieldValueSectionExchangeTransformer',
+      parameters: ['registration', 'email']
     },
     template: {
       fieldName: 'email',

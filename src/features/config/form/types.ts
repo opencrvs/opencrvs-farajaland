@@ -16,7 +16,7 @@ import { identityTypeMapper } from './options'
 import {
   IConditionals,
   ValidationInitializer
-} from './validations-and-conditionals'
+} from './validationsAndConditionals'
 
 // TODO: only list out supported mappings in core include custom form field mappings
 // replace string with the names of all the functions.

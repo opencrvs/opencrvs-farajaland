@@ -65,7 +65,7 @@ import {
   detailsExist,
   hideIfInformantMotherOrFather,
   exactDateOfBirthUnknownConditional
-} from './validations-and-conditionals'
+} from './validationsAndConditionals'
 import {
   childNameInEnglish,
   fatherNameInEnglish,
@@ -77,7 +77,7 @@ export const birthRegisterForms: ISerializedForm = {
   sections: [
     {
       id: 'registration', // A hidden 'registration' section must be included to store identifiers in a form draft that are used in certificates
-      viewType: 'hidden',
+      viewType: 'form',
       name: {
         defaultMessage: 'Registration',
         description: 'Form section name for Registration',

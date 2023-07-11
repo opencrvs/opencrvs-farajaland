@@ -15,7 +15,7 @@
 import { MessageDescriptor } from 'react-intl'
 import { IFormData, IFormFieldValue, IntegratingSystemType } from './types'
 import { sentenceCase } from './address-utils'
-import { ADMIN_LEVELS, EventLocationAddressCases } from './addresses'
+import { ADMIN_LEVELS, EventLocationAddressCases } from './address-settings'
 
 export interface IConditional {
   description?: string
@@ -75,6 +75,7 @@ export interface IConditionals {
   isAuditActionDeactivate: IConditional
   isAuditActionReactivate: IConditional
 }
+
 export interface IValidationResult {
   message: MessageDescriptor
   props?: { [key: string]: any }
@@ -285,10 +286,6 @@ export const informantFirstNameConditionals = [
   {
     action: 'disable',
     expression: `draftData?.informant?.fieldsModifiedByNidUserInfo?.includes('firstNamesEng')`
-  },
-  {
-    action: 'hide',
-    expression: '!values.detailsExist'
   }
 ]
 
@@ -298,6 +295,7 @@ export const informantFamilyNameConditionals = [
     expression: `draftData?.informant?.fieldsModifiedByNidUserInfo?.includes('familyNameEng')`
   }
 ]
+
 export const fathersBirthDateConditionals = [
   {
     action: 'hide',

@@ -16,7 +16,7 @@ import {
   informantMessageDescriptors
 } from '../formatjs-messages'
 import { SerializedFormField } from '../types'
-import { IConditional } from '../validations-and-conditionals'
+import { IConditional } from '../validationsAndConditionals'
 
 export const getBirthDate = (
   fieldName: string,
@@ -168,12 +168,7 @@ export const getNationality = (
   options: {
     resource: 'countries'
   },
-  conditionals: [
-    {
-      action: 'hide',
-      expression: '!values.detailsExist'
-    }
-  ].concat(conditionals),
+  conditionals: conditionals,
   mapping: {
     template: {
       fieldName: certificateHandlebar,
