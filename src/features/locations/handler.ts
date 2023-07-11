@@ -43,17 +43,16 @@ type Facility = {
   id: string
   name: string
   partOf: string
-  code: 'HEALTH_FACILITY' | 'CRVS_OFFICE'
+  locationType: 'HEALTH_FACILITY' | 'CRVS_OFFICE'
 }
 
 type Location = {
-  statisticalID: string
+  id: string
   name: string
   alias: string
   partOf: string
-  code: 'ADMIN_STRUCTURE' | 'HEALTH_FACILITY' | 'CRVS_OFFICE'
-  physicalType: 'Jurisdiction' | 'Building'
-  jurisdictionType?: typeof JURISDICTION_TYPE[number]
+  locationType: 'ADMIN_STRUCTURE' | 'HEALTH_FACILITY' | 'CRVS_OFFICE'
+  jurisdictionType?: (typeof JURISDICTION_TYPE)[number]
   statistics?: LocationStatistic['years']
 }
 
@@ -84,29 +83,27 @@ export async function locationsHandler(_: Request, h: ResponseToolkit) {
       const id = humdataLocation[`admin${locationLevel}Pcode`]
       if (id) {
         locations.set(id, {
-          statisticalID: id,
+          id,
           name: humdataLocation[`admin${locationLevel}Name_en`]!,
           alias: humdataLocation[`admin${locationLevel}Name_alias`]!,
           partOf:
             locationLevel == 1
               ? 'Location/0'
               : `Location/${humdataLocation[`admin${locationLevel - 1}Pcode`]}`,
-          code: 'ADMIN_STRUCTURE',
-          physicalType: 'Jurisdiction',
+          locationType: 'ADMIN_STRUCTURE',
           jurisdictionType: JURISDICTION_TYPE[locationLevel - 1],
           statistics: statisticsMap.get(id)?.years
         })
       }
     })
   })
-  ;[...healthFacilities, ...crvsFacilities]
-    .map(({ id, ...rest }) => ({ statisticalID: id, ...rest }))
-    .forEach((healthFacility) => {
-      locations.set(healthFacility.statisticalID, {
-        ...healthFacility,
-        alias: healthFacility.name,
-        physicalType: 'Building'
-      })
+  ;[...healthFacilities, ...crvsFacilities].forEach((healthFacility) => {
+    locations.set(healthFacility.id, {
+      ...healthFacility,
+      // We haven't set aliases for the facilities in farajaland
+      // that's why just using the name instead
+      alias: healthFacility.name
     })
+  })
   return h.response(Array.from(locations.values()))
 }
