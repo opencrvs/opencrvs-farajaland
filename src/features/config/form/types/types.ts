@@ -140,6 +140,7 @@ export const LOCATION_SEARCH_INPUT = 'LOCATION_SEARCH_INPUT'
 export const TIME = 'TIME'
 export const NID_VERIFICATION_BUTTON = 'NID_VERIFICATION_BUTTON'
 export const DIVIDER = 'DIVIDER'
+export const HEADING3 = 'HEADING3'
 export enum RadioSize {
   LARGE = 'large',
   NORMAL = 'normal'
@@ -476,6 +477,10 @@ export interface IDividerField extends IFormFieldBase {
   type: typeof DIVIDER
 }
 
+export interface IHeading3Field extends IFormFieldBase {
+  type: typeof HEADING3
+}
+
 export type IFormField =
   | ITextFormField
   | ITelFormField
@@ -507,6 +512,7 @@ export type IFormField =
   | ITimeFormFIeld
   | INidVerificationButton
   | IDividerField
+  | IHeading3Field
 
 export interface SelectComponentOption {
   value: string
