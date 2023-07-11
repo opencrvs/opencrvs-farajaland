@@ -15,12 +15,12 @@ import {
   formMessageDescriptors,
   informantMessageDescriptors
 } from '../formatjs-messages'
-import { SerializedFormField } from '../types'
 import { IConditional } from '../validationsAndConditionals'
+import { Conditional, SerializedFormField } from '../types/types'
 
 export const getBirthDate = (
   fieldName: string,
-  conditionals: IConditional[],
+  conditionals: Conditional[],
   validator: any[],
   certificateHandlebar: string
 ): SerializedFormField => ({
@@ -185,7 +185,7 @@ export const getNationality = (
 
 export const getNationalID = (
   fieldName: string,
-  conditionals: IConditional[],
+  conditionals: Conditional[],
   validator: any[],
   certificateHandlebar: string
 ): SerializedFormField => ({
@@ -394,7 +394,7 @@ export const otherInformantType: SerializedFormField = {
 
 export const getDetailsExist = (
   label: MessageDescriptor,
-  conditionals: IConditional[]
+  conditionals: Conditional[]
 ): SerializedFormField => ({
   name: 'detailsExist',
   type: 'CHECKBOX',

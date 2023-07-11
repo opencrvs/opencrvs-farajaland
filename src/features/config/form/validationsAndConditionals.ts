@@ -13,9 +13,15 @@
 // TODO: add in all the validations and conditionals logic and generate a js file client can load
 
 import { MessageDescriptor } from 'react-intl'
-import { IFormData, IFormFieldValue, IntegratingSystemType } from './types'
 import { sentenceCase } from './address-utils'
-import { ADMIN_LEVELS, EventLocationAddressCases } from './address-settings'
+import { EventLocationAddressCases, ADMIN_LEVELS } from './address-settings'
+import {
+  Conditional,
+  IFormData,
+  IFormFieldValue,
+  IntegratingSystemType
+} from './types/types'
+import { Validator } from './types/validators'
 
 export interface IConditional {
   description?: string
@@ -102,7 +108,7 @@ export const isValidChildBirthDate = [
   {
     operation: 'isValidChildBirthDate'
   }
-]
+] satisfies Validator[]
 
 export const hideIfNidIntegrationDisabled = [
   {
@@ -168,7 +174,7 @@ export const parentsBirthDateValidators = [
     operation: 'isValidParentsBirthDate',
     parameters: [5]
   }
-]
+] satisfies Validator[]
 
 export function getNationalIDValidators(configCase: string) {
   if (configCase === 'informant') {
@@ -357,9 +363,6 @@ export const fatherFamilyNameConditionals = [
 export const mothersDetailsDontExistOnOtherPage =
   'draftData && draftData.mother && !draftData.mother.detailsExist'
 
-// if mothers details do not exist
-export const mothersDetailsDontExist = '!values.detailsExist'
-
 // if fathers details do not exist
 export const fathersDetailsDontExist = '!values.detailsExist'
 
@@ -514,9 +517,9 @@ export function getPlaceOfEventConditionals(
 
 export function getRuralOrUrbanConditionals(
   useCase: string,
-  defaultConditionals: IConditional[]
+  defaultConditionals: Conditional[]
 ) {
-  let customConditionals: IConditional[] = []
+  let customConditionals: Conditional[] = []
   switch (ADMIN_LEVELS) {
     case 1:
       customConditionals = [
