@@ -9,11 +9,8 @@
  * Copyright (C) The OpenCRVS Authors. OpenCRVS and the OpenCRVS
  * graphic logo are (registered/a) trademark(s) of Plan International.
  */
-
-import { MessageDescriptor } from 'react-intl'
 import { formMessageDescriptors } from '../formatjs-messages'
 import { Conditional, SerializedFormField } from '../types/types'
-import { hideIfInformantMotherOrFather } from './utils'
 
 export const attendantAtBirth: SerializedFormField = {
   name: 'attendantAtBirth',

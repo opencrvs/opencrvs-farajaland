@@ -14,17 +14,11 @@ import {
   formMessageDescriptors,
   informantMessageDescriptors
 } from '../formatjs-messages'
-import {
-  IFormFieldMapping,
-  ISelectOption,
-  SerializedFormField,
-  TEXTAREA,
-  IConditional
-} from '../types/types'
+import { SerializedFormField, TEXTAREA, Conditional } from '../types/types'
 
 export const getDeathDate = (
   fieldName: string,
-  conditionals: IConditional[],
+  conditionals: Conditional[],
   validator: any[],
   certificateHandlebar: string
 ): SerializedFormField => ({
@@ -277,51 +271,89 @@ export const getDeathDescription: SerializedFormField = {
   }
 }
 
-export const placeOfDeathSelectOptions: ISelectOption[] = [
-  {
-    value: 'HEALTH_FACILITY',
-    label: formMessageDescriptors.healthInstitution
-  },
-  {
-    value: 'DECEASED_USUAL_RESIDENCE',
-    label: formMessageDescriptors.placeOfDeathSameAsPrimary
-  },
-  {
-    value: 'OTHER',
-    label: formMessageDescriptors.otherInstitution
-  }
-]
-
-export const placeOfDeathMappingObj: IFormFieldMapping = {
-  mutation: {
-    operation: 'deathEventLocationMutationTransformer',
-    parameters: [{}]
-  },
-  query: {
-    operation: 'eventLocationTypeQueryTransformer',
-    parameters: []
-  }
-}
-
-export const placeOfDeathHealthFacilityConditionals: IConditional[] = [
-  {
-    action: 'hide',
-    expression: '(values.placeOfDeath!="HEALTH_FACILITY")'
-  }
-]
-
-export const placeOfDeathMappingObjForLocation: IFormFieldMapping = {
-  template: {
-    fieldName: 'placeOfDeath',
-    operation: 'eventLocationNameQueryOfflineTransformer',
-    parameters: ['facilities', 'placeOfDeath']
-  },
-  mutation: {
-    operation: 'deathEventLocationMutationTransformer',
-    parameters: [{}]
-  },
-  query: {
-    operation: 'eventLocationIDQueryTransformer',
-    parameters: []
-  }
-}
+export const getPlaceOfDeathFields = () =>
+  [
+    {
+      name: 'placeOfDeathTitle',
+      type: 'SUBSECTION',
+      label: formMessageDescriptors.placeOfDeath,
+      previewGroup: 'placeOfDeath',
+      ignoreBottomMargin: true,
+      initialValue: '',
+      validator: []
+    },
+    {
+      name: 'placeOfDeath',
+      type: 'SELECT_WITH_OPTIONS',
+      previewGroup: 'placeOfDeath',
+      ignoreFieldLabelOnErrorMessage: true,
+      label: formMessageDescriptors.placeOfDeath,
+      required: true,
+      initialValue: '',
+      validator: [],
+      placeholder: formMessageDescriptors.formSelectPlaceholder,
+      options: [
+        {
+          value: 'HEALTH_FACILITY',
+          label: formMessageDescriptors.healthInstitution
+        },
+        {
+          value: 'DECEASED_USUAL_RESIDENCE',
+          label: formMessageDescriptors.placeOfDeathSameAsPrimary
+        },
+        {
+          value: 'OTHER',
+          label: formMessageDescriptors.otherInstitution
+        }
+      ],
+      mapping: {
+        mutation: {
+          operation: 'deathEventLocationMutationTransformer',
+          parameters: [{}]
+        },
+        query: {
+          operation: 'eventLocationTypeQueryTransformer',
+          parameters: []
+        }
+      }
+    },
+    {
+      name: 'deathLocation',
+      type: 'LOCATION_SEARCH_INPUT',
+      label: formMessageDescriptors.healthInstitution,
+      previewGroup: 'placeOfDeath',
+      required: true,
+      initialValue: '',
+      searchableResource: ['facilities'],
+      searchableType: ['HEALTH_FACILITY'],
+      dynamicOptions: {
+        resource: 'facilities'
+      },
+      validator: [
+        {
+          operation: 'facilityMustBeSelected'
+        }
+      ],
+      conditionals: [
+        {
+          action: 'hide',
+          expression: '(values.placeOfDeath!="HEALTH_FACILITY")'
+        }
+      ],
+      mapping: {
+        template: {
+          fieldName: 'placeOfDeath',
+          operation: 'eventLocationNameQueryOfflineTransformer',
+          parameters: ['facilities', 'placeOfDeath']
+        },
+        mutation: {
+          operation: 'deathEventLocationMutationTransformer',
+          parameters: [{}]
+        },
+        query: {
+          operation: 'eventLocationIDQueryTransformer',
+          parameters: []
+        }
+      }
+    }
+  ] satisfies SerializedFormField[]

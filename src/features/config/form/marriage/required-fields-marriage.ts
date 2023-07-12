@@ -18,11 +18,7 @@ import {
   marriageDocumentForWhomFhirMapping,
   marriageDocumentTypeFhirMapping
 } from '../options'
-import {
-  ISelectOption,
-  SerializedFormField,
-  IConditional
-} from '../types/types'
+import { ISelectOption, SerializedFormField, Conditional } from '../types/types'
 
 export const marriageInformantType: SerializedFormField = {
   name: 'informantType',
@@ -216,7 +212,7 @@ export const getDocUploaderForMarriage = (
   label: string,
   extraValueEnum: string,
   options: ISelectOption[],
-  conditionals: IConditional[]
+  conditionals: Conditional[]
 ): SerializedFormField => ({
   name,
   type: 'DOCUMENT_UPLOADER_WITH_OPTION',
@@ -259,7 +255,7 @@ export const getIdSelectOptions: ISelectOption[] = [
   }
 ]
 
-export const getInformantConditionalForDocUpload: IConditional[] = [
+export const getInformantConditionalForDocUpload: Conditional[] = [
   {
     action: 'hide',
     expression:

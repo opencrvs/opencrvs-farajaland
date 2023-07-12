@@ -13,19 +13,18 @@
 import {
   exactDateOfBirthUnknown,
   getAgeOfIndividualInYears,
-  getBirthDate,
-  getGender,
   getMaritalStatus,
   registrationEmail,
   registrationPhone,
   seperatorSubsection
 } from './common-optional-fields'
 import {
+  getGender,
+  getBirthDate,
   getFamilyNameField,
   getFirstNameField,
   getNationalID,
   getNationality,
-  getPlaceOfBirthOrDeathFields,
   otherInformantType
 } from './common-required-fields'
 import {
@@ -35,51 +34,23 @@ import {
   getDeathDate,
   getDeathDescription,
   getMannerOfDeath,
-  placeOfDeathHealthFacilityConditionals,
-  placeOfDeathMappingObj,
-  placeOfDeathMappingObjForLocation,
-  placeOfDeathSelectOptions
-} from './death/required-fields-death'
+  getPlaceOfDeathFields
+} from './death/required-fields'
 import { formMessageDescriptors } from './formatjs-messages'
 import {
   deathDocumentForWhomFhirMapping,
   deathDocumentTypeFhirMapping
 } from './options'
-import { ISerializedForm, IntegratingSystemType, TEXTAREA } from './types/types'
+import { ISerializedForm } from './types/types'
 import {
-  exactDateOfBirthUnknownConditional,
   getNationalIDValidators,
-  hideIfInformantMotherOrFather,
   hideIfNidIntegrationEnabled,
   informantBirthDateConditionals,
   informantFamilyNameConditionals,
-  isValidChildBirthDate
-} from './birth/utils'
-
-const nidIntegrationConditionals = {
-  hideIfNidIntegrationEnabled: {
-    action: 'hide',
-    expression: `const nationalIdSystem =
-    offlineCountryConfig &&
-    offlineCountryConfig.systems.find(s => s.integratingSystemType === '${IntegratingSystemType.Mosip}');
-        nationalIdSystem &&
-        nationalIdSystem.settings.openIdProviderBaseUrl &&
-        nationalIdSystem.settings.openIdProviderClientId &&
-        nationalIdSystem.settings.openIdProviderClaims;
-    `
-  },
-  hideIfNidIntegrationDisabled: {
-    action: 'hide',
-    expression: `const nationalIdSystem =
-    offlineCountryConfig &&
-    offlineCountryConfig.systems.find(s => s.integratingSystemType === '${IntegratingSystemType.Mosip}');
-      !nationalIdSystem ||
-      !nationalIdSystem.settings.openIdProviderBaseUrl ||
-      !nationalIdSystem.settings.openIdProviderClientId ||
-      !nationalIdSystem.settings.openIdProviderClaims;
-    `
-  }
-} as const
+  informantFirstNameConditionals,
+  exactDateOfBirthUnknownConditional,
+  isValidBirthDate
+} from './common-utils'
 
 export const deathRegisterForms = {
   sections: [
@@ -230,15 +201,13 @@ export const deathRegisterForms = {
             getBirthDate(
               'deceasedBirthDate',
               [],
-              isValidChildBirthDate,
+              isValidBirthDate,
               'eventDate'
             ), // Required field.,
             exactDateOfBirthUnknown,
             getAgeOfIndividualInYears(
               formMessageDescriptors.ageOfInformant,
-              exactDateOfBirthUnknownConditional.concat(
-                hideIfInformantMotherOrFather
-              )
+              exactDateOfBirthUnknownConditional
             ),
             getNationality('deceasedNationality', []),
             getNationalID(
@@ -248,7 +217,7 @@ export const deathRegisterForms = {
               'deceasedNID'
             ),
             seperatorSubsection,
-            getMaritalStatus('deceasedMaritalStatus', [])
+            getMaritalStatus('deceasedMaritalStatus')
             // PRIMARY ADDRESS SUBSECTION
             // PRIMARY ADDRESS
             // SECONDARY ADDRESS SAME AS PRIMARY
@@ -289,14 +258,7 @@ export const deathRegisterForms = {
             getCauseOfDeath,
             getCauseOfDeathMethod,
             getDeathDescription,
-            ...getPlaceOfBirthOrDeathFields(
-              'placeOfDeath',
-              placeOfDeathSelectOptions,
-              placeOfDeathMappingObj,
-              'deathLocation',
-              placeOfDeathHealthFacilityConditionals,
-              placeOfDeathMappingObjForLocation
-            )
+            ...getPlaceOfDeathFields()
           ]
         }
       ]
@@ -314,7 +276,7 @@ export const deathRegisterForms = {
             otherInformantType,
             getFirstNameField(
               'informantNameInEnglish',
-              [],
+              informantFirstNameConditionals,
               'informantFirstName'
             ), // Required field. In Farajaland, we have built the option to integrate with MOSIP. So we have different conditionals for each name to check MOSIP responses.  You could always refactor firstNamesEng for a basic setup
             getFamilyNameField(

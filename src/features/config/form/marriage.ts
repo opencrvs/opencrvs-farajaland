@@ -13,11 +13,11 @@
 import {
   exactDateOfBirthUnknown,
   getAgeOfIndividualInYears,
-  getBirthDate,
   registrationEmail,
   registrationPhone
 } from './common-optional-fields'
 import {
+  getBirthDate,
   getFamilyNameField,
   getFirstNameField,
   getNationalID,
@@ -31,7 +31,6 @@ import {
 import {
   getMarriedLastName,
   getTypeOfMarriage,
-  marriageInformantConditional,
   placeOfMarriageSubsection
 } from './marriage/optional-fields-marriage'
 import {
@@ -45,15 +44,13 @@ import {
   witnessRelationshipForOthers,
   getInformantConditionalForDocUpload
 } from './marriage/required-fields-marriage'
-import {
-  marriageDocumentForWhomFhirMapping,
-  marriageDocumentTypeFhirMapping
-} from './options'
+import { marriageDocumentTypeFhirMapping } from './options'
 import { ISerializedForm } from './types/types'
 import {
   exactDateOfBirthUnknownConditional,
   getNationalIDValidators
-} from './birth/utils'
+} from './common-utils'
+import { hideIfInformantBrideOrGroom } from './marriage/utils'
 
 export const marriageRegisterForms: ISerializedForm = {
   sections: [
@@ -139,17 +136,17 @@ export const marriageRegisterForms: ISerializedForm = {
             otherInformantType,
             getFirstNameField(
               'informantNameInEnglish',
-              marriageInformantConditional,
+              hideIfInformantBrideOrGroom,
               'informantFirstName'
             ),
             getFamilyNameField(
               'informantNameInEnglish',
-              marriageInformantConditional,
+              hideIfInformantBrideOrGroom,
               'informantFamilyName'
             ),
             getBirthDate(
               'informantBirthDate',
-              marriageInformantConditional,
+              hideIfInformantBrideOrGroom,
               [
                 {
                   operation: 'dateFormatIsCorrect',
@@ -166,16 +163,13 @@ export const marriageRegisterForms: ISerializedForm = {
             getAgeOfIndividualInYears(
               formMessageDescriptors.ageOfInformant,
               exactDateOfBirthUnknownConditional.concat(
-                marriageInformantConditional
+                hideIfInformantBrideOrGroom
               )
             ),
-            getNationality(
-              'informantNationality',
-              marriageInformantConditional
-            ),
+            getNationality('informantNationality', hideIfInformantBrideOrGroom),
             getNationalID(
               'informantID',
-              marriageInformantConditional,
+              hideIfInformantBrideOrGroom,
               getNationalIDValidators('informant'),
               'informantNID'
             ),
@@ -417,7 +411,15 @@ export const marriageRegisterForms: ISerializedForm = {
             }
           ]
         }
-      ]
+      ],
+      mapping: {
+        mutation: {
+          operation: 'setInformantSectionTransformer'
+        },
+        query: {
+          operation: 'getInformantSectionTransformer'
+        }
+      }
     },
     {
       id: 'witnessTwo',
@@ -458,7 +460,15 @@ export const marriageRegisterForms: ISerializedForm = {
             }
           ]
         }
-      ]
+      ],
+      mapping: {
+        mutation: {
+          operation: 'setInformantSectionTransformer'
+        },
+        query: {
+          operation: 'getInformantSectionTransformer'
+        }
+      }
     },
     {
       id: 'documents',

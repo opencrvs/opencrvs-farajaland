@@ -11,70 +11,7 @@
  */
 import { MessageDescriptor } from 'react-intl'
 import { formMessageDescriptors } from './formatjs-messages'
-import { SerializedFormField, IConditional } from './types/types'
-import { hideIfInformantMotherOrFather } from './birth/utils'
-
-export const getBirthDate = (
-  fieldName: string,
-  conditionals: IConditional[],
-  validator: any[],
-  certificateHandlebar: string
-): SerializedFormField => ({
-  name: fieldName, // A field with this name MUST exist
-  type: 'DATE',
-  label: formMessageDescriptors.dateOfBirth,
-  required: true,
-  conditionals,
-  initialValue: '',
-  validator,
-  mapping: {
-    template: {
-      operation: 'dateFormatTransformer',
-      fieldName: certificateHandlebar,
-      parameters: ['birthDate', 'en', 'do MMMM yyyy']
-    },
-    mutation: {
-      operation: 'longDateTransformer',
-      parameters: ['birthDate']
-    },
-    query: {
-      operation: 'fieldValueTransformer',
-      parameters: ['birthDate']
-    }
-  }
-})
-
-export const getGender = (
-  certificateHandlebar: string
-): SerializedFormField => ({
-  name: 'gender', // A field with this name MUST exist
-  type: 'SELECT_WITH_OPTIONS',
-  label: formMessageDescriptors.sex,
-  required: true,
-  initialValue: '',
-  validator: [],
-  placeholder: formMessageDescriptors.formSelectPlaceholder,
-  mapping: {
-    template: {
-      fieldName: certificateHandlebar,
-      operation: 'selectTransformer'
-    }
-  },
-  options: [
-    {
-      value: 'male',
-      label: formMessageDescriptors.sexMale
-    },
-    {
-      value: 'female',
-      label: formMessageDescriptors.sexFemale
-    },
-    {
-      value: 'unknown',
-      label: formMessageDescriptors.sexUnknown
-    }
-  ]
-})
+import { SerializedFormField, Conditional } from './types/types'
 
 export const exactDateOfBirthUnknown: SerializedFormField = {
   name: 'exactDateOfBirthUnknown',
@@ -107,7 +44,7 @@ export const exactDateOfBirthUnknown: SerializedFormField = {
       action: 'hide',
       expression: '!window.config.DATE_OF_BIRTH_UNKNOWN || !values.detailsExist'
     }
-  ].concat(hideIfInformantMotherOrFather),
+  ],
   mapping: {
     query: {
       operation: 'booleanTransformer'
@@ -120,7 +57,7 @@ export const exactDateOfBirthUnknown: SerializedFormField = {
 
 export const getAgeOfIndividualInYears = (
   label: MessageDescriptor,
-  conditionals: IConditional[]
+  conditionals: Conditional[]
 ): SerializedFormField => ({
   name: 'ageOfIndividualInYears',
   type: 'NUMBER',
@@ -147,8 +84,7 @@ export const getAgeOfIndividualInYears = (
 })
 
 export const getMaritalStatus = (
-  certificateHandlebar: string,
-  conditionals: IConditional[]
+  certificateHandlebar: string
 ): SerializedFormField => ({
   name: 'maritalStatus',
   type: 'SELECT_WITH_OPTIONS',
@@ -167,7 +103,12 @@ export const getMaritalStatus = (
       operation: 'selectTransformer'
     }
   },
-  conditionals,
+  conditionals: [
+    {
+      action: 'hide',
+      expression: '!values.detailsExist'
+    }
+  ],
   options: [
     {
       value: 'SINGLE',
@@ -235,14 +176,14 @@ export const registrationEmail: SerializedFormField = {
   mapping: {
     mutation: {
       operation: 'sectionFieldToBundleFieldTransformer',
-      parameters: ['registration.email']
+      parameters: ['registration.contactEmail']
     },
     query: {
-      operation: 'bundleFieldToSectionFieldTransformer',
-      parameters: ['registration.email']
+      operation: 'fieldValueSectionExchangeTransformer',
+      parameters: ['registration', 'contactEmail']
     },
     template: {
-      fieldName: 'email',
+      fieldName: 'contactEmail',
       operation: 'plainInputTransformer'
     }
   }
@@ -266,8 +207,8 @@ export const registrationPhone: SerializedFormField = {
       parameters: ['registration.contactPhoneNumber']
     },
     query: {
-      operation: 'bundleFieldToSectionFieldTransformer',
-      parameters: ['registration.contactPhoneNumber']
+      operation: 'fieldValueSectionExchangeTransformer',
+      parameters: ['registration', 'contactPhoneNumber']
     },
     template: {
       fieldName: 'contactPhoneNumber',

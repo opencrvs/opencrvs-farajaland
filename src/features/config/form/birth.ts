@@ -19,13 +19,11 @@ import { formMessageDescriptors } from './formatjs-messages'
 import {
   getDetailsExist,
   getReasonNotExisting,
-  placeOfBirthHealthFacilityConditionals,
-  placeOfBirthMappingObjForLocation,
-  placeOfBirthMappintObj,
-  placeOfBirthSelectOptions
-} from './birth/required-fields-birth'
-import { getPlaceOfBirthOrDeathFields } from './common-required-fields'
+  getPlaceOfBirthFields
+} from './birth/required-fields'
 import {
+  getBirthDate,
+  getGender,
   getFamilyNameField,
   getFirstNameField,
   getNationalID,
@@ -34,8 +32,6 @@ import {
   otherInformantType
 } from './common-required-fields'
 import {
-  getBirthDate,
-  getGender,
   exactDateOfBirthUnknown,
   getAgeOfIndividualInYears,
   getMaritalStatus,
@@ -59,13 +55,7 @@ import {
 } from './birth/preview-groups'
 import {
   isValidChildBirthDate,
-  informantFirstNameConditionals,
   hideIfInformantMotherOrFather,
-  informantFamilyNameConditionals,
-  informantBirthDateConditionals,
-  exactDateOfBirthUnknownConditional,
-  hideIfNidIntegrationEnabled,
-  getNationalIDValidators,
   hideIfNidIntegrationDisabled,
   mothersDetailsExistConditionals,
   mothersBirthDateConditionals,
@@ -80,12 +70,20 @@ import {
   fatherFamilyNameConditionals,
   fatherNationalIDVerfication
 } from './birth/utils'
+import {
+  getNationalIDValidators,
+  informantFirstNameConditionals,
+  informantFamilyNameConditionals,
+  informantBirthDateConditionals,
+  exactDateOfBirthUnknownConditional,
+  hideIfNidIntegrationEnabled
+} from './common-utils'
 
 export const birthRegisterForms: ISerializedForm = {
   sections: [
     {
       id: 'registration', // A hidden 'registration' section must be included to store identifiers in a form draft that are used in certificates
-      viewType: 'hidden',
+      viewType: 'form',
       name: {
         defaultMessage: 'Registration',
         description: 'Form section name for Registration',
@@ -238,14 +236,7 @@ export const birthRegisterForms: ISerializedForm = {
               isValidChildBirthDate,
               'eventDate'
             ), // Required field.
-            ...getPlaceOfBirthOrDeathFields(
-              'placeOfBirth',
-              placeOfBirthSelectOptions,
-              placeOfBirthMappintObj,
-              'birthLocation',
-              placeOfBirthHealthFacilityConditionals,
-              placeOfBirthMappingObjForLocation
-            ),
+            ...getPlaceOfBirthFields(),
             {
               name: 'seperator',
               type: 'SUBSECTION',
@@ -279,13 +270,6 @@ export const birthRegisterForms: ISerializedForm = {
       groups: [
         {
           id: 'informant-view-group',
-          conditionals: [
-            {
-              action: 'hide',
-              expression:
-                "(draftData && draftData.registration && draftData.registration.informantType && selectedInformantAndContactType.selectedInformantType && (selectedInformantAndContactType.selectedInformantType === 'MOTHER' || selectedInformantAndContactType.selectedInformantType === 'FATHER'))"
-            }
-          ],
           fields: [
             informantType, // Required field.
             otherInformantType, // Required field.
@@ -373,7 +357,7 @@ export const birthRegisterForms: ISerializedForm = {
             exactDateOfBirthUnknown,
             getAgeOfIndividualInYears(
               formMessageDescriptors.ageOfMother,
-              detailsExist
+              exactDateOfBirthUnknownConditional
             ),
             getFirstNameField(
               'motherNameInEnglish',
@@ -415,7 +399,7 @@ export const birthRegisterForms: ISerializedForm = {
                 }
               ]
             },
-            getMaritalStatus('motherMaritalStatus', []),
+            getMaritalStatus('motherMaritalStatus'),
             multipleBirth,
             getOccupation('motherOccupation'),
             getEducation('motherEducationalAttainment')
@@ -460,7 +444,7 @@ export const birthRegisterForms: ISerializedForm = {
             exactDateOfBirthUnknown,
             getAgeOfIndividualInYears(
               formMessageDescriptors.ageOfFather,
-              detailsExist
+              exactDateOfBirthUnknownConditional
             ),
             getFirstNameField(
               'fatherNameInEnglish',
@@ -502,7 +486,7 @@ export const birthRegisterForms: ISerializedForm = {
                 }
               ]
             },
-            getMaritalStatus('fatherMaritalStatus', []),
+            getMaritalStatus('fatherMaritalStatus'),
             multipleBirth,
             getOccupation('fatherOccupation'),
             getEducation('fatherEducationalAttainment')
