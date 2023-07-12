@@ -12,8 +12,8 @@
 
 import { MessageDescriptor } from 'react-intl'
 import { formMessageDescriptors } from '../formatjs-messages'
-import { IConditional, SerializedFormField } from '../types'
-import { hideIfInformantMotherOrFather } from '../validations-and-conditionals'
+import { Conditional, SerializedFormField } from '../types/types'
+import { hideIfInformantMotherOrFather } from './utils'
 
 export const attendantAtBirth: SerializedFormField = {
   name: 'attendantAtBirth',
@@ -151,7 +151,7 @@ export const weightAtBirth: SerializedFormField = {
 
 export const getNIDVerificationButton = (
   fieldName: string,
-  conditionals: IConditional[],
+  conditionals: Conditional[],
   validator: any[]
 ): SerializedFormField => ({
   name: fieldName,

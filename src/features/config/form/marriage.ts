@@ -49,11 +49,11 @@ import {
   marriageDocumentForWhomFhirMapping,
   marriageDocumentTypeFhirMapping
 } from './options'
-import { ISerializedForm } from './types'
+import { ISerializedForm } from './types/types'
 import {
   exactDateOfBirthUnknownConditional,
   getNationalIDValidators
-} from './validations-and-conditionals'
+} from './birth/utils'
 
 export const marriageRegisterForms: ISerializedForm = {
   sections: [

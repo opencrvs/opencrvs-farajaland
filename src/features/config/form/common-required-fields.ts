@@ -14,8 +14,12 @@ import {
   formMessageDescriptors,
   informantMessageDescriptors
 } from './formatjs-messages'
-import { IFormFieldMapping, ISelectOption, SerializedFormField } from './types'
-import { IConditional } from './validations-and-conditionals'
+import {
+  IFormFieldMapping,
+  ISelectOption,
+  SerializedFormField,
+  IConditional
+} from './types/types'
 
 export const getFamilyNameField = (
   previewGroup: string,

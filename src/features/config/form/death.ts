@@ -45,7 +45,7 @@ import {
   deathDocumentForWhomFhirMapping,
   deathDocumentTypeFhirMapping
 } from './options'
-import { ISerializedForm, IntegratingSystemType, TEXTAREA } from './types'
+import { ISerializedForm, IntegratingSystemType, TEXTAREA } from './types/types'
 import {
   exactDateOfBirthUnknownConditional,
   getNationalIDValidators,
@@ -54,7 +54,7 @@ import {
   informantBirthDateConditionals,
   informantFamilyNameConditionals,
   isValidChildBirthDate
-} from './validations-and-conditionals'
+} from './birth/utils'
 
 const nidIntegrationConditionals = {
   hideIfNidIntegrationEnabled: {
@@ -79,9 +79,9 @@ const nidIntegrationConditionals = {
       !nationalIdSystem.settings.openIdProviderClaims;
     `
   }
-}
+} as const
 
-export const deathRegisterForms: ISerializedForm = {
+export const deathRegisterForms = {
   sections: [
     {
       id: 'registration',
@@ -557,4 +557,4 @@ export const deathRegisterForms: ISerializedForm = {
       ]
     }
   ]
-}
+} satisfies ISerializedForm
