@@ -67,21 +67,6 @@ export const marriageInformantType: SerializedFormField = {
   ]
 }
 
-export const brideOrGroomBirthDateValidators = (spouseType: string) => [
-  {
-    operation: 'dateFormatIsCorrect',
-    parameters: []
-  },
-  {
-    operation: 'dateInPast',
-    parameters: []
-  },
-  {
-    operation: 'isValidDateOfBirthForMarriage',
-    parameters: [spouseType, 18]
-  }
-]
-
 export const getMarriageDate: SerializedFormField = {
   name: 'marriageDate',
   type: 'DATE',
@@ -122,12 +107,11 @@ export const witnessName = (
   previewGroup: string,
   certificateHandlebar: string,
   parameters: string,
-  label: string
+  label: 'firstName' | 'familyName'
 ): SerializedFormField => ({
   name,
   previewGroup,
   type: 'TEXT',
-  // @ts-ignore
   label: formMessageDescriptors[label],
   maxLength: 32,
   required: true,
@@ -209,18 +193,20 @@ export const witnessRelationshipForOthers: SerializedFormField = {
 
 export const getDocUploaderForMarriage = (
   name: string,
-  label: string,
-  extraValueEnum: string,
+  label:
+    | 'proofOfMarriageNotice'
+    | 'proofOfGroomsID'
+    | 'proofOfBridesID'
+    | 'proofOfInformantsID',
+  extraValueEnum: 'GROOM' | 'BRIDE' | 'MARRIAGE_NOTICE_PROOF' | 'INFORMANT',
   options: ISelectOption[],
   conditionals: Conditional[]
 ): SerializedFormField => ({
   name,
   type: 'DOCUMENT_UPLOADER_WITH_OPTION',
-  // @ts-ignore
   label: formMessageDescriptors[label],
   required: false,
   initialValue: '',
-  // @ts-ignore
   extraValue: marriageDocumentForWhomFhirMapping[extraValueEnum],
   hideAsterisk: true,
   conditionals,

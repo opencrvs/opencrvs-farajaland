@@ -34,7 +34,6 @@ import {
   placeOfMarriageSubsection
 } from './marriage/optional-fields-marriage'
 import {
-  brideOrGroomBirthDateValidators,
   getDocUploaderForMarriage,
   getMarriageDate,
   getRelationshipToSpousesForWitness,
@@ -47,6 +46,7 @@ import {
 import { marriageDocumentTypeFhirMapping } from './options'
 import { ISerializedForm } from './types/types'
 import {
+  brideOrGroomBirthDateValidators,
   exactDateOfBirthUnknownConditional,
   getNationalIDValidators
 } from './common-utils'

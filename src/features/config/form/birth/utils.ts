@@ -188,6 +188,21 @@ export const fatherFamilyNameConditionals = [
   }
 ]
 
+export const brideOrGroomBirthDateValidators = (spouseType: string) => [
+  {
+    operation: 'dateFormatIsCorrect',
+    parameters: []
+  },
+  {
+    operation: 'dateInPast',
+    parameters: []
+  },
+  {
+    operation: 'isValidDateOfBirthForMarriage',
+    parameters: [spouseType, 18]
+  }
+]
+
 // if mothers details do not exist on other page
 export const mothersDetailsDontExistOnOtherPage =
   'draftData && draftData.mother && !draftData.mother.detailsExist'
