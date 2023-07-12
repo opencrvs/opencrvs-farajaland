@@ -12,8 +12,12 @@
 
 import { MessageDescriptor } from 'react-intl'
 import { formMessageDescriptors } from '../formatjs-messages'
-import { IFormFieldMapping, ISelectOption, SerializedFormField } from '../types'
-import { IConditional } from '../validations-and-conditionals'
+import {
+  IFormFieldMapping,
+  ISelectOption,
+  SerializedFormField,
+  IConditional
+} from '../types/types'
 
 export const getDetailsExist = (
   label: MessageDescriptor,

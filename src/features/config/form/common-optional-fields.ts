@@ -11,11 +11,8 @@
  */
 import { MessageDescriptor } from 'react-intl'
 import { formMessageDescriptors } from './formatjs-messages'
-import { SerializedFormField } from './types'
-import {
-  IConditional,
-  hideIfInformantMotherOrFather
-} from './validations-and-conditionals'
+import { SerializedFormField, IConditional } from './types/types'
+import { hideIfInformantMotherOrFather } from './birth/utils'
 
 export const getBirthDate = (
   fieldName: string,

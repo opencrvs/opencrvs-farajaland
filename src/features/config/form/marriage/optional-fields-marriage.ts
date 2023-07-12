@@ -11,8 +11,7 @@
  */
 
 import { formMessageDescriptors } from '../formatjs-messages'
-import { SerializedFormField } from '../types'
-import { IConditional } from '../validations-and-conditionals'
+import { SerializedFormField, IConditional } from '../types/types'
 
 export const getMarriedLastName: SerializedFormField = {
   name: 'marriedLastNameEng',

@@ -258,6 +258,7 @@ export const getPlaceOfBirthOrDeathFields = (
   {
     name: fieldName + 'title',
     type: 'SUBSECTION',
+    // @ts-ignore
     label: formMessageDescriptors[fieldName],
     previewGroup: fieldName,
     ignoreBottomMargin: true,
@@ -269,6 +270,7 @@ export const getPlaceOfBirthOrDeathFields = (
     type: 'SELECT_WITH_OPTIONS',
     previewGroup: fieldName,
     ignoreFieldLabelOnErrorMessage: true,
+    // @ts-ignore
     label: formMessageDescriptors[fieldName],
     required: true,
     initialValue: '',

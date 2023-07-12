@@ -18,9 +18,9 @@ import {
   IFormFieldMapping,
   ISelectOption,
   SerializedFormField,
-  TEXTAREA
-} from '../types'
-import { IConditional } from '../validations-and-conditionals'
+  TEXTAREA,
+  IConditional
+} from '../types/types'
 
 export const getDeathDate = (
   fieldName: string,

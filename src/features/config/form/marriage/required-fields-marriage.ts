@@ -18,8 +18,11 @@ import {
   marriageDocumentForWhomFhirMapping,
   marriageDocumentTypeFhirMapping
 } from '../options'
-import { ISelectOption, SerializedFormField } from '../types'
-import { IConditional } from '../validations-and-conditionals'
+import {
+  ISelectOption,
+  SerializedFormField,
+  IConditional
+} from '../types/types'
 
 export const marriageInformantType: SerializedFormField = {
   name: 'informantType',
@@ -128,6 +131,7 @@ export const witnessName = (
   name,
   previewGroup,
   type: 'TEXT',
+  // @ts-ignore
   label: formMessageDescriptors[label],
   maxLength: 32,
   required: true,
@@ -216,9 +220,11 @@ export const getDocUploaderForMarriage = (
 ): SerializedFormField => ({
   name,
   type: 'DOCUMENT_UPLOADER_WITH_OPTION',
+  // @ts-ignore
   label: formMessageDescriptors[label],
   required: false,
   initialValue: '',
+  // @ts-ignore
   extraValue: marriageDocumentForWhomFhirMapping[extraValueEnum],
   hideAsterisk: true,
   conditionals,

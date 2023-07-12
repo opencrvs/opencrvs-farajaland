@@ -831,6 +831,11 @@ export interface IDateRangePickerValue {
   isDateRangeActive: boolean | undefined
 }
 
+export interface IConditional {
+  action: string
+  expression: string
+}
+
 export type IFormFieldValue =
   | string
   | string[]
