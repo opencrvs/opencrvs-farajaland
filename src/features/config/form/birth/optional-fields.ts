@@ -12,7 +12,6 @@
 
 import { MessageDescriptor } from 'react-intl'
 import { formMessageDescriptors } from '../formatjs-messages'
-import { hideIfInformantMotherOrFather } from '../validationsAndConditionals'
 import { Conditional, SerializedFormField } from '../types/types'
 
 export const attendantAtBirth: SerializedFormField = {
@@ -260,8 +259,7 @@ export const exactDateOfBirthUnknown: SerializedFormField = {
     {
       action: 'hide',
       expression: '!window.config.DATE_OF_BIRTH_UNKNOWN || !values.detailsExist'
-    },
-    ...hideIfInformantMotherOrFather
+    }
   ],
   mapping: {
     query: {

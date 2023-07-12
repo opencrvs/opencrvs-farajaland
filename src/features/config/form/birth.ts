@@ -71,7 +71,7 @@ import {
   fatherFirstNameConditionals,
   fatherFamilyNameConditionals,
   fatherNationalIDVerfication
-} from './validationsAndConditionals'
+} from './birth/utils'
 
 export const birthRegisterForms: ISerializedForm = {
   sections: [

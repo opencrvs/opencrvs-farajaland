@@ -48,7 +48,7 @@ export enum Event {
   Marriage = 'marriage'
 }
 
-type ValidationInitializer = (...value: any[]) => Validation
+export type ValidationInitializer = (...value: any[]) => Validation
 
 type IIgnoreFields = {
   fieldsToIgnoreForLocalAddress: string[]

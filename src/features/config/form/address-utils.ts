@@ -14,7 +14,7 @@ import { MessageDescriptor } from 'react-intl'
 import {
   getAddressConditionals,
   getPlaceOfEventConditionals
-} from './validationsAndConditionals'
+} from './birth/utils'
 import { AddressCases, EventLocationAddressCases } from './address-settings'
 import { ISerializedForm, SerializedFormField, Event } from './types/types'
 import { AddressCopyConfigCases, AddressSubsections } from './addresses'

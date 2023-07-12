@@ -19,7 +19,7 @@ import {
   mothersDetailsDontExistOnOtherPage,
   primaryAddressSameAsOtherPrimaryAddress,
   secondaryAddressesDisabled
-} from './validationsAndConditionals'
+} from './birth/utils'
 import {
   FLEX_DIRECTION,
   SerializedFormField,
@@ -108,7 +108,7 @@ export const defaultAddressConfiguration: IAddressConfiguration[] = [
       {
         config: AddressSubsections.SECONDARY_ADDRESS_SUBSECTION,
         label: formMessageDescriptors.secondaryAddress,
-        conditionalCase: secondaryAddressesDisabled
+        conditionalCase: `${MOTHER_DETAILS_DONT_EXIST} || ${secondaryAddressesDisabled}`
       },
       {
         config: AddressCases.SECONDARY_ADDRESS,
