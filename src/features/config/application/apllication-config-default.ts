@@ -16,7 +16,8 @@ export const defaultApplicationConfig = {
       ON_TIME: 0,
       LATE: 5.5,
       DELAYED: 15
-    }
+    },
+    PRINT_IN_ADVANCE: true
   },
   COUNTRY_LOGO: countryLogo,
   CURRENCY: {
@@ -28,7 +29,8 @@ export const defaultApplicationConfig = {
     FEE: {
       ON_TIME: 0,
       DELAYED: 0
-    }
+    },
+    PRINT_IN_ADVANCE: true
   },
   PHONE_NUMBER_PATTERN: '^0(7|9)[0-9]{8}$',
   NID_NUMBER_PATTERN: '^[0-9]{10}$',
@@ -43,5 +45,9 @@ export const defaultApplicationConfig = {
     },
     PRINT_IN_ADVANCE: true
   },
-  MARRIAGE_REGISTRATION: false
+  MARRIAGE_REGISTRATION: false,
+  ADDRESSES: 1,
+  DATE_OF_BIRTH_UNKNOWN: false,
+  INFORMANT_SIGNATURE: true,
+  INFORMANT_SIGNATURE_REQUIRED: true
 }
