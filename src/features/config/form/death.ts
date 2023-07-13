@@ -216,8 +216,7 @@ export const deathRegisterForms = {
               getNationalIDValidators('deceased'),
               'deceasedNID'
             ),
-            seperatorSubsection,
-            getMaritalStatus('deceasedMaritalStatus')
+            getMaritalStatus('deceasedMaritalStatus', [])
             // PRIMARY ADDRESS SUBSECTION
             // PRIMARY ADDRESS
             // SECONDARY ADDRESS SAME AS PRIMARY
