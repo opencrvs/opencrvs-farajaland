@@ -14,10 +14,7 @@ import {
   formMessageDescriptors,
   informantMessageDescriptors
 } from '../formatjs-messages'
-import {
-  marriageDocumentForWhomFhirMapping,
-  marriageDocumentTypeFhirMapping
-} from '../options'
+import { marriageDocumentForWhomFhirMapping } from '../options'
 import { ISelectOption, SerializedFormField, Conditional } from '../types/types'
 
 export const marriageInformantType: SerializedFormField = {
@@ -221,30 +218,3 @@ export const getDocUploaderForMarriage = (
     }
   }
 })
-
-export const getIdSelectOptions: ISelectOption[] = [
-  {
-    value: marriageDocumentTypeFhirMapping.NATIONAL_ID,
-    label: formMessageDescriptors.docTypeNID
-  },
-  {
-    value: marriageDocumentTypeFhirMapping.PASSPORT,
-    label: formMessageDescriptors.docTypePassport
-  },
-  {
-    value: marriageDocumentTypeFhirMapping.BIRTH_CERTIFICATE,
-    label: formMessageDescriptors.docTypeBirthCert
-  },
-  {
-    value: marriageDocumentTypeFhirMapping.OTHER,
-    label: formMessageDescriptors.docTypeOther
-  }
-]
-
-export const getInformantConditionalForDocUpload: Conditional[] = [
-  {
-    action: 'hide',
-    expression:
-      "(draftData && draftData.informant && draftData.informant.informantType && (draftData.informant.informantType === 'BRIDE' || draftData.informant.informantType === 'GROOM' ))"
-  }
-]

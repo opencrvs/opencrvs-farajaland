@@ -38,19 +38,21 @@ import {
   getMarriageDate,
   getRelationshipToSpousesForWitness,
   marriageInformantType,
-  getIdSelectOptions,
   witnessName,
-  witnessRelationshipForOthers,
-  getInformantConditionalForDocUpload
+  witnessRelationshipForOthers
 } from './marriage/required-fields-marriage'
 import { marriageDocumentTypeFhirMapping } from './options'
 import { ISerializedForm } from './types/types'
 import {
-  brideOrGroomBirthDateValidators,
   exactDateOfBirthUnknownConditional,
   getNationalIDValidators
 } from './common-utils'
-import { hideIfInformantBrideOrGroom } from './marriage/utils'
+import {
+  hideIfInformantBrideOrGroom,
+  brideOrGroomBirthDateValidators,
+  getDocSelectOptions,
+  getInformantConditionalForDocUpload
+} from './marriage/utils'
 
 export const marriageRegisterForms: ISerializedForm = {
   sections: [
@@ -506,21 +508,21 @@ export const marriageRegisterForms: ISerializedForm = {
               'uploadDocForGroom',
               'proofOfGroomsID',
               'GROOM',
-              getIdSelectOptions,
+              getDocSelectOptions,
               []
             ),
             getDocUploaderForMarriage(
               'uploadDocForBride',
               'proofOfBridesID',
               'BRIDE',
-              getIdSelectOptions,
+              getDocSelectOptions,
               []
             ),
             getDocUploaderForMarriage(
               'uploadDocForInformant',
               'proofOfInformantsID',
               'INFORMANT',
-              getIdSelectOptions,
+              getDocSelectOptions,
               getInformantConditionalForDocUpload
             )
           ]
