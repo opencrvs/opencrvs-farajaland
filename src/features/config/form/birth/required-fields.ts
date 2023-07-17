@@ -17,7 +17,7 @@ import { Conditional, SerializedFormField } from '../types/types'
 export const getPlaceOfBirthFields = (): SerializedFormField[] => [
   {
     name: 'placeOfBirthTitle',
-    type: 'SUBSECTION',
+    type: 'SUBSECTION_HEADER',
     label: formMessageDescriptors.placeOfBirthPreview,
     previewGroup: 'placeOfBirth',
     ignoreBottomMargin: true,

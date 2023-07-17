@@ -328,7 +328,7 @@ export const getAddressSubsection = (
   const fields: SerializedFormField[] = []
   const subsection: SerializedFormField = {
     name: previewGroup,
-    type: 'SUBSECTION',
+    type: 'SUBSECTION_HEADER',
     label,
     previewGroup: previewGroup,
     initialValue: '',

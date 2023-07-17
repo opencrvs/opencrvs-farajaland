@@ -275,7 +275,7 @@ export const getPlaceOfDeathFields = () =>
   [
     {
       name: 'placeOfDeathTitle',
-      type: 'SUBSECTION',
+      type: 'SUBSECTION_HEADER',
       label: formMessageDescriptors.placeOfDeath,
       previewGroup: 'placeOfDeath',
       ignoreBottomMargin: true,

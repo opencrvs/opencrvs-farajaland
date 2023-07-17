@@ -239,7 +239,7 @@ export const birthRegisterForms: ISerializedForm = {
             ...getPlaceOfBirthFields(),
             {
               name: 'seperator',
-              type: 'SUBSECTION',
+              type: 'SUBSECTION_HEADER',
               label: {
                 defaultMessage: ' ',
                 description: 'empty string',
@@ -383,7 +383,7 @@ export const birthRegisterForms: ISerializedForm = {
             ),
             {
               name: 'seperator',
-              type: 'SUBSECTION',
+              type: 'SUBSECTION_HEADER',
               label: {
                 defaultMessage: ' ',
                 description: 'empty string',
@@ -470,7 +470,7 @@ export const birthRegisterForms: ISerializedForm = {
             ),
             {
               name: 'seperator',
-              type: 'SUBSECTION',
+              type: 'SUBSECTION_HEADER',
               label: {
                 defaultMessage: ' ',
                 description: 'empty string',
