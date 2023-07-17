@@ -272,7 +272,12 @@ export const birthRegisterForms: ISerializedForm = {
           id: 'informant-view-group',
           fields: [
             informantType, // Required field.
-            otherInformantType, // Required field.
+            otherInformantType('informantsRelationWithChild', [
+              {
+                action: 'hide',
+                expression: 'values.informantType !== "OTHER"'
+              }
+            ]), // Required field.
             registrationPhone,
             registrationEmail,
             getFirstNameField(

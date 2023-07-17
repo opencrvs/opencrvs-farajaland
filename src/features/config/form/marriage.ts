@@ -135,7 +135,12 @@ export const marriageRegisterForms: ISerializedForm = {
           showExitButtonOnly: true,
           fields: [
             marriageInformantType,
-            otherInformantType,
+            otherInformantType('relationshipToSpouses', [
+              {
+                action: 'hide',
+                expression: 'values.informantType !== "OTHER"'
+              }
+            ]),
             getFirstNameField(
               'informantNameInEnglish',
               hideIfInformantBrideOrGroom,

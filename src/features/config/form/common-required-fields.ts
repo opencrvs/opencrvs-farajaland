@@ -277,10 +277,16 @@ export const informantType: SerializedFormField = {
   ]
 }
 
-export const otherInformantType: SerializedFormField = {
+export const otherInformantType = (
+  label:
+    | 'relationshipToDeceased'
+    | 'relationshipToSpouses'
+    | 'informantsRelationWithChild',
+  conditionals: Conditional[]
+): SerializedFormField => ({
   name: 'otherInformantType',
   type: 'TEXT',
-  label: formMessageDescriptors.informantsRelationWithChild,
+  label: formMessageDescriptors[label],
   placeholder: formMessageDescriptors.relationshipPlaceHolder,
   required: true,
   initialValue: '',
@@ -289,12 +295,7 @@ export const otherInformantType: SerializedFormField = {
       operation: 'englishOnlyNameFormat'
     }
   ],
-  conditionals: [
-    {
-      action: 'hide',
-      expression: 'values.informantType !== "OTHER"'
-    }
-  ],
+  conditionals,
   mapping: {
     mutation: {
       operation: 'sectionFieldToBundleFieldTransformer',
@@ -305,4 +306,4 @@ export const otherInformantType: SerializedFormField = {
       parameters: ['registration.otherInformantType']
     }
   }
-}
+})

@@ -272,7 +272,12 @@ export const deathRegisterForms = {
           id: 'informant-view-group',
           fields: [
             deathInformantType,
-            otherInformantType,
+            otherInformantType('relationshipToDeceased', [
+              {
+                action: 'hide',
+                expression: 'values.contactPoint !== "OTHER"'
+              }
+            ]),
             getFirstNameField(
               'informantNameInEnglish',
               informantFirstNameConditionals,
