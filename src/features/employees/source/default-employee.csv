@@ -1,0 +1,4 @@
+primaryOfficeId,username,givenNames,familyName,role,type,mobile,email
+39bc2a6e-697a-46dd-8c38-17e391098f6f,k.bwalya,Kalusha,Bwalya,FIELD_AGENT,Social Worker,+260911111111,k.bwalya@test.org
+39bc2a6e-697a-46dd-8c38-17e391098f6f,k.mweene,Kennedy,Mweene,LOCAL_REGISTRAR,Local Registrar,+260933333333,k.mweene@test.org
+9485cc7f-0f65-4c7c-932a-f4fd3ee24fe4,j.campbell,Jonathan,Campbell,NATIONAL_SYSTEM_ADMIN,National System Admin,+260921111111,j.campbell@test.org
