@@ -41,7 +41,7 @@ import {
   deathDocumentForWhomFhirMapping,
   deathDocumentTypeFhirMapping
 } from './options'
-import { ISerializedForm } from './types/types'
+import { Event, ISerializedForm } from './types/types'
 import {
   getNationalIDValidators,
   hideIfNidIntegrationEnabled,
@@ -272,12 +272,7 @@ export const deathRegisterForms = {
           id: 'informant-view-group',
           fields: [
             deathInformantType,
-            otherInformantType('relationshipToDeceased', [
-              {
-                action: 'hide',
-                expression: 'values.contactPoint !== "OTHER"'
-              }
-            ]),
+            otherInformantType(Event.Death),
             getFirstNameField(
               'informantNameInEnglish',
               informantFirstNameConditionals,

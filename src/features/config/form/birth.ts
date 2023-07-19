@@ -10,7 +10,7 @@
  * graphic logo are (registered/a) trademark(s) of Plan International.
  */
 
-import { ISerializedForm } from './types/types'
+import { Event, ISerializedForm } from './types/types'
 import {
   birthDocumentForWhomFhirMapping,
   birthDocumentTypeFhirMapping
@@ -261,12 +261,7 @@ export const birthRegisterForms: ISerializedForm = {
           id: 'informant-view-group',
           fields: [
             informantType, // Required field.
-            otherInformantType('informantsRelationWithChild', [
-              {
-                action: 'hide',
-                expression: 'values.informantType !== "OTHER"'
-              }
-            ]), // Required field.
+            otherInformantType(Event.Birth), // Required field.
             registrationPhone,
             registrationEmail,
             getFirstNameField(
