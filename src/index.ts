@@ -48,6 +48,7 @@ import { locationsHandler } from './features/locations/handler'
 import { certificateHandler } from './features/certificates/handler'
 import { rolesHandler } from './features/roles/handler'
 import { usersHandler } from './features/employees/handler'
+import { applicationConfigHandler } from './features/config/application/handler'
 
 export interface ITokenPayload {
   sub: string
@@ -390,6 +391,17 @@ export async function createServer() {
     options: {
       tags: ['api'],
       description: 'Handles submission of mosip generaed NID'
+    }
+  })
+
+  server.route({
+    method: 'GET',
+    path: '/application-config',
+    handler: applicationConfigHandler,
+    options: {
+      auth: false,
+      tags: ['api', 'application-config'],
+      description: 'Returns default application configuration'
     }
   })
 
