@@ -84,8 +84,7 @@ export const getAgeOfIndividualInYears = (
 })
 
 export const getMaritalStatus = (
-  certificateHandlebar: string,
-  conditionals: Conditional[]
+  certificateHandlebar: string
 ): SerializedFormField => ({
   name: 'maritalStatus',
   type: 'SELECT_WITH_OPTIONS',
@@ -104,7 +103,12 @@ export const getMaritalStatus = (
       operation: 'selectTransformer'
     }
   },
-  conditionals,
+  conditionals: [
+    {
+      action: 'hide',
+      expression: '!values.detailsExist'
+    }
+  ],
   options: [
     {
       value: 'SINGLE',
