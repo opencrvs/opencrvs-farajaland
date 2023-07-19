@@ -44,6 +44,7 @@ import { ErrorContext } from 'hapi-auth-jwt2'
 import { mapGeojsonHandler } from '@countryconfig/features/map/handler'
 import { formHandler } from '@countryconfig/features/config/form'
 import { countryLogoHandler } from '@countryconfig/features/countryLogo/handler'
+import { locationsHandler } from './features/locations/handler'
 import { certificateHandler } from './features/certificates/handler'
 import { rolesHandler } from './features/roles/handler'
 import { applicationConfigHandler } from './features/config/application/handler'
@@ -400,6 +401,17 @@ export async function createServer() {
       auth: false,
       tags: ['api', 'application-config'],
       description: 'Returns default application configuration'
+    }
+  })
+  
+  server.route({
+    method: 'GET',
+    path: '/locations',
+    handler: locationsHandler,
+    options: {
+      auth: false,
+      tags: ['api', 'locations'],
+      description: 'Returns the locations metadata'
     }
   })
 
