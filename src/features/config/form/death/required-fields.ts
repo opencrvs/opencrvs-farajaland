@@ -10,6 +10,7 @@
  * graphic logo are (registered/a) trademark(s) of Plan International.
  */
 
+import { seperatorDivider } from '../common-optional-fields'
 import {
   formMessageDescriptors,
   informantMessageDescriptors
@@ -275,13 +276,14 @@ export const getPlaceOfDeathFields = () =>
   [
     {
       name: 'placeOfDeathTitle',
-      type: 'SUBSECTION_HEADER',
+      type: 'HEADING3',
       label: formMessageDescriptors.placeOfDeath,
       previewGroup: 'placeOfDeath',
-      ignoreBottomMargin: true,
+      ignoreBottomMargin: false,
       initialValue: '',
       validator: []
     },
+    seperatorDivider,
     {
       name: 'placeOfDeath',
       type: 'SELECT_WITH_OPTIONS',
