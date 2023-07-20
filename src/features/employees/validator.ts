@@ -30,25 +30,15 @@ export const UserSchema = z.array(
     ]),
     type: z.enum([
       'Field Agent',
-      'Agent de terrain',
       'Police Officer',
-      'Officier de police',
       'Social Worker',
-      'Travailleur social',
       'Healthcare Worker',
-      'Personnel de santé',
       'Registration Agent',
-      "Agent d'enregistrement",
       'Local Registrar',
-      'Registraire local',
       'Local System Admin',
-      'Administrateur système local',
       'National System Admin',
-      'Administrateur système national',
       'Performance Manager',
-      'Gestion des performances',
-      'National Registrar',
-      'Registraire national'
+      'National Registrar'
     ]),
     mobile: z.string(),
     email: z.string()
