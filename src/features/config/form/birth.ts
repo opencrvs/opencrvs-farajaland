@@ -13,7 +13,7 @@
 import { Event, ISerializedForm } from './types/types'
 import {
   birthDocumentForWhomFhirMapping,
-  birthDocumentTypeFhirMapping
+  birthAttachmentTypeFhirMapping
 } from './options'
 import { formMessageDescriptors } from './formatjs-messages'
 import {
@@ -484,7 +484,7 @@ export const birthRegisterForms: ISerializedForm = {
               validator: [],
               options: [
                 {
-                  value: birthDocumentTypeFhirMapping.NOTIFICATION_OF_BIRTH,
+                  value: birthAttachmentTypeFhirMapping.NOTIFICATION_OF_BIRTH,
                   label: formMessageDescriptors.docTypeChildBirthProof
                 }
               ],
@@ -507,19 +507,19 @@ export const birthRegisterForms: ISerializedForm = {
               validator: [],
               options: [
                 {
-                  value: birthDocumentTypeFhirMapping.NATIONAL_ID,
+                  value: birthAttachmentTypeFhirMapping.NATIONAL_ID,
                   label: formMessageDescriptors.docTypeNID
                 },
                 {
-                  value: birthDocumentTypeFhirMapping.PASSPORT,
+                  value: birthAttachmentTypeFhirMapping.PASSPORT,
                   label: formMessageDescriptors.docTypePassport
                 },
                 {
-                  value: birthDocumentTypeFhirMapping.BIRTH_CERTIFICATE,
+                  value: birthAttachmentTypeFhirMapping.BIRTH_CERTIFICATE,
                   label: formMessageDescriptors.docTypeBirthCert
                 },
                 {
-                  value: birthDocumentTypeFhirMapping.OTHER,
+                  value: birthAttachmentTypeFhirMapping.OTHER,
                   label: formMessageDescriptors.docTypeOther
                 }
               ],
@@ -550,19 +550,19 @@ export const birthRegisterForms: ISerializedForm = {
               validator: [],
               options: [
                 {
-                  value: birthDocumentTypeFhirMapping.NATIONAL_ID,
+                  value: birthAttachmentTypeFhirMapping.NATIONAL_ID,
                   label: formMessageDescriptors.docTypeNID
                 },
                 {
-                  value: birthDocumentTypeFhirMapping.PASSPORT,
+                  value: birthAttachmentTypeFhirMapping.PASSPORT,
                   label: formMessageDescriptors.docTypePassport
                 },
                 {
-                  value: birthDocumentTypeFhirMapping.BIRTH_CERTIFICATE,
+                  value: birthAttachmentTypeFhirMapping.BIRTH_CERTIFICATE,
                   label: formMessageDescriptors.docTypeBirthCert
                 },
                 {
-                  value: birthDocumentTypeFhirMapping.OTHER,
+                  value: birthAttachmentTypeFhirMapping.OTHER,
                   label: formMessageDescriptors.docTypeOther
                 }
               ],
@@ -593,19 +593,19 @@ export const birthRegisterForms: ISerializedForm = {
               validator: [],
               options: [
                 {
-                  value: birthDocumentTypeFhirMapping.NATIONAL_ID,
+                  value: birthAttachmentTypeFhirMapping.NATIONAL_ID,
                   label: formMessageDescriptors.docTypeNID
                 },
                 {
-                  value: birthDocumentTypeFhirMapping.PASSPORT,
+                  value: birthAttachmentTypeFhirMapping.PASSPORT,
                   label: formMessageDescriptors.docTypePassport
                 },
                 {
-                  value: birthDocumentTypeFhirMapping.BIRTH_CERTIFICATE,
+                  value: birthAttachmentTypeFhirMapping.BIRTH_CERTIFICATE,
                   label: formMessageDescriptors.docTypeBirthCert
                 },
                 {
-                  value: birthDocumentTypeFhirMapping.OTHER,
+                  value: birthAttachmentTypeFhirMapping.OTHER,
                   label: formMessageDescriptors.docTypeOther
                 }
               ],
@@ -636,12 +636,12 @@ export const birthRegisterForms: ISerializedForm = {
               options: [
                 {
                   value:
-                    birthDocumentTypeFhirMapping.PROOF_OF_LEGAL_GUARDIANSHIP,
+                    birthAttachmentTypeFhirMapping.PROOF_OF_LEGAL_GUARDIANSHIP,
                   label: formMessageDescriptors.legalGuardianProof
                 },
                 {
                   value:
-                    birthDocumentTypeFhirMapping.PROOF_OF_ASSIGNED_RESPONSIBILITY,
+                    birthAttachmentTypeFhirMapping.PROOF_OF_ASSIGNED_RESPONSIBILITY,
                   label: formMessageDescriptors.assignedResponsibilityProof
                 }
               ],

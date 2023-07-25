@@ -39,7 +39,7 @@ import {
 import { formMessageDescriptors } from './formatjs-messages'
 import {
   deathDocumentForWhomFhirMapping,
-  deathDocumentTypeFhirMapping
+  deathAttachmentTypeFhirMapping
 } from './options'
 import { Event, ISerializedForm } from './types/types'
 import {
@@ -368,19 +368,19 @@ export const deathRegisterForms = {
               validator: [],
               options: [
                 {
-                  value: deathDocumentTypeFhirMapping.NATIONAL_ID,
+                  value: deathAttachmentTypeFhirMapping.NATIONAL_ID,
                   label: formMessageDescriptors.docTypeNID
                 },
                 {
-                  value: deathDocumentTypeFhirMapping.PASSPORT,
+                  value: deathAttachmentTypeFhirMapping.PASSPORT,
                   label: formMessageDescriptors.docTypePassport
                 },
                 {
-                  value: deathDocumentTypeFhirMapping.BIRTH_CERTIFICATE,
+                  value: deathAttachmentTypeFhirMapping.BIRTH_CERTIFICATE,
                   label: formMessageDescriptors.docTypeBirthCert
                 },
                 {
-                  value: deathDocumentTypeFhirMapping.OTHER,
+                  value: deathAttachmentTypeFhirMapping.OTHER,
                   label: formMessageDescriptors.docTypeOther
                 }
               ],
@@ -403,19 +403,19 @@ export const deathRegisterForms = {
               validator: [],
               options: [
                 {
-                  value: deathDocumentTypeFhirMapping.NATIONAL_ID,
+                  value: deathAttachmentTypeFhirMapping.NATIONAL_ID,
                   label: formMessageDescriptors.docTypeNID
                 },
                 {
-                  value: deathDocumentTypeFhirMapping.PASSPORT,
+                  value: deathAttachmentTypeFhirMapping.PASSPORT,
                   label: formMessageDescriptors.docTypePassport
                 },
                 {
-                  value: deathDocumentTypeFhirMapping.BIRTH_CERTIFICATE,
+                  value: deathAttachmentTypeFhirMapping.BIRTH_CERTIFICATE,
                   label: formMessageDescriptors.docTypeBirthCert
                 },
                 {
-                  value: deathDocumentTypeFhirMapping.OTHER,
+                  value: deathAttachmentTypeFhirMapping.OTHER,
                   label: formMessageDescriptors.docTypeOther
                 }
               ],
@@ -438,29 +438,30 @@ export const deathRegisterForms = {
               validator: [],
               options: [
                 {
-                  value: deathDocumentTypeFhirMapping.ATTESTED_LETTER_OF_DEATH,
+                  value:
+                    deathAttachmentTypeFhirMapping.ATTESTED_LETTER_OF_DEATH,
                   label: formMessageDescriptors.docTypeLetterOfDeath
                 },
                 {
                   value:
-                    deathDocumentTypeFhirMapping.POLICE_CERTIFICATE_OF_DEATH,
+                    deathAttachmentTypeFhirMapping.POLICE_CERTIFICATE_OF_DEATH,
                   label: formMessageDescriptors.docTypePoliceCertificate
                 },
                 {
                   value:
-                    deathDocumentTypeFhirMapping.HOSPITAL_CERTIFICATE_OF_DEATH,
+                    deathAttachmentTypeFhirMapping.HOSPITAL_CERTIFICATE_OF_DEATH,
                   label: formMessageDescriptors.docTypeHospitalDeathCertificate
                 },
                 {
-                  value: deathDocumentTypeFhirMapping.CORONERS_REPORT,
+                  value: deathAttachmentTypeFhirMapping.CORONERS_REPORT,
                   label: formMessageDescriptors.docTypeCoronersReport
                 },
                 {
-                  value: deathDocumentTypeFhirMapping.BURIAL_RECEIPT,
+                  value: deathAttachmentTypeFhirMapping.BURIAL_RECEIPT,
                   label: formMessageDescriptors.docTypeCopyOfBurialReceipt
                 },
                 {
-                  value: deathDocumentTypeFhirMapping.OTHER,
+                  value: deathAttachmentTypeFhirMapping.OTHER,
                   label: formMessageDescriptors.docTypeOther
                 }
               ],
@@ -492,15 +493,15 @@ export const deathRegisterForms = {
               options: [
                 {
                   value:
-                    deathDocumentTypeFhirMapping.MEDICALLY_CERTIFIED_CAUSE_OF_DEATH,
+                    deathAttachmentTypeFhirMapping.MEDICALLY_CERTIFIED_CAUSE_OF_DEATH,
                   label: formMessageDescriptors.medicallyCertified
                 },
                 {
-                  value: deathDocumentTypeFhirMapping.VERBAL_AUTOPSY_REPORT,
+                  value: deathAttachmentTypeFhirMapping.VERBAL_AUTOPSY_REPORT,
                   label: formMessageDescriptors.verbalAutopsyReport
                 },
                 {
-                  value: deathDocumentTypeFhirMapping.OTHER,
+                  value: deathAttachmentTypeFhirMapping.OTHER,
                   label: formMessageDescriptors.docTypeOther
                 }
               ],
