@@ -36,9 +36,14 @@ import {
 } from './queries'
 import { join } from 'path'
 import { readFileSync } from 'fs'
+import {
+  birthAttachmentTypeFhirMapping,
+  deathAttachmentTypeFhirMapping
+} from '@countryconfig/features/config/form/options'
 
 const HOME_BIRTH_WEIGHT = 0.2
 const HOME_DEATH_WEIGHT = 0.2
+/** Number of attachments per record. Please see `birthAttachmentTypeFhirMapping` and `deathAttachmentTypeFhirMapping`, this number cannot exceed the biggest index of either of them. */
 const NUMBER_OF_ATTACHMENTS_PER_RECORD = process.env
   .NUMBER_OF_ATTACHMENTS_PER_RECORD
   ? parseInt(process.env.NUMBER_OF_ATTACHMENTS_PER_RECORD, 10)
@@ -214,11 +219,11 @@ export function createBirthDeclarationData(
       ],
       draftId: faker.datatype.uuid(),
       attachments: Array.from({ length: NUMBER_OF_ATTACHMENTS_PER_RECORD }).map(
-        () => ({
+        (_, i) => ({
           contentType: 'image/png',
           data: 'data:image/png;base64,' + ATTACHMENT,
           subject: AttachmentSubject.Child,
-          type: AttachmentType.NotificationOfBirth
+          type: Object.keys(birthAttachmentTypeFhirMapping)[i] as AttachmentType
         })
       ),
       inCompleteFields: !sex ? 'child/child-view-group/gender' : undefined
@@ -353,11 +358,11 @@ export async function createDeathDeclaration(
       contactPhoneNumber:
         '+2607' + faker.datatype.number({ min: 10000000, max: 99999999 }),
       attachments: Array.from({ length: NUMBER_OF_ATTACHMENTS_PER_RECORD }).map(
-        () => ({
+        (_, i) => ({
           contentType: 'image/png',
           data: 'data:image/png;base64,' + ATTACHMENT,
           subject: AttachmentSubject.DeceasedDeathCauseProof,
-          type: AttachmentType.CoronersReport
+          type: Object.keys(deathAttachmentTypeFhirMapping)[i] as AttachmentType
         })
       ),
       contactRelationship: 'Mother',

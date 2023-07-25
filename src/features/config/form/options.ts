@@ -12,6 +12,7 @@
 
 // A file just to store the constants until we decide what to do with removing hardcoded options from core
 
+import { AttachmentType } from '@countryconfig/data-generator/gateway'
 import { formMessageDescriptors } from './formatjs-messages'
 import { BIG_NUMBER, IDynamicFieldTypeMapper, TEXT } from './types/types'
 import { MessageDescriptor } from 'react-intl'
@@ -34,18 +35,19 @@ export const deathDocumentForWhomFhirMapping = {
   INFORMANT_ID_PROOF: 'INFORMANT_ID_PROOF'
 }
 
-export const deathDocumentTypeFhirMapping = {
-  HOSPITAL_CERTIFICATE_OF_DEATH: 'HOSPITAL_CERTIFICATE_OF_DEATH',
-  ATTESTED_LETTER_OF_DEATH: 'ATTESTED_LETTER_OF_DEATH',
-  BURIAL_RECEIPT: 'BURIAL_RECEIPT',
-  POLICE_CERTIFICATE_OF_DEATH: 'POLICE_CERTIFICATE_OF_DEATH',
-  MEDICALLY_CERTIFIED_CAUSE_OF_DEATH: 'MEDICALLY_CERTIFIED_CAUSE_OF_DEATH',
-  VERBAL_AUTOPSY_REPORT: 'VERBAL_AUTOPSY_REPORT',
-  CORONERS_REPORT: 'CORONERS_REPORT',
-  BIRTH_CERTIFICATE: 'BIRTH_CERTIFICATE',
-  NATIONAL_ID: 'NATIONAL_ID',
-  PASSPORT: 'PASSPORT',
-  OTHER: 'OTHER'
+export const deathAttachmentTypeFhirMapping = {
+  [AttachmentType.HospitalCertificateOfDeath]: 'HOSPITAL_CERTIFICATE_OF_DEATH',
+  [AttachmentType.AttestedLetterOfDeath]: 'ATTESTED_LETTER_OF_DEATH',
+  [AttachmentType.BurialReceipt]: 'BURIAL_RECEIPT',
+  [AttachmentType.PoliceCertificateOfDeath]: 'POLICE_CERTIFICATE_OF_DEATH',
+  [AttachmentType.MedicallyCertifiedCauseOfDeath]:
+    'MEDICALLY_CERTIFIED_CAUSE_OF_DEATH',
+  [AttachmentType.VerbalAutopsyReport]: 'VERBAL_AUTOPSY_REPORT',
+  [AttachmentType.CoronersReport]: 'CORONERS_REPORT',
+  [AttachmentType.BirthCertificate]: 'BIRTH_CERTIFICATE',
+  [AttachmentType.NationalId]: 'NATIONAL_ID',
+  [AttachmentType.Passport]: 'PASSPORT',
+  [AttachmentType.Other]: 'OTHER'
 }
 
 export const birthDocumentForWhomFhirMapping = {
@@ -58,14 +60,15 @@ export const birthDocumentForWhomFhirMapping = {
   LEGAL_GUARDIAN_PROOF: 'LEGAL_GUARDIAN_PROOF'
 }
 
-export const birthDocumentTypeFhirMapping = {
-  BIRTH_CERTIFICATE: 'BIRTH_CERTIFICATE',
-  NATIONAL_ID: 'NATIONAL_ID',
-  PASSPORT: 'PASSPORT',
-  OTHER: 'OTHER',
-  NOTIFICATION_OF_BIRTH: 'NOTIFICATION_OF_BIRTH',
-  PROOF_OF_LEGAL_GUARDIANSHIP: 'PROOF_OF_LEGAL_GUARDIANSHIP',
-  PROOF_OF_ASSIGNED_RESPONSIBILITY: 'PROOF_OF_ASSIGNED_RESPONSIBILITY'
+export const birthAttachmentTypeFhirMapping = {
+  [AttachmentType.BirthCertificate]: 'BIRTH_CERTIFICATE',
+  [AttachmentType.NationalId]: 'NATIONAL_ID',
+  [AttachmentType.Passport]: 'PASSPORT',
+  [AttachmentType.Other]: 'OTHER',
+  [AttachmentType.NotificationOfBirth]: 'NOTIFICATION_OF_BIRTH',
+  [AttachmentType.ProofOfLegalGuardianship]: 'PROOF_OF_LEGAL_GUARDIANSHIP',
+  [AttachmentType.ProofOfAssignedResponsibility]:
+    'PROOF_OF_ASSIGNED_RESPONSIBILITY'
 }
 
 export const marriageDocumentForWhomFhirMapping = {
