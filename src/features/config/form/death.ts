@@ -37,10 +37,7 @@ import {
   getPlaceOfDeathFields
 } from './death/required-fields'
 import { formMessageDescriptors } from './formatjs-messages'
-import {
-  deathDocumentForWhomFhirMapping,
-  deathAttachmentTypeFhirMapping
-} from './options'
+import { deathDocumentForWhomFhirMapping, attachment } from './options'
 import { Event, ISerializedForm } from './types/types'
 import {
   getNationalIDValidators,
@@ -368,19 +365,19 @@ export const deathRegisterForms = {
               validator: [],
               options: [
                 {
-                  value: deathAttachmentTypeFhirMapping.NATIONAL_ID,
+                  value: attachment.nationalId,
                   label: formMessageDescriptors.docTypeNID
                 },
                 {
-                  value: deathAttachmentTypeFhirMapping.PASSPORT,
+                  value: attachment.passport,
                   label: formMessageDescriptors.docTypePassport
                 },
                 {
-                  value: deathAttachmentTypeFhirMapping.BIRTH_CERTIFICATE,
+                  value: attachment.birthCertificate,
                   label: formMessageDescriptors.docTypeBirthCert
                 },
                 {
-                  value: deathAttachmentTypeFhirMapping.OTHER,
+                  value: attachment.other,
                   label: formMessageDescriptors.docTypeOther
                 }
               ],
@@ -403,19 +400,19 @@ export const deathRegisterForms = {
               validator: [],
               options: [
                 {
-                  value: deathAttachmentTypeFhirMapping.NATIONAL_ID,
+                  value: attachment.nationalId,
                   label: formMessageDescriptors.docTypeNID
                 },
                 {
-                  value: deathAttachmentTypeFhirMapping.PASSPORT,
+                  value: attachment.passport,
                   label: formMessageDescriptors.docTypePassport
                 },
                 {
-                  value: deathAttachmentTypeFhirMapping.BIRTH_CERTIFICATE,
+                  value: attachment.birthCertificate,
                   label: formMessageDescriptors.docTypeBirthCert
                 },
                 {
-                  value: deathAttachmentTypeFhirMapping.OTHER,
+                  value: attachment.other,
                   label: formMessageDescriptors.docTypeOther
                 }
               ],
@@ -438,30 +435,27 @@ export const deathRegisterForms = {
               validator: [],
               options: [
                 {
-                  value:
-                    deathAttachmentTypeFhirMapping.ATTESTED_LETTER_OF_DEATH,
+                  value: attachment.attestedLetterOfDeath,
                   label: formMessageDescriptors.docTypeLetterOfDeath
                 },
                 {
-                  value:
-                    deathAttachmentTypeFhirMapping.POLICE_CERTIFICATE_OF_DEATH,
+                  value: attachment.policeCertificateOfDeath,
                   label: formMessageDescriptors.docTypePoliceCertificate
                 },
                 {
-                  value:
-                    deathAttachmentTypeFhirMapping.HOSPITAL_CERTIFICATE_OF_DEATH,
+                  value: attachment.hospitalCertificateOfDeath,
                   label: formMessageDescriptors.docTypeHospitalDeathCertificate
                 },
                 {
-                  value: deathAttachmentTypeFhirMapping.CORONERS_REPORT,
+                  value: attachment.coronersReport,
                   label: formMessageDescriptors.docTypeCoronersReport
                 },
                 {
-                  value: deathAttachmentTypeFhirMapping.BURIAL_RECEIPT,
+                  value: attachment.burialReceipt,
                   label: formMessageDescriptors.docTypeCopyOfBurialReceipt
                 },
                 {
-                  value: deathAttachmentTypeFhirMapping.OTHER,
+                  value: attachment.other,
                   label: formMessageDescriptors.docTypeOther
                 }
               ],
@@ -492,16 +486,15 @@ export const deathRegisterForms = {
               ],
               options: [
                 {
-                  value:
-                    deathAttachmentTypeFhirMapping.MEDICALLY_CERTIFIED_CAUSE_OF_DEATH,
+                  value: attachment.medicallyCertifiedCauseOfDeath,
                   label: formMessageDescriptors.medicallyCertified
                 },
                 {
-                  value: deathAttachmentTypeFhirMapping.VERBAL_AUTOPSY_REPORT,
+                  value: attachment.verbalAutopsyReport,
                   label: formMessageDescriptors.verbalAutopsyReport
                 },
                 {
-                  value: deathAttachmentTypeFhirMapping.OTHER,
+                  value: attachment.other,
                   label: formMessageDescriptors.docTypeOther
                 }
               ],

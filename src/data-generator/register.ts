@@ -7,11 +7,8 @@ import { Location } from './location'
 
 import {
   AttachmentInput,
-  AttendantType,
   BirthRegistrationInput,
-  BirthType,
   DeathRegistrationInput,
-  MaritalStatusType,
   RegisterBirthDeclarationMutation,
   RegisterDeathDeclarationMutation
 } from './gateway'
@@ -20,6 +17,11 @@ import { sub } from 'date-fns'
 import { GATEWAY_GQL_HOST } from './constants'
 import { MARK_AS_REGISTERED_QUERY, MARK_DEATH_AS_REGISTERED } from './queries'
 import { fetchDeathRegistration, fetchRegistration } from './declare'
+import {
+  attendant,
+  birth,
+  maritalStatus
+} from '@countryconfig/features/config/form/options'
 
 // Hospital notifications have a limited set of data in them
 // This part amends the missing fields if needed
@@ -65,19 +67,16 @@ export function createBirthRegistrationDetailsForNotification(
       contactRelationship: 'Mother',
       draftId: declaration.id
     },
-    birthType: BirthType.Single,
+    birthType: birth.single,
     weightAtBirth: Math.round((2.5 + 2 * Math.random()) * 10) / 10,
-    attendantAtBirth: AttendantType.Physician,
+    attendantAtBirth: attendant.physician,
     eventLocation: {
       _fhirID: (declaration.eventLocation as any)?._fhirID
     },
     informant: {
       ...registrationInput.informant,
-      individual: {
-        ...registrationInput.informant?.individual,
-        occupation: 'Farmer',
-        nationality: ['FAR']
-      }
+      occupation: 'Farmer',
+      nationality: ['FAR']
     },
     father: {
       ...registrationInput.father,
@@ -94,7 +93,7 @@ export function createBirthRegistrationDetailsForNotification(
       dateOfMarriage: sub(new Date(declaration.child.birthDate), { years: 2 })
         .toISOString()
         .split('T')[0],
-      maritalStatus: MaritalStatusType.Married,
+      maritalStatus: maritalStatus.married,
       _fhirID: declaration.mother.id
     },
     _fhirIDMap: declaration._fhirIDMap
@@ -121,7 +120,8 @@ export function createRegistrationDetails(
       'eventLocation.id',
       'informant.id',
       'informant.individual.id',
-      'deceased.id'
+      'deceased.id',
+      'informant.relationship'
     ]),
     ['registration.registrationNumber', 'registration.type']
   )

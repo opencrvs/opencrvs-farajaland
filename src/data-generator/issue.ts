@@ -6,7 +6,6 @@ import {
   AttachmentInput,
   BirthRegistrationInput,
   DeathRegistrationInput,
-  LocationType,
   MarkBirthAsIssuedMutation,
   MarkDeathAsIssuedMutation,
   PaymentOutcomeType,
@@ -18,6 +17,7 @@ import { MARK_BIRTH_AS_ISSUED, MARK_DEATH_AS_ISSUED } from './queries'
 import { differenceInDays } from 'date-fns'
 import { ConfigResponse } from './config'
 import { fetchDeathRegistration, fetchRegistration } from './declare'
+import { location } from '@countryconfig/features/config/form/options'
 
 export function createBirthIssuingDetails(
   createdAt: Date,
@@ -25,7 +25,12 @@ export function createBirthIssuingDetails(
   config: ConfigResponse
 ) {
   const withIdsRemoved = idsToFHIRIds(
-    omit(declaration, ['__typename', 'id', 'registration.type']),
+    omit(declaration, [
+      '__typename',
+      'id',
+      'registration.type',
+      'informant.relationship'
+    ]),
     [
       'id',
       'eventLocation.id',
@@ -99,7 +104,12 @@ export function createDeathIssuingDetails(
   config: ConfigResponse
 ): DeathRegistrationInput {
   const withIdsRemoved = idsToFHIRIds(
-    omit(declaration, ['__typename', 'id', 'registration.type']),
+    omit(declaration, [
+      '__typename',
+      'id',
+      'registration.type',
+      'informant.relationship'
+    ]),
     [
       'id',
       'eventLocation.id',
@@ -140,10 +150,10 @@ export function createDeathIssuingDetails(
       )
     },
     eventLocation:
-      withIdsRemoved.eventLocation?.type === LocationType.PrivateHome
+      withIdsRemoved.eventLocation?.type === location.privateHome
         ? {
-            address: withIdsRemoved.eventLocation.address,
-            type: withIdsRemoved.eventLocation.type
+            address: withIdsRemoved.eventLocation?.address,
+            type: withIdsRemoved.eventLocation?.type
           }
         : {
             _fhirID: withIdsRemoved.eventLocation?._fhirID

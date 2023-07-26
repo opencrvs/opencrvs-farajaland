@@ -20,29 +20,26 @@ const birthRegistrationFragment = gql`
     informant {
       id
       relationship
-      individual {
+      identifier {
         id
-        identifier {
-          id
-          type
-        }
-        name {
-          use
-          firstNames
-          familyName
-        }
-        occupation
-        nationality
-        birthDate
-        address {
-          type
-          line
-          district
-          state
-          city
-          postalCode
-          country
-        }
+        type
+      }
+      name {
+        use
+        firstNames
+        familyName
+      }
+      occupation
+      nationality
+      birthDate
+      address {
+        type
+        line
+        district
+        state
+        city
+        postalCode
+        country
       }
     }
     mother {
@@ -214,17 +211,15 @@ const birthRegistrationFragment = gql`
         collector {
           relationship
           otherRelationship
-          individual {
-            name {
-              use
-              firstNames
-              familyName
-            }
-            telecom {
-              system
-              value
-              use
-            }
+          name {
+            use
+            firstNames
+            familyName
+          }
+          telecom {
+            system
+            value
+            use
           }
         }
       }
@@ -367,33 +362,30 @@ export const FETCH_DEATH_REGISTRATION_QUERY = print(gql`
       informant {
         id
         relationship
-        individual {
+        identifier {
           id
-          identifier {
-            id
-            type
-          }
-          name {
-            use
-            firstNames
-            familyName
-          }
-          nationality
-          occupation
-          birthDate
-          telecom {
-            system
-            value
-          }
-          address {
-            type
-            line
-            district
-            state
-            city
-            postalCode
-            country
-          }
+          type
+        }
+        name {
+          use
+          firstNames
+          familyName
+        }
+        nationality
+        occupation
+        birthDate
+        telecom {
+          system
+          value
+        }
+        address {
+          type
+          line
+          district
+          state
+          city
+          postalCode
+          country
         }
       }
       father {

@@ -12,22 +12,6 @@
 
 // A file just to store the constants until we decide what to do with removing hardcoded options from core
 
-import { AttachmentType } from '@countryconfig/data-generator/gateway'
-import { formMessageDescriptors } from './formatjs-messages'
-import { BIG_NUMBER, IDynamicFieldTypeMapper, TEXT } from './types/types'
-import { MessageDescriptor } from 'react-intl'
-
-export const NATIONAL_ID = 'NATIONAL_ID'
-export const BIRTH_REGISTRATION_NUMBER = 'BIRTH_REGISTRATION_NUMBER'
-export const PASSPORT = 'PASSPORT'
-export const DEATH_REGISTRATION_NUMBER = 'DEATH_REGISTRATION_NUMBER'
-export const DRIVING_LICENSE = 'DRIVING_LICENSE'
-export const REFUGEE_NUMBER = 'REFUGEE_NUMBER'
-export const ALIEN_NUMBER = 'ALIEN_NUMBER'
-export const OTHER = 'OTHER'
-export const NO_ID = 'NO_ID'
-export const SOCIAL_SECURITY_NO = 'SOCIAL_SECURITY_NO'
-
 export const deathDocumentForWhomFhirMapping = {
   DECEASED_ID_PROOF: 'DECEASED_ID_PROOF',
   DECEASED_DEATH_PROOF: 'DECEASED_DEATH_PROOF',
@@ -35,19 +19,191 @@ export const deathDocumentForWhomFhirMapping = {
   INFORMANT_ID_PROOF: 'INFORMANT_ID_PROOF'
 }
 
-export const deathAttachmentTypeFhirMapping = {
-  [AttachmentType.HospitalCertificateOfDeath]: 'HOSPITAL_CERTIFICATE_OF_DEATH',
-  [AttachmentType.AttestedLetterOfDeath]: 'ATTESTED_LETTER_OF_DEATH',
-  [AttachmentType.BurialReceipt]: 'BURIAL_RECEIPT',
-  [AttachmentType.PoliceCertificateOfDeath]: 'POLICE_CERTIFICATE_OF_DEATH',
-  [AttachmentType.MedicallyCertifiedCauseOfDeath]:
-    'MEDICALLY_CERTIFIED_CAUSE_OF_DEATH',
-  [AttachmentType.VerbalAutopsyReport]: 'VERBAL_AUTOPSY_REPORT',
-  [AttachmentType.CoronersReport]: 'CORONERS_REPORT',
-  [AttachmentType.BirthCertificate]: 'BIRTH_CERTIFICATE',
-  [AttachmentType.NationalId]: 'NATIONAL_ID',
-  [AttachmentType.Passport]: 'PASSPORT',
-  [AttachmentType.Other]: 'OTHER'
+/** Mapping of attachment types to identifiers */
+export const attachment = {
+  attestedLetterOfDeath: 'ATTESTED_LETTER_OF_DEATH',
+  birthCertificate: 'BIRTH_CERTIFICATE',
+  burialReceipt: 'BURIAL_RECEIPT',
+  coronersReport: 'CORONERS_REPORT',
+  hospitalCertificateOfDeath: 'HOSPITAL_CERTIFICATE_OF_DEATH',
+  marriageNotice: 'MARRIAGE_NOTICE',
+  medicallyCertifiedCauseOfDeath: 'MEDICALLY_CERTIFIED_CAUSE_OF_DEATH',
+  nationalId: 'NATIONAL_ID',
+  notificationOfBirth: 'NOTIFICATION_OF_BIRTH',
+  other: 'OTHER',
+  passport: 'PASSPORT',
+  policeCertificateOfDeath: 'POLICE_CERTIFICATE_OF_DEATH',
+  proofOfAssignedResponsibility: 'PROOF_OF_ASSIGNED_RESPONSIBILITY',
+  proofOfLegalGuardianship: 'PROOF_OF_LEGAL_GUARDIANSHIP',
+  verbalAutopsyReport: 'VERBAL_AUTOPSY_REPORT'
+}
+
+export const DEATH_ATTACHMENT_TYPES = [
+  attachment.hospitalCertificateOfDeath,
+  attachment.attestedLetterOfDeath,
+  attachment.burialReceipt,
+  attachment.policeCertificateOfDeath,
+  attachment.medicallyCertifiedCauseOfDeath,
+  attachment.verbalAutopsyReport,
+  attachment.coronersReport,
+  attachment.birthCertificate,
+  attachment.nationalId,
+  attachment.passport,
+  attachment.other
+] as const
+
+export const BIRTH_ATTACHMENT_TYPES = [
+  attachment.birthCertificate,
+  attachment.nationalId,
+  attachment.passport,
+  attachment.other,
+  attachment.notificationOfBirth,
+  attachment.proofOfLegalGuardianship,
+  attachment.proofOfAssignedResponsibility
+] as const
+
+/** Mapping of education types to identifiers */
+export const education = {
+  firstStageTertiaryIsced_5: 'FIRST_STAGE_TERTIARY_ISCED_5',
+  noSchooling: 'NO_SCHOOLING',
+  postSecondaryIsced_4: 'POST_SECONDARY_ISCED_4',
+  primaryIsced_1: 'PRIMARY_ISCED_1'
+} as const
+
+/** Mapping of location types to identifiers */
+export const location = {
+  adminStructure: 'ADMIN_STRUCTURE',
+  crvsOffice: 'CRVS_OFFICE',
+  deceasedUsualResidence: 'DECEASED_USUAL_RESIDENCE',
+  healthFacility: 'HEALTH_FACILITY',
+  hospital: 'HOSPITAL',
+  idpCamp: 'IDP_CAMP',
+  militaryBaseOrCantonment: 'MILITARY_BASE_OR_CANTONMENT',
+  other: 'OTHER',
+  otherHealthInstitution: 'OTHER_HEALTH_INSTITUTION',
+  primaryAddress: 'PRIMARY_ADDRESS',
+  privateHome: 'PRIVATE_HOME',
+  secondaryAddress: 'SECONDARY_ADDRESS',
+  unhcrCamp: 'UNHCR_CAMP'
+}
+
+/** Mapping of identity types to identifiers */
+export const identity = {
+  nationalId: 'NATIONAL_ID',
+  birthRegistrationNumber: 'BIRTH_REGISTRATION_NUMBER',
+  deathRegistrationNumber: 'DEATH_REGISTRATION_NUMBER',
+  passport: 'PASSPORT',
+  drivingLicense: 'DRIVING_LICENSE',
+  refugeeNumber: 'REFUGEE_NUMBER',
+  alienNumber: 'ALIEN_NUMBER',
+  other: 'OTHER',
+  noId: 'NO_ID',
+  socialSecurityNumber: 'SOCIAL_SECURITY_NO'
+}
+
+/** Mapping of marital status types to identifiers */
+export const maritalStatus = {
+  divorced: 'DIVORCED',
+  married: 'MARRIED',
+  notStated: 'NOT_STATED',
+  separated: 'SEPARATED',
+  single: 'SINGLE',
+  widowed: 'WIDOWED'
+}
+
+/** Mapping of address types to identifiers. Note that location and addresses are different, as persons address cannot be a hospital for example. */
+export const address = {
+  adminStructure: 'ADMIN_STRUCTURE',
+  crvsOffice: 'CRVS_OFFICE',
+  deceasedUsualResidence: 'DECEASED_USUAL_RESIDENCE',
+  healthFacility: 'HEALTH_FACILITY',
+  idpCamp: 'IDP_CAMP',
+  militaryBaseOrCantonment: 'MILITARY_BASE_OR_CANTONMENT',
+  other: 'OTHER',
+  primaryAddress: 'PRIMARY_ADDRESS',
+  privateHome: 'PRIVATE_HOME',
+  secondaryAddress: 'SECONDARY_ADDRESS',
+  unhcrCamp: 'UNHCR_CAMP'
+}
+
+/** Mapping of informant types to identifiers */
+export const informant = {
+  bride: 'BRIDE',
+  brother: 'BROTHER',
+  daughter: 'DAUGHTER',
+  daughterInLaw: 'DAUGHTER_IN_LAW',
+  father: 'FATHER',
+  granddaughter: 'GRANDDAUGHTER',
+  grandfather: 'GRANDFATHER',
+  grandmother: 'GRANDMOTHER',
+  grandson: 'GRANDSON',
+  groom: 'GROOM',
+  informant: 'INFORMANT',
+  legalGuardian: 'LEGAL_GUARDIAN',
+  mother: 'MOTHER',
+  other: 'OTHER',
+  otherFamilyMember: 'OTHER_FAMILY_MEMBER',
+  sister: 'SISTER',
+  son: 'SON',
+  sonInLaw: 'SON_IN_LAW',
+  spouse: 'SPOUSE'
+}
+
+/** Mapping manners of death to identifiers */
+export const mannerOfDeath = {
+  accident: 'ACCIDENT',
+  homicide: 'HOMICIDE',
+  mannerUndetermined: 'MANNER_UNDETERMINED',
+  naturalCauses: 'NATURAL_CAUSES',
+  suicide: 'SUICIDE'
+}
+
+/** Mapping types of birth to identifiers */
+export const birth = {
+  higherMultipleDelivery: 'HIGHER_MULTIPLE_DELIVERY',
+  quadruplet: 'QUADRUPLET',
+  single: 'SINGLE',
+  triplet: 'TRIPLET',
+  twin: 'TWIN'
+}
+
+/** Mapping types of attachment subjects to identifiers */
+export const attachmentSubject = {
+  bride: 'BRIDE',
+  child: 'CHILD',
+  childAge: 'CHILD_AGE',
+  deceasedDeathCauseProof: 'DECEASED_DEATH_CAUSE_PROOF',
+  deceasedDeathProof: 'DECEASED_DEATH_PROOF',
+  deceasedIdProof: 'DECEASED_ID_PROOF',
+  father: 'FATHER',
+  groom: 'GROOM',
+  informantIdProof: 'INFORMANT_ID_PROOF',
+  legalGuardianProof: 'LEGAL_GUARDIAN_PROOF',
+  marriageNoticeProof: 'MARRIAGE_NOTICE_PROOF',
+  mother: 'MOTHER',
+  other: 'OTHER',
+  parent: 'PARENT'
+}
+
+/** Mapping attendant types to identifiers */
+export const attendant = {
+  layperson: 'LAYPERSON',
+  midwife: 'MIDWIFE',
+  none: 'NONE',
+  nurse: 'NURSE',
+  nurseMidwife: 'NURSE_MIDWIFE',
+  other: 'OTHER',
+  otherParamedicalPersonnel: 'OTHER_PARAMEDICAL_PERSONNEL',
+  physician: 'PHYSICIAN',
+  traditionalBirthAttendant: 'TRADITIONAL_BIRTH_ATTENDANT'
+}
+
+/** Mapping of cause-of-death method types into identifiers  */
+export const causeOfDeathMethod = {
+  layReported: 'LAY_REPORTED',
+  medicallyCertified: 'MEDICALLY_CERTIFIED',
+  physician: 'PHYSICIAN',
+  verbalAutopsy: 'VERBAL_AUTOPSY'
 }
 
 export const birthDocumentForWhomFhirMapping = {
@@ -58,17 +214,6 @@ export const birthDocumentForWhomFhirMapping = {
   OTHER: 'OTHER',
   INFORMANT_ID_PROOF: 'INFORMANT_ID_PROOF',
   LEGAL_GUARDIAN_PROOF: 'LEGAL_GUARDIAN_PROOF'
-}
-
-export const birthAttachmentTypeFhirMapping = {
-  [AttachmentType.BirthCertificate]: 'BIRTH_CERTIFICATE',
-  [AttachmentType.NationalId]: 'NATIONAL_ID',
-  [AttachmentType.Passport]: 'PASSPORT',
-  [AttachmentType.Other]: 'OTHER',
-  [AttachmentType.NotificationOfBirth]: 'NOTIFICATION_OF_BIRTH',
-  [AttachmentType.ProofOfLegalGuardianship]: 'PROOF_OF_LEGAL_GUARDIANSHIP',
-  [AttachmentType.ProofOfAssignedResponsibility]:
-    'PROOF_OF_ASSIGNED_RESPONSIBILITY'
 }
 
 export const marriageDocumentForWhomFhirMapping = {
@@ -84,80 +229,4 @@ export const marriageDocumentTypeFhirMapping = {
   NATIONAL_ID: 'NATIONAL_ID',
   PASSPORT: 'PASSPORT',
   OTHER: 'OTHER'
-}
-
-export const identityOptions = [
-  { value: PASSPORT, label: formMessageDescriptors.iDTypePassport },
-  { value: NATIONAL_ID, label: formMessageDescriptors.iDTypeNationalID },
-  {
-    value: DRIVING_LICENSE,
-    label: formMessageDescriptors.iDTypeDrivingLicense
-  },
-  {
-    value: BIRTH_REGISTRATION_NUMBER,
-    label: formMessageDescriptors.iDTypeBRN
-  },
-  {
-    value: REFUGEE_NUMBER,
-    label: formMessageDescriptors.iDTypeRefugeeNumber
-  },
-  { value: ALIEN_NUMBER, label: formMessageDescriptors.iDTypeAlienNumber },
-  { value: NO_ID, label: formMessageDescriptors.iDTypeNoId },
-  { value: OTHER, label: formMessageDescriptors.iDTypeOther }
-]
-
-export const identityTypeMapper: IDynamicFieldTypeMapper = (key: string) => {
-  switch (key) {
-    case NATIONAL_ID:
-      return BIG_NUMBER
-    case BIRTH_REGISTRATION_NUMBER:
-      return BIG_NUMBER
-    case DEATH_REGISTRATION_NUMBER:
-      return BIG_NUMBER
-    default:
-      return TEXT
-  }
-}
-
-export function identityHelperTextMapper(
-  code: string
-): MessageDescriptor | undefined {
-  switch (code) {
-    case 'NATIONAL_ID':
-      return formMessageDescriptors.helperTextNID
-    default:
-      return undefined
-  }
-}
-
-export function identityTooltipMapper(code: string): MessageDescriptor {
-  switch (code) {
-    case 'NATIONAL_ID':
-      return formMessageDescriptors.tooltipNationalID
-    case 'BIRTH_REGISTRATION_NUMBER':
-      return formMessageDescriptors.iDTypeBRN
-    default:
-      return formMessageDescriptors.iD
-  }
-}
-
-export function identityNameMapper(code: string): MessageDescriptor {
-  switch (code) {
-    case 'NATIONAL_ID':
-      return formMessageDescriptors.iDTypeNationalID
-    case 'PASSPORT':
-      return formMessageDescriptors.iDTypePassport
-    case 'DRIVING_LICENSE':
-      return formMessageDescriptors.iDTypeDrivingLicense
-    case 'BIRTH_REGISTRATION_NUMBER':
-      return formMessageDescriptors.iDTypeBRN
-    case 'DEATH_REGISTRATION_NUMBER':
-      return formMessageDescriptors.iDTypeDRN
-    case 'REFUGEE_NUMBER':
-      return formMessageDescriptors.iDTypeRefugeeNumber
-    case 'ALIEN_NUMBER':
-      return formMessageDescriptors.iDTypeAlienNumber
-    default:
-      return formMessageDescriptors.iD
-  }
 }

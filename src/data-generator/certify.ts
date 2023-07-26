@@ -6,7 +6,6 @@ import {
   AttachmentInput,
   BirthRegistrationInput,
   DeathRegistrationInput,
-  LocationType,
   MarkBirthAsCertifiedMutation,
   MarkDeathAsCertifiedMutation,
   PaymentOutcomeType,
@@ -18,6 +17,7 @@ import { MARK_BIRTH_AS_CERTIFIED, MARK_DEATH_AS_CERTIFIED } from './queries'
 import { differenceInDays } from 'date-fns'
 import { ConfigResponse } from './config'
 import { fetchDeathRegistration, fetchRegistration } from './declare'
+import { location } from '@countryconfig/features/config/form/options'
 
 export function createBirthCertificationDetails(
   createdAt: Date,
@@ -25,7 +25,13 @@ export function createBirthCertificationDetails(
   config: ConfigResponse
 ) {
   const withIdsRemoved = idsToFHIRIds(
-    omit(declaration, ['__typename', 'id', 'registration.type']),
+    omit(declaration, [
+      '__typename',
+      'id',
+      'registration.type',
+      'history',
+      'informant.relationship'
+    ]),
     [
       'id',
       'eventLocation.id',
@@ -37,7 +43,6 @@ export function createBirthCertificationDetails(
       'informant.id'
     ]
   )
-  delete withIdsRemoved.history
 
   const data = {
     ...withIdsRemoved,
@@ -74,7 +79,12 @@ export function createDeathCertificationDetails(
   config: ConfigResponse
 ): DeathRegistrationInput {
   const withIdsRemoved = idsToFHIRIds(
-    omit(declaration, ['__typename', 'id', 'registration.type']),
+    omit(declaration, [
+      '__typename',
+      'id',
+      'registration.type',
+      'informant.relationship'
+    ]),
     [
       'id',
       'eventLocation.id',
@@ -115,10 +125,10 @@ export function createDeathCertificationDetails(
       )
     },
     eventLocation:
-      withIdsRemoved.eventLocation?.type === LocationType.PrivateHome
+      withIdsRemoved.eventLocation?.type === location.privateHome
         ? {
-            address: withIdsRemoved.eventLocation.address,
-            type: withIdsRemoved.eventLocation.type
+            address: withIdsRemoved.eventLocation?.address,
+            type: withIdsRemoved.eventLocation?.type
           }
         : {
             _fhirID: withIdsRemoved.eventLocation?._fhirID
@@ -190,6 +200,7 @@ export async function markBirthAsCertified(
   }
 
   if (result.errors) {
+    // eslint-disable-next-line no-console
     console.error(JSON.stringify(result.errors, null, 2))
     throw new Error('Birth declaration could not be certified')
   }
@@ -235,12 +246,14 @@ export async function markDeathAsCertified(
     data: MarkDeathAsCertifiedMutation
   }
   if (result.errors) {
+    // eslint-disable-next-line no-console
     console.error(JSON.stringify(result.errors, null, 2))
     details.registration?.certificates?.forEach((cert) => {
       if (cert?.data) {
         cert.data = 'REDACTED'
       }
     })
+    // eslint-disable-next-line no-console
     console.error(JSON.stringify(details))
     throw new Error('Death declaration could not be certified')
   }

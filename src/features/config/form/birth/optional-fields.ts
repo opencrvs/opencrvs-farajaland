@@ -10,6 +10,7 @@
  * graphic logo are (registered/a) trademark(s) of Plan International.
  */
 import { formMessageDescriptors } from '../formatjs-messages'
+import { education } from '../options'
 import { Conditional, SerializedFormField } from '../types/types'
 
 export const attendantAtBirth: SerializedFormField = {
@@ -249,7 +250,7 @@ export const getEducation = (
   placeholder: formMessageDescriptors.formSelectPlaceholder,
   options: [
     {
-      value: 'NO_SCHOOLING',
+      value: education.noSchooling,
       label: {
         defaultMessage: 'No schooling',
         description: 'Option for form field: no education',
@@ -257,7 +258,7 @@ export const getEducation = (
       }
     },
     {
-      value: 'PRIMARY_ISCED_1',
+      value: education.primaryIsced_1,
       label: {
         defaultMessage: 'Primary',
         description: 'Option for form field: ISCED1 education',
@@ -265,7 +266,7 @@ export const getEducation = (
       }
     },
     {
-      value: 'POST_SECONDARY_ISCED_4',
+      value: education.postSecondaryIsced_4,
       label: {
         defaultMessage: 'Secondary',
         description: 'Option for form field: ISCED4 education',
@@ -273,7 +274,7 @@ export const getEducation = (
       }
     },
     {
-      value: 'FIRST_STAGE_TERTIARY_ISCED_5',
+      value: education.firstStageTertiaryIsced_5,
       label: {
         defaultMessage: 'Tertiary',
         description: 'Option for form field: ISCED5 education',
