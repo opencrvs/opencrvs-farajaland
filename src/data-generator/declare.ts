@@ -269,21 +269,16 @@ export async function createBirthDeclaration(
   birthDate: Date,
   declarationTime: Date,
   location: Location,
-  facility: Facility
+  facility: Facility,
+  base64Attachment: string
 ) {
-  const ATTACHMENT = readFileSync(
-    join(__dirname, 'assets', '528KB-random.png'),
-    {
-      encoding: 'base64'
-    }
-  )
   const details = createBirthDeclarationData(
     sex,
     birthDate,
     declarationTime,
     location,
     facility,
-    ATTACHMENT
+    base64Attachment
   )
 
   const name = details.child?.name
