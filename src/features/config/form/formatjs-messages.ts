@@ -418,8 +418,7 @@ export const formMessageDescriptors = {
     id: 'form.section.documents.name'
   },
   documentsParagraph: {
-    defaultMessage:
-      'For birth regiatration of children below 5 years old, one of the documents listed below is required:',
+    defaultMessage: 'The following documents are required',
     description: 'Documents Paragraph text',
     id: 'form.section.documents.birth.requirements'
   },
