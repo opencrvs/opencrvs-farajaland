@@ -44,10 +44,6 @@ const NUMBER_OF_ATTACHMENTS_PER_RECORD = process.env
   ? parseInt(process.env.NUMBER_OF_ATTACHMENTS_PER_RECORD, 10)
   : 2
 
-const ATTACHMENT = readFileSync(
-  join(__dirname, 'assets', '528KB-random.png')
-).toString('base64')
-
 function randomWeightInKg() {
   return Math.round(2.5 + 2 * Math.random())
 }
@@ -161,7 +157,8 @@ export function createBirthDeclarationData(
   birthDate: Date,
   declarationTime: Date,
   location: Location,
-  facility: Facility
+  facility: Facility,
+  base64Attachment: string
 ): BirthRegistrationInput {
   const timeFilling = Math.round(100000 + Math.random() * 100000) // 100 - 200 seconds
   const familyName = faker.name.lastName()
@@ -216,7 +213,7 @@ export function createBirthDeclarationData(
       attachments: Array.from({ length: NUMBER_OF_ATTACHMENTS_PER_RECORD }).map(
         () => ({
           contentType: 'image/png',
-          data: 'data:image/png;base64,' + ATTACHMENT,
+          data: 'data:image/png;base64,' + base64Attachment,
           subject: AttachmentSubject.Child,
           type: AttachmentType.NotificationOfBirth
         })
@@ -274,12 +271,19 @@ export async function createBirthDeclaration(
   location: Location,
   facility: Facility
 ) {
+  const ATTACHMENT = readFileSync(
+    join(__dirname, 'assets', '528KB-random.png'),
+    {
+      encoding: 'base64'
+    }
+  )
   const details = createBirthDeclarationData(
     sex,
     birthDate,
     declarationTime,
     location,
-    facility
+    facility,
+    ATTACHMENT
   )
 
   const name = details.child?.name
@@ -333,7 +337,8 @@ export async function createDeathDeclaration(
   sex: 'male' | 'female' | undefined,
   declarationTime: Date,
   location: Location,
-  facility: Facility
+  facility: Facility,
+  base64Attachment: string
 ) {
   const familyName = faker.name.lastName()
   const firstNames = faker.name.firstName()
@@ -355,7 +360,7 @@ export async function createDeathDeclaration(
       attachments: Array.from({ length: NUMBER_OF_ATTACHMENTS_PER_RECORD }).map(
         () => ({
           contentType: 'image/png',
-          data: 'data:image/png;base64,' + ATTACHMENT,
+          data: 'data:image/png;base64,' + base64Attachment,
           subject: AttachmentSubject.DeceasedDeathCauseProof,
           type: AttachmentType.CoronersReport
         })
