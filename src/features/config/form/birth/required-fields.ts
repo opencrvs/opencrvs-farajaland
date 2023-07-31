@@ -13,7 +13,7 @@
 import { MessageDescriptor } from 'react-intl'
 import { formMessageDescriptors } from '../formatjs-messages'
 import { Conditional, SerializedFormField } from '../types/types'
-import { seperatorDivider } from '../common-optional-fields'
+import { divider } from '../common-optional-fields'
 
 export const getPlaceOfBirthFields = (): SerializedFormField[] => [
   {
@@ -25,7 +25,7 @@ export const getPlaceOfBirthFields = (): SerializedFormField[] => [
     initialValue: '',
     validator: []
   },
-  seperatorDivider,
+  divider,
   {
     name: 'placeOfBirth',
     type: 'SELECT_WITH_OPTIONS',

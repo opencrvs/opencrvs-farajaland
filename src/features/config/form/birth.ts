@@ -37,7 +37,7 @@ import {
   getMaritalStatus,
   registrationEmail,
   registrationPhone,
-  seperatorDivider
+  divider
 } from './common-optional-fields'
 import {
   attendantAtBirth,
@@ -238,7 +238,7 @@ export const birthRegisterForms: ISerializedForm = {
               'eventDate'
             ), // Required field.
             ...getPlaceOfBirthFields(),
-            seperatorDivider,
+            divider,
             attendantAtBirth,
             birthType,
             weightAtBirth
@@ -370,7 +370,7 @@ export const birthRegisterForms: ISerializedForm = {
               hideIfNidIntegrationDisabled.concat(motherNationalIDVerfication),
               []
             ),
-            seperatorDivider,
+            divider,
             getMaritalStatus('motherMaritalStatus'),
             multipleBirth,
             getOccupation('motherOccupation'),
@@ -440,7 +440,7 @@ export const birthRegisterForms: ISerializedForm = {
               hideIfNidIntegrationDisabled.concat(fatherNationalIDVerfication),
               []
             ),
-            seperatorDivider,
+            divider,
             getMaritalStatus('fatherMaritalStatus'),
             getOccupation('fatherOccupation'),
             getEducation('fatherEducationalAttainment')

@@ -231,7 +231,7 @@ export const registrationPhone: SerializedFormField = {
   }
 }
 
-export const seperatorDivider: SerializedFormField = {
+export const divider: SerializedFormField = {
   name: 'seperator',
   type: 'DIVIDER',
   label: {
