@@ -648,12 +648,18 @@ Cypress.Commands.add('declareDeathDeclarationWithMinimumInput', (options) => {
 
   cy.goToNextFormSection()
   // Informant details
+  cy.selectOption(
+    '#informantType',
+    options?.informantType || 'Spouse',
+    options?.informantType || 'Spouse'
+  )
   cy.get('#informantID').type('9123456781')
   cy.get('#informantBirthDate-dd').type('16')
   cy.get('#informantBirthDate-mm').type('06')
   cy.get('#informantBirthDate-yyyy').type('1988')
   cy.get('#firstNamesEng').type('Soumita')
   cy.get('#familyNameEng').type('Aktar')
+  cy.get('#registrationPhone').type('07' + getRandomNumbers(8))
 
   cy.goToNextFormSection()
 
@@ -706,8 +712,12 @@ Cypress.Commands.add('enterDeathMaximumInput', (options) => {
   cy.get('#deceasedID').type('1234567891')
 
   cy.selectOption('#nationality', 'Farajaland', 'Farajaland')
-  cy.get('#firstNamesEng').type(options?.deceasedFirstNames || 'Nafiz')
-  cy.get('#familyNameEng').type(options?.deceasedFamilyName || 'Sadik')
+  cy.get('#firstNamesEng').type(
+    options?.deceasedFirstNames || faker.name.firstName()
+  )
+  cy.get('#familyNameEng').type(
+    options?.deceasedFamilyName || faker.name.lastName()
+  )
   cy.get('#deceasedBirthDate-dd').type(deceasedDoBSplit?.dd || '16')
   cy.get('#deceasedBirthDate-mm').type(deceasedDoBSplit?.mm || '06')
   cy.get('#deceasedBirthDate-yyyy').type(deceasedDoBSplit?.yyyy || '1971')
@@ -720,9 +730,11 @@ Cypress.Commands.add('enterDeathMaximumInput', (options) => {
   cy.selectOption('#countryPrimary', 'Farajaland', 'Farajaland')
   cy.selectOption('#statePrimary', 'Pualula', 'Pualula')
   cy.selectOption('#districtPrimary', 'Embe', 'Embe')
+  cy.get('#cityUrbanOptionPrimary').type('My town')
   cy.get('#addressLine3UrbanOptionPrimary').type('My residential area')
   cy.get('#addressLine2UrbanOptionPrimary').type('My street')
   cy.get('#numberUrbanOptionPrimary').type('40')
+  cy.get('#postcodePrimary').type('9000')
   cy.goToNextFormSection()
   // EVENT DETAILS
   cy.get('#deathDate-dd').type('18')
@@ -750,21 +762,30 @@ Cypress.Commands.add('enterDeathMaximumInput', (options) => {
   cy.get('#addressLine3UrbanOption').type('My residential area')
   cy.get('#addressLine2UrbanOption').type('My street')
   cy.get('#numberUrbanOption').type('40')
+  cy.get('#postalCode').type('9000')
 
   cy.goToNextFormSection()
   // INFORMANT DETAILS
+  cy.selectOption(
+    '#informantType',
+    options?.informantType || 'Spouse',
+    options?.informantType || 'Spouse'
+  )
+  cy.get('#registrationPhone').type('07' + getRandomNumbers(8))
+  cy.get('#registrationEmail').type('axonishere@gmail.com')
+  cy.get('#firstNamesEng').type(options?.informantFirstNames || 'Alom')
+  cy.get('#familyNameEng').type(options?.informantFamilyName || 'Mia')
+  cy.get('#informantBirthDate-dd').type(informantDoBSplit?.dd || '23')
+  cy.get('#informantBirthDate-mm').type(informantDoBSplit?.mm || '10')
+  cy.get('#informantBirthDate-yyyy').type(informantDoBSplit?.yyyy || '1975')
   cy.selectOption('#nationality', 'Farajaland', 'Farajaland')
-  cy.get('#informantID').type('9123453781')
-  cy.get('#informantBirthDate-dd').type(informantDoBSplit?.dd || '16')
-  cy.get('#informantBirthDate-mm').type(informantDoBSplit?.mm || '06')
-  cy.get('#informantBirthDate-yyyy').type(informantDoBSplit?.yyyy || '1988')
-  cy.get('#firstNamesEng').type(options?.informantFirstNames || 'Anne')
-  cy.get('#familyNameEng').type(options?.informantFamilyName || 'Salim')
+  cy.get('#informantID').type(getRandomNumbers(10))
   cy.get('#primaryAddressSameAsOtherPrimary_false').click()
-
-  cy.selectOption('#countryPrimary', 'Farajaland', 'Farajaland')
+  cy.selectOption('#countryPrimary-form-input', 'Farajaland', 'Farajaland')
   cy.selectOption('#statePrimary', 'Pualula', 'Pualula')
   cy.selectOption('#districtPrimary', 'Embe', 'Embe')
+  cy.get('#cityUrbanOptionPrimary').type('My town')
+  cy.get('#postcodePrimary').type('9000')
   cy.goToNextFormSection()
   cy.goToNextFormSection()
 })
