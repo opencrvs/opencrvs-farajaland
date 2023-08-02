@@ -392,15 +392,6 @@ function getRandomFacility(token, location) {
     })
 }
 
-const readAttachmentFile = () =>
-  new Cypress.Promise<string>((resolve) => {
-    cy.readFile('cypress/support/assets/528KB-random.png', 'base64').then((file) => {
-      console.log(file)
-
-      resolve(file)
-    })
-  })
-
 Cypress.Commands.add('createBirthRegistrationAs', (role, options = {}) => {
   return getToken(role).then((token) => {
     return getLocationWithName(token, 'Ibombo').then((location) => {
