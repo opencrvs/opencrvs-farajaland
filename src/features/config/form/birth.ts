@@ -283,7 +283,16 @@ export const birthRegisterForms: ISerializedForm = {
               informantBirthDateConditionals.concat(
                 hideIfInformantMotherOrFather
               ),
-              [],
+              [
+                {
+                  operation: 'dateFormatIsCorrect',
+                  parameters: []
+                },
+                {
+                  operation: 'dateInPast',
+                  parameters: []
+                }
+              ],
               'eventDate'
             ), // Required field.
             exactDateOfBirthUnknown,
