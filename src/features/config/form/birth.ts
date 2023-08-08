@@ -238,7 +238,7 @@ export const birthRegisterForms: ISerializedForm = {
               'eventDate'
             ), // Required field.
             ...getPlaceOfBirthFields(),
-            seperatorDivider,
+            seperatorDivider('place-of-birth-seperator'),
             attendantAtBirth,
             birthType,
             weightAtBirth
@@ -370,7 +370,7 @@ export const birthRegisterForms: ISerializedForm = {
               hideIfNidIntegrationDisabled.concat(motherNationalIDVerfication),
               []
             ),
-            seperatorDivider,
+            seperatorDivider('mother-nid-seperator'),
             getMaritalStatus('motherMaritalStatus'),
             multipleBirth,
             getOccupation('motherOccupation'),
@@ -440,7 +440,7 @@ export const birthRegisterForms: ISerializedForm = {
               hideIfNidIntegrationDisabled.concat(fatherNationalIDVerfication),
               []
             ),
-            seperatorDivider,
+            seperatorDivider('father-nid-seperator'),
             getMaritalStatus('fatherMaritalStatus'),
             getOccupation('fatherOccupation'),
             getEducation('fatherEducationalAttainment')

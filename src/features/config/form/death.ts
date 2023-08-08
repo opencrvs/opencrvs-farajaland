@@ -310,7 +310,7 @@ export const deathRegisterForms = {
               getNationalIDValidators('informant'),
               'informantNID'
             ),
-            seperatorDivider,
+            seperatorDivider('informant-nid-seperator'),
             registrationPhone,
             registrationEmail
             // PRIMARY ADDRESS SUBSECTION

@@ -283,7 +283,7 @@ export const getPlaceOfDeathFields = () =>
       initialValue: '',
       validator: []
     },
-    seperatorDivider,
+    seperatorDivider('place-of-death'),
     {
       name: 'placeOfDeath',
       type: 'SELECT_WITH_OPTIONS',

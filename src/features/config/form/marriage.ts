@@ -331,7 +331,7 @@ export const marriageRegisterForms: ISerializedForm = {
             getMarriageDate,
             getTypeOfMarriage,
             placeOfMarriageSubsection,
-            seperatorDivider
+            seperatorDivider('place-of-marriage-seperator')
           ]
         }
       ]
