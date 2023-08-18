@@ -21,10 +21,6 @@
     "test:compilation": "tsc --noEmit",
     "start": "cross-env NODE_ENV=development nodemon --exec ts-node -r tsconfig-paths/register src/index.ts",
     "start:prod": "ts-node --transpile-only -r tsconfig-paths/register src/index.ts",
-    "db:populate": "bash db-populate.sh",
-    "populate:config": "ts-node -r tsconfig-paths/register src/features/config/scripts/populate-default-config.ts",
-    "db:backup:create": "bash create-backup.sh",
-    "db:backup:restore": "bash restore-backup.sh",
     "db:clear:all": "bash clear-all-data.sh",
     "compose:push:version": "export COUNTRY_CONFIG_VERSION=`git log -1 --pretty=format:%h` && bash build-and-push.sh && unset COUNTRY_CONFIG_VERSION",
     "compose:push:release": "export COUNTRY_CONFIG_VERSION=`git describe --tags --abbrev=0` && bash build-and-push.sh && unset COUNTRY_CONFIG_VERSION",
@@ -41,7 +37,6 @@
     "@types/bcryptjs": "^2.4.2",
     "@types/google-libphonenumber": "^7.4.23",
     "@types/hapi__inert": "^5.2.3",
-    "@types/iconv": "^3.0.1",
     "@types/jsonwebtoken": "^8.5.8",
     "@types/react-intl": "^3.0.0",
     "@typescript-eslint/eslint-plugin": "^5.60.1",
@@ -61,8 +56,7 @@
     "nodemon": "^2.0.22",
     "prettier": "^2.8.8",
     "react-intl": "^6.4.3",
-    "ts-jest": "^26.5.6",
-    "zod": "^3.17.3"
+    "ts-jest": "^26.5.6"
   },
   "dependencies": {
     "@faker-js/faker": "^6.0.0-alpha.5",
@@ -106,11 +100,10 @@
     "hapi-auth-jwt2": "10.4.0",
     "hapi-pino": "^6.3.0",
     "hapi-sentry": "^3.1.0",
-    "iconv": "^3.0.1",
     "joi": "^17.4.0",
     "jwt-decode": "^2.2.0",
     "lodash": "^4.17.21",
-    "mongoose": "^5.1.5",
+    "mongoose": "^5.13.20",
     "node-fetch": "^2.6.1",
     "opener": "^1.5.1",
     "p-queue": "^6.6.2",
@@ -121,7 +114,8 @@
     "tsconfig-paths": "^3.8.0",
     "typescript": "^5.1.6",
     "uuid": "^3.3.2",
-    "whatwg-fetch": "^3.0.0"
+    "whatwg-fetch": "^3.0.0",
+    "zod": "^3.17.3"
   },
   "lint-staged": {
     "src/**/*.{ts,graphql}": [

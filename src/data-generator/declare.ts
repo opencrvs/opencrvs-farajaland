@@ -22,8 +22,6 @@ import {
   FETCH_REGISTRATION_QUERY,
   SEARCH_EVENTS
 } from './queries'
-import { join } from 'path'
-import { readFileSync } from 'fs'
 import {
   BIRTH_ATTACHMENT_TYPES,
   DEATH_ATTACHMENT_TYPES,
@@ -47,10 +45,6 @@ const NUMBER_OF_ATTACHMENTS_PER_RECORD = process.env
   .NUMBER_OF_ATTACHMENTS_PER_RECORD
   ? parseInt(process.env.NUMBER_OF_ATTACHMENTS_PER_RECORD, 10)
   : 2
-
-const ATTACHMENT = readFileSync(
-  join(__dirname, 'assets', '528KB-random.png')
-).toString('base64')
 
 function randomWeightInKg() {
   return Math.round(2.5 + 2 * Math.random())
@@ -165,7 +159,8 @@ export function createBirthDeclarationData(
   birthDate: Date,
   declarationTime: Date,
   location: Location,
-  facility: Facility
+  facility: Facility,
+  base64Attachment: string
 ): BirthRegistrationInput {
   const timeFilling = Math.round(100000 + Math.random() * 100000) // 100 - 200 seconds
   const familyName = faker.name.lastName()
@@ -219,7 +214,7 @@ export function createBirthDeclarationData(
       attachments: Array.from({ length: NUMBER_OF_ATTACHMENTS_PER_RECORD }).map(
         (_, i) => ({
           contentType: 'image/png',
-          data: 'data:image/png;base64,' + ATTACHMENT,
+          data: 'data:image/png;base64,' + base64Attachment,
           subject: attachmentSubject.child,
           type: BIRTH_ATTACHMENT_TYPES[i]
         })
@@ -275,14 +270,16 @@ export async function createBirthDeclaration(
   birthDate: Date,
   declarationTime: Date,
   location: Location,
-  facility: Facility
+  facility: Facility,
+  base64Attachment: string
 ) {
   const details = createBirthDeclarationData(
     sex,
     birthDate,
     declarationTime,
     location,
-    facility
+    facility,
+    base64Attachment
   )
 
   const name = details.child?.name
@@ -336,7 +333,8 @@ export async function createDeathDeclaration(
   sex: 'male' | 'female' | undefined,
   declarationTime: Date,
   location: Location,
-  facility: Facility
+  facility: Facility,
+  base64Attachment: string
 ) {
   const familyName = faker.name.lastName()
   const firstNames = faker.name.firstName()
@@ -358,7 +356,7 @@ export async function createDeathDeclaration(
       attachments: Array.from({ length: NUMBER_OF_ATTACHMENTS_PER_RECORD }).map(
         (_, i) => ({
           contentType: 'image/png',
-          data: 'data:image/png;base64,' + ATTACHMENT,
+          data: 'data:image/png;base64,' + base64Attachment,
           subject: attachmentSubject.deceasedDeathCauseProof,
           type: DEATH_ATTACHMENT_TYPES[i]
         })

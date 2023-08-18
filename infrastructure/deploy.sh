@@ -18,10 +18,6 @@ for i in "$@"; do
         CLEAR_DATA="${i#*=}"
         shift
         ;;
-    --restore_metadata=*)
-        RESTORE_METADATA="${i#*=}"
-        shift
-        ;;        
     --host=*)
         HOST="${i#*=}"
         shift
@@ -66,9 +62,8 @@ function trapint {
 }
 
 print_usage_and_exit () {
-    echo 'Usage: ./deploy.sh --clear_data=yes|no --restore_metadata=yes|no --host --environment --version --country_config_version --replicas'
+    echo 'Usage: ./deploy.sh --clear_data=yes|no --host --environment --version --country_config_version --replicas'
     echo "  --clear_data must have a value of 'yes' or 'no' set e.g. --clear_data=yes"
-    echo "  --restore_metadata must have a value of 'yes' or 'no' set e.g. --restore_metadata=yes"
     echo "  --environment can be 'production' or 'development' or 'qa' or 'demo'"
     echo '  --host    is the server to deploy to'
     echo "  --version can be any OpenCRVS Core docker image tag or 'latest'"
@@ -79,11 +74,6 @@ print_usage_and_exit () {
 
 if [ -z "$CLEAR_DATA" ] || { [ $CLEAR_DATA != 'no' ] && [ $CLEAR_DATA != 'yes' ] ;} ; then
     echo 'Error: Argument --clear_data is required & must be either yes or no.'
-    print_usage_and_exit
-fi
-
-if [ -z "$RESTORE_METADATA" ] || { [ $RESTORE_METADATA != 'no' ] && [ $RESTORE_METADATA != 'yes' ] ;} ; then
-    echo 'Error: Argument --restore_metadata is required & must be either yes or no.'
     print_usage_and_exit
 fi
 
@@ -173,6 +163,11 @@ if [ -z "$MONGODB_ADMIN_PASSWORD" ] ; then
     print_usage_and_exit
 fi
 
+if [ -z "$SUPER_USER_PASSWORD" ] ; then
+    echo 'Error: Missing environment variable SUPER_USER_PASSWORD.'
+    print_usage_and_exit
+fi
+
 if [ -z "$DOCKERHUB_ACCOUNT" ] ; then
     echo 'Error: Missing environment variable DOCKERHUB_ACCOUNT.'
     print_usage_and_exit
@@ -230,6 +225,28 @@ if [ -z "$EMAIL_API_KEY" ] ; then
     echo 'Info: Missing optional environment variable EMAIL_API_KEY.'
 fi
 
+if [ -z "$SENTRY_DSN" ] ; then
+    echo 'Info: Missing optional Sentry DSN environment variable SENTRY_DSN'
+fi
+
+if [ -z "$INFOBIP_GATEWAY_ENDPOINT" ] ; then
+  echo 'Info: Missing optional Infobip Gateway endpoint environment variable INFOBIP_GATEWAY_ENDPOINT'
+fi
+
+if [ -z "$INFOBIP_API_KEY" ] ; then
+  echo 'Info: Missing optional Infobip API Key environment variable INFOBIP_API_KEY'
+fi
+
+if [ -z "$INFOBIP_SENDER_ID" ] ; then
+  echo 'Info: Missing optional Infobip Sender ID environment variable INFOBIP_SENDER_ID'
+fi
+
+if [ -z "$SENDER_EMAIL_ADDRESS" ] ; then
+  echo 'Info: Missing optional return sender email address environment variable SENDER_EMAIL_ADDRESS'
+fi
+
+
+
 SSH_USER=${SSH_USER:-root}
 SSH_HOST=${SSH_HOST:-$HOST}
 LOG_LOCATION=${LOG_LOCATION:-/var/log}
@@ -283,14 +300,7 @@ echo
 echo "Deploying COUNTRY_CONFIG_VERSION $COUNTRY_CONFIG_VERSION to $SSH_HOST..."
 echo
 
-mkdir -p /tmp/opencrvs/infrastructure/default_backups
 mkdir -p /tmp/opencrvs/infrastructure/cryptfs
-
-# Copy selected country default backups to infrastructure default_backups folder
-cp $BASEDIR/../backups/hearth-dev.gz /tmp/opencrvs/infrastructure/default_backups/hearth-dev.gz
-cp $BASEDIR/../backups/openhim-dev.gz /tmp/opencrvs/infrastructure/default_backups/openhim-dev.gz
-cp $BASEDIR/../backups/user-mgnt.gz /tmp/opencrvs/infrastructure/default_backups/user-mgnt.gz
-cp $BASEDIR/../backups/application-config.gz /tmp/opencrvs/infrastructure/default_backups/application-config.gz
 
 # Copy decrypt script
 cp $BASEDIR/decrypt.sh /tmp/opencrvs/infrastructure/cryptfs/decrypt.sh
@@ -418,6 +428,11 @@ docker_stack_deploy() {
   MINIO_ROOT_USER=$MINIO_ROOT_USER
   MINIO_ROOT_PASSWORD=$MINIO_ROOT_PASSWORD
   EMAIL_API_KEY=$EMAIL_API_KEY
+  SENTRY_DSN=$SENTRY_DSN
+  INFOBIP_GATEWAY_ENDPOINT=$INFOBIP_GATEWAY_ENDPOINT
+  INFOBIP_API_KEY=$INFOBIP_API_KEY
+  INFOBIP_SENDER_ID=$INFOBIP_SENDER_ID
+  SENDER_EMAIL_ADDRESS=$SENDER_EMAIL_ADDRESS
   DOCKERHUB_ACCOUNT=$DOCKERHUB_ACCOUNT
   DOCKERHUB_REPO=$DOCKERHUB_REPO
   ELASTICSEARCH_SUPERUSER_PASSWORD=$ELASTICSEARCH_SUPERUSER_PASSWORD
@@ -426,6 +441,7 @@ docker_stack_deploy() {
   ROTATING_SEARCH_ELASTIC_PASSWORD=$ROTATING_SEARCH_ELASTIC_PASSWORD
   KIBANA_USERNAME=$KIBANA_USERNAME
   KIBANA_PASSWORD=$KIBANA_PASSWORD
+  SUPER_USER_PASSWORD=$SUPER_USER_PASSWORD
   TOKENSEEDER_MOSIP_AUTH__PARTNER_MISP_LK=$TOKENSEEDER_MOSIP_AUTH__PARTNER_MISP_LK
   TOKENSEEDER_MOSIP_AUTH__PARTNER_APIKEY=$TOKENSEEDER_MOSIP_AUTH__PARTNER_APIKEY
   TOKENSEEDER_CRYPTO_SIGNATURE__SIGN_P12_FILE_PASSWORD=$TOKENSEEDER_CRYPTO_SIGNATURE__SIGN_P12_FILE_PASSWORD
@@ -478,7 +494,7 @@ else
 fi
 
 # Deploy the OpenCRVS stack onto the swarm
-if [[ "$ENV" = "development" ]]; then
+if [[ "$ENV" = "staging" ]]; then
   ENVIRONMENT_COMPOSE="docker-compose.countryconfig.staging-deploy.yml docker-compose.staging-deploy.yml"
   FILES_TO_ROTATE="${FILES_TO_ROTATE} /opt/opencrvs/docker-compose.countryconfig.staging-deploy.yml /opt/opencrvs/docker-compose.staging-deploy.yml"
 elif [[ "$ENV" = "qa" ]]; then
@@ -516,12 +532,13 @@ if [ $CLEAR_DATA == "yes" ] ; then
         ELASTICSEARCH_ADMIN_PASSWORD=$ELASTICSEARCH_SUPERUSER_PASSWORD \
         MONGODB_ADMIN_USER=$MONGODB_ADMIN_USER \
         MONGODB_ADMIN_PASSWORD=$MONGODB_ADMIN_PASSWORD \
-        /opt/opencrvs/infrastructure/clear-all-data.sh $REPLICAS $ENV"
-fi
+        /opt/opencrvs/infrastructure/clear-all-data.sh $REPLICAS"
 
-if [ $RESTORE_METADATA == "yes" ] ; then
     echo
-    echo "Restoring metadata..."
+    echo "Running migrations..."
     echo
-    ssh $SSH_USER@$SSH_HOST "MONGODB_ADMIN_USER=$MONGODB_ADMIN_USER MONGODB_ADMIN_PASSWORD=$MONGODB_ADMIN_PASSWORD /opt/opencrvs/infrastructure/restore-metadata.sh $REPLICAS $ENV"
+    ssh $SSH_USER@$SSH_HOST "
+        ELASTICSEARCH_ADMIN_USER=elastic \
+        ELASTICSEARCH_ADMIN_PASSWORD=$ELASTICSEARCH_SUPERUSER_PASSWORD \
+        /opt/opencrvs/infrastructure/run-migrations.sh"
 fi
