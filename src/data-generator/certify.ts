@@ -17,7 +17,7 @@ import { MARK_BIRTH_AS_CERTIFIED, MARK_DEATH_AS_CERTIFIED } from './queries'
 import { differenceInDays } from 'date-fns'
 import { ConfigResponse } from './config'
 import { fetchDeathRegistration, fetchRegistration } from './declare'
-import { location } from '@countryconfig/features/config/form/options'
+import { location } from './options'
 
 export function createBirthCertificationDetails(
   createdAt: Date,

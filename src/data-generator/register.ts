@@ -17,11 +17,7 @@ import { sub } from 'date-fns'
 import { GATEWAY_GQL_HOST } from './constants'
 import { MARK_AS_REGISTERED_QUERY, MARK_DEATH_AS_REGISTERED } from './queries'
 import { fetchDeathRegistration, fetchRegistration } from './declare'
-import {
-  attendant,
-  birth,
-  maritalStatus
-} from '@countryconfig/features/config/form/options'
+import { attendant, birth, maritalStatus } from './options'
 
 // Hospital notifications have a limited set of data in them
 // This part amends the missing fields if needed

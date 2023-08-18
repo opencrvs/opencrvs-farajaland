@@ -36,7 +36,7 @@ import {
   attachmentSubject,
   attendant,
   causeOfDeathMethod
-} from '@countryconfig/features/config/form/options'
+} from './options'
 
 const HOME_BIRTH_WEIGHT = 0.2
 const HOME_DEATH_WEIGHT = 0.2
