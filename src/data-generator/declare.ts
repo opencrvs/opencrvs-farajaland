@@ -201,7 +201,6 @@ export function createBirthDeclarationData(
       otherInformantType: '',
       contactPhoneNumber:
         '+2607' + faker.datatype.number({ min: 10000000, max: 99999999 }),
-      contactRelationship: 'Mother',
       status: [
         {
           timestamp: sub(declarationTime, {
@@ -361,7 +360,6 @@ export async function createDeathDeclaration(
           type: DEATH_ATTACHMENT_TYPES[i]
         })
       ),
-      contactRelationship: 'Mother',
       draftId: faker.datatype.uuid(),
       status: [
         {

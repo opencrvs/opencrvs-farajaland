@@ -110,11 +110,11 @@ const birthRegistrationFragment = gql`
     }
     registration {
       id
-      contact
-      contactRelationship
+      informantType
       contactPhoneNumber
       attachments {
         data
+        uri
         type
         contentType
         subject
@@ -411,11 +411,11 @@ export const FETCH_DEATH_REGISTRATION_QUERY = print(gql`
       }
       registration {
         id
-        contact
-        contactRelationship
+        informantType
         contactPhoneNumber
         attachments {
           data
+          uri
           type
           contentType
           subject

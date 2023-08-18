@@ -254,7 +254,14 @@ export function birthNotification({
           identifier: [
             {
               use: 'official',
-              type: 'NATIONAL_ID',
+              type: {
+                coding: [
+                  {
+                    system: 'http://opencrvs.org/specs/identifier-type',
+                    code: 'NATIONAL_ID'
+                  }
+                ]
+              },
               value: mother.nid
             }
           ],
@@ -348,7 +355,14 @@ export function birthNotification({
           identifier: [
             {
               use: 'official',
-              type: 'NATIONAL_ID',
+              type: {
+                coding: [
+                  {
+                    system: 'http://opencrvs.org/specs/identifier-type',
+                    code: 'NATIONAL_ID'
+                  }
+                ]
+              },
               value: father.nid
             }
           ],

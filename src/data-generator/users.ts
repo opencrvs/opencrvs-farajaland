@@ -400,16 +400,18 @@ export async function createUsers(
   if (!nationalSystemAdmin.length) {
     const natlUserRes = await getUserByRole(token, 'NATIONAL_SYSTEM_ADMIN')
     const mappedNatlUserRes = await Promise.all(
-      natlUserRes.map(async (user) => {
-        return {
-          username: user.username,
-          password: 'test',
-          token: await getToken(user.username, 'test'),
-          stillInUse: true,
-          primaryOfficeId: user.primaryOffice.id,
-          isSystemUser: false
-        }
-      })
+      natlUserRes
+        .filter(({ username }) => username !== 'o.admin')
+        .map(async (user) => {
+          return {
+            username: user.username,
+            password: 'test',
+            token: await getToken(user.username, 'test'),
+            stillInUse: true,
+            primaryOfficeId: user.primaryOffice.id,
+            isSystemUser: false
+          }
+        })
     )
     nationalSystemAdmin.push(mappedNatlUserRes[0])
   }

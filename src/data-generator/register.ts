@@ -60,7 +60,6 @@ export function createBirthRegistrationDetailsForNotification(
     createdAt,
     registration: {
       ...registrationInput.registration,
-      contactRelationship: 'Mother',
       draftId: declaration.id
     },
     birthType: birth.single,
