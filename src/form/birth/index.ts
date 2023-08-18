@@ -164,6 +164,45 @@ export const birthForm: ISerializedForm = {
       viewType: 'form',
       name: formMessageDescriptors.childTab,
       title: formMessageDescriptors.childTitle,
+      mapping: {
+        template: [
+          {
+            fieldName: 'birthConfigurableIdentifier1',
+            operation: 'childIdentityToFieldTransformer',
+            parameters: [['BIRTH_CONFIGURABLE_IDENTIFIER_1']]
+          },
+          {
+            fieldName: 'birthConfigurableIdentifier2',
+            operation: 'childIdentityToFieldTransformer',
+            parameters: [['BIRTH_CONFIGURABLE_IDENTIFIER_2']]
+          },
+          {
+            fieldName: 'birthConfigurableIdentifier3',
+            operation: 'childIdentityToFieldTransformer',
+            parameters: [['BIRTH_CONFIGURABLE_IDENTIFIER_3']]
+          }
+        ],
+        mutation: {
+          operation: 'childFieldToIdentityTransformer',
+          parameters: [
+            [
+              'BIRTH_CONFIGURABLE_IDENTIFIER_1',
+              'BIRTH_CONFIGURABLE_IDENTIFIER_2',
+              'BIRTH_CONFIGURABLE_IDENTIFIER_3'
+            ]
+          ]
+        },
+        query: {
+          operation: 'childIdentityToFieldTransformer',
+          parameters: [
+            [
+              'BIRTH_CONFIGURABLE_IDENTIFIER_1',
+              'BIRTH_CONFIGURABLE_IDENTIFIER_2',
+              'BIRTH_CONFIGURABLE_IDENTIFIER_3'
+            ]
+          ]
+        }
+      }, // These mappings support configurable identifiers in
       groups: [
         {
           id: 'child-view-group',
@@ -231,7 +270,16 @@ export const birthForm: ISerializedForm = {
               informantBirthDateConditionals.concat(
                 hideIfInformantMotherOrFather
               ),
-              [],
+              [
+                {
+                  operation: 'dateFormatIsCorrect',
+                  parameters: []
+                },
+                {
+                  operation: 'dateInPast',
+                  parameters: []
+                }
+              ],
               certificateHandlebars.informantBirthDate
             ), // Required field.
             exactDateOfBirthUnknown,
@@ -340,7 +388,12 @@ export const birthForm: ISerializedForm = {
             // preceding field of address fields
             divider('mother-nid-seperator', detailsExist),
             divider('mother-address-seperator', detailsExist),
-            getMaritalStatus(certificateHandlebars.motherMaritalStatus),
+            getMaritalStatus(certificateHandlebars.motherMaritalStatus, [
+              {
+                action: 'hide',
+                expression: '!values.detailsExist'
+              }
+            ]),
             getEducation(certificateHandlebars.motherEducationalAttainment),
             getOccupation(certificateHandlebars.motherOccupation),
             multipleBirth
@@ -416,7 +469,12 @@ export const birthForm: ISerializedForm = {
             // preceding field of address fields
             divider('father-nid-seperator', detailsExist),
             divider('father-address-seperator', detailsExist),
-            getMaritalStatus(certificateHandlebars.fatherMaritalStatus),
+            getMaritalStatus(certificateHandlebars.fatherMaritalStatus, [
+              {
+                action: 'hide',
+                expression: '!values.detailsExist'
+              }
+            ]),
             getEducation(certificateHandlebars.fatherEducationalAttainment),
             getOccupation(certificateHandlebars.fatherOccupation)
           ],

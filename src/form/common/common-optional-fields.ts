@@ -12,7 +12,6 @@
 import { MessageDescriptor } from 'react-intl'
 import { formMessageDescriptors } from './messages'
 import { SerializedFormField, Conditional } from '../types/types'
-import { INFORMANT_NOTIFICATION_DELIVERY_METHOD } from '@countryconfig/api/notification/constant'
 import { Validator } from '../types/validators'
 import { maritalStatusOptions } from './select-options'
 import { certificateHandlebars } from '../birth/certificate-handlebars'
@@ -119,7 +118,8 @@ export const getAgeOfIndividualInYears = (
 })
 
 export const getMaritalStatus = (
-  certificateHandlebar: string
+  certificateHandlebar: string,
+  conditionals: Conditional[]
 ): SerializedFormField => ({
   name: 'maritalStatus',
   type: 'SELECT_WITH_OPTIONS',
@@ -138,12 +138,7 @@ export const getMaritalStatus = (
       operation: 'selectTransformer'
     }
   },
-  conditionals: [
-    {
-      action: 'hide',
-      expression: '!values.detailsExist'
-    }
-  ],
+  conditionals,
   options: maritalStatusOptions
 })
 
@@ -151,7 +146,7 @@ export const registrationEmail: SerializedFormField = {
   name: 'registrationEmail',
   type: 'TEL',
   label: formMessageDescriptors.email,
-  required: INFORMANT_NOTIFICATION_DELIVERY_METHOD === 'email',
+  required: true, // Email is the configured INFORMANT_NOTIFICATION_DELIVERY_METHOD in Farajaland
   initialValue: '',
   validator: [
     {
@@ -179,7 +174,7 @@ export const registrationPhone: SerializedFormField = {
   name: 'registrationPhone',
   type: 'TEL',
   label: formMessageDescriptors.phoneNumber,
-  required: INFORMANT_NOTIFICATION_DELIVERY_METHOD === 'sms',
+  required: false,
   initialValue: '',
   validator: [
     {
