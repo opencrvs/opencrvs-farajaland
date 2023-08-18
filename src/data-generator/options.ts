@@ -10,14 +10,7 @@
  * graphic logo are (registered/a) trademark(s) of Plan International.
  */
 
-// A file just to store the constants until we decide what to do with removing hardcoded options from core
-
-export const deathDocumentForWhomFhirMapping = {
-  DECEASED_ID_PROOF: 'DECEASED_ID_PROOF',
-  DECEASED_DEATH_PROOF: 'DECEASED_DEATH_PROOF',
-  DECEASED_DEATH_CAUSE_PROOF: 'DECEASED_DEATH_CAUSE_PROOF',
-  INFORMANT_ID_PROOF: 'INFORMANT_ID_PROOF'
-}
+// A file just to store the constants used in data-generator
 
 /** Mapping of attachment types to identifiers */
 export const attachment = {
@@ -204,29 +197,4 @@ export const causeOfDeathMethod = {
   medicallyCertified: 'MEDICALLY_CERTIFIED',
   physician: 'PHYSICIAN',
   verbalAutopsy: 'VERBAL_AUTOPSY'
-}
-
-export const birthDocumentForWhomFhirMapping = {
-  CHILD: 'CHILD',
-  FATHER: 'FATHER',
-  MOTHER: 'MOTHER',
-  PARENT: 'PARENT',
-  OTHER: 'OTHER',
-  INFORMANT_ID_PROOF: 'INFORMANT_ID_PROOF',
-  LEGAL_GUARDIAN_PROOF: 'LEGAL_GUARDIAN_PROOF'
-}
-
-export const marriageDocumentForWhomFhirMapping = {
-  GROOM: 'GROOM',
-  BRIDE: 'BRIDE',
-  MARRIAGE_NOTICE_PROOF: 'MARRIAGE_NOTICE_PROOF',
-  INFORMANT: 'INFORMANT'
-}
-
-export const marriageDocumentTypeFhirMapping = {
-  MARRIAGE_NOTICE: 'MARRIAGE_NOTICE',
-  BIRTH_CERTIFICATE: 'BIRTH_CERTIFICATE',
-  NATIONAL_ID: 'NATIONAL_ID',
-  PASSPORT: 'PASSPORT',
-  OTHER: 'OTHER'
 }
