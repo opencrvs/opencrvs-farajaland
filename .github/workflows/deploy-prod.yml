@@ -99,4 +99,4 @@ jobs:
           SUPER_USER_PASSWORD: ${{ secrets.SUPER_USER_PASSWORD }}
         run: |
           cd ./${{ github.event.repository.name }}
-          yarn deploy --clear_data=no --environment=${{ github.event.inputs.environment }} --host=${{ env.DOMAIN }} --version=${{{ github.event.inputs.core-image-tag }}} --country_config_version=${{ github.event.inputs.countryconfig-image-tag }} --country_config_path=../${{ github.event.repository.name }} --replicas=${{ env.REPLICAS }}
+          yarn deploy --clear_data=no --environment=${{ github.event.inputs.environment }} --host=${{ env.DOMAIN }} --version=${{ github.event.inputs.core-image-tag }} --country_config_version=${{ github.event.inputs.countryconfig-image-tag }} --country_config_path=../${{ github.event.repository.name }} --replicas=${{ env.REPLICAS }}
