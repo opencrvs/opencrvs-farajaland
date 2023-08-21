@@ -114,9 +114,7 @@ export function createRegistrationDetails(
       'father.id',
       'eventLocation.id',
       'informant.id',
-      'informant.individual.id',
-      'deceased.id',
-      'informant.relationship'
+      'deceased.id'
     ]),
     ['registration.registrationNumber', 'registration.type']
   )

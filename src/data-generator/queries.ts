@@ -20,6 +20,7 @@ const birthRegistrationFragment = gql`
     informant {
       id
       relationship
+      _fhirIDPatient
       identifier {
         id
         type
@@ -362,6 +363,7 @@ export const FETCH_DEATH_REGISTRATION_QUERY = print(gql`
       informant {
         id
         relationship
+        _fhirIDPatient
         identifier {
           id
           type

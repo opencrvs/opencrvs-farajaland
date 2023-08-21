@@ -39,7 +39,6 @@ export function createBirthCertificationDetails(
       'father.id',
       'child.id',
       'registration.id',
-      'informant.individual.id',
       'informant.id'
     ]
   )
@@ -90,7 +89,6 @@ export function createDeathCertificationDetails(
       'eventLocation.id',
       'mother.id',
       'father.id',
-      'informant.individual.id',
       'informant.id',
       'deceased.id',
       'registration.id'
