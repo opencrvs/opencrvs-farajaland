@@ -25,14 +25,8 @@ export function createBirthIssuingDetails(
   config: ConfigResponse
 ) {
   const withIdsRemoved = idsToFHIRIds(
-    omit(declaration, [
-      '__typename',
-      'id',
-      'registration.type',
-      'informant.relationship'
-    ]),
+    omit(declaration, ['__typename', 'id', 'registration.type']),
     [
-      'id',
       'eventLocation.id',
       'mother.id',
       'father.id',
@@ -104,12 +98,7 @@ export function createDeathIssuingDetails(
   config: ConfigResponse
 ): DeathRegistrationInput {
   const withIdsRemoved = idsToFHIRIds(
-    omit(declaration, [
-      '__typename',
-      'id',
-      'registration.type',
-      'informant.relationship'
-    ]),
+    omit(declaration, ['__typename', 'id', 'registration.type']),
     [
       'id',
       'eventLocation.id',
