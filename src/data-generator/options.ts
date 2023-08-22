@@ -13,7 +13,7 @@
 // A file just to store the constants used in data-generator
 
 /** Mapping of attachment types to identifiers */
-export const attachment = {
+const attachmentType = {
   attestedLetterOfDeath: 'ATTESTED_LETTER_OF_DEATH',
   birthCertificate: 'BIRTH_CERTIFICATE',
   burialReceipt: 'BURIAL_RECEIPT',
@@ -31,28 +31,68 @@ export const attachment = {
   verbalAutopsyReport: 'VERBAL_AUTOPSY_REPORT'
 }
 
-export const DEATH_ATTACHMENT_TYPES = [
-  attachment.hospitalCertificateOfDeath,
-  attachment.attestedLetterOfDeath,
-  attachment.burialReceipt,
-  attachment.policeCertificateOfDeath,
-  attachment.medicallyCertifiedCauseOfDeath,
-  attachment.verbalAutopsyReport,
-  attachment.coronersReport,
-  attachment.birthCertificate,
-  attachment.nationalId,
-  attachment.passport,
-  attachment.other
+/** Mapping types of attachment subjects to identifiers */
+const attachmentSubject = {
+  bride: 'BRIDE',
+  child: 'CHILD',
+  childAge: 'CHILD_AGE',
+  deceasedDeathCauseProof: 'DECEASED_DEATH_CAUSE_PROOF',
+  deceasedDeathProof: 'DECEASED_DEATH_PROOF',
+  deceasedIdProof: 'DECEASED_ID_PROOF',
+  father: 'FATHER',
+  groom: 'GROOM',
+  informantIdProof: 'INFORMANT_ID_PROOF',
+  legalGuardianProof: 'LEGAL_GUARDIAN_PROOF',
+  marriageNoticeProof: 'MARRIAGE_NOTICE_PROOF',
+  mother: 'MOTHER',
+  other: 'OTHER',
+  parent: 'PARENT'
+}
+
+export const DEATH_ATTACHMENTS = [
+  {
+    subject: attachmentSubject.deceasedIdProof,
+    type: attachmentType.nationalId
+  },
+  {
+    subject: attachmentSubject.deceasedIdProof,
+    type: attachmentType.passport
+  },
+  {
+    subject: attachmentSubject.deceasedIdProof,
+    type: attachmentType.birthCertificate
+  },
+  {
+    subject: attachmentSubject.informantIdProof,
+    type: attachmentType.nationalId
+  },
+  {
+    subject: attachmentSubject.informantIdProof,
+    type: attachmentType.other
+  }
 ] as const
 
-export const BIRTH_ATTACHMENT_TYPES = [
-  attachment.birthCertificate,
-  attachment.nationalId,
-  attachment.passport,
-  attachment.other,
-  attachment.notificationOfBirth,
-  attachment.proofOfLegalGuardianship,
-  attachment.proofOfAssignedResponsibility
+export const BIRTH_ATTACHMENTS = [
+  {
+    subject: attachmentSubject.child,
+    type: attachmentType.notificationOfBirth
+  },
+  {
+    subject: attachmentSubject.mother,
+    type: attachmentType.nationalId
+  },
+  {
+    subject: attachmentSubject.mother,
+    type: attachmentType.passport
+  },
+  {
+    subject: attachmentSubject.mother,
+    type: attachmentType.birthCertificate
+  },
+  {
+    subject: attachmentSubject.mother,
+    type: attachmentType.other
+  }
 ] as const
 
 /** Mapping of education types to identifiers */
@@ -158,24 +198,6 @@ export const birth = {
   single: 'SINGLE',
   triplet: 'TRIPLET',
   twin: 'TWIN'
-}
-
-/** Mapping types of attachment subjects to identifiers */
-export const attachmentSubject = {
-  bride: 'BRIDE',
-  child: 'CHILD',
-  childAge: 'CHILD_AGE',
-  deceasedDeathCauseProof: 'DECEASED_DEATH_CAUSE_PROOF',
-  deceasedDeathProof: 'DECEASED_DEATH_PROOF',
-  deceasedIdProof: 'DECEASED_ID_PROOF',
-  father: 'FATHER',
-  groom: 'GROOM',
-  informantIdProof: 'INFORMANT_ID_PROOF',
-  legalGuardianProof: 'LEGAL_GUARDIAN_PROOF',
-  marriageNoticeProof: 'MARRIAGE_NOTICE_PROOF',
-  mother: 'MOTHER',
-  other: 'OTHER',
-  parent: 'PARENT'
 }
 
 /** Mapping attendant types to identifiers */

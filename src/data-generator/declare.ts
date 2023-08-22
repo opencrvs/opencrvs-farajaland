@@ -23,8 +23,8 @@ import {
   SEARCH_EVENTS
 } from './queries'
 import {
-  BIRTH_ATTACHMENT_TYPES,
-  DEATH_ATTACHMENT_TYPES,
+  BIRTH_ATTACHMENTS,
+  DEATH_ATTACHMENTS,
   education,
   identity,
   maritalStatus,
@@ -33,18 +33,23 @@ import {
   informant,
   mannerOfDeath,
   birth,
-  attachmentSubject,
   attendant,
   causeOfDeathMethod
 } from './options'
 
 const HOME_BIRTH_WEIGHT = 0.2
 const HOME_DEATH_WEIGHT = 0.2
-/** Number of attachments per record. Please see `birthAttachmentTypeFhirMapping` and `deathAttachmentTypeFhirMapping`, this number cannot exceed the biggest index of either of them. */
-const NUMBER_OF_ATTACHMENTS_PER_RECORD = process.env
-  .NUMBER_OF_ATTACHMENTS_PER_RECORD
-  ? parseInt(process.env.NUMBER_OF_ATTACHMENTS_PER_RECORD, 10)
-  : 2
+/*
+ * Number of attachments per record. Please see `BIRTH_ATTACHMENTS`
+ * and `DEATH_ATTACHMENTS`, this number cannot exceed the biggest
+ * index of either of them.
+ */
+const NUMBER_OF_ATTACHMENTS_PER_RECORD = Math.min(
+  Math.min(BIRTH_ATTACHMENTS.length, DEATH_ATTACHMENTS.length),
+  process.env.NUMBER_OF_ATTACHMENTS_PER_RECORD
+    ? parseInt(process.env.NUMBER_OF_ATTACHMENTS_PER_RECORD, 10)
+    : 2
+)
 
 function randomWeightInKg() {
   return Math.round(2.5 + 2 * Math.random())
@@ -222,8 +227,7 @@ export function createBirthDeclarationData(
         (_, i) => ({
           contentType: 'image/png',
           data: 'data:image/png;base64,' + base64Attachment,
-          subject: attachmentSubject.child,
-          type: BIRTH_ATTACHMENT_TYPES[i]
+          ...BIRTH_ATTACHMENTS[i]
         })
       ),
       inCompleteFields: !sex ? 'child/child-view-group/gender' : undefined
@@ -364,8 +368,7 @@ export async function createDeathDeclaration(
         (_, i) => ({
           contentType: 'image/png',
           data: 'data:image/png;base64,' + base64Attachment,
-          subject: attachmentSubject.deceasedDeathCauseProof,
-          type: DEATH_ATTACHMENT_TYPES[i]
+          ...DEATH_ATTACHMENTS[i]
         })
       ),
       draftId: faker.datatype.uuid(),
