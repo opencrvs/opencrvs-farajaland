@@ -349,6 +349,7 @@ export async function createDeathDeclaration(
 ) {
   const familyName = faker.name.lastName()
   const firstNames = faker.name.firstName()
+  const spouseFirstName = faker.name.firstName()
 
   const requestStart = Date.now()
 
@@ -364,6 +365,7 @@ export async function createDeathDeclaration(
       informantType: 'SPOUSE',
       contactPhoneNumber:
         '+2607' + faker.datatype.number({ min: 10000000, max: 99999999 }),
+      contactEmail: faker.internet.email(spouseFirstName, familyName),
       attachments: Array.from({ length: NUMBER_OF_ATTACHMENTS_PER_RECORD }).map(
         (_, i) => ({
           contentType: 'image/png',
@@ -451,7 +453,7 @@ export async function createDeathDeclaration(
       name: [
         {
           use: 'en',
-          firstNames: firstNames,
+          firstNames: spouseFirstName,
           familyName: familyName
         }
       ],
