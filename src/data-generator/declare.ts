@@ -75,6 +75,7 @@ export async function sendBirthNotification(
 ): Promise<string> {
   const lastName = faker.name.lastName()
   const firstName = faker.name.firstName()
+  const motherFirstName = faker.name.firstName('female')
   const requestStart = Date.now()
 
   const notification = birthNotification({
@@ -85,7 +86,7 @@ export async function sendBirthNotification(
       gender: sex
     },
     father: {
-      firstName: 'Dad',
+      firstName: faker.name.firstName('male'),
       lastName,
       nid: faker.datatype
         .number({ min: 1000000000, max: 9999999999 })
@@ -93,7 +94,7 @@ export async function sendBirthNotification(
       dateOfBirth: sub(birthDate, { years: 20 }).toISOString().split('T')[0]
     },
     mother: {
-      firstName: 'Mum',
+      firstName: motherFirstName,
       lastName,
       dateOfBirth: sub(birthDate, { years: 20 }).toISOString().split('T')[0],
       nid: faker.datatype
@@ -114,7 +115,7 @@ export async function sendBirthNotification(
     ],
     phoneNumber:
       '+2607' + faker.datatype.number({ min: 10000000, max: 99999999 }),
-    email: faker.internet.email(),
+    email: faker.internet.email(motherFirstName, lastName),
     dateOfBirth: birthDate.toISOString().split('T')[0],
     placeOfBirth: `Location/${facility.id}`,
     officeLocation: office.partOf,
@@ -170,6 +171,7 @@ export function createBirthDeclarationData(
   const timeFilling = Math.round(100000 + Math.random() * 100000) // 100 - 200 seconds
   const familyName = faker.name.lastName()
   const firstNames = faker.name.firstName()
+  const motherFirstName = faker.name.firstName('female')
 
   const mother: PersonInput = {
     nationality: ['FAR'],
@@ -187,7 +189,7 @@ export function createBirthDeclarationData(
     name: [
       {
         use: 'en',
-        firstNames: faker.name.firstName('female'),
+        firstNames: motherFirstName,
         familyName: familyName
       }
     ],
@@ -206,7 +208,7 @@ export function createBirthDeclarationData(
       otherInformantType: '',
       contactPhoneNumber:
         '+2607' + faker.datatype.number({ min: 10000000, max: 99999999 }),
-      contactEmail: faker.internet.email(),
+      contactEmail: faker.internet.email(motherFirstName, familyName),
       status: [
         {
           timestamp: sub(declarationTime, {
