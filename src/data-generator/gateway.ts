@@ -190,8 +190,6 @@ export type AdvancedSearchParametersInput = {
 
 export type ApplicationConfiguration = {
   __typename?: 'ApplicationConfiguration'
-  ADDRESSES?: Maybe<Scalars['Int']>
-  ADMIN_LEVELS?: Maybe<Scalars['Int']>
   APPLICATION_NAME?: Maybe<Scalars['String']>
   BIRTH?: Maybe<Birth>
   COUNTRY_LOGO?: Maybe<CountryLogo>
@@ -200,9 +198,7 @@ export type ApplicationConfiguration = {
   DEATH?: Maybe<Death>
   EXTERNAL_VALIDATION_WORKQUEUE?: Maybe<Scalars['Boolean']>
   FIELD_AGENT_AUDIT_LOCATIONS?: Maybe<Scalars['String']>
-  HIDE_BIRTH_EVENT_REGISTER_INFORMATION?: Maybe<Scalars['Boolean']>
-  HIDE_DEATH_EVENT_REGISTER_INFORMATION?: Maybe<Scalars['Boolean']>
-  HIDE_MARRIAGE_EVENT_REGISTER_INFORMATION?: Maybe<Scalars['Boolean']>
+  INFORMANT_NOTIFICATION_DELIVERY_METHOD?: Maybe<Scalars['String']>
   INFORMANT_SIGNATURE?: Maybe<Scalars['Boolean']>
   INFORMANT_SIGNATURE_REQUIRED?: Maybe<Scalars['Boolean']>
   LOGIN_BACKGROUND?: Maybe<LoginBackground>
@@ -210,11 +206,10 @@ export type ApplicationConfiguration = {
   MARRIAGE_REGISTRATION?: Maybe<Scalars['Boolean']>
   NID_NUMBER_PATTERN?: Maybe<Scalars['String']>
   PHONE_NUMBER_PATTERN?: Maybe<Scalars['String']>
+  USER_NOTIFICATION_DELIVERY_METHOD?: Maybe<Scalars['String']>
 }
 
 export type ApplicationConfigurationInput = {
-  ADDRESSES?: InputMaybe<Scalars['Int']>
-  ADMIN_LEVELS?: InputMaybe<Scalars['Int']>
   APPLICATION_NAME?: InputMaybe<Scalars['String']>
   BIRTH?: InputMaybe<BirthInput>
   COUNTRY_LOGO?: InputMaybe<CountryLogoInput>
@@ -223,19 +218,19 @@ export type ApplicationConfigurationInput = {
   DEATH?: InputMaybe<DeathInput>
   EXTERNAL_VALIDATION_WORKQUEUE?: InputMaybe<Scalars['Boolean']>
   FIELD_AGENT_AUDIT_LOCATIONS?: InputMaybe<Scalars['String']>
-  HIDE_BIRTH_EVENT_REGISTER_INFORMATION?: InputMaybe<Scalars['Boolean']>
-  HIDE_DEATH_EVENT_REGISTER_INFORMATION?: InputMaybe<Scalars['Boolean']>
-  HIDE_MARRIAGE_EVENT_REGISTER_INFORMATION?: InputMaybe<Scalars['Boolean']>
+  INFORMANT_NOTIFICATION_DELIVERY_METHOD?: InputMaybe<Scalars['String']>
   INFORMANT_SIGNATURE?: InputMaybe<Scalars['Boolean']>
   INFORMANT_SIGNATURE_REQUIRED?: InputMaybe<Scalars['Boolean']>
   LOGIN_BACKGROUND?: InputMaybe<LoginBackgroundInput>
   MARRIAGE?: InputMaybe<MarriageInput>
   NID_NUMBER_PATTERN?: InputMaybe<Scalars['String']>
   PHONE_NUMBER_PATTERN?: InputMaybe<Scalars['String']>
+  USER_NOTIFICATION_DELIVERY_METHOD?: InputMaybe<Scalars['String']>
 }
 
 export type AssignmentData = {
   __typename?: 'AssignmentData'
+  avatarURL: Scalars['String']
   firstName?: Maybe<Scalars['String']>
   lastName?: Maybe<Scalars['String']>
   officeName?: Maybe<Scalars['String']>
@@ -783,7 +778,7 @@ export type History = {
   requester?: Maybe<Scalars['String']>
   signature?: Maybe<Signature>
   statusReason?: Maybe<StatusReason>
-  system?: Maybe<System>
+  system?: Maybe<IntegratedSystem>
   user?: Maybe<User>
 }
 
@@ -833,6 +828,13 @@ export type InputOutput = {
   valueCode?: Maybe<Scalars['String']>
   valueId?: Maybe<Scalars['String']>
   valueString?: Maybe<Scalars['String']>
+}
+
+export type IntegratedSystem = {
+  __typename?: 'IntegratedSystem'
+  name?: Maybe<Scalars['String']>
+  type?: Maybe<Scalars['String']>
+  username?: Maybe<Scalars['String']>
 }
 
 export enum IntegratingSystemType {
@@ -1880,10 +1882,8 @@ export type RegistrationInput = {
   book?: InputMaybe<Scalars['String']>
   brideSignature?: InputMaybe<Scalars['String']>
   certificates?: InputMaybe<Array<InputMaybe<CertificateInput>>>
-  contact?: InputMaybe<Scalars['String']>
   contactEmail?: InputMaybe<Scalars['String']>
   contactPhoneNumber?: InputMaybe<Scalars['String']>
-  contactRelationship?: InputMaybe<Scalars['String']>
   correction?: InputMaybe<CorrectionInput>
   draftId?: InputMaybe<Scalars['String']>
   groomSignature?: InputMaybe<Scalars['String']>
@@ -1997,7 +1997,7 @@ export type RemoveBookmarkedSeachInput = {
 
 export type Response = {
   __typename?: 'Response'
-  msg: Scalars['String']
+  roleIdMap: Scalars['Map']
 }
 
 export type Role = {
@@ -2278,9 +2278,11 @@ export type UserInput = {
   identifier?: InputMaybe<Array<InputMaybe<UserIdentifierInput>>>
   mobile?: InputMaybe<Scalars['String']>
   name: Array<HumanNameInput>
+  password?: InputMaybe<Scalars['String']>
   primaryOffice?: InputMaybe<Scalars['String']>
   role?: InputMaybe<Scalars['String']>
   signature?: InputMaybe<SignatureInput>
+  status?: InputMaybe<Status>
   systemRole: SystemRoleType
   username?: InputMaybe<Scalars['String']>
 }
@@ -2339,6 +2341,7 @@ export type BirthRegistrationFragmentFragment = {
     __typename?: 'RelatedPerson'
     id?: string | null
     relationship?: string | null
+    _fhirIDPatient?: string | null
     occupation?: string | null
     nationality?: Array<string | null> | null
     birthDate?: string | null
@@ -2443,8 +2446,7 @@ export type BirthRegistrationFragmentFragment = {
   registration?: {
     __typename?: 'Registration'
     id?: string | null
-    contact?: string | null
-    contactRelationship?: string | null
+    informantType?: string | null
     contactPhoneNumber?: string | null
     type?: RegistrationType | null
     trackingId?: string | null
@@ -2452,6 +2454,7 @@ export type BirthRegistrationFragmentFragment = {
     attachments?: Array<{
       __typename?: 'Attachment'
       data?: string | null
+      uri?: string | null
       type?: string | null
       contentType?: string | null
       subject?: string | null
@@ -2484,84 +2487,6 @@ export type BirthRegistrationFragmentFragment = {
     __typename?: 'QuestionnaireQuestion'
     fieldId?: string | null
     value?: string | null
-  } | null> | null
-  history?: Array<{
-    __typename?: 'History'
-    date?: any | null
-    action?: RegAction | null
-    regStatus?: RegStatus | null
-    statusReason?: { __typename?: 'StatusReason'; text?: string | null } | null
-    location?: {
-      __typename?: 'Location'
-      id: string
-      name?: string | null
-    } | null
-    office?: {
-      __typename?: 'Location'
-      id: string
-      name?: string | null
-    } | null
-    user?: {
-      __typename?: 'User'
-      id: string
-      systemRole: SystemRoleType
-      role: {
-        __typename?: 'Role'
-        _id: string
-        labels: Array<{ __typename?: 'RoleLabel'; lang: string; label: string }>
-      }
-      name: Array<{
-        __typename?: 'HumanName'
-        firstNames?: string | null
-        familyName?: string | null
-        use?: string | null
-      }>
-      avatar?: { __typename?: 'Avatar'; data: string; type: string } | null
-    } | null
-    comments?: Array<{
-      __typename?: 'Comment'
-      comment?: string | null
-      createdAt?: any | null
-      user?: {
-        __typename?: 'User'
-        id: string
-        username?: string | null
-        avatar?: { __typename?: 'Avatar'; data: string; type: string } | null
-      } | null
-    } | null> | null
-    input?: Array<{
-      __typename?: 'InputOutput'
-      valueCode?: string | null
-      valueId?: string | null
-      valueString?: string | null
-    } | null> | null
-    output?: Array<{
-      __typename?: 'InputOutput'
-      valueCode?: string | null
-      valueId?: string | null
-      valueString?: string | null
-    } | null> | null
-    certificates?: Array<{
-      __typename?: 'Certificate'
-      hasShowedVerifiedDocument?: boolean | null
-      collector?: {
-        __typename?: 'RelatedPerson'
-        relationship?: string | null
-        otherRelationship?: string | null
-        name?: Array<{
-          __typename?: 'HumanName'
-          use?: string | null
-          firstNames?: string | null
-          familyName?: string | null
-        } | null> | null
-        telecom?: Array<{
-          __typename?: 'ContactPoint'
-          system?: string | null
-          value?: string | null
-          use?: string | null
-        } | null> | null
-      } | null
-    } | null> | null
   } | null> | null
 }
 
@@ -2715,6 +2640,7 @@ export type FetchBirthRegistrationQuery = {
       __typename?: 'RelatedPerson'
       id?: string | null
       relationship?: string | null
+      _fhirIDPatient?: string | null
       occupation?: string | null
       nationality?: Array<string | null> | null
       birthDate?: string | null
@@ -2819,8 +2745,7 @@ export type FetchBirthRegistrationQuery = {
     registration?: {
       __typename?: 'Registration'
       id?: string | null
-      contact?: string | null
-      contactRelationship?: string | null
+      informantType?: string | null
       contactPhoneNumber?: string | null
       type?: RegistrationType | null
       trackingId?: string | null
@@ -2828,6 +2753,7 @@ export type FetchBirthRegistrationQuery = {
       attachments?: Array<{
         __typename?: 'Attachment'
         data?: string | null
+        uri?: string | null
         type?: string | null
         contentType?: string | null
         subject?: string | null
@@ -2860,91 +2786,6 @@ export type FetchBirthRegistrationQuery = {
       __typename?: 'QuestionnaireQuestion'
       fieldId?: string | null
       value?: string | null
-    } | null> | null
-    history?: Array<{
-      __typename?: 'History'
-      date?: any | null
-      action?: RegAction | null
-      regStatus?: RegStatus | null
-      statusReason?: {
-        __typename?: 'StatusReason'
-        text?: string | null
-      } | null
-      location?: {
-        __typename?: 'Location'
-        id: string
-        name?: string | null
-      } | null
-      office?: {
-        __typename?: 'Location'
-        id: string
-        name?: string | null
-      } | null
-      user?: {
-        __typename?: 'User'
-        id: string
-        systemRole: SystemRoleType
-        role: {
-          __typename?: 'Role'
-          _id: string
-          labels: Array<{
-            __typename?: 'RoleLabel'
-            lang: string
-            label: string
-          }>
-        }
-        name: Array<{
-          __typename?: 'HumanName'
-          firstNames?: string | null
-          familyName?: string | null
-          use?: string | null
-        }>
-        avatar?: { __typename?: 'Avatar'; data: string; type: string } | null
-      } | null
-      comments?: Array<{
-        __typename?: 'Comment'
-        comment?: string | null
-        createdAt?: any | null
-        user?: {
-          __typename?: 'User'
-          id: string
-          username?: string | null
-          avatar?: { __typename?: 'Avatar'; data: string; type: string } | null
-        } | null
-      } | null> | null
-      input?: Array<{
-        __typename?: 'InputOutput'
-        valueCode?: string | null
-        valueId?: string | null
-        valueString?: string | null
-      } | null> | null
-      output?: Array<{
-        __typename?: 'InputOutput'
-        valueCode?: string | null
-        valueId?: string | null
-        valueString?: string | null
-      } | null> | null
-      certificates?: Array<{
-        __typename?: 'Certificate'
-        hasShowedVerifiedDocument?: boolean | null
-        collector?: {
-          __typename?: 'RelatedPerson'
-          relationship?: string | null
-          otherRelationship?: string | null
-          name?: Array<{
-            __typename?: 'HumanName'
-            use?: string | null
-            firstNames?: string | null
-            familyName?: string | null
-          } | null> | null
-          telecom?: Array<{
-            __typename?: 'ContactPoint'
-            system?: string | null
-            value?: string | null
-            use?: string | null
-          } | null> | null
-        } | null
-      } | null> | null
     } | null> | null
   } | null
 }
@@ -3001,6 +2842,7 @@ export type FetchDeathRegistrationQuery = {
       __typename?: 'RelatedPerson'
       id?: string | null
       relationship?: string | null
+      _fhirIDPatient?: string | null
       nationality?: Array<string | null> | null
       occupation?: string | null
       birthDate?: string | null
@@ -3060,8 +2902,7 @@ export type FetchDeathRegistrationQuery = {
     registration?: {
       __typename?: 'Registration'
       id?: string | null
-      contact?: string | null
-      contactRelationship?: string | null
+      informantType?: string | null
       contactPhoneNumber?: string | null
       type?: RegistrationType | null
       trackingId?: string | null
@@ -3069,6 +2910,7 @@ export type FetchDeathRegistrationQuery = {
       attachments?: Array<{
         __typename?: 'Attachment'
         data?: string | null
+        uri?: string | null
         type?: string | null
         contentType?: string | null
         subject?: string | null

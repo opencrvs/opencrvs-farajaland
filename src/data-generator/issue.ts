@@ -32,11 +32,9 @@ export function createBirthIssuingDetails(
       'father.id',
       'child.id',
       'registration.id',
-      'informant.individual.id',
       'informant.id'
     ]
   )
-  delete withIdsRemoved.history
 
   const completionDays = differenceInDays(
     createdAt,

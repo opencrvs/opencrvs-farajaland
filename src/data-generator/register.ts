@@ -119,9 +119,6 @@ export function createRegistrationDetails(
     ['registration.registrationNumber', 'registration.type']
   )
 
-  if (withIdsRemoved.__typename === 'BirthRegistration') {
-    delete withIdsRemoved.history
-  }
   delete withIdsRemoved.__typename
   delete withIdsRemoved.id
 
