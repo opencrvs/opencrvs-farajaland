@@ -44,12 +44,10 @@ const HOME_DEATH_WEIGHT = 0.2
  * and `DEATH_ATTACHMENTS`, this number cannot exceed the biggest
  * index of either of them.
  */
-const NUMBER_OF_ATTACHMENTS_PER_RECORD = Math.min(
-  Math.min(BIRTH_ATTACHMENTS.length, DEATH_ATTACHMENTS.length),
-  process.env.NUMBER_OF_ATTACHMENTS_PER_RECORD
-    ? parseInt(process.env.NUMBER_OF_ATTACHMENTS_PER_RECORD, 10)
-    : 2
-)
+const NUMBER_OF_ATTACHMENTS_PER_RECORD = process.env
+  .NUMBER_OF_ATTACHMENTS_PER_RECORD
+  ? parseInt(process.env.NUMBER_OF_ATTACHMENTS_PER_RECORD, 10)
+  : 2
 
 function randomWeightInKg() {
   return Math.round(2.5 + 2 * Math.random())
@@ -223,13 +221,13 @@ export function createBirthDeclarationData(
         }
       ],
       draftId: faker.datatype.uuid(),
-      attachments: Array.from({ length: NUMBER_OF_ATTACHMENTS_PER_RECORD }).map(
-        (_, i) => ({
+      attachments: faker.helpers
+        .arrayElements(BIRTH_ATTACHMENTS, NUMBER_OF_ATTACHMENTS_PER_RECORD)
+        .map((attachment) => ({
+          ...attachment,
           contentType: 'image/png',
-          data: 'data:image/png;base64,' + base64Attachment,
-          ...BIRTH_ATTACHMENTS[i]
-        })
-      ),
+          data: 'data:image/png;base64,' + base64Attachment
+        })),
       inCompleteFields: !sex ? 'child/child-view-group/gender' : undefined
     },
     father: {
@@ -366,13 +364,13 @@ export async function createDeathDeclaration(
       contactPhoneNumber:
         '+2607' + faker.datatype.number({ min: 10000000, max: 99999999 }),
       contactEmail: faker.internet.email(spouseFirstName, familyName),
-      attachments: Array.from({ length: NUMBER_OF_ATTACHMENTS_PER_RECORD }).map(
-        (_, i) => ({
+      attachments: faker.helpers
+        .arrayElements(DEATH_ATTACHMENTS, NUMBER_OF_ATTACHMENTS_PER_RECORD)
+        .map((attachment) => ({
+          ...attachment,
           contentType: 'image/png',
-          data: 'data:image/png;base64,' + base64Attachment,
-          ...DEATH_ATTACHMENTS[i]
-        })
-      ),
+          data: 'data:image/png;base64,' + base64Attachment
+        })),
       draftId: faker.datatype.uuid(),
       status: [
         {
