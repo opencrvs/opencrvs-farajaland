@@ -87,14 +87,18 @@ export async function sendBirthNotification(
     father: {
       firstName: 'Dad',
       lastName,
-      nid: faker.datatype.number({ min: 100000000, max: 999999999 }).toString(),
+      nid: faker.datatype
+        .number({ min: 1000000000, max: 9999999999 })
+        .toString(),
       dateOfBirth: sub(birthDate, { years: 20 }).toISOString().split('T')[0]
     },
     mother: {
       firstName: 'Mum',
       lastName,
       dateOfBirth: sub(birthDate, { years: 20 }).toISOString().split('T')[0],
-      nid: faker.datatype.number({ min: 100000000, max: 999999999 }).toString()
+      nid: faker.datatype
+        .number({ min: 1000000000, max: 9999999999 })
+        .toString()
     },
     createdAt: createdAt.toISOString(),
     address: [
@@ -110,6 +114,7 @@ export async function sendBirthNotification(
     ],
     phoneNumber:
       '+2607' + faker.datatype.number({ min: 10000000, max: 99999999 }),
+    email: faker.internet.email(),
     dateOfBirth: birthDate.toISOString().split('T')[0],
     placeOfBirth: `Location/${facility.id}`,
     officeLocation: office.partOf,
@@ -201,6 +206,7 @@ export function createBirthDeclarationData(
       otherInformantType: '',
       contactPhoneNumber:
         '+2607' + faker.datatype.number({ min: 10000000, max: 99999999 }),
+      contactEmail: faker.internet.email(),
       status: [
         {
           timestamp: sub(declarationTime, {

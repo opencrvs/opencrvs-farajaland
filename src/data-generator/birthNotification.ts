@@ -29,6 +29,7 @@ interface BirthNotification {
     nid: string
   }
   phoneNumber: string
+  email: string
   address: fhir.Address[]
   dateOfBirth: string
   placeOfBirth: string // Location Resource
@@ -42,6 +43,7 @@ export function birthNotification({
   father,
   mother,
   phoneNumber,
+  email,
   address,
   dateOfBirth,
   placeOfBirth,
@@ -204,6 +206,10 @@ export function birthNotification({
             {
               url: 'http://opencrvs.org/specs/extension/contact-person-phone-number',
               valueString: phoneNumber
+            },
+            {
+              url: 'http://opencrvs.org/specs/extension/contact-person-email',
+              valueString: email
             },
             {
               url: 'http://opencrvs.org/specs/extension/timeLoggedMS',

@@ -113,6 +113,7 @@ const birthRegistrationFragment = gql`
       id
       informantType
       contactPhoneNumber
+      contactEmail
       attachments {
         data
         uri
@@ -340,6 +341,7 @@ export const FETCH_DEATH_REGISTRATION_QUERY = print(gql`
         id
         informantType
         contactPhoneNumber
+        contactEmail
         attachments {
           data
           uri
