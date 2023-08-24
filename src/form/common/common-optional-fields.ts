@@ -16,7 +16,16 @@ import { Validator } from '../types/validators'
 import { maritalStatusOptions } from './select-options'
 import { certificateHandlebars } from '../birth/certificate-handlebars'
 
-export const exactDateOfBirthUnknown: SerializedFormField = {
+const exactDobConditional: Conditional[] = [
+  {
+    action: 'hide',
+    expression: '!window.config.DATE_OF_BIRTH_UNKNOWN'
+  }
+]
+
+export const exactDateOfBirthUnknown = (
+  conditionalCase: Conditional[]
+): SerializedFormField => ({
   name: 'exactDateOfBirthUnknown',
   type: 'CHECKBOX',
   label: {
@@ -42,12 +51,7 @@ export const exactDateOfBirthUnknown: SerializedFormField = {
       parameters: [5, true]
     }
   ],
-  conditionals: [
-    {
-      action: 'hide',
-      expression: '!window.config.DATE_OF_BIRTH_UNKNOWN || !values.detailsExist'
-    }
-  ],
+  conditionals: exactDobConditional.concat(conditionalCase),
   mapping: {
     query: {
       operation: 'booleanTransformer'
@@ -56,7 +60,7 @@ export const exactDateOfBirthUnknown: SerializedFormField = {
       operation: 'ignoreFieldTransformer'
     }
   }
-}
+})
 
 export const getNationalID = (
   fieldName: string,
