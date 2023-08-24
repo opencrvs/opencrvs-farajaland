@@ -37,20 +37,7 @@ export const exactDateOfBirthUnknown = (
   required: false,
   hideHeader: true,
   initialValue: false,
-  validator: [
-    {
-      operation: 'range',
-      parameters: [12, 120]
-    },
-    {
-      operation: 'maxLength',
-      parameters: [3]
-    },
-    {
-      operation: 'isValidParentsBirthDate',
-      parameters: [5, true]
-    }
-  ],
+  validator: [],
   conditionals: exactDobConditional.concat(conditionalCase),
   mapping: {
     query: {
