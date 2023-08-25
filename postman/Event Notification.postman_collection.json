@@ -8,16 +8,6 @@
 		{
 			"name": "Create Birth Notification (Max)",
 			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzY29wZSI6WyJkZWNsYXJlIiwibm90aWZpY2F0aW9uLWFwaSIsImRlbW8iXSwiaWF0IjoxNjkyNzk1ODYyLCJleHAiOjE2OTI3OTY0NjIsImF1ZCI6WyJvcGVuY3J2czphdXRoLXVzZXIiLCJvcGVuY3J2czp1c2VyLW1nbnQtdXNlciIsIm9wZW5jcnZzOmhlYXJ0aC11c2VyIiwib3BlbmNydnM6Z2F0ZXdheS11c2VyIiwib3BlbmNydnM6bm90aWZpY2F0aW9uLXVzZXIiLCJvcGVuY3J2czp3b3JrZmxvdy11c2VyIiwib3BlbmNydnM6c2VhcmNoLXVzZXIiLCJvcGVuY3J2czptZXRyaWNzLXVzZXIiLCJvcGVuY3J2czpjb3VudHJ5Y29uZmlnLXVzZXIiLCJvcGVuY3J2czp3ZWJob29rcy11c2VyIiwib3BlbmNydnM6Y29uZmlnLXVzZXIiLCJvcGVuY3J2czpkb2N1bWVudHMtdXNlciIsIm9wZW5jcnZzOm5vdGlmaWNhdGlvbi1hcGktdXNlciJdLCJpc3MiOiJvcGVuY3J2czphdXRoLXNlcnZpY2UiLCJzdWIiOiI2NGU1ZWUzNzEwMjA5MWI3N2YxM2RhMjkifQ.qPON-NqoiVPEimjRKGgRfiAcJ9uLnr5D09zV0x930u6SKt6oqELy5bCwvyj6uXiBKjoqVN7moR_zvqZ88paqRdDJz7JgxvWUkaeLRUQV-pY1W787RGZQBktQi6BKXOsERvU5EKo83p4FFUVAf5axdrVwS-9UVmVRCqTLWFMFS3xuyMKQRyejA5y9e-AtIhdrRMu6VywK1YASKkS41sqjudYOpfVVcGXyuuYNx5ngciDLxvGNpMF8jrh1ao2iii1yRmtwjRSxr0jveHuMcuviSoCZzOJynaHyJp07i7YuI7dtZW3tbtuGM0J7KLH1cCSYTCuC6pLlZwCEnxe0ZGn_eA",
-							"type": "string"
-						}
-					]
-				},
 				"method": "POST",
 				"header": [],
 				"body": {
@@ -44,16 +34,6 @@
 		{
 			"name": "Create Birth Notification (Min)",
 			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzY29wZSI6WyJkZWNsYXJlIiwibm90aWZpY2F0aW9uLWFwaSIsImRlbW8iXSwiaWF0IjoxNjkyNzk1ODYyLCJleHAiOjE2OTI3OTY0NjIsImF1ZCI6WyJvcGVuY3J2czphdXRoLXVzZXIiLCJvcGVuY3J2czp1c2VyLW1nbnQtdXNlciIsIm9wZW5jcnZzOmhlYXJ0aC11c2VyIiwib3BlbmNydnM6Z2F0ZXdheS11c2VyIiwib3BlbmNydnM6bm90aWZpY2F0aW9uLXVzZXIiLCJvcGVuY3J2czp3b3JrZmxvdy11c2VyIiwib3BlbmNydnM6c2VhcmNoLXVzZXIiLCJvcGVuY3J2czptZXRyaWNzLXVzZXIiLCJvcGVuY3J2czpjb3VudHJ5Y29uZmlnLXVzZXIiLCJvcGVuY3J2czp3ZWJob29rcy11c2VyIiwib3BlbmNydnM6Y29uZmlnLXVzZXIiLCJvcGVuY3J2czpkb2N1bWVudHMtdXNlciIsIm9wZW5jcnZzOm5vdGlmaWNhdGlvbi1hcGktdXNlciJdLCJpc3MiOiJvcGVuY3J2czphdXRoLXNlcnZpY2UiLCJzdWIiOiI2NGU1ZWUzNzEwMjA5MWI3N2YxM2RhMjkifQ.qPON-NqoiVPEimjRKGgRfiAcJ9uLnr5D09zV0x930u6SKt6oqELy5bCwvyj6uXiBKjoqVN7moR_zvqZ88paqRdDJz7JgxvWUkaeLRUQV-pY1W787RGZQBktQi6BKXOsERvU5EKo83p4FFUVAf5axdrVwS-9UVmVRCqTLWFMFS3xuyMKQRyejA5y9e-AtIhdrRMu6VywK1YASKkS41sqjudYOpfVVcGXyuuYNx5ngciDLxvGNpMF8jrh1ao2iii1yRmtwjRSxr0jveHuMcuviSoCZzOJynaHyJp07i7YuI7dtZW3tbtuGM0J7KLH1cCSYTCuC6pLlZwCEnxe0ZGn_eA",
-							"type": "string"
-						}
-					]
-				},
 				"method": "POST",
 				"header": [],
 				"body": {
@@ -80,16 +60,6 @@
 		{
 			"name": "Create Death Notification (Min)",
 			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzY29wZSI6WyJkZWNsYXJlIiwibm90aWZpY2F0aW9uLWFwaSIsImRlbW8iXSwiaWF0IjoxNjkyNzk2MjkyLCJleHAiOjE2OTI3OTY4OTIsImF1ZCI6WyJvcGVuY3J2czphdXRoLXVzZXIiLCJvcGVuY3J2czp1c2VyLW1nbnQtdXNlciIsIm9wZW5jcnZzOmhlYXJ0aC11c2VyIiwib3BlbmNydnM6Z2F0ZXdheS11c2VyIiwib3BlbmNydnM6bm90aWZpY2F0aW9uLXVzZXIiLCJvcGVuY3J2czp3b3JrZmxvdy11c2VyIiwib3BlbmNydnM6c2VhcmNoLXVzZXIiLCJvcGVuY3J2czptZXRyaWNzLXVzZXIiLCJvcGVuY3J2czpjb3VudHJ5Y29uZmlnLXVzZXIiLCJvcGVuY3J2czp3ZWJob29rcy11c2VyIiwib3BlbmNydnM6Y29uZmlnLXVzZXIiLCJvcGVuY3J2czpkb2N1bWVudHMtdXNlciIsIm9wZW5jcnZzOm5vdGlmaWNhdGlvbi1hcGktdXNlciJdLCJpc3MiOiJvcGVuY3J2czphdXRoLXNlcnZpY2UiLCJzdWIiOiI2NGU1ZWUzNzEwMjA5MWI3N2YxM2RhMjkifQ.OhJjIxRpTFXwgsTTN9EJ3pShgIX2eAdNAYNjotuT76TjtD9Rjod5hmln4HgbGNVR85vF7QI_Pt9qeN0w2He9ezS-3p3D0CthfVwmA7Q5-fH4pzTlE5hL0gmJX-aCAxCjM7NOCxrK4hr2NP_cPdR4u15gXIlLsLZtX-lFq_Pi7nT0ClLqv1hyzm5wm2z46JRFBsW_TYN1WTdUSQ2h-MBsdqLPTJFz4cfrh-AuuEOo5QSHdJfI0cfpgM_DxuKVt85vjlcyblS3DypSmWdhztzkuRVngWRpJTGU80qAktXA998RcE7RzF8XWfSkPb3g1o47m83D9WQjZKS7MgD_tN3W7Q",
-							"type": "string"
-						}
-					]
-				},
 				"method": "POST",
 				"header": [],
 				"body": {
