@@ -491,8 +491,8 @@ fi
 
 # Deploy the OpenCRVS stack onto the swarm
 if [[ "$ENV" = "staging" ]]; then
-  ENVIRONMENT_COMPOSE="docker-compose.countryconfig.staging-deploy.yml docker-compose.staging-deploy.yml"
-  FILES_TO_ROTATE="${FILES_TO_ROTATE} /opt/opencrvs/docker-compose.countryconfig.staging-deploy.yml /opt/opencrvs/docker-compose.staging-deploy.yml"
+  ENVIRONMENT_COMPOSE="docker-compose.countryconfig.staging-deploy.yml docker-compose.staging-deploy.yml docker-compose.dci.yml"
+  FILES_TO_ROTATE="${FILES_TO_ROTATE} /opt/opencrvs/docker-compose.countryconfig.staging-deploy.yml /opt/opencrvs/docker-compose.staging-deploy.yml /opt/opencrvs/docker-compose.dci.yml"
 elif [[ "$ENV" = "qa" ]]; then
   ENVIRONMENT_COMPOSE="docker-compose.countryconfig.qa-deploy.yml docker-compose.qa-deploy.yml"
   FILES_TO_ROTATE="${FILES_TO_ROTATE} /opt/opencrvs/docker-compose.countryconfig.qa-deploy.yml /opt/opencrvs/docker-compose.qa-deploy.yml"
