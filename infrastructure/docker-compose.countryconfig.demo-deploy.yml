@@ -81,10 +81,3 @@ services:
   webhooks:
     environment:
       - SENTRY_DSN=${SENTRY_DSN}
-
-  dci-crvs-api:
-    image: opencrvs/dci-crvs-api:7409b3d
-    environment:
-      - OPENCRVS_AUTH_URL=http://auth:4040
-      - OPENCRVS_GATEWAY_URL=http://gateway:7070/graphql
-      
