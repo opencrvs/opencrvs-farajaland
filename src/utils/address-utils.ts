@@ -708,25 +708,26 @@ function getTemplateMapping(
 }
 
 // You should never need to edit this function.  If there is a bug here raise an issue in [Github](https://github.com/opencrvs/opencrvs-farajaland)
-function getMutationMapping(
-  type:
-    | 'TEXT'
-    | 'RADIO_GROUP'
-    | 'SELECT_WITH_OPTIONS'
-    | 'SELECT_WITH_DYNAMIC_OPTIONS',
-  location: string,
-  useCase: string,
+function getMutationMapping({
+  location,
+  useCase,
+  locationIndex,
+  isLeafLevel
+}: {
+  location: string
+  useCase: string
   locationIndex?: number
-): IMutationMapper {
+  isLeafLevel?: boolean
+}): IMutationMapper {
   return isUseCaseForPlaceOfEvent(useCase)
     ? locationIndex || locationIndex === 0
       ? {
           operation: 'eventLocationMutationTransformer',
-          parameters: [{ useCase, lineNumber: locationIndex }]
+          parameters: [{ useCase, lineNumber: locationIndex, isLeafLevel }]
         }
       : {
           operation: 'eventLocationMutationTransformer',
-          parameters: [{ useCase, transformedFieldName: location }]
+          parameters: [{ useCase, transformedFieldName: location, isLeafLevel }]
         }
     : locationIndex || locationIndex === 0
     ? {
@@ -737,7 +738,8 @@ function getMutationMapping(
               useCase.toUpperCase() === 'PRIMARY'
                 ? AddressCases.PRIMARY_ADDRESS
                 : AddressCases.SECONDARY_ADDRESS,
-            lineNumber: locationIndex
+            lineNumber: locationIndex,
+            isLeafLevel
           }
         ]
       }
@@ -749,7 +751,8 @@ function getMutationMapping(
               useCase.toUpperCase() === 'PRIMARY'
                 ? AddressCases.PRIMARY_ADDRESS
                 : AddressCases.SECONDARY_ADDRESS,
-            transformedFieldName: location
+            transformedFieldName: location,
+            isLeafLevel
           }
         ]
       }
@@ -844,22 +847,36 @@ function getQueryMapping(
 }
 
 // You should never need to edit this function.  If there is a bug here raise an issue in [Github](https://github.com/opencrvs/opencrvs-farajaland)
-export function getMapping(
-  section: string,
+export function getMapping({
+  section,
+  type,
+  location,
+  useCase,
+  fieldName,
+  locationIndex,
+  isLeafLevel
+}: {
+  section: string
   type:
     | 'TEXT'
     | 'RADIO_GROUP'
     | 'SELECT_WITH_OPTIONS'
-    | 'SELECT_WITH_DYNAMIC_OPTIONS',
-  location: string, // used to filter offline locations and for FHIR props - use empty string for address lines
-  useCase: string,
-  fieldName: string,
+    | 'SELECT_WITH_DYNAMIC_OPTIONS'
+  location: string
+  useCase: string
+  fieldName: string
   locationIndex?: number
-): IFormFieldMapping {
+  isLeafLevel?: boolean
+}): IFormFieldMapping {
   if (type !== 'RADIO_GROUP') {
     return {
       template: getTemplateMapping(location, useCase, fieldName, locationIndex),
-      mutation: getMutationMapping(type, location, useCase, locationIndex),
+      mutation: getMutationMapping({
+        location,
+        useCase,
+        locationIndex,
+        isLeafLevel
+      }),
       query: getQueryMapping(
         section,
         type,
@@ -872,7 +889,12 @@ export function getMapping(
   } else {
     // Radio Groups in addresses have no need for certificate template
     return {
-      mutation: getMutationMapping(type, location, useCase, locationIndex),
+      mutation: getMutationMapping({
+        location,
+        useCase,
+        locationIndex,
+        isLeafLevel
+      }),
       query: getQueryMapping(
         section,
         type,

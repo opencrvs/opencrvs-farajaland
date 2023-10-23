@@ -73,12 +73,20 @@ export const getXAddressSameAsY = (
 
 // A select field that uses the loaded administrative location levels from Humdata
 // We recommend that you do not edit this function
-export function getAddressLocationSelect(
-  section: string,
-  location: string,
-  useCase: string,
+export function getAddressLocationSelect({
+  section,
+  location,
+  useCase,
+  locationIndex,
+  isLeafLevel
+}: {
+  section: string
+  location: string
+  useCase: string
   locationIndex?: number
-): SerializedFormField {
+  /** If the structure the smallest possible level. Allows saving Address.partOf in FHIR. */
+  isLeafLevel?: boolean
+}): SerializedFormField {
   const fieldName = `${location}${sentenceCase(useCase)}${sentenceCase(
     section
   )}`
@@ -113,14 +121,15 @@ export function getAddressLocationSelect(
           useCase as EventLocationAddressCases
         )
       : getAddressConditionals(section, location, useCase),
-    mapping: getMapping(
+    mapping: getMapping({
       section,
-      'SELECT_WITH_DYNAMIC_OPTIONS',
+      type: 'SELECT_WITH_DYNAMIC_OPTIONS',
       location,
       useCase,
       fieldName,
-      locationIndex
-    )
+      locationIndex,
+      isLeafLevel
+    })
   }
 }
 
@@ -132,35 +141,78 @@ function getAdminLevelSelects(
 ): SerializedFormField[] {
   switch (ADMIN_LEVELS) {
     case 1:
-      return [getAddressLocationSelect(section, 'state', useCase)]
+      return [
+        getAddressLocationSelect({
+          section,
+          location: 'state',
+          useCase,
+          isLeafLevel: true
+        })
+      ]
     case 2:
       return [
-        getAddressLocationSelect(section, 'state', useCase),
-        getAddressLocationSelect(section, 'district', useCase)
+        getAddressLocationSelect({ section, location: 'state', useCase }),
+        getAddressLocationSelect({
+          section,
+          location: 'district',
+          useCase,
+          isLeafLevel: true
+        })
       ]
     case 3:
       return [
-        getAddressLocationSelect(section, 'state', useCase),
-        getAddressLocationSelect(section, 'district', useCase),
-        getAddressLocationSelect(section, 'locationLevel3', useCase, 10)
+        getAddressLocationSelect({ section, location: 'state', useCase }),
+        getAddressLocationSelect({ section, location: 'district', useCase }),
+        getAddressLocationSelect({
+          section,
+          location: 'locationLevel3',
+          useCase,
+          locationIndex: 10,
+          isLeafLevel: true
+        })
       ]
     case 4:
       return [
-        getAddressLocationSelect(section, 'state', useCase),
-        getAddressLocationSelect(section, 'district', useCase),
-        getAddressLocationSelect(section, 'locationLevel3', useCase, 10),
-        getAddressLocationSelect(section, 'locationLevel4', useCase, 11)
+        getAddressLocationSelect({ section, location: 'state', useCase }),
+        getAddressLocationSelect({ section, location: 'district', useCase }),
+        getAddressLocationSelect({
+          section,
+          location: 'locationLevel3',
+          useCase,
+          locationIndex: 10
+        }),
+        getAddressLocationSelect({
+          section,
+          location: 'locationLevel4',
+          useCase,
+          locationIndex: 11,
+          isLeafLevel: true
+        })
       ]
     case 5:
       return [
-        getAddressLocationSelect(section, 'state', useCase),
-        getAddressLocationSelect(section, 'district', useCase),
-        getAddressLocationSelect(section, 'locationLevel3', useCase, 10),
-        getAddressLocationSelect(section, 'locationLevel4', useCase, 11),
-        getAddressLocationSelect(section, 'locationLevel5', useCase, 12)
+        getAddressLocationSelect({ section, location: 'state', useCase }),
+        getAddressLocationSelect({ section, location: 'district', useCase }),
+        getAddressLocationSelect({
+          section,
+          location: 'locationLevel3',
+          useCase,
+          locationIndex: 10
+        }),
+        getAddressLocationSelect({
+          section,
+          location: 'locationLevel4',
+          useCase,
+          locationIndex: 11
+        }),
+        getAddressLocationSelect({
+          section,
+          location: 'locationLevel5',
+          useCase,
+          locationIndex: 12,
+          isLeafLevel: true
+        })
       ]
-    default:
-      return [getAddressLocationSelect(section, 'state', useCase)]
   }
 }
 
@@ -231,13 +283,13 @@ export function getAddressFields(
       conditionals: isUseCaseForPlaceOfEvent(useCase)
         ? getPlaceOfEventConditionals(section, 'country', useCase)
         : getAddressConditionals(section, 'country', useCase),
-      mapping: getMapping(
+      mapping: getMapping({
         section,
-        'SELECT_WITH_OPTIONS',
-        'country', // Maps form value to FHIR prop. Use empty string for FHIR Address line index
+        type: 'SELECT_WITH_OPTIONS',
+        location: 'country',
         useCase,
-        `country${sentenceCase(useCase)}${sentenceCase(section)}`
-      )
+        fieldName: `country${sentenceCase(useCase)}${sentenceCase(section)}`
+      })
     }, // Required
     // Select fields are added for each administrative location level from Humdata
     ...getAdminLevelSelects(section, useCase), // Required
@@ -261,14 +313,14 @@ export function getAddressFields(
       conditionals: isUseCaseForPlaceOfEvent(useCase)
         ? getPlaceOfEventConditionals(section, 'ruralOrUrban', useCase)
         : getAddressConditionals(section, 'ruralOrUrban', useCase),
-      mapping: getMapping(
+      mapping: getMapping({
         section,
-        'RADIO_GROUP',
-        '', // No FHIR prop exists for this custom address prop. Use empty string for FHIR Address line index
+        type: 'RADIO_GROUP',
+        location: '',
         useCase,
-        `country${sentenceCase(useCase)}${sentenceCase(section)}`,
-        5 // The selected index in the FHIR Address line array to store this value
-      )
+        fieldName: `country${sentenceCase(useCase)}${sentenceCase(section)}`,
+        locationIndex: 5 // The selected index in the FHIR Address line array to store this value
+      })
     },
     {
       name: `city${sentenceCase(useCase)}${sentenceCase(section)}`,
@@ -288,13 +340,13 @@ export function getAddressFields(
       conditionals: isUseCaseForPlaceOfEvent(useCase)
         ? getPlaceOfEventConditionals(section, 'urban', useCase)
         : getAddressConditionals(section, 'urban', useCase),
-      mapping: getMapping(
+      mapping: getMapping({
         section,
-        'TEXT',
-        'city',
+        type: 'TEXT',
+        location: 'city',
         useCase,
-        `city${sentenceCase(useCase)}${sentenceCase(section)}`
-      )
+        fieldName: `city${sentenceCase(useCase)}${sentenceCase(section)}`
+      })
     },
     {
       name: `addressLine1UrbanOption${sentenceCase(useCase)}${sentenceCase(
@@ -316,16 +368,16 @@ export function getAddressFields(
       conditionals: isUseCaseForPlaceOfEvent(useCase)
         ? getPlaceOfEventConditionals(section, 'urban', useCase)
         : getAddressConditionals(section, 'urban', useCase),
-      mapping: getMapping(
+      mapping: getMapping({
         section,
-        'TEXT',
-        '',
+        type: 'TEXT',
+        location: '',
         useCase,
-        `addressLine1UrbanOption${sentenceCase(useCase)}${sentenceCase(
-          section
-        )}`,
-        2
-      )
+        fieldName: `addressLine1UrbanOption${sentenceCase(
+          useCase
+        )}${sentenceCase(section)}`,
+        locationIndex: 2
+      })
     },
     {
       name: `addressLine2UrbanOption${sentenceCase(useCase)}${sentenceCase(
@@ -347,16 +399,16 @@ export function getAddressFields(
       conditionals: isUseCaseForPlaceOfEvent(useCase)
         ? getPlaceOfEventConditionals(section, 'urban', useCase)
         : getAddressConditionals(section, 'urban', useCase),
-      mapping: getMapping(
+      mapping: getMapping({
         section,
-        'TEXT',
-        '',
+        type: 'TEXT',
+        location: '',
         useCase,
-        `addressLine2UrbanOption${sentenceCase(useCase)}${sentenceCase(
-          section
-        )}`,
-        1
-      )
+        fieldName: `addressLine2UrbanOption${sentenceCase(
+          useCase
+        )}${sentenceCase(section)}`,
+        locationIndex: 1
+      })
     },
     {
       name: `addressLine3UrbanOption${sentenceCase(useCase)}${sentenceCase(
@@ -378,16 +430,16 @@ export function getAddressFields(
       conditionals: isUseCaseForPlaceOfEvent(useCase)
         ? getPlaceOfEventConditionals(section, 'urban', useCase)
         : getAddressConditionals(section, 'urban', useCase),
-      mapping: getMapping(
+      mapping: getMapping({
         section,
-        'TEXT',
-        '',
+        type: 'TEXT',
+        location: '',
         useCase,
-        `addressLine3UrbanOption${sentenceCase(useCase)}${sentenceCase(
-          section
-        )}`,
-        0
-      )
+        fieldName: `addressLine3UrbanOption${sentenceCase(
+          useCase
+        )}${sentenceCase(section)}`,
+        locationIndex: 0
+      })
     },
     {
       name: `postalCode${sentenceCase(useCase)}${sentenceCase(section)}`,
@@ -407,13 +459,13 @@ export function getAddressFields(
       conditionals: isUseCaseForPlaceOfEvent(useCase)
         ? getPlaceOfEventConditionals(section, 'urban', useCase)
         : getAddressConditionals(section, 'urban', useCase),
-      mapping: getMapping(
+      mapping: getMapping({
         section,
-        'TEXT',
-        'postalCode',
+        type: 'TEXT',
+        location: 'postalCode',
         useCase,
-        `postalCode${sentenceCase(useCase)}${sentenceCase(section)}`
-      )
+        fieldName: `postalCode${sentenceCase(useCase)}${sentenceCase(section)}`
+      })
     },
     {
       name: `addressLine1RuralOption${sentenceCase(useCase)}${sentenceCase(
@@ -435,16 +487,16 @@ export function getAddressFields(
       conditionals: isUseCaseForPlaceOfEvent(useCase)
         ? getPlaceOfEventConditionals(section, 'rural', useCase)
         : getAddressConditionals(section, 'rural', useCase),
-      mapping: getMapping(
+      mapping: getMapping({
         section,
-        'TEXT',
-        '',
+        type: 'TEXT',
+        location: '',
         useCase,
-        `addressLine1RuralOption${sentenceCase(useCase)}${sentenceCase(
-          section
-        )}`,
-        4
-      )
+        fieldName: `addressLine1RuralOption${sentenceCase(
+          useCase
+        )}${sentenceCase(section)}`,
+        locationIndex: 4
+      })
     },
     // INTERNATIONAL ADDRESSES ARE SUPPLIED BECAUSE INFORMANTS & CITIZENS MAY LIVE ABROAD & REGISTER AN EVENT AT ONE OF YOUR FOREIGN EMBASSIES
     // SOMETIMES THIS IS ALSO REQUIRED FOR DIPLOMATIC REASONS OR FOR MILITARY FORCES
@@ -468,13 +520,15 @@ export function getAddressFields(
       conditionals: isUseCaseForPlaceOfEvent(useCase)
         ? getPlaceOfEventConditionals(section, 'international', useCase)
         : getAddressConditionals(section, 'international', useCase),
-      mapping: getMapping(
+      mapping: getMapping({
         section,
-        'TEXT',
-        'state',
+        type: 'TEXT',
+        location: 'state',
         useCase,
-        `internationalState${sentenceCase(useCase)}${sentenceCase(section)}`
-      )
+        fieldName: `internationalState${sentenceCase(useCase)}${sentenceCase(
+          section
+        )}`
+      })
     },
     {
       name: `internationalDistrict${sentenceCase(useCase)}${sentenceCase(
@@ -496,13 +550,15 @@ export function getAddressFields(
       conditionals: isUseCaseForPlaceOfEvent(useCase)
         ? getPlaceOfEventConditionals(section, 'international', useCase)
         : getAddressConditionals(section, 'international', useCase),
-      mapping: getMapping(
+      mapping: getMapping({
         section,
-        'TEXT',
-        'district',
+        type: 'TEXT',
+        location: 'district',
         useCase,
-        `internationalDistrict${sentenceCase(useCase)}${sentenceCase(section)}`
-      )
+        fieldName: `internationalDistrict${sentenceCase(useCase)}${sentenceCase(
+          section
+        )}`
+      })
     },
     {
       name: `internationalCity${sentenceCase(useCase)}${sentenceCase(section)}`,
@@ -522,13 +578,15 @@ export function getAddressFields(
       conditionals: isUseCaseForPlaceOfEvent(useCase)
         ? getPlaceOfEventConditionals(section, 'international', useCase)
         : getAddressConditionals(section, 'international', useCase),
-      mapping: getMapping(
+      mapping: getMapping({
         section,
-        'TEXT',
-        'city',
+        type: 'TEXT',
+        location: 'city',
         useCase,
-        `internationalCity${sentenceCase(useCase)}${sentenceCase(section)}`
-      )
+        fieldName: `internationalCity${sentenceCase(useCase)}${sentenceCase(
+          section
+        )}`
+      })
     },
     {
       name: `internationalAddressLine1${sentenceCase(useCase)}${sentenceCase(
@@ -550,16 +608,16 @@ export function getAddressFields(
       conditionals: isUseCaseForPlaceOfEvent(useCase)
         ? getPlaceOfEventConditionals(section, 'international', useCase)
         : getAddressConditionals(section, 'international', useCase),
-      mapping: getMapping(
+      mapping: getMapping({
         section,
-        'TEXT',
-        '',
+        type: 'TEXT',
+        location: '',
         useCase,
-        `internationalAddressLine1${sentenceCase(useCase)}${sentenceCase(
-          section
-        )}`,
-        6
-      )
+        fieldName: `internationalAddressLine1${sentenceCase(
+          useCase
+        )}${sentenceCase(section)}`,
+        locationIndex: 6
+      })
     },
     {
       name: `internationalAddressLine2${sentenceCase(useCase)}${sentenceCase(
@@ -581,16 +639,16 @@ export function getAddressFields(
       conditionals: isUseCaseForPlaceOfEvent(useCase)
         ? getPlaceOfEventConditionals(section, 'international', useCase)
         : getAddressConditionals(section, 'international', useCase),
-      mapping: getMapping(
+      mapping: getMapping({
         section,
-        'TEXT',
-        '',
+        type: 'TEXT',
+        location: '',
         useCase,
-        `internationalAddressLine2${sentenceCase(useCase)}${sentenceCase(
-          section
-        )}`,
-        7
-      )
+        fieldName: `internationalAddressLine2${sentenceCase(
+          useCase
+        )}${sentenceCase(section)}`,
+        locationIndex: 7
+      })
     },
     {
       name: `internationalAddressLine3${sentenceCase(useCase)}${sentenceCase(
@@ -612,16 +670,16 @@ export function getAddressFields(
       conditionals: isUseCaseForPlaceOfEvent(useCase)
         ? getPlaceOfEventConditionals(section, 'international', useCase)
         : getAddressConditionals(section, 'international', useCase),
-      mapping: getMapping(
+      mapping: getMapping({
         section,
-        'TEXT',
-        '',
+        type: 'TEXT',
+        location: '',
         useCase,
-        `internationalAddressLine3${sentenceCase(useCase)}${sentenceCase(
-          section
-        )}`,
-        8
-      )
+        fieldName: `internationalAddressLine3${sentenceCase(
+          useCase
+        )}${sentenceCase(section)}`,
+        locationIndex: 8
+      })
     },
     {
       name: `internationalPostalCode${sentenceCase(useCase)}${sentenceCase(
@@ -643,15 +701,15 @@ export function getAddressFields(
       conditionals: isUseCaseForPlaceOfEvent(useCase)
         ? getPlaceOfEventConditionals(section, 'international', useCase)
         : getAddressConditionals(section, 'international', useCase),
-      mapping: getMapping(
+      mapping: getMapping({
         section,
-        'TEXT',
-        'postalCode',
+        type: 'TEXT',
+        location: 'postalCode',
         useCase,
-        `internationalPostalCode${sentenceCase(useCase)}${sentenceCase(
-          section
-        )}`
-      )
+        fieldName: `internationalPostalCode${sentenceCase(
+          useCase
+        )}${sentenceCase(section)}`
+      })
     }
   ]
 }
