@@ -12,7 +12,6 @@
 import { MessageDescriptor } from 'react-intl'
 import {
   formMessageDescriptors,
-  informantMessageDescriptors
 } from '../common/messages'
 import { Conditional, SerializedFormField } from '../types/types'
 import { divider } from '../common/common-optional-fields'
@@ -37,7 +36,8 @@ export const informantType: SerializedFormField = {
     'informantType',
     certificateHandlebars.informantType
   ),
-  options: birthInformantTypeOptions
+  options: birthInformantTypeOptions,
+  exampleValues: ['Mother']
 }
 
 export const getPlaceOfBirthFields = (): SerializedFormField[] => [
@@ -53,7 +53,8 @@ export const getPlaceOfBirthFields = (): SerializedFormField[] => [
     validator: [],
     placeholder: formMessageDescriptors.formSelectPlaceholder,
     options: placeOfBirthOptions,
-    mapping: getEventLocationSelectionMapping('placeOfBirth')
+    mapping: getEventLocationSelectionMapping('placeOfBirth'),
+    exampleValues: ['Other'],
   },
   {
     name: 'birthLocation',
@@ -81,6 +82,45 @@ export const getPlaceOfBirthFields = (): SerializedFormField[] => [
     mapping: getEventLocationSelectionMapping(
       'birthLocation',
       certificateHandlebars.placeOfBirth
-    )
+    ),
+    exampleValues: ['Shifwankula Health Post'],
   }
 ]
+
+export const getDetailsExist = (
+  label: MessageDescriptor,
+  conditionals: Conditional[]
+) =>
+  ({
+    name: 'detailsExist',
+    type: 'CHECKBOX',
+    label,
+    required: true,
+    checkedValue: false,
+    uncheckedValue: true,
+    hideHeader: true,
+    initialValue: true,
+    validator: [],
+    conditionals,
+    mapping: getFieldMapping('detailsExist'),
+    ignoreBottomMargin: true,
+    exampleValues: ['true']
+  } satisfies SerializedFormField)
+
+export const getReasonNotExisting = (certificateHandlebar: string) =>
+  ({
+    name: 'reasonNotApplying',
+    conditionals: [
+      {
+        action: 'hide',
+        expression: 'values.detailsExist'
+      }
+    ],
+    type: 'TEXT',
+    label: formMessageDescriptors.reasonNA,
+    validator: [],
+    initialValue: '',
+    required: true,
+    mapping: getFieldMapping('reasonNotApplying', certificateHandlebar),
+    exampleValues: ['reasonNotApplying']
+  } satisfies SerializedFormField)

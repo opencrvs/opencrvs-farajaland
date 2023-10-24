@@ -29,7 +29,11 @@ export const getBirthDate = (
   conditionals,
   initialValue: '',
   validator,
-  mapping: getFieldMapping('birthDate', certificateHandlebar)
+  mapping: getFieldMapping('birthDate', certificateHandlebar),
+  exampleValues: [
+    '03-04-2023',
+    '02-01-1995'
+  ]
 })
 
 export const getGender = (certificateHandlebar: string) =>
@@ -42,7 +46,8 @@ export const getGender = (certificateHandlebar: string) =>
     validator: [],
     placeholder: formMessageDescriptors.formSelectPlaceholder,
     mapping: getFieldMapping('gender', certificateHandlebar),
-    options: genderOptions
+    options: genderOptions,
+    exampleValues: ['Male'],
   } satisfies SerializedFormField)
 
 export const getFamilyNameField = (
@@ -64,6 +69,7 @@ export const getFamilyNameField = (
         operation: 'englishOnlyNameFormat'
       }
     ],
+    exampleValues: ['Test Family Name'],
     mapping: getFieldMapping('familyName', certificateHandlebar)
   } satisfies SerializedFormField)
 
@@ -85,6 +91,7 @@ export const getFirstNameField = (
     maxLength: 32,
     required: true,
     initialValue: '',
+    exampleValues: ['First Name'],
     validator: [
       {
         operation: 'englishOnlyNameFormat'
@@ -105,6 +112,7 @@ export const getNationality = (
     initialValue: 'FAR',
     validator: [],
     placeholder: formMessageDescriptors.formSelectPlaceholder,
+    exampleValues: ['Fiji'],
     options: {
       resource: 'countries'
     },
@@ -125,6 +133,7 @@ export const otherInformantType = (event: Event) =>
     placeholder: formMessageDescriptors.relationshipPlaceHolder,
     required: true,
     initialValue: '',
+    exampleValues: ["Other Information"],
     validator: [
       {
         operation: 'englishOnlyNameFormat'

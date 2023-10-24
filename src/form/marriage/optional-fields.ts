@@ -30,7 +30,8 @@ export const getMarriedLastName = (
       operation: 'englishOnlyNameFormat'
     }
   ],
-  mapping: getFieldMapping('marriedLastName', certificateHandlebar)
+  mapping: getFieldMapping('marriedLastName', certificateHandlebar),
+  exampleValues: ['marriedLastNameEng'],
 })
 
 export const getTypeOfMarriage: SerializedFormField = {
@@ -45,7 +46,8 @@ export const getTypeOfMarriage: SerializedFormField = {
   mapping: getFieldMapping(
     'typeOfMarriage',
     certificateHandlebars.typeOfMarriage
-  )
+  ),
+  exampleValues: ['Monogamous'],
 }
 
 export const placeOfMarriageSubsection: SerializedFormField = {

@@ -728,6 +728,7 @@ export type SerializedFormField = UnionOmit<
 > & {
   validator: Validator[]
   mapping?: IFormFieldMapping
+  exampleValues?: string[]
 }
 
 export type IFormSectionQueryMapFunction = (

@@ -17,6 +17,7 @@ import {
 } from './select-options'
 import { certificateHandlebars } from '../birth/certificate-handlebars'
 import { getFieldMapping } from '@countryconfig/utils/mapping/field-mapping-utils'
+import { Validator } from '../types/validators'
 
 const exactDobConditional: Conditional[] = [
   {
@@ -48,8 +49,27 @@ export const exactDateOfBirthUnknown = (
     mutation: {
       operation: 'ignoreFieldTransformer'
     }
-  }
+  },
+    exampleValues: ['true'],
 })
+
+export const getNationalID = (
+  fieldName: string,
+  conditionals: Conditional[],
+  validator: Validator[],
+  certificateHandlebar: string
+) =>
+  ({
+    name: fieldName,
+    type: 'TEXT',
+    label: formMessageDescriptors.iDTypeNationalID,
+    required: false,
+    initialValue: '',
+    validator,
+    conditionals,
+    mapping: getFieldMapping('nationalId', certificateHandlebar),
+    exampleValues: ['1234567890'],
+  } satisfies SerializedFormField)
 
 export const getAgeOfIndividualInYears = (
   label: MessageDescriptor,
@@ -76,7 +96,8 @@ export const getAgeOfIndividualInYears = (
   ],
   conditionals,
   postfix: 'years',
-  inputFieldWidth: '78px'
+  inputFieldWidth: '78px',
+  exampleValues: ['27']
 })
 
 export const getMaritalStatus = (
@@ -96,7 +117,8 @@ export const getMaritalStatus = (
   placeholder: formMessageDescriptors.formSelectPlaceholder,
   mapping: getFieldMapping('maritalStatus', certificateHandlebar),
   conditionals,
-  options: maritalStatusOptions
+  options: maritalStatusOptions,
+  exampleValues: ['Single']
 })
 
 export const registrationEmail: SerializedFormField = {
@@ -114,7 +136,8 @@ export const registrationEmail: SerializedFormField = {
   mapping: getFieldMapping(
     'registrationEmail',
     certificateHandlebars.contactEmail
-  )
+  ),
+  exampleValues: ['test@hotmail.com']
 }
 
 export const registrationPhone: SerializedFormField = {
@@ -123,6 +146,7 @@ export const registrationPhone: SerializedFormField = {
   label: formMessageDescriptors.phoneNumber,
   required: false,
   initialValue: '',
+  exampleValues: ['0912345678'],
   validator: [
     {
       operation: 'phoneNumberFormat'

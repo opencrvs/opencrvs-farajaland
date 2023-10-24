@@ -120,7 +120,8 @@ export function getAddressLocationSelect(
       useCase,
       fieldName,
       locationIndex
-    )
+    ),
+    exampleValues: ['Residential address']
   }
 }
 
@@ -228,6 +229,7 @@ export function getAddressFields(
       options: {
         resource: 'countries'
       },
+      exampleValues: ['Farajaland'],
       conditionals: isUseCaseForPlaceOfEvent(useCase)
         ? getPlaceOfEventConditionals(section, 'country', useCase)
         : getAddressConditionals(section, 'country', useCase),

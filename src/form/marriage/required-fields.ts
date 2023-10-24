@@ -34,7 +34,8 @@ export const marriageInformantType: SerializedFormField = {
     'informantType',
     certificateHandlebars.informantType
   ),
-  options: getMarriageInformantTypeOptions
+  options: getMarriageInformantTypeOptions,
+  exampleValues: ['Groom'],
 }
 
 export const getMarriageDate: SerializedFormField = {
@@ -49,7 +50,8 @@ export const getMarriageDate: SerializedFormField = {
       parameters: [18]
     }
   ],
-  mapping: getFieldMapping('marriageDate', certificateHandlebars.eventDate)
+  mapping: getFieldMapping('marriageDate', certificateHandlebars.eventDate),
+  exampleValues: ['04-09-2023'],
 }
 
 export const getRelationshipToSpousesForWitness: SerializedFormField = {
@@ -60,7 +62,8 @@ export const getRelationshipToSpousesForWitness: SerializedFormField = {
   initialValue: '',
   validator: [],
   placeholder: formMessageDescriptors.formSelectPlaceholder,
-  options: witnessRelationshipOptions
+  options: witnessRelationshipOptions,
+  exampleValues: [`Head of groom's family`],
 }
 
 export const witnessRelationshipForOthers: SerializedFormField = {
@@ -76,7 +79,8 @@ export const witnessRelationshipForOthers: SerializedFormField = {
       action: 'hide',
       expression: '(values.relationship!=="OTHER")'
     }
-  ]
+  ],
+  exampleValues: ['otherRelationship'],
 }
 
 const marriageDocumentExtraValue = {

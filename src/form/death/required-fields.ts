@@ -37,6 +37,7 @@ export const getDeathDate = (
   conditionals,
   initialValue: '',
   validator,
+  exampleValues: ["05-04-2023"],
   mapping: getFieldMapping('deathDate', certificateHandlebars.eventDate)
 })
 
@@ -54,7 +55,8 @@ export const deathInformantType: SerializedFormField = {
     'informantType',
     certificateHandlebars.informantType
   ),
-  options: deathInformantTypeOptions
+  options: deathInformantTypeOptions,
+  exampleValues: ["Son"],
 }
 
 export const getMannerOfDeath: SerializedFormField = {
@@ -66,7 +68,8 @@ export const getMannerOfDeath: SerializedFormField = {
   validator: [],
   placeholder: formMessageDescriptors.formSelectPlaceholder,
   options: mannerOfDeathOptions,
-  mapping: getFieldMapping('mannerOfDeath', certificateHandlebars.mannerOfDeath)
+  mapping: getFieldMapping('mannerOfDeath', certificateHandlebars.mannerOfDeath),
+  exampleValues: ['Natural causes']
 }
 
 export const getCauseOfDeath: SerializedFormField = {
@@ -82,7 +85,8 @@ export const getCauseOfDeath: SerializedFormField = {
   mapping: getFieldMapping(
     'causeOfDeathEstablished',
     certificateHandlebars.causeOfDeathEstablished
-  )
+  ),
+  exampleValues: ['true']
 }
 
 export const getCauseOfDeathMethod: SerializedFormField = {
@@ -103,7 +107,8 @@ export const getCauseOfDeathMethod: SerializedFormField = {
   mapping: getFieldMapping(
     'causeOfDeathMethod',
     certificateHandlebars.causeOfDeathMethod
-  )
+  ),
+  exampleValues: ['Natural causes']
 }
 
 export const getDeathDescription: SerializedFormField = {
@@ -124,7 +129,8 @@ export const getDeathDescription: SerializedFormField = {
   mapping: getFieldMapping(
     'deathDescription',
     certificateHandlebars.deathDescription
-  )
+  ),
+  exampleValues: ['deathDescription']
 }
 
 export const getPlaceOfDeathFields = () =>
@@ -150,7 +156,8 @@ export const getPlaceOfDeathFields = () =>
       validator: [],
       placeholder: formMessageDescriptors.formSelectPlaceholder,
       options: placeOfDeathOptions,
-      mapping: getEventLocationSelectionMapping('placeOfDeath')
+      mapping: getEventLocationSelectionMapping('placeOfDeath'),
+      exampleValues: ['Other']
     },
     {
       name: 'deathLocation',
@@ -178,6 +185,7 @@ export const getPlaceOfDeathFields = () =>
       mapping: getEventLocationSelectionMapping(
         'deathLocation',
         certificateHandlebars.placeOfDeath
-      )
+      ),
+      exampleValues: ['Sekelela Health Post']
     }
   ] satisfies SerializedFormField[]
