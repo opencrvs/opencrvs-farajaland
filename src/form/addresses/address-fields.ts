@@ -77,15 +77,16 @@ export function getAddressLocationSelect({
   section,
   location,
   useCase,
-  locationIndex,
-  isLeafLevel
+  fhirLineArrayPosition,
+  isLowestAdministrativeLevel
 }: {
   section: string
   location: string
   useCase: string
-  locationIndex?: number
-  /** If the structure the smallest possible level. Allows saving Address.partOf in FHIR. */
-  isLeafLevel?: boolean
+  /** Position where the location gets mapped into within a fhir.Address line-array */
+  fhirLineArrayPosition?: number
+  /** If the structure the smallest possible level. Allows saving fhir.Address.partOf */
+  isLowestAdministrativeLevel?: boolean
 }): SerializedFormField {
   const fieldName = `${location}${sentenceCase(useCase)}${sentenceCase(
     section
@@ -127,8 +128,8 @@ export function getAddressLocationSelect({
       location,
       useCase,
       fieldName,
-      locationIndex,
-      isLeafLevel
+      fhirLineArrayPosition,
+      isLowestAdministrativeLevel
     })
   }
 }
@@ -146,7 +147,7 @@ function getAdminLevelSelects(
           section,
           location: 'state',
           useCase,
-          isLeafLevel: true
+          isLowestAdministrativeLevel: true
         })
       ]
     case 2:
@@ -156,7 +157,7 @@ function getAdminLevelSelects(
           section,
           location: 'district',
           useCase,
-          isLeafLevel: true
+          isLowestAdministrativeLevel: true
         })
       ]
     case 3:
@@ -167,8 +168,8 @@ function getAdminLevelSelects(
           section,
           location: 'locationLevel3',
           useCase,
-          locationIndex: 10,
-          isLeafLevel: true
+          fhirLineArrayPosition: 10,
+          isLowestAdministrativeLevel: true
         })
       ]
     case 4:
@@ -179,14 +180,14 @@ function getAdminLevelSelects(
           section,
           location: 'locationLevel3',
           useCase,
-          locationIndex: 10
+          fhirLineArrayPosition: 10
         }),
         getAddressLocationSelect({
           section,
           location: 'locationLevel4',
           useCase,
-          locationIndex: 11,
-          isLeafLevel: true
+          fhirLineArrayPosition: 11,
+          isLowestAdministrativeLevel: true
         })
       ]
     case 5:
@@ -197,20 +198,20 @@ function getAdminLevelSelects(
           section,
           location: 'locationLevel3',
           useCase,
-          locationIndex: 10
+          fhirLineArrayPosition: 10
         }),
         getAddressLocationSelect({
           section,
           location: 'locationLevel4',
           useCase,
-          locationIndex: 11
+          fhirLineArrayPosition: 11
         }),
         getAddressLocationSelect({
           section,
           location: 'locationLevel5',
           useCase,
-          locationIndex: 12,
-          isLeafLevel: true
+          fhirLineArrayPosition: 12,
+          isLowestAdministrativeLevel: true
         })
       ]
   }
@@ -319,7 +320,7 @@ export function getAddressFields(
         location: '',
         useCase,
         fieldName: `country${sentenceCase(useCase)}${sentenceCase(section)}`,
-        locationIndex: 5 // The selected index in the FHIR Address line array to store this value
+        fhirLineArrayPosition: 5 // The selected index in the FHIR Address line array to store this value
       })
     },
     {
@@ -376,7 +377,7 @@ export function getAddressFields(
         fieldName: `addressLine1UrbanOption${sentenceCase(
           useCase
         )}${sentenceCase(section)}`,
-        locationIndex: 2
+        fhirLineArrayPosition: 2
       })
     },
     {
@@ -407,7 +408,7 @@ export function getAddressFields(
         fieldName: `addressLine2UrbanOption${sentenceCase(
           useCase
         )}${sentenceCase(section)}`,
-        locationIndex: 1
+        fhirLineArrayPosition: 1
       })
     },
     {
@@ -438,7 +439,7 @@ export function getAddressFields(
         fieldName: `addressLine3UrbanOption${sentenceCase(
           useCase
         )}${sentenceCase(section)}`,
-        locationIndex: 0
+        fhirLineArrayPosition: 0
       })
     },
     {
@@ -495,7 +496,7 @@ export function getAddressFields(
         fieldName: `addressLine1RuralOption${sentenceCase(
           useCase
         )}${sentenceCase(section)}`,
-        locationIndex: 4
+        fhirLineArrayPosition: 4
       })
     },
     // INTERNATIONAL ADDRESSES ARE SUPPLIED BECAUSE INFORMANTS & CITIZENS MAY LIVE ABROAD & REGISTER AN EVENT AT ONE OF YOUR FOREIGN EMBASSIES
@@ -616,7 +617,7 @@ export function getAddressFields(
         fieldName: `internationalAddressLine1${sentenceCase(
           useCase
         )}${sentenceCase(section)}`,
-        locationIndex: 6
+        fhirLineArrayPosition: 6
       })
     },
     {
@@ -647,7 +648,7 @@ export function getAddressFields(
         fieldName: `internationalAddressLine2${sentenceCase(
           useCase
         )}${sentenceCase(section)}`,
-        locationIndex: 7
+        fhirLineArrayPosition: 7
       })
     },
     {
@@ -678,7 +679,7 @@ export function getAddressFields(
         fieldName: `internationalAddressLine3${sentenceCase(
           useCase
         )}${sentenceCase(section)}`,
-        locationIndex: 8
+        fhirLineArrayPosition: 8
       })
     },
     {

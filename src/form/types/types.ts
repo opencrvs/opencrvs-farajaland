@@ -68,7 +68,7 @@ type IAddressLineMapper = {
   transformedFieldName?: string
   useCase?: string
   lineNumber?: number
-  isLeafLevel?: boolean
+  isLowestAdministrativeLevel?: boolean
 }
 
 export type IQueryMapper = {

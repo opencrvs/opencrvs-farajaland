@@ -668,21 +668,21 @@ function getTemplateMapping(
   location: string,
   useCase: string,
   fieldName: string,
-  locationIndex?: number
+  fhirLineArrayPosition?: number
 ): IHandlebarTemplates {
   return isUseCaseForPlaceOfEvent(useCase)
-    ? locationIndex
+    ? fhirLineArrayPosition
       ? {
           fieldName,
           operation: 'eventLocationAddressLineTemplateTransformer',
-          parameters: [locationIndex, fieldName, location]
+          parameters: [fhirLineArrayPosition, fieldName, location]
         }
       : {
           fieldName,
           operation: 'eventLocationAddressFHIRPropertyTemplateTransformer',
           parameters: [location]
         }
-    : locationIndex
+    : fhirLineArrayPosition
     ? {
         fieldName,
         operation: 'addressLineTemplateTransformer',
@@ -690,7 +690,7 @@ function getTemplateMapping(
           useCase.toUpperCase() === 'PRIMARY'
             ? AddressCases.PRIMARY_ADDRESS
             : AddressCases.SECONDARY_ADDRESS,
-          locationIndex,
+          fhirLineArrayPosition,
           fieldName,
           location
         ]
@@ -711,25 +711,37 @@ function getTemplateMapping(
 function getMutationMapping({
   location,
   useCase,
-  locationIndex,
-  isLeafLevel
+  fhirLineArrayPosition,
+  isLowestAdministrativeLevel
 }: {
   location: string
   useCase: string
-  locationIndex?: number
-  isLeafLevel?: boolean
+  fhirLineArrayPosition?: number
+  isLowestAdministrativeLevel?: boolean
 }): IMutationMapper {
   return isUseCaseForPlaceOfEvent(useCase)
-    ? locationIndex || locationIndex === 0
+    ? fhirLineArrayPosition || fhirLineArrayPosition === 0
       ? {
           operation: 'eventLocationMutationTransformer',
-          parameters: [{ useCase, lineNumber: locationIndex, isLeafLevel }]
+          parameters: [
+            {
+              useCase,
+              lineNumber: fhirLineArrayPosition,
+              isLowestAdministrativeLevel
+            }
+          ]
         }
       : {
           operation: 'eventLocationMutationTransformer',
-          parameters: [{ useCase, transformedFieldName: location, isLeafLevel }]
+          parameters: [
+            {
+              useCase,
+              transformedFieldName: location,
+              isLowestAdministrativeLevel
+            }
+          ]
         }
-    : locationIndex || locationIndex === 0
+    : fhirLineArrayPosition || fhirLineArrayPosition === 0
     ? {
         operation: 'addressMutationTransformer',
         parameters: [
@@ -738,8 +750,8 @@ function getMutationMapping({
               useCase.toUpperCase() === 'PRIMARY'
                 ? AddressCases.PRIMARY_ADDRESS
                 : AddressCases.SECONDARY_ADDRESS,
-            lineNumber: locationIndex,
-            isLeafLevel
+            lineNumber: fhirLineArrayPosition,
+            isLowestAdministrativeLevel
           }
         ]
       }
@@ -752,7 +764,7 @@ function getMutationMapping({
                 ? AddressCases.PRIMARY_ADDRESS
                 : AddressCases.SECONDARY_ADDRESS,
             transformedFieldName: location,
-            isLeafLevel
+            isLowestAdministrativeLevel
           }
         ]
       }
@@ -769,7 +781,7 @@ function getQueryMapping(
   location: string,
   useCase: string,
   fieldName: string,
-  locationIndex?: number
+  fhirLineArrayPosition?: number
 ): IQueryMapper {
   return isUseCaseForPlaceOfEvent(useCase)
     ? {
@@ -792,7 +804,10 @@ function getQueryMapping(
           fieldName ===
             `internationalCity${sentenceCase(useCase)}${sentenceCase(section)}`
             ? [
-                { transformedFieldName: location, lineNumber: locationIndex },
+                {
+                  transformedFieldName: location,
+                  lineNumber: fhirLineArrayPosition
+                },
                 {
                   fieldsToIgnoreForLocalAddress: [
                     `internationalDistrict${sentenceCase(
@@ -817,9 +832,9 @@ function getQueryMapping(
                   ]
                 }
               ]
-            : [{ lineNumber: locationIndex }]
+            : [{ lineNumber: fhirLineArrayPosition }]
       }
-    : locationIndex || locationIndex === 0
+    : fhirLineArrayPosition || fhirLineArrayPosition === 0
     ? {
         operation: 'addressQueryTransformer',
         parameters: [
@@ -828,7 +843,7 @@ function getQueryMapping(
               useCase.toUpperCase() === 'PRIMARY'
                 ? AddressCases.PRIMARY_ADDRESS
                 : AddressCases.SECONDARY_ADDRESS,
-            lineNumber: locationIndex
+            lineNumber: fhirLineArrayPosition
           }
         ]
       }
@@ -853,8 +868,8 @@ export function getMapping({
   location,
   useCase,
   fieldName,
-  locationIndex,
-  isLeafLevel
+  fhirLineArrayPosition,
+  isLowestAdministrativeLevel
 }: {
   section: string
   type:
@@ -865,17 +880,22 @@ export function getMapping({
   location: string
   useCase: string
   fieldName: string
-  locationIndex?: number
-  isLeafLevel?: boolean
+  fhirLineArrayPosition?: number
+  isLowestAdministrativeLevel?: boolean
 }): IFormFieldMapping {
   if (type !== 'RADIO_GROUP') {
     return {
-      template: getTemplateMapping(location, useCase, fieldName, locationIndex),
+      template: getTemplateMapping(
+        location,
+        useCase,
+        fieldName,
+        fhirLineArrayPosition
+      ),
       mutation: getMutationMapping({
         location,
         useCase,
-        locationIndex,
-        isLeafLevel
+        fhirLineArrayPosition,
+        isLowestAdministrativeLevel
       }),
       query: getQueryMapping(
         section,
@@ -883,7 +903,7 @@ export function getMapping({
         location,
         useCase,
         fieldName,
-        locationIndex
+        fhirLineArrayPosition
       )
     }
   } else {
@@ -892,8 +912,8 @@ export function getMapping({
       mutation: getMutationMapping({
         location,
         useCase,
-        locationIndex,
-        isLeafLevel
+        fhirLineArrayPosition,
+        isLowestAdministrativeLevel
       }),
       query: getQueryMapping(
         section,
@@ -901,7 +921,7 @@ export function getMapping({
         location,
         useCase,
         fieldName,
-        locationIndex
+        fhirLineArrayPosition
       )
     }
   }
