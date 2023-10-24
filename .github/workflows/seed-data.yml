@@ -1,6 +1,14 @@
 name: Seed data
 run-name: Seed data to ${{ github.event.inputs.environment }} core=${{ github.event.inputs.core-image-tag }}
 on:
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+      core-image-tag:
+        required: true
+        type: string
   workflow_dispatch:
     inputs:
       environment:
@@ -12,8 +20,6 @@ on:
           - staging
           - qa
           - production
-          - config
-          - demo
       core-image-tag:
         description: Core DockerHub image tag
 jobs:
@@ -43,15 +49,12 @@ jobs:
         run: yarn install
 
       - name: Seed data on given environment
-        uses: nick-fields/retry@v2
-        with:
-          timeout_minutes: 5
-          max_attempts: 3
-          command: |
-            cd ./opencrvs-core
-            yarn seed
+        run: |
+          cd ./opencrvs-core
+          yarn seed:prod
         env:
-          GATEWAY_URL: ${{ secrets.GATEWAY_HOST }}
-          GATEWAY_GQL_HOST: ${{ secrets.GATEWAY_GQL_HOST }}
-          AUTH_URL: ${{ secrets.AUTH_API_HOST }}
-          COUNTRY_CONFIG_URL: ${{ secrets.COUNTRY_CONFIG_HOST }}
+          ACTIVATE_USERS: ${{ vars.ACTIVATE_USERS }}
+          GATEWAY_HOST: ${{ vars.GATEWAY_HOST }}
+          AUTH_HOST: ${{ vars.AUTH_HOST }}
+          COUNTRY_CONFIG_HOST: ${{ vars.COUNTRY_CONFIG_HOST }}
+          SUPER_USER_PASSWORD: ${{ secrets.SUPER_USER_PASSWORD }}

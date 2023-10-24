@@ -6,11 +6,10 @@
  * OpenCRVS is also distributed under the terms of the Civil Registration
  * & Healthcare Disclaimer located at http://opencrvs.org/license.
  *
- * Copyright (C) The OpenCRVS Authors. OpenCRVS and the OpenCRVS
- * graphic logo are (registered/a) trademark(s) of Plan International.
+ * Copyright (C) The OpenCRVS Authors located at https://github.com/opencrvs/opencrvs-core/blob/master/AUTHORS.
  */
 
-import faker from "@faker-js/faker"
+import faker from '@faker-js/faker'
 
 context('Birth Integration Test', () => {
   beforeEach(() => {
@@ -31,7 +30,18 @@ context('Birth Integration Test', () => {
     cy.login('fieldWorker')
     cy.createPin()
     cy.verifyLandingPageVisible()
-    cy.enterMaximumInput({ informantType, motherDoB, motherFirstNames, motherFamilyName, fatherDoB, fatherFirstNames, fatherFamilyName, informantFirstNames, informantFamilyName, informantDoB })
+    cy.enterMaximumInput({
+      informantType,
+      motherDoB,
+      motherFirstNames,
+      motherFamilyName,
+      fatherDoB,
+      fatherFirstNames,
+      fatherFamilyName,
+      informantFirstNames,
+      informantFamilyName,
+      informantDoB
+    })
     cy.submitDeclaration()
     cy.logout()
   })
@@ -55,8 +65,8 @@ context('Birth Integration Test', () => {
     cy.submitForm()
     cy.logout()
   })
-  //TODO: problem with readAttachmentFile function, may need to fix
-  it.skip('login as a registrar and reject a maximum input declaration', () => {
+
+  it('login as a registrar and reject a maximum input declaration', () => {
     // Create declaration with an API call
     cy.createBirthRegistrationAs('fieldWorker')
 
@@ -82,7 +92,18 @@ context('Birth Integration Test', () => {
     cy.login('registrar')
     cy.createPin()
     cy.verifyLandingPageVisible()
-    cy.enterMaximumInput({ informantType, motherDoB, motherFirstNames, motherFamilyName, fatherDoB, fatherFirstNames, fatherFamilyName, informantFirstNames, informantFamilyName, informantDoB })
+    cy.enterMaximumInput({
+      informantType,
+      motherDoB,
+      motherFirstNames,
+      motherFamilyName,
+      fatherDoB,
+      fatherFirstNames,
+      fatherFamilyName,
+      informantFirstNames,
+      informantFamilyName,
+      informantDoB
+    })
     //register declaration
     cy.get('#registerDeclarationBtn').click()
     cy.get('#submit_confirm').click()

@@ -3,13 +3,14 @@ import { log } from './util'
 import { Facility, getFacilities, Location } from './location'
 import fetch from 'node-fetch'
 import { getToken, getTokenForSystemClient } from './auth'
-import { GATEWAY_GQL_HOST } from './constants'
+import { GATEWAY_HOST } from './constants'
 import { expand } from 'regex-to-strings'
-import { convertToMSISDN } from '@countryconfig/features/utils'
-import { getAgentRoles } from '@countryconfig/features/employees/scripts/utils'
+import { convertToMSISDN } from '@countryconfig/utils'
 import { readFileSync } from 'fs'
 import { join } from 'path'
 import { MutationCreateOrUpdateUserArgs } from './gateway'
+import { getSystemRolesQuery } from '@countryconfig/data-generator/queries'
+import { SystemRole as GQLSystemRole } from '@countryconfig/data-generator/gateway'
 
 export type User = {
   username: string
@@ -49,6 +50,30 @@ const SIGNATURE = readFileSync(
   join(__dirname, 'assets', '528KB-random.png')
 ).toString('base64')
 
+export async function getAgentRoles(token: string): Promise<GQLSystemRole[]> {
+  const res = await fetch(`${GATEWAY_HOST}/graphql`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    },
+    body: JSON.stringify({
+      query: getSystemRolesQuery,
+      variables: {
+        active: true
+      }
+    })
+  })
+
+  if (!res.ok) {
+    throw new Error(
+      `Could not fetch agent roles, ${res.statusText} ${res.status}`
+    )
+  }
+  const roles = await res.json()
+  return roles.data.getSystemRoles
+}
+
 export async function createUser(
   token: string,
   primaryOfficeId: string,
@@ -83,7 +108,7 @@ export async function createUser(
     username:
       firstName.toLocaleLowerCase() + '.' + familyName.toLocaleLowerCase(),
     mobile: convertToMSISDN(generatedPhoneNumber, countryAlpha3),
-    email: faker.internet.email(),
+    email: faker.internet.email(undefined, undefined, 'example.com'),
     primaryOffice: primaryOfficeId,
     ...overrides
   }
@@ -98,7 +123,7 @@ export async function createUser(
     }
   }
 
-  const createUserRes = await fetch(GATEWAY_GQL_HOST, {
+  const createUserRes = await fetch(`${GATEWAY_HOST}/graphql`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -127,7 +152,7 @@ export async function createUser(
 
   const userToken = await getToken(data.createOrUpdateUser.username, 'test')
 
-  const res = await fetch(GATEWAY_GQL_HOST, {
+  const res = await fetch(`${GATEWAY_HOST}/graphql`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -163,7 +188,7 @@ export async function createUser(
 }
 
 export async function getUsers(token: string, locationId: string) {
-  const getUsersRes = await fetch(GATEWAY_GQL_HOST, {
+  const getUsersRes = await fetch(`${GATEWAY_HOST}/graphql`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -211,7 +236,7 @@ export async function getUsers(token: string, locationId: string) {
 }
 
 export async function getUserByRole(token: string, systemRole: string) {
-  const getUsersRes = await fetch(GATEWAY_GQL_HOST, {
+  const getUsersRes = await fetch(`${GATEWAY_HOST}/graphql`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -263,7 +288,7 @@ const registerSystemClient = async (
   type: string,
   token: string
 ) => {
-  const createUserRes = await fetch(GATEWAY_GQL_HOST, {
+  const createUserRes = await fetch(`${GATEWAY_HOST}/graphql`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -375,16 +400,18 @@ export async function createUsers(
   if (!nationalSystemAdmin.length) {
     const natlUserRes = await getUserByRole(token, 'NATIONAL_SYSTEM_ADMIN')
     const mappedNatlUserRes = await Promise.all(
-      natlUserRes.map(async (user) => {
-        return {
-          username: user.username,
-          password: 'test',
-          token: await getToken(user.username, 'test'),
-          stillInUse: true,
-          primaryOfficeId: user.primaryOffice.id,
-          isSystemUser: false
-        }
-      })
+      natlUserRes
+        .filter(({ username }) => username !== 'o.admin')
+        .map(async (user) => {
+          return {
+            username: user.username,
+            password: 'test',
+            token: await getToken(user.username, 'test'),
+            stillInUse: true,
+            primaryOfficeId: user.primaryOffice.id,
+            isSystemUser: false
+          }
+        })
     )
     nationalSystemAdmin.push(mappedNatlUserRes[0])
   }

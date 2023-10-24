@@ -6,8 +6,7 @@
  * OpenCRVS is also distributed under the terms of the Civil Registration
  * & Healthcare Disclaimer located at http://opencrvs.org/license.
  *
- * Copyright (C) The OpenCRVS Authors. OpenCRVS and the OpenCRVS
- * graphic logo are (registered/a) trademark(s) of Plan International.
+ * Copyright (C) The OpenCRVS Authors located at https://github.com/opencrvs/opencrvs-core/blob/master/AUTHORS.
  */
 /// <reference types="Cypress" />
 import faker from '@faker-js/faker'
@@ -47,7 +46,7 @@ context('Death Integration Test', () => {
     cy.registerDeclaration()
   })
 
-  it('Tests from declaration to registration using minimum input', () => {
+  it('Login as field agent and tests from declaration to registration using minimum input ', () => {
     cy.registerDeathDeclarationWithMinimumInput()
   })
 
@@ -58,7 +57,7 @@ context('Death Integration Test', () => {
     cy.submitForm()
   })
 
-  it('Tests from declaration to registration using maximum input', () => {
+  it('Login as field agent and tests from declaration to registration using maximum input', () => {
     cy.registerDeathDeclarationWithMaximumInput()
   })
 

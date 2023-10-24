@@ -6,18 +6,18 @@ import {
   AttachmentInput,
   BirthRegistrationInput,
   DeathRegistrationInput,
-  LocationType,
   MarkBirthAsIssuedMutation,
   MarkDeathAsIssuedMutation,
   PaymentOutcomeType,
   PaymentType
 } from './gateway'
 import { omit } from 'lodash'
-import { GATEWAY_GQL_HOST } from './constants'
+import { GATEWAY_HOST } from './constants'
 import { MARK_BIRTH_AS_ISSUED, MARK_DEATH_AS_ISSUED } from './queries'
 import { differenceInDays } from 'date-fns'
 import { ConfigResponse } from './config'
 import { fetchDeathRegistration, fetchRegistration } from './declare'
+import { location } from './options'
 
 export function createBirthIssuingDetails(
   createdAt: Date,
@@ -27,17 +27,14 @@ export function createBirthIssuingDetails(
   const withIdsRemoved = idsToFHIRIds(
     omit(declaration, ['__typename', 'id', 'registration.type']),
     [
-      'id',
       'eventLocation.id',
       'mother.id',
       'father.id',
       'child.id',
       'registration.id',
-      'informant.individual.id',
       'informant.id'
     ]
   )
-  delete withIdsRemoved.history
 
   const completionDays = differenceInDays(
     createdAt,
@@ -140,10 +137,10 @@ export function createDeathIssuingDetails(
       )
     },
     eventLocation:
-      withIdsRemoved.eventLocation?.type === LocationType.PrivateHome
+      withIdsRemoved.eventLocation?.type === location.privateHome
         ? {
-            address: withIdsRemoved.eventLocation.address,
-            type: withIdsRemoved.eventLocation.type
+            address: withIdsRemoved.eventLocation?.address,
+            type: withIdsRemoved.eventLocation?.type
           }
         : {
             _fhirID: withIdsRemoved.eventLocation?._fhirID
@@ -192,7 +189,7 @@ export async function markBirthAsIssued(
 
   const requestStart = Date.now()
 
-  const certifyDeclarationRes = await fetch(GATEWAY_GQL_HOST, {
+  const certifyDeclarationRes = await fetch(`${GATEWAY_HOST}/graphql`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -238,7 +235,7 @@ export async function markDeathAsIssued(
 
   const requestStart = Date.now()
 
-  const certifyDeclarationRes = await fetch(GATEWAY_GQL_HOST, {
+  const certifyDeclarationRes = await fetch(`${GATEWAY_HOST}/graphql`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

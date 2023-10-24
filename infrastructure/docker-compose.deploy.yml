@@ -5,8 +5,7 @@
 # OpenCRVS is also distributed under the terms of the Civil Registration
 # & Healthcare Disclaimer located at http://opencrvs.org/license.
 #
-# Copyright (C) The OpenCRVS Authors. OpenCRVS and the OpenCRVS
-# graphic logo are (registered/a) trademark(s) of Plan International.
+# Copyright (C) The OpenCRVS Authors located at https://github.com/opencrvs/opencrvs-core/blob/master/AUTHORS.
 version: '3.3'
 
 services:
@@ -42,6 +41,8 @@ services:
       - --entrypoints.web.http.redirections.entrypoint.permanent=true
       - --serverstransport.insecureskipverify=true
       - --entrypoints.websecure.address=:443
+      - --accesslog=true
+      - --accesslog.format=json
       - --ping=true
     deploy:
       replicas: 1
@@ -51,10 +52,15 @@ services:
       placement:
         constraints:
           - node.role == manager
+    logging:
+      driver: gelf
+      options:
+        gelf-address: 'udp://127.0.0.1:12201'
+        tag: 'traefik'
     networks:
       - overlay_net
   metricbeat:
-    image: docker.elastic.co/beats/metricbeat:7.17.0
+    image: docker.elastic.co/beats/metricbeat:7.17.13
 
     user: root
     volumes:
@@ -277,6 +283,10 @@ services:
       - '/data/minio:/data'
     command: server --console-address ":9001" /data
     deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.data1 == true
       labels:
         - 'traefik.enable=true'
         - 'traefik.docker.network=opencrvs_overlay_net'
@@ -298,6 +308,24 @@ services:
     networks:
       - overlay_net
 
+  minio-mc:
+    image: minio/mc
+    entrypoint: >
+      /bin/sh -c "
+      /usr/bin/mc admin trace --path ocrvs/* minio
+      "
+    depends_on:
+      - minio
+    volumes:
+      - /opt/opencrvs/infrastructure/mc-config:/root/.mc
+    networks:
+      - overlay_net
+    logging:
+      driver: gelf
+      options:
+        gelf-address: 'udp://127.0.0.1:12201'
+        tag: 'minio'
+  
   setup-elasticsearch-users:
     image: ubuntu:bionic
     entrypoint: ['bash', '/usr/app/setup.sh']
@@ -332,8 +360,12 @@ services:
   elastalert:
     image: jertel/elastalert2:2.3.0
     restart: unless-stopped
+    environment:
+      - ES_USERNAME=elastic
+      - ES_PASSWORD=${ELASTICSEARCH_SUPERUSER_PASSWORD}
     volumes:
       - '/opt/opencrvs/infrastructure/monitoring/elastalert/elastalert.yaml:/opt/elastalert/config.yaml'
+      - '/opt/opencrvs/infrastructure/monitoring/elastalert/auth.yaml:/opt/elastalert/auth.yaml'
       - '/opt/opencrvs/infrastructure/monitoring/elastalert/rules:/opt/elastalert/rules'
     networks:
       - overlay_net
@@ -788,6 +820,7 @@ services:
       - MINIO_HOST=minio
       - MINIO_PORT=9000
       - MINIO_BUCKET=ocrvs
+      - SUPER_USER_PASSWORD=${SUPER_USER_PASSWORD}
     deploy:
       labels:
         - 'traefik.enable=false'

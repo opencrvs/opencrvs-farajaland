@@ -5,8 +5,7 @@
 # OpenCRVS is also distributed under the terms of the Civil Registration
 # & Healthcare Disclaimer located at http://opencrvs.org/license.
 #
-# Copyright (C) The OpenCRVS Authors. OpenCRVS and the OpenCRVS
-# graphic logo are (registered/a) trademark(s) of Plan International.
+# Copyright (C) The OpenCRVS Authors located at https://github.com/opencrvs/opencrvs-core/blob/master/AUTHORS.
 print_usage_and_exit () {
     echo 'Usage: ./clear-all-data.sh --path_to_core=XXX'
     echo "This script clears all OpenCRVS data locally.  To run it you must pass the directory path to opencrvs-core."
@@ -36,7 +35,6 @@ if [ -z $path_to_core ]; then
     print_usage_and_exit
 fi
 
-
 # It's fine if these fail as it might be that the databases do not exist at this point
 docker run --rm --network=opencrvs_default mongo:4.4 mongo --host mongo1 --eval "\
 db.getSiblingDB('hearth-dev').dropDatabase();\
@@ -59,3 +57,14 @@ if [ -d $PATH_TO_MINIO_DIR ] ; then
   docker exec opencrvs_minio_1 mkdir -p /data/minio/ocrvs
   echo "**** Removed minio data ****"
 fi
+
+echo "Running migrations"
+echo
+
+yarn --cwd="$path_to_core/packages/migration" start
+
+echo
+echo "Restarting openhim for the db changes to take effect"
+echo
+
+docker restart `docker ps --format "{{.Names}}" | grep openhim-core`
