@@ -559,7 +559,7 @@ services:
   login:
     environment:
       - COUNTRY_CONFIG_URL=https://countryconfig.{{hostname}}
-      - CSP_WILDCARD={{CSP_WILDCARD}}
+      - CSP_WILDCARD=${CSP_WILDCARD}
     deploy:
       labels:
         - 'traefik.enable=true'
