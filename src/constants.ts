@@ -9,7 +9,9 @@
  * Copyright (C) The OpenCRVS Authors located at https://github.com/opencrvs/opencrvs-core/blob/master/AUTHORS.
  */
 export const TEST_SOURCE = `${process.cwd()}/src/tests/`
-export const HOSTNAME = process.env.HOSTNAME || '*'
+export const CORS_WHITELIST = process.env.CORS_WHITELIST
+  ? JSON.parse(process.env.CORS_WHITELIST)
+  : ['*']
 export const FHIR_URL = process.env.FHIR_URL || 'http://localhost:3447/fhir'
 export const OPENHIM_URL =
   process.env.OPENHIM_URL || 'http://localhost:5001/fhir'

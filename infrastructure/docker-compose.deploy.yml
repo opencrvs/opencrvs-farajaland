@@ -470,7 +470,7 @@ services:
   client:
     environment:
       - COUNTRY_CONFIG_URL=https://countryconfig.{{hostname}}
-      - HOST={{hostname}}
+      - CSP_WILDCARD={{CSP_WILDCARD}}
       - MINIO_URL=https://minio.{{hostname}}
     deploy:
       labels:
@@ -559,7 +559,7 @@ services:
   login:
     environment:
       - COUNTRY_CONFIG_URL=https://countryconfig.{{hostname}}
-      - HOST={{hostname}}
+      - CSP_WILDCARD={{CSP_WILDCARD}}
     deploy:
       labels:
         - 'traefik.enable=true'
