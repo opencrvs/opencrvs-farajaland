@@ -51,6 +51,7 @@ import { validatorsHandler } from './form/common/custom-validation-conditionals/
 import { conditionalsHandler } from './form/common/custom-validation-conditionals/conditionals-handler'
 import { COUNTRY_WIDE_CRUDE_DEATH_RATE } from './api/application/application-config-default'
 import { handlebarsHandler } from './form/common/certificate/handlebars/handler'
+import { trackingIDHandler } from './api/tracking-id/handler'
 
 export interface ITokenPayload {
   sub: string
@@ -317,6 +318,17 @@ export async function createServer() {
 
   server.route({
     method: 'GET',
+    path: '/handlebars.js',
+    handler: handlebarsHandler,
+    options: {
+      auth: false,
+      tags: ['api'],
+      description: 'Serves handlebars as JS'
+    }
+  })
+
+  server.route({
+    method: 'GET',
     path: '/content/{application}',
     handler: contentHandler,
     options: {
@@ -467,6 +479,16 @@ export async function createServer() {
       auth: false,
       tags: ['api', 'users'],
       description: 'Returns users metadata'
+    }
+  })
+
+  server.route({
+    method: 'POST',
+    path: '/tracking-id',
+    handler: trackingIDHandler,
+    options: {
+      tags: ['api'],
+      description: 'Provides a tracking id'
     }
   })
 
