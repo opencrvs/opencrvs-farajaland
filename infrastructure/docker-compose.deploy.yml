@@ -470,7 +470,7 @@ services:
   client:
     environment:
       - COUNTRY_CONFIG_URL=https://countryconfig.{{hostname}}
-      - CSP_WILDCARD={{CSP_WILDCARD}}
+      - CSP_WILDCARD=${CSP_WILDCARD}
       - MINIO_URL=https://minio.{{hostname}}
     deploy:
       labels:
@@ -589,6 +589,7 @@ services:
       - jwt-public-key.{{ts}}
       - jwt-private-key.{{ts}}
     environment:
+      - CORS_WHITELIST=${CORS_WHITELIST}
       - APN_SERVICE_URL=http://apm-server:8200
       - CERT_PRIVATE_KEY_PATH=/run/secrets/jwt-private-key.{{ts}}
       - CERT_PUBLIC_KEY_PATH=/run/secrets/jwt-public-key.{{ts}}
@@ -659,6 +660,7 @@ services:
       - APN_SERVICE_URL=http://apm-server:8200
       - CERT_PUBLIC_KEY_PATH=/run/secrets/jwt-public-key.{{ts}}
       - DOMAIN={{hostname}}
+      - CORS_WHITELIST=${CORS_WHITELIST}
     deploy:
       labels:
         - 'traefik.enable=true'
@@ -787,6 +789,7 @@ services:
       - CERT_PUBLIC_KEY_PATH=/run/secrets/jwt-public-key.{{ts}}
       - MONGO_URL=mongodb://config:${CONFIG_MONGODB_PASSWORD}@mongo1/application-config?replicaSet=rs0
       - DOMAIN={{hostname}}
+      - CORS_WHITELIST=${CORS_WHITELIST}
     deploy:
       labels:
         - 'traefik.enable=true'
