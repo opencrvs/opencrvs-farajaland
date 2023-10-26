@@ -110,8 +110,8 @@ jobs:
           INFOBIP_API_KEY: ${{ secrets.INFOBIP_API_KEY }}
           SENDER_EMAIL_ADDRESS: ${{ secrets.SENDER_EMAIL_ADDRESS }}
           SUPER_USER_PASSWORD: ${{ secrets.SUPER_USER_PASSWORD }}
-          CSP_WILDCARD: ${{ secrets.CSP_WILDCARD }}
-          CORS_WHITELIST: ${{ secrets.CORS_WHITELIST }}
+          CSP_WILDCARD: ${{ vars.CSP_WILDCARD }}
+          CORS_WHITELIST: ${{ vars.CORS_WHITELIST }}
         run: |
           cd ./${{ github.event.repository.name }}
           yarn deploy --clear_data=no --environment=${{ github.event.inputs.deploy-script-environment }} --host=${{ env.DOMAIN }} --version=${{ github.event.inputs.core-image-tag }} --country_config_version=${{ github.event.inputs.countryconfig-image-tag }} --country_config_path=../${{ github.event.repository.name }} --replicas=${{ env.REPLICAS }}
