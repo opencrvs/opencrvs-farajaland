@@ -173,6 +173,16 @@ if [ -z "$DOCKERHUB_REPO" ] ; then
     print_usage_and_exit
 fi
 
+if [ -z "$CSP_WILDCARD" ] ; then
+    echo 'Error: Missing environment variable CSP_WILDCARD.'
+    print_usage_and_exit
+fi
+
+if [ -z "$CORS_WHITELIST" ] ; then
+    echo 'Error: Missing environment variable CORS_WHITELIST.'
+    print_usage_and_exit
+fi
+
 if [ -z "$TOKENSEEDER_MOSIP_AUTH__PARTNER_MISP_LK" ] ; then
     echo 'Info: Missing optional MOSIP environment variable TOKENSEEDER_MOSIP_AUTH__PARTNER_MISP_LK.'
     TOKENSEEDER_MOSIP_AUTH__PARTNER_MISP_LK=''
@@ -446,7 +456,9 @@ docker_stack_deploy() {
   NATIONAL_ID_OIDP_ESSENTIAL_CLAIMS=$NATIONAL_ID_OIDP_ESSENTIAL_CLAIMS
   NATIONAL_ID_OIDP_VOLUNTARY_CLAIMS=$NATIONAL_ID_OIDP_VOLUNTARY_CLAIMS
   NATIONAL_ID_OIDP_CLIENT_PRIVATE_KEY=$NATIONAL_ID_OIDP_CLIENT_PRIVATE_KEY
-  NATIONAL_ID_OIDP_JWT_AUD_CLAIM=$NATIONAL_ID_OIDP_JWT_AUD_CLAIM"
+  NATIONAL_ID_OIDP_JWT_AUD_CLAIM=$NATIONAL_ID_OIDP_JWT_AUD_CLAIM
+  CORS_WHITELIST=$CORS_WHITELIST
+  CSP_WILDCARD=$CSP_WILDCARD"
 
   echo "Pulling all docker images. This might take a while"
 
