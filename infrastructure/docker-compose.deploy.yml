@@ -549,7 +549,8 @@ services:
       - APN_SERVICE_URL=http://apm-server:8200
       - COUNTRY_LOGO_URL=https://countryconfig.{{hostname}}/content/country-logo
       - LOGIN_URL=https://login.{{hostname}}
-      - CLIENT_APP_URL='https://register.{{hostname}}'
+      - CLIENT_APP_URL=https://register.{{hostname}}
+      - DOMAIN={{hostname}}
     networks:
       - overlay_net
     logging:
@@ -595,7 +596,8 @@ services:
       - CERT_PUBLIC_KEY_PATH=/run/secrets/jwt-public-key.{{ts}}
       - LOGIN_URL=https://login.{{hostname}}
       - COUNTRY_CONFIG_URL=https://countryconfig.{{hostname}}
-      - CLIENT_APP_URL='https://register.{{hostname}}'
+      - CLIENT_APP_URL=https://register.{{hostname}}
+      - DOMAIN={{hostname}}
     deploy:
       labels:
         - 'traefik.enable=true'
@@ -662,7 +664,8 @@ services:
       - APN_SERVICE_URL=http://apm-server:8200
       - CERT_PUBLIC_KEY_PATH=/run/secrets/jwt-public-key.{{ts}}
       - LOGIN_URL=https://login.{{hostname}}
-      - CLIENT_APP_URL='https://register.{{hostname}}'
+      - CLIENT_APP_URL=https://register.{{hostname}}
+      - DOMAIN={{hostname}}
     deploy:
       labels:
         - 'traefik.enable=true'
@@ -791,7 +794,8 @@ services:
       - CERT_PUBLIC_KEY_PATH=/run/secrets/jwt-public-key.{{ts}}
       - MONGO_URL=mongodb://config:${CONFIG_MONGODB_PASSWORD}@mongo1/application-config?replicaSet=rs0
       - LOGIN_URL=https://login.{{hostname}}
-      - CLIENT_APP_URL='https://register.{{hostname}}'
+      - CLIENT_APP_URL=https://register.{{hostname}}
+      - DOMAIN={{hostname}}
     deploy:
       labels:
         - 'traefik.enable=true'
