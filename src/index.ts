@@ -16,13 +16,17 @@ import * as Pino from 'hapi-pino'
 import * as JWT from 'hapi-auth-jwt2'
 import * as inert from '@hapi/inert'
 import * as Sentry from 'hapi-sentry'
-import { SENTRY_DSN } from '@countryconfig/constants'
+import {
+  CLIENT_APP_URL,
+  HOSTNAME,
+  LOGIN_URL,
+  SENTRY_DSN
+} from '@countryconfig/constants'
 import {
   COUNTRY_CONFIG_HOST,
   COUNTRY_CONFIG_PORT,
   CHECK_INVALID_TOKEN,
   AUTH_URL,
-  CORS_WHITELIST,
   DEFAULT_TIMEOUT
 } from '@countryconfig/constants'
 import { statisticsHandler } from '@countryconfig/api/data-generator/handler'
@@ -169,7 +173,10 @@ async function getPublicKey(): Promise<string> {
 }
 
 export async function createServer() {
-  const whitelist: string[] = CORS_WHITELIST as string[]
+  let whitelist: string[] = [HOSTNAME]
+  if (HOSTNAME[0] !== '*') {
+    whitelist = [LOGIN_URL, CLIENT_APP_URL]
+  }
   logger.info(`Whitelist: ${JSON.stringify(whitelist)}`)
   const server = new Hapi.Server({
     host: COUNTRY_CONFIG_HOST,

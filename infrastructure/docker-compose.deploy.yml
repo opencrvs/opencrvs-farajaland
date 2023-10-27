@@ -549,7 +549,7 @@ services:
       - APN_SERVICE_URL=http://apm-server:8200
       - COUNTRY_LOGO_URL=https://countryconfig.{{hostname}}/content/country-logo
       - LOGIN_URL=https://login.{{hostname}}
-      - CORS_WHITELIST=${CORS_WHITELIST}
+      - CLIENT_APP_URL='https://register.{{hostname}}'
     networks:
       - overlay_net
     logging:
@@ -590,10 +590,12 @@ services:
       - jwt-public-key.{{ts}}
       - jwt-private-key.{{ts}}
     environment:
-      - CORS_WHITELIST=${CORS_WHITELIST}
       - APN_SERVICE_URL=http://apm-server:8200
       - CERT_PRIVATE_KEY_PATH=/run/secrets/jwt-private-key.{{ts}}
       - CERT_PUBLIC_KEY_PATH=/run/secrets/jwt-public-key.{{ts}}
+      - LOGIN_URL=https://login.{{hostname}}
+      - COUNTRY_CONFIG_URL=https://countryconfig.{{hostname}}
+      - CLIENT_APP_URL='https://register.{{hostname}}'
     deploy:
       labels:
         - 'traefik.enable=true'
@@ -659,7 +661,8 @@ services:
     environment:
       - APN_SERVICE_URL=http://apm-server:8200
       - CERT_PUBLIC_KEY_PATH=/run/secrets/jwt-public-key.{{ts}}
-      - CORS_WHITELIST=${CORS_WHITELIST}
+      - LOGIN_URL=https://login.{{hostname}}
+      - CLIENT_APP_URL='https://register.{{hostname}}'
     deploy:
       labels:
         - 'traefik.enable=true'
@@ -787,7 +790,8 @@ services:
       - APN_SERVICE_URL=http://apm-server:8200
       - CERT_PUBLIC_KEY_PATH=/run/secrets/jwt-public-key.{{ts}}
       - MONGO_URL=mongodb://config:${CONFIG_MONGODB_PASSWORD}@mongo1/application-config?replicaSet=rs0
-      - CORS_WHITELIST=${CORS_WHITELIST}
+      - LOGIN_URL=https://login.{{hostname}}
+      - CLIENT_APP_URL='https://register.{{hostname}}'
     deploy:
       labels:
         - 'traefik.enable=true'
