@@ -10,12 +10,9 @@
  */
 export const TEST_SOURCE = `${process.cwd()}/src/tests/`
 export const HOSTNAME = process.env.DOMAIN || '*'
-export const LOGIN_URL = (
-  process.env.LOGIN_URL || 'http://localhost:3020/'
-).replace('https://', '')
-export const CLIENT_APP_URL = (
+export const LOGIN_URL = process.env.LOGIN_URL || 'http://localhost:3020/'
+export const CLIENT_APP_URL =
   process.env.CLIENT_APP_URL || 'http://localhost:3000/'
-).replace('https://', '')
 export const FHIR_URL = process.env.FHIR_URL || 'http://localhost:3447/fhir'
 export const OPENHIM_URL =
   process.env.OPENHIM_URL || 'http://localhost:5001/fhir'
