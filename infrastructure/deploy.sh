@@ -173,8 +173,8 @@ if [ -z "$DOCKERHUB_REPO" ] ; then
     print_usage_and_exit
 fi
 
-if [ -z "$CSP_WILDCARD" ] ; then
-    echo 'Error: Missing environment variable CSP_WILDCARD.'
+if [ -z "$CONTENT_SECURITY_POLICY_WILDCARD" ] ; then
+    echo 'Error: Missing environment variable CONTENT_SECURITY_POLICY_WILDCARD.'
     print_usage_and_exit
 fi
 
@@ -452,7 +452,7 @@ docker_stack_deploy() {
   NATIONAL_ID_OIDP_VOLUNTARY_CLAIMS=$NATIONAL_ID_OIDP_VOLUNTARY_CLAIMS
   NATIONAL_ID_OIDP_CLIENT_PRIVATE_KEY=$NATIONAL_ID_OIDP_CLIENT_PRIVATE_KEY
   NATIONAL_ID_OIDP_JWT_AUD_CLAIM=$NATIONAL_ID_OIDP_JWT_AUD_CLAIM
-  CSP_WILDCARD=$CSP_WILDCARD"
+  CONTENT_SECURITY_POLICY_WILDCARD=$CONTENT_SECURITY_POLICY_WILDCARD"
 
   echo "Pulling all docker images. This might take a while"
 
