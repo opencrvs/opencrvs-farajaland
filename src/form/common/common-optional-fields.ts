@@ -50,7 +50,7 @@ export const exactDateOfBirthUnknown = (
       operation: 'ignoreFieldTransformer'
     }
   },
-    exampleValues: ['true'],
+  exampleValues: ['true']
 })
 
 export const getNationalID = (
@@ -68,7 +68,7 @@ export const getNationalID = (
     validator,
     conditionals,
     mapping: getFieldMapping('nationalId', certificateHandlebar),
-    exampleValues: ['1234567890'],
+    exampleValues: ['4185417204']
   } satisfies SerializedFormField)
 
 export const getAgeOfIndividualInYears = (
@@ -213,7 +213,8 @@ export const getOccupation = (
       expression: '!values.detailsExist'
     }
   ],
-  mapping: getFieldMapping('occupation', certificateHandlebar)
+  mapping: getFieldMapping('occupation', certificateHandlebar),
+  exampleValues: ['Teacher']
 })
 
 export const getEducation = (
@@ -233,5 +234,6 @@ export const getEducation = (
   ],
   placeholder: formMessageDescriptors.formSelectPlaceholder,
   options: educationalAttainmentOptions,
-  mapping: getFieldMapping('educationalAttainment', certificateHandlebar)
+  mapping: getFieldMapping('educationalAttainment', certificateHandlebar),
+  exampleValues: ['Primary']
 })

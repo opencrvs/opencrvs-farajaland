@@ -121,7 +121,7 @@ export function getAddressLocationSelect(
       fieldName,
       locationIndex
     ),
-    exampleValues: ['Residential address']
+    exampleValues: ['Irundu']
   }
 }
 
@@ -260,6 +260,7 @@ export function getAddressFields(
         ? useCase
         : `${useCase}Address`,
       validator: [],
+      exampleValues: ['Urban'],
       conditionals: isUseCaseForPlaceOfEvent(useCase)
         ? getPlaceOfEventConditionals(section, 'ruralOrUrban', useCase)
         : getAddressConditionals(section, 'ruralOrUrban', useCase),
@@ -286,6 +287,7 @@ export function getAddressFields(
       required: false,
       initialValue: '',
       validator: [],
+      exampleValues: ['Town'],
       dependency: `district${sentenceCase(useCase)}${sentenceCase(section)}`,
       conditionals: isUseCaseForPlaceOfEvent(useCase)
         ? getPlaceOfEventConditionals(section, 'urban', useCase)

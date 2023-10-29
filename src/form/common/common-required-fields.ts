@@ -30,10 +30,7 @@ export const getBirthDate = (
   initialValue: '',
   validator,
   mapping: getFieldMapping('birthDate', certificateHandlebar),
-  exampleValues: [
-    '03-04-2023',
-    '02-01-1995'
-  ]
+  exampleValues: ['03-04-2023', '02-01-1995']
 })
 
 export const getGender = (certificateHandlebar: string) =>
@@ -47,7 +44,7 @@ export const getGender = (certificateHandlebar: string) =>
     placeholder: formMessageDescriptors.formSelectPlaceholder,
     mapping: getFieldMapping('gender', certificateHandlebar),
     options: genderOptions,
-    exampleValues: ['Male'],
+    exampleValues: ['Male']
   } satisfies SerializedFormField)
 
 export const getFamilyNameField = (
@@ -133,7 +130,7 @@ export const otherInformantType = (event: Event) =>
     placeholder: formMessageDescriptors.relationshipPlaceHolder,
     required: true,
     initialValue: '',
-    exampleValues: ["Other Information"],
+    exampleValues: ['Other Information'],
     validator: [
       {
         operation: 'englishOnlyNameFormat'
@@ -162,7 +159,8 @@ export const getNationalID = (
     initialValue: '',
     validator,
     conditionals,
-    mapping: getFieldMapping('nationalId', certificateHandlebar)
+    mapping: getFieldMapping('nationalId', certificateHandlebar),
+    exampleValues: ['4185417204']
   } satisfies SerializedFormField)
 
 export const getDetailsExist = (
