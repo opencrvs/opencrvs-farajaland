@@ -66,7 +66,7 @@ export const getFamilyNameField = (
         operation: 'englishOnlyNameFormat'
       }
     ],
-    exampleValues: ['Test Family Name'],
+    exampleValues: ['Mweene'],
     mapping: getFieldMapping('familyName', certificateHandlebar)
   } satisfies SerializedFormField)
 
@@ -88,7 +88,7 @@ export const getFirstNameField = (
     maxLength: 32,
     required: true,
     initialValue: '',
-    exampleValues: ['First Name'],
+    exampleValues: ['Kennedy'],
     validator: [
       {
         operation: 'englishOnlyNameFormat'
@@ -109,7 +109,7 @@ export const getNationality = (
     initialValue: 'FAR',
     validator: [],
     placeholder: formMessageDescriptors.formSelectPlaceholder,
-    exampleValues: ['Fiji'],
+    exampleValues: ['Sulaka'],
     options: {
       resource: 'countries'
     },

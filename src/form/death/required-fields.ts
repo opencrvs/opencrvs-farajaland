@@ -37,7 +37,7 @@ export const getDeathDate = (
   conditionals,
   initialValue: '',
   validator,
-  exampleValues: ["05-04-2023"],
+  exampleValues: ['05-04-2023'],
   mapping: getFieldMapping('deathDate', certificateHandlebars.eventDate)
 })
 
@@ -56,7 +56,7 @@ export const deathInformantType: SerializedFormField = {
     certificateHandlebars.informantType
   ),
   options: deathInformantTypeOptions,
-  exampleValues: ["Son"],
+  exampleValues: ['Son']
 }
 
 export const getMannerOfDeath: SerializedFormField = {
@@ -68,7 +68,10 @@ export const getMannerOfDeath: SerializedFormField = {
   validator: [],
   placeholder: formMessageDescriptors.formSelectPlaceholder,
   options: mannerOfDeathOptions,
-  mapping: getFieldMapping('mannerOfDeath', certificateHandlebars.mannerOfDeath),
+  mapping: getFieldMapping(
+    'mannerOfDeath',
+    certificateHandlebars.mannerOfDeath
+  ),
   exampleValues: ['Natural causes']
 }
 
@@ -130,7 +133,7 @@ export const getDeathDescription: SerializedFormField = {
     'deathDescription',
     certificateHandlebars.deathDescription
   ),
-  exampleValues: ['deathDescription']
+  exampleValues: ['He got heart attack in the middle of the night.']
 }
 
 export const getPlaceOfDeathFields = () =>

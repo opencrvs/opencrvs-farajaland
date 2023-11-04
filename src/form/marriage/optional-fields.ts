@@ -31,7 +31,7 @@ export const getMarriedLastName = (
     }
   ],
   mapping: getFieldMapping('marriedLastName', certificateHandlebar),
-  exampleValues: ['marriedLastNameEng'],
+  exampleValues: ['Campbell']
 })
 
 export const getTypeOfMarriage: SerializedFormField = {
@@ -47,7 +47,7 @@ export const getTypeOfMarriage: SerializedFormField = {
     'typeOfMarriage',
     certificateHandlebars.typeOfMarriage
   ),
-  exampleValues: ['Monogamous'],
+  exampleValues: ['Monogamous']
 }
 
 export const placeOfMarriageSubsection: SerializedFormField = {
