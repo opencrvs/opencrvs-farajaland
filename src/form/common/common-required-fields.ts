@@ -109,7 +109,7 @@ export const getNationality = (
     initialValue: 'FAR',
     validator: [],
     placeholder: formMessageDescriptors.formSelectPlaceholder,
-    exampleValues: ['Sulaka'],
+    exampleValues: ['Farajaland'],
     options: {
       resource: 'countries'
     },
