@@ -31,7 +31,7 @@ export const attendantAtBirth: SerializedFormField = {
     'attendantAtBirth',
     certificateHandlebars.attendantAtBirth
   ),
-  exampleValues: ['Nurse'],
+  exampleValues: ['Nurse']
 }
 
 export const birthType: SerializedFormField = {
@@ -48,7 +48,7 @@ export const birthType: SerializedFormField = {
   placeholder: formMessageDescriptors.formSelectPlaceholder,
   options: typeOfBirthOptions,
   mapping: getFieldMapping('birthType', certificateHandlebars.birthType),
-  exampleValues: ['Single'],
+  exampleValues: ['Single']
 }
 
 export const weightAtBirth: SerializedFormField = {
@@ -103,49 +103,5 @@ export const multipleBirth: SerializedFormField = {
     certificateHandlebars.multipleBirth
   ),
   inputFieldWidth: '64px',
-  exampleValues: ['10'],
+  exampleValues: ['10']
 }
-
-export const getOccupation = (
-  certificateHandlebar: string
-): SerializedFormField => ({
-  name: 'occupation',
-  type: 'TEXT',
-  label: {
-    defaultMessage: 'Occupation',
-    description: 'text for occupation form field',
-    id: 'form.field.label.occupation'
-  },
-  required: false,
-  initialValue: '',
-  validator: [],
-  conditionals: [
-    {
-      action: 'hide',
-      expression: '!values.detailsExist'
-    }
-  ],
-  mapping: getFieldMapping('occupation', certificateHandlebar),
-  exampleValues: ['Occupation'],
-})
-
-export const getEducation = (
-  certificateHandlebar: string
-): SerializedFormField => ({
-  name: 'educationalAttainment',
-  type: 'SELECT_WITH_OPTIONS',
-  label: formMessageDescriptors.educationAttainment,
-  required: false,
-  initialValue: '',
-  validator: [],
-  conditionals: [
-    {
-      action: 'hide',
-      expression: '!values.detailsExist'
-    }
-  ],
-  placeholder: formMessageDescriptors.formSelectPlaceholder,
-  options: educationalAttainmentOptions,
-  mapping: getFieldMapping('educationalAttainment', certificateHandlebar),
-  exampleValues: ['No schooling'],
-})
