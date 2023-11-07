@@ -12,7 +12,6 @@ import { getFieldMapping } from '@countryconfig/utils/mapping/field-mapping-util
 import { formMessageDescriptors } from '../common/messages'
 import {
   attendantAtBirthOptions,
-  educationalAttainmentOptions,
   typeOfBirthOptions
 } from '../common/select-options'
 import { SerializedFormField } from '../types/types'
