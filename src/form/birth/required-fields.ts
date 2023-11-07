@@ -9,11 +9,8 @@
  * Copyright (C) The OpenCRVS Authors located at https://github.com/opencrvs/opencrvs-core/blob/master/AUTHORS.
  */
 
-import { MessageDescriptor } from 'react-intl'
-import {
-  formMessageDescriptors,
-} from '../common/messages'
-import { Conditional, SerializedFormField } from '../types/types'
+import { formMessageDescriptors } from '../common/messages'
+import { SerializedFormField } from '../types/types'
 import { divider } from '../common/common-optional-fields'
 import {
   birthInformantTypeOptions,
@@ -54,7 +51,7 @@ export const getPlaceOfBirthFields = (): SerializedFormField[] => [
     placeholder: formMessageDescriptors.formSelectPlaceholder,
     options: placeOfBirthOptions,
     mapping: getEventLocationSelectionMapping('placeOfBirth'),
-    exampleValues: ['Other'],
+    exampleValues: ['Other']
   },
   {
     name: 'birthLocation',
@@ -83,44 +80,6 @@ export const getPlaceOfBirthFields = (): SerializedFormField[] => [
       'birthLocation',
       certificateHandlebars.placeOfBirth
     ),
-    exampleValues: ['Shifwankula Health Post'],
+    exampleValues: ['Shifwankula Health Post']
   }
 ]
-
-export const getDetailsExist = (
-  label: MessageDescriptor,
-  conditionals: Conditional[]
-) =>
-  ({
-    name: 'detailsExist',
-    type: 'CHECKBOX',
-    label,
-    required: true,
-    checkedValue: false,
-    uncheckedValue: true,
-    hideHeader: true,
-    initialValue: true,
-    validator: [],
-    conditionals,
-    mapping: getFieldMapping('detailsExist'),
-    ignoreBottomMargin: true,
-    exampleValues: ['true']
-  } satisfies SerializedFormField)
-
-export const getReasonNotExisting = (certificateHandlebar: string) =>
-  ({
-    name: 'reasonNotApplying',
-    conditionals: [
-      {
-        action: 'hide',
-        expression: 'values.detailsExist'
-      }
-    ],
-    type: 'TEXT',
-    label: formMessageDescriptors.reasonNA,
-    validator: [],
-    initialValue: '',
-    required: true,
-    mapping: getFieldMapping('reasonNotApplying', certificateHandlebar),
-    exampleValues: ['reasonNotApplying']
-  } satisfies SerializedFormField)
