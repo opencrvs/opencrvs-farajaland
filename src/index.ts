@@ -44,7 +44,10 @@ import {
 } from './api/notification/handler'
 import { mosipMediatorHandler } from '@countryconfig/api/mediators/mosip-openhim-mediator/handler'
 import { ErrorContext } from 'hapi-auth-jwt2'
-import { mapGeojsonHandler } from '@countryconfig/api/dashboard-map/handler'
+import {
+  dashboardQueriesHandler,
+  mapGeojsonHandler
+} from '@countryconfig/api/dashboards/handler'
 import { formHandler } from '@countryconfig/form'
 import { locationsHandler } from './data-seeding/locations/handler'
 import { certificateHandler } from './data-seeding/certificates/handler'
@@ -378,6 +381,16 @@ export async function createServer() {
       auth: false,
       tags: ['api'],
       description: 'Serves map geojson'
+    }
+  })
+
+  server.route({
+    method: 'GET',
+    path: '/dashboards/queries.json',
+    handler: dashboardQueriesHandler,
+    options: {
+      tags: ['api'],
+      description: 'Serves dashboard view refresher queries'
     }
   })
 
