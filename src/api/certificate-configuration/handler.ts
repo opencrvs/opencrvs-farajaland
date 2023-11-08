@@ -25,11 +25,11 @@ type Configuration = Partial<{
 export function certificateConfigurationHandler(): Configuration {
   return {
     fonts: {
-      Kenia: {
-        normal: `${COUNTRY_CONFIG_URL}/fonts/Kenia-Regular.ttf`,
-        bold: `${COUNTRY_CONFIG_URL}/fonts/Kenia-Regular.ttf`,
-        italics: `${COUNTRY_CONFIG_URL}/fonts/Kenia-Regular.ttf`,
-        bolditalics: `${COUNTRY_CONFIG_URL}/fonts/Kenia-Regular.ttf`
+      ['Noto Sans']: {
+        normal: `${COUNTRY_CONFIG_URL}/fonts/NotoSans-Regular.ttf`,
+        bold: `${COUNTRY_CONFIG_URL}/fonts/NotoSans-SemiBold.ttf`,
+        italics: `${COUNTRY_CONFIG_URL}/fonts/NotoSans-Regular.ttf`,
+        bolditalics: `${COUNTRY_CONFIG_URL}/fonts/NotoSans-Regular.ttf`
       }
     }
   }
