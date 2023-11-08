@@ -240,7 +240,7 @@ echo ""
 
 create_elasticsearch_backup() {
   OUTPUT=""
-  OUTPUT=$(docker run --rm --network=$NETWORK appropriate/curl curl -s -X PUT -H "Content-Type: application/json;charset=UTF-8" "http://$(elasticsearch_host)/_snapshot/ocrvs/snapshot_${VERSION:-$BACKUP_DATE}?wait_for_completion=true&pretty" -d '{ "indices": "ocrvs" }' 2>/dev/null)
+  OUTPUT=$(docker run --rm --network=$NETWORK appropriate/curl curl -s -X PUT -H "Content-Type: application/json;charset=UTF-8" "http://$(elasticsearch_host)/_snapshot/ocrvs/snapshot_${LABEL:-$BACKUP_DATE}?wait_for_completion=true&pretty" -d '{ "indices": "ocrvs" }' 2>/dev/null)
   if echo $OUTPUT | jq -e '.snapshot.state == "SUCCESS"' > /dev/null; then
     echo "Snapshot state is SUCCESS"
   else
