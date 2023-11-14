@@ -192,7 +192,7 @@ export const deathForm = {
             ), // Required field.,
             exactDateOfBirthUnknown([]),
             getAgeOfIndividualInYears(
-              formMessageDescriptors.ageOfInformant,
+              formMessageDescriptors.ageOfDeceased,
               exactDateOfBirthUnknownConditional
             ),
             getNationality(certificateHandlebars.deceasedNationality, []),
