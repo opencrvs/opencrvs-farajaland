@@ -15,8 +15,8 @@ import {
   getMaritalStatus,
   registrationEmail,
   registrationPhone,
-  divider,
-  getOccupation
+  divider
+  // getOccupation
 } from '../common/common-optional-fields'
 import {
   getGender,
@@ -44,6 +44,8 @@ import {
   hideIfNidIntegrationEnabled,
   informantBirthDateConditionals,
   informantFamilyNameConditionals,
+  ageOfIndividualConditionals,
+  ageOfDeceasedConditionals,
   informantFirstNameConditionals,
   exactDateOfBirthUnknownConditional,
   isValidBirthDate /*,
@@ -193,7 +195,8 @@ export const deathForm = {
             exactDateOfBirthUnknown([]),
             getAgeOfIndividualInYears(
               formMessageDescriptors.ageOfDeceased,
-              exactDateOfBirthUnknownConditional
+              exactDateOfBirthUnknownConditional,
+              ageOfDeceasedConditionals
             ),
             getNationality(certificateHandlebars.deceasedNationality, []),
             getNationalID(
@@ -274,7 +277,8 @@ export const deathForm = {
             exactDateOfBirthUnknown([]),
             getAgeOfIndividualInYears(
               formMessageDescriptors.ageOfInformant,
-              exactDateOfBirthUnknownConditional
+              exactDateOfBirthUnknownConditional,
+              ageOfIndividualConditionals
             ),
             getNationality(certificateHandlebars.informantNationality, []),
             getNationalID(
