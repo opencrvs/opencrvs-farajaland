@@ -2112,7 +2112,22 @@
         "performance.registrationsListTable.monthColumn": "Month",
         "performance.registrationsListTable.locationColumn": "Location",
         "performance.registrationsListTable.registrarColumn": "Registrar",
-        "performance.registrationsListTable.totalRegistrationsColumn": "Total Registrations"
+        "performance.registrationsListTable.totalRegistrationsColumn": "Total Registrations",
+        "correction.correctionForApprovalDialog.title": "Send record correction for approval ?",
+        "correction.correctionForApprovalDialog.actions.cancel": "Cancel",
+        "correction.correctionForApprovalDialog.actions.send": "Confirm",
+        "correction.correctionForApprovalDialog.description": "The Registrar will be notified of this correction request and a record of this request will be recorded",
+        "correction.summary.submitter": "Submitter",
+        "correction.summary.office": "Office",
+        "correction.summary.requestedOn": "Requested on",
+        "register.form.modal.title.saveCorrectionConfirm": "Approve correction?",
+        "register.form.modal.desc.saveCorrectionConfirm": "The declarant will be notified of this correction and a record of this decision will be recorded",
+        "register.form.modal.title.saveCorrectionReject": "Reject correction?",
+        "register.form.modal.desc.saveCorrectionReject": "The declarant will be notified of this decision and a record of this decision will be recorded",
+        "review.rejection.form.reasonLabel": "Reason",
+        "user.profile.auditList.requestedCorrectionAuditAction": "Requested correction",
+        "user.profile.auditList.approvedCorrectionAuditAction": "Approved correction request",
+        "user.profile.auditList.rejectedCorrectedAuditAction": "Rejected correction request"
       }
     },
     {
@@ -2217,9 +2232,9 @@
         "certificate.receipt.issuedBy": "Par :",
         "certificate.receipt.issuedDate": "Date du paiement :",
         "certificate.receipt.issuer": "Par : {role}, {name}\n Date de paiement : {dateOfPayment}",
-        "certificate.receipt.service..5year.amount": "\u09F3 50.00",
+        "certificate.receipt.service..5year.amount": "৳ 50.00",
         "certificate.receipt.service.5year": "{event} inscription après 5 ans de l'événement",
-        "certificate.receipt.service.targetDay.amount": "\u09F3 25.00",
+        "certificate.receipt.service.targetDay.amount": "৳ 25.00",
         "certificate.receipt.service.targetDay": "{event}  après 45 jours de l'événement.",
         "certificate.receipt.service": "Service",
         "certificate.receipt.subheader": "{event} Enregistrement après {DOBDiff} de {DOE}",
@@ -3691,7 +3706,7 @@
         "print.certificate.next": "Suivant",
         "print.certificate.noLabel": "",
         "print.certificate.payment": "Le paiement est requis",
-        "print.certificate.paymentAmount": "\u09F3 {paymentAmount}",
+        "print.certificate.paymentAmount": "৳ {paymentAmount}",
         "print.certificate.paymentInstruction": "Veuillez encaisser le paiement, imprimer le reçu et le remettre au bénéficiaire.",
         "print.certificate.paymentMethod": "Mode de paiement",
         "print.certificate.printCertificate": "Imprimer le certificat",
@@ -4227,7 +4242,22 @@
         "dashboard.noContent": "Aucun contenu à afficher. Assurez-vous que les variables suivantes sont configurées dans le <strong>client-config.js</strong> fourni par le package de configuration de votre pays:<br /><ul><li><strong>LEADERBOARDS_DASHBOARD_URL</strong></li><li><strong>REGISTRATIONS_DASHBOARD_URL</strong></li><li><strong>STATISTICS_DASHBOARD_URL</strong></li></ul>",
         "dashboard.dashboardTitle": "Tableau de bord",
         "dashboard.leaderboardTitle": "Classements",
-        "dashboard.statisticTitle": "Statistiques"
+        "dashboard.statisticTitle": "Statistiques",
+        "correction.correctionForApprovalDialog.title": "Envoyer la correction de l'enregistrement pour approbation ?",
+        "correction.correctionForApprovalDialog.actions.cancel": "Annuler",
+        "correction.correctionForApprovalDialog.actions.send": "Confirmer",
+        "correction.correctionForApprovalDialog.description": "Le greffier sera informé de cette demande de correction et un enregistrement de cette demande sera effectué",
+        "correction.summary.submitter": "Déposant",
+        "correction.summary.office": "Bureau",
+        "correction.summary.requestedOn": "Demandé le",
+        "register.form.modal.title.saveCorrectionConfirm": "Approuver la correction ?",
+        "register.form.modal.desc.saveCorrectionConfirm": "Le déclarant sera informé de cette correction et un procès-verbal de cette décision sera enregistré",
+        "register.form.modal.title.saveCorrectionReject": "Rejeter la correction ?",
+        "register.form.modal.desc.saveCorrectionReject": "Cette décision sera notifiée au déclarant et un procès-verbal de cette décision sera enregistré",
+        "review.rejection.form.reasonLabel": "Raison",
+        "user.profile.auditList.requestedCorrectionAuditAction": "Correction demandée",
+        "user.profile.auditList.approvedCorrectionAuditAction": "Demande de correction approuvée",
+        "user.profile.auditList.rejectedCorrectedAuditAction": "Demande de correction rejetée"
       }
     }
   ]
