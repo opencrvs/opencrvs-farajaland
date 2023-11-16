@@ -5,7 +5,7 @@ const { writeFileSync } = require('fs')
 const config = {
   environment: '',
   repo: {
-    REPOSITORY_ID: '',
+    REPOSITORY: '', // e.g. opencrvs/opencrvs-farajaland
     DOCKERHUB_ACCOUNT: '', // This may be a dockerhub organisation or the same as the username
     DOCKERHUB_REPO: '',
     DOCKER_USERNAME: process.env.DOCKER_USERNAME,
@@ -32,7 +32,7 @@ const config = {
     INFOBIP_SENDER_ID: process.env.INFOBIP_SENDER_ID || '' // the name of the SMS sender e.g. OpenCRVS
   },
   seeding: {
-    ACTIVATE_USERS: true,
+    ACTIVATE_USERS: 'true',
     AUTH_HOST: '',
     COUNTRY_CONFIG_HOST: '',
     GATEWAY_HOST: ''
@@ -72,11 +72,16 @@ const octokit = new Octokit({
   auth: process.env.GITHUB_TOKEN
 })
 
-async function createVariable(environment, name, value) {
+async function fetchRepositoryId() {
+  const response = await octokit.request(`GET /repos/${config.repo.REPOSITORY}`)
+  return response.data.id.toString()
+}
+
+async function createVariable(repositoryId, environment, name, value) {
   await octokit.request(
-    `POST /repositories/${config.repo.REPOSITORY_ID}/environments/${config.environment}/variables`,
+    `POST /repositories/${repositoryId}/environments/${config.environment}/variables`,
     {
-      repository_id: config.repo.REPOSITORY_ID,
+      repository_id: repositoryId,
       environment_name: environment,
       name: name,
       value: value,
@@ -87,7 +92,14 @@ async function createVariable(environment, name, value) {
   )
 }
 
-async function createSecret(environment, key, keyId, name, secret) {
+async function createSecret(
+  repositoryId,
+  environment,
+  key,
+  keyId,
+  name,
+  secret
+) {
   //Check if libsodium is ready and then proceed.
   await sodium.ready
 
@@ -105,9 +117,9 @@ async function createSecret(environment, key, keyId, name, secret) {
   )
 
   await octokit.request(
-    `PUT /repositories/${config.repo.REPOSITORY_ID}/environments/${environment}/secrets/${name}`,
+    `PUT /repositories/${repositoryId}/environments/${environment}/secrets/${name}`,
     {
-      repository_id: config.repo.REPOSITORY_ID,
+      repository_id: repositoryId,
       environment_name: environment,
       secret_name: name,
       encrypted_value: encryptedValue,
@@ -119,9 +131,9 @@ async function createSecret(environment, key, keyId, name, secret) {
   )
 }
 
-async function getPublicKey(environment) {
+async function getPublicKey(repositoryId, environment) {
   await octokit.request(
-    `PUT /repos/${config.repo.DOCKERHUB_ACCOUNT}/${config.repo.DOCKERHUB_REPO}/environments/${environment}`,
+    `PUT /repositories/${repositoryId}/environments/${environment}`,
     {
       headers: {
         'X-GitHub-Api-Version': '2022-11-28'
@@ -130,10 +142,8 @@ async function getPublicKey(environment) {
   )
 
   const res = await octokit.request(
-    `GET /repositories/${config.repo.REPOSITORY_ID}/environments/${environment}/secrets/public-key`,
+    `GET /repositories/${repositoryId}/environments/${environment}/secrets/public-key`,
     {
-      owner: config.repo.DOCKERHUB_ACCOUNT,
-      repo: config.repo.DOCKERHUB_REPO,
       headers: {
         'X-GitHub-Api-Version': '2022-11-28'
       }
@@ -153,7 +163,8 @@ function generateLongPassword() {
 }
 
 async function main() {
-  const { key, key_id } = await getPublicKey(config.environment)
+  const repositoryId = await fetchRepositoryId()
+  const { key, key_id } = await getPublicKey(repositoryId, config.environment)
   let backupSecrets = {}
   let backupVariables = {}
   let vpnSecrets = {}
@@ -209,6 +220,7 @@ async function main() {
   } else {
     for (const [secretName, secretValue] of Object.entries(SECRETS)) {
       await createSecret(
+        repositoryId,
         config.environment,
         key,
         key_id,
@@ -218,7 +230,12 @@ async function main() {
     }
 
     for (const [variableName, variableValue] of Object.entries(VARIABLES)) {
-      await createVariable(config.environment, variableName, variableValue)
+      await createVariable(
+        repositoryId,
+        config.environment,
+        variableName,
+        variableValue
+      )
     }
   }
 }
