@@ -126,7 +126,7 @@
       "prettier --write",
       "git add"
     ],
-    "src/api/content/**/*.json": [
+    "src/api/content/**/!(descriptions)*.json": [
       "yarn sort-translations",
       "prettier --write",
       "git add"
