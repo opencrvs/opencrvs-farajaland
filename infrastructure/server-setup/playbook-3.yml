@@ -43,61 +43,21 @@
         # mosip_seeder_encrypt_cert_filename={{ mosip_seeder_encrypt_cert_filename }}
         # mosip_seeder_encrypt_sig_path={{ mosip_seeder_encrypt_sig_path }}
         # mosip_seeder_encrypt_sig_filename={{ mosip_seeder_encrypt_sig_filename }}
+    - include_tasks:
+        file: tasks/tools.yml
+        apply:
+          tags:
+            - tools
+      tags:
+        - tools
 
-    - name: 'Add docker repository key'
-      apt_key:
-        url: https://download.docker.com/linux/ubuntu/gpg
-        state: present
-
-    - name: 'Add docker repository'
-      apt_repository:
-        repo: 'deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_lsb.codename }} stable'
-        state: present
-        update_cache: yes
-
-    - name: 'Install docker'
-      apt: name=docker-ce state=present update_cache=yes install_recommends=yes allow_unauthenticated=yes
-      when: ansible_distribution == "Ubuntu"
-      retries: 3
-      delay: 20
-
-    - name: 'Ensure Docker service started'
-      service: name=docker state=started
-
-    - name: 'Get docker info'
-      shell: docker info
-      register: docker_info
-      changed_when: False
-
-    - name: 'Install pip3'
-      apt:
-        name: python3-pip
-        state: present
-
-    - name: 'Install jq'
-      apt:
-        name: jq
-        state: present
-
-    - name: 'Install pexpect python module for ansible expect commands'
-      pip:
-        name: pexpect
-
-    - name: 'Install docker python module for ansible docker commands'
-      pip:
-        name: docker
-
-    - name: 'Log into DockerHub'
-      docker_login:
-        username: '{{dockerhub_username}}'
-        password: '{{dockerhub_password}}'
-
-    - name: 'Setup crontab to clean up docker images'
-      cron:
-        name: 'cleanup docker images'
-        minute: '0'
-        hour: '0'
-        job: '/usr/bin/docker system prune -af >> /var/log/docker-prune.log'
+    - include_tasks:
+        file: tasks/docker.yml
+        apply:
+          tags:
+            - docker
+      tags:
+        - docker
 
     - name: 'Setup crontab to backup the opencrvs data'
       cron:
@@ -386,33 +346,10 @@
       copy:
         src: ../logrotate.conf
         dest: /etc/
-    
-    - name: Give read and write permissions to logrotate.conf because we replace it on each deploy
-      file:
-        path: /etc/logrotate.conf
-        owner: '{{ ansible_user }}'
-        group: '{{ ansible_user }}'
-        mode: 'u+rwX,g+rwX,o-rwx'
-    
+
     - name: Create deploy logfile
       ansible.builtin.file:
         path: /var/log/setup-deploy-config.log
-        owner: '{{ ansible_user }}'
-        group: '{{ ansible_user }}'
-        state: touch
-        mode: 'u+rwX,g+rwX,o-rwx'
-    
-    - name: Create secret logfile
-      ansible.builtin.file:
-        path: /var/log/rotate-secrets.log
-        owner: '{{ ansible_user }}'
-        group: '{{ ansible_user }}'
-        state: touch
-        mode: 'u+rwX,g+rwX,o-rwx'
-    
-    - name: Create backup logfile
-      ansible.builtin.file:
-        path: /var/log/opencrvs-backup.log
         owner: '{{ ansible_user }}'
         group: '{{ ansible_user }}'
         state: touch

@@ -15,11 +15,6 @@
   become: yes
   become_method: sudo
   tasks:
-    - name: 'Create app directory'
-      file:
-        path: /opt/opencrvs
-        state: directory
-
     - name: 'Check mandatory variables are defined'
       assert:
         that:
@@ -29,6 +24,19 @@
           - disk_encryption_key is defined
           - encrypted_disk_size is defined
 
+    - name: Update apt-get
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - include_tasks:
+        file: tasks/application.yml
+        apply:
+          tags:
+            - application
+      tags:
+        - application
+
     - name: Setting global variables accessed by country configuration playbook
       ansible.builtin.set_fact:
         mongodb_admin_password={{ mongodb_admin_password }}
@@ -36,60 +44,31 @@
         elasticsearch_superuser_password={{elasticsearch_superuser_password}}
         disk_encryption_key={{ disk_encryption_key }}
 
-    - name: 'Add docker repository key'
-      apt_key:
-        url: https://download.docker.com/linux/ubuntu/gpg
-        state: present
+    - include_tasks:
+        file: tasks/tools.yml
+        apply:
+          tags:
+            - tools
+      tags:
+        - tools
 
-    - name: 'Add docker repository'
-      apt_repository:
-        repo: 'deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_lsb.codename }} stable'
-        state: present
-        update_cache: yes
+    - include_tasks:
+        file: tasks/docker.yml
+        apply:
+          tags:
+            - docker
+      tags:
+        - docker
 
-    - name: 'Install docker'
-      apt: name=docker-ce state=present update_cache=yes install_recommends=yes allow_unauthenticated=yes
-      when: ansible_distribution == "Ubuntu"
-      retries: 3
-      delay: 20
-
-    - name: 'Ensure Docker service started'
-      service: name=docker state=started
-
-    - name: 'Get docker info'
-      shell: docker info
-      register: docker_info
-      changed_when: False
-
-    - name: 'Install pip3'
-      apt:
-        name: python3-pip
-        state: present
-
-    - name: 'Install jq'
-      apt:
-        name: jq
-        state: present
-
-    - name: 'Install pexpect python module for ansible expect commands'
-      pip:
-        name: pexpect
-
-    - name: 'Install docker python module for ansible docker commands'
-      pip:
-        name: docker
-
-    - name: 'Log into DockerHub'
-      docker_login:
-        username: '{{dockerhub_username}}'
-        password: '{{dockerhub_password}}'
-
-    - name: 'Setup crontab to clean up docker images'
-      cron:
-        name: 'cleanup docker images'
-        minute: '0'
-        hour: '0'
-        job: '/usr/bin/docker system prune -af >> /var/log/docker-prune.log'
+    - include_tasks:
+        file: tasks/deployment-user.yml
+        apply:
+          tags:
+            - deployment-user
+            - users
+      tags:
+        - deployment-user
+        - users
 
     - name: 'Setup crontab to backup the opencrvs data'
       cron:

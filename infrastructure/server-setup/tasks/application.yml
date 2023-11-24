@@ -1,0 +1,43 @@
+- name: Create 'application' group
+  group:
+    name: application
+    state: present
+
+- name: Create application directory
+  file:
+    path: /opt/opencrvs
+    state: directory
+    owner: root
+    group: application
+    # Owner and group have rwx, others have no permission
+    mode: '0770'
+
+- name: Add current user to 'application' group
+  user:
+    name: '{{ ansible_user }}'
+    groups: application
+    append: yes
+
+- name: Create deploy logfile
+  ansible.builtin.file:
+    path: /var/log/setup-deploy-config.log
+    owner: '{{ ansible_user }}'
+    group: 'application'
+    state: touch
+    mode: 'u+rwX,g+rwX,o-rwx'
+
+- name: Create secret logfile
+  ansible.builtin.file:
+    path: /var/log/rotate-secrets.log
+    owner: '{{ ansible_user }}'
+    group: 'application'
+    state: touch
+    mode: 'u+rwX,g+rwX,o-rwx'
+
+- name: Create backup logfile
+  ansible.builtin.file:
+    path: /var/log/opencrvs-backup.log
+    owner: '{{ ansible_user }}'
+    group: 'application'
+    state: touch
+    mode: 'u+rwX,g+rwX,o-rwx'
