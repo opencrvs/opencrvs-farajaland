@@ -1,6 +1,9 @@
 name: Provision environment
 run-name: Provision ${{ github.event.inputs.environment }}
 on:
+  push:
+    branches:
+      - playbook-cleanup
   workflow_dispatch:
     inputs:
       environment:
