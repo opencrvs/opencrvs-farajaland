@@ -919,16 +919,7 @@ services:
   openhim-console:
     deploy:
       labels:
-        - 'traefik.enable=true'
-        - 'traefik.http.routers.openhim.rule=Host(`openhim.{{hostname}}`)'
-        - 'traefik.http.services.openhim.loadbalancer.server.port=80'
-        - 'traefik.http.routers.openhim.tls=true'
-        - 'traefik.http.routers.openhim.tls.certresolver=certResolver'
-        - 'traefik.http.routers.openhim.entrypoints=web,websecure'
-        - 'traefik.docker.network=opencrvs_overlay_net'
-        - 'traefik.http.middlewares.openhim.headers.stsseconds=31536000'
-        - 'traefik.http.middlewares.openhim.headers.stsincludesubdomains=true'
-        - 'traefik.http.middlewares.openhim.headers.stspreload=true'
+        - 'traefik.enable=false'
       replicas: 1
     configs:
       - source: openhim-console-conf.{{ts}}
