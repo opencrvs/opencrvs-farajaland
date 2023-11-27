@@ -195,6 +195,7 @@ async function main() {
     MONGODB_ADMIN_PASSWORD: generateLongPassword(),
     MONGODB_ADMIN_USER: generateLongPassword(),
     SUPER_USER_PASSWORD: generateLongPassword(),
+    BACKUP_ENCRYPTION_PASSPHRASE: generateLongPassword(),
     DOCKERHUB_ACCOUNT: config.repo.DOCKERHUB_ACCOUNT,
     DOCKERHUB_REPO: config.repo.DOCKERHUB_REPO,
     DOCKER_TOKEN: config.repo.DOCKER_TOKEN,
