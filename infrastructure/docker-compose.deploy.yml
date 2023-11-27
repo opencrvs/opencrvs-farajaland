@@ -879,14 +879,7 @@ services:
       - mongo1
     deploy:
       labels:
-        - 'traefik.enable=true'
-        - 'traefik.http.routers.openhimapi.rule=Host(`openhim-api.{{hostname}}`)'
-        - 'traefik.http.services.openhimapi.loadbalancer.server.port=8080'
-        - 'traefik.http.routers.openhimapi.tls=true'
-        - 'traefik.http.routers.openhimapi.service=openhimapi'
-        - 'traefik.http.routers.openhimapi.entrypoints=web,websecure'
-        - 'traefik.http.routers.openhimapi.tls.certresolver=certResolver'
-        - 'traefik.http.services.openhimapi.loadbalancer.server.scheme=https'
+        - 'traefik.enable=false'
 
         # To expose OpenHIM to external systems as an interoperability layer
         # Given OpenCRVS has it's own integrations UI and control.  This functionality is currently disabled
