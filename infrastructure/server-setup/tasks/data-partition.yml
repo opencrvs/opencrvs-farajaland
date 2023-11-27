@@ -19,9 +19,18 @@
     get_checksum: False
   register: encryptedFileSystemPostCheck
 
+- name: Check if cryptfs_file_sparse.img is already mounted
+  shell: mount | grep -q 'cryptfs on /data'
+  register: is_mounted
+  ignore_errors: true
+  changed_when: false
+
 - name: 'Mount encrypted data folder'
-  script: ../cryptfs/mount.sh -p {{disk_encryption_key}}
-  when: encryptedFileSystemPostCheck.stat.exists
+  script: ../cryptfs/mount.sh -p {{ disk_encryption_key }}
+  when:
+    - encryptedFileSystemPostCheck.stat.exists
+    # Check if cryptfs_file_sparse.img is already mounted
+    - is_mounted.rc != 0
 
   # Create data directories
 - name: Check mongo data directory

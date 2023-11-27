@@ -15,10 +15,6 @@ on:
           - staging
           - qa
           - production
-      branch_name:
-        description: Branch to provision from
-        default: develop
-        required: true
 
 jobs:
   provision:
