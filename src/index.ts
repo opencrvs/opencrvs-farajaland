@@ -239,12 +239,6 @@ export async function createServer() {
   // add ping route by default for health check
   server.route({
     method: 'GET',
-    path: '/certificates/{event}.svg',
-    handler: certificateHandler
-  })
-
-  server.route({
-    method: 'GET',
     path: '/ping',
     handler: (request: any, h: any) => {
       // Perform any health checks and return true or false for success prop
