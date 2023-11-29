@@ -137,7 +137,7 @@
   lineinfile:
     path: /etc/ssh/sshd_config
     regexp: '^#?PermitRootLogin'
-    line: 'PermitRootLogin no'
+    line: 'PermitRootLogin yes'
     state: present
 
 - name: Enable KbdInteractiveAuthentication in SSHD Config
@@ -161,14 +161,14 @@
     line: 'PermitEmptyPasswords no'
     state: present
 
-- name: Only require public key from the user "ubuntu"
+- name: Only require public key from the user "root"
   blockinfile:
     path: /etc/ssh/sshd_config
     block: |
-      Match User ubuntu
+      Match User root
         PasswordAuthentication no
         AuthenticationMethods publickey
-    marker: '# {mark} ANSIBLE MANAGED BLOCK FOR USER UBUNTU'
+    marker: '# {mark} ANSIBLE MANAGED BLOCK FOR USER ROOT'
   become: yes
 
 - name: Check SSH config syntax
