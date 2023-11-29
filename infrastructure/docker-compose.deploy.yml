@@ -59,6 +59,32 @@ services:
         tag: 'traefik'
     networks:
       - overlay_net
+
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:7.17.0
+    user: root
+    networks:
+      - overlay_net
+    configs:
+      - source: filebeat.{{ts}}
+        target: /usr/share/filebeat/filebeat.yml
+      - source: beat-rollover-policy.{{ts}}
+        target: /usr/share/filebeat/rollover-policy.json
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/lib/docker/containers/:/var/lib/docker/containers/:ro
+      - /var/log/:/var/log/:ro
+    environment:
+      - ELASTICSEARCH_HOST=elasticsearch:9200
+      - ELASTICSEARCH_USERNAME=elastic
+      - ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_SUPERUSER_PASSWORD}
+      - KIBANA_HOST=kibana:5601
+    command: ['--strict.perms=false']
+    deploy:
+      mode: global
+      labels:
+        - 'traefik.enable=false'
+
   metricbeat:
     image: docker.elastic.co/beats/metricbeat:7.17.13
 
@@ -89,7 +115,7 @@ services:
     configs:
       - source: metricbeat-conf.{{ts}}
         target: /usr/share/metricbeat/metricbeat.yml
-      - source: metricbeat-rollover-policy.{{ts}}
+      - source: beat-rollover-policy.{{ts}}
         target: /usr/share/metricbeat/rollover-policy.json
     logging:
       driver: gelf
@@ -1008,9 +1034,11 @@ configs:
     file: ./infrastructure/hearth-queryparam-extensions.json
   metricbeat-conf.{{ts}}:
     file: ./infrastructure/monitoring/beats/metricbeat.yml
+  filebeat.{{ts}}:
+    file: ./infrastructure/monitoring/filebeat/filebeat.yml
   mongo-on-deploy.{{ts}}:
     file: ./infrastructure/mongodb/on-deploy.sh
-  metricbeat-rollover-policy.{{ts}}:
+  beat-rollover-policy.{{ts}}:
     file: ./infrastructure/monitoring/beats/rollover-policy.json
   kibana.{{ts}}:
     file: ./infrastructure/monitoring/kibana/kibana.yml
