@@ -1,0 +1,183 @@
+- name: Define all users
+  set_fact:
+    users:
+      # If you need to remove access from someone, do not remove them from this list, but instead set their state: absent
+      - name: pyry
+        ssh_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDH6qZgtXhWf+xKwpWmHez6F44VRWrUJPF/aa+qdAc+EUNcUUNq8a/KflVthI15GW83VdHSgOCqrqnZTl/shfjOlq9FxsCDI9BY1Zt2+Dc/YMiY4519jM8QEUpZllJTAsBbaz3MSfqda67lEY8sQp9Jk5hw3vUOYxPBtHLSBehwnj4rNnobRrQ4YeOPnLry+cwf8tuQ1ftaxmsKeSKc8blToj2zJHe5t2a5CkOmCOCjAoToVVHWtUZwZ8E3Xrwdyod1q3vnNjofHPr8TFYpuJlAaIAtko4w8XaeQAbfz+iWGpOSYjbaMhG3gq05kfTm3XUEUsbwSeWhZ8d7F0XDESjHDELQYcikHgm6ywnUtpMht16rbjnZ+h8mDlE/Ftz9N9gkzn7bTTMYRRUrjJUTppH9opNbzlcr38zAhNDEeRvGIhxx6/jRZ0xk1SqQhYh08M3URpvIDbh/Umm7NO/cN6ZX8ogrrMSRfoYvk2u4gioX5qfyIDSVwiVztMjkPdZ/rhU= pyry@opencrvs.org
+        state: present
+        sudoer: true
+      - name: tameem
+        ssh_key: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGUprcQyUFYwRto0aRpgriR95C1pgNxrQ0lEWEe1D8he haidertameem@gmail.com
+        state: present
+        sudoer: true
+      - name: riku
+        ssh_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDWIF63S4f3z9wQMvWibmvl7MPuJ6EVrkP0HuvgNhcs/4DZYMcR/GRBvV4ldOSYMlBevIXycgGzNDxKJgENUuwIWanjBu7uVAHyD6+cIRD1h63qq7Cjv/2HYTfBDKOrKzPOhA6zWvKO0ZGWsjRXk5LWMCbKOkvKJCxOpj/NVBxeE4FTK5YADYPV3OSsmBtqTHrVLm2sMmShU/2hMYYswWkobidjX65+nK/X+3C+yJbHwiydVvn+QCrFlFfCLPWKe8rUpOxyxofPqWVQh6CHhHfT8okaOc9sOE8Qeip9ljo84DftJh3Xm3ynOdWK1hH2BvRvxNadWqcE1qECbkg4tx2x riku.rouvila@gmail.com
+        state: present
+        sudoer: true
+      - name: euan
+        ssh_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDECqHO65UpyrrO8uueD06RxGaVVq22f152Rf8qVQQAAIGAMu6gCs7ztlZ8a3yQgSEIjM/Jl1/RqIVs6CziTEef74nLFTZ5Ufz3CLRVgdebBeSBEmhTfTUV0HLkSyNzwKFpuzJxucGd72ulPvEp6eHvyJAPJz37YcU8cjaL1v05T6s2ee99li35GlDDtCzfjVV4ZPAg5JdfWuTj41RAVC0LQhk2/NB4qEu37UxGGjhRFSjBEsS5LxI9QfvgrsHpl/VOn+soH7ZkK7kS6qRgNP/uYsXRWXhHaamcl5OX68gJWTbrW6c7PCqlbCWGnsHJswCmqPIthwXXMfC7ULDNLSKG6mslAt5Dyc8/MCr3vTW7pDyr2d0FvvY86SMQUggxv3qF7TZewqfX1bhK0fMLarIxVMQ1RFo//wN9QGA+2we8rxd2Y1Kr1DBuJyuwXPfv+Exo8yNYQ+x/AYH5k6UVcSYuaB8eYmplG2KQCxt8RBFtoChrwOKNRWLqXdKyfpdp5XmnnWxPvR95gf3h3yLocVYkF0i0uvKKJ0vt8J0Ezfkdfow0B1kUg5bPXKJROX7PwbaCPdYcxyDaO6wwOigRnSmoFvkH1pLb4j1RQAXcX531CHgfN6Izi/h0mpMS4bnyIUcv2GQr+h4z4TxcCtj7qpH2y6yw7XG12jVh7TfeesXG2Q== euanmillar77@gmail.com
+        state: present
+        sudoer: true
+
+- name: Ensure users are present
+  user:
+    name: '{{ item.name }}'
+    state: '{{ item.state }}'
+  with_items: '{{ users }}'
+
+- name: Grant passwordless sudo to the users
+  ansible.builtin.lineinfile:
+    path: /etc/sudoers.d/{{ item.name }}
+    line: '{{ item.name }} ALL=(ALL) NOPASSWD:ALL'
+    validate: 'visudo -cf %s'
+    create: yes
+  become: yes
+  when: item.state == 'present' and item.sudoer == true
+  with_items: '{{ users }}'
+
+- name: Set authorized key for users
+  authorized_key:
+    user: '{{ item.name }}'
+    key: '{{ item.ssh_key }}'
+  when: item.state == 'present'
+  with_items: '{{ users }}'
+
+- name: Ensure user's shell is bash
+  user:
+    name: '{{ item.name }}'
+    shell: /bin/bash
+  when: item.state == 'present'
+  with_items: '{{ users }}'
+
+- name: Ensure TERM is set in .bashrc
+  lineinfile:
+    path: /home/{{ item.name }}/.bashrc
+    line: 'export TERM=xterm'
+    create: yes
+  when: item.state == 'present'
+  with_items: '{{ users }}'
+
+- name: Check if Docker group exists
+  command: getent group docker
+  register: docker_group
+  ignore_errors: yes
+
+- name: Add user to Docker group
+  when: docker_group.rc == 0 and item.state == 'present'
+  with_items: '{{ users }}'
+  ignore_errors: yes
+  user:
+    name: '{{ item.name }}'
+    groups: docker
+    append: yes
+
+- name: Ensure 2FA setup lines are present in .profile for each user
+  blockinfile:
+    path: '/home/{{ item.name }}/.profile'
+    block: |
+      if [ ! -f "$HOME/.google_authenticator" ]; then
+          echo "You must set up two-factor authentication."
+          (trap 'echo "Ctrl+C detected."' INT; google-authenticator) || exit 1
+      fi
+    create: yes
+    owner: '{{ item.name }}'
+    group: '{{ item.name }}'
+    mode: '0644'
+  when: item.state == 'present'
+  with_items: '{{ users }}'
+
+- name: 'Install libpam-google-authenticator'
+  apt:
+    name: libpam-google-authenticator
+    state: present
+    update_cache: yes
+
+- name: Ensure pam_google_authenticator.so is present in /etc/pam.d/sshd
+  lineinfile:
+    path: /etc/pam.d/sshd
+    line: 'auth required pam_google_authenticator.so nullok'
+    state: present
+
+- name: Add condition for users in users.yml for 2FA in /etc/pam.d/sshd
+  lineinfile:
+    path: /etc/pam.d/sshd
+    insertafter: 'auth required pam_google_authenticator.so nullok'
+    line: 'auth required pam_permit.so'
+    state: present
+
+- name: Disable default auth mechanism (password) in PAM
+  lineinfile:
+    path: /etc/pam.d/sshd
+    regexp: '^@include common-auth'
+    line: '#@include common-auth'
+    state: present
+
+- name: Set AuthenticationMethods to publickey,keyboard-interactive
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?AuthenticationMethods'
+    line: 'AuthenticationMethods publickey,keyboard-interactive'
+    state: present
+
+- name: Enable ChallengeResponseAuthentication in SSHD Config
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?ChallengeResponseAuthentication'
+    line: 'ChallengeResponseAuthentication yes'
+    state: present
+
+- name: Enable PubkeyAuthentication in SSHD Config
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?PubkeyAuthentication'
+    line: 'PubkeyAuthentication yes'
+    state: present
+
+- name: Set PermitRootLogin to no
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?PermitRootLogin'
+    line: 'PermitRootLogin no'
+    state: present
+
+- name: Enable KbdInteractiveAuthentication in SSHD Config
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?KbdInteractiveAuthentication'
+    line: 'KbdInteractiveAuthentication yes'
+    state: present
+
+- name: Disable PasswordAuthentication in SSHD Config
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?PasswordAuthentication'
+    line: 'PasswordAuthentication no'
+    state: present
+
+- name: Disable PermitEmptyPasswords in SSHD Config
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?PermitEmptyPasswords'
+    line: 'PermitEmptyPasswords no'
+    state: present
+
+- name: Only require public key from the user "ubuntu"
+  blockinfile:
+    path: /etc/ssh/sshd_config
+    block: |
+      Match User ubuntu
+        PasswordAuthentication no
+        AuthenticationMethods publickey
+    marker: '# {mark} ANSIBLE MANAGED BLOCK FOR USER UBUNTU'
+  become: yes
+
+- name: Check SSH config syntax
+  command: sshd -T
+  register: check_result
+  ignore_errors: yes
+
+- name: Restart SSH service
+  service:
+    name: sshd
+    state: restarted
+  when: check_result.rc == 0

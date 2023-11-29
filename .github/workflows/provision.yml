@@ -1,9 +1,6 @@
 name: Provision environment
 run-name: Provision ${{ github.event.inputs.environment }}
 on:
-  push:
-    branches:
-      - playbook-cleanup
   workflow_dispatch:
     inputs:
       environment:
@@ -15,7 +12,28 @@ on:
           - staging
           - qa
           - production
-
+      tag:
+        type: choice
+        description: Select group tag you want to execute
+        default: all
+        options:
+          - all
+          - checks
+          - application
+          - tools
+          - docker
+          - deployment
+          - users
+          - crontab
+          - mongodb
+          - data
+          - swap
+          - ufw
+          - fail2ban
+          - decrypt
+          - swarm
+          - elasticsearch
+          - traefik
 jobs:
   provision:
     environment: ${{ github.event.inputs.environment }}
@@ -143,6 +161,7 @@ jobs:
             [docker-workers]
           options: |
             --verbose
+            ${{ inputs.tag != 'all' && format('--tags={0}', inputs.tag) || ''}}
             --extra-vars ""${{ steps.ansible-variables.outputs.EXTRA_VARS }}""
 
       - name: Run playbook on 1 replica in production
@@ -162,4 +181,5 @@ jobs:
             [docker-workers]
           options: |
             --verbose
+            ${{ inputs.tag != 'all' && format('--tags={0}', inputs.tag) || ''}}
             --extra-vars ""${{ steps.ansible-production-variables.outputs.EXTRA_VARS }}""

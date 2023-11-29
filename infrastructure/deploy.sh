@@ -332,23 +332,10 @@ cp $BASEDIR/emergency-backup-metadata.sh /tmp/opencrvs/infrastructure/emergency-
 # Copy emergency restore script
 cp $BASEDIR/emergency-restore-metadata.sh /tmp/opencrvs/infrastructure/emergency-restore-metadata.sh
 
-# Copy authorized keys
-cp $BASEDIR/authorized_keys /tmp/opencrvs/infrastructure/authorized_keys
-
 # Copy metabase database
 cp $PARENT_DIR/src/api/dashboards/file/metabase.init.db.sql /tmp/opencrvs/infrastructure/metabase.init.db.sql
 
-rotate_authorized_keys() {
-  # file exists and has a size of more than 0 bytes
-  if [ -s "/tmp/opencrvs/infrastructure/authorized_keys" ]; then
-    ssh $SSH_USER@$SSH_HOST -p $SSH_PORT 'cat /opt/opencrvs/infrastructure/authorized_keys > ~/.ssh/authorized_keys'
-  else
-    echo "File /tmp/opencrvs/infrastructure/authorized_keys is empty. Did not rotate authorized keys!"
-  fi
-}
-
 # Download base docker compose files to the server
-
 rsync -e "ssh -p $SSH_PORT" --exclude='vagrant/' -rP /tmp/docker-compose* infrastructure $SSH_USER@$SSH_HOST:/opt/opencrvs/
 
 rsync -e "ssh -p $SSH_PORT" --exclude='vagrant/' -rP $BASEDIR/docker-compose* infrastructure $SSH_USER@$SSH_HOST:/opt/opencrvs/
@@ -537,7 +524,6 @@ else
 fi
 
 rotate_secrets "$FILES_TO_ROTATE"
-rotate_authorized_keys
 docker_stack_deploy "$ENVIRONMENT_COMPOSE" "$REPLICAS_COMPOSE"
 
 echo

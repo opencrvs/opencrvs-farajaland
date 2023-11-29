@@ -58,6 +58,14 @@
         - users
 
     - include_tasks:
+        file: tasks/users.yml
+        apply:
+          tags:
+            - users
+      tags:
+        - users
+
+    - include_tasks:
         file: tasks/crontab.yml
         apply:
           tags:
