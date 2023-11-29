@@ -6,34 +6,32 @@
 # & Healthcare Disclaimer located at http://opencrvs.org/license.
 #
 # Copyright (C) The OpenCRVS Authors located at https://github.com/opencrvs/opencrvs-core/blob/master/AUTHORS.
-name: 'service alert'
+name: 'ssh-alert'
 type: 'frequency'
-index: 'kibana-alert-history-services'
+index: 'kibana-alert-history-default'
 is_enabled: true
 num_events: 1
 realert:
-  minutes: 5
+  minutes: 1
 terms_size: 50
 timeframe:
-  minutes: 5
+  minutes: 1
 timestamp_field: '@timestamp'
 timestamp_type: 'iso'
 use_strftime_index: false
 # https://github.com/Yelp/elastalert/issues/1260
 raw_count_keys: false
-alert_subject: '{{HOST}} {}: {} {} 🚨'
+alert_subject: '{{HOST}}: Login to {} from {} 🚨'
 alert_subject_args:
-  - 'event.kind'
-  - 'rule.name'
-  - 'kibana.alert.context.apm__error_rate.serviceName'
-alert_text: 'Login to https://kibana.{{HOST}}/app/apm/services/{}/overview to view the alert.'
-alert_text_args:
-  - 'kibana.alert.context.apm__error_rate.serviceName'
+  - 'kibana.alert.context.__es-query.hits[0]_source.user.name'
+  - 'kibana.alert.context.__es-query.hits[0]_source.source.ip'
+alert_text: 'Login to https://kibana.{{HOST}} to view the alert.'
+
 filter:
   - query:
       term:
         rule.name.keyword:
-          value: 'Error in service'
+          value: 'Succesful SSH login'
 alert:
   - 'email'
 email: '{{ALERT_EMAIL}}'

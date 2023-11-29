@@ -29,14 +29,25 @@ alert_text: 'Reason: {}. Login to https://kibana.{{HOST}} to view the alert.'
 alert_text_args:
   - 'kibana.alert.context.metrics__alert__inventory__threshold.reason'
 filter:
-  - query:
-      query_string:
-        query: '@timestamp:*'
+  - bool:
+      should:
+        - term:
+            rule.name.keyword:
+              value: 'Available disk space in data partition'
+        - term:
+            rule.name.keyword:
+              value: 'CPU under heavy load'
+        - term:
+            rule.name.keyword:
+              value: 'Low on available disk space'
+      minimum_should_match: 1
+
 alert:
   - 'email'
 email: '{{ALERT_EMAIL}}'
 from_addr: 'alert@opencrvs.org'
 smtp_host: '{{SMTP_HOST}}'
+# prettier-ignore
 smtp_port: {{SMTP_PORT}}
 smtp_ssl: false
 smtp_auth_file: '/opt/elastalert/auth.yaml'
