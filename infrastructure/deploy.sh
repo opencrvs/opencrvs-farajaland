@@ -332,9 +332,6 @@ cp $BASEDIR/emergency-backup-metadata.sh /tmp/opencrvs/infrastructure/emergency-
 # Copy emergency restore script
 cp $BASEDIR/emergency-restore-metadata.sh /tmp/opencrvs/infrastructure/emergency-restore-metadata.sh
 
-# Copy metabase database
-cp $PARENT_DIR/src/api/dashboards/file/metabase.init.db.sql /tmp/opencrvs/infrastructure/metabase.init.db.sql
-
 # Download base docker compose files to the server
 rsync -e "ssh -p $SSH_PORT" --exclude='vagrant/' -rP /tmp/docker-compose* infrastructure $SSH_USER@$SSH_HOST:/opt/opencrvs/
 
