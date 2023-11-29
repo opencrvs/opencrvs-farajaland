@@ -571,7 +571,7 @@ fi
 echo "Setting up Kibana config & alerts"
 
 while true; do
-  if ssh $SSH_USER@$SSH_HOST -p $SSH_PORT "ELASTICSEARCH_SUPERUSER_PASSWORD=$ELASTICSEARCH_SUPERUSER_PASSWORD HOST=kibana$HOST /opt/opencrvs/infrastructure/monitoring/kibana/setup-config.sh"; then
+  if ssh $SSH_USER@$SSH_HOST -p $SSH_PORT "ELASTICSEARCH_SUPERUSER_PASSWORD=$ELASTICSEARCH_SUPERUSER_PASSWORD HOST=kibana.$HOST /opt/opencrvs/infrastructure/monitoring/kibana/setup-config.sh"; then
     break
   fi
   sleep 5
