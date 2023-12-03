@@ -1,0 +1,73 @@
+name: PR Preview
+on:
+  workflow_dispatch:
+    inputs:
+      core_branch_name:
+        description: Core branch to build from
+        default: develop
+        required: true
+      country_config_branch_name:
+        description: Country config branch to build from
+        default: develop
+        required: true
+jobs:
+  push:
+    environment: staging
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone country config resource package
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Install SSH Key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_KEY }}
+          known_hosts: ${{ secrets.KNOWN_HOSTS }}
+      - name: Check if Service Exists
+        id: check-service
+        run: |
+          CORE_BRANCH_NAME="${{ github.event.inputs.core_branch_name }}"
+          COUNTRY_CONFIG_BRANCH_NAME="${{ github.event.inputs.country_config_branch_name }}"
+          SANITIZED_CORE_BRANCH_NAME=$(echo "$CORE_BRANCH_NAME" | sed 's/[^a-zA-Z0-9_-]/-/g')
+          SANITIZED_COUNTRY_CONFIG_BRANCH_NAME=$(echo "$COUNTRY_CONFIG_BRANCH_NAME" | sed 's/[^a-zA-Z0-9_-]/-/g')
+          COMBINED_NAME="${SANITIZED_CORE_BRANCH_NAME}__${SANITIZED_COUNTRY_CONFIG_BRANCH_NAME}"
+
+          echo "domain=$COMBINED_NAME.${{ vars.DOMAIN }}" >> $GITHUB_ENV
+
+          EXISTS=$(ssh root@${{ vars.DOMAIN }} "docker service ls | grep $COMBINED_NAME || true")
+
+          if [ -n "$EXISTS" ]; then
+            echo "service_exists=true" >> $GITHUB_ENV
+            echo "service_name=pr_preview_$COMBINED_NAME" >> $GITHUB_ENV
+          else
+            echo "service_exists=false" >> $GITHUB_ENV
+          fi
+
+      - name: Update Existing Service
+        if: env.service_exists == 'true'
+        run: |
+          ssh root@${{ vars.DOMAIN }} "docker service update --force ${{ env.service_name }}"
+
+      - name: Create New Service
+        if: env.service_exists == 'false'
+        run: |
+          ssh root@${{ vars.DOMAIN }} "bash -s" -- < ./.github/pr-previews/deploy.sh \
+            --core-branch-name ${{ github.event.inputs.core_branch_name }} \
+            --country-config-branch-name ${{ github.event.inputs.country_config_branch_name }} \
+            --mongodb-admin-address mongodb://${{ secrets.MONGODB_ADMIN_USER }}:${{ secrets.MONGODB_ADMIN_PASSWORD }}@mongo1:27017 \
+            --elasticsearch-admin-address elastic:${{ secrets.ELASTICSEARCH_SUPERUSER_PASSWORD }}@elasticsearch:9200 \
+            --minio-external-address minio.${{ vars.DOMAIN }} \
+            --minio-address minio:9000 \
+            --influxdb-address influxdb:8086 \
+            --redis-address redis:6379 \
+            --minio-access-key ${{ secrets.MINIO_ROOT_USER }} \
+            --minio-secret-key ${{ secrets.MINIO_ROOT_PASSWORD }} \
+            --host-domain ${{ vars.DOMAIN }}
+
+      - name: Wait for the environment to respond with 200
+        run: |
+          until curl -s -o /dev/null -w "%{http_code}" https://${{ env.domain }} == "200"; do
+            sleep 5
+          done
