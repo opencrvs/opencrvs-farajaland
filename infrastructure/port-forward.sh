@@ -20,7 +20,7 @@ TARGET_CONTAINER_NAME=$(echo $CONTAINER_PORT | cut -d: -f1)
 PORT=$(echo $CONTAINER_PORT | cut -d: -f2)
 
 # Generate the socat container's name
-CONTAINER_NAME="tunnel_${TARGET_CONTAINER_NAME}_$(whoami)"
+CONTAINER_NAME="tunnel_${TARGET_CONTAINER_NAME}_$(whoami)_$PORT"
 
 # Generate a random port between 30000 and 60000 for socat inside the host machine
 SOCAT_PORT=$(( 30000 + RANDOM % 30001 ))
