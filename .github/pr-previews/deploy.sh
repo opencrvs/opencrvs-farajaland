@@ -56,16 +56,16 @@ docker service create \
 --env "CORE_VERSION=$CORE_BRANCH_NAME" \
 --env "COUNTY_CONFIG_VERSION=$COUNTRY_CONFIG_BRANCH_NAME" \
 --label "traefik.enable=true" \
---label "traefik.http.routers.pr-preview.rule=Host(\`$COMBINED_NAME.$HOST_DOMAIN\`)" \
---label "traefik.http.services.pr-preview.loadbalancer.server.port=7000" \
---label "traefik.http.routers.pr-preview.tls=true" \
---label "traefik.http.routers.pr-preview.tls.certresolver=certResolver" \
---label "traefik.http.routers.pr-preview.entrypoints=web,websecure" \
+--label "traefik.http.routers.$COMBINED_NAME.rule=Host(\`$COMBINED_NAME.$HOST_DOMAIN\`)" \
+--label "traefik.http.services.$COMBINED_NAME.loadbalancer.server.port=7000" \
+--label "traefik.http.routers.$COMBINED_NAME.tls=true" \
+--label "traefik.http.routers.$COMBINED_NAME.tls.certresolver=certResolver" \
+--label "traefik.http.routers.$COMBINED_NAME.entrypoints=web,websecure" \
 --label "traefik.docker.network=opencrvs_overlay_net" \
---label "traefik.http.middlewares.pr-preview.headers.customresponseheaders.Pragma=no-cache" \
---label "traefik.http.middlewares.pr-preview.headers.customresponseheaders.Cache-control=no-store" \
---label "traefik.http.middlewares.pr-preview.headers.customresponseheaders.X-Robots-Tag=none" \
---label "traefik.http.middlewares.pr-preview.headers.stsseconds=31536000" \
---label "traefik.http.middlewares.pr-preview.headers.stsincludesubdomains=true" \
---label "traefik.http.middlewares.pr-preview.headers.stspreload=true" \
+--label "traefik.http.middlewares.$COMBINED_NAME.headers.customresponseheaders.Pragma=no-cache" \
+--label "traefik.http.middlewares.$COMBINED_NAME.headers.customresponseheaders.Cache-control=no-store" \
+--label "traefik.http.middlewares.$COMBINED_NAME.headers.customresponseheaders.X-Robots-Tag=none" \
+--label "traefik.http.middlewares.$COMBINED_NAME.headers.stsseconds=31536000" \
+--label "traefik.http.middlewares.$COMBINED_NAME.headers.stsincludesubdomains=true" \
+--label "traefik.http.middlewares.$COMBINED_NAME.headers.stspreload=true" \
 rikukissa/opencrvs-standalone
