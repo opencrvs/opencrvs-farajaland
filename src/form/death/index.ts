@@ -75,6 +75,7 @@ import {
 } from '../common/preview-groups'
 import { certificateHandlebars } from './certficate-handlebars'
 import { getCommonSectionMapping } from '@countryconfig/utils/mapping/field-mapping-utils'
+import { getNumberOfDependants } from './custom-fields'
 //import { getSectionMapping } from '@countryconfig/utils/mapping/section/death/mapping-utils'
 
 // import { createCustomFieldExample } from '../custom-fields'
@@ -205,7 +206,8 @@ export const deathForm = {
               getNationalIDValidators('deceased'),
               certificateHandlebars.deceasedNID
             ),
-            getMaritalStatus(certificateHandlebars.deceasedMaritalStatus, [])
+            getMaritalStatus(certificateHandlebars.deceasedMaritalStatus, []),
+            getNumberOfDependants()
           ],
           previewGroups: [deceasedNameInEnglish]
         }
