@@ -21,8 +21,7 @@ import {
   getFamilyNameField,
   getFirstNameField,
   getNationality,
-  otherInformantType,
-  getNationalID
+  otherInformantType
 } from '../common/common-required-fields'
 import {
   formMessageDescriptors,
@@ -60,6 +59,7 @@ import {
 } from '../common/preview-groups'
 import { certificateHandlebars } from './certificate-handlebars'
 import { getCommonSectionMapping } from '@countryconfig/utils/mapping/field-mapping-utils'
+import { getIDNumberFields, getIDType } from '../custom-fields'
 
 // import { createCustomFieldExample } from '../custom-fields'
 
@@ -137,11 +137,16 @@ export const marriageForm: ISerializedForm = {
               certificateHandlebars.informantNationality,
               hideIfInformantBrideOrGroom
             ), // Required field
-            getNationalID(
-              'informantID',
+            getIDType(
+              'marriage',
+              'informant',
               hideIfInformantBrideOrGroom,
-              getNationalIDValidators('informant'),
-              certificateHandlebars.informantNID
+              true
+            ),
+            ...getIDNumberFields(
+              'informant',
+              hideIfInformantBrideOrGroom,
+              true
             ),
             // ADDRESS FIELDS WILL RENDER HERE
             registrationPhone,
@@ -190,12 +195,8 @@ export const marriageForm: ISerializedForm = {
               brideOrGroomAgeValidators
             ),
             getNationality(certificateHandlebars.groomNationality, []), // Required field
-            getNationalID(
-              'iD',
-              [],
-              getNationalIDValidators('groom'),
-              certificateHandlebars.groomNID
-            ),
+            getIDType('marriage', 'groom', [], true),
+            ...getIDNumberFields('groom', [], true),
             getMarriedLastName(certificateHandlebars.groomMarriedLastNameEng)
           ],
           previewGroups: [groomNameInEnglish]
@@ -240,12 +241,8 @@ export const marriageForm: ISerializedForm = {
               brideOrGroomAgeValidators
             ),
             getNationality(certificateHandlebars.brideNationality, []), // Required field
-            getNationalID(
-              'iD',
-              [],
-              getNationalIDValidators('bride'),
-              certificateHandlebars.brideNID
-            ),
+            getIDType('marriage', 'bride', [], true),
+            ...getIDNumberFields('bride', [], true),
             getMarriedLastName(certificateHandlebars.brideMarriedLastNameEng)
           ],
           previewGroups: [brideNameInEnglish]

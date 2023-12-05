@@ -24,8 +24,7 @@ import {
   getFamilyNameField,
   getFirstNameField,
   getNationality,
-  otherInformantType,
-  getNationalID /*,
+  otherInformantType /*,
   getDetailsExist,
   getReasonNotExisting*/
 } from '../common/common-required-fields'
@@ -40,8 +39,6 @@ import {
 import { formMessageDescriptors } from '../common/messages'
 import { Event, ISerializedForm } from '../types/types'
 import {
-  getNationalIDValidators,
-  hideIfNidIntegrationEnabled,
   informantBirthDateConditionals,
   informantFamilyNameConditionals,
   ageOfIndividualConditionals,
@@ -76,6 +73,7 @@ import {
 import { certificateHandlebars } from './certficate-handlebars'
 import { getCommonSectionMapping } from '@countryconfig/utils/mapping/field-mapping-utils'
 import { getNumberOfDependants } from './custom-fields'
+import { getIDNumberFields, getIDType } from '../custom-fields'
 //import { getSectionMapping } from '@countryconfig/utils/mapping/section/death/mapping-utils'
 
 // import { createCustomFieldExample } from '../custom-fields'
@@ -200,12 +198,8 @@ export const deathForm = {
               ageOfDeceasedConditionals
             ),
             getNationality(certificateHandlebars.deceasedNationality, []),
-            getNationalID(
-              'deceasedID',
-              [],
-              getNationalIDValidators('deceased'),
-              certificateHandlebars.deceasedNID
-            ),
+            getIDType('death', 'deceased', [], true),
+            ...getIDNumberFields('deceased', [], true),
             getMaritalStatus(certificateHandlebars.deceasedMaritalStatus, []),
             getNumberOfDependants()
           ],
@@ -283,12 +277,8 @@ export const deathForm = {
               ageOfIndividualConditionals
             ),
             getNationality(certificateHandlebars.informantNationality, []),
-            getNationalID(
-              'informantID',
-              hideIfNidIntegrationEnabled,
-              getNationalIDValidators('informant'),
-              certificateHandlebars.informantNID
-            ),
+            getIDType('death', 'informant', [], true),
+            ...getIDNumberFields('informant', [], true),
             // ADDRESS FIELDS WILL RENDER HERE
             divider('informant-address-separator'),
             registrationPhone,
