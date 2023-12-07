@@ -346,6 +346,9 @@ services:
       - /opt/opencrvs/infrastructure/mc-config:/root/.mc
     networks:
       - overlay_net
+    deploy:
+      labels:
+        - 'traefik.enable=false'
     logging:
       driver: gelf
       options:

@@ -5,7 +5,9 @@ const { writeFileSync } = require('fs')
 const config = {
   environment: '',
   repo: {
-    REPOSITORY: '', // e.g. opencrvs/opencrvs-farajaland
+    REPOSITORY_ID: '',
+    REPOSITORY_ACCOUNT: '',
+    REPOSITORY_NAME: '',
     DOCKERHUB_ACCOUNT: '', // This may be a dockerhub organisation or the same as the username
     DOCKERHUB_REPO: '',
     DOCKER_USERNAME: process.env.DOCKER_USERNAME,
@@ -19,10 +21,10 @@ const config = {
     SSH_KEY: process.env.SSH_KEY // id_rsa
   },
   infrastructure: {
-    DISK_SPACE: '',
-    HOSTNAME: '', // server machine hostname used when provisioning - TODO: Adapt to support 3 or 5 replicas
-    DOMAIN: '', // web hostname applied after all public subdomains in Traefik,
-    REPLICAS: '1' // TODO: Adapt to support 3 or 5 replicas
+    DISK_SPACE: '', // e.g. 200g
+    HOSTNAME: '', // server machine hostname used when provisioning.  You would need to adapt to support 3 or 5 replicas
+    DOMAIN: '', // web domain applied after all public subdomains
+    REPLICAS: '1'
   },
   services: {
     SENTRY_DSN: process.env.SENTRY_DSN || '',
@@ -32,7 +34,7 @@ const config = {
     INFOBIP_SENDER_ID: process.env.INFOBIP_SENDER_ID || '' // the name of the SMS sender e.g. OpenCRVS
   },
   seeding: {
-    ACTIVATE_USERS: 'true',
+    ACTIVATE_USERS: '', // Must be a string 'true' for QA or 'false' in PRODUCTION!
     AUTH_HOST: '',
     COUNTRY_CONFIG_HOST: '',
     GATEWAY_HOST: ''
@@ -55,16 +57,13 @@ const config = {
     VPN_SERVERCERT: process.env.VPN_SERVERCERT || ''
   },
   whitelist: {
-    CONTENT_SECURITY_POLICY_WILDCARD: '', // e.g. *.<your-domain>
+    CONTENT_SECURITY_POLICY_WILDCARD: '*.', // e.g. *.<your-domain>
     CLIENT_APP_URL: '',
     LOGIN_URL: ''
   },
   backup: {
     BACKUP_HOST: process.env.BACKUP_HOST || '',
-    BACKUP_DIRECTORY: '',
-    qa: {
-      RESTORE_DIRECTORY: '' // If making use of script to restore a production backup on QA for regular monitoring
-    }
+    BACKUP_DIRECTORY: ''
   }
 }
 
@@ -72,16 +71,11 @@ const octokit = new Octokit({
   auth: process.env.GITHUB_TOKEN
 })
 
-async function fetchRepositoryId() {
-  const response = await octokit.request(`GET /repos/${config.repo.REPOSITORY}`)
-  return response.data.id.toString()
-}
-
-async function createVariable(repositoryId, environment, name, value) {
+async function createVariable(environment, name, value) {
   await octokit.request(
-    `POST /repositories/${repositoryId}/environments/${config.environment}/variables`,
+    `POST /repositories/${config.repo.REPOSITORY_ID}/environments/${config.environment}/variables`,
     {
-      repository_id: repositoryId,
+      repository_id: config.repo.REPOSITORY_ID,
       environment_name: environment,
       name: name,
       value: value,
@@ -92,14 +86,7 @@ async function createVariable(repositoryId, environment, name, value) {
   )
 }
 
-async function createSecret(
-  repositoryId,
-  environment,
-  key,
-  keyId,
-  name,
-  secret
-) {
+async function createSecret(environment, key, keyId, name, secret) {
   //Check if libsodium is ready and then proceed.
   await sodium.ready
 
@@ -117,9 +104,9 @@ async function createSecret(
   )
 
   await octokit.request(
-    `PUT /repositories/${repositoryId}/environments/${environment}/secrets/${name}`,
+    `PUT /repositories/${config.repo.REPOSITORY_ID}/environments/${environment}/secrets/${name}`,
     {
-      repository_id: repositoryId,
+      repository_id: config.repo.REPOSITORY_ID,
       environment_name: environment,
       secret_name: name,
       encrypted_value: encryptedValue,
@@ -131,9 +118,9 @@ async function createSecret(
   )
 }
 
-async function getPublicKey(repositoryId, environment) {
+async function getPublicKey(environment) {
   await octokit.request(
-    `PUT /repositories/${repositoryId}/environments/${environment}`,
+    `PUT /repos/${config.repo.REPOSITORY_ACCOUNT}/${config.repo.REPOSITORY_NAME}/environments/${environment}`,
     {
       headers: {
         'X-GitHub-Api-Version': '2022-11-28'
@@ -142,8 +129,10 @@ async function getPublicKey(repositoryId, environment) {
   )
 
   const res = await octokit.request(
-    `GET /repositories/${repositoryId}/environments/${environment}/secrets/public-key`,
+    `GET /repositories/${config.repo.REPOSITORY_ID}/environments/${environment}/secrets/public-key`,
     {
+      owner: config.repo.DOCKERHUB_ACCOUNT,
+      repo: config.repo.DOCKERHUB_REPO,
       headers: {
         'X-GitHub-Api-Version': '2022-11-28'
       }
@@ -163,8 +152,7 @@ function generateLongPassword() {
 }
 
 async function main() {
-  const repositoryId = await fetchRepositoryId()
-  const { key, key_id } = await getPublicKey(repositoryId, config.environment)
+  const { key, key_id } = await getPublicKey(config.environment)
   let backupSecrets = {}
   let backupVariables = {}
   let vpnSecrets = {}
@@ -185,7 +173,7 @@ async function main() {
     }
   }
 
-  const SECRETS = {
+  const SECRETS_TO_SAVE_IN_PASSWORD_MANAGER = {
     ELASTICSEARCH_SUPERUSER_PASSWORD: generateLongPassword(),
     ENCRYPTION_KEY: generateLongPassword(),
     KIBANA_USERNAME: 'opencrvs-admin',
@@ -194,11 +182,14 @@ async function main() {
     MINIO_ROOT_USER: generateLongPassword(),
     MONGODB_ADMIN_PASSWORD: generateLongPassword(),
     MONGODB_ADMIN_USER: generateLongPassword(),
-    SUPER_USER_PASSWORD: generateLongPassword(),
-    BACKUP_ENCRYPTION_PASSPHRASE: generateLongPassword(),
+    SUPER_USER_PASSWORD: generateLongPassword()
+  }
+
+  const SECRETS = {
     DOCKERHUB_ACCOUNT: config.repo.DOCKERHUB_ACCOUNT,
     DOCKERHUB_REPO: config.repo.DOCKERHUB_REPO,
     DOCKER_TOKEN: config.repo.DOCKER_TOKEN,
+    ...SECRETS_TO_SAVE_IN_PASSWORD_MANAGER,
     ...config.ssh,
     ...config.smtp,
     ...config.services,
@@ -212,8 +203,10 @@ async function main() {
     ...backupVariables
   }
   writeFileSync(
-    './.secrets/' + config.environment + '.json',
-    JSON.stringify([SECRETS, VARIABLES], null, 2)
+    '../.secrets/SECRETS_TO_SAVE_IN_PASSWORD_MANAGER_FOR_ENV_' +
+      config.environment +
+      '.json',
+    JSON.stringify([SECRETS_TO_SAVE_IN_PASSWORD_MANAGER], null, 2)
   )
   if (process.argv.includes('--dry-run')) {
     console.log('Dry run. Not creating secrets or variables.')
@@ -221,7 +214,6 @@ async function main() {
   } else {
     for (const [secretName, secretValue] of Object.entries(SECRETS)) {
       await createSecret(
-        repositoryId,
         config.environment,
         key,
         key_id,
@@ -231,12 +223,7 @@ async function main() {
     }
 
     for (const [variableName, variableValue] of Object.entries(VARIABLES)) {
-      await createVariable(
-        repositoryId,
-        config.environment,
-        variableName,
-        variableValue
-      )
+      await createVariable(config.environment, variableName, variableValue)
     }
   }
 }
