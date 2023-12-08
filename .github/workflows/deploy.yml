@@ -117,7 +117,6 @@ jobs:
           SUPER_USER_PASSWORD: ${{ secrets.SUPER_USER_PASSWORD }}
           SSH_KEY: ${{ secrets.SSH_KEY }}
           CONTENT_SECURITY_POLICY_WILDCARD: ${{ vars.CONTENT_SECURITY_POLICY_WILDCARD }}
-          # ELASTALERT_SLACK_WEBHOOK: ${{ secrets.ELASTALERT_SLACK_WEBHOOK }}
         run: |
           cd ./${{ github.event.repository.name }}
           yarn deploy \

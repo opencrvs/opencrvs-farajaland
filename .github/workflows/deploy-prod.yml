@@ -114,7 +114,6 @@ jobs:
           SSH_KEY: ${{ secrets.SSH_KEY }}
           KNOWN_HOSTS: ${{ secrets.KNOWN_HOSTS }}
           CONTENT_SECURITY_POLICY_WILDCARD: ${{ vars.CONTENT_SECURITY_POLICY_WILDCARD }}
-          # ELASTALERT_SLACK_WEBHOOK: ${{ secrets.ELASTALERT_SLACK_WEBHOOK }}
         run: |
           cd ./${{ github.event.repository.name }}
           yarn deploy \

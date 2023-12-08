@@ -27,7 +27,6 @@ const config = {
   },
   services: {
     SENTRY_DSN: process.env.SENTRY_DSN || '',
-    ELASTALERT_SLACK_WEBHOOK: process.env.ELASTALERT_SLACK_WEBHOOK || '',
     INFOBIP_API_KEY: process.env.INFOBIP_API_KEY || '',
     INFOBIP_GATEWAY_ENDPOINT: process.env.INFOBIP_GATEWAY_ENDPOINT || '',
     INFOBIP_SENDER_ID: process.env.INFOBIP_SENDER_ID || '' // the name of the SMS sender e.g. OpenCRVS
