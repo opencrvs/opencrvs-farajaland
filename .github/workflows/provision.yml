@@ -109,7 +109,6 @@ jobs:
           external_backup_server_ip: ${{ secrets.BACKUP_HOST }}
           manager_production_server_ip: ${{ secrets.SSH_HOST }}
           ansible_user: ${{ secrets.SSH_USER }}
-          # ansible_sudo_pass: ${{ secrets.SUDO_PASSWORD }} in case your user is not root
 
       - name: Set variables for ansible in qa environments
         id: ansible-variables
@@ -128,7 +127,6 @@ jobs:
           mongodb_admin_username: ${{ secrets.MONGODB_ADMIN_USER }}
           mongodb_admin_password: ${{ secrets.MONGODB_ADMIN_PASSWORD }}
           elasticsearch_superuser_password: ${{ secrets.ELASTICSEARCH_SUPERUSER_PASSWORD }}
-          # ansible_sudo_pass: ${{ secrets.SUDO_PASSWORD }} in case your user is not root
 
       - name: Read known hosts
         run: |

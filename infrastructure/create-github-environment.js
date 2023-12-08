@@ -17,7 +17,6 @@ const config = {
     KNOWN_HOSTS: process.env.KNOWN_HOSTS,
     SSH_HOST: process.env.SSH_HOST, // IP address for the manager
     SSH_USER: process.env.SSH_USER,
-    // SUDO_PASSWORD: process.env.SUDO_PASSWORD, // in case your user is not root
     SSH_KEY: process.env.SSH_KEY // id_rsa
   },
   infrastructure: {

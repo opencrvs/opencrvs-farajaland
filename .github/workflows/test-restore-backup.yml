@@ -61,7 +61,6 @@ jobs:
         id: production-backup-check
         if: ${{ github.event.inputs.testing-prod-backup == 'production' }}
         env:
-          SUDO_PASSWORD: ${{ secrets.VPN_PWD }}
           SSH_USER: ${{ secrets.SSH_USER }}
           SSH_HOST: ${{ secrets.SSH_HOST }}
           BACKUP_HOST: ${{ secrets.BACKUP_HOST }}
@@ -78,7 +77,6 @@ jobs:
         id: qa-backup-check
         if: ${{ github.event.inputs.testing-prod-backup == 'qa' }}
         env:
-          SUDO_PASSWORD: ${{ secrets.VPN_PWD }}
           SSH_USER: ${{ secrets.SSH_USER }}
           SSH_HOST: ${{ secrets.SSH_HOST }}
           BACKUP_HOST: ${{ secrets.BACKUP_HOST }}

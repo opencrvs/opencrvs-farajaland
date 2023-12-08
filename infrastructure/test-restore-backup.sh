@@ -11,13 +11,6 @@
 # THIS SCRIPT RUNS FROM A GITHUB ACTION TO TEST RESTORE A BACKUP ONTO A QA SERVER AS A REGULAR MONITORING EXERCISE
 #------------------------------------------------------------------------------------------------------------------
 
-# Uncomment if your SSH user is not root
-#
-#if [ -z "$SUDO_PASSWORD" ] ; then
-#    echo 'Error: Missing environment variable SUDO_PASSWORD.'
-#   exit 1
-#fi
-
 if [ -z "$SSH_USER" ] ; then
     echo 'Error: Missing environment variable SSH_USER.'
     exit 1
@@ -65,7 +58,7 @@ fi
 
 if [ $REVERTING == "no" ] ; then
     # Backup QA environment first
-    ssh "$SSH_USER@$SSH_HOST" "echo $SUDO_PASSWORD | sudo -S bash /opt/opencrvs/infrastructure/emergency-backup-metadata.sh --ssh_user=$SSH_USER --ssh_host=$BACKUP_HOST --ssh_port=22 --production_ip=$SSH_HOST --remote_dir=$BACKUP_DIRECTORY/qa --replicas=$REPLICAS --label=$QA_BACKUP_LABEL"
+    ssh "$SSH_USER@$SSH_HOST" "bash /opt/opencrvs/infrastructure/emergency-backup-metadata.sh --ssh_user=$SSH_USER --ssh_host=$BACKUP_HOST --ssh_port=22 --production_ip=$SSH_HOST --remote_dir=$BACKUP_DIRECTORY/qa --replicas=$REPLICAS --label=$QA_BACKUP_LABEL"
     LABEL="$PROD_BACKUP_LABEL"
     REMOTE_DIR="$BACKUP_DIRECTORY/$LABEL"
 else
@@ -98,18 +91,11 @@ ssh "$SSH_USER@$SSH_HOST" "rsync -av --delete --progress $SSH_USER@$BACKUP_HOST:
 
 # Restore
 echo "Restoring"
-# Uncomment if your SSH user is not root
-#
-# ssh "$SSH_USER@$SSH_HOST" "echo $SUDO_PASSWORD | sudo -S rm -rf /data/backups/elasticsearch && mv $RESTORE_DIRECTORY/elasticsearch /data/backups/"
-# else 
 ssh "$SSH_USER@$SSH_HOST" "rm -rf /data/backups/elasticsearch && mv $RESTORE_DIRECTORY/elasticsearch /data/backups/"
 
 ssh "$SSH_USER@$SSH_HOST" "docker service update --force --update-parallelism 1 --update-delay 30s opencrvs_elasticsearch"
 echo "Waiting 2 mins for elasticsearch to restart."
 echo
 sleep 120
-# Uncomment if your SSH user is not root
-#
-# ssh "$SSH_USER@$SSH_HOST" "echo $SUDO_PASSWORD | sudo -S bash /opt/opencrvs/infrastructure/emergency-restore-metadata.sh --label=$LABEL --replicas=$REPLICAS --backup-dir=$RESTORE_DIRECTORY"
-# else 
+
 ssh "/opt/opencrvs/infrastructure/emergency-restore-metadata.sh --label=$LABEL --replicas=$REPLICAS --backup-dir=$RESTORE_DIRECTORY"
