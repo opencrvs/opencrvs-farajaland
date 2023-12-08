@@ -41,3 +41,19 @@
     group: 'application'
     state: touch
     mode: 'u+rwX,g+rwX,o-rwx'
+
+- name: Create reboot logfile
+  ansible.builtin.file:
+    path: /var/log/cryptfs-reboot.log
+    owner: '{{ ansible_user }}'
+    group: 'application'
+    state: touch
+    mode: 'u+rwX,g+rwX,o-rwx'
+
+- name: Create papertrail logfile
+  ansible.builtin.file:
+    path: /var/log/papertrail.log
+    owner: '{{ ansible_user }}'
+    group: 'application'
+    state: touch
+    mode: 'u+rwX,g+rwX,o-rwx'
