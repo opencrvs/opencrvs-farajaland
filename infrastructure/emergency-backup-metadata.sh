@@ -339,7 +339,7 @@ if [[ "$OWN_IP" = "$PRODUCTION_IP" || "$OWN_IP" = "$(dig $PRODUCTION_IP +short)"
 
   openssl enc -aes-256-cbc -salt -in /tmp/${LABEL:-$BACKUP_DATE}.tar.gz -out /tmp/${LABEL:-$BACKUP_DATE}.tar.gz.enc -pass pass:$PASSPHRASE
 
-  script -q -c "rsync -a -r --rsync-path='mkdir -p $REMOTE_DIR/ && rsync' --progress --rsh='ssh -o StrictHostKeyChecking=no -o ProxyCommand=\"ssh -o StrictHostKeyChecking=no ubuntu@165.210.33.199 -W %h:%p\" -p$SSH_PORT' /tmp/${LABEL:-$BACKUP_DATE}.tar.gz.enc $SSH_USER@$SSH_HOST:$REMOTE_DIR/" && echo "Copied backup files to remote server."
+  script -q -c "rsync -a -r --rsync-path='mkdir -p $REMOTE_DIR/ && rsync' --progress --rsh='ssh -o StrictHostKeyChecking=no -p$SSH_PORT' /tmp/${LABEL:-$BACKUP_DATE}.tar.gz.enc $SSH_USER@$SSH_HOST:$REMOTE_DIR/" && echo "Copied backup files to remote server."
 
   rm /tmp/${LABEL:-$BACKUP_DATE}.tar.gz.enc
   rm /tmp/${LABEL:-$BACKUP_DATE}.tar.gz
