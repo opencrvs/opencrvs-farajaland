@@ -173,6 +173,7 @@ async function main() {
 
   const SECRETS_TO_SAVE_IN_PASSWORD_MANAGER = {
     ELASTICSEARCH_SUPERUSER_PASSWORD: generateLongPassword(),
+    BACKUP_ENCRYPTION_PASSPHRASE: generateLongPassword(),
     ENCRYPTION_KEY: generateLongPassword(),
     KIBANA_USERNAME: 'opencrvs-admin',
     KIBANA_PASSWORD: generateLongPassword(),
