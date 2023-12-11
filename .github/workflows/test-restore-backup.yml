@@ -25,9 +25,6 @@ jobs:
     environment: qa
     runs-on: ubuntu-20.04
     timeout-minutes: 60
-    strategy:
-      matrix:
-        node-version: [16.20.0]
     steps:
       - uses: actions/checkout@v2
         if: github.event_name == 'workflow_dispatch'
@@ -52,7 +49,7 @@ jobs:
           REPLICAS: ${{ vars.REPLICAS }}
           QA_BACKUP_LABEL: ${{ github.event.inputs.qa-backup-label }}
           PROD_BACKUP_LABEL: ${{ github.event.inputs.prod-backup-label }}
-          REVERTING: "no"
+          REVERTING: 'no'
         run: |
           bash infrastructure/test-restore-backup.sh
 
@@ -67,7 +64,7 @@ jobs:
           RESTORE_DIRECTORY: ${{ vars.RESTORE_DIRECTORY }}
           REPLICAS: ${{ vars.REPLICAS }}
           QA_BACKUP_LABEL: ${{ github.event.inputs.qa-backup-label }}
-          PROD_BACKUP_LABEL: ""
-          REVERTING: "yes"
+          PROD_BACKUP_LABEL: ''
+          REVERTING: 'yes'
         run: |
           bash infrastructure/test-restore-backup.sh
