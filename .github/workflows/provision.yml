@@ -125,9 +125,8 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           known_hosts: ${{ env.KNOWN_HOSTS }}
 
-      - name: Run playbook on 1 replica in qa
+      - name: Run playbook
         uses: dawidd6/action-ansible-playbook@v2
-        if: vars.REPLICAS == 1 && env.ENV_TYPE == 'qa'
         env:
           ANSIBLE_PERSISTENT_COMMAND_TIMEOUT: 30
           ANSIBLE_SSH_TIMEOUT: 30
@@ -135,32 +134,8 @@ jobs:
         with:
           playbook: playbook.yml
           directory: ${{ github.event.repository.name }}/infrastructure/server-setup
-          inventory: |
-            [docker-manager-first]
-            ${{ vars.HOSTNAME }} ansible_host="${{ secrets.SSH_HOST }}" data_label=data1
-
-            [docker-workers]
           options: |
             --verbose
+            --inventory ${{ github.event.inputs.environment }}.ini
             ${{ inputs.tag != 'all' && format('--tags={0}', inputs.tag) || ''}}
             --extra-vars ""${{ steps.ansible-variables.outputs.EXTRA_VARS }}""
-
-      - name: Run playbook on 1 replica in production
-        uses: dawidd6/action-ansible-playbook@v2
-        if: vars.REPLICAS == 1 && env.ENV_TYPE == 'production'
-        env:
-          ANSIBLE_PERSISTENT_COMMAND_TIMEOUT: 30
-          ANSIBLE_SSH_TIMEOUT: 30
-          ANSIBLE_SSH_RETRIES: 20
-        with:
-          playbook: playbook.yml
-          directory: ${{ github.event.repository.name }}/infrastructure/server-setup
-          inventory: |
-            [docker-manager-first]
-            ${{ vars.HOSTNAME }} ansible_host="${{ secrets.SSH_HOST }}" data_label=data1
-
-            [docker-workers]
-          options: |
-            --verbose
-            ${{ inputs.tag != 'all' && format('--tags={0}', inputs.tag) || ''}}
-            --extra-vars ""${{ steps.ansible-production-variables.outputs.EXTRA_VARS }}""
