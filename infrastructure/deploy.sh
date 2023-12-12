@@ -337,9 +337,6 @@ rsync -e "ssh -p $SSH_PORT" --exclude='vagrant/' -rP /tmp/docker-compose* infras
 
 rsync -e "ssh -p $SSH_PORT" --exclude='vagrant/' -rP $BASEDIR/docker-compose* infrastructure $SSH_USER@$SSH_HOST:/opt/opencrvs/
 
-# Copy all country compose files to the server
-rsync -e "ssh -p $SSH_PORT" --exclude='vagrant/' -rP $BASEDIR/docker-compose.countryconfig* infrastructure $SSH_USER@$SSH_HOST:/opt/opencrvs/
-
 # Override configuration files with country specific files
 rsync -e "ssh -p $SSH_PORT" -rP /tmp/opencrvs/infrastructure $SSH_USER@$SSH_HOST:/opt/opencrvs
 
@@ -410,13 +407,9 @@ split_and_join() {
 
 docker_stack_deploy() {
   environment_compose=$1
-  replicas_compose=$2
   echo "DEPLOYING THIS ENVIRONMENT: $environment_compose"
-  echo "DEPLOYING THESE REPLICAS: $replicas_compose"
 
   ENVIRONMENT_COMPOSE_WITH_LOCAL_PATHS=$(echo "$environment_compose" | sed "s|docker-compose|$BASEDIR/docker-compose|g")
-  REPLICAS_COMPOSE_WITH_LOCAL_PATHS=$(echo "$replicas_compose" | sed "s|docker-compose|$BASEDIR/docker-compose|g")
-
   CORE_COMPOSE_FILES_WITH_LOCAL_PATHS=$(echo "$COMPOSE_FILED_FROM_CORE" | sed "s|docker-compose|/tmp/docker-compose|g")
   COMMON_COMPOSE_FILES_WITH_LOCAL_PATHS="$BASEDIR/docker-compose.deploy.yml $CORE_COMPOSE_FILES_WITH_LOCAL_PATHS"
 
@@ -465,7 +458,7 @@ docker_stack_deploy() {
   echo "Pulling all docker images. This might take a while"
 
   EXISTING_IMAGES=$(ssh $SSH_USER@$SSH_HOST -p $SSH_PORT "docker images --format '{{.Repository}}:{{.Tag}}'")
-  IMAGE_TAGS_TO_DOWNLOAD=$(get_docker_tags_from_compose_files "$COMMON_COMPOSE_FILES_WITH_LOCAL_PATHS $ENVIRONMENT_COMPOSE_WITH_LOCAL_PATHS $REPLICAS_COMPOSE_WITH_LOCAL_PATHS")
+  IMAGE_TAGS_TO_DOWNLOAD=$(get_docker_tags_from_compose_files "$COMMON_COMPOSE_FILES_WITH_LOCAL_PATHS $ENVIRONMENT_COMPOSE_WITH_LOCAL_PATHS")
 
   for tag in ${IMAGE_TAGS_TO_DOWNLOAD[@]}; do
     if [[ $EXISTING_IMAGES == *"$tag"* ]]; then
@@ -484,45 +477,31 @@ docker_stack_deploy() {
 
   echo "Updating docker swarm stack with new compose files"
   ssh $SSH_USER@$SSH_HOST -p $SSH_PORT 'cd /opt/opencrvs && \
-    '$ENV_VARIABLES' docker stack deploy --prune -c '$(split_and_join " " " -c " "$COMMON_COMPOSE_FILES $environment_compose $replicas_compose")' --with-registry-auth opencrvs'
+    '$ENV_VARIABLES' docker stack deploy --prune -c '$(split_and_join " " " -c " "$COMMON_COMPOSE_FILES $environment_compose")' --with-registry-auth opencrvs'
 }
 
 FILES_TO_ROTATE="/opt/opencrvs/docker-compose.deploy.yml"
 
-if [ "$REPLICAS" = "3" ]; then
-  REPLICAS_COMPOSE="docker-compose.replicas-3.yml docker-compose.countryconfig.replicas-3.yml"
-  FILES_TO_ROTATE="${FILES_TO_ROTATE} /opt/opencrvs/docker-compose.replicas-3.yml"
-elif [ "$REPLICAS" = "5" ]; then
-  REPLICAS_COMPOSE="docker-compose.replicas-5.yml docker-compose.countryconfig.replicas-5.yml"
-  FILES_TO_ROTATE="${FILES_TO_ROTATE} /opt/opencrvs/docker-compose.replicas-5.yml"
-elif [ "$REPLICAS" = "1" ]; then
-  REPLICAS_COMPOSE="docker-compose.countryconfig.replicas-1.yml"
-else
-  echo "Unknown error running docker-compose on server as REPLICAS is not 1, 3 or 5."
-  exit 1
-fi
-
 # Deploy the OpenCRVS stack onto the swarm
 if [[ "$ENV" = "staging" ]]; then
-  ENVIRONMENT_COMPOSE="docker-compose.countryconfig.staging-deploy.yml docker-compose.staging-deploy.yml"
-  FILES_TO_ROTATE="${FILES_TO_ROTATE} /opt/opencrvs/docker-compose.countryconfig.staging-deploy.yml /opt/opencrvs/docker-compose.staging-deploy.yml"
+  ENVIRONMENT_COMPOSE="docker-compose.staging-deploy.yml"
+  FILES_TO_ROTATE="${FILES_TO_ROTATE} /opt/opencrvs/docker-compose.staging-deploy.yml"
 elif [[ "$ENV" = "qa" ]]; then
-  ENVIRONMENT_COMPOSE="docker-compose.countryconfig.qa-deploy.yml docker-compose.qa-deploy.yml"
-  FILES_TO_ROTATE="${FILES_TO_ROTATE} /opt/opencrvs/docker-compose.countryconfig.qa-deploy.yml /opt/opencrvs/docker-compose.qa-deploy.yml"
+  ENVIRONMENT_COMPOSE="docker-compose.qa-deploy.yml"
+  FILES_TO_ROTATE="${FILES_TO_ROTATE} /opt/opencrvs/docker-compose.qa-deploy.yml"
 elif [[ "$ENV" = "production" ]]; then
-  ENVIRONMENT_COMPOSE="docker-compose.countryconfig.prod-deploy.yml docker-compose.prod-deploy.yml"
-  FILES_TO_ROTATE="${FILES_TO_ROTATE} /opt/opencrvs/docker-compose.countryconfig.prod-deploy.yml /opt/opencrvs/docker-compose.prod-deploy.yml"
+  ENVIRONMENT_COMPOSE="docker-compose.production-deploy.yml"
+  FILES_TO_ROTATE="${FILES_TO_ROTATE} /opt/opencrvs/docker-compose.production-deploy.yml"
 elif [[ "$ENV" = "demo" ]]; then
-  ENVIRONMENT_COMPOSE="docker-compose.countryconfig.demo-deploy.yml docker-compose.prod-deploy.yml"
-  FILES_TO_ROTATE="${FILES_TO_ROTATE} /opt/opencrvs/docker-compose.countryconfig.demo-deploy.yml /opt/opencrvs/docker-compose.prod-deploy.yml"
+  ENVIRONMENT_COMPOSE="docker-compose.production-deploy.yml"
+  FILES_TO_ROTATE="${FILES_TO_ROTATE} /opt/opencrvs/docker-compose.production-deploy.yml"
 else
   echo "Unknown error running docker-compose on server as ENV is not staging, qa, demo or production."
   exit 1
 fi
 
 rotate_secrets "$FILES_TO_ROTATE"
-docker_stack_deploy "$ENVIRONMENT_COMPOSE" "$REPLICAS_COMPOSE"
-
+docker_stack_deploy "$ENVIRONMENT_COMPOSE"
 echo
 echo "This script doesnt ensure that all docker containers successfully start, just that docker_stack_deploy ran successfully."
 echo
