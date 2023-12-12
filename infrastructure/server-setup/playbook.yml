@@ -11,6 +11,7 @@
   tasks:
     - name: Create MongoDB replicate key file locally
       local_action: shell openssl rand -base64 755 > /tmp/mongodb-keyfile
+
 - hosts: all
   become: yes
   become_method: sudo
@@ -169,9 +170,11 @@
 - hosts: docker-workers
   become: yes
   become_method: sudo
+  vars:
+    manager_hostname: "{{ groups['docker-manager-first'][0] }}"
   tasks:
     - name: 'Join as a worker'
-      shell: "docker swarm join --token {{ hostvars['manager1']['worker_token']['stdout'] }} {{ hostvars['manager1']['ansible_default_ipv4']['address'] }}:2377"
+      shell: "docker swarm join --token {{ hostvars[manager_hostname]['worker_token']['stdout'] }} {{ hostvars[manager_hostname]['ansible_default_ipv4']['address'] }}:2377"
       when: "docker_info.stdout.find('Swarm: inactive') != -1"
       retries: 3
       delay: 20
