@@ -18,7 +18,7 @@ import * as inert from '@hapi/inert'
 import * as Sentry from 'hapi-sentry'
 import {
   CLIENT_APP_URL,
-  HOSTNAME,
+  DOMAIN,
   LOGIN_URL,
   SENTRY_DSN
 } from '@countryconfig/constants'
@@ -176,8 +176,8 @@ async function getPublicKey(): Promise<string> {
 }
 
 export async function createServer() {
-  let whitelist: string[] = [HOSTNAME]
-  if (HOSTNAME[0] !== '*') {
+  let whitelist: string[] = [DOMAIN]
+  if (DOMAIN[0] !== '*') {
     whitelist = [LOGIN_URL, CLIENT_APP_URL]
   }
   logger.info(`Whitelist: ${JSON.stringify(whitelist)}`)

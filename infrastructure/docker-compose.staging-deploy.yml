@@ -22,7 +22,6 @@ services:
       - CONFIRM_REGISTRATION_URL=http://openhim-core:5001/confirm/registration
       - CHECK_INVALID_TOKEN=true
       - MONGO_URL=mongodb://mongo1/user-mgnt?replicaSet=rs0
-      - HOSTNAME=${HOSTNAME}
       - SENTRY_DSN=${SENTRY_DSN}
     deploy:
       replicas: 1

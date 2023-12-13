@@ -31,7 +31,6 @@ const config = {
   },
   infrastructure: {
     DISK_SPACE: '', // e.g. 200g
-    HOSTNAME: '', // server machine hostname used when provisioning.  You would need to adapt to support 3 or 5 replicas
     DOMAIN: '', // web domain applied after all public subdomains
     REPLICAS: '1'
   },

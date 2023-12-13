@@ -93,7 +93,6 @@ services:
       - OPENHIM_URL=http://openhim-core:5001/fhir
       - CONFIRM_REGISTRATION_URL=http://openhim-core:5001/confirm/registration
       - CHECK_INVALID_TOKEN=true
-      - HOSTNAME=${HOSTNAME}
       - EMAIL_API_KEY=${EMAIL_API_KEY}
       - INFOBIP_GATEWAY_ENDPOINT=${INFOBIP_GATEWAY_ENDPOINT}
       - INFOBIP_API_KEY=${INFOBIP_API_KEY}
