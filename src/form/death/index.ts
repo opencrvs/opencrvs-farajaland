@@ -59,8 +59,7 @@ import {
   motherFirstNameConditionals,
   motherFamilyNameConditionals,
   mothersBirthDateConditionals,
-  mothersDetailsExistConditionals,
-  spouseDetailsExistConditionals*/,
+  mothersDetailsExistConditionals,*/,
   spouseDetailsExistConditionals,
   detailsExist,
   spouseBirthDateConditionals,
@@ -72,14 +71,13 @@ import {
   deceasedNameInEnglish,
   informantNameInEnglish /*,
   fatherNameInEnglish,
-  motherNameInEnglish,
-  spouseNameInEnglish*/,
+  motherNameInEnglish,*/,
   spouseNameInEnglish
 } from '../common/preview-groups'
 import { certificateHandlebars } from './certficate-handlebars'
 import { getCommonSectionMapping } from '@countryconfig/utils/mapping/field-mapping-utils'
-import { getNumberOfDependants } from './custom-fields'
-import { getIDNumberFields, getIDType } from '../custom-fields'
+import { getNumberOfDependants } from '@countryconfig/form/death/custom-fields'
+import { getIDNumberFields, getIDType } from '@countryconfig/form/custom-fields'
 import { getSectionMapping } from '@countryconfig/utils/mapping/section/death/mapping-utils'
 //import { getSectionMapping } from '@countryconfig/utils/mapping/section/death/mapping-utils'
 

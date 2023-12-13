@@ -261,12 +261,12 @@ export const birthForm: ISerializedForm = {
             getIDType(
               'birth',
               'informant',
-              hideIfNidIntegrationEnabled.concat(detailsExist),
+              hideIfNidIntegrationEnabled.concat(hideIfInformantMotherOrFather),
               true
             ),
             ...getIDNumberFields(
               'informant',
-              hideIfNidIntegrationEnabled.concat(detailsExist),
+              hideIfNidIntegrationEnabled.concat(hideIfInformantMotherOrFather),
               true
             ),
             // preceding field of address fields

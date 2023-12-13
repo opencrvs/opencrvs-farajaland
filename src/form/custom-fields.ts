@@ -9,11 +9,12 @@
  * Copyright (C) The OpenCRVS Authors located at https://github.com/opencrvs/opencrvs-core/blob/master/AUTHORS.
  */
 
-import { sentenceCase } from '@countryconfig/utils/address-utils'
 import { formMessageDescriptors } from './common/messages'
 import { Conditional, SerializedFormField } from './types/types'
 import { getCustomFieldMapping } from '@countryconfig/utils/mapping/field-mapping-utils'
 import { getNationalIDValidators } from './common/default-validation-conditionals'
+import { camelCase } from 'lodash'
+import { uppercaseFirstLetter } from '@countryconfig/utils'
 
 // ======================= CUSTOM FIELD CONFIGURATION =======================
 
@@ -131,14 +132,15 @@ export function getIDNumber(
   conditionals: Conditional[] = [],
   required: boolean
 ): SerializedFormField {
-  const fieldName: string = `${sectionId}IdNumber${sentenceCase(idValue)}`
+  const fieldName: string = `${sectionId}${uppercaseFirstLetter(
+    camelCase(idValue)
+  )}`
   const validators = getValidators(sectionId, idValue)
   // eslint-disable-next-line no-console
   console.log('Custom field addded with handlebar: ', fieldName)
   return {
     name: fieldName,
     required,
-    custom: true,
     type: 'TEXT',
     label: {
       id: 'form.field.label.iD',
