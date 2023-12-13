@@ -20,24 +20,14 @@ if (EMAIL_API_KEY) {
   sgMail.setApiKey(EMAIL_API_KEY)
 }
 
-const readBirthTemplate = <T extends Record<string, string>>(
-  templateName: string
+const readTemplate = <T extends Record<string, string>>(
+  templateName: string,
+  event: string
 ) =>
   Handlebars.compile<T>(
     fs
       .readFileSync(
-        join(__dirname, `/email-templates/birth/${templateName}.html`)
-      )
-      .toString()
-  )
-
-const readDeathTemplate = <T extends Record<string, string>>(
-  templateName: string
-) =>
-  Handlebars.compile<T>(
-    fs
-      .readFileSync(
-        join(__dirname, `/email-templates/death/${templateName}.html`)
+        join(__dirname, `/email-templates/${event}/${templateName}.html`)
       )
       .toString()
   )
@@ -130,12 +120,12 @@ type RejectionDeclarationVariables = DeclarationCommonVariables & {
 const templates = {
   'onboarding-invite': {
     type: 'onboarding-invite',
-    subject: 'Welcome to OpenCRVS!',
+    subject: 'Welcome to {{applicationName}}',
     template: readOtherTemplate<OnboardingInviteVariables>('onboarding-invite')
   },
   '2-factor-authentication': {
     type: '2-factor-authentication',
-    subject: 'Two factor authentication',
+    subject: 'Authentication code',
     template: readOtherTemplate<TwoFactorAuthenticationVariables>(
       '2-factor-authentication'
     )
@@ -156,67 +146,106 @@ const templates = {
   },
   'password-reset-by-system-admin': {
     type: 'password-reset-by-system-admin',
-    subject: 'Account password reset invitation',
+    subject: 'Password reset by system administrator',
     template: readOtherTemplate<ResetPasswordBySysAdminVariables>(
       'password-reset-by-system-admin'
     )
   },
   'password-reset': {
     type: 'password-reset',
-    subject: 'Account password reset request',
+    subject: 'Password reset',
     template: readOtherTemplate<ResetPasswordVariables>('password-reset')
   },
   'username-reminder': {
     type: 'username-reminder',
-    subject: 'Account username reminder',
+    subject: 'Username reminder',
     template: readOtherTemplate<UsernameReminderVariables>('username-reminder')
   },
   'username-updated': {
     type: 'username-updated',
-    subject: 'Account username updated',
+    subject: 'Username updated',
     template: readOtherTemplate<UsernameUpdateVariables>('username-updated')
   },
   birthInProgressNotification: {
     type: 'birthInProgressNotification',
     subject: 'Birth declaration in progress',
-    template: readBirthTemplate<InProgressDeclarationVariables>('inProgress')
+    template: readTemplate<InProgressDeclarationVariables>(
+      'inProgress',
+      'birth'
+    )
   },
   birthDeclarationNotification: {
     type: 'birthDeclarationNotification',
     subject: 'Birth declaration in review',
-    template: readBirthTemplate<InReviewDeclarationVariables>('inReview')
+    template: readTemplate<InReviewDeclarationVariables>('inReview', 'birth')
   },
   birthRegistrationNotification: {
     type: 'birthRegistrationNotification',
-    subject: 'Birth declaration registered',
-    template:
-      readBirthTemplate<RegistrationDeclarationVariables>('registration')
+    subject: 'Birth registration complete',
+    template: readTemplate<RegistrationDeclarationVariables>(
+      'registration',
+      'birth'
+    )
   },
   birthRejectionNotification: {
     type: 'birthRejectionNotification',
-    subject: 'Birth declaration required update',
-    template: readBirthTemplate<RejectionDeclarationVariables>('rejection')
+    subject: 'Birth declaration requires updates',
+    template: readTemplate<RejectionDeclarationVariables>('rejection', 'birth')
   },
   deathInProgressNotification: {
     type: 'deathInProgressNotification',
     subject: 'Death declaration in progress',
-    template: readDeathTemplate<InProgressDeclarationVariables>('inProgress')
+    template: readTemplate<InProgressDeclarationVariables>(
+      'inProgress',
+      'death'
+    )
   },
   deathDeclarationNotification: {
     type: 'deathDeclarationNotification',
     subject: 'Death declaration in review',
-    template: readDeathTemplate<InReviewDeclarationVariables>('inReview')
+    template: readTemplate<InReviewDeclarationVariables>('inReview', 'death')
   },
   deathRegistrationNotification: {
     type: 'deathRegistrationNotification',
-    subject: 'Death declaration registered',
-    template:
-      readDeathTemplate<RegistrationDeclarationVariables>('registration')
+    subject: 'Death registration complete',
+    template: readTemplate<RegistrationDeclarationVariables>(
+      'registration',
+      'death'
+    )
   },
   deathRejectionNotification: {
     type: 'deathRejectionNotification',
-    subject: 'Death declaration required update',
-    template: readDeathTemplate<RejectionDeclarationVariables>('rejection')
+    subject: 'Death declaration requires updates',
+    template: readTemplate<RejectionDeclarationVariables>('rejection', 'death')
+  },
+  marriageInProgressNotification: {
+    type: 'marriageInProgressNotification',
+    subject: 'Marriage declaration in progress',
+    template: readTemplate<InProgressDeclarationVariables>(
+      'inProgress',
+      'marriage'
+    )
+  },
+  marriageDeclarationNotification: {
+    type: 'marriageDeclarationNotification',
+    subject: 'Marriage declaration in review',
+    template: readTemplate<InReviewDeclarationVariables>('inReview', 'marriage')
+  },
+  marriageRegistrationNotification: {
+    type: 'marriageRegistrationNotification',
+    subject: 'Marriage registration complete',
+    template: readTemplate<RegistrationDeclarationVariables>(
+      'registration',
+      'marriage'
+    )
+  },
+  marriageRejectionNotification: {
+    type: 'marriageRejectionNotification',
+    subject: 'Marriage declaration requires updates',
+    template: readTemplate<RejectionDeclarationVariables>(
+      'rejection',
+      'marriage'
+    )
   }
 }
 
@@ -243,7 +272,10 @@ export const sendEmail = async (
   let emailSubject = ''
   let emailBody = ''
 
-  emailSubject = templates[type].subject
+  emailSubject = templates[type].subject.replace(
+    '{{applicationName}}',
+    variables.applicationName
+  )
   emailBody = templates[type].template(variables as any)
 
   const msg = {
