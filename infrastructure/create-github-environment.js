@@ -24,7 +24,6 @@ const config = {
     REPOSITORY_NAME: 'opencrvs-farajaland'
   },
   ssh: {
-    KNOWN_HOSTS: process.env.KNOWN_HOSTS,
     SSH_HOST: process.env.SSH_HOST, // IP address for the manager
     SSH_USER: process.env.SSH_USER,
     SSH_KEY: process.env.SSH_KEY // id_rsa
@@ -158,6 +157,7 @@ async function getPublicKey(environment) {
     config.github_repository.ORGANISATION,
     config.github_repository.REPOSITORY_NAME
   )
+
   await octokit.request(
     `PUT /repos/${config.github_repository.ORGANISATION}/${config.github_repository.REPOSITORY_NAME}/environments/${environment}`,
     {
@@ -249,7 +249,7 @@ async function main() {
   const SECRETS = {
     DOCKERHUB_ACCOUNT: config.dockerhub.ORGANISATION,
     DOCKERHUB_REPO: config.dockerhub.REPOSITORY,
-    DOCKER_TOKEN: config.github_repository.DOCKER_TOKEN,
+    DOCKER_TOKEN: config.dockerhub.TOKEN,
     ...SECRETS_TO_SAVE_IN_PASSWORD_MANAGER,
     ...config.ssh,
     ...config.smtp,
@@ -263,10 +263,6 @@ async function main() {
     ...config.seeding,
     ...config.whitelist,
     ...backupVariables
-  }
-
-  if (!existsSync('../.secrets')) {
-    mkdirSync('../.secrets')
   }
 
   const errors = []
@@ -319,8 +315,12 @@ async function main() {
     )
   }
 
+  if (!existsSync('.secrets')) {
+    mkdirSync('.secrets')
+  }
+
   writeFileSync(
-    '../.secrets/SECRETS_TO_SAVE_IN_PASSWORD_MANAGER_FOR_ENV_' +
+    '.secrets/SECRETS_TO_SAVE_IN_PASSWORD_MANAGER_FOR_ENV_' +
     config.environment +
     '.json',
     JSON.stringify([SECRETS_TO_SAVE_IN_PASSWORD_MANAGER], null, 2)
