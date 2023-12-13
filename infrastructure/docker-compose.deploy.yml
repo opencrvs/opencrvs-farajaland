@@ -571,6 +571,8 @@ services:
         - 'traefik.http.middlewares.countryconfig.headers.stspreload=true'
       replicas: 1
     environment:
+      - MONGO_URL=mongodb://mongo1/user-mgnt?replicaSet=rs0
+      - CONFIG_MONGO_URL=mongodb://mongo1/application-config?replicaSet=rs0
       - APN_SERVICE_URL=http://apm-server:8200
       - COUNTRY_CONFIG_URL=https://countryconfig.{{hostname}}
       - LOGIN_URL=https://login.{{hostname}}
