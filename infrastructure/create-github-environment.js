@@ -1,17 +1,27 @@
+const minimist = require('minimist')
 const sodium = require('libsodium-wrappers')
 const { Octokit } = require('@octokit/core')
 const { writeFileSync } = require('fs')
+const { existsSync } = require('fs')
+const { mkdirSync } = require('fs')
+
+const args = minimist(process.argv.slice(2), {
+  string: ['vpn-type'],
+  boolean: ['sms-enabled', 'configure-vpn', 'dry-run', 'configure-backup'],
+  alias: {}
+})
 
 const config = {
   environment: '',
-  repo: {
-    REPOSITORY_ID: '',
-    REPOSITORY_ACCOUNT: '',
-    REPOSITORY_NAME: '',
-    DOCKERHUB_ACCOUNT: '', // This may be a dockerhub organisation or the same as the username
-    DOCKERHUB_REPO: '',
-    DOCKER_USERNAME: process.env.DOCKER_USERNAME,
-    DOCKER_TOKEN: process.env.DOCKER_TOKEN
+  dockerhub: {
+    ORGANISATION: 'opencrvs', // This may be a dockerhub organisation or the same as the username
+    REPOSITORY: 'opencrvs-farajaland',
+    USERNAME: process.env.DOCKER_USERNAME,
+    TOKEN: process.env.DOCKER_TOKEN
+  },
+  github_repository: {
+    ORGANISATION: 'opencrvs',
+    REPOSITORY_NAME: 'opencrvs-farajaland'
   },
   ssh: {
     KNOWN_HOSTS: process.env.KNOWN_HOSTS,
@@ -25,11 +35,13 @@ const config = {
     DOMAIN: '', // web domain applied after all public subdomains
     REPLICAS: '1'
   },
+  sms: {
+    INFOBIP_API_KEY: process.env.INFOBIP_API_KEY,
+    INFOBIP_GATEWAY_ENDPOINT: process.env.INFOBIP_GATEWAY_ENDPOINT,
+    INFOBIP_SENDER_ID: process.env.INFOBIP_SENDER_ID // the name of the SMS sender e.g. OpenCRVS
+  },
   services: {
-    SENTRY_DSN: process.env.SENTRY_DSN || '',
-    INFOBIP_API_KEY: process.env.INFOBIP_API_KEY || '',
-    INFOBIP_GATEWAY_ENDPOINT: process.env.INFOBIP_GATEWAY_ENDPOINT || '',
-    INFOBIP_SENDER_ID: process.env.INFOBIP_SENDER_ID || '' // the name of the SMS sender e.g. OpenCRVS
+    SENTRY_DSN: process.env.SENTRY_DSN
   },
   seeding: {
     ACTIVATE_USERS: '', // Must be a string 'true' for QA or 'false' in PRODUCTION!
@@ -38,21 +50,27 @@ const config = {
     GATEWAY_HOST: ''
   },
   smtp: {
-    SMTP_HOST: process.env.SMTP_HOST || '',
-    SMTP_USERNAME: process.env.SMTP_USERNAME || '',
-    SMTP_PASSWORD: process.env.SMTP_PASSWORD || '',
-    EMAIL_API_KEY: process.env.EMAIL_API_KEY || '',
+    SMTP_HOST: process.env.SMTP_HOST,
+    SMTP_USERNAME: process.env.SMTP_USERNAME,
+    SMTP_PASSWORD: process.env.SMTP_PASSWORD,
     SMTP_PORT: '',
     ALERT_EMAIL: ''
   },
   vpn: {
     // openconnect details for optional VPN
-    VPN_PROTOCOL: '', // e,g, fortinet, wireguard etc
-    VPN_HOST: process.env.VPN_HOST || '',
-    VPN_PORT: process.env.VPN_PORT || '',
-    VPN_USER: process.env.VPN_USER || '',
-    VPN_PWD: process.env.VPN_PWD || '',
-    VPN_SERVERCERT: process.env.VPN_SERVERCERT || ''
+    type: args['vpn-type'], // e,g, fortinet, wireguard etc
+    wireguard: {
+      VPN_HOST_ADDRESS: process.env.VPN_HOST_ADDRESS, // IP address for the VPN server
+      VPN_ADMIN_PASSWORD: process.env.VPN_ADMIN_PASSWORD
+    },
+    openconnect: {
+      VPN_PROTOCOL: process.env.VPN_PROTOCOL,
+      VPN_HOST_ADDRESS: process.env.VPN_HOST_ADDRESS,
+      VPN_PORT: process.env.VPN_PORT,
+      VPN_USER: process.env.VPN_USER,
+      VPN_PWD: process.env.VPN_PWD,
+      VPN_SERVERCERT: process.env.VPN_SERVERCERT
+    }
   },
   whitelist: {
     CONTENT_SECURITY_POLICY_WILDCARD: '*.', // e.g. *.<your-domain>
@@ -69,11 +87,11 @@ const octokit = new Octokit({
   auth: process.env.GITHUB_TOKEN
 })
 
-async function createVariable(environment, name, value) {
+async function createVariable(repositoryId, environment, name, value) {
   await octokit.request(
-    `POST /repositories/${config.repo.REPOSITORY_ID}/environments/${config.environment}/variables`,
+    `POST /repositories/${repositoryId}/environments/${config.environment}/variables`,
     {
-      repository_id: config.repo.REPOSITORY_ID,
+      repository_id: repositoryId,
       environment_name: environment,
       name: name,
       value: value,
@@ -84,7 +102,27 @@ async function createVariable(environment, name, value) {
   )
 }
 
-async function createSecret(environment, key, keyId, name, secret) {
+async function getRepositoryId(owner, repo) {
+  try {
+    const response = await octokit.request('GET /repos/{owner}/{repo}', {
+      owner: owner,
+      repo: repo
+    })
+
+    return response.data.id
+  } catch (error) {
+    console.error('Error fetching repository information:', error)
+  }
+}
+
+async function createSecret(
+  repositoryId,
+  environment,
+  key,
+  keyId,
+  name,
+  secret
+) {
   //Check if libsodium is ready and then proceed.
   await sodium.ready
 
@@ -102,9 +140,9 @@ async function createSecret(environment, key, keyId, name, secret) {
   )
 
   await octokit.request(
-    `PUT /repositories/${config.repo.REPOSITORY_ID}/environments/${environment}/secrets/${name}`,
+    `PUT /repositories/${repositoryId}/environments/${environment}/secrets/${name}`,
     {
-      repository_id: config.repo.REPOSITORY_ID,
+      repository_id: repositoryId,
       environment_name: environment,
       secret_name: name,
       encrypted_value: encryptedValue,
@@ -117,8 +155,12 @@ async function createSecret(environment, key, keyId, name, secret) {
 }
 
 async function getPublicKey(environment) {
+  const repositoryId = await getRepositoryId(
+    config.github_repository.ORGANISATION,
+    config.github_repository.REPOSITORY_NAME
+  )
   await octokit.request(
-    `PUT /repos/${config.repo.REPOSITORY_ACCOUNT}/${config.repo.REPOSITORY_NAME}/environments/${environment}`,
+    `PUT /repos/${config.github_repository.ORGANISATION}/${config.github_repository.REPOSITORY_NAME}/environments/${environment}`,
     {
       headers: {
         'X-GitHub-Api-Version': '2022-11-28'
@@ -127,10 +169,10 @@ async function getPublicKey(environment) {
   )
 
   const res = await octokit.request(
-    `GET /repositories/${config.repo.REPOSITORY_ID}/environments/${environment}/secrets/public-key`,
+    `GET /repositories/${repositoryId}/environments/${environment}/secrets/public-key`,
     {
-      owner: config.repo.DOCKERHUB_ACCOUNT,
-      repo: config.repo.DOCKERHUB_REPO,
+      owner: config.github_repository.ORGANISATION,
+      repo: config.github_repository.REPOSITORY_NAME,
       headers: {
         'X-GitHub-Api-Version': '2022-11-28'
       }
@@ -150,12 +192,23 @@ function generateLongPassword() {
 }
 
 async function main() {
+  if (!config.environment) {
+    console.error('Please specify an environment in config.environment')
+    process.exit(1)
+  }
+
   const { key, key_id } = await getPublicKey(config.environment)
+  const repositoryId = await getRepositoryId(
+    config.github_repository.ORGANISATION,
+    config.github_repository.REPOSITORY_NAME
+  )
+
   let backupSecrets = {}
   let backupVariables = {}
   let vpnSecrets = {}
+  let smsSecrets = {}
 
-  if (process.argv.includes('--configure-backup')) {
+  if (args['configure-backup']) {
     backupSecrets = {
       BACKUP_HOST: config.backup.BACKUP_HOST
     }
@@ -165,9 +218,19 @@ async function main() {
     }
   }
 
-  if (process.argv.includes('--configure-vpn')) {
+  if (args['configure-vpn']) {
+    if (!config.vpn.type) {
+      console.error('Please specify a VPN type with --vpn-type')
+      process.exit(1)
+    }
     vpnSecrets = {
-      ...config.vpn
+      ...config.vpn[config.vpn.type]
+    }
+  }
+
+  if (args['sms-enabled']) {
+    smsSecrets = {
+      ...config.sms
     }
   }
 
@@ -185,15 +248,16 @@ async function main() {
   }
 
   const SECRETS = {
-    DOCKERHUB_ACCOUNT: config.repo.DOCKERHUB_ACCOUNT,
-    DOCKERHUB_REPO: config.repo.DOCKERHUB_REPO,
-    DOCKER_TOKEN: config.repo.DOCKER_TOKEN,
+    DOCKERHUB_ACCOUNT: config.dockerhub.ORGANISATION,
+    DOCKERHUB_REPO: config.dockerhub.REPOSITORY,
+    DOCKER_TOKEN: config.github_repository.DOCKER_TOKEN,
     ...SECRETS_TO_SAVE_IN_PASSWORD_MANAGER,
     ...config.ssh,
     ...config.smtp,
     ...config.services,
     ...backupSecrets,
-    ...vpnSecrets
+    ...vpnSecrets,
+    ...smsSecrets
   }
   const VARIABLES = {
     ...config.infrastructure,
@@ -201,30 +265,67 @@ async function main() {
     ...config.whitelist,
     ...backupVariables
   }
-  writeFileSync(
-    '../.secrets/SECRETS_TO_SAVE_IN_PASSWORD_MANAGER_FOR_ENV_' +
-      config.environment +
-      '.json',
-    JSON.stringify([SECRETS_TO_SAVE_IN_PASSWORD_MANAGER], null, 2)
-  )
-  if (process.argv.includes('--dry-run')) {
-    console.log('Dry run. Not creating secrets or variables.')
-    process.exit(0)
-  } else {
-    for (const [secretName, secretValue] of Object.entries(SECRETS)) {
-      await createSecret(
-        config.environment,
-        key,
-        key_id,
-        secretName,
-        secretValue
+
+  if (!existsSync('../.secrets')) {
+    mkdirSync('../.secrets')
+  }
+
+  const errors = []
+  for (const [secretName, secretValue] of Object.entries(SECRETS)) {
+    if (secretValue === undefined || secretValue === '') {
+      errors.push(
+        `Secret ${secretName} is empty.  Please set the value in the config.`
       )
     }
+  }
 
-    for (const [variableName, variableValue] of Object.entries(VARIABLES)) {
-      await createVariable(config.environment, variableName, variableValue)
+  for (const [variableName, variableValue] of Object.entries(VARIABLES)) {
+    if (variableValue === undefined || variableValue === '') {
+      errors.push(
+        `Variable ${variableName} is empty.  Please set the value in the config.`
+      )
     }
   }
+
+  if (args['dry-run']) {
+    console.log('Dry run. Not creating secrets or variables.')
+    console.log(SECRETS)
+    console.log(VARIABLES)
+    console.log('Errors:', errors)
+    process.exit(0)
+  }
+
+  if (errors.length > 0) {
+    console.error(errors)
+    process.exit(1)
+  }
+
+  for (const [secretName, secretValue] of Object.entries(SECRETS)) {
+    await createSecret(
+      repositoryId,
+      config.environment,
+      key,
+      key_id,
+      secretName,
+      secretValue
+    )
+  }
+
+  for (const [variableName, variableValue] of Object.entries(VARIABLES)) {
+    await createVariable(
+      repositoryId,
+      config.environment,
+      variableName,
+      variableValue
+    )
+  }
+
+  writeFileSync(
+    '../.secrets/SECRETS_TO_SAVE_IN_PASSWORD_MANAGER_FOR_ENV_' +
+    config.environment +
+    '.json',
+    JSON.stringify([SECRETS_TO_SAVE_IN_PASSWORD_MANAGER], null, 2)
+  )
 }
 
 main()
