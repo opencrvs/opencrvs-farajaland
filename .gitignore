@@ -31,3 +31,4 @@ cypress/videos
 graphql.schema.json
 *.tar.gz
 9. config: Translations
+*.xlsx
