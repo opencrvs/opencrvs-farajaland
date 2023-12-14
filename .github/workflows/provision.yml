@@ -101,6 +101,6 @@ jobs:
           directory: ${{ github.event.repository.name }}/infrastructure/server-setup
           options: |
             --verbose
-            --inventory ${{ github.event.inputs.environment }}.ini
+            --inventory ${{ github.event.inputs.environment }}.yml
             ${{ inputs.tag != 'all' && format('--tags={0}', inputs.tag) || ''}}
             --extra-vars ""${{ steps.ansible-variables.outputs.EXTRA_VARS }}""
