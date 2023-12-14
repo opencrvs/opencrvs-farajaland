@@ -53,7 +53,7 @@ jobs:
           path: './${{ github.event.repository.name }}'
 
       - name: Set variables for ansible in production environments
-        id: ansible-production-variables
+        id: ansible-variables
         run: |
           JSON_WITH_NEWLINES=$(cat<<EOF
             ${{ toJSON(env) }}
