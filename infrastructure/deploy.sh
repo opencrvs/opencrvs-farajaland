@@ -9,7 +9,7 @@
 set -e
 
 BASEDIR=$(dirname $0)
-PARENT_DIR=$(dirname $(dirname $0))
+PROJECT_ROOT=$(dirname $(dirname $0))
 
 # Default values
 SSH_PORT=22
@@ -321,24 +321,7 @@ echo
 echo "Deploying COUNTRY_CONFIG_VERSION $COUNTRY_CONFIG_VERSION to $SSH_HOST..."
 echo
 
-mkdir -p /tmp/opencrvs/infrastructure/cryptfs
-
-# Copy decrypt script
-cp $BASEDIR/decrypt.sh /tmp/opencrvs/infrastructure/cryptfs/decrypt.sh
-
-# Copy emergency backup script
-cp $BASEDIR/emergency-backup-metadata.sh /tmp/opencrvs/infrastructure/emergency-backup-metadata.sh
-
-# Copy emergency restore script
-cp $BASEDIR/emergency-restore-metadata.sh /tmp/opencrvs/infrastructure/emergency-restore-metadata.sh
-
-# Download base docker compose files to the server
-rsync -e "ssh -p $SSH_PORT" --exclude='vagrant/' -rP /tmp/docker-compose* infrastructure $SSH_USER@$SSH_HOST:/opt/opencrvs/
-
-rsync -e "ssh -p $SSH_PORT" --exclude='vagrant/' -rP $BASEDIR/docker-compose* infrastructure $SSH_USER@$SSH_HOST:/opt/opencrvs/
-
-# Override configuration files with country specific files
-rsync -e "ssh -p $SSH_PORT" -rP /tmp/opencrvs/infrastructure $SSH_USER@$SSH_HOST:/opt/opencrvs
+rsync -e "ssh -p $SSH_PORT" -rP $PROJECT_ROOT $SSH_USER@$SSH_HOST:/opt/opencrvs
 
 rotate_secrets() {
   files_to_rotate=$1
@@ -478,12 +461,9 @@ docker_stack_deploy() {
   ssh $SSH_USER@$SSH_HOST -p $SSH_PORT 'cd /opt/opencrvs && \
     '$ENV_VARIABLES' docker stack deploy --prune -c '$(split_and_join " " " -c " "$COMMON_COMPOSE_FILES $environment_compose")' --with-registry-auth opencrvs'
 }
-
-FILES_TO_ROTATE="/opt/opencrvs/docker-compose.deploy.yml"
-
 # Deploy the OpenCRVS stack onto the swarm
 ENVIRONMENT_COMPOSE="docker-compose.$ENV-deploy.yml"
-FILES_TO_ROTATE="${FILES_TO_ROTATE} /opt/opencrvs/docker-compose.$ENV-deploy.yml"
+FILES_TO_ROTATE="/opt/opencrvs/infrastructure/docker-compose.deploy.yml /opt/opencrvs/infrastructure/docker-compose.$ENV-deploy.yml"
 
 rotate_secrets "$FILES_TO_ROTATE"
 docker_stack_deploy "$ENVIRONMENT_COMPOSE"
