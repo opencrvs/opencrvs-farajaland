@@ -986,9 +986,7 @@ services:
   dashboards:
     volumes:
       - /data/metabase:/data/metabase
-    configs:
-      - source: metabase-init-sql.{{ts}}
-        target: /metabase.init.db.sql
+      - /opt/opencrvs/infrastructure/metabase/metabase.init.db.sql:/metabase.init.db.sql
     networks:
       - overlay_net
     environment:
@@ -1029,8 +1027,6 @@ secrets:
   jwt-private-key.{{ts}}:
     external: true
 configs:
-  metabase-init-sql.{{ts}}:
-    file: ./infrastructure/metabase/metabase.init.db.sql
   openhim-console-conf.{{ts}}:
     file: ./infrastructure/openhim-console-config.deploy.json
   hearth-check-dupe-plugin.{{ts}}:
