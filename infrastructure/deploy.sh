@@ -276,7 +276,7 @@ LOG_LOCATION=${LOG_LOCATION:-/var/log}
 (cd /tmp/ && curl -O https://raw.githubusercontent.com/opencrvs/opencrvs-core/$VERSION/docker-compose.deps.yml)
 
 COMPOSE_FILED_FROM_CORE="docker-compose.deps.yml docker-compose.yml"
-COMMON_COMPOSE_FILES="$COMPOSE_FILED_FROM_CORE docker-compose.deploy.yml"
+COMMON_COMPOSE_FILES="infrastructure/docker-compose.deps.yml infrastructure/docker-compose.yml infrastructure/docker-compose.deploy.yml"
 
 # Rotate MongoDB credentials
 # https://unix.stackexchange.com/a/230676
@@ -459,7 +459,7 @@ docker_stack_deploy() {
   done
 
   echo "Updating docker swarm stack with new compose files"
-  ssh $SSH_USER@$SSH_HOST -p $SSH_PORT 'cd /opt/opencrvs/infrastructure && \
+  ssh $SSH_USER@$SSH_HOST -p $SSH_PORT 'cd /opt/opencrvs && \
     '$ENV_VARIABLES' docker stack deploy --prune -c '$(split_and_join " " " -c " "$COMMON_COMPOSE_FILES $environment_compose")' --with-registry-auth opencrvs'
 }
 # Deploy the OpenCRVS stack onto the swarm
