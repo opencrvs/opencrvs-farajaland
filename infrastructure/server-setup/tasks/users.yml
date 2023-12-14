@@ -133,12 +133,13 @@
     line: 'PubkeyAuthentication yes'
     state: present
 
-- name: Set PermitRootLogin to no
+- name: Disable SSH root login so all maintainers log in as their own user
   lineinfile:
     path: /etc/ssh/sshd_config
     regexp: '^#?PermitRootLogin'
-    line: 'PermitRootLogin yes'
+    line: 'PermitRootLogin no'
     state: present
+  when: ansible_user != "root"
 
 - name: Enable KbdInteractiveAuthentication in SSHD Config
   lineinfile:
@@ -161,14 +162,14 @@
     line: 'PermitEmptyPasswords no'
     state: present
 
-- name: Only require public key from the user "root"
+- name: Only require public key from the user "{{ ansible_user }}"
   blockinfile:
     path: /etc/ssh/sshd_config
     block: |
-      Match User root
+      Match User {{ ansible_user }}
         PasswordAuthentication no
         AuthenticationMethods publickey
-    marker: '# {mark} ANSIBLE MANAGED BLOCK FOR USER ROOT'
+    marker: '# {mark} ANSIBLE MANAGED BLOCK FOR USER {{ ansible_user }}'
   become: yes
 
 - name: Check SSH config syntax
