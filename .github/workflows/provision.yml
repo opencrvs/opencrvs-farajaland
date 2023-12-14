@@ -60,15 +60,6 @@ jobs:
               echo "ENV_TYPE=qa" >> "$GITHUB_ENV"
           fi
 
-      - name: Setup PEM file
-        # Secret didn't work directly in the if condition
-        env:
-          SSH_KEY: ${{ secrets.SSH_KEY }}
-        if: ${{ env.SSH_KEY }}
-        run: |
-          echo "${{ secrets.SSH_KEY }}" > /tmp/server.pem
-          chmod 600 /tmp/server.pem
-
       - name: Set variables for ansible in production environments
         id: ansible-production-variables
         if: env.ENV_TYPE == 'production'
