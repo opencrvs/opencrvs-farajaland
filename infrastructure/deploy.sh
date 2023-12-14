@@ -331,7 +331,11 @@ rotate_secrets() {
 
 # Setup configuration files and compose file for the deployment domain
 echo "Replacing {{variables}} from files"
-ssh $SSH_USER@$SSH_HOST -p $SSH_PORT "SMTP_HOST=$SMTP_HOST SMTP_PORT=$SMTP_PORT SMTP_USERNAME=$SMTP_USERNAME SMTP_PASSWORD=$SMTP_PASSWORD ALERT_EMAIL=$ALERT_EMAIL MINIO_ROOT_USER=$MINIO_ROOT_USER MINIO_ROOT_PASSWORD=$MINIO_ROOT_PASSWORD bash /opt/opencrvs/infrastructure/setup-deploy-config.sh $HOST | tee -a $LOG_LOCATION/setup-deploy-config.log"
+ssh $SSH_USER@$SSH_HOST -p $SSH_PORT "SMTP_HOST=$SMTP_HOST SMTP_PORT=$SMTP_PORT SMTP_USERNAME=$SMTP_USERNAME SMTP_PASSWORD=$SMTP_PASSWORD ALERT_EMAIL=$ALERT_EMAIL MINIO_ROOT_USER=$MINIO_ROOT_USER MINIO_ROOT_PASSWORD=$MINIO_ROOT_PASSWORD bash /opt/opencrvs/infrastructure/setup-deploy-config.sh $HOST"
+
+FILES_TO_ROTATE="/opt/opencrvs/infrastructure/docker-compose.deploy.yml /opt/opencrvs/infrastructure/docker-compose.$ENV-deploy.yml"
+
+rotate_secrets "$FILES_TO_ROTATE"
 
 # Takes in a space separated string of docker-compose.yml files
 # returns a new line separated list of images defined in those files
