@@ -459,6 +459,7 @@ docker_stack_deploy() {
 
   echo "Updating docker swarm stack with new compose files"
   COMMON_COMPOSE_FILES="infrastructure/docker-compose.deps.yml infrastructure/docker-compose.yml infrastructure/docker-compose.deploy.yml"
+
   ssh $SSH_USER@$SSH_HOST -p $SSH_PORT 'cd /opt/opencrvs && \
     '$ENV_VARIABLES' docker stack deploy --prune -c '$(split_and_join " " " -c " "$COMMON_COMPOSE_FILES infrastructure/$environment_compose")' --with-registry-auth opencrvs'
 }
