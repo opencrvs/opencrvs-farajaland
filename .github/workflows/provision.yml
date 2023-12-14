@@ -52,17 +52,8 @@ jobs:
           fetch-depth: 0
           path: './${{ github.event.repository.name }}'
 
-      - name: Set environment type ENV_TYPE
-        run: |
-          if [ "${{ github.event.inputs.environment }}" == "production" ]; then
-              echo "ENV_TYPE=production" >> "$GITHUB_ENV"
-          else
-              echo "ENV_TYPE=qa" >> "$GITHUB_ENV"
-          fi
-
       - name: Set variables for ansible in production environments
         id: ansible-production-variables
-        if: env.ENV_TYPE == 'production'
         run: |
           JSON_WITH_NEWLINES=$(cat<<EOF
             ${{ toJSON(env) }}
@@ -84,24 +75,6 @@ jobs:
           external_backup_server_ip: ${{ secrets.BACKUP_HOST }}
           manager_production_server_ip: ${{ secrets.SSH_HOST }}
           ansible_user: ${{ secrets.SSH_USER }}
-
-      - name: Set variables for ansible in qa environments
-        id: ansible-variables
-        if: env.ENV_TYPE == 'qa'
-        run: |
-          JSON_WITH_NEWLINES=$(cat<<EOF
-            ${{ toJSON(env) }}
-          EOF)
-          JSON_WITHOUT_NEWLINES=$(echo $JSON_WITH_NEWLINES | jq -R -c .)
-          echo "EXTRA_VARS=$JSON_WITHOUT_NEWLINES" >> $GITHUB_OUTPUT
-        env:
-          encrypted_disk_size: ${{ vars.DISK_SPACE }}
-          disk_encryption_key: ${{ secrets.ENCRYPTION_KEY }}
-          dockerhub_username: ${{ secrets.DOCKER_USERNAME }}
-          dockerhub_password: ${{ secrets.DOCKER_TOKEN }}
-          mongodb_admin_username: ${{ secrets.MONGODB_ADMIN_USER }}
-          mongodb_admin_password: ${{ secrets.MONGODB_ADMIN_PASSWORD }}
-          elasticsearch_superuser_password: ${{ secrets.ELASTICSEARCH_SUPERUSER_PASSWORD }}
 
       - name: Read known hosts
         run: |
