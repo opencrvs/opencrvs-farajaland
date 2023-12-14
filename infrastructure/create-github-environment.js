@@ -250,6 +250,7 @@ async function main() {
     DOCKERHUB_ACCOUNT: config.dockerhub.ORGANISATION,
     DOCKERHUB_REPO: config.dockerhub.REPOSITORY,
     DOCKER_TOKEN: config.dockerhub.TOKEN,
+    DOCKER_USERNAME: config.dockerhub.USERNAME,
     ...SECRETS_TO_SAVE_IN_PASSWORD_MANAGER,
     ...config.ssh,
     ...config.smtp,
