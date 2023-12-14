@@ -322,6 +322,7 @@ echo "Deploying COUNTRY_CONFIG_VERSION $COUNTRY_CONFIG_VERSION to $SSH_HOST..."
 echo
 
 rsync -e "ssh -p $SSH_PORT" -rP $PROJECT_ROOT $SSH_USER@$SSH_HOST:/opt/opencrvs
+rsync -e "ssh -p $SSH_PORT" /tmp/docker-compose.yml /tmp/docker-compose.deps.yml $SSH_USER@$SSH_HOST:/opt/opencrvs/infrastructure
 
 rotate_secrets() {
   files_to_rotate=$1
@@ -458,7 +459,7 @@ docker_stack_deploy() {
   done
 
   echo "Updating docker swarm stack with new compose files"
-  ssh $SSH_USER@$SSH_HOST -p $SSH_PORT 'cd /opt/opencrvs && \
+  ssh $SSH_USER@$SSH_HOST -p $SSH_PORT 'cd /opt/opencrvs/infrastructure && \
     '$ENV_VARIABLES' docker stack deploy --prune -c '$(split_and_join " " " -c " "$COMMON_COMPOSE_FILES $environment_compose")' --with-registry-auth opencrvs'
 }
 # Deploy the OpenCRVS stack onto the swarm
