@@ -75,7 +75,7 @@ function trapint {
 print_usage_and_exit () {
     echo 'Usage: ./deploy.sh --clear_data=yes|no --host --environment --ssh_host --ssh_user --version --country_config_version --replicas'
     echo "  --clear_data must have a value of 'yes' or 'no' set e.g. --clear_data=yes"
-    echo "  --environment can be 'production' or 'development' or 'qa' or 'demo'"
+    echo "  --environment can be 'production', 'development', 'qa' or similar"
     echo '  --host    is the server to deploy to'
     echo "  --version can be any OpenCRVS Core docker image tag or 'latest'"
     echo "  --country_config_version can be any OpenCRVS Country Configuration docker image tag or 'latest'"
@@ -482,22 +482,8 @@ docker_stack_deploy() {
 FILES_TO_ROTATE="/opt/opencrvs/docker-compose.deploy.yml"
 
 # Deploy the OpenCRVS stack onto the swarm
-if [[ "$ENV" = "staging" ]]; then
-  ENVIRONMENT_COMPOSE="docker-compose.staging-deploy.yml"
-  FILES_TO_ROTATE="${FILES_TO_ROTATE} /opt/opencrvs/docker-compose.staging-deploy.yml"
-elif [[ "$ENV" = "qa" ]]; then
-  ENVIRONMENT_COMPOSE="docker-compose.qa-deploy.yml"
-  FILES_TO_ROTATE="${FILES_TO_ROTATE} /opt/opencrvs/docker-compose.qa-deploy.yml"
-elif [[ "$ENV" = "production" ]]; then
-  ENVIRONMENT_COMPOSE="docker-compose.production-deploy.yml"
-  FILES_TO_ROTATE="${FILES_TO_ROTATE} /opt/opencrvs/docker-compose.production-deploy.yml"
-elif [[ "$ENV" = "demo" ]]; then
-  ENVIRONMENT_COMPOSE="docker-compose.production-deploy.yml"
-  FILES_TO_ROTATE="${FILES_TO_ROTATE} /opt/opencrvs/docker-compose.production-deploy.yml"
-else
-  echo "Unknown error running docker-compose on server as ENV is not staging, qa, demo or production."
-  exit 1
-fi
+ENVIRONMENT_COMPOSE="docker-compose.$ENV-deploy.yml"
+FILES_TO_ROTATE="${FILES_TO_ROTATE} /opt/opencrvs/docker-compose.$ENV-deploy.yml"
 
 rotate_secrets "$FILES_TO_ROTATE"
 docker_stack_deploy "$ENVIRONMENT_COMPOSE"
