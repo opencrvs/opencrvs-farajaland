@@ -229,6 +229,3 @@ services:
       - mongo3
     environment:
       - REPLICAS=3
-
-networks:
-  overlay_net: {}

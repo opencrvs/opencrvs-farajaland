@@ -133,7 +133,6 @@ services:
       - vpn
 
 networks:
-  overlay_net: {}
   vpn:
     driver: overlay
     attachable: false

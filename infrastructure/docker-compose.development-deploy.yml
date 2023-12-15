@@ -92,6 +92,3 @@ services:
     environment:
       - QA_ENV=true
       - NODE_ENV=production
-
-networks:
-  overlay_net: {}
