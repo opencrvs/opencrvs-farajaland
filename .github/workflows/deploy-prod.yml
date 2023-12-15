@@ -34,6 +34,14 @@ jobs:
       matrix:
         node-version: [16.20.0]
     steps:
+      - uses: trstringer/manual-approval@v1
+        with:
+          secret: ${{ github.TOKEN }}
+          approvers: euanmillar
+          minimum-approvals: 1
+          issue-title: "Deploy (Prod): core: ${{ github.event.inputs.core-image-tag }} country config: ${{ github.event.inputs.countryconfig-image-tag }}"
+          issue-body: "Please approve or deny the deployment of core: ${{ github.event.inputs.core-image-tag }} country config: ${{ github.event.inputs.countryconfig-image-tag }} to production"
+          exclude-workflow-initiator-as-approver: false
       - name: Clone core
         uses: actions/checkout@v3
         with:
