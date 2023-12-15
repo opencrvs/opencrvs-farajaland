@@ -93,7 +93,7 @@ jobs:
 
       - name: Deploy to ${{ github.event.inputs.environment }}
         id: deploy
-        continue-on-error: ${{ github.event.inputs.debug }}
+        continue-on-error: ${{ github.event.inputs.debug == true }}
         env:
           DOMAIN: ${{ vars.DOMAIN }}
           REPLICAS: ${{ vars.REPLICAS }}
