@@ -63,7 +63,7 @@ for i in "$@"; do
 done
 
 print_usage_and_exit() {
-  echo 'Usage: ./emergency-backup-metadata.sh --passphrase=XXX --ssh_user=XXX --ssh_host=XXX --ssh_port=XXX --production_ip=XXX --remote_dir=XXX --replicas=XXX --label=XXX'
+  echo 'Usage: ./backup.sh --passphrase=XXX --ssh_user=XXX --ssh_host=XXX --ssh_port=XXX --production_ip=XXX --remote_dir=XXX --replicas=XXX --label=XXX'
   echo "Script must receive SSH details and a target directory of a remote server to copy backup files to."
   echo "Optionally a LABEL i.e. 'v1.0.1' can be provided to be appended to the backup file labels"
   echo "7 days of backup data will be retained in the manager node"
@@ -100,6 +100,10 @@ if [ "$IS_LOCAL" = false ]; then
   fi
   if [ -z "$REPLICAS" ]; then
     echo "Error: Argument for the --replicas is required."
+    print_usage_and_exit
+  fi
+  if [ -z "$PASSPHRASE" ]; then
+    echo "Error: Argument for the --passphrase is required."
     print_usage_and_exit
   fi
   # In this example, we load the MONGODB_ADMIN_USER, MONGODB_ADMIN_PASSWORD, ELASTICSEARCH_ADMIN_USER & ELASTICSEARCH_ADMIN_PASSWORD database access secrets from a file.
@@ -316,7 +320,7 @@ fi
 if [[ "$OWN_IP" = "$PRODUCTION_IP" || "$OWN_IP" = "$(dig $PRODUCTION_IP +short)" ]]; then
 
   # Create a temporary directory to store the backup files before packaging
-  BACKUP_RAW_FILES_DIR=/tmp/backup-$LABEL/
+  BACKUP_RAW_FILES_DIR=/tmp/backup-${LABEL:-$BACKUP_DATE}/
   mkdir -p $BACKUP_RAW_FILES_DIR
 
   # Copy full directories to the temporary directory

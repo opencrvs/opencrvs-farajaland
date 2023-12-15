@@ -14,6 +14,8 @@ all:
     # SSH and other services should never be exposed to the public internet.
     only_allow_access_from_addresses:
       - 165.22.110.53
+    environment:
+      - production
     users:
       # If you need to remove access from someone, do not remove them from this list, but instead set their state: absent
       - name: riku

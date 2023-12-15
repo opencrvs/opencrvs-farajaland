@@ -326,11 +326,11 @@ mkdir -p /tmp/opencrvs/infrastructure/cryptfs
 # Copy decrypt script
 cp $BASEDIR/decrypt.sh /tmp/opencrvs/infrastructure/cryptfs/decrypt.sh
 
-# Copy emergency backup script
-cp $BASEDIR/emergency-backup-metadata.sh /tmp/opencrvs/infrastructure/emergency-backup-metadata.sh
+# Copy backup script
+cp $BASEDIR/backup.sh /tmp/opencrvs/infrastructure/backup.sh
 
-# Copy emergency restore script
-cp $BASEDIR/emergency-restore-metadata.sh /tmp/opencrvs/infrastructure/emergency-restore-metadata.sh
+# Copy restore script
+cp $BASEDIR/restore.sh /tmp/opencrvs/infrastructure/restore.sh
 
 # Download base docker compose files to the server
 rsync -e "ssh -p $SSH_PORT" --exclude='vagrant/' -rP /tmp/docker-compose* infrastructure $SSH_USER@$SSH_HOST:/opt/opencrvs/
