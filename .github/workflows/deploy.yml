@@ -22,9 +22,11 @@ on:
       reset:
         type: boolean
         description: Reset the environment
+        default: false
       debug:
         type: boolean
         description: Open SSH session to the runner after deployment
+        default: false
 jobs:
   deploy:
     environment: ${{ github.event.inputs.environment }}
@@ -136,7 +138,7 @@ jobs:
 
       - name: Setup tmate session
         uses: mxschmitt/action-tmate@v3
-        if: ${{ github.event.inputs.debug }}
+        if: ${{ github.event.inputs.debug == true }}
         env:
           DOMAIN: ${{ vars.DOMAIN }}
           REPLICAS: ${{ vars.REPLICAS }}
