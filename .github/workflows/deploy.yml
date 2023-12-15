@@ -47,12 +47,6 @@ jobs:
           fetch-depth: 0
           path: './${{ github.event.repository.name }}'
 
-      - name: Checkout country branch
-        run: |
-          cd ${{ github.event.repository.name }}
-          git checkout ${{ github.event.inputs.countryconfig-image-tag }}
-          cd ../
-
       - name: Checkout core branch
         run: |
           cd opencrvs-core
@@ -95,6 +89,7 @@ jobs:
 
       - name: Deploy to ${{ github.event.inputs.environment }}
         id: deploy
+        continue-on-error: true
         env:
           DOMAIN: ${{ vars.DOMAIN }}
           REPLICAS: ${{ vars.REPLICAS }}
@@ -134,6 +129,9 @@ jobs:
           --version=${{ github.event.inputs.core-image-tag }} \
           --country_config_version=${{ github.event.inputs.countryconfig-image-tag }} \
           --replicas=${{ env.REPLICAS }}
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+
   seed-data:
     needs: deploy
     if: ${{ github.event.inputs.reset == 'yes' && needs.deploy.outputs.outcome == 'success' }}
