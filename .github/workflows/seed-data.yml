@@ -15,10 +15,11 @@ on:
         type: choice
         description: Environment to seed data
         required: true
-        default: 'staging'
+        default: 'development'
         options:
-          - staging
+          - development
           - qa
+          - staging
           - production
       core-image-tag:
         description: Core DockerHub image tag
