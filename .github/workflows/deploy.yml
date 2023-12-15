@@ -21,7 +21,7 @@ on:
         required: true
       reset:
         type: boolean
-        description: Whether to reset the environment
+        description: Reset the environment
       debug:
         type: boolean
         description: Open SSH session to the runner after deployment
@@ -76,7 +76,6 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_TOKEN }}
 
-
       - name: Wait for images to be available
         run: |
           while true; do
@@ -126,7 +125,7 @@ jobs:
         run: |
           cd ./${{ github.event.repository.name }}
           yarn deploy \
-          --clear_data=${{ github.event.inputs.reset && "yes" || "no" }} \
+          --clear_data=${{ github.event.inputs.reset && 'yes' || 'no' }} \
           --environment=${{ github.event.inputs.environment }} \
           --host=${{ env.DOMAIN }} \
           --ssh_host=${{ secrets.SSH_HOST }} \
@@ -137,7 +136,7 @@ jobs:
 
       - name: Setup tmate session
         uses: mxschmitt/action-tmate@v3
-        if: inputs.debug == true
+        if: ${{ github.event.inputs.debug }}
         env:
           DOMAIN: ${{ vars.DOMAIN }}
           REPLICAS: ${{ vars.REPLICAS }}
