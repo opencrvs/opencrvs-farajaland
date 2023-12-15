@@ -38,6 +38,10 @@ for i in "$@"; do
     REPLICAS="${i#*=}"
     shift
     ;;
+  --label=*)
+    LABEL="${i#*=}"
+    shift
+    ;;
   --passphrase=*)
     PASSPHRASE="${i#*=}"
     shift
@@ -53,7 +57,7 @@ done
 print_usage_and_exit() {
   echo 'Usage: ./restore.sh --passphrase=XXX --ssh_user=XXX --ssh_host=XXX --ssh_port=XXX --replicas=XXX --remote_dir=XXX'
   echo "This script CLEARS ALL DATA and RESTORES A SPECIFIC DAY'S or label's data. This process is irreversible, so USE WITH CAUTION."
-  echo "label will be from that specific day in format +%Y-%m-%d i.e. 2019-01-01"
+  echo "Script must receive a label parameter to restore data from that specific day in format +%Y-%m-%d i.e. 2019-01-01 or that label"
   echo "The Hearth, OpenHIM User and Application-config db backup zips you would like to restore from: hearth-dev-{label}.gz, openhim-dev-{label}.gz, user-mgnt-{label}.gz and  application-config-{label}.gz must exist in /data/backups/mongo/ folder"
   echo "The Elasticsearch backup folder /data/backups/elasticsearch must exist with all previous snapshots and indices. All files are required"
   echo "The InfluxDB backup files must exist in the /data/backups/influxdb/{label} folder"
@@ -66,7 +70,9 @@ print_usage_and_exit() {
   exit 1
 }
 
-LABEL=$(date +%Y-%m-%d)
+if [ -z "$LABEL" ]; then
+  LABEL=$(date +%Y-%m-%d)
+fi
 
 if [ "$IS_LOCAL" = false ]; then
   ROOT_PATH=${ROOT_PATH:-/data}
