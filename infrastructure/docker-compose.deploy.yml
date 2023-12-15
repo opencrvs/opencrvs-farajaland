@@ -186,7 +186,6 @@ services:
   mongo1:
     command: mongod --auth --replSet rs0 --keyFile /etc/mongodb-keyfile
     hostname: 'mongo1'
-    container_name: 'mongo1'
     volumes:
       - '/data/mongo:/data/db'
       - '/mongodb-keyfile:/mongodb-keyfile'
