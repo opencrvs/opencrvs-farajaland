@@ -320,7 +320,7 @@ echo
 echo "Deploying COUNTRY_CONFIG_VERSION $COUNTRY_CONFIG_VERSION to $SSH_HOST..."
 echo
 
-rsync -e "ssh -p $SSH_PORT" -az $PROJECT_ROOT/infrastructure $SSH_USER@$SSH_HOST:/opt/opencrvs/infrastructure
+rsync -e "ssh -p $SSH_PORT" -az $PROJECT_ROOT/infrastructure $SSH_USER@$SSH_HOST:/opt/opencrvs/infrastructure --delete
 rsync -e "ssh -p $SSH_PORT" /tmp/docker-compose.yml /tmp/docker-compose.deps.yml $SSH_USER@$SSH_HOST:/opt/opencrvs/infrastructure
 
 rotate_secrets() {
