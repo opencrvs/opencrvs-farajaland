@@ -129,6 +129,7 @@ jobs:
           --version=${{ github.event.inputs.core-image-tag }} \
           --country_config_version=${{ github.event.inputs.countryconfig-image-tag }} \
           --replicas=${{ env.REPLICAS }}
+
       - name: Setup tmate session
         uses: mxschmitt/action-tmate@v3
 
