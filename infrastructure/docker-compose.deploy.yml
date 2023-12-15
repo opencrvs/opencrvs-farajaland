@@ -339,7 +339,7 @@ services:
     depends_on:
       - minio
     volumes:
-      - /opt/opencrvs/infrastructure/mc-config:/root/.mc
+      - /opt/opencrvs/infrastructure/mc-config/config.json:/root/.mc/config.json
     networks:
       - overlay_net
     deploy:
