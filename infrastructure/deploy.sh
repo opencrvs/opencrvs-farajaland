@@ -323,6 +323,10 @@ echo
 rsync -e "ssh -p $SSH_PORT" -az $PROJECT_ROOT/infrastructure $SSH_USER@$SSH_HOST:/opt/opencrvs/ --delete
 rsync -e "ssh -p $SSH_PORT" /tmp/docker-compose.yml /tmp/docker-compose.deps.yml $SSH_USER@$SSH_HOST:/opt/opencrvs/infrastructure
 
+ssh $SSH_USER@$SSH_HOST -p $SSH_PORT << EOF
+  docker login -u $DOCKER_USERNAME -p $DOCKER_TOKEN
+EOF
+
 rotate_secrets() {
   files_to_rotate=$1
   echo "ROTATING SECRETS ON: $files_to_rotate"
