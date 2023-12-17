@@ -8,9 +8,35 @@
  *
  * Copyright (C) The OpenCRVS Authors located at https://github.com/opencrvs/opencrvs-core/blob/master/AUTHORS.
  */
+
+interface DoBSplit {
+  dd: string
+  mm: string
+  yyyy: string
+}
+
+interface SearchCriteria {
+  childDoBSplit: DoBSplit
+  motherDoBSplit: DoBSplit
+  fatherDoBSplit: DoBSplit
+  childGender: string
+  informantDoBSplit: DoBSplit
+  eventCountry: string
+  informantFirstNames: string
+  informantFamilyName: string
+  fatherFirstName: string
+  fatherFamilyName: string
+  motherFirstName: string
+  motherFamilyName: string
+  placeOfRegistration: string
+  province: string
+  district: string
+}
+
 type BirthDeclarationOptions = {
   firstName?: string
   familyName?: string
+  searchCriteria?: SearchCriteria
 }
 
 interface DeclarationOptions {

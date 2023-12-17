@@ -51,7 +51,7 @@ context('Advanced Search Integration Test', () => {
     const motherFirstNames = faker.name.firstName()
     const motherFamilyName = faker.name.lastName()
     const childDoB = '1998-08-19'
-    const childGender = 'Male'
+    const childGender = 'male'
     const motherDoB = '1971-01-19'
     const fatherDoB = '1961-01-31'
     const informantFirstNames = faker.name.firstName()
@@ -64,13 +64,39 @@ context('Advanced Search Integration Test', () => {
     const eventCountry = 'Farajaland'
     const eventLocationLevel1 = 'Pualula'
     const eventLocationLevel2 = 'Embe'
+    const district = 'Embe'
+    const province = 'Pualula'
+    const placeOfRegistration = 'Ibombo District Office'
+
+    //CREATE REGISTRATION
+    cy.createBirthRegistrationAs('registrar', {
+      firstName: childFirstNames,
+      familyName: childLastName,
+      searchCriteria: {
+        childDoBSplit,
+        motherDoBSplit,
+        fatherDoBSplit,
+        childGender,
+        informantDoBSplit,
+        eventCountry,
+        placeOfRegistration,
+        informantFirstNames,
+        informantFamilyName,
+        fatherFirstName: fatherFirstNames,
+        fatherFamilyName,
+        motherFirstName: motherFirstNames,
+        motherFamilyName,
+        province,
+        district
+      }
+    })
 
     //LOGIN
     cy.login('registrar')
     cy.createPin()
 
     //CREATE REGISTRATION
-    cy.verifyLandingPageVisible()
+    /*cy.verifyLandingPageVisible()
     cy.enterMaximumInput({
       childFirstNames,
       childLastName,
@@ -91,7 +117,7 @@ context('Advanced Search Integration Test', () => {
     })
     //register declaration
     cy.get('#registerDeclarationBtn').click()
-    cy.get('#submit_confirm').click()
+    cy.get('#submit_confirm').click()*/
 
     //OPEN ADVANCED SEARCH
     cy.get('#searchType').click()
@@ -104,6 +130,8 @@ context('Advanced Search Integration Test', () => {
     cy.get('#dateOfRegistration-date_range_button').click()
     cy.get('#date-range-confirm-action').click()
     cy.selectOption('#registrationStatuses', 'Any status', 'Any status')
+    // Kaikki nämä hakutiedot pitää mätsätä tehdyn rekisteröinnin tietoihin.
+    // Muuten todistuksia ei tuke löytymään.
     //ENTER CHILD DETAILS FOR SEARCH
     cy.get('#BirthChildDetails-accordion').click()
     cy.get('#childDoBexact-dd').type(childDoBSplit.dd)

@@ -172,6 +172,7 @@ export function createBirthDeclarationData(
   const familyName = faker.name.lastName()
   const firstNames = faker.name.firstName()
   const motherFirstName = faker.name.firstName('female')
+  const fatherFirstName = faker.name.firstName('female')
 
   const mother: PersonInput = {
     nationality: ['FAR'],
@@ -200,12 +201,39 @@ export function createBirthDeclarationData(
       createAddressInput(location, address.primaryAddress)
     ]
   }
+  const father: PersonInput = {
+    nationality: ['FAR'],
+    occupation: 'Bookkeeper',
+    educationalAttainment: education.primaryIsced_1,
+    dateOfMarriage: sub(birthDate, { years: 2 }).toISOString().split('T')[0],
+    identifier: [
+      {
+        id: faker.datatype
+          .number({ min: 1000000000, max: 9999999999 })
+          .toString(),
+        type: identity.nationalId
+      }
+    ],
+    name: [
+      {
+        use: 'en',
+        firstNames: fatherFirstName,
+        familyName: familyName
+      }
+    ],
+    birthDate: sub(birthDate, { years: 22 }).toISOString().split('T')[0],
+    maritalStatus: maritalStatus.married,
+    address: [
+      createAddressInput(location, address.primaryAddress),
+      createAddressInput(location, address.primaryAddress)
+    ]
+  }
 
   return {
     createdAt: declarationTime.toISOString(),
     registration: {
       informantType: informant.mother,
-      otherInformantType: '',
+      otherInformantType: 'FATHER',
       contactPhoneNumber:
         '+2607' + faker.datatype.number({ min: 10000000, max: 99999999 }),
       contactEmail: faker.internet.email(motherFirstName, familyName),
@@ -227,10 +255,6 @@ export function createBirthDeclarationData(
         })),
       inCompleteFields: !sex ? 'child/child-view-group/gender' : undefined
     },
-    father: {
-      detailsExist: false,
-      reasonNotApplying: 'Father unknown'
-    },
     child: {
       name: [
         {
@@ -247,6 +271,7 @@ export function createBirthDeclarationData(
     birthType: birth.single,
     weightAtBirth: Math.round(2.5 + 2 * Math.random() * 10) / 10,
     eventLocation:
+    // Mikä pointti???
       Math.random() < HOME_BIRTH_WEIGHT
         ? {
             address: {
@@ -266,7 +291,8 @@ export function createBirthDeclarationData(
         : {
             _fhirID: facility.id
           },
-    mother
+    mother,
+    father
   }
 }
 

@@ -388,18 +388,84 @@ function getRandomFacility(token, location) {
 
 Cypress.Commands.add('createBirthRegistrationAs', (role, options = {}) => {
   return getToken(role).then((token) => {
-    return getLocationWithName(token, 'Ibombo').then((location) => {
+    return getLocationWithName(token, options?.searchCriteria?.district || 'Ibombo').then((location) => {
       return getRandomFacility(token, location).then(async (facility) => {
         cy.readFile('cypress/support/assets/528KB-random.png', 'base64').then(
           (file) => {
+            // Tässä tehdään jo syntymärekisteröinti input joka vastaa mutaation BirthRegistrationInput
             const details = createBirthDeclarationData(
-              'male',
+              options?.searchCriteria?.childGender,
               new Date('2018-05-18T13:18:26.240Z'),
               new Date(),
               location,
               facility,
               file
             )
+
+            if (options.searchCriteria) {
+              const {
+                childDoBSplit,
+                childGender,
+                fatherDoBSplit,
+                motherDoBSplit,
+                fatherFamilyName,
+                fatherFirstName,
+                motherFamilyName,
+                motherFirstName,
+                informantFamilyName,
+                informantFirstNames,
+                informantDoBSplit,
+                province,
+                district,
+                placeOfRegistration,
+                eventCountry
+              } = options.searchCriteria
+              details.child.birthDate = `${childDoBSplit.yyyy}-${childDoBSplit.mm}-${childDoBSplit.dd}`
+              details.child.gender = childGender
+
+              // Pilessä ainakin, gender, mother tiedoissa jotain, status?  piäisi olla registered,
+              // ehkä event details locaatio tieto.
+
+              details.father.birthDate = `${fatherDoBSplit.yyyy}-${fatherDoBSplit.mm}-${fatherDoBSplit.dd}`
+              details.mother.birthDate = `${motherDoBSplit.yyyy}-${motherDoBSplit.mm}-${motherDoBSplit.dd}`
+
+              /* details.eventLocation = {
+                ...details.eventLocation,
+                address: {
+                  district,
+                  city: province,
+                  state: province,
+                  country: 'FAR',
+                },
+                // name: placeOfRegistration
+              } */
+
+              details.father.name = [
+                {
+                  use: 'en',
+                  firstNames: fatherFirstName || faker.name.firstName(),
+                  familyName: fatherFamilyName || faker.name.lastName()
+                }
+              ]
+              details.mother.name = [
+                {
+                  use: 'en',
+                  firstNames: motherFirstName || faker.name.firstName(),
+                  familyName: motherFamilyName || faker.name.lastName()
+                }
+              ]
+              details.informant = {
+                ...details.informant,
+                birthDate: `${informantDoBSplit.yyyy}-${informantDoBSplit.mm}-${informantDoBSplit.dd}`,
+                name: [
+                  {
+                    use: 'en',
+                    firstNames: informantFirstNames || faker.name.firstName(),
+                    familyName: informantFamilyName || faker.name.lastName()
+                  }
+                ]
+              }
+            }
 
             if (options.firstName) {
               details.child.name = [
@@ -410,7 +476,10 @@ Cypress.Commands.add('createBirthRegistrationAs', (role, options = {}) => {
                 }
               ]
             }
+            cy.log('todistus', details)
             cy.intercept('/graphql', (req) => {
+              // Tässä menee joku pieleen koska kantaan ei tule edes todistusta edes tietokantaan.
+              // Se ensimmäinen testi luo vaan.
               if (hasOperationName(req, 'createBirthRegistration')) {
                 req.on('response', (res) => {
                   const compositionId =
