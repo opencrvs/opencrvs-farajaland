@@ -34,7 +34,7 @@
 - name: 'Install docker python module for ansible docker commands'
   apt:
     name: python3-docker
-    state: absent
+    state: present
 
 - name: 'Log into DockerHub'
   docker_login:
