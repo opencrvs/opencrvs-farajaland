@@ -43,7 +43,8 @@ jobs:
         env:
           HOST: ${{ vars.DOMAIN }}
           ENV: ${{ vars.ENVIRONMENT_TYPE }}
-          SSH_USER: ${{ vars.SSH_USER }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
           REPLICAS: ${{ vars.REPLICAS }}
           MONGODB_ADMIN_USER: ${{ secrets.MONGODB_ADMIN_USER }}
           MONGODB_ADMIN_PASSWORD: ${{ secrets.MONGODB_ADMIN_PASSWORD }}
@@ -51,7 +52,7 @@ jobs:
           MINIO_ROOT_USER: ${{ secrets.MINIO_ROOT_USER }}
           MINIO_ROOT_PASSWORD: ${{ secrets.MINIO_ROOT_PASSWORD }}
         run: |
-          ssh $SSH_USER@$SSH_HOST -p $SSH_PORT "
+          ssh $SSH_USER@$SSH_HOST "
             ELASTICSEARCH_ADMIN_USER=elastic \
             ELASTICSEARCH_ADMIN_PASSWORD=$ELASTICSEARCH_SUPERUSER_PASSWORD \
             MONGODB_ADMIN_USER=$MONGODB_ADMIN_USER \
