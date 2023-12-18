@@ -17,10 +17,6 @@ SSH_PORT=22
 # Reading Names parameters
 for i in "$@"; do
     case $i in
-    --clear_data=*)
-        CLEAR_DATA="${i#*=}"
-        shift
-        ;;
     --host=*)
         HOST="${i#*=}"
         shift
@@ -73,8 +69,7 @@ function trapint {
 }
 
 print_usage_and_exit () {
-    echo 'Usage: ./deploy.sh --clear_data=yes|no --host --environment --ssh_host --ssh_user --version --country_config_version --replicas'
-    echo "  --clear_data must have a value of 'yes' or 'no' set e.g. --clear_data=yes"
+    echo 'Usage: ./deploy.sh --host --environment --ssh_host --ssh_user --version --country_config_version --replicas'
     echo "  --environment can be 'production', 'development', 'qa' or similar"
     echo '  --host    is the server to deploy to'
     echo "  --version can be any OpenCRVS Core docker image tag or 'latest'"
@@ -82,11 +77,6 @@ print_usage_and_exit () {
     echo "  --replicas number of supported mongo databases in your replica set.  Can be 1, 3 or 5"
     exit 1
 }
-
-if [ -z "$CLEAR_DATA" ] || { [ $CLEAR_DATA != 'no' ] && [ $CLEAR_DATA != 'yes' ] ;} ; then
-    echo 'Error: Argument --clear_data is required & must be either yes or no.'
-    print_usage_and_exit
-fi
 
 if [ -z "$ENV" ] ; then
     echo 'Error: Argument --environment is required.'
@@ -479,30 +469,6 @@ echo "This script doesnt ensure that all docker containers successfully start, j
 echo
 echo "Waiting 2 mins for mongo to deploy before working with data. Please note it can take up to 10 minutes for the entire stack to deploy in some scenarios."
 echo
-sleep 120
-
-
-if [ $CLEAR_DATA == "yes" ] ; then
-    echo
-    echo "Clearing all existing data..."
-    echo
-    ssh $SSH_USER@$SSH_HOST -p $SSH_PORT "
-        ELASTICSEARCH_ADMIN_USER=elastic \
-        ELASTICSEARCH_ADMIN_PASSWORD=$ELASTICSEARCH_SUPERUSER_PASSWORD \
-        MONGODB_ADMIN_USER=$MONGODB_ADMIN_USER \
-        MONGODB_ADMIN_PASSWORD=$MONGODB_ADMIN_PASSWORD \
-        MINIO_ROOT_USER=$MINIO_ROOT_USER \
-        MINIO_ROOT_PASSWORD=$MINIO_ROOT_PASSWORD \
-        /opt/opencrvs/infrastructure/clear-all-data.sh $REPLICAS"
-
-    echo
-    echo "Running migrations..."
-    echo
-    ssh $SSH_USER@$SSH_HOST -p $SSH_PORT "
-        ELASTICSEARCH_ADMIN_USER=elastic \
-        ELASTICSEARCH_ADMIN_PASSWORD=$ELASTICSEARCH_SUPERUSER_PASSWORD \
-        /opt/opencrvs/infrastructure/run-migrations.sh"
-fi
 
 echo "Setting up Kibana config & alerts"
 
