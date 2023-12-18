@@ -1,6 +1,11 @@
 name: Reset environment
 run-name: Reset data on ${{ github.event.inputs.environment }}
 on:
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
   workflow_dispatch:
     inputs:
       environment:
