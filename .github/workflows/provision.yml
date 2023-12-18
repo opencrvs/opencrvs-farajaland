@@ -35,6 +35,10 @@ on:
           - swarm
           - elasticsearch
           - traefik
+      debug:
+        type: boolean
+        description: Open SSH session to the runner after deployment
+        default: false
 jobs:
   provision:
     environment: ${{ github.event.inputs.environment }}
@@ -91,7 +95,23 @@ jobs:
           known_hosts: ${{ env.KNOWN_HOSTS }}
 
       - name: Setup tmate session
+        if: ${{ github.event.inputs.debug == 'true' }}
         uses: mxschmitt/action-tmate@v3
+        env:
+          encrypted_disk_size: ${{ vars.DISK_SPACE }}
+          disk_encryption_key: ${{ secrets.ENCRYPTION_KEY }}
+          dockerhub_username: ${{ secrets.DOCKER_USERNAME }}
+          dockerhub_password: ${{ secrets.DOCKER_TOKEN }}
+          mongodb_admin_username: ${{ secrets.MONGODB_ADMIN_USER }}
+          mongodb_admin_password: ${{ secrets.MONGODB_ADMIN_PASSWORD }}
+          backup_encryption_passphrase: ${{ secrets.BACKUP_ENCRYPTION_PASSPHRASE }}
+          elasticsearch_superuser_password: ${{ secrets.ELASTICSEARCH_SUPERUSER_PASSWORD }}
+          external_backup_server_remote_directory: ${{ vars.BACKUP_DIRECTORY }}
+          external_backup_server_user: ${{ secrets.SSH_USER }}
+          external_backup_server_ssh_port: 22
+          external_backup_server_ip: ${{ secrets.BACKUP_HOST }}
+          manager_production_server_ip: ${{ secrets.SSH_HOST }}
+          ansible_user: ${{ secrets.SSH_USER }}
 
       - name: Run playbook
         uses: dawidd6/action-ansible-playbook@v2
