@@ -90,6 +90,9 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           known_hosts: ${{ env.KNOWN_HOSTS }}
 
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+
       - name: Run playbook
         uses: dawidd6/action-ansible-playbook@v2
         env:
