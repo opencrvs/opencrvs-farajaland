@@ -65,3 +65,10 @@ jobs:
             MINIO_ROOT_USER=$MINIO_ROOT_USER \
             MINIO_ROOT_PASSWORD=$MINIO_ROOT_PASSWORD \
             /opt/opencrvs/infrastructure/clear-all-data.sh $REPLICAS"
+
+          echo "Running migrations..."
+          echo
+          ssh $SSH_USER@$SSH_HOST "
+              ELASTICSEARCH_ADMIN_USER=elastic \
+              ELASTICSEARCH_ADMIN_PASSWORD=$ELASTICSEARCH_SUPERUSER_PASSWORD \
+              /opt/opencrvs/infrastructure/run-migrations.sh"
