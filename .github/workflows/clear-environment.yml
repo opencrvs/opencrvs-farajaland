@@ -1,4 +1,4 @@
-name: Reset data on municipalities
+name: Reset environment
 run-name: Reset data on ${{ github.event.inputs.environment }}
 on:
   workflow_dispatch:
