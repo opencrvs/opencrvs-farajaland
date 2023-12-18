@@ -115,6 +115,10 @@ jobs:
 
       - name: Run playbook
         uses: dawidd6/action-ansible-playbook@v2
+        env:
+          ANSIBLE_PERSISTENT_COMMAND_TIMEOUT: 10
+          ANSIBLE_SSH_TIMEOUT: 10
+          ANSIBLE_SSH_RETRIES: 5
         with:
           playbook: playbook.yml
           directory: ${{ github.event.repository.name }}/infrastructure/server-setup
