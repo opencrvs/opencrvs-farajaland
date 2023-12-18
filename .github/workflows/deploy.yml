@@ -169,7 +169,6 @@ jobs:
           CONTENT_SECURITY_POLICY_WILDCARD: ${{ vars.CONTENT_SECURITY_POLICY_WILDCARD }}
   reset:
     needs: deploy
-    if: ${{ github.event.inputs.reset == true }}
     uses: ./.github/workflows/clear-environment.yml
     with:
       environment: ${{ github.event.inputs.environment }}
@@ -177,7 +176,6 @@ jobs:
 
   seed-data:
     needs: [deploy, reset]
-    if: ${{ github.event.inputs.reset == true }}
     uses: ./.github/workflows/seed-data.yml
     with:
       environment: ${{ github.event.inputs.environment }}
