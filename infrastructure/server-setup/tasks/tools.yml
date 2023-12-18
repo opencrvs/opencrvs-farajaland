@@ -10,4 +10,4 @@
 
 - name: 'Install pexpect python module for ansible expect commands'
   pip:
-    name: pexpect
+    name: python3-pexpect
