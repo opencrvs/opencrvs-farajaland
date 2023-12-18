@@ -173,6 +173,8 @@ jobs:
     uses: ./.github/workflows/clear-environment.yml
     with:
       environment: ${{ github.event.inputs.environment }}
+    outputs:
+      outcome: ${{ steps.reset.outcome }}
     secrets: inherit
 
   seed-data:
