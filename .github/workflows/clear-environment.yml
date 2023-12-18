@@ -43,11 +43,13 @@ jobs:
         env:
           HOST: ${{ vars.DOMAIN }}
           ENV: ${{ vars.ENVIRONMENT_TYPE }}
-          REPLICAS: 1
+          SSH_USER: ${{ vars.SSH_USER }}
+          REPLICAS: ${{ vars.REPLICAS }}
           MONGODB_ADMIN_USER: ${{ secrets.MONGODB_ADMIN_USER }}
           MONGODB_ADMIN_PASSWORD: ${{ secrets.MONGODB_ADMIN_PASSWORD }}
           ELASTICSEARCH_SUPERUSER_PASSWORD: ${{ secrets.ELASTICSEARCH_SUPERUSER_PASSWORD }}
-          SSH_USER: ${{ vars.SSH_USER }}
+          MINIO_ROOT_USER: ${{ secrets.MINIO_ROOT_USER }}
+          MINIO_ROOT_PASSWORD: ${{ secrets.MINIO_ROOT_PASSWORD }}
         run: |
           cd ${{ github.event.repository.name }}
-          bash reset-data.sh
+          bash infrastructure/clear-all-data.sh ${{ vars.REPLICAS }}
