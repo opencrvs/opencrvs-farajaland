@@ -161,3 +161,4 @@
     name: sshd
     state: restarted
   when: check_result.rc == 0
+  become: yes
