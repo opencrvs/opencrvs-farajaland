@@ -51,5 +51,11 @@ jobs:
           MINIO_ROOT_USER: ${{ secrets.MINIO_ROOT_USER }}
           MINIO_ROOT_PASSWORD: ${{ secrets.MINIO_ROOT_PASSWORD }}
         run: |
-          cd ${{ github.event.repository.name }}
-          bash infrastructure/clear-all-data.sh ${{ vars.REPLICAS }}
+          ssh $SSH_USER@$SSH_HOST -p $SSH_PORT "
+            ELASTICSEARCH_ADMIN_USER=elastic \
+            ELASTICSEARCH_ADMIN_PASSWORD=$ELASTICSEARCH_SUPERUSER_PASSWORD \
+            MONGODB_ADMIN_USER=$MONGODB_ADMIN_USER \
+            MONGODB_ADMIN_PASSWORD=$MONGODB_ADMIN_PASSWORD \
+            MINIO_ROOT_USER=$MINIO_ROOT_USER \
+            MINIO_ROOT_PASSWORD=$MINIO_ROOT_PASSWORD \
+            /opt/opencrvs/infrastructure/clear-all-data.sh $REPLICAS"
