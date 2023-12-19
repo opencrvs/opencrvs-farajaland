@@ -388,11 +388,12 @@ function getRandomFacility(token, location) {
 
 Cypress.Commands.add('createBirthRegistrationAs', (role, options = {}) => {
   return getToken(role).then((token) => {
-    return getLocationWithName(token, options?.searchCriteria?.district || 'Ibombo').then((location) => {
+    const locationName = options?.searchCriteria?.district || 'Ibombo'
+    return getLocationWithName(token, locationName).then((location) => {
       return getRandomFacility(token, location).then(async (facility) => {
         cy.readFile('cypress/support/assets/528KB-random.png', 'base64').then(
           (file) => {
-            // Tässä tehdään jo syntymärekisteröinti input joka vastaa mutaation BirthRegistrationInput
+            cy.log('criteria', options?.searchCriteria)
             const details = createBirthDeclarationData(
               options?.searchCriteria?.childGender,
               new Date('2018-05-18T13:18:26.240Z'),
@@ -423,8 +424,11 @@ Cypress.Commands.add('createBirthRegistrationAs', (role, options = {}) => {
               details.child.birthDate = `${childDoBSplit.yyyy}-${childDoBSplit.mm}-${childDoBSplit.dd}`
               details.child.gender = childGender
 
-              // Pilessä ainakin, gender, mother tiedoissa jotain, status?  piäisi olla registered,
-              // ehkä event details locaatio tieto.
+              // Wrong values are gender, mother info? status? should be registered
+              // maybe in the event details location info.
+              // femaile gender is selected in the client in some reason
+              // mom's info is correct in the request.
+              // Status is saved with value "preliminary"
 
               details.father.birthDate = `${fatherDoBSplit.yyyy}-${fatherDoBSplit.mm}-${fatherDoBSplit.dd}`
               details.mother.birthDate = `${motherDoBSplit.yyyy}-${motherDoBSplit.mm}-${motherDoBSplit.dd}`

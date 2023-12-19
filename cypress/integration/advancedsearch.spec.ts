@@ -130,8 +130,6 @@ context('Advanced Search Integration Test', () => {
     cy.get('#dateOfRegistration-date_range_button').click()
     cy.get('#date-range-confirm-action').click()
     cy.selectOption('#registrationStatuses', 'Any status', 'Any status')
-    // Kaikki nämä hakutiedot pitää mätsätä tehdyn rekisteröinnin tietoihin.
-    // Muuten todistuksia ei tuke löytymään.
     //ENTER CHILD DETAILS FOR SEARCH
     cy.get('#BirthChildDetails-accordion').click()
     cy.get('#childDoBexact-dd').type(childDoBSplit.dd)
@@ -139,6 +137,7 @@ context('Advanced Search Integration Test', () => {
     cy.get('#childDoBexact-yyyy').type(childDoBSplit.yyyy)
     cy.get('#childFirstNames').type(childFirstNames)
     cy.get('#childLastName').type(childLastName)
+    // This always selects female even if the childGender === 'male'
     cy.selectOption('#childGender', childGender, childGender)
 
     //ENTER EVENT DETAILS FOR SEARCH
