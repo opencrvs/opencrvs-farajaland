@@ -6,16 +6,16 @@ const { existsSync } = require('fs')
 const { mkdirSync } = require('fs')
 
 const args = minimist(process.argv.slice(2), {
-  string: ['vpn-type'],
+  string: ['environment', 'vpn-type'],
   boolean: ['sms-enabled', 'configure-vpn', 'dry-run', 'configure-backup'],
   alias: {}
 })
 
 const config = {
-  environment: '',
+  environment: args.environment,
   dockerhub: {
     ORGANISATION: 'opencrvs', // This may be a dockerhub organisation or the same as the username
-    REPOSITORY: 'opencrvs-farajaland',
+    REPOSITORY: 'ocrvs-farajaland',
     USERNAME: process.env.DOCKER_USERNAME,
     TOKEN: process.env.DOCKER_TOKEN
   },
@@ -26,11 +26,11 @@ const config = {
   ssh: {
     SSH_HOST: process.env.SSH_HOST, // IP address for the manager
     SSH_USER: process.env.SSH_USER,
-    SSH_KEY: process.env.SSH_KEY // id_rsa
+    SSH_KEY: process.env.SSH_KEY
   },
   infrastructure: {
-    DISK_SPACE: '', // e.g. 200g
-    DOMAIN: '', // web domain applied after all public subdomains
+    DISK_SPACE: '200g', // e.g. 200g
+    DOMAIN: process.env.DOMAIN, // web domain applied after all public subdomains
     REPLICAS: '1'
   },
   sms: {
@@ -51,8 +51,9 @@ const config = {
     SMTP_HOST: process.env.SMTP_HOST,
     SMTP_USERNAME: process.env.SMTP_USERNAME,
     SMTP_PASSWORD: process.env.SMTP_PASSWORD,
-    SMTP_PORT: '',
-    ALERT_EMAIL: ''
+    SMTP_PORT: process.env.SMTP_PORT,
+    ALERT_EMAIL:
+      'sentry-dev-aaaalrpiimoklruew7v7dgo2km@opencrvsworkspace.slack.com'
   },
   vpn: {
     // openconnect details for optional VPN
@@ -73,7 +74,7 @@ const config = {
   whitelist: {
     CONTENT_SECURITY_POLICY_WILDCARD: '*.', // e.g. *.<your-domain>
     CLIENT_APP_URL: '',
-    LOGIN_URL: ''
+    LOGIN_URL: process.env.DOMAIN ? `https://login.${process.env.DOMAIN}` : ''
   },
   backup: {
     BACKUP_HOST: process.env.BACKUP_HOST || '',
@@ -101,16 +102,12 @@ async function createVariable(repositoryId, environment, name, value) {
 }
 
 async function getRepositoryId(owner, repo) {
-  try {
-    const response = await octokit.request('GET /repos/{owner}/{repo}', {
-      owner: owner,
-      repo: repo
-    })
+  const response = await octokit.request('GET /repos/{owner}/{repo}', {
+    owner: owner,
+    repo: repo
+  })
 
-    return response.data.id
-  } catch (error) {
-    console.error('Error fetching repository information:', error)
-  }
+  return response.data.id
 }
 
 async function createSecret(
@@ -181,6 +178,34 @@ async function getPublicKey(environment) {
   return res.data
 }
 
+async function listRepoSecrets(owner, repositoryId, environmentName) {
+  const response = await octokit.request(
+    'GET /repositories/{repository_id}/environments/{environment_name}/secrets',
+    {
+      owner: owner,
+      repository_id: repositoryId,
+      environment_name: environmentName
+    }
+  )
+  return response.data.secrets
+}
+
+async function listRepoVariables(repositoryId, environmentName) {
+  const response = await octokit.request(
+    'GET /repositories/{repository_id}/environments/{environment_name}/variables',
+    {
+      per_page: 30,
+      repository_id: repositoryId,
+      environment_name: environmentName,
+      headers: {
+        'X-GitHub-Api-Version': '2022-11-28'
+      }
+    }
+  )
+
+  return response.data.variables
+}
+
 function generateLongPassword() {
   const chars =
     '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_'
@@ -200,6 +225,16 @@ async function main() {
   const repositoryId = await getRepositoryId(
     config.github_repository.ORGANISATION,
     config.github_repository.REPOSITORY_NAME
+  )
+
+  const existingVariables = await listRepoVariables(
+    repositoryId,
+    config.environment
+  )
+  const existingSecrets = await listRepoSecrets(
+    config.github_repository.ORGANISATION,
+    repositoryId,
+    config.environment
   )
 
   let backupSecrets = {}
@@ -266,6 +301,35 @@ async function main() {
     ...backupVariables
   }
 
+  const allSecretsKeys = Object.keys(SECRETS)
+
+  const allVariablesKeys = Object.keys(VARIABLES)
+
+  if (existingSecrets.length !== 0) {
+    console.log(
+      'This environment already has defined secrets. Environment is however currently missing the following secrets:',
+      allSecretsKeys.filter(
+        (key) => !existingSecrets.find((secret) => secret.name === key)
+      )
+    )
+    for (const secret of existingSecrets) {
+      delete SECRETS[secret.name]
+    }
+  }
+  console.log(existingVariables)
+
+  if (existingVariables.length !== 0) {
+    console.log(
+      'This environment already has defined variables. Environment is however currently missing the following variables:',
+      allVariablesKeys.filter(
+        (key) => !existingVariables.find((secret) => secret.name === key)
+      )
+    )
+    for (const variable of existingVariables) {
+      delete VARIABLES[variable.name]
+    }
+  }
+
   const errors = []
   for (const [secretName, secretValue] of Object.entries(SECRETS)) {
     if (secretValue === undefined || secretValue === '') {
@@ -283,11 +347,22 @@ async function main() {
     }
   }
 
+  const secretsToCreate = allSecretsKeys.filter(
+    (key) => !existingSecrets.find((secret) => secret.name === key)
+  )
+  const variablesToCreate = allVariablesKeys.filter(
+    (key) => !existingVariables.find((secret) => secret.name === key)
+  )
+
   if (args['dry-run']) {
-    console.log('Dry run. Not creating secrets or variables.')
-    console.log(SECRETS)
-    console.log(VARIABLES)
+    console.log('This is a dry run. Not creating secrets or variables.')
+    console.log('')
     console.log('Errors:', errors)
+    console.log('')
+    console.log('After all errors are fixed, These secrets will be created:')
+    console.log(secretsToCreate)
+    console.log('These variables would be created:')
+    console.log(variablesToCreate)
     process.exit(0)
   }
 
@@ -297,6 +372,7 @@ async function main() {
   }
 
   for (const [secretName, secretValue] of Object.entries(SECRETS)) {
+    console.log(`Creating secret ${secretName} with value ${secretValue}`)
     await createSecret(
       repositoryId,
       config.environment,
@@ -308,6 +384,8 @@ async function main() {
   }
 
   for (const [variableName, variableValue] of Object.entries(VARIABLES)) {
+    console.log(`Creating variable ${variableName} with value ${variableValue}`)
+
     await createVariable(
       repositoryId,
       config.environment,
