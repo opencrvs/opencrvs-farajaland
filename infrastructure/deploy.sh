@@ -270,7 +270,7 @@ COMPOSE_FILED_FROM_CORE="docker-compose.deps.yml docker-compose.yml"
 SSH_ARGS=${SSH_ARGS:-""}
 
 configured_rsync() {
-  rsync -e "ssh -p $SSH_PORT" $SSH_ARGS "$@"
+  rsync -e "ssh -p $SSH_PORT $SSH_ARGS" "$@"
 }
 
 configured_ssh() {
