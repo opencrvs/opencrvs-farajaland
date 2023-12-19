@@ -111,6 +111,7 @@ jobs:
           SENDER_EMAIL_ADDRESS: ${{ secrets.SENDER_EMAIL_ADDRESS }}
           SUPER_USER_PASSWORD: ${{ secrets.SUPER_USER_PASSWORD }}
           CONTENT_SECURITY_POLICY_WILDCARD: ${{ vars.CONTENT_SECURITY_POLICY_WILDCARD }}
+          SSH_ARGS: ${{ vars.SSH_ARGS }}
         run: |
           cd ./${{ github.event.repository.name }}
           yarn deploy \

@@ -267,6 +267,16 @@ LOG_LOCATION=${LOG_LOCATION:-/var/log}
 
 COMPOSE_FILED_FROM_CORE="docker-compose.deps.yml docker-compose.yml"
 
+SSH_ARGS=${SSH_ARGS:-""}
+
+configured_rsync() {
+  rsync -e "ssh -p $SSH_PORT" $SSH_ARGS "$@"
+}
+
+configured_ssh() {
+  ssh $SSH_USER@$SSH_HOST -p $SSH_PORT $SSH_ARGS "$@"
+}
+
 # Rotate MongoDB credentials
 # https://unix.stackexchange.com/a/230676
 generate_password() {
@@ -310,21 +320,21 @@ echo
 echo "Deploying COUNTRY_CONFIG_VERSION $COUNTRY_CONFIG_VERSION to $SSH_HOST..."
 echo
 
-rsync -e "ssh -p $SSH_PORT" -az $PROJECT_ROOT/infrastructure $SSH_USER@$SSH_HOST:/opt/opencrvs/ --delete
-rsync -e "ssh -p $SSH_PORT" /tmp/docker-compose.yml /tmp/docker-compose.deps.yml $SSH_USER@$SSH_HOST:/opt/opencrvs/infrastructure
+configured_rsync -az $PROJECT_ROOT/infrastructure $SSH_USER@$SSH_HOST:/opt/opencrvs/ --delete
+configured_rsync /tmp/docker-compose.yml /tmp/docker-compose.deps.yml $SSH_USER@$SSH_HOST:/opt/opencrvs/infrastructure
 
-ssh $SSH_USER@$SSH_HOST -p $SSH_PORT << EOF
+configured_ssh << EOF
   docker login -u $DOCKER_USERNAME -p $DOCKER_TOKEN
 EOF
 
 rotate_secrets() {
   files_to_rotate=$1
   echo "ROTATING SECRETS ON: $files_to_rotate"
-  ssh $SSH_USER@$SSH_HOST -p $SSH_PORT '/opt/opencrvs/infrastructure/rotate-secrets.sh '$files_to_rotate' | tee -a '$LOG_LOCATION'/rotate-secrets.log'
+  configured_ssh '/opt/opencrvs/infrastructure/rotate-secrets.sh '$files_to_rotate' | tee -a '$LOG_LOCATION'/rotate-secrets.log'
 }
 
 # Setup configuration files and compose file for the deployment domain
-ssh $SSH_USER@$SSH_HOST -p $SSH_PORT "SMTP_HOST=$SMTP_HOST SMTP_PORT=$SMTP_PORT SMTP_USERNAME=$SMTP_USERNAME SMTP_PASSWORD=$SMTP_PASSWORD ALERT_EMAIL=$ALERT_EMAIL MINIO_ROOT_USER=$MINIO_ROOT_USER MINIO_ROOT_PASSWORD=$MINIO_ROOT_PASSWORD /opt/opencrvs/infrastructure/setup-deploy-config.sh $HOST | tee -a $LOG_LOCATION/setup-deploy-config.log"
+configured_ssh "SMTP_HOST=$SMTP_HOST SMTP_PORT=$SMTP_PORT SMTP_USERNAME=$SMTP_USERNAME SMTP_PASSWORD=$SMTP_PASSWORD ALERT_EMAIL=$ALERT_EMAIL MINIO_ROOT_USER=$MINIO_ROOT_USER MINIO_ROOT_PASSWORD=$MINIO_ROOT_PASSWORD /opt/opencrvs/infrastructure/setup-deploy-config.sh $HOST | tee -a $LOG_LOCATION/setup-deploy-config.log"
 
 
 # Takes in a space separated string of docker-compose.yml files
@@ -434,7 +444,7 @@ docker_stack_deploy() {
 
   echo "Pulling all docker images. This might take a while"
 
-  EXISTING_IMAGES=$(ssh $SSH_USER@$SSH_HOST -p $SSH_PORT "docker images --format '{{.Repository}}:{{.Tag}}'")
+  EXISTING_IMAGES=$(configured_ssh "docker images --format '{{.Repository}}:{{.Tag}}'")
   IMAGE_TAGS_TO_DOWNLOAD=$(get_docker_tags_from_compose_files "$COMMON_COMPOSE_FILES_WITH_LOCAL_PATHS $ENVIRONMENT_COMPOSE_WITH_LOCAL_PATHS")
 
   for tag in ${IMAGE_TAGS_TO_DOWNLOAD[@]}; do
@@ -445,7 +455,7 @@ docker_stack_deploy() {
 
     echo "Downloading $tag"
 
-    until ssh $SSH_USER@$SSH_HOST -p $SSH_PORT "cd /opt/opencrvs && docker pull $tag"
+    until configured_ssh "cd /opt/opencrvs && docker pull $tag"
     do
       echo "Server failed to download $tag. Retrying..."
       sleep 5
@@ -455,7 +465,7 @@ docker_stack_deploy() {
   echo "Updating docker swarm stack with new compose files"
   COMMON_COMPOSE_FILES="infrastructure/docker-compose.deps.yml infrastructure/docker-compose.yml infrastructure/docker-compose.deploy.yml"
 
-  ssh $SSH_USER@$SSH_HOST -p $SSH_PORT 'cd /opt/opencrvs && \
+  configured_ssh 'cd /opt/opencrvs && \
     '$ENV_VARIABLES' docker stack deploy --prune -c '$(split_and_join " " " -c " "$COMMON_COMPOSE_FILES infrastructure/$environment_compose")' --with-registry-auth opencrvs'
 }
 # Deploy the OpenCRVS stack onto the swarm
@@ -473,7 +483,7 @@ echo
 echo "Setting up Kibana config & alerts"
 
 while true; do
-  if ssh $SSH_USER@$SSH_HOST -p $SSH_PORT "ELASTICSEARCH_SUPERUSER_PASSWORD=$ELASTICSEARCH_SUPERUSER_PASSWORD HOST=kibana.$HOST /opt/opencrvs/infrastructure/monitoring/kibana/setup-config.sh"; then
+  if configured_ssh "ELASTICSEARCH_SUPERUSER_PASSWORD=$ELASTICSEARCH_SUPERUSER_PASSWORD HOST=kibana.$HOST /opt/opencrvs/infrastructure/monitoring/kibana/setup-config.sh"; then
     break
   fi
   sleep 5

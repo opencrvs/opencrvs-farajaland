@@ -123,6 +123,7 @@ jobs:
           SENDER_EMAIL_ADDRESS: ${{ secrets.SENDER_EMAIL_ADDRESS }}
           SUPER_USER_PASSWORD: ${{ secrets.SUPER_USER_PASSWORD }}
           SSH_KEY: ${{ secrets.SSH_KEY }}
+          SSH_ARGS: ${{ vars.SSH_ARGS }}
           CONTENT_SECURITY_POLICY_WILDCARD: ${{ vars.CONTENT_SECURITY_POLICY_WILDCARD }}
         run: |
           cd ./${{ github.event.repository.name }}
@@ -166,6 +167,7 @@ jobs:
           SENDER_EMAIL_ADDRESS: ${{ secrets.SENDER_EMAIL_ADDRESS }}
           SUPER_USER_PASSWORD: ${{ secrets.SUPER_USER_PASSWORD }}
           SSH_KEY: ${{ secrets.SSH_KEY }}
+          SSH_ARGS: ${{ vars.SSH_ARGS }}
           CONTENT_SECURITY_POLICY_WILDCARD: ${{ vars.CONTENT_SECURITY_POLICY_WILDCARD }}
   reset:
     needs: deploy
