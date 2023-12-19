@@ -39,6 +39,3 @@ docker-workers:
     farajaland-prod-02:
       ansible_host: '178.128.245.255'
       data_label: data2
-    farajaland-prod-03:
-      ansible_host: '165.22.198.21'
-      data_label: data3
