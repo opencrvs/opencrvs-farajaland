@@ -39,3 +39,4 @@ docker-workers:
     farajaland-prod-02:
       ansible_host: '178.128.245.255'
       data_label: data2
+      ansible_ssh_common_args: '-J root@165.22.110.53 -o StrictHostKeyChecking=no'
