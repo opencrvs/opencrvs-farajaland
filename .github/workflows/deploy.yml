@@ -123,7 +123,6 @@ jobs:
           WIREGUARD_ADMIN_PASSWORD: ${{ secrets.WIREGUARD_ADMIN_PASSWORD }}
           SENDER_EMAIL_ADDRESS: ${{ secrets.SENDER_EMAIL_ADDRESS }}
           SUPER_USER_PASSWORD: ${{ secrets.SUPER_USER_PASSWORD }}
-          SSH_KEY: ${{ secrets.SSH_KEY }}
           SSH_ARGS: ${{ vars.SSH_ARGS }}
           CONTENT_SECURITY_POLICY_WILDCARD: ${{ vars.CONTENT_SECURITY_POLICY_WILDCARD }}
         run: |
@@ -162,10 +161,10 @@ jobs:
           MINIO_ROOT_USER: ${{ secrets.MINIO_ROOT_USER }}
           MINIO_ROOT_PASSWORD: ${{ secrets.MINIO_ROOT_PASSWORD }}
           EMAIL_API_KEY: ${{ secrets.EMAIL_API_KEY }}
-          INFOBIP_SENDER_ID: ${{ secrets.INFOBIP_SENDER_ID }}
           SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
-          INFOBIP_GATEWAY_ENDPOINT: ${{ secrets.INFOBIP_GATEWAY_ENDPOINT }}
           WIREGUARD_ADMIN_PASSWORD: ${{ secrets.WIREGUARD_ADMIN_PASSWORD }}
+          INFOBIP_SENDER_ID: ${{ secrets.INFOBIP_SENDER_ID }}
+          INFOBIP_GATEWAY_ENDPOINT: ${{ secrets.INFOBIP_GATEWAY_ENDPOINT }}
           INFOBIP_API_KEY: ${{ secrets.INFOBIP_API_KEY }}
           SENDER_EMAIL_ADDRESS: ${{ secrets.SENDER_EMAIL_ADDRESS }}
           SUPER_USER_PASSWORD: ${{ secrets.SUPER_USER_PASSWORD }}

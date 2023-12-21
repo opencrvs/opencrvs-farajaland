@@ -273,8 +273,23 @@ configured_rsync() {
   rsync -e "ssh -p $SSH_PORT $SSH_ARGS" "$@"
 }
 
+get_environment_variables() {
+    local env_vars=""
+    while IFS='=' read -r name value; do
+        # Exclude variables that start with specified patterns and specific standard variables
+        if [[ ! $name =~ ^(npm_|GITHUB_|PATH|SSH_ARGS|HOME|LANG|USER|SHELL|PWD) ]]; then
+            # Handle special characters in value
+            value=$(printf '%q' "$value")
+            env_vars+="${name}=${value} "
+        fi
+    done < <(printenv)
+
+    echo "$env_vars"
+}
+
+
 configured_ssh() {
-  ssh $SSH_USER@$SSH_HOST -p $SSH_PORT $SSH_ARGS "export $(printenv | xargs); $@"
+  ssh $SSH_USER@$SSH_HOST -p $SSH_PORT $SSH_ARGS "export $(get_environment_variables); $@"
 }
 
 # Rotate MongoDB credentials
