@@ -21,11 +21,11 @@
 
 - name: Set ownership and permissions for files
   ansible.builtin.file:
-    path: '{{ item.path }}'
+    path: /opt/opencrvs
     owner: root
     group: application
     mode: '0770'
-  with_items: '{{ files_found.files }}'
+    recurse: yes
 
 - name: Add current user to 'application' group
   user:
