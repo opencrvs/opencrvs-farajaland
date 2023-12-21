@@ -289,7 +289,6 @@ get_environment_variables() {
 
 
 configured_ssh() {
-  echo "$(get_environment_variables)"
   ssh $SSH_USER@$SSH_HOST -p $SSH_PORT $SSH_ARGS "export $(get_environment_variables); $@"
 }
 
