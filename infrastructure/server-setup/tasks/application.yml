@@ -9,8 +9,8 @@
     state: directory
     owner: root
     group: application
-    # Owner and group have rwx, others have no permission
-    mode: '0770'
+    # Owner and group have rwx, others have read permission
+    mode: '0775'
 
 - name: Find all files in /opt/opencrvs
   ansible.builtin.find:
