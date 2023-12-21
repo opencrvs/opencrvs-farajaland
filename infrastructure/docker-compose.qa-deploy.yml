@@ -95,7 +95,7 @@ services:
       - NODE_ENV=production
 
   wg-easy:
-    image: weejewel/wg-easy:7
+    image: weejewel/wg-easy:2ee373a16cf0
     environment:
       - WG_HOST=vpn.{{hostname}}
       - PASSWORD=${WIREGUARD_ADMIN_PASSWORD}
