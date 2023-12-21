@@ -277,10 +277,10 @@ get_environment_variables() {
     local env_vars=""
     while IFS='=' read -r name value; do
         # Exclude variables that start with specified patterns and specific standard variables
-        if [[ ! $name =~ ^(npm_|GITHUB_|PATH|SSH_ARGS|HOME|LANG|USER|SHELL|PWD|KNOWN_HOSTS) ]]; then
-            # Handle special characters in value
-            value=$(printf '%q' "$value")
-            env_vars+="${name}=${value} "
+        if [[ ! $name =~ ^(npm_|RUNNER_TOOL_CACHE|GITHUB_|PATH|SSH_ARGS|HOME|LANG|USER|SHELL|PWD|KNOWN_HOSTS) ]]; then
+            # Safely escape and quote the value
+            printf -v escaped_value "%q" "$value"
+            env_vars+="${name}=\"${escaped_value}\" "
         fi
     done < <(printenv)
 
