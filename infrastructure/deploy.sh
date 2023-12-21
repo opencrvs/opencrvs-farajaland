@@ -277,7 +277,7 @@ get_environment_variables() {
     local env_vars=""
     while IFS='=' read -r name value; do
         # Exclude variables that start with specified patterns and specific standard variables
-        if [[ ! $name =~ ^(npm_|GITHUB_|PATH|SSH_ARGS|HOME|LANG|USER|SHELL|PWD) ]]; then
+        if [[ ! $name =~ ^(npm_|GITHUB_|PATH|SSH_ARGS|HOME|LANG|USER|SHELL|PWD|KNOWN_HOSTS) ]]; then
             # Handle special characters in value
             value=$(printf '%q' "$value")
             env_vars+="${name}=${value} "
@@ -289,6 +289,7 @@ get_environment_variables() {
 
 
 configured_ssh() {
+  echo "$(get_environment_variables)"
   ssh $SSH_USER@$SSH_HOST -p $SSH_PORT $SSH_ARGS "export $(get_environment_variables); $@"
 }
 
