@@ -120,6 +120,7 @@ services:
         - 'traefik.http.routers.vpn.rule=Host(`vpn.{{hostname}}`)'
         - 'traefik.http.services.vpn.loadbalancer.server.port=51821'
         - 'traefik.http.routers.vpn.tls=true'
+        - 'traefik.http.routers.vpn.tls.certresolver=certResolver'
         - 'traefik.http.routers.vpn.entrypoints=web,websecure'
         - 'traefik.docker.network=opencrvs_vpn'
         - 'traefik.http.middlewares.vpn.headers.customresponseheaders.Pragma=no-cache'
