@@ -274,7 +274,7 @@ configured_rsync() {
 }
 
 configured_ssh() {
-  ssh $SSH_USER@$SSH_HOST -p $SSH_PORT $SSH_ARGS "$@"
+  ssh $SSH_USER@$SSH_HOST -p $SSH_PORT $SSH_ARGS "export $(printenv | xargs); $@"
 }
 
 # Rotate MongoDB credentials
@@ -319,10 +319,6 @@ echo "Deploying VERSION $VERSION to $SSH_HOST..."
 echo
 echo "Deploying COUNTRY_CONFIG_VERSION $COUNTRY_CONFIG_VERSION to $SSH_HOST..."
 echo
-
-configured_rsync() {
-  rsync -e "ssh -p $SSH_PORT $SSH_ARGS" "export $(printenv | xargs); $@"
-}
 
 configured_rsync -rlD $PROJECT_ROOT/infrastructure $SSH_USER@$SSH_HOST:/opt/opencrvs/ --delete --no-perms --omit-dir-times --verbose
 configured_rsync -rlD /tmp/docker-compose.yml /tmp/docker-compose.deps.yml $SSH_USER@$SSH_HOST:/opt/opencrvs/infrastructure --no-perms --omit-dir-times  --verbose
