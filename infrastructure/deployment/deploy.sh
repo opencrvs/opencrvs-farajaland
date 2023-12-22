@@ -183,18 +183,26 @@ configured_rsync() {
 
 get_environment_variables() {
   local env_vars=""
+  # Define an array of variables to exclude
+  local exclude_vars=("PATH" "SSH_ARGS" "HOME" "LANG" "USER" "SHELL" "PWD" "KNOWN_HOSTS")
+
   while IFS='=' read -r name value; do
-    # Exclude variables that start with specified patterns and specific standard variables
-    if [[ ! $name =~ ^(npm_|RUNNER_TOOL_CACHE|GITHUB_|PATH|SSH_ARGS|HOME|LANG|USER|SHELL|PWD|KNOWN_HOSTS) ]]; then
+    # Check if the variable is in the exclude list
+    if printf '%s\n' "${exclude_vars[@]}" | grep -qx "$name"; then
+      # Skip the variable if it's in the exclude list
+      continue
+    fi
+
+    # Exclude variables that start with specified patterns
+    if [[ ! $name =~ ^(npm_|RUNNER_TOOL_CACHE|GITHUB_) ]]; then
       # Safely escape and quote the value
       printf -v escaped_value "%q" "$value"
       env_vars+="${name}=\"${escaped_value}\" "
     fi
-    done < <(printenv)
+  done < <(printenv)
 
-    echo "$env_vars"
+  echo "$env_vars"
 }
-
 
 configured_ssh() {
   ssh $SSH_USER@$SSH_HOST -p $SSH_PORT $SSH_ARGS "export $(get_environment_variables); $@"
