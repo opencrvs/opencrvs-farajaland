@@ -204,7 +204,11 @@ BACKUP_RAW_FILES_DIR=/tmp/backup-$LABEL/
 mkdir -p $BACKUP_RAW_FILES_DIR
 
 # Copy backup from backup server
-script -q -c "rsync -a -r --delete --progress --rsh='ssh -o StrictHostKeyChecking=no -p $SSH_PORT' $SSH_USER@$SSH_HOST:$REMOTE_DIR/${LABEL}.tar.gz.enc $BACKUP_RAW_FILES_DIR/${LABEL}.tar.gz.enc" && echo "Copied backup files to staging server."
+rsync -a -r --delete --progress --rsh="ssh -o StrictHostKeyChecking=no -p $SSH_PORT" \
+  $SSH_USER@$SSH_HOST:$REMOTE_DIR/${LABEL}.tar.gz.enc\
+  $BACKUP_RAW_FILES_DIR/${LABEL}.tar.gz.enc
+
+echo "Copied backup files to server."
 
 # Decrypt
 openssl enc -d -aes-256-cbc -salt -in $BACKUP_RAW_FILES_DIR/${LABEL}.tar.gz.enc --out $BACKUP_RAW_FILES_DIR/${LABEL}.tar.gz -pass pass:$PASSPHRASE
