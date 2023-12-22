@@ -47,11 +47,13 @@ for i in "$@"; do
         shift
         ;;
     --country_config_version=*)
-        COUNTRY_CONFIG_VERSION="${i#*=}"
+        # Exported so that it can be used in the docker-compose files
+        export COUNTRY_CONFIG_VERSION="${i#*=}"
         shift
         ;;
     --replicas=*)
-        REPLICAS="${i#*=}"
+        # Exported so that it can be used in the docker-compose files
+        export REPLICAS="${i#*=}"
         shift
         ;;
     *) ;;
