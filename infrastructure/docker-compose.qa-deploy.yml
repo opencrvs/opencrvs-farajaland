@@ -1,6 +1,11 @@
 version: '3.3'
 
 services:
+  traefik:
+    networks:
+      - overlay_net
+      - vpn
+
   notification:
     environment:
       - LANGUAGES=en,fr
