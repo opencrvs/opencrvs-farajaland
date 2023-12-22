@@ -4,10 +4,7 @@
     minute: '0'
     hour: '0'
     job: 'cd / && bash /opt/opencrvs/infrastructure/backup.sh --passphrase={{ backup_encryption_passphrase }} --ssh_user={{ external_backup_server_user }} --ssh_host={{ external_backup_server_ip }} --ssh_port={{ external_backup_server_ssh_port }} --production_ip={{ manager_production_server_ip }} --remote_dir={{ external_backup_server_remote_directory }} --replicas=1 >> /var/log/opencrvs-backup.log 2>&1'
-  when:
-    - external_backup_server_ip is defined
-    - backup_encryption_passphrase
-    - enable_backups
+    state: "{{ 'present' if (external_backup_server_ip is defined and backup_encryption_passphrase and enable_backups) else 'absent' }}"
 
 - name: 'Setup crontab to restore the opencrvs data'
   cron:
@@ -15,7 +12,4 @@
     minute: '0'
     hour: '1'
     job: 'cd / && bash /opt/opencrvs/infrastructure/restore.sh --passphrase={{ backup_encryption_passphrase }} --ssh_user={{ external_backup_server_user }} --ssh_host={{ external_backup_server_ip }} --ssh_port={{ external_backup_server_ssh_port }} --remote_dir={{ external_backup_server_remote_directory }} --replicas=1 >> /var/log/opencrvs-restore.log 2>&1'
-  when:
-    - external_backup_server_ip is defined
-    - backup_encryption_passphrase
-    - periodic_restore_from_backup
+    state: "{{ 'present' if (external_backup_server_ip is defined and backup_encryption_passphrase and periodic_restore_from_backup) else 'absent' }}"

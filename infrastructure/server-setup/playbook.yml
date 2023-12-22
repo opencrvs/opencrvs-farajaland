@@ -12,7 +12,7 @@
     - name: Create MongoDB replicate key file locally
       local_action: shell openssl rand -base64 755 > /tmp/mongodb-keyfile
 
-- hosts: all
+- hosts: docker-manager-first, docker-workers
   become: yes
   become_method: sudo
   tasks:
@@ -186,3 +186,5 @@
       when: "docker_info.stdout.find('Swarm: inactive') != -1"
       retries: 3
       delay: 20
+
+- import_playbook: backups.yml

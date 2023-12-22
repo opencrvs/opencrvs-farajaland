@@ -1,0 +1,54 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
+#
+# OpenCRVS is also distributed under the terms of the Civil Registration
+# & Healthcare Disclaimer located at http://opencrvs.org/license.
+#
+# Copyright (C) The OpenCRVS Authors located at https://github.com/opencrvs/opencrvs-core/blob/master/AUTHORS.
+---
+- hosts: localhost
+  tasks:
+    - name: Generate SSH keypair for application -> backup server connection
+      command: ssh-keygen -t rsa -b 4096 -f /tmp/backup_ssh_key -N ""
+
+- hosts: docker-manager-first
+  tasks:
+    - name: Check if ssh_key already exists
+      stat:
+        path: /home/{{ ansible_user }}/.ssh/id_rsa
+      register: file_check
+
+    - name: Ensure application server can login to backup server
+      copy:
+        src: /tmp/backup_ssh_key
+        dest: /home/{{ ansible_user }}/.ssh/id_rsa
+        mode: 0600
+      when: not file_check.stat.exists
+
+- hosts: backups
+  become: yes
+  become_method: sudo
+  tasks:
+    - name: Ensure backup user is present
+      user:
+        name: '{{ external_backup_server_user }}'
+        state: present
+
+    - name: Check if authorized_keys already exists
+      stat:
+        path: /home/{{ external_backup_server_user }}/.ssh/authorized_keys
+      register: file_check
+
+    - name: Ensure backup application servers can login to backup server
+      copy:
+        src: /tmp/backup_ssh_key.pub
+        dest: /home/{{ external_backup_server_user }}/.ssh/authorized_keys
+        mode: 0600
+      when: not file_check.stat.exists
+
+    - name: 'Create backup directory'
+      file:
+        path: '{{ external_backup_server_remote_directory }}'
+        state: directory
+        owner: '{{ external_backup_server_user }}'
