@@ -1,0 +1,6 @@
+- name: Set authorized keys for users
+  authorized_key:
+    user: '{{ ansible_user }}'
+    key: '{{ item.key }}'
+    state: '{{ item.state }}'
+  with_items: '{{ allow_jump_access_from | default([]) }}'

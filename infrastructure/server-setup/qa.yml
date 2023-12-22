@@ -30,6 +30,11 @@ all:
         ssh_key: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINUml9O5ySwPtEMD1yGEYHlf9Z3jro97NWAnM9+ew9gn tahmidrahman.dsi@gmail.com
         state: present
         sudoer: true
+    allow_jump_access_from:
+      - key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCPjy0G2Q20CTO8x8RAm8LJ7QtptE1FVsnVzARQLfY79ruXacqHNG0jHW2IIYOpghHBef0+bQ33FP6lwH4QtWclDmpx4Thwy6Y1zUJoY2xUZUV0w3+mFVL9ePdFgr0Uz/HBVf5uJy6HNxcgJBRgBaSipWyp3AnDIAkLkTxiyoZVlZhJi01ARxuivLSZj5zuQBjbQkQxcIKmROLrP8QughbnLBq1nNupe1R4Qw9KETw1+zBZ80MfJvfQ/hM+TXJ1GjNXh99MBmw7Abb9fM//OV1HU3GMi8TUhPDtZ0rn6kCf3qzV5X3+C1vvz6tQfk/paXQqbxBSWQB2CvOXjtZSml4zZNwiPjW6bMDezltx5YHGOnTpd6R3N/oMd73zAUUp15Jg9TUuCJAqjanjCA0sznw8OLsi9jHqnMvcXiJySu1Kqxbb/vSrpla0rXY5Vb/Ha8eRfv+eEK+EgaOLE73q0MwnraBKtGkhJQjopxWoorN1RgqdqDbIwc9/ViOURby9Pc0= provision@farajaland-staging
+        state: present
+      - key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDbzqrE2VdYTuEz+sodpg44ZmkH465swDPb6M3gRNGugvMWuav6HhO6nGkyFaNCdUY2atCYIW5p3mcQK187ZpE4voGoNWjxckRXZ1nQ8lVGOGuhPBdKvXVh2wIe6WoIAv/QToLrGGTiMzRCxZ7MU7MXWBKlTB08gpDck9s+Wrp8gQUd0MH/WzpJ8AMKsVDup5R95aZ+iVJMjgvVKTKJE9jvuQpXy9WcU7YxBKh9J+vaLWr5Q9R48B4tpK4vgQ3UQU1tfNVJsE9Gi9HieuBSc2h6diHHZzzDiJuJk1XsedINRikEDeaQXjYUSRvAwfwzuxuFvTUXmroJnEw+xyVDBCvFa2UFbAtCwytp7Iadkn2UQV2sdHDuGIYE4EItBysONPvszEHj3/vn+j/9sODBCNpRdSWXJipcrx8Vvdn8t8Wiu6iS5ZfPOkhscAIlR9zvDigqYhZn57AuY56zLV/+NIANScxkiZDVnlYPl/yFKFZfKJhkmdfYMe5C3ezRcQO/TvM= provision@farajaland-prod
+        state: present
 
 docker-manager-first:
   hosts:

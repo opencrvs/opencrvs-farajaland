@@ -18,7 +18,7 @@
   authorized_key:
     user: '{{ item.name }}'
     key: '{{ item.ssh_key }}'
-  when: item.state == 'present'
+    state: '{{ item.state }}'
   with_items: '{{ users }}'
 
 - name: Ensure user's shell is bash

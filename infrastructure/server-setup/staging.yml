@@ -34,7 +34,7 @@ docker-manager-first:
     farajaland-staging:
       ansible_host: '167.172.105.70'
       data_label: data1
-      ansible_ssh_common_args: '-J root@165.22.110.53 -o StrictHostKeyChecking=no'
+      ansible_ssh_common_args: '-J provision@165.22.110.53 -o StrictHostKeyChecking=no'
 
 # QA and staging servers are not configured to use workers.
 docker-workers: {}
