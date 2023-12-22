@@ -11,6 +11,8 @@
   tasks:
     - name: Generate SSH keypair for application -> backup server connection
       command: ssh-keygen -t rsa -b 4096 -f /tmp/backup_ssh_key -N ""
+      tags:
+        - backups
 
 - hosts: docker-manager-first
   tasks:
@@ -18,6 +20,8 @@
       stat:
         path: /home/{{ ansible_user }}/.ssh/id_rsa
       register: file_check
+      tags:
+        - backups
 
     - name: Ensure application server can login to backup server
       copy:
@@ -25,6 +29,8 @@
         dest: /home/{{ ansible_user }}/.ssh/id_rsa
         mode: 0600
       when: not file_check.stat.exists
+      tags:
+        - backups
 
 - hosts: backups
   become: yes
@@ -34,11 +40,15 @@
       user:
         name: '{{ external_backup_server_user }}'
         state: present
+      tags:
+        - backups
 
     - name: Check if authorized_keys already exists
       stat:
         path: /home/{{ external_backup_server_user }}/.ssh/authorized_keys
       register: file_check
+      tags:
+        - backups
 
     - name: Ensure backup application servers can login to backup server
       copy:
@@ -46,9 +56,13 @@
         dest: /home/{{ external_backup_server_user }}/.ssh/authorized_keys
         mode: 0600
       when: not file_check.stat.exists
+      tags:
+        - backups
 
     - name: 'Create backup directory'
       file:
         path: '{{ external_backup_server_remote_directory }}'
         state: directory
         owner: '{{ external_backup_server_user }}'
+      tags:
+        - backups
