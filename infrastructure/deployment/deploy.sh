@@ -333,13 +333,7 @@ export ROTATING_METRICBEAT_ELASTIC_PASSWORD=`generate_password`
 # Used by APM for writing data to ElasticSearch
 export ROTATING_APM_ELASTIC_PASSWORD=`generate_password`
 
-validate_environment_variables
 
-echo
-echo "Deploying VERSION $VERSION to $SSH_HOST..."
-echo
-echo "Deploying COUNTRY_CONFIG_VERSION $COUNTRY_CONFIG_VERSION to $SSH_HOST..."
-echo
 
 # Download core compose files to /tmp/
 for compose_file in ${COMPOSE_FILES_DOWNLOADED_FROM_CORE[@]}; do
@@ -349,6 +343,13 @@ for compose_file in ${COMPOSE_FILES_DOWNLOADED_FROM_CORE[@]}; do
   fi
 done
 
+validate_environment_variables
+
+echo
+echo "Deploying VERSION $VERSION to $SSH_HOST..."
+echo
+echo "Deploying COUNTRY_CONFIG_VERSION $COUNTRY_CONFIG_VERSION to $SSH_HOST..."
+echo
 echo "Syncing configuration files to the target server"
 
 configured_rsync -rlD $PROJECT_ROOT/infrastructure $SSH_USER@$SSH_HOST:/opt/opencrvs/ --delete --no-perms --omit-dir-times --verbose
