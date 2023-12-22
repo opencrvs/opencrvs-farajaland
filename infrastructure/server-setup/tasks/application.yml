@@ -9,8 +9,23 @@
     state: directory
     owner: root
     group: application
-    # Owner and group have rwx, others have no permission
+    # Owner and group have rwx, others have read permission
+    mode: '0775'
+
+- name: Find all files in /opt/opencrvs
+  ansible.builtin.find:
+    paths: /opt/opencrvs
+    recurse: yes
+    file_type: file
+  register: files_found
+
+- name: Set ownership and permissions for files
+  ansible.builtin.file:
+    path: /opt/opencrvs
+    owner: root
+    group: application
     mode: '0770'
+    recurse: yes
 
 - name: Add current user to 'application' group
   user:

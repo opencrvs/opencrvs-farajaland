@@ -1,6 +1,11 @@
 version: '3.3'
 
 services:
+  traefik:
+    networks:
+      - overlay_net
+      - vpn
+
   notification:
     environment:
       - LANGUAGES=en,fr
@@ -9,7 +14,7 @@ services:
       - NODE_ENV=production
 
   countryconfig:
-    image: ${DOCKERHUB_ACCOUNT}/${DOCKERHUB_REPO}:${COUNTRY_CONFIG_VERSION:-latest}
+    image: ${DOCKERHUB_ACCOUNT}/${DOCKERHUB_REPO}:${COUNTRY_CONFIG_VERSION}
     restart: unless-stopped
     secrets:
       - jwt-public-key.{{ts}}
@@ -95,7 +100,7 @@ services:
       - NODE_ENV=production
 
   wg-easy:
-    image: weejewel/wg-easy:7
+    image: ghcr.io/wg-easy/wg-easy:8
     environment:
       - WG_HOST=vpn.{{hostname}}
       - PASSWORD=${WIREGUARD_ADMIN_PASSWORD}
@@ -120,6 +125,7 @@ services:
         - 'traefik.http.routers.vpn.rule=Host(`vpn.{{hostname}}`)'
         - 'traefik.http.services.vpn.loadbalancer.server.port=51821'
         - 'traefik.http.routers.vpn.tls=true'
+        - 'traefik.http.routers.vpn.tls.certresolver=certResolver'
         - 'traefik.http.routers.vpn.entrypoints=web,websecure'
         - 'traefik.docker.network=opencrvs_vpn'
         - 'traefik.http.middlewares.vpn.headers.customresponseheaders.Pragma=no-cache'
@@ -133,7 +139,6 @@ services:
       - vpn
 
 networks:
-  overlay_net: {}
   vpn:
     driver: overlay
     attachable: false

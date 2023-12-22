@@ -28,9 +28,9 @@ services:
     environment:
       - NODE_ENV=production
       - SENTRY_DSN=${SENTRY_DSN}
-      - MONGO_URL=mongodb://metrics:${METRICS_MONGODB_PASSWORD}@mongo1,mongo2,mongo3/metrics?replicaSet=rs0
-      - HEARTH_MONGO_URL=mongodb://hearth:${HEARTH_MONGODB_PASSWORD}@mongo1,mongo2,mongo3/hearth-dev?replicaSet=rs0
-      - DASHBOARD_MONGO_URL=mongodb://performance:${PERFORMANCE_MONGODB_PASSWORD}@mongo1,mongo2,mongo3/performance?replicaSet=rs0
+      - MONGO_URL=mongodb://metrics:${METRICS_MONGODB_PASSWORD}@mongo1,mongo2/metrics?replicaSet=rs0
+      - HEARTH_MONGO_URL=mongodb://hearth:${HEARTH_MONGODB_PASSWORD}@mongo1,mongo2/hearth-dev?replicaSet=rs0
+      - DASHBOARD_MONGO_URL=mongodb://performance:${PERFORMANCE_MONGODB_PASSWORD}@mongo1,mongo2/performance?replicaSet=rs0
 
   auth:
     environment:
@@ -43,7 +43,7 @@ services:
     environment:
       - NODE_ENV=production
       - SENTRY_DSN=${SENTRY_DSN}
-      - MONGO_URL=mongodb://user-mgnt:${USER_MGNT_MONGODB_PASSWORD}@mongo1,mongo2,mongo3/user-mgnt?replicaSet=rs0
+      - MONGO_URL=mongodb://user-mgnt:${USER_MGNT_MONGODB_PASSWORD}@mongo1,mongo2/user-mgnt?replicaSet=rs0
     deploy:
       replicas: 2
 
@@ -59,7 +59,7 @@ services:
     environment:
       - NODE_ENV=production
       - SENTRY_DSN=${SENTRY_DSN}
-      - MONGO_URL=mongodb://webhooks:${WEBHOOKS_MONGODB_PASSWORD}@mongo1,mongo2,mongo3/webhooks?replicaSet=rs0
+      - MONGO_URL=mongodb://webhooks:${WEBHOOKS_MONGODB_PASSWORD}@mongo1,mongo2/webhooks?replicaSet=rs0
     deploy:
       replicas: 2
 
@@ -67,21 +67,21 @@ services:
     environment:
       - NODE_ENV=production
       - SENTRY_DSN=${SENTRY_DSN}
-      - MONGO_URL=mongodb://config:${CONFIG_MONGODB_PASSWORD}@mongo1,mongo2,mongo3/application-config?replicaSet=rs0
+      - MONGO_URL=mongodb://config:${CONFIG_MONGODB_PASSWORD}@mongo1,mongo2/application-config?replicaSet=rs0
     deploy:
       replicas: 2
 
   scheduler:
     environment:
       - NODE_ENV=production
-      - OPENHIM_MONGO_URL=mongodb://openhim:${OPENHIM_MONGODB_PASSWORD}@mongo1,mongo2,mongo3/openhim-dev?replicaSet=rs0
+      - OPENHIM_MONGO_URL=mongodb://openhim:${OPENHIM_MONGODB_PASSWORD}@mongo1,mongo2/openhim-dev?replicaSet=rs0
 
   documents:
     environment:
       - NODE_ENV=production
 
   countryconfig:
-    image: ${DOCKERHUB_ACCOUNT}/${DOCKERHUB_REPO}:${COUNTRY_CONFIG_VERSION:-latest}
+    image: ${DOCKERHUB_ACCOUNT}/${DOCKERHUB_REPO}:${COUNTRY_CONFIG_VERSION}
     restart: unless-stopped
     secrets:
       - jwt-public-key.{{ts}}
@@ -126,35 +126,32 @@ services:
 
   hearth:
     environment:
-      - mongodb__url=mongodb://hearth:${HEARTH_MONGODB_PASSWORD}@mongo1,mongo2,mongo3/hearth-dev?replicaSet=rs0
+      - mongodb__url=mongodb://hearth:${HEARTH_MONGODB_PASSWORD}@mongo1,mongo2/hearth-dev?replicaSet=rs0
     depends_on:
       - mongo1
       - mongo2
-      - mongo3
     deploy:
       replicas: 2
 
   migration:
     environment:
-      - USER_MGNT_MONGO_URL=mongodb://user-mgnt:${USER_MGNT_MONGODB_PASSWORD}@mongo1,mongo2,mongo3/user-mgnt?replicaSet=rs0
-      - APPLICATION_CONFIG_MONGO_URL=mongodb://config:${CONFIG_MONGODB_PASSWORD}@mongo1,mongo2,mongo3/application-config?replicaSet=rs0
-      - PERFORMANCE_MONGO_URL=mongodb://performance:${PERFORMANCE_MONGODB_PASSWORD}@mongo1,mongo2,mongo3/performance?replicaSet=rs0
-      - HEARTH_MONGO_URL=mongodb://hearth:${HEARTH_MONGODB_PASSWORD}@mongo1,mongo2,mongo3/hearth-dev?replicaSet=rs0
-      - OPENHIM_MONGO_URL=mongodb://openhim:${OPENHIM_MONGODB_PASSWORD}@mongo1,mongo2,mongo3/openhim-dev?replicaSet=rs0
-      - WAIT_HOSTS=mongo1:27017,mongo2:27017,mongo3:27017,influxdb:8086,minio:9000,elasticsearch:9200
+      - USER_MGNT_MONGO_URL=mongodb://user-mgnt:${USER_MGNT_MONGODB_PASSWORD}@mongo1,mongo2/user-mgnt?replicaSet=rs0
+      - APPLICATION_CONFIG_MONGO_URL=mongodb://config:${CONFIG_MONGODB_PASSWORD}@mongo1,mongo2/application-config?replicaSet=rs0
+      - PERFORMANCE_MONGO_URL=mongodb://performance:${PERFORMANCE_MONGODB_PASSWORD}@mongo1,mongo2/performance?replicaSet=rs0
+      - HEARTH_MONGO_URL=mongodb://hearth:${HEARTH_MONGODB_PASSWORD}@mongo1,mongo2/hearth-dev?replicaSet=rs0
+      - OPENHIM_MONGO_URL=mongodb://openhim:${OPENHIM_MONGODB_PASSWORD}@mongo1,mongo2/openhim-dev?replicaSet=rs0
+      - WAIT_HOSTS=mongo1:27017,mongo2:27017:27017,influxdb:8086,minio:9000,elasticsearch:9200
     depends_on:
       - mongo1
       - mongo2
-      - mongo3
 
   openhim-core:
     environment:
-      - mongo_url=mongodb://openhim:${OPENHIM_MONGODB_PASSWORD}@mongo1,mongo2,mongo3/openhim-dev?replicaSet=rs0
-      - mongo_atnaUrl=mongodb://openhim:${OPENHIM_MONGODB_PASSWORD}@mongo1,mongo2,mongo3/openhim-dev?replicaSet=rs0
+      - mongo_url=mongodb://openhim:${OPENHIM_MONGODB_PASSWORD}@mongo1,mongo2/openhim-dev?replicaSet=rs0
+      - mongo_atnaUrl=mongodb://openhim:${OPENHIM_MONGODB_PASSWORD}@mongo1,mongo2/openhim-dev?replicaSet=rs0
     depends_on:
       - mongo1
       - mongo2
-      - mongo3
     deploy:
       replicas: 2
 
@@ -165,7 +162,6 @@ services:
   mongo2:
     image: mongo:4.4
     hostname: 'mongo2'
-    container_name: 'mongo2'
     restart: unless-stopped
     command: mongod --auth --replSet rs0 --keyFile /etc/mongodb-keyfile
     volumes:
@@ -192,43 +188,9 @@ services:
     networks:
       - overlay_net
 
-  mongo3:
-    image: mongo:4.4
-    hostname: 'mongo3'
-    container_name: 'mongo3'
-    restart: unless-stopped
-    command: mongod --auth --replSet rs0 --keyFile /etc/mongodb-keyfile
-    volumes:
-      - '/data/mongo:/data/db'
-      - '/mongodb-keyfile:/mongodb-keyfile'
-    entrypoint:
-      - bash
-      - -c
-      - |
-        cp /mongodb-keyfile /etc/mongodb-keyfile
-        chmod 400 /etc/mongodb-keyfile
-        chown 999:999 /etc/mongodb-keyfile
-        exec docker-entrypoint.sh $$@
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=${MONGODB_ADMIN_USER}
-      - MONGO_INITDB_ROOT_PASSWORD=${MONGODB_ADMIN_PASSWORD}
-    deploy:
-      labels:
-        - 'traefik.enable=false'
-      replicas: 1
-      placement:
-        constraints:
-          - node.labels.data3 == true
-    networks:
-      - overlay_net
-
   mongo-on-update:
     depends_on:
       - mongo1
       - mongo2
-      - mongo3
     environment:
-      - REPLICAS=3
-
-networks:
-  overlay_net: {}
+      - REPLICAS=2

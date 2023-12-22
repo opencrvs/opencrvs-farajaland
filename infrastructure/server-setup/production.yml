@@ -32,6 +32,7 @@ docker-manager-first:
     farajaland-prod:
       ansible_host: '165.22.205.62'
       data_label: data1
+      ansible_ssh_common_args: '-J root@165.22.110.53 -o StrictHostKeyChecking=no'
 
 # We recommend you add 2-4 workers for a scaled production deployment
 # This should depend on the size of your country and the number of end users.
@@ -40,6 +41,4 @@ docker-workers:
     farajaland-prod-02:
       ansible_host: '178.128.245.255'
       data_label: data2
-    farajaland-prod-03:
-      ansible_host: '165.22.198.21'
-      data_label: data3
+      ansible_ssh_common_args: '-J root@165.22.110.53 -o StrictHostKeyChecking=no'

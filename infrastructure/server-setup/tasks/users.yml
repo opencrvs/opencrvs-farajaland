@@ -156,8 +156,28 @@
   register: check_result
   ignore_errors: yes
 
-- name: Restart SSH service
+# Ubuntu 22.10
+- name: Check if sshd service exists
+  command: systemctl status sshd
+  register: sshd_status
+  ignore_errors: yes
+
+- name: Restart SSH service (sshd)
   service:
     name: sshd
     state: restarted
-  when: check_result.rc == 0
+  when: sshd_status.rc == 0
+  become: yes
+
+# Ubuntu 23.10
+- name: Check if ssh service exists
+  command: systemctl status ssh
+  register: ssh_status
+  ignore_errors: yes
+
+- name: Restart SSH service (ssh)
+  service:
+    name: ssh
+    state: restarted
+  when: ssh_status.rc == 0 and sshd_status.rc != 0
+  become: yes

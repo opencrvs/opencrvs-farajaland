@@ -15,7 +15,9 @@ sed -i "s/{{hostname}}/$1/g" /opt/opencrvs/infrastructure/openhim-console-config
 
 
 # Set hostname in compose file
-sed -i "s/{{hostname}}/$1/g" /opt/opencrvs/docker-compose.deploy.yml
+for file in /opt/opencrvs/infrastructure/docker-compose*.yml; do
+    sed -i "s/{{hostname}}/$1/g" "$file"
+done
 
 # Setup an encryption key for Kibana
 KIBANA_ENCRYPTION_KEY=`uuidgen`

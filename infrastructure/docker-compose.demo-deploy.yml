@@ -81,7 +81,7 @@ services:
       - NODE_ENV=production
 
   countryconfig:
-    image: ${DOCKERHUB_ACCOUNT}/${DOCKERHUB_REPO}:${COUNTRY_CONFIG_VERSION:-latest}
+    image: ${DOCKERHUB_ACCOUNT}/${DOCKERHUB_REPO}:${COUNTRY_CONFIG_VERSION}
     restart: unless-stopped
     secrets:
       - jwt-public-key.{{ts}}
@@ -165,7 +165,6 @@ services:
   mongo2:
     image: mongo:4.4
     hostname: 'mongo2'
-    container_name: 'mongo2'
     restart: unless-stopped
     command: mongod --auth --replSet rs0 --keyFile /etc/mongodb-keyfile
     volumes:
@@ -195,7 +194,6 @@ services:
   mongo3:
     image: mongo:4.4
     hostname: 'mongo3'
-    container_name: 'mongo3'
     restart: unless-stopped
     command: mongod --auth --replSet rs0 --keyFile /etc/mongodb-keyfile
     volumes:
@@ -229,6 +227,3 @@ services:
       - mongo3
     environment:
       - REPLICAS=3
-
-networks:
-  overlay_net: {}
