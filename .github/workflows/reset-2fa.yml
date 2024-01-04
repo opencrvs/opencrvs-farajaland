@@ -21,7 +21,7 @@ on:
           - production
 
 jobs:
-  provision:
+  reset:
     environment: ${{ github.event.inputs.environment }}
     runs-on: ubuntu-20.04
     outputs:
@@ -47,6 +47,12 @@ jobs:
         with:
           key: ${{ secrets.SSH_KEY }}
           known_hosts: ${{ env.KNOWN_HOSTS }}
+
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+        env:
+          SSH_KEY: ${{ secrets.SSH_KEY }}
+          SSH_ARGS: ${{ vars.SSH_ARGS }}
 
       - name: Remove 2FA
         run: |
