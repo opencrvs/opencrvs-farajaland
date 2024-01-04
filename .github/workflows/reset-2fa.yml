@@ -1,9 +1,6 @@
 name: Reset 2FA
 run-name: Reset 2FA from user ${{ github.event.inputs.user }} in ${{ github.event.inputs.environment }}
 on:
-  push:
-    branches:
-      - infra-improvements
   workflow_dispatch:
     inputs:
       user:
@@ -47,12 +44,6 @@ jobs:
         with:
           key: ${{ secrets.SSH_KEY }}
           known_hosts: ${{ env.KNOWN_HOSTS }}
-
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
-        env:
-          SSH_KEY: ${{ secrets.SSH_KEY }}
-          SSH_ARGS: ${{ vars.SSH_ARGS }}
 
       - name: Remove 2FA
         run: |
