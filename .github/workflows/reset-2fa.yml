@@ -1,6 +1,9 @@
-name: Provision environment
-run-name: Provision ${{ github.event.inputs.environment }}
+name: Reset 2FA
+run-name: Reset 2FA from user ${{ github.event.inputs.user }} in ${{ github.event.inputs.environment }}
 on:
+  push:
+    branches:
+      - infra-improvements
   workflow_dispatch:
     inputs:
       user:
