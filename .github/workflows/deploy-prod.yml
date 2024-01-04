@@ -18,11 +18,6 @@ on:
       countryconfig-image-tag:
         description: Your Country Config DockerHub image tag
         required: true
-      use-latest-infrastructure:
-        description: Deploy with latest infrastructure code
-        required: true
-        default: false
-        type: boolean
 
 jobs:
   deploy:
@@ -35,17 +30,15 @@ jobs:
           secret: ${{ github.TOKEN }}
           approvers: euanmillar,rikukissa
           minimum-approvals: 1
-          issue-title: 'Deploy (Prod): core: ${{ github.event.inputs.core-image-tag }} country config: ${{ github.event.inputs.countryconfig-image-tag }}'
-          issue-body: 'Please approve or deny the deployment of core: ${{ github.event.inputs.core-image-tag }} country config: ${{ github.event.inputs.countryconfig-image-tag }} to production'
+          issue-title: "Deploy (Prod): core: ${{ github.event.inputs.core-image-tag }} country config: ${{ github.event.inputs.countryconfig-image-tag }}"
+          issue-body: "Please approve or deny the deployment of core: ${{ github.event.inputs.core-image-tag }} country config: ${{ github.event.inputs.countryconfig-image-tag }} to production"
           exclude-workflow-initiator-as-approver: false
-
       - name: Clone core
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
           repository: 'opencrvs/opencrvs-core'
           path: './opencrvs-core'
-
       - name: Clone country config resource package
         uses: actions/checkout@v3
         with:
@@ -53,7 +46,6 @@ jobs:
           path: './${{ github.event.repository.name }}'
 
       - name: Checkout country branch
-        if: github.event.inputs.use-latest-infrastructure == 'false'
         run: |
           cd ${{ github.event.repository.name }}
           git checkout ${{ github.event.inputs.countryconfig-image-tag }}
