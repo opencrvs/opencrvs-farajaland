@@ -76,6 +76,12 @@ print_usage_and_exit() {
   exit 1
 }
 
+# Check if REPLICAS is a number and greater than 0
+if ! [[ "$REPLICAS" =~ ^[0-9]+$ ]]; then
+  echo "Script must be passed a positive integer number of replicas"
+  exit 1
+fi
+
 if [ "$IS_LOCAL" = false ]; then
   ROOT_PATH=${ROOT_PATH:-/data}
   if [ -z "$SSH_USER" ]; then
@@ -143,6 +149,7 @@ chown -R 1000:1000 $ROOT_PATH/backups
 mkdir -p $ROOT_PATH/metabase
 chown -R 1000:1000 $ROOT_PATH/metabase
 
+
 # Select docker network and replica set in production
 #----------------------------------------------------
 if [ "$IS_LOCAL" = true ]; then
@@ -153,21 +160,15 @@ elif [ "$REPLICAS" = "0" ]; then
   HOST=mongo1
   NETWORK=opencrvs_default
   echo "Working with no replicas"
-elif [ "$REPLICAS" = "1" ]; then
-  HOST=rs0/mongo1
-  NETWORK=opencrvs_overlay_net
-  echo "Working with 1 replica"
-elif [ "$REPLICAS" = "3" ]; then
-  HOST=rs0/mongo1,mongo2,mongo3
-  NETWORK=opencrvs_overlay_net
-  echo "Working with 3 replicas"
-elif [ "$REPLICAS" = "5" ]; then
-  HOST=rs0/mongo1,mongo2,mongo3,mongo4,mongo5
-  NETWORK=opencrvs_overlay_net
-  echo "Working with 5 replicas"
 else
-  echo "Script must be passed an understandable number of replicas: 0,1,3 or 5"
-  exit 1
+  # Construct the HOST string rs0/mongo1,mongo2... based on the number of replicas
+  HOST="rs0/"
+  for (( i=1; i<=REPLICAS; i++ )); do
+    if [ $i -gt 1 ]; then
+      HOST="${HOST},"
+    fi
+    HOST="${HOST}mongo${i}"
+  done
 fi
 
 mongo_credentials() {
