@@ -26,28 +26,28 @@ if [ -z "$1" ] ; then
     print_usage_and_exit
 fi
 
+if ! [[ "$REPLICAS" =~ ^[0-9]+$ ]]; then
+  echo "Script must be passed a positive integer number of replicas"
+  print_usage_and_exit
+fi
+
 REPLICAS=$1
 
 if [ "$REPLICAS" = "0" ]; then
   HOST=mongo1
   NETWORK=opencrvs_default
   echo "Working with no replicas"
-elif [ "$REPLICAS" = "1" ]; then
-  HOST=rs0/mongo1
-  NETWORK=opencrvs_overlay_net
-  echo "Working with 1 replica"
-elif [ "$REPLICAS" = "3" ]; then
-  HOST=rs0/mongo1,mongo2,mongo3
-  NETWORK=opencrvs_overlay_net
-  echo "Working with 3 replicas"
-elif [ "$REPLICAS" = "5" ]; then
-  HOST=rs0/mongo1,mongo2,mongo3,mongo4,mongo5
-  NETWORK=opencrvs_overlay_net
-  echo "Working with 5 replicas"
 else
-  echo "Script must be passed an understandable number of replicas: 0,1,3 or 5"
-  exit 1
-fi
+  NETWORK=opencrvs_overlay_net
+  # Construct the HOST string rs0/mongo1,mongo2... based on the number of replicas
+  HOST="rs0/"
+  for (( i=1; i<=REPLICAS; i++ )); do
+    if [ $i -gt 1 ]; then
+      HOST="${HOST},"
+    fi
+    HOST="${HOST}mongo${i}"
+  done
+done
 
 mongo_credentials() {
   if [ ! -z ${MONGODB_ADMIN_USER+x} ] || [ ! -z ${MONGODB_ADMIN_PASSWORD+x} ]; then
