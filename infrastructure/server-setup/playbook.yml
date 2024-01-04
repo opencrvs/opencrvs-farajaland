@@ -67,14 +67,6 @@
         - users
 
     - include_tasks:
-        file: tasks/jumphost.yml
-        apply:
-          tags:
-            - users
-      tags:
-        - users
-
-    - include_tasks:
         file: tasks/crontab.yml
         apply:
           tags:
