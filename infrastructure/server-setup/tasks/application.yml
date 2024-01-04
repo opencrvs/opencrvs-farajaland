@@ -24,7 +24,7 @@
     path: /opt/opencrvs
     owner: root
     group: application
-    mode: '0770'
+    mode: '0775'
     recurse: yes
 
 - name: Add current user to 'application' group
