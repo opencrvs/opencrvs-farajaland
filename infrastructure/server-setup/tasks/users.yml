@@ -64,7 +64,7 @@
     owner: '{{ item.name }}'
     group: '{{ item.name }}'
     mode: '0644'
-  when: item.state == 'present'
+  when: item.state == 'present' and item.2factor != false
   with_items: '{{ users }}'
 
 - name: 'Install libpam-google-authenticator'
