@@ -137,6 +137,7 @@ services:
     depends_on:
       - kibana
     volumes:
+      # Exceed Docker config file 500 kb file limit, thus a volume mount
       - '/opt/opencrvs/infrastructure/monitoring/kibana/config.ndjson:/config.ndjson'
     networks:
       - overlay_net
@@ -264,7 +265,9 @@ services:
     volumes:
       - '/data/elasticsearch:/usr/share/elasticsearch/data'
       - '/data/backups/elasticsearch:/data/backups/elasticsearch'
-      - '/opt/opencrvs/infrastructure/elasticsearch/jvm.options:/usr/share/elasticsearch/config/jvm.options.d/jvm.options'
+    configs:
+      - source: jvm-options.{{ts}}
+        target: /usr/share/elasticsearch/config/jvm.options.d/jvm.options
     deploy:
       resources:
         limits:
@@ -337,13 +340,17 @@ services:
       "
     depends_on:
       - minio
-    volumes:
-      - /opt/opencrvs/infrastructure/mc-config/config.json:/root/.mc/config.json
+    configs:
+      - source: minio-mc-config.{{ts}}
+        target: /root/.mc/config.json
     networks:
       - overlay_net
     deploy:
       labels:
         - 'traefik.enable=false'
+      placement:
+        constraints:
+          - node.role == manager
     logging:
       driver: gelf
       options:
@@ -985,6 +992,7 @@ services:
   dashboards:
     volumes:
       - /data/metabase:/data/metabase
+      # Exceed Docker config file 500 kb file limit, thus a volume mount
       - /opt/opencrvs/infrastructure/metabase/metabase.init.db.sql:/metabase.init.db.sql
     networks:
       - overlay_net
@@ -1050,6 +1058,10 @@ configs:
     file: /opt/opencrvs/infrastructure/monitoring/logstash/logstash.conf
   influxdb-conf.{{ts}}:
     file: /opt/opencrvs/infrastructure/influxdb.conf
+  jvm-options.{{ts}}:
+    file: /opt/opencrvs/infrastructure/elasticsearch/jvm.options
+  minio-mc-config.{{ts}}:
+    file: /opt/opencrvs/infrastructure/mc-config/config.json
 networks:
   overlay_net:
     driver: overlay
