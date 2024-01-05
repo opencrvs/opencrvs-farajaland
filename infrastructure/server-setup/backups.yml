@@ -76,7 +76,7 @@
     - name: Fetch the public SSH key so it can be transferred to the backup machine
       fetch:
         src: '{{ crontab_user_home }}/.ssh/id_rsa.pub'
-        dest: '/tmp/{{ inventory_hostname }}_id_rsa.pub'
+        dest: '/tmp/docker-manager-first_id_rsa.pub'
         flat: yes
       tags:
         - backups
