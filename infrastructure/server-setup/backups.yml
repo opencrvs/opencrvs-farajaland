@@ -17,17 +17,27 @@
 - hosts: docker-manager-first
   vars:
     crontab_user: root
+
   tasks:
+    - name: Get crontab user home directory
+      getent:
+        database: passwd
+        key: '{{ crontab_user }}'
+      register: getent_passwd_crontab
+
+    - set_fact:
+        crontab_user_home: '{{ getent_passwd_crontab.ansible_facts.getent_passwd[crontab_user][4] }}'
+
     - name: Check if crontab user already has an ssh key
       stat:
-        path: /home/{{ crontab_user }}/.ssh/id_rsa.pub
+        path: '{{ crontab_user_home }}/.ssh/id_rsa.pub'
       register: file_check
       tags:
         - backups
 
-    - name: Ensure .ssh directory exists
+    - name: Ensure .ssh directory exists for crontab user
       file:
-        path: '/home/{{ crontab_user }}/.ssh'
+        path: '{{ crontab_user_home }}/.ssh'
         state: directory
         owner: '{{ crontab_user }}'
         mode: '0700'
@@ -37,7 +47,7 @@
     - name: Create an SSH key for crontab user if they do not have one
       copy:
         src: /tmp/backup_ssh_key
-        dest: /home/{{ crontab_user }}/.ssh/id_rsa
+        dest: '{{ crontab_user_home }}/.ssh/id_rsa'
         mode: 0600
       when: not file_check.stat.exists
       tags:
@@ -55,7 +65,7 @@
 
     - name: Fetch the public SSH key so it can be transferred to the backup machine
       fetch:
-        src: /home/{{ crontab_user }}/.ssh/id_rsa.pub
+        src: '{{ crontab_user_home }}/.ssh/id_rsa.pub'
         dest: '/tmp/{{ inventory_hostname }}_id_rsa.pub'
         flat: yes
       when: file_check.stat.exists
@@ -65,6 +75,9 @@
 - hosts: backups
   become: yes
   become_method: sudo
+  vars:
+    external_backup_server_user: 'backup_user' # Replace with actual username
+
   tasks:
     - name: Ensure backup user is present
       user:
@@ -72,20 +85,28 @@
         state: present
         create_home: true
         shell: /bin/bash
-        home: '/home/{{ external_backup_server_user }}'
       tags:
         - backups
 
+    - name: Get external backup server user home directory
+      getent:
+        database: passwd
+        key: '{{ external_backup_server_user }}'
+      register: getent_passwd_backup
+
+    - set_fact:
+        external_backup_server_user_home: '{{ getent_passwd_backup.ansible_facts.getent_passwd[external_backup_server_user][4] }}'
+
     - name: Check if authorized_keys already exists
       stat:
-        path: /home/{{ external_backup_server_user }}/.ssh/authorized_keys
+        path: '{{ external_backup_server_user_home }}/.ssh/authorized_keys'
       register: file_check
       tags:
         - backups
 
-    - name: Ensure .ssh directory exists
+    - name: Ensure .ssh directory exists for external backup server user
       file:
-        path: '/home/{{ external_backup_server_user }}/.ssh'
+        path: '{{ external_backup_server_user_home }}/.ssh'
         state: directory
         owner: '{{ external_backup_server_user }}'
         mode: '0700'
@@ -94,7 +115,7 @@
 
     - name: Ensure backup application servers can login to backup server
       blockinfile:
-        path: /home/{{ external_backup_server_user }}/.ssh/authorized_keys
+        path: '{{ external_backup_server_user_home }}/.ssh/authorized_keys'
         block: |
           {{ lookup('file', '/tmp/docker-manager-first_id_rsa.pub') }}
         marker: '# {mark} ANSIBLE MANAGED BLOCK docker-manager-first'
@@ -105,7 +126,7 @@
 
     - name: 'Create backup directory'
       file:
-        path: '{{ external_backup_server_remote_directory }}'
+        path: '{{ external_backup_server_remote_directory }}' # Replace with the actual directory path
         state: directory
         owner: '{{ external_backup_server_user }}'
       tags:
