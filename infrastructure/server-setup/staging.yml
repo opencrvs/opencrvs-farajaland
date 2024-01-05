@@ -40,3 +40,7 @@ docker-manager-first:
 
 # QA and staging servers are not configured to use workers.
 docker-workers: {}
+backups:
+  hosts:
+    farajaland-qa:
+      ansible_host: '165.22.110.53'
