@@ -122,34 +122,63 @@ elasticsearch_host() {
   fi
 }
 
-# Delete all data from search
-#----------------------------
+#####
+#
+#
+#
+# CLEAR ALL DATA
+#
+#
+#
+#####
+
+
+##
+# ------ ELASTICSEARCH -----
+##
+
 echo "delete any previously created snapshot if any.  This may error on a fresh install with a repository_missing_exception error.  Just ignore it."
 docker run --rm --network=$NETWORK appropriate/curl curl -X DELETE "http://$(elasticsearch_host)/_snapshot/ocrvs"
 docker run --rm --network=$NETWORK appropriate/curl curl -X DELETE "http://$(elasticsearch_host)/*" -v
+
+echo "Waiting for elasticsearch to restart so that the restore script can find the updated volume."
+docker service update --force --update-parallelism 1 --update-delay 30s opencrvs_elasticsearch
+docker run --rm --network=$NETWORK toschneck/wait-for-it -t 120 elasticsearch:9200 -- echo "Elasticsearch is up"
+
+##
+# ------ INFLUXDB -------
+##
 
 # Delete all data from metrics
 #-----------------------------
 docker run --rm --network=$NETWORK appropriate/curl curl -X POST 'http://influxdb:8086/query?db=ocrvs' --data-urlencode "q=DROP SERIES FROM /.*/" -v
 docker run --rm --network=$NETWORK appropriate/curl curl -X POST 'http://influxdb:8086/query?db=ocrvs' --data-urlencode "q=DROP DATABASE \"ocrvs\"" -v
 
-# Delete all data from minio
-#-----------------------------
+##
+# ------ MINIO -------
+##
+
+
 rm -rf $ROOT_PATH/minio/ocrvs
 mkdir -p $ROOT_PATH/minio/ocrvs
 
-# Delete all data from metabase
-#-----------------------------
+##
+# ------ METABASE -------
+##
+
+
 rm -rf $ROOT_PATH/metabase/*
 
-# Delete all data from vsExport
-#-----------------------------
+##
+# ------ VSEXPORTS -------
+##
+
 rm -rf $ROOT_PATH/vsexport
 mkdir -p $ROOT_PATH/vsexport
 
-echo "Waiting for elasticsearch to restart so that the restore script can find the updated volume."
-docker service update --force --update-parallelism 1 --update-delay 30s opencrvs_elasticsearch
-docker run --rm --network=$NETWORK toschneck/wait-for-it -t 120 elasticsearch:9200 -- echo "Elasticsearch is up"
+##
+# ------ MONGODB -------
+##
 
 # Delete all data from Hearth, OpenHIM, User and Application-config and any other service related Mongo databases
 #-----------------------------------------------------------------------------------
@@ -163,12 +192,31 @@ db.getSiblingDB('metrics').dropDatabase();\
 db.getSiblingDB('performance').dropDatabase();\
 db.getSiblingDB('webhooks').dropDatabase();"
 
+#####
+#
+#
+#
+# RESTORE FROM BACKUP
+#
+#
+#
+#####
+
+##
+# ------ MONGODB -------
+##
+
 # Restore all data from a backup into Hearth, OpenHIM, User, Application-config and any other service related Mongo databases
 #--------------------------------------------------------------------------------------------------
 docker run --rm -v $ROOT_PATH/backups/mongo:/data/backups/mongo --network=$NETWORK mongo:4.4 bash \
 -c "for db in hearth-dev openhim-dev user-mgnt application-config metrics webhooks performance; \
       do mongorestore $(mongo_credentials) --host $HOST --drop --gzip --archive=/data/backups/mongo/\${db}-$LABEL.gz; \
     done"
+
+
+##
+# ------ ELASTICSEARCH -----
+##
 
 # Register backup folder as an Elasticsearch repository for restoring the search data
 #-------------------------------------------------------------------------------------
@@ -184,6 +232,13 @@ echo
 docker service update --force opencrvs_setup-elasticsearch-users
 echo
 sleep 60
+
+
+
+##
+# ------ INFLUXDB -----
+##
+
 # Get the container ID and host details of any running InfluxDB container, as the only way to restore is by using the Influxd CLI inside a running opencrvs_metrics container
 #----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 if  [ "$IS_LOCAL" = true ]; then
@@ -213,18 +268,28 @@ else
   ssh $INFLUXDB_SSH_USER@$INFLUXDB_HOST "docker cp /data/backups/influxdb/$LABEL/ $INFLUXDB_CONTAINER_NAME.$INFLUXDB_CONTAINER_ID:/home/user"
   ssh $INFLUXDB_SSH_USER@$INFLUXDB_HOST "docker exec $INFLUXDB_CONTAINER_NAME.$INFLUXDB_CONTAINER_ID influxd restore -portable -db ocrvs /home/user/$LABEL"
 fi
-# Restore all data from Minio
-#----------------------------
+
+
+##
+# ------ MINIO -----
+##
 tar -xzvf $ROOT_PATH/backups/minio/ocrvs-$LABEL.tar.gz -C $ROOT_PATH/minio
 
-# Restore all data from Metabase
-#----------------------------
+# Restart minio again so it picks up the updated files
+docker service update --force opencrvs_minio
+
+##
+# ------ METABASE -----
+##
 tar -xzvf $ROOT_PATH/backups/metabase/ocrvs-$LABEL.tar.gz -C $ROOT_PATH/metabase
 
-# Restore VSExport
+
+##
+# ------ VSEXPORT -----
+##
 tar -xzvf $ROOT_PATH/backups/vsexport/ocrvs-$LABEL.tar.gz -C $ROOT_PATH/vsexport
 
 # Run migrations by restarting migration service
 if [ "$IS_LOCAL" = false ]; then
-  docker service update --force --update-parallelism 1 --update-delay 30s opencrvs_migration
+  docker service update --force --update-parallelism 1 opencrvs_migration
 fi
