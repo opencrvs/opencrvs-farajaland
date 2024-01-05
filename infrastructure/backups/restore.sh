@@ -12,28 +12,17 @@
 # This script clears all data and restores a specific day's data.  It is irreversable, so use with caution.
 #------------------------------------------------------------------------------------------------------------------
 
+set -e
+
 if docker service ls > /dev/null 2>&1; then
   IS_LOCAL=false
 else
   IS_LOCAL=true
 fi
 
-
 # Reading Named parameters
 for i in "$@"; do
   case $i in
-  --ssh_user=*)
-    SSH_USER="${i#*=}"
-    shift
-    ;;
-  --ssh_host=*)
-    SSH_HOST="${i#*=}"
-    shift
-    ;;
-  --ssh_port=*)
-    SSH_PORT="${i#*=}"
-    shift
-    ;;
   --replicas=*)
     REPLICAS="${i#*=}"
     shift
@@ -42,20 +31,12 @@ for i in "$@"; do
     LABEL="${i#*=}"
     shift
     ;;
-  --passphrase=*)
-    PASSPHRASE="${i#*=}"
-    shift
-    ;;
-  --remote_dir=*)
-    REMOTE_DIR="${i#*=}"
-    shift
-    ;;
   *) ;;
   esac
 done
 
 print_usage_and_exit() {
-  echo 'Usage: ./restore.sh --passphrase=XXX --ssh_user=XXX --ssh_host=XXX --ssh_port=XXX --replicas=XXX --remote_dir=XXX'
+  echo 'Usage: ./restore.sh --replicas=XXX'
   echo "This script CLEARS ALL DATA and RESTORES A SPECIFIC DAY'S or label's data. This process is irreversible, so USE WITH CAUTION."
   echo "Script must receive a label parameter to restore data from that specific day in format +%Y-%m-%d i.e. 2019-01-01 or that label"
   echo "The Hearth, OpenHIM User and Application-config db backup zips you would like to restore from: hearth-dev-{label}.gz, openhim-dev-{label}.gz, user-mgnt-{label}.gz and  application-config-{label}.gz must exist in /data/backups/mongo/ folder"
@@ -82,30 +63,7 @@ fi
 
 if [ "$IS_LOCAL" = false ]; then
   ROOT_PATH=${ROOT_PATH:-/data}
-  if [ -z "$SSH_USER" ] ; then
-    echo 'Error: Missing environment variable SSH_USER.'
-    exit 1
-  fi
 
-  if [ -z "$SSH_HOST" ] ; then
-      echo 'Error: Missing environment variable SSH_HOST.'
-      exit 1
-  fi
-
-  if [ -z "$SSH_PORT" ] ; then
-      echo 'Error: Missing environment variable SSH_PORT.'
-      exit 1
-  fi
-
-  if [ -z "$REMOTE_DIR" ]; then
-    echo "Error: Argument for the --remote_dir is required."
-    print_usage_and_exit
-  fi
-
-  if [ -z "$BACKUP_HOST" ] ; then
-      echo 'Error: Missing environment variable BACKUP_HOST.'
-      exit 1
-  fi
   if [ -z "$REPLICAS" ]; then
     echo "Error: Argument for the --replicas is required."
     print_usage_and_exit
@@ -145,6 +103,8 @@ else
     HOST="${HOST}mongo${i}"
   done
 fi
+
+
 
 mongo_credentials() {
   if [ ! -z ${MONGODB_ADMIN_USER+x} ] || [ ! -z ${MONGODB_ADMIN_PASSWORD+x} ]; then
@@ -197,43 +157,9 @@ rm -rf $ROOT_PATH/metabase/*
 rm -rf $ROOT_PATH/vsexport
 mkdir -p $ROOT_PATH/vsexport
 
-# Copy & decrypt backup files
-#-------------------------------------------
-
-# Create a temporary directory to store the backup files before decrypting
-BACKUP_RAW_FILES_DIR=/tmp/backup-$LABEL/
-mkdir -p $BACKUP_RAW_FILES_DIR
-
-# Copy backup from backup server
-rsync -a -r --delete --progress --rsh="ssh -o StrictHostKeyChecking=no -p $SSH_PORT" \
-  $SSH_USER@$SSH_HOST:$REMOTE_DIR/${LABEL}.tar.gz.enc\
-  $BACKUP_RAW_FILES_DIR/${LABEL}.tar.gz.enc
-
-echo "Copied backup files to server."
-
-# Decrypt
-openssl enc -d -aes-256-cbc -salt -in $BACKUP_RAW_FILES_DIR/${LABEL}.tar.gz.enc --out $BACKUP_RAW_FILES_DIR/${LABEL}.tar.gz -pass pass:$PASSPHRASE
-
-# Extract
-tar -xvf $BACKUP_RAW_FILES_DIR/${LABEL}.tar.gz
-
-# Move folders
-cp -r $BACKUP_RAW_FILES_DIR/elasticsearch /data/backups/
+echo "Waiting for elasticsearch to restart so that the restore script can find the updated volume."
 docker service update --force --update-parallelism 1 --update-delay 30s opencrvs_elasticsearch
-echo "Waiting 2 mins for elasticsearch to restart so that the restore script can find the updated volume."
-echo
-sleep 120
-cp -r $BACKUP_RAW_FILES_DIR/influxdb /data/backups/
-mv $BACKUP_RAW_FILES_DIR/minio/ocrvs-${LABEL}.tar.gz /data/backups/minio/
-mv $BACKUP_RAW_FILES_DIR/metabase/ocrvs-${LABEL}.tar.gz /data/backups/metabase/
-mv $BACKUP_RAW_FILES_DIR/vsexport/ocrvs-${LABEL}.tar.gz /data/backups/vsexport/
-mv $BACKUP_RAW_FILES_DIR/mongo/hearth-dev-${LABEL}.tar.gz /data/backups/mongo/
-mv $BACKUP_RAW_FILES_DIR/mongo/user-mgnt-${LABEL}.tar.gz /data/backups/mongo/
-mv $BACKUP_RAW_FILES_DIR/mongo/openhim-dev-${LABEL}.tar.gz /data/backups/mongo/
-mv $BACKUP_RAW_FILES_DIR/mongo/application-config-${LABEL}.tar.gz /data/backups/mongo/
-mv $BACKUP_RAW_FILES_DIR/mongo/metrics-${LABEL}.tar.gz /data/backups/mongo/
-mv $BACKUP_RAW_FILES_DIR/mongo/webhooks-${LABEL}.tar.gz /data/backups/mongo/
-mv $BACKUP_RAW_FILES_DIR/mongo/performance-${LABEL}.tar.gz /data/backups/mongo/
+docker run --rm --network=$NETWORK toschneck/wait-for-it -t 120 elasticsearch:9200 -- echo "Elasticsearch is up"
 
 # Restore all data from a backup into Hearth, OpenHIM, User, Application-config and any other service related Mongo databases
 #--------------------------------------------------------------------------------------------------
@@ -255,13 +181,10 @@ docker run --rm -v $ROOT_PATH/backups/mongo:/data/backups/mongo --network=$NETWO
 # Register backup folder as an Elasticsearch repository for restoring the search data
 #-------------------------------------------------------------------------------------
 docker run --rm --network=$NETWORK appropriate/curl curl -X PUT -H "Content-Type: application/json;charset=UTF-8" "http://$(elasticsearch_host)/_snapshot/ocrvs" -d '{ "type": "fs", "settings": { "location": "/data/backups/elasticsearch", "compress": true }}'
-
 sleep 10
 
 # Restore all data from a backup into search
 #-------------------------------------------
-script -q -c "rsync -a -r --rsync-path='mkdir -p $REMOTE_DIR/ && rsync' --progress --rsh='ssh -o StrictHostKeyChecking=no -p$SSH_PORT' /tmp/${LABEL:-$BACKUP_DATE}.tar.gz.enc $SSH_USER@$SSH_HOST:$REMOTE_DIR/" && echo "Copied backup files to remote server."
-
 docker run --rm --network=$NETWORK appropriate/curl curl -X POST -H "Content-Type: application/json;charset=UTF-8" "http://$(elasticsearch_host)/_snapshot/ocrvs/snapshot_$LABEL/_restore?pretty" -d '{ "indices": "ocrvs" }'
 sleep 10
 echo "Waiting 1 minute to rotate elasticsearch passwords"
@@ -313,10 +236,3 @@ tar -xzvf $ROOT_PATH/backups/vsexport/ocrvs-$LABEL.tar.gz -C $ROOT_PATH/vsexport
 if [ "$IS_LOCAL" = false ]; then
   docker service update --force --update-parallelism 1 --update-delay 30s opencrvs_migration
 fi
-
-# Clean up
-#-------------------------------------------
-rm $BACKUP_RAW_FILES_DIR/${LABEL}.tar.gz.enc
-rm $BACKUP_RAW_FILES_DIR/${LABEL}.tar.gz
-rm -r $BACKUP_RAW_FILES_DIR
-echo "Done"

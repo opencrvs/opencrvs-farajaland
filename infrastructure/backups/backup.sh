@@ -343,9 +343,11 @@ if [[ "$OWN_IP" = "$PRODUCTION_IP" || "$OWN_IP" = "$(dig $PRODUCTION_IP +short)"
 
   tar -czf /tmp/${LABEL:-$BACKUP_DATE}.tar.gz -C "$BACKUP_RAW_FILES_DIR" .
 
-  openssl enc -aes-256-cbc -salt -in /tmp/${LABEL:-$BACKUP_DATE}.tar.gz -out /tmp/${LABEL:-$BACKUP_DATE}.tar.gz.enc -pass pass:$PASSPHRASE
+  openssl enc -aes-256-cbc -salt -pbkdf2 -in /tmp/${LABEL:-$BACKUP_DATE}.tar.gz -out /tmp/${LABEL:-$BACKUP_DATE}.tar.gz.enc -pass pass:$PASSPHRASE
 
-  script -q -c "rsync -a -r --rsync-path='mkdir -p $REMOTE_DIR/ && rsync' --progress --rsh='ssh -o StrictHostKeyChecking=no -p$SSH_PORT' /tmp/${LABEL:-$BACKUP_DATE}.tar.gz.enc $SSH_USER@$SSH_HOST:$REMOTE_DIR/" && echo "Copied backup files to remote server."
+  rsync -a -r --rsync-path="mkdir -p $REMOTE_DIR/ && rsync" --progress --rsh="ssh -o StrictHostKeyChecking=no -p $SSH_PORT" /tmp/${LABEL:-$BACKUP_DATE}.tar.gz.enc $SSH_USER@$SSH_HOST:$REMOTE_DIR/
+
+  echo "Copied backup files to remote server."
 
   rm /tmp/${LABEL:-$BACKUP_DATE}.tar.gz.enc
   rm /tmp/${LABEL:-$BACKUP_DATE}.tar.gz
