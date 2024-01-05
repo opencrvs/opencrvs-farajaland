@@ -58,6 +58,11 @@
       tags:
         - backups
 
+    - name: Create public key file from private key
+      command: ssh-keygen -y -f {{ crontab_user_home }}/.ssh/id_rsa > {{ crontab_user_home }}/.ssh/id_rsa.pub
+      tags:
+        - backups
+
     - include_tasks:
         file: tasks/backups/crontab.yml
         apply:
