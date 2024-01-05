@@ -25,6 +25,15 @@
       tags:
         - backups
 
+    - name: Ensure .ssh directory exists
+      file:
+        path: '/home/{{ crontab_user }}/.ssh'
+        state: directory
+        owner: '{{ crontab_user }}'
+        mode: '0700'
+      tags:
+        - backups
+
     - name: Create an SSH key for crontab user if they do not have one
       copy:
         src: /tmp/backup_ssh_key
