@@ -15,20 +15,41 @@
         - backups
 
 - hosts: docker-manager-first
+  vars:
+    crontab_user: root
   tasks:
-    - name: Check if ssh_key already exists
+    - name: Check if crontab user already has an ssh key
       stat:
-        path: /home/{{ ansible_user }}/.ssh/id_rsa
+        path: /home/{{ crontab_user }}/.ssh/id_rsa.pub
       register: file_check
       tags:
         - backups
 
-    - name: Ensure application server can login to backup server
+    - name: Create an SSH key for crontab user if they do not have one
       copy:
         src: /tmp/backup_ssh_key
-        dest: /home/{{ ansible_user }}/.ssh/id_rsa
+        dest: /home/{{ crontab_user }}/.ssh/id_rsa
         mode: 0600
       when: not file_check.stat.exists
+      tags:
+        - backups
+
+    - include_tasks:
+        file: backups/crontab.yml
+        apply:
+          tags:
+            - crontab
+            - backups
+      tags:
+        - crontab
+        - backups
+
+    - name: Fetch the public SSH key so it can be transferred to the backup machine
+      fetch:
+        src: /home/{{ crontab_user }}/.ssh/id_rsa.pub
+        dest: '/tmp/{{ inventory_hostname }}_id_rsa.pub'
+        flat: yes
+      when: file_check.stat.exists
       tags:
         - backups
 
@@ -63,11 +84,13 @@
         - backups
 
     - name: Ensure backup application servers can login to backup server
-      copy:
-        src: /tmp/backup_ssh_key.pub
-        dest: /home/{{ external_backup_server_user }}/.ssh/authorized_keys
+      blockinfile:
+        path: /home/{{ external_backup_server_user }}/.ssh/authorized_keys
+        block: |
+          {{ lookup('file', '/tmp/docker-manager-first_id_rsa.pub') }}
+        marker: '# {mark} ANSIBLE MANAGED BLOCK docker-manager-first'
+        create: yes
         mode: 0600
-      when: not file_check.stat.exists
       tags:
         - backups
 

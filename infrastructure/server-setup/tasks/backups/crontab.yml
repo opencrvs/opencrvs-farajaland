@@ -1,6 +1,6 @@
 - name: 'Setup crontab to backup the opencrvs data'
   cron:
-    user: 'root'
+    user: '{{ crontab_user }}'
     name: 'backup opencrvs'
     minute: '0'
     hour: '0'
@@ -14,7 +14,7 @@
 
 - name: 'Setup crontab to restore the opencrvs data'
   cron:
-    user: 'root'
+    user: '{{ crontab_user }}'
     name: 'restore opencrvs'
     minute: '0'
     hour: '1'

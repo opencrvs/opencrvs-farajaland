@@ -67,14 +67,6 @@
         - users
 
     - include_tasks:
-        file: tasks/crontab.yml
-        apply:
-          tags:
-            - crontab
-      tags:
-        - crontab
-
-    - include_tasks:
         file: tasks/mongodb.yml
         apply:
           tags:
