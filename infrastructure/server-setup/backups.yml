@@ -15,6 +15,7 @@
         - backups
 
 - hosts: docker-manager-first
+  become: yes
   vars:
     crontab_user: root
 
