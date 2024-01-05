@@ -43,7 +43,7 @@ for i in "$@"; do
         shift
         ;;
     --version=*)
-        VERSION="${i#*=}"
+        export VERSION="${i#*=}"
         shift
         ;;
     --country_config_version=*)
