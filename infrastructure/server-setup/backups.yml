@@ -24,9 +24,13 @@
         database: passwd
         key: '{{ crontab_user }}'
       register: getent_passwd_crontab
+      tags:
+        - backups
 
     - set_fact:
         crontab_user_home: '{{ getent_passwd_crontab.ansible_facts.getent_passwd[crontab_user][4] }}'
+      tags:
+        - backups
 
     - name: Check if crontab user already has an ssh key
       stat:
@@ -93,9 +97,13 @@
         database: passwd
         key: '{{ external_backup_server_user }}'
       register: getent_passwd_backup
+      tags:
+        - backups
 
     - set_fact:
         external_backup_server_user_home: '{{ getent_passwd_backup.ansible_facts.getent_passwd[external_backup_server_user][4] }}'
+      tags:
+        - backups
 
     - name: Check if authorized_keys already exists
       stat:
