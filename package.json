@@ -24,9 +24,8 @@
     "data-generator": "ts-node -r tsconfig-paths/register -T src/data-generator/index.ts",
     "data-generator:generate-types": "graphql-codegen --config codegen.yml && yarn prettier --write src/data-generator/gateway.ts",
     "deploy": "bash infrastructure/deployment/deploy.sh",
-    "restore-snapshot": "bash infrastructure/restore-snapshot.sh",
-    "snapshot": "bash infrastructure/emergency-backup-metadata.sh",
-    "backup:check": "bash infrastructure/backup-check.sh",
+    "restore-snapshot": "bash infrastructure/backups/restore-snapshot.sh",
+    "snapshot": "bash infrastructure/backups/backup.sh",
     "port-forward": "bash infrastructure/port-forward.sh",
     "validate-translations": "ts-node src/validate-translations.ts"
   },

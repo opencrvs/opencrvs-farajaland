@@ -80,6 +80,7 @@ const config = {
   },
   backup: {
     BACKUP_HOST: process.env.BACKUP_HOST || '',
+    BACKUP_SSH_USER: process.env.BACKUP_SSH_USER || '',
     BACKUP_DIRECTORY: ''
   }
 }

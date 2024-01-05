@@ -19,6 +19,7 @@ on:
         default: all
         options:
           - all
+          - backups
           - checks
           - application
           - tools
@@ -69,9 +70,10 @@ jobs:
           mongodb_admin_username: ${{ secrets.MONGODB_ADMIN_USER }}
           mongodb_admin_password: ${{ secrets.MONGODB_ADMIN_PASSWORD }}
           backup_encryption_passphrase: ${{ secrets.BACKUP_ENCRYPTION_PASSPHRASE }}
+          restore_backup_encryption_passphrase: ${{ secrets.RESTORE_BACKUP_ENCRYPTION_PASSPHRASE }}
           elasticsearch_superuser_password: ${{ secrets.ELASTICSEARCH_SUPERUSER_PASSWORD }}
           external_backup_server_remote_directory: ${{ vars.BACKUP_DIRECTORY }}
-          external_backup_server_user: ${{ secrets.SSH_USER }}
+          external_backup_server_user: ${{ secrets.BACKUP_SSH_USER }}
           external_backup_server_ssh_port: 22
           external_backup_server_ip: ${{ secrets.BACKUP_HOST }}
           manager_production_server_ip: ${{ secrets.SSH_HOST }}
@@ -104,7 +106,7 @@ jobs:
           backup_encryption_passphrase: ${{ secrets.BACKUP_ENCRYPTION_PASSPHRASE }}
           elasticsearch_superuser_password: ${{ secrets.ELASTICSEARCH_SUPERUSER_PASSWORD }}
           external_backup_server_remote_directory: ${{ vars.BACKUP_DIRECTORY }}
-          external_backup_server_user: ${{ secrets.SSH_USER }}
+          external_backup_server_user: ${{ secrets.BACKUP_SSH_USER }}
           external_backup_server_ssh_port: 22
           external_backup_server_ip: ${{ secrets.BACKUP_HOST }}
           manager_production_server_ip: ${{ secrets.SSH_HOST }}
