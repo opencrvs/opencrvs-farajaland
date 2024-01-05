@@ -73,7 +73,6 @@
         src: '{{ crontab_user_home }}/.ssh/id_rsa.pub'
         dest: '/tmp/{{ inventory_hostname }}_id_rsa.pub'
         flat: yes
-      when: file_check.stat.exists
       tags:
         - backups
 
