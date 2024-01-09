@@ -14,38 +14,52 @@ const args = minimist(process.argv.slice(2), {
 const config = {
   environment: args.environment,
   dockerhub: {
-    ORGANISATION: 'opencrvs', // This may be a dockerhub organisation or the same as the username
-    REPOSITORY: 'ocrvs-farajaland',
+    ORGANISATION: 'opencrvs', // EDIT: This should be your dockerhub organisation
+    REPOSITORY: 'ocrvs-farajaland', // EDIT: This should be your dockerhub, private repository
     USERNAME: process.env.DOCKER_USERNAME,
     TOKEN: process.env.DOCKER_TOKEN
   },
   github_repository: {
-    ORGANISATION: 'opencrvs',
-    REPOSITORY_NAME: 'opencrvs-farajaland'
+    ORGANISATION: 'opencrvs', // EDIT: This should be your github organisation name
+    REPOSITORY_NAME: 'opencrvs-farajaland' // EDIT: This should be your github forked countryconfig repository name
   },
   ssh: {
-    SSH_HOST: process.env.SSH_HOST, // IP address for the manager
+    SSH_HOST: process.env.SSH_HOST, // Note: For "prodution" environment server clusters of (2, 3 or 5 replicas) this is always the IP address for just 1 manager server
     SSH_USER: process.env.SSH_USER,
     SSH_KEY: process.env.SSH_KEY
   },
   infrastructure: {
-    DISK_SPACE: '200g', // e.g. 200g
-    DOMAIN: process.env.DOMAIN, // web domain applied after all public subdomains
-    REPLICAS: '1'
+    DISK_SPACE: '200g', // EDIT: This should be the amount of diskspace that should be dedicated to OpenCRVS data and will become the size of an encrypted cryptfs data directory. DO NOT USE ALL DISKSPACE FOR OPENCRVS! Leave at least 50g available for OS use.
+    DOMAIN: process.env.DOMAIN, // Note: This is the web domain applied after all public subdomains
+    REPLICAS: '1' // EDIT: This should be 1 for qa, staging and backup environments.  For "production" environment server clusters of (2, 3 or 5 replicas), set to 2, 3 or 5 as appropriate.
+  },
+  backup: {
+    BACKUP_HOST: process.env.BACKUP_HOST,
+    BACKUP_SSH_USER: process.env.BACKUP_SSH_USER,
+    BACKUP_DIRECTORY: '' // EDIT: This should be the full path to a directory on your backup server where encrypted backups will be stored.
   },
   sms: {
     INFOBIP_API_KEY: process.env.INFOBIP_API_KEY,
     INFOBIP_GATEWAY_ENDPOINT: process.env.INFOBIP_GATEWAY_ENDPOINT,
-    INFOBIP_SENDER_ID: process.env.INFOBIP_SENDER_ID // the name of the SMS sender e.g. OpenCRVS
+    INFOBIP_SENDER_ID: process.env.INFOBIP_SENDER_ID // If using Infobip SMS as a comms provider, this is the name of the SMS sender e.g. OpenCRVS
   },
   services: {
     SENTRY_DSN: process.env.SENTRY_DSN
   },
   seeding: {
-    ACTIVATE_USERS: '', // Must be a string 'true' for QA or 'false' in PRODUCTION!
-    AUTH_HOST: '',
-    COUNTRY_CONFIG_HOST: '',
-    GATEWAY_HOST: ''
+    ACTIVATE_USERS:
+      args.environment === 'qa' ||
+      args.environment === 'dev' ||
+      args.environment === 'demo'
+        ? 'true'
+        : 'false',
+    AUTH_HOST: process.env.DOMAIN ? `https://auth.${process.env.DOMAIN}` : '',
+    COUNTRY_CONFIG_HOST: process.env.DOMAIN
+      ? `https://countryconfig.${process.env.DOMAIN}`
+      : '',
+    GATEWAY_HOST: process.env.DOMAIN
+      ? `https://gateway.${process.env.DOMAIN}`
+      : ''
   },
   smtp: {
     SMTP_HOST: process.env.SMTP_HOST,
@@ -58,13 +72,14 @@ const config = {
       'sentry-dev-aaaalrpiimoklruew7v7dgo2km@opencrvsworkspace.slack.com'
   },
   vpn: {
-    // openconnect details for optional VPN
     type: args['vpn-type'], // e,g, fortinet, wireguard etc
     wireguard: {
+      // Note: Only required if you wish to use the provided Wireguard VPN
       VPN_HOST_ADDRESS: process.env.VPN_HOST_ADDRESS, // IP address for the VPN server
       VPN_ADMIN_PASSWORD: process.env.VPN_ADMIN_PASSWORD
     },
     openconnect: {
+      // Note: If you do not have a jump or bastion server, you may need environment variables openconnect can use to access your VPN
       VPN_PROTOCOL: process.env.VPN_PROTOCOL,
       VPN_HOST_ADDRESS: process.env.VPN_HOST_ADDRESS,
       VPN_PORT: process.env.VPN_PORT,
@@ -74,14 +89,11 @@ const config = {
     }
   },
   whitelist: {
-    CONTENT_SECURITY_POLICY_WILDCARD: '*.', // e.g. *.<your-domain>
-    CLIENT_APP_URL: '',
+    CONTENT_SECURITY_POLICY_WILDCARD: `*.${process.env.DOMAIN}`,
+    CLIENT_APP_URL: process.env.DOMAIN
+      ? `https://register.${process.env.DOMAIN}`
+      : '',
     LOGIN_URL: process.env.DOMAIN ? `https://login.${process.env.DOMAIN}` : ''
-  },
-  backup: {
-    BACKUP_HOST: process.env.BACKUP_HOST || '',
-    BACKUP_SSH_USER: process.env.BACKUP_SSH_USER || '',
-    BACKUP_DIRECTORY: ''
   }
 }
 
@@ -403,8 +415,8 @@ async function main() {
 
   writeFileSync(
     '.secrets/SECRETS_TO_SAVE_IN_PASSWORD_MANAGER_FOR_ENV_' +
-    config.environment +
-    '.json',
+      config.environment +
+      '.json',
     JSON.stringify([SECRETS_TO_SAVE_IN_PASSWORD_MANAGER], null, 2)
   )
 }
