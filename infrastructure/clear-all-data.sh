@@ -26,12 +26,12 @@ if [ -z "$1" ] ; then
     print_usage_and_exit
 fi
 
+
+REPLICAS=$1
 if ! [[ "$REPLICAS" =~ ^[0-9]+$ ]]; then
   echo "Script must be passed a positive integer number of replicas. Got '$REPLICAS'"
   print_usage_and_exit
 fi
-
-REPLICAS=$1
 
 if [ "$REPLICAS" = "0" ]; then
   HOST=mongo1
