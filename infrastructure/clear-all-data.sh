@@ -27,7 +27,7 @@ if [ -z "$1" ] ; then
 fi
 
 if ! [[ "$REPLICAS" =~ ^[0-9]+$ ]]; then
-  echo "Script must be passed a positive integer number of replicas"
+  echo "Script must be passed a positive integer number of replicas. Got '$REPLICAS'"
   print_usage_and_exit
 fi
 
