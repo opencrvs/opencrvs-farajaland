@@ -47,7 +47,7 @@ else
     fi
     HOST="${HOST}mongo${i}"
   done
-done
+fi
 
 mongo_credentials() {
   if [ ! -z ${MONGODB_ADMIN_USER+x} ] || [ ! -z ${MONGODB_ADMIN_PASSWORD+x} ]; then
