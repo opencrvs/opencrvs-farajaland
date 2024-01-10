@@ -14,7 +14,7 @@ on:
       core-image-tag:
         description: Core DockerHub image tag
         required: true
-        default: 'v1.3.2'
+        default: 'v1.4.0'
       countryconfig-image-tag:
         description: Your Country Config DockerHub image tag
         required: true
@@ -30,8 +30,8 @@ jobs:
           secret: ${{ github.TOKEN }}
           approvers: euanmillar,rikukissa
           minimum-approvals: 1
-          issue-title: "Deploy (Prod): core: ${{ github.event.inputs.core-image-tag }} country config: ${{ github.event.inputs.countryconfig-image-tag }}"
-          issue-body: "Please approve or deny the deployment of core: ${{ github.event.inputs.core-image-tag }} country config: ${{ github.event.inputs.countryconfig-image-tag }} to production"
+          issue-title: 'Deploy (Prod): core: ${{ github.event.inputs.core-image-tag }} country config: ${{ github.event.inputs.countryconfig-image-tag }}'
+          issue-body: 'Please approve or deny the deployment of core: ${{ github.event.inputs.core-image-tag }} country config: ${{ github.event.inputs.countryconfig-image-tag }} to production'
           exclude-workflow-initiator-as-approver: false
       - name: Clone core
         uses: actions/checkout@v3
