@@ -96,6 +96,17 @@ type UsernameUpdateVariables = {
   countryLogo: string
 }
 
+type ApproveCorrectionVariables = {
+  firstNames: string
+  lastName: string
+  event: string
+  trackingId: string
+  applicationName: string
+  countryLogo: string
+}
+
+type RejectCorrectionVariables = ApproveCorrectionVariables & { reason: string }
+
 type DeclarationCommonVariables = {
   trackingId: string
   crvsOffice: string
@@ -165,6 +176,20 @@ const templates = {
     type: 'username-updated',
     subject: 'Username updated',
     template: readOtherTemplate<UsernameUpdateVariables>('username-updated')
+  },
+  'correction-approved': {
+    type: 'correction-approved',
+    subject: 'Correction request approved',
+    template: readOtherTemplate<ApproveCorrectionVariables>(
+      'correction-approved'
+    )
+  },
+  'correction-rejected': {
+    type: 'correction-rejected',
+    subject: 'Correction request rejected',
+    template: readOtherTemplate<RejectCorrectionVariables>(
+      'correction-rejected'
+    )
   },
   birthInProgressNotification: {
     type: 'birthInProgressNotification',

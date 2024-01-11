@@ -14,12 +14,14 @@
   when: item.state == 'present' and item.sudoer == true
   with_items: '{{ users }}'
 
-- name: Set authorized key for users
+- name: Set authorized keys for users
   authorized_key:
-    user: '{{ item.name }}'
-    key: '{{ item.ssh_key }}'
-  when: item.state == 'present'
-  with_items: '{{ users }}'
+    user: '{{ item.0.name }}'
+    key: '{{ item.1 }}'
+  when: item.0.state == 'present'
+  with_subelements:
+    - '{{ users }}'
+    - ssh_keys
 
 - name: Ensure user's shell is bash
   user:
@@ -62,7 +64,7 @@
     owner: '{{ item.name }}'
     group: '{{ item.name }}'
     mode: '0644'
-  when: item.state == 'present'
+  when: item.state == 'present' and item.2factor != false
   with_items: '{{ users }}'
 
 - name: 'Install libpam-google-authenticator'
@@ -156,8 +158,28 @@
   register: check_result
   ignore_errors: yes
 
-- name: Restart SSH service
+# Ubuntu 22.10
+- name: Check if sshd service exists
+  command: systemctl status sshd
+  register: sshd_status
+  ignore_errors: yes
+
+- name: Restart SSH service (sshd)
   service:
     name: sshd
     state: restarted
-  when: check_result.rc == 0
+  when: sshd_status.rc == 0
+  become: yes
+
+# Ubuntu 23.10
+- name: Check if ssh service exists
+  command: systemctl status ssh
+  register: ssh_status
+  ignore_errors: yes
+
+- name: Restart SSH service (ssh)
+  service:
+    name: ssh
+    state: restarted
+  when: ssh_status.rc == 0 and sshd_status.rc != 0
+  become: yes

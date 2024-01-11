@@ -1,4 +1,4 @@
-name: Deploy(production)
+name: Deploy (production)
 run-name: Deploy to ${{ github.event.inputs.environment }} core=${{ github.event.inputs.core-image-tag }} country config=${{ github.event.inputs.countryconfig-image-tag }}
 on:
   workflow_dispatch:
@@ -7,33 +7,32 @@ on:
         type: choice
         description: Environment to deploy to
         required: true
-        default: 'production'
+        default: 'staging'
         options:
           - production
+          - staging
       core-image-tag:
         description: Core DockerHub image tag
         required: true
-        default: 'v1.3.2'
+        default: 'v1.4.0'
       countryconfig-image-tag:
         description: Your Country Config DockerHub image tag
         required: true
-      deploy-script-environment:
-        type: choice
-        description: Deploy script environment
-        required: true
-        default: 'production'
-        options:
-          - production
-          - demo
+
 jobs:
   deploy:
     environment: ${{ github.event.inputs.environment }}
     runs-on: ubuntu-20.04
     timeout-minutes: 60
-    strategy:
-      matrix:
-        node-version: [16.20.0]
     steps:
+      - uses: trstringer/manual-approval@v1
+        with:
+          secret: ${{ github.TOKEN }}
+          approvers: euanmillar,rikukissa
+          minimum-approvals: 1
+          issue-title: 'Deploy (Prod): core: ${{ github.event.inputs.core-image-tag }} country config: ${{ github.event.inputs.countryconfig-image-tag }}'
+          issue-body: 'Please approve or deny the deployment of core: ${{ github.event.inputs.core-image-tag }} country config: ${{ github.event.inputs.countryconfig-image-tag }} to production'
+          exclude-workflow-initiator-as-approver: false
       - name: Clone core
         uses: actions/checkout@v3
         with:
@@ -70,6 +69,10 @@ jobs:
         with:
           key: ${{ secrets.SSH_KEY }}
           known_hosts: ${{ env.KNOWN_HOSTS }}
+
+      - name: Unset KNOWN_HOSTS variable
+        run: |
+          echo "KNOWN_HOSTS=" >> $GITHUB_ENV
 
       - name: Login to DockerHub
         uses: docker/login-action@v1
@@ -120,11 +123,12 @@ jobs:
           SENDER_EMAIL_ADDRESS: ${{ secrets.SENDER_EMAIL_ADDRESS }}
           SUPER_USER_PASSWORD: ${{ secrets.SUPER_USER_PASSWORD }}
           CONTENT_SECURITY_POLICY_WILDCARD: ${{ vars.CONTENT_SECURITY_POLICY_WILDCARD }}
+          SSH_ARGS: ${{ vars.SSH_ARGS }}
         run: |
           cd ./${{ github.event.repository.name }}
           yarn deploy \
           --clear_data=no \
-          --environment=${{ github.event.inputs.deploy-script-environment }} \
+          --environment=${{ github.event.inputs.environment }} \
           --host=${{ env.DOMAIN }} \
           --ssh_host=${{ secrets.SSH_HOST }} \
           --ssh_user=${{ secrets.SSH_USER }} \

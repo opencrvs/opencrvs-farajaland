@@ -32,8 +32,9 @@
   changed_when: False
 
 - name: 'Install docker python module for ansible docker commands'
-  pip:
-    name: docker
+  apt:
+    name: python3-docker
+    state: present
 
 - name: 'Log into DockerHub'
   docker_login:

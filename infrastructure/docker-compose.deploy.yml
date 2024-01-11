@@ -137,6 +137,7 @@ services:
     depends_on:
       - kibana
     volumes:
+      # Exceed Docker config file 500 kb file limit, thus a volume mount
       - '/opt/opencrvs/infrastructure/monitoring/kibana/config.ndjson:/config.ndjson'
     networks:
       - overlay_net
@@ -186,7 +187,6 @@ services:
   mongo1:
     command: mongod --auth --replSet rs0 --keyFile /etc/mongodb-keyfile
     hostname: 'mongo1'
-    container_name: 'mongo1'
     volumes:
       - '/data/mongo:/data/db'
       - '/mongodb-keyfile:/mongodb-keyfile'
@@ -265,7 +265,9 @@ services:
     volumes:
       - '/data/elasticsearch:/usr/share/elasticsearch/data'
       - '/data/backups/elasticsearch:/data/backups/elasticsearch'
-      - './infrastructure/elasticsearch/jvm.options:/usr/share/elasticsearch/config/jvm.options.d/jvm.options'
+    configs:
+      - source: jvm-options.{{ts}}
+        target: /usr/share/elasticsearch/config/jvm.options.d/jvm.options
     deploy:
       resources:
         limits:
@@ -338,13 +340,17 @@ services:
       "
     depends_on:
       - minio
-    volumes:
-      - /opt/opencrvs/infrastructure/mc-config:/root/.mc
+    configs:
+      - source: minio-mc-config.{{ts}}
+        target: /root/.mc/config.json
     networks:
       - overlay_net
     deploy:
       labels:
         - 'traefik.enable=false'
+      placement:
+        constraints:
+          - node.role == manager
     logging:
       driver: gelf
       options:
@@ -986,9 +992,8 @@ services:
   dashboards:
     volumes:
       - /data/metabase:/data/metabase
-    configs:
-      - source: metabase-init-sql.{{ts}}
-        target: /metabase.init.db.sql
+      # Exceed Docker config file 500 kb file limit, thus a volume mount
+      - /opt/opencrvs/infrastructure/metabase/metabase.init.db.sql:/metabase.init.db.sql
     networks:
       - overlay_net
     environment:
@@ -1029,32 +1034,34 @@ secrets:
   jwt-private-key.{{ts}}:
     external: true
 configs:
-  metabase-init-sql.{{ts}}:
-    file: ./infrastructure/metabase/metabase.init.db.sql
   openhim-console-conf.{{ts}}:
-    file: ./infrastructure/openhim-console-config.deploy.json
+    file: /opt/opencrvs/infrastructure/openhim-console-config.deploy.json
   hearth-check-dupe-plugin.{{ts}}:
-    file: ./infrastructure/hearth-plugins/checkDuplicateTask.js
+    file: /opt/opencrvs/infrastructure/hearth-plugins/checkDuplicateTask.js
   hearth-queryparam-extensions-conf.{{ts}}:
-    file: ./infrastructure/hearth-queryparam-extensions.json
+    file: /opt/opencrvs/infrastructure/hearth-queryparam-extensions.json
   metricbeat-conf.{{ts}}:
-    file: ./infrastructure/monitoring/beats/metricbeat.yml
+    file: /opt/opencrvs/infrastructure/monitoring/beats/metricbeat.yml
   filebeat.{{ts}}:
-    file: ./infrastructure/monitoring/filebeat/filebeat.yml
+    file: /opt/opencrvs/infrastructure/monitoring/filebeat/filebeat.yml
   mongo-on-deploy.{{ts}}:
-    file: ./infrastructure/mongodb/on-deploy.sh
+    file: /opt/opencrvs/infrastructure/mongodb/on-deploy.sh
   beat-rollover-policy.{{ts}}:
-    file: ./infrastructure/monitoring/beats/rollover-policy.json
+    file: /opt/opencrvs/infrastructure/monitoring/beats/rollover-policy.json
   kibana.{{ts}}:
-    file: ./infrastructure/monitoring/kibana/kibana.yml
+    file: /opt/opencrvs/infrastructure/monitoring/kibana/kibana.yml
   apm.{{ts}}:
-    file: ./infrastructure/monitoring/apm/apm-server.yml
+    file: /opt/opencrvs/infrastructure/monitoring/apm/apm-server.yml
   logstash.{{ts}}:
-    file: ./infrastructure/monitoring/logstash/logstash.yml
+    file: /opt/opencrvs/infrastructure/monitoring/logstash/logstash.yml
   logstash-pipeline.{{ts}}:
-    file: ./infrastructure/monitoring/logstash/logstash.conf
+    file: /opt/opencrvs/infrastructure/monitoring/logstash/logstash.conf
   influxdb-conf.{{ts}}:
-    file: ./infrastructure/influxdb.conf
+    file: /opt/opencrvs/infrastructure/influxdb.conf
+  jvm-options.{{ts}}:
+    file: /opt/opencrvs/infrastructure/elasticsearch/jvm.options
+  minio-mc-config.{{ts}}:
+    file: /opt/opencrvs/infrastructure/mc-config/config.json
 networks:
   overlay_net:
     driver: overlay

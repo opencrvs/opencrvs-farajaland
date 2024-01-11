@@ -11,25 +11,37 @@ all:
     users:
       # If you need to remove access from someone, do not remove them from this list, but instead set their state: absent
       - name: pyry
-        ssh_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDH6qZgtXhWf+xKwpWmHez6F44VRWrUJPF/aa+qdAc+EUNcUUNq8a/KflVthI15GW83VdHSgOCqrqnZTl/shfjOlq9FxsCDI9BY1Zt2+Dc/YMiY4519jM8QEUpZllJTAsBbaz3MSfqda67lEY8sQp9Jk5hw3vUOYxPBtHLSBehwnj4rNnobRrQ4YeOPnLry+cwf8tuQ1ftaxmsKeSKc8blToj2zJHe5t2a5CkOmCOCjAoToVVHWtUZwZ8E3Xrwdyod1q3vnNjofHPr8TFYpuJlAaIAtko4w8XaeQAbfz+iWGpOSYjbaMhG3gq05kfTm3XUEUsbwSeWhZ8d7F0XDESjHDELQYcikHgm6ywnUtpMht16rbjnZ+h8mDlE/Ftz9N9gkzn7bTTMYRRUrjJUTppH9opNbzlcr38zAhNDEeRvGIhxx6/jRZ0xk1SqQhYh08M3URpvIDbh/Umm7NO/cN6ZX8ogrrMSRfoYvk2u4gioX5qfyIDSVwiVztMjkPdZ/rhU= pyry@opencrvs.org
+        ssh_keys:
+          - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDH6qZgtXhWf+xKwpWmHez6F44VRWrUJPF/aa+qdAc+EUNcUUNq8a/KflVthI15GW83VdHSgOCqrqnZTl/shfjOlq9FxsCDI9BY1Zt2+Dc/YMiY4519jM8QEUpZllJTAsBbaz3MSfqda67lEY8sQp9Jk5hw3vUOYxPBtHLSBehwnj4rNnobRrQ4YeOPnLry+cwf8tuQ1ftaxmsKeSKc8blToj2zJHe5t2a5CkOmCOCjAoToVVHWtUZwZ8E3Xrwdyod1q3vnNjofHPr8TFYpuJlAaIAtko4w8XaeQAbfz+iWGpOSYjbaMhG3gq05kfTm3XUEUsbwSeWhZ8d7F0XDESjHDELQYcikHgm6ywnUtpMht16rbjnZ+h8mDlE/Ftz9N9gkzn7bTTMYRRUrjJUTppH9opNbzlcr38zAhNDEeRvGIhxx6/jRZ0xk1SqQhYh08M3URpvIDbh/Umm7NO/cN6ZX8ogrrMSRfoYvk2u4gioX5qfyIDSVwiVztMjkPdZ/rhU= pyry@opencrvs.org
         state: present
         sudoer: true
       - name: tameem
-        ssh_key: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGUprcQyUFYwRto0aRpgriR95C1pgNxrQ0lEWEe1D8he haidertameem@gmail.com
+        ssh_keys:
+          - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGUprcQyUFYwRto0aRpgriR95C1pgNxrQ0lEWEe1D8he haidertameem@gmail.com
         state: present
         sudoer: true
       - name: riku
-        ssh_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDWIF63S4f3z9wQMvWibmvl7MPuJ6EVrkP0HuvgNhcs/4DZYMcR/GRBvV4ldOSYMlBevIXycgGzNDxKJgENUuwIWanjBu7uVAHyD6+cIRD1h63qq7Cjv/2HYTfBDKOrKzPOhA6zWvKO0ZGWsjRXk5LWMCbKOkvKJCxOpj/NVBxeE4FTK5YADYPV3OSsmBtqTHrVLm2sMmShU/2hMYYswWkobidjX65+nK/X+3C+yJbHwiydVvn+QCrFlFfCLPWKe8rUpOxyxofPqWVQh6CHhHfT8okaOc9sOE8Qeip9ljo84DftJh3Xm3ynOdWK1hH2BvRvxNadWqcE1qECbkg4tx2x riku.rouvila@gmail.com
+        ssh_keys:
+          - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDWIF63S4f3z9wQMvWibmvl7MPuJ6EVrkP0HuvgNhcs/4DZYMcR/GRBvV4ldOSYMlBevIXycgGzNDxKJgENUuwIWanjBu7uVAHyD6+cIRD1h63qq7Cjv/2HYTfBDKOrKzPOhA6zWvKO0ZGWsjRXk5LWMCbKOkvKJCxOpj/NVBxeE4FTK5YADYPV3OSsmBtqTHrVLm2sMmShU/2hMYYswWkobidjX65+nK/X+3C+yJbHwiydVvn+QCrFlFfCLPWKe8rUpOxyxofPqWVQh6CHhHfT8okaOc9sOE8Qeip9ljo84DftJh3Xm3ynOdWK1hH2BvRvxNadWqcE1qECbkg4tx2x riku.rouvila@gmail.com
         state: present
         sudoer: true
       - name: euan
-        ssh_key: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDECqHO65UpyrrO8uueD06RxGaVVq22f152Rf8qVQQAAIGAMu6gCs7ztlZ8a3yQgSEIjM/Jl1/RqIVs6CziTEef74nLFTZ5Ufz3CLRVgdebBeSBEmhTfTUV0HLkSyNzwKFpuzJxucGd72ulPvEp6eHvyJAPJz37YcU8cjaL1v05T6s2ee99li35GlDDtCzfjVV4ZPAg5JdfWuTj41RAVC0LQhk2/NB4qEu37UxGGjhRFSjBEsS5LxI9QfvgrsHpl/VOn+soH7ZkK7kS6qRgNP/uYsXRWXhHaamcl5OX68gJWTbrW6c7PCqlbCWGnsHJswCmqPIthwXXMfC7ULDNLSKG6mslAt5Dyc8/MCr3vTW7pDyr2d0FvvY86SMQUggxv3qF7TZewqfX1bhK0fMLarIxVMQ1RFo//wN9QGA+2we8rxd2Y1Kr1DBuJyuwXPfv+Exo8yNYQ+x/AYH5k6UVcSYuaB8eYmplG2KQCxt8RBFtoChrwOKNRWLqXdKyfpdp5XmnnWxPvR95gf3h3yLocVYkF0i0uvKKJ0vt8J0Ezfkdfow0B1kUg5bPXKJROX7PwbaCPdYcxyDaO6wwOigRnSmoFvkH1pLb4j1RQAXcX531CHgfN6Izi/h0mpMS4bnyIUcv2GQr+h4z4TxcCtj7qpH2y6yw7XG12jVh7TfeesXG2Q== euanmillar77@gmail.com
+        ssh_keys:
+          - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDECqHO65UpyrrO8uueD06RxGaVVq22f152Rf8qVQQAAIGAMu6gCs7ztlZ8a3yQgSEIjM/Jl1/RqIVs6CziTEef74nLFTZ5Ufz3CLRVgdebBeSBEmhTfTUV0HLkSyNzwKFpuzJxucGd72ulPvEp6eHvyJAPJz37YcU8cjaL1v05T6s2ee99li35GlDDtCzfjVV4ZPAg5JdfWuTj41RAVC0LQhk2/NB4qEu37UxGGjhRFSjBEsS5LxI9QfvgrsHpl/VOn+soH7ZkK7kS6qRgNP/uYsXRWXhHaamcl5OX68gJWTbrW6c7PCqlbCWGnsHJswCmqPIthwXXMfC7ULDNLSKG6mslAt5Dyc8/MCr3vTW7pDyr2d0FvvY86SMQUggxv3qF7TZewqfX1bhK0fMLarIxVMQ1RFo//wN9QGA+2we8rxd2Y1Kr1DBuJyuwXPfv+Exo8yNYQ+x/AYH5k6UVcSYuaB8eYmplG2KQCxt8RBFtoChrwOKNRWLqXdKyfpdp5XmnnWxPvR95gf3h3yLocVYkF0i0uvKKJ0vt8J0Ezfkdfow0B1kUg5bPXKJROX7PwbaCPdYcxyDaO6wwOigRnSmoFvkH1pLb4j1RQAXcX531CHgfN6Izi/h0mpMS4bnyIUcv2GQr+h4z4TxcCtj7qpH2y6yw7XG12jVh7TfeesXG2Q== euanmillar77@gmail.com
         state: present
         sudoer: true
       - name: tahmid
-        ssh_key: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINUml9O5ySwPtEMD1yGEYHlf9Z3jro97NWAnM9+ew9gn tahmidrahman.dsi@gmail.com
+        ssh_keys:
+          - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINUml9O5ySwPtEMD1yGEYHlf9Z3jro97NWAnM9+ew9gn tahmidrahman.dsi@gmail.com
         state: present
         sudoer: true
+      - name: jump
+        ssh_keys:
+          - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCPjy0G2Q20CTO8x8RAm8LJ7QtptE1FVsnVzARQLfY79ruXacqHNG0jHW2IIYOpghHBef0+bQ33FP6lwH4QtWclDmpx4Thwy6Y1zUJoY2xUZUV0w3+mFVL9ePdFgr0Uz/HBVf5uJy6HNxcgJBRgBaSipWyp3AnDIAkLkTxiyoZVlZhJi01ARxuivLSZj5zuQBjbQkQxcIKmROLrP8QughbnLBq1nNupe1R4Qw9KETw1+zBZ80MfJvfQ/hM+TXJ1GjNXh99MBmw7Abb9fM//OV1HU3GMi8TUhPDtZ0rn6kCf3qzV5X3+C1vvz6tQfk/paXQqbxBSWQB2CvOXjtZSml4zZNwiPjW6bMDezltx5YHGOnTpd6R3N/oMd73zAUUp15Jg9TUuCJAqjanjCA0sznw8OLsi9jHqnMvcXiJySu1Kqxbb/vSrpla0rXY5Vb/Ha8eRfv+eEK+EgaOLE73q0MwnraBKtGkhJQjopxWoorN1RgqdqDbIwc9/ViOURby9Pc0= provision@farajaland-staging
+          - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDbzqrE2VdYTuEz+sodpg44ZmkH465swDPb6M3gRNGugvMWuav6HhO6nGkyFaNCdUY2atCYIW5p3mcQK187ZpE4voGoNWjxckRXZ1nQ8lVGOGuhPBdKvXVh2wIe6WoIAv/QToLrGGTiMzRCxZ7MU7MXWBKlTB08gpDck9s+Wrp8gQUd0MH/WzpJ8AMKsVDup5R95aZ+iVJMjgvVKTKJE9jvuQpXy9WcU7YxBKh9J+vaLWr5Q9R48B4tpK4vgQ3UQU1tfNVJsE9Gi9HieuBSc2h6diHHZzzDiJuJk1XsedINRikEDeaQXjYUSRvAwfwzuxuFvTUXmroJnEw+xyVDBCvFa2UFbAtCwytp7Iadkn2UQV2sdHDuGIYE4EItBysONPvszEHj3/vn+j/9sODBCNpRdSWXJipcrx8Vvdn8t8Wiu6iS5ZfPOkhscAIlR9zvDigqYhZn57AuY56zLV/+NIANScxkiZDVnlYPl/yFKFZfKJhkmdfYMe5C3ezRcQO/TvM= provision@farajaland-prod
+        state: present
+        sudoer: false
+        2factor: false
 
 docker-manager-first:
   hosts:
