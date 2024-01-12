@@ -13,11 +13,11 @@ import { join } from 'path'
 import { ILanguage } from './api/content/service'
 import * as XLSX from 'xlsx'
 
-type translationType = {
+type TranslationType = {
   data: ILanguage[]
 }
 
-type descriptionType = {
+type DescriptionType = {
   data: { [key: string]: string }
 }
 
@@ -25,43 +25,48 @@ function generateSheet(
   clientPath: string,
   descriptionPath: string,
   name: string
-) {
-  let allMessageData: translationType
-  let allMessageDescriptions: descriptionType
+): void {
+  let allMessageData: TranslationType
+  let allMessageDescriptions: DescriptionType
 
   function readFile(path: string) {
     return JSON.parse(fs.readFileSync(join(__dirname, path)).toString())
   }
 
   try {
-    allMessageData = readFile(clientPath) as translationType
-    allMessageDescriptions = readFile(descriptionPath) as descriptionType
+    allMessageData = readFile(clientPath) as TranslationType
+    allMessageDescriptions = readFile(descriptionPath) as DescriptionType
   } catch (err) {
     console.log(err)
-    return false
+    process.exit(1)
   }
 
-  const availableTranslations = allMessageData.data.map(
-    (d: Partial<ILanguage>) => ({
-      lang: d.displayName,
-      messages: d.messages
-    })
+  type SheetRow = Record<string, string> & { id: string }
+
+  const messagesById = allMessageData.data.reduce(
+    (
+      translationsByKey: { [languageItemId: string]: SheetRow },
+      copyForLanguage: ILanguage
+    ) => {
+      const messages = copyForLanguage.messages || {}
+      Object.keys(messages).forEach((key) => {
+        translationsByKey[key] = translationsByKey[key]
+          ? { ...translationsByKey[key], [copyForLanguage.lang]: messages[key] }
+          : {
+              id: key,
+              description: allMessageDescriptions.data[key],
+              [copyForLanguage.lang]: messages[key]
+            }
+      })
+      return translationsByKey
+    },
+    {}
   )
 
-  availableTranslations.forEach((item) => {
-    const sheetname = `${name}-${item.lang}`
-    const rows = []
-    for (const [key, value] of Object.entries(item.messages!)) {
-      rows.push({
-        id: key,
-        text: value,
-        description: allMessageDescriptions.data[key] || ''
-      })
-    }
-    const worksheet = XLSX.utils.json_to_sheet(rows)
-    XLSX.utils.book_append_sheet(workbook, worksheet, sheetname)
-  })
-  return true
+  const rows = Object.values(messagesById)
+
+  const worksheet = XLSX.utils.json_to_sheet(rows)
+  XLSX.utils.book_append_sheet(workbook, worksheet, name)
 }
 
 const workbook = XLSX.utils.book_new()
@@ -81,4 +86,5 @@ generateSheet(
   `./api/content/notification/descriptions.json`,
   'SMS notifications'
 )
-XLSX.writeFile(workbook, './9. config: Translations')
+
+XLSX.writeFile(workbook, 'Translations.xlsx')
