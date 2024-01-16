@@ -41,7 +41,7 @@ all:
           - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDbzqrE2VdYTuEz+sodpg44ZmkH465swDPb6M3gRNGugvMWuav6HhO6nGkyFaNCdUY2atCYIW5p3mcQK187ZpE4voGoNWjxckRXZ1nQ8lVGOGuhPBdKvXVh2wIe6WoIAv/QToLrGGTiMzRCxZ7MU7MXWBKlTB08gpDck9s+Wrp8gQUd0MH/WzpJ8AMKsVDup5R95aZ+iVJMjgvVKTKJE9jvuQpXy9WcU7YxBKh9J+vaLWr5Q9R48B4tpK4vgQ3UQU1tfNVJsE9Gi9HieuBSc2h6diHHZzzDiJuJk1XsedINRikEDeaQXjYUSRvAwfwzuxuFvTUXmroJnEw+xyVDBCvFa2UFbAtCwytp7Iadkn2UQV2sdHDuGIYE4EItBysONPvszEHj3/vn+j/9sODBCNpRdSWXJipcrx8Vvdn8t8Wiu6iS5ZfPOkhscAIlR9zvDigqYhZn57AuY56zLV/+NIANScxkiZDVnlYPl/yFKFZfKJhkmdfYMe5C3ezRcQO/TvM= provision@farajaland-prod
         state: present
         sudoer: false
-        2factor: false
+        two_factor: false
 
 docker-manager-first:
   hosts:
