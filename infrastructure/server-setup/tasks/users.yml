@@ -4,10 +4,10 @@
     state: '{{ item.state }}'
   with_items: '{{ users }}'
 
-- name: Grant passwordless sudo to the users
+- name: Grant passwordless sudo to the users, but prevent usage of 'su'
   ansible.builtin.lineinfile:
     path: /etc/sudoers.d/{{ item.name }}
-    line: '{{ item.name }} ALL=(ALL) NOPASSWD:ALL'
+    line: '{{ item.name }} ALL=(ALL) NOPASSWD:ALL, !/usr/bin/su'
     validate: 'visudo -cf %s'
     create: yes
   become: yes
