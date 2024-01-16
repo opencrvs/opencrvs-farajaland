@@ -122,6 +122,11 @@
     state: present
   when: ansible_user != "root"
 
+- name: Disable root account login completely
+  ansible.builtin.command:
+    cmd: passwd -l root
+  become: yes
+
 - name: Enable KbdInteractiveAuthentication in SSHD Config
   lineinfile:
     path: /etc/ssh/sshd_config
