@@ -25,18 +25,28 @@ const config = {
   },
   ssh: {
     SSH_HOST: process.env.SSH_HOST, // Note: For "prodution" environment server clusters of (2, 3 or 5 replicas) this is always the IP address for just 1 manager server
-    SSH_USER: process.env.SSH_USER,
-    SSH_KEY: process.env.SSH_KEY
+    SSH_USER: 'provision',
+    SSH_KEY: process.env.SSH_KEY,
+    SSH_ARGS: `-J jump@${process.env.VPN_HOST_ADDRESS}`
   },
   infrastructure: {
     DISK_SPACE: '200g', // EDIT: This should be the amount of diskspace that should be dedicated to OpenCRVS data and will become the size of an encrypted cryptfs data directory. DO NOT USE ALL DISKSPACE FOR OPENCRVS! Leave at least 50g available for OS use.
-    DOMAIN: process.env.DOMAIN, // Note: This is the web domain applied after all public subdomains
+    DOMAIN: process.env.DOMAIN, // Note: This is the web domain applied after all subdomains in URLs
     REPLICAS: '1' // EDIT: This should be 1 for qa, staging and backup environments.  For "production" environment server clusters of (2, 3 or 5 replicas), set to 2, 3 or 5 as appropriate.
   },
   backup: {
     BACKUP_HOST: process.env.BACKUP_HOST,
     BACKUP_SSH_USER: process.env.BACKUP_SSH_USER,
     BACKUP_DIRECTORY: '' // EDIT: This should be the full path to a directory on your backup server where encrypted backups will be stored.
+  },
+  smtp: {
+    SMTP_HOST: process.env.SMTP_HOST,
+    SMTP_USERNAME: process.env.SMTP_USERNAME,
+    SMTP_PASSWORD: process.env.SMTP_PASSWORD,
+    SMTP_PORT: process.env.SMTP_PORT,
+    SENDER_EMAIL_ADDRESS: process.env.SENDER_EMAIL_ADDRESS,
+    EMAIL_API_KEY: process.env.EMAIL_API_KEY,
+    ALERT_EMAIL: '' // EDIT: This can be an email address to receive alert emails or a Slack channel email link
   },
   sms: {
     INFOBIP_API_KEY: process.env.INFOBIP_API_KEY,
@@ -49,7 +59,7 @@ const config = {
   seeding: {
     ACTIVATE_USERS:
       args.environment === 'qa' ||
-      args.environment === 'dev' ||
+      args.environment === 'development' ||
       args.environment === 'demo'
         ? 'true'
         : 'false',
@@ -61,22 +71,11 @@ const config = {
       ? `https://gateway.${process.env.DOMAIN}`
       : ''
   },
-  smtp: {
-    SMTP_HOST: process.env.SMTP_HOST,
-    SMTP_USERNAME: process.env.SMTP_USERNAME,
-    SMTP_PASSWORD: process.env.SMTP_PASSWORD,
-    SMTP_PORT: process.env.SMTP_PORT,
-    SENDER_EMAIL_ADDRESS: process.env.SENDER_EMAIL_ADDRESS,
-    EMAIL_API_KEY: process.env.EMAIL_API_KEY,
-    ALERT_EMAIL:
-      'sentry-dev-aaaalrpiimoklruew7v7dgo2km@opencrvsworkspace.slack.com'
-  },
   vpn: {
     type: args['vpn-type'], // e,g, fortinet, wireguard etc
     wireguard: {
       // Note: Only required if you wish to use the provided Wireguard VPN
-      VPN_HOST_ADDRESS: process.env.VPN_HOST_ADDRESS, // IP address for the VPN server
-      VPN_ADMIN_PASSWORD: process.env.VPN_ADMIN_PASSWORD
+      VPN_HOST_ADDRESS: process.env.VPN_HOST_ADDRESS // IP address for the VPN server
     },
     openconnect: {
       // Note: If you do not have a jump or bastion server, you may need environment variables openconnect can use to access your VPN
@@ -235,6 +234,20 @@ async function main() {
     console.error('Please specify an environment in config.environment')
     process.exit(1)
   }
+  if (args.environment === 'production' || args.environment === 'staging') {
+    if (!config.vpn.type) {
+      console.error(
+        'Please specify VPN details for staging or production environments'
+      )
+      process.exit(1)
+    }
+    if (!config.backup.BACKUP_HOST || !config.backup.BACKUP_SSH_USER) {
+      console.error(
+        'Please specify backup server details for staging or production environments'
+      )
+      process.exit(1)
+    }
+  }
 
   const { key, key_id } = await getPublicKey(config.environment)
   const repositoryId = await getRepositoryId(
@@ -271,6 +284,9 @@ async function main() {
     if (!config.vpn.type) {
       console.error('Please specify a VPN type with --vpn-type')
       process.exit(1)
+    }
+    if (config.vpn.type === 'wireguard') {
+      vpnSecrets.wireguard.VPN_ADMIN_PASSWORD = generateLongPassword()
     }
     vpnSecrets = {
       ...config.vpn[config.vpn.type]
@@ -314,6 +330,11 @@ async function main() {
     ...config.seeding,
     ...config.whitelist,
     ...backupVariables
+  }
+
+  if (config.vpn.type === 'wireguard') {
+    SECRETS_TO_SAVE_IN_PASSWORD_MANAGER.VPN_ADMIN_PASSWORD =
+      vpnSecrets.wireguard.VPN_ADMIN_PASSWORD
   }
 
   const allSecretsKeys = Object.keys(SECRETS)
