@@ -601,6 +601,7 @@ services:
       - INFOBIP_GATEWAY_ENDPOINT=${INFOBIP_GATEWAY_ENDPOINT:-""}
       - INFOBIP_API_KEY=${INFOBIP_API_KEY:-""}
       - INFOBIP_SENDER_ID=${INFOBIP_SENDER_ID:-""}
+      - DOMAIN={{hostname}}
     networks:
       - overlay_net
     logging:
