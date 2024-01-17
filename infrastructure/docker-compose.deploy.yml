@@ -580,9 +580,9 @@ services:
         - 'traefik.http.middlewares.countryconfig.headers.stspreload=true'
         # This is an invalid IP range, effectively blocking all IPs from accessing /email path.
         # It's only meant to be accessed from the internal docker network.
-        - 'traefik.http.middlewares.block-all.ipwhitelist.sourcerange=255.255.255.255'
-        - 'traefik.http.routers.email-blocker.rule=Path(`/email`)'
-        - 'traefik.http.routers.email-blocker.middlewares=block-all'
+        - 'traefik.http.middlewares.block-email.ipwhitelist.sourcerange=255.255.255.255'
+        - 'traefik.http.routers.block-email.rule=Host(`countryconfig.{{hostname}}`) && Path(`/email`)'
+        - 'traefik.http.routers.block-email.middlewares=block-email'
       replicas: 1
     environment:
       - MONGO_URL=mongodb://mongo1/user-mgnt?replicaSet=rs0
