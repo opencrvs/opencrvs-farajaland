@@ -150,7 +150,6 @@ export async function emailHandler(
   h: Hapi.ResponseToolkit
 ) {
   const payload = request.payload as EmailPayloads
-  console.log({ payload })
 
   if (process.env.NODE_ENV !== 'production') {
     logger.info(

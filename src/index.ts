@@ -459,6 +459,10 @@ export async function createServer() {
     path: '/email',
     handler: emailHandler,
     options: {
+      /*
+       * In deployed environments, the email path is blocked by Traefik.
+       * See docker-compose.deploy.yml for more details.
+       */
       auth: false,
       tags: ['api'],
       validate: {

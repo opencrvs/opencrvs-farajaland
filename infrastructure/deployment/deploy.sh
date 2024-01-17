@@ -353,7 +353,7 @@ EOF
 configured_ssh "
   MINIO_ROOT_USER=$MINIO_ROOT_USER
   MINIO_ROOT_PASSWORD=$MINIO_ROOT_PASSWORD
-  /opt/opencrvs/infrastructure/setup-deploy-config.sh | tee -a $LOG_LOCATION/setup-deploy-config.log"
+  /opt/opencrvs/infrastructure/setup-deploy-config.sh $HOST | tee -a $LOG_LOCATION/setup-deploy-config.log"
 
 rotate_secrets
 
