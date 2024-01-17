@@ -99,6 +99,7 @@ jobs:
         env:
           DOMAIN: ${{ vars.DOMAIN }}
           REPLICAS: ${{ vars.REPLICAS }}
+          NOTIFICATION_TRANSPORT: ${{ vars.NOTIFICATION_TRANSPORT }}
           SMTP_PORT: ${{ secrets.SMTP_PORT }}
           SMTP_HOST: ${{ secrets.SMTP_HOST }}
           SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
