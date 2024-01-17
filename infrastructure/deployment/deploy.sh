@@ -139,26 +139,6 @@ validate_environment_variables() {
   # These ones are directly required by this script
   # and thus should be set in the environment variables even
   # if not required by compose files
-  if [ -z "$SMTP_HOST" ] ; then
-      echo 'Error: Missing environment variable SMTP_HOST.'
-      print_usage_and_exit
-  fi
-
-  if [ -z "$SMTP_PORT" ] ; then
-      echo 'Error: Missing environment variable SMTP_PORT.'
-      print_usage_and_exit
-  fi
-
-  if [ -z "$SMTP_USERNAME" ] ; then
-      echo 'Error: Missing environment variable SMTP_USERNAME.'
-      print_usage_and_exit
-  fi
-
-  if [ -z "$SMTP_PASSWORD" ] ; then
-      echo 'Error: Missing environment variable SMTP_PASSWORD.'
-      print_usage_and_exit
-  fi
-
   if [ -z "$ALERT_EMAIL" ] ; then
       echo 'Error: Missing environment variable ALERT_EMAIL.'
       print_usage_and_exit
@@ -371,14 +351,9 @@ EOF
 
 # Setup configuration files and compose file for the deployment domain
 configured_ssh "
-  SMTP_HOST=$SMTP_HOST
-  SMTP_PORT=$SMTP_PORT
-  SMTP_USERNAME=$SMTP_USERNAME
-  SMTP_PASSWORD=$SMTP_PASSWORD
-  ALERT_EMAIL=$ALERT_EMAIL
   MINIO_ROOT_USER=$MINIO_ROOT_USER
   MINIO_ROOT_PASSWORD=$MINIO_ROOT_PASSWORD
-  /opt/opencrvs/infrastructure/setup-deploy-config.sh $HOST | tee -a $LOG_LOCATION/setup-deploy-config.log"
+  /opt/opencrvs/infrastructure/setup-deploy-config.sh | tee -a $LOG_LOCATION/setup-deploy-config.log"
 
 rotate_secrets
 

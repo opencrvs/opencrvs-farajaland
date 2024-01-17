@@ -9,6 +9,7 @@
  * Copyright (C) The OpenCRVS Authors located at https://github.com/opencrvs/opencrvs-core/blob/master/AUTHORS.
  */
 require('app-module-path').addPath(require('path').join(__dirname))
+require('dotenv').config()
 
 import fetch from 'node-fetch'
 import * as Hapi from '@hapi/hapi'
@@ -39,8 +40,10 @@ import * as decode from 'jwt-decode'
 import { join } from 'path'
 import { logger } from '@countryconfig/logger'
 import {
+  emailHandler,
+  emailSchema,
   notificationHandler,
-  notificationScheme
+  notificationSchema
 } from './api/notification/handler'
 import { mosipMediatorHandler } from '@countryconfig/api/mediators/mosip-openhim-mediator/handler'
 import { ErrorContext } from 'hapi-auth-jwt2'
@@ -444,7 +447,22 @@ export async function createServer() {
     options: {
       tags: ['api'],
       validate: {
-        payload: notificationScheme
+        payload: notificationSchema
+      },
+      description:
+        'Handles sending either SMS or email using a predefined template file'
+    }
+  })
+
+  server.route({
+    method: 'POST',
+    path: '/email',
+    handler: emailHandler,
+    options: {
+      auth: false,
+      tags: ['api'],
+      validate: {
+        payload: emailSchema
       },
       description: 'Handles sending SMS'
     }

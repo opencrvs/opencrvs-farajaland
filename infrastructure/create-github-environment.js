@@ -51,9 +51,9 @@ const config = {
     SMTP_HOST: process.env.SMTP_HOST,
     SMTP_USERNAME: process.env.SMTP_USERNAME,
     SMTP_PASSWORD: process.env.SMTP_PASSWORD,
+    SMTP_SECURE: process.env.SMTP_SECURE,
     SMTP_PORT: process.env.SMTP_PORT,
     SENDER_EMAIL_ADDRESS: process.env.SENDER_EMAIL_ADDRESS,
-    EMAIL_API_KEY: process.env.EMAIL_API_KEY,
     ALERT_EMAIL:
       'sentry-dev-aaaalrpiimoklruew7v7dgo2km@opencrvsworkspace.slack.com'
   },
