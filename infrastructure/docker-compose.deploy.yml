@@ -566,7 +566,7 @@ services:
     deploy:
       labels:
         - 'traefik.enable=true'
-        - 'traefik.http.routers.countryconfig.rule=Host(`countryconfig.{{hostname}}`)'
+        - 'traefik.http.routers.countryconfig.rule=Host(`countryconfig.{{hostname}}`) && !Path(`/email`)'
         - 'traefik.http.services.countryconfig.loadbalancer.server.port=3040'
         - 'traefik.http.routers.countryconfig.tls=true'
         - 'traefik.http.routers.countryconfig.tls.certresolver=certResolver'
