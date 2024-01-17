@@ -46,7 +46,6 @@
     "@typescript-eslint/eslint-plugin": "^5.60.1",
     "@typescript-eslint/parser": "^5.60.1",
     "cypress-xpath": "^2.0.1",
-    "dotenv": "^6.1.0",
     "eslint": "^8.43.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-prettier": "^4.2.1",
@@ -65,6 +64,7 @@
     "ts-jest": "^26.5.6"
   },
   "dependencies": {
+    "dotenv": "^6.1.0",
     "@faker-js/faker": "^6.0.0-alpha.5",
     "@hapi/boom": "^9.1.1",
     "@hapi/hapi": "^20.0.1",
