@@ -1,15 +1,35 @@
 const minimist = require('minimist')
-const sodium = require('libsodium-wrappers')
-const { Octokit } = require('@octokit/core')
 const { writeFileSync } = require('fs')
 const { existsSync } = require('fs')
 const { mkdirSync } = require('fs')
+const { getRepositoryId } = require('./github')
+const { getPublicKey } = require('./github')
+const { listRepoVariables } = require('./github')
+const { listRepoSecrets } = require('./github')
+const { createSecret } = require('./github')
+const { createVariable } = require('./github')
 
 const args = minimist(process.argv.slice(2), {
   string: ['environment', 'vpn-type', 'notification-transport'],
   boolean: ['sms-enabled', 'configure-vpn', 'dry-run', 'configure-backup'],
   alias: {}
 })
+
+require('dotenv').config({
+  path: `${process.cwd()}/.env.${args.environment}`
+})
+
+type WireguardSecrets = {
+  VPN_ADMIN_PASSWORD: string
+}
+type OpenConnectSecrets = {
+  VPN_PROTOCOL: string
+  VPN_HOST_ADDRESS: string
+  VPN_PORT: string
+  VPN_USER: string
+  VPN_PWD: string
+  VPN_SERVERCERT: string
+}
 
 const config = {
   environment: args.environment,
@@ -85,142 +105,55 @@ const config = {
   }
 }
 
-const octokit = new Octokit({
-  auth: process.env.GITHUB_TOKEN
-})
-
-async function createVariable(repositoryId, environment, name, value) {
-  await octokit.request(
-    `POST /repositories/${repositoryId}/environments/${config.environment}/variables`,
-    {
-      repository_id: repositoryId,
-      environment_name: environment,
-      name: name,
-      value: value,
-      headers: {
-        'X-GitHub-Api-Version': '2022-11-28'
-      }
-    }
-  )
-}
-
-async function getRepositoryId(owner, repo) {
-  const response = await octokit.request('GET /repos/{owner}/{repo}', {
-    owner: owner,
-    repo: repo
-  })
-
-  return response.data.id
-}
-
-async function createSecret(
-  repositoryId,
-  environment,
-  key,
-  keyId,
-  name,
-  secret
-) {
-  //Check if libsodium is ready and then proceed.
-  await sodium.ready
-
-  // Convert Secret & Base64 key to Uint8Array.
-  let binkey = sodium.from_base64(key, sodium.base64_variants.ORIGINAL)
-  let binsec = sodium.from_string(secret)
-
-  //Encrypt the secret using LibSodium
-  let encBytes = sodium.crypto_box_seal(binsec, binkey)
-
-  // Convert encrypted Uint8Array to Base64
-  const encryptedValue = sodium.to_base64(
-    encBytes,
-    sodium.base64_variants.ORIGINAL
-  )
-
-  await octokit.request(
-    `PUT /repositories/${repositoryId}/environments/${environment}/secrets/${name}`,
-    {
-      repository_id: repositoryId,
-      environment_name: environment,
-      secret_name: name,
-      encrypted_value: encryptedValue,
-      key_id: keyId,
-      headers: {
-        'X-GitHub-Api-Version': '2022-11-28'
-      }
-    }
-  )
-}
-
-async function getPublicKey(environment) {
-  const repositoryId = await getRepositoryId(
-    config.github_repository.ORGANISATION,
-    config.github_repository.REPOSITORY_NAME
-  )
-
-  await octokit.request(
-    `PUT /repos/${config.github_repository.ORGANISATION}/${config.github_repository.REPOSITORY_NAME}/environments/${environment}`,
-    {
-      headers: {
-        'X-GitHub-Api-Version': '2022-11-28'
-      }
-    }
-  )
-
-  const res = await octokit.request(
-    `GET /repositories/${repositoryId}/environments/${environment}/secrets/public-key`,
-    {
-      owner: config.github_repository.ORGANISATION,
-      repo: config.github_repository.REPOSITORY_NAME,
-      headers: {
-        'X-GitHub-Api-Version': '2022-11-28'
-      }
-    }
-  )
-
-  return res.data
-}
-
-async function listRepoSecrets(owner, repositoryId, environmentName) {
-  const response = await octokit.request(
-    'GET /repositories/{repository_id}/environments/{environment_name}/secrets',
-    {
-      owner: owner,
-      repository_id: repositoryId,
-      environment_name: environmentName
-    }
-  )
-  return response.data.secrets
-}
-
-async function listRepoVariables(repositoryId, environmentName) {
-  const response = await octokit.request(
-    'GET /repositories/{repository_id}/environments/{environment_name}/variables',
-    {
-      per_page: 30,
-      repository_id: repositoryId,
-      environment_name: environmentName,
-      headers: {
-        'X-GitHub-Api-Version': '2022-11-28'
-      }
-    }
-  )
-
-  return response.data.variables
-}
+// eslint-disable-next-line no-console
+const log = console.log
+// eslint-disable-next-line no-console
+const error = console.error
 
 function generateLongPassword() {
   const chars =
     '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_'
   let result = ''
-  for (var i = 16; i > 0; --i)
+  for (let i = 16; i > 0; --i)
     result += chars[Math.floor(Math.random() * chars.length)]
   return result
 }
 
+type VPNConfig =
+  | {
+      type: 'wireguard'
+      wireguard: {
+        VPN_HOST_ADDRESS: string
+      }
+    }
+  | {
+      type: 'openconnect'
+      openconnect: {
+        VPN_PROTOCOL: string
+        VPN_HOST_ADDRESS: string
+        VPN_PORT: string
+        VPN_USER: string
+        VPN_PWD: string
+        VPN_SERVERCERT: string
+      }
+    }
+
+function createVPNConfiguration(
+  config: VPNConfig
+): WireguardSecrets | OpenConnectSecrets {
+  if (config.type === 'wireguard') {
+    const baseValues = config.wireguard
+    return {
+      ...baseValues,
+      VPN_ADMIN_PASSWORD: generateLongPassword()
+    }
+  }
+  return config.openconnect
+}
+
 async function main() {
   if (!config.environment) {
-    console.error('Please specify an environment in config.environment')
+    error('Please specify an environment in config.environment')
     process.exit(1)
   }
 
@@ -231,7 +164,24 @@ async function main() {
     process.exit(1)
   }
 
-  const { key, key_id } = await getPublicKey(config.environment)
+  if (args.environment === 'production' || args.environment === 'staging') {
+    if (!config.vpn.type) {
+      error('Please specify VPN details for staging or production environments')
+      process.exit(1)
+    }
+    if (!config.backup.BACKUP_HOST || !config.backup.BACKUP_SSH_USER) {
+      error(
+        'Please specify backup server details for staging or production environments'
+      )
+      process.exit(1)
+    }
+  }
+
+  const { key, key_id } = await getPublicKey(
+    config.environment,
+    config.github_repository.ORGANISATION,
+    config.github_repository.REPOSITORY_NAME
+  )
   const repositoryId = await getRepositoryId(
     config.github_repository.ORGANISATION,
     config.github_repository.REPOSITORY_NAME
@@ -249,6 +199,7 @@ async function main() {
 
   let backupSecrets = {}
   let backupVariables = {}
+
   let vpnSecrets = {}
   let smsSecrets = {}
 
@@ -257,19 +208,16 @@ async function main() {
       BACKUP_HOST: config.backup.BACKUP_HOST
     }
     backupVariables = {
-      BACKUP_DIRECTORY: config.backup.BACKUP_DIRECTORY,
-      RESTORE_DIRECTORY: config.backup.qa.RESTORE_DIRECTORY
+      BACKUP_DIRECTORY: config.backup.BACKUP_DIRECTORY
     }
   }
 
   if (args['configure-vpn']) {
     if (!config.vpn.type) {
-      console.error('Please specify a VPN type with --vpn-type')
+      error('Please specify a VPN type with --vpn-type')
       process.exit(1)
     }
-    vpnSecrets = {
-      ...config.vpn[config.vpn.type]
-    }
+    vpnSecrets = createVPNConfiguration(config.vpn.type)
   }
 
   if (args['sms-enabled']) {
@@ -317,7 +265,7 @@ async function main() {
   const allVariablesKeys = Object.keys(VARIABLES)
 
   if (existingSecrets.length !== 0) {
-    console.log(
+    log(
       'This environment already has defined secrets. Environment is however currently missing the following secrets:',
       allSecretsKeys.filter(
         (key) => !existingSecrets.find((secret) => secret.name === key)
@@ -327,10 +275,10 @@ async function main() {
       delete SECRETS[secret.name]
     }
   }
-  console.log(existingVariables)
+  log(existingVariables)
 
   if (existingVariables.length !== 0) {
-    console.log(
+    log(
       'This environment already has defined variables. Environment is however currently missing the following variables:',
       allVariablesKeys.filter(
         (key) => !existingVariables.find((secret) => secret.name === key)
@@ -341,7 +289,7 @@ async function main() {
     }
   }
 
-  const errors = []
+  const errors: string[] = []
   for (const [secretName, secretValue] of Object.entries(SECRETS)) {
     if (secretValue === undefined || secretValue === '') {
       errors.push(
@@ -366,24 +314,24 @@ async function main() {
   )
 
   if (args['dry-run']) {
-    console.log('This is a dry run. Not creating secrets or variables.')
-    console.log('')
-    console.log('Errors:', errors)
-    console.log('')
-    console.log('After all errors are fixed, These secrets will be created:')
-    console.log(secretsToCreate)
-    console.log('These variables would be created:')
-    console.log(variablesToCreate)
+    log('This is a dry run. Not creating secrets or variables.')
+    log('')
+    log('Errors:', errors)
+    log('')
+    log('After all errors are fixed, These secrets will be created:')
+    log(secretsToCreate)
+    log('These variables would be created:')
+    log(variablesToCreate)
     process.exit(0)
   }
 
   if (errors.length > 0) {
-    console.error(errors)
+    error(errors)
     process.exit(1)
   }
 
   for (const [secretName, secretValue] of Object.entries(SECRETS)) {
-    console.log(`Creating secret ${secretName} with value ${secretValue}`)
+    log(`Creating secret ${secretName} with value ${secretValue}`)
     await createSecret(
       repositoryId,
       config.environment,
@@ -395,7 +343,7 @@ async function main() {
   }
 
   for (const [variableName, variableValue] of Object.entries(VARIABLES)) {
-    console.log(`Creating variable ${variableName} with value ${variableValue}`)
+    log(`Creating variable ${variableName} with value ${variableValue}`)
 
     await createVariable(
       repositoryId,
