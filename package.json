@@ -6,6 +6,9 @@
     "darwin",
     "linux"
   ],
+  "engines": {
+    "node": "18.19.0"
+  },
   "license": "MPL-2.0",
   "husky": {
     "hooks": {
