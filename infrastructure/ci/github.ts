@@ -1,11 +1,13 @@
 const sodium = require('libsodium-wrappers')
-const { Octokit } = require('@octokit/core')
+import { Octokit } from '@octokit/core'
 
-const octokit = new Octokit({
-  auth: process.env.GITHUB_TOKEN
-})
-
-export async function createVariable(repositoryId, environment, name, value) {
+export async function createVariable(
+  octokit: Octokit,
+  repositoryId: number,
+  environment: string,
+  name: string,
+  value: string
+): Promise<void> {
   await octokit.request(
     `POST /repositories/${repositoryId}/environments/${environment}/variables`,
     {
@@ -19,8 +21,32 @@ export async function createVariable(repositoryId, environment, name, value) {
     }
   )
 }
+export async function updateVariable(
+  octokit: Octokit,
+  repositoryId: number,
+  environment: string,
+  name: string,
+  value: string
+): Promise<void> {
+  await octokit.request(
+    `PATCH /repositories/${repositoryId}/environments/${environment}/variables/${name}`,
+    {
+      repository_id: repositoryId,
+      environment_name: environment,
+      name: name,
+      value: value,
+      headers: {
+        'X-GitHub-Api-Version': '2022-11-28'
+      }
+    }
+  )
+}
 
-export async function getRepositoryId(owner, repo) {
+export async function getRepositoryId(
+  octokit: Octokit,
+  owner: string,
+  repo: string
+): Promise<number> {
   const response = await octokit.request('GET /repos/{owner}/{repo}', {
     owner: owner,
     repo: repo
@@ -30,22 +56,23 @@ export async function getRepositoryId(owner, repo) {
 }
 
 export async function createSecret(
-  repositoryId,
-  environment,
-  key,
-  keyId,
-  name,
-  secret
-) {
+  octokit: Octokit,
+  repositoryId: number,
+  environment: string,
+  key: string,
+  keyId: string,
+  name: string,
+  secret: string
+): Promise<void> {
   //Check if libsodium is ready and then proceed.
   await sodium.ready
 
   // Convert Secret & Base64 key to Uint8Array.
-  let binkey = sodium.from_base64(key, sodium.base64_variants.ORIGINAL)
-  let binsec = sodium.from_string(secret)
+  const binkey = sodium.from_base64(key, sodium.base64_variants.ORIGINAL)
+  const binsec = sodium.from_string(secret)
 
   //Encrypt the secret using LibSodium
-  let encBytes = sodium.crypto_box_seal(binsec, binkey)
+  const encBytes = sodium.crypto_box_seal(binsec, binkey)
 
   // Convert encrypted Uint8Array to Base64
   const encryptedValue = sodium.to_base64(
@@ -68,8 +95,17 @@ export async function createSecret(
   )
 }
 
-export async function getPublicKey(environment, ORGANISATION, REPOSITORY_NAME) {
-  const repositoryId = await getRepositoryId(ORGANISATION, REPOSITORY_NAME)
+export async function getPublicKey(
+  octokit: Octokit,
+  environment: string,
+  ORGANISATION: string,
+  REPOSITORY_NAME: string
+): Promise<any> {
+  const repositoryId = await getRepositoryId(
+    octokit,
+    ORGANISATION,
+    REPOSITORY_NAME
+  )
 
   await octokit.request(
     `PUT /repos/${ORGANISATION}/${REPOSITORY_NAME}/environments/${environment}`,
@@ -93,8 +129,15 @@ export async function getPublicKey(environment, ORGANISATION, REPOSITORY_NAME) {
 
   return res.data
 }
+export type Secret = { type: 'SECRET'; name: string }
+export type Variable = { type: 'VARIABLE'; name: string; value: string }
 
-export async function listRepoSecrets(owner, repositoryId, environmentName) {
+export async function listRepoSecrets(
+  octokit: Octokit,
+  owner: string,
+  repositoryId: number,
+  environmentName: string
+): Promise<Secret[]> {
   const response = await octokit.request(
     'GET /repositories/{repository_id}/environments/{environment_name}/secrets',
     {
@@ -103,10 +146,14 @@ export async function listRepoSecrets(owner, repositoryId, environmentName) {
       environment_name: environmentName
     }
   )
-  return response.data.secrets
+  return response.data.secrets.map((secret) => ({ ...secret, type: 'SECRET' }))
 }
 
-export async function listRepoVariables(repositoryId, environmentName) {
+export async function listRepoVariables(
+  octokit: Octokit,
+  repositoryId: number,
+  environmentName: string
+): Promise<Variable[]> {
   const response = await octokit.request(
     'GET /repositories/{repository_id}/environments/{environment_name}/variables',
     {
@@ -119,5 +166,8 @@ export async function listRepoVariables(repositoryId, environmentName) {
     }
   )
 
-  return response.data.variables
+  return response.data.variables.map((variable) => ({
+    ...variable,
+    type: 'VARIABLE'
+  }))
 }
