@@ -126,6 +126,7 @@
   ansible.builtin.command:
     cmd: passwd -l root
   become: yes
+  when: ansible_user != "root"
 
 - name: Enable KbdInteractiveAuthentication in SSHD Config
   lineinfile:
