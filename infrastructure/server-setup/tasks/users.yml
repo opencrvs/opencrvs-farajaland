@@ -38,6 +38,14 @@
   when: item.state == 'present'
   with_items: '{{ users }}'
 
+- name: Ensure history has timestamps
+  lineinfile:
+    path: /home/{{ item.name }}/.bashrc
+    line: 'export HISTTIMEFORMAT="%d/%m/%y %T "'
+    create: yes
+  when: item.state == 'present'
+  with_items: '{{ users }}'
+
 - name: Check if Docker group exists
   command: getent group docker
   register: docker_group
