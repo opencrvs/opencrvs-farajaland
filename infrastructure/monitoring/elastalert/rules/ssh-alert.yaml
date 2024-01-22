@@ -21,23 +21,16 @@ timestamp_type: 'iso'
 use_strftime_index: false
 # https://github.com/Yelp/elastalert/issues/1260
 raw_count_keys: false
-alert_subject: '{{HOST}}: Login to {} from {} 🚨'
-alert_subject_args:
-  - 'kibana.alert.context.__es-query.hits[0]_source.user.name'
-  - 'kibana.alert.context.__es-query.hits[0]_source.source.ip'
-alert_text: 'Login to https://kibana.{{HOST}} to view the alert.'
-
 filter:
   - query:
       term:
         rule.name.keyword:
           value: 'Succesful SSH login'
-alert:
-  - 'email'
-email: '{{ALERT_EMAIL}}'
-from_addr: 'alert@opencrvs.org'
-smtp_host: '{{SMTP_HOST}}'
-# prettier-ignore
-smtp_port: {{SMTP_PORT}}
-smtp_ssl: false
-smtp_auth_file: '/opt/elastalert/auth.yaml'
+
+alert: post2
+http_post2_url: 'http://countryconfig:3040/email'
+http_post2_payload:
+  subject: '{% raw %}{{DOMAIN}}{% endraw %}: Login to {{kibana.alert.context.__es-query.hits[0]_source.user.name}} from {{kibana.alert.context.__es-query.hits[0]_source.source.ip}} 🚨'
+  html: 'Login to https://kibana.{% raw %}{{DOMAIN}}{% endraw %} to view the alert.'
+  from: '{% raw %}{{SENDER_EMAIL_ADDRESS}}{% endraw %}'
+  to: '{% raw %}{{ALERT_EMAIL}}{% endraw %}'

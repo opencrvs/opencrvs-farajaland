@@ -21,6 +21,7 @@ on:
           - all
           - backups
           - checks
+          - updates
           - application
           - tools
           - docker
