@@ -6,7 +6,7 @@ const { existsSync } = require('fs')
 const { mkdirSync } = require('fs')
 
 const args = minimist(process.argv.slice(2), {
-  string: ['environment', 'vpn-type'],
+  string: ['environment', 'vpn-type', 'notification-transport'],
   boolean: ['sms-enabled', 'configure-vpn', 'dry-run', 'configure-backup'],
   alias: {}
 })
@@ -51,9 +51,9 @@ const config = {
     SMTP_HOST: process.env.SMTP_HOST,
     SMTP_USERNAME: process.env.SMTP_USERNAME,
     SMTP_PASSWORD: process.env.SMTP_PASSWORD,
+    SMTP_SECURE: process.env.SMTP_SECURE,
     SMTP_PORT: process.env.SMTP_PORT,
     SENDER_EMAIL_ADDRESS: process.env.SENDER_EMAIL_ADDRESS,
-    EMAIL_API_KEY: process.env.EMAIL_API_KEY,
     ALERT_EMAIL:
       'sentry-dev-aaaalrpiimoklruew7v7dgo2km@opencrvsworkspace.slack.com'
   },
@@ -224,6 +224,13 @@ async function main() {
     process.exit(1)
   }
 
+  if (!['email', 'sms'].includes(args['notification-transport'])) {
+    console.error(
+      'Please specify a notification transport. It should be either "email" or "sms"'
+    )
+    process.exit(1)
+  }
+
   const { key, key_id } = await getPublicKey(config.environment)
   const repositoryId = await getRepositoryId(
     config.github_repository.ORGANISATION,
@@ -301,7 +308,8 @@ async function main() {
     ...config.infrastructure,
     ...config.seeding,
     ...config.whitelist,
-    ...backupVariables
+    ...backupVariables,
+    NOTIFICATION_TRANSPORT: args['notification-transport']
   }
 
   const allSecretsKeys = Object.keys(SECRETS)

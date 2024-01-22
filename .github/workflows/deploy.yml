@@ -103,10 +103,12 @@ jobs:
         env:
           DOMAIN: ${{ vars.DOMAIN }}
           REPLICAS: ${{ vars.REPLICAS }}
+          NOTIFICATION_TRANSPORT: ${{ vars.NOTIFICATION_TRANSPORT }}
           SMTP_PORT: ${{ secrets.SMTP_PORT }}
           SMTP_HOST: ${{ secrets.SMTP_HOST }}
           SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
           SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          SMTP_SECURE: ${{ secrets.SMTP_SECURE }}
           ALERT_EMAIL: ${{ secrets.ALERT_EMAIL }}
           DOCKERHUB_ACCOUNT: ${{ secrets.DOCKERHUB_ACCOUNT }}
           DOCKERHUB_REPO: ${{ secrets.DOCKERHUB_REPO }}
@@ -119,7 +121,6 @@ jobs:
           ELASTICSEARCH_SUPERUSER_PASSWORD: ${{ secrets.ELASTICSEARCH_SUPERUSER_PASSWORD }}
           MINIO_ROOT_USER: ${{ secrets.MINIO_ROOT_USER }}
           MINIO_ROOT_PASSWORD: ${{ secrets.MINIO_ROOT_PASSWORD }}
-          EMAIL_API_KEY: ${{ secrets.EMAIL_API_KEY }}
           INFOBIP_SENDER_ID: ${{ secrets.INFOBIP_SENDER_ID }}
           SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
           INFOBIP_GATEWAY_ENDPOINT: ${{ secrets.INFOBIP_GATEWAY_ENDPOINT }}
@@ -147,10 +148,12 @@ jobs:
         env:
           DOMAIN: ${{ vars.DOMAIN }}
           REPLICAS: ${{ vars.REPLICAS }}
+          NOTIFICATION_TRANSPORT: ${{ vars.NOTIFICATION_TRANSPORT }}
           SMTP_PORT: ${{ secrets.SMTP_PORT }}
           SMTP_HOST: ${{ secrets.SMTP_HOST }}
           SMTP_USERNAME: ${{ secrets.SMTP_USERNAME }}
           SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          SMTP_SECURE: ${{ secrets.SMTP_SECURE }}
           ALERT_EMAIL: ${{ secrets.ALERT_EMAIL }}
           DOCKERHUB_ACCOUNT: ${{ secrets.DOCKERHUB_ACCOUNT }}
           DOCKERHUB_REPO: ${{ secrets.DOCKERHUB_REPO }}
@@ -163,7 +166,6 @@ jobs:
           ELASTICSEARCH_SUPERUSER_PASSWORD: ${{ secrets.ELASTICSEARCH_SUPERUSER_PASSWORD }}
           MINIO_ROOT_USER: ${{ secrets.MINIO_ROOT_USER }}
           MINIO_ROOT_PASSWORD: ${{ secrets.MINIO_ROOT_PASSWORD }}
-          EMAIL_API_KEY: ${{ secrets.EMAIL_API_KEY }}
           SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
           WIREGUARD_ADMIN_PASSWORD: ${{ secrets.WIREGUARD_ADMIN_PASSWORD }}
           INFOBIP_SENDER_ID: ${{ secrets.INFOBIP_SENDER_ID }}
