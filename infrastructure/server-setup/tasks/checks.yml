@@ -6,8 +6,3 @@
       - elasticsearch_superuser_password is defined
       - disk_encryption_key is defined
       - encrypted_disk_size is defined
-
-- name: Update apt-get
-  apt:
-    update_cache: yes
-    cache_valid_time: 3600

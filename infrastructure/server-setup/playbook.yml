@@ -12,7 +12,7 @@
     - name: Create MongoDB replicate key file locally
       local_action: shell openssl rand -base64 755 > /tmp/mongodb-keyfile
 
-- hosts: docker-manager-first, docker-workers
+- hosts: all
   become: yes
   become_method: sudo
   tasks:
@@ -24,6 +24,18 @@
       tags:
         - checks
 
+    - include_tasks:
+        file: tasks/updates.yml
+        apply:
+          tags:
+            - updates
+      tags:
+        - updates
+
+- hosts: docker-manager-first, docker-workers
+  become: yes
+  become_method: sudo
+  tasks:
     - include_tasks:
         file: tasks/application.yml
         apply:
