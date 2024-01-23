@@ -68,7 +68,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-  
+
       - name: Wait for images to be available
         run: |
           while true; do
@@ -83,10 +83,10 @@ jobs:
             fi
             sleep 10
           done
-  
 
       - name: Deploy to ${{ github.event.inputs.environment }}
         env:
+          SSH_USER: ${{ secrets.SSH_USER }}
           DOMAIN: ${{ vars.DOMAIN }}
           REPLICAS: ${{ vars.REPLICAS }}
           SMTP_PORT: ${{ secrets.SMTP_PORT }}
