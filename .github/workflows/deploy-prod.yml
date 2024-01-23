@@ -10,6 +10,7 @@ on:
         default: 'production'
         options:
           - production
+          - staging
       core-image-tag:
         description: Core DockerHub image tag
         required: true
