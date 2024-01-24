@@ -131,7 +131,7 @@
         path: '{{ external_backup_server_user_home }}/.ssh/authorized_keys'
         block: |
           {{ lookup('file', '/tmp/docker-manager-first_id_rsa.pub') }}
-        marker: '# {mark} ANSIBLE MANAGED BLOCK docker-manager-first'
+        marker: '# {mark} ANSIBLE MANAGED BLOCK docker-manager-first {{ inventory_hostname }}'
         create: yes
         mode: 0600
       tags:
