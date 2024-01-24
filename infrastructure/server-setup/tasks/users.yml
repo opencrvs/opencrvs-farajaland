@@ -167,6 +167,12 @@
     marker: '# {mark} ANSIBLE MANAGED BLOCK FOR USER {{ ansible_user }}'
   become: yes
 
+- name: Enable logging in to the provisioning user with specified SSH keys
+  authorized_key:
+    user: '{{ ansible_user }}'
+    key: '{{ item }}'
+  with_items: '{{ additional_keys_for_provisioning_user | default([]) }}'
+
 - name: Check SSH config syntax
   command: sshd -T
   register: check_result
