@@ -99,3 +99,30 @@ services:
     environment:
       - QA_ENV=true
       - NODE_ENV=production
+
+  traefik:
+    image: 'traefik:v2.9'
+    environment:
+      - GOOGLE_DOMAINS_ACCESS_TOKEN=${GOOGLE_DOMAINS_ACCESS_TOKEN}
+    command:
+      - --entrypoints.web.address=:80
+      - --entrypoints.websecure.address=:443
+      - --providers.docker
+      - --providers.docker.swarmMode=true
+      - --api.dashboard=true
+      - --api.insecure=true
+      - --log.level=WARNING
+
+      - --certificatesresolvers.certResolver.acme.dnschallenge=true
+      - --certificatesresolvers.certResolver.acme.dnschallenge.provider=googledomains
+      - --certificatesresolvers.certResolver.acme.email=riku@opencrvs.org
+      - --certificatesresolvers.certResolver.acme.storage=acme.json
+
+      - --entrypoints.web.http.redirections.entryPoint.to=websecure
+      - --entrypoints.web.http.redirections.entryPoint.scheme=https
+      - --entrypoints.web.http.redirections.entrypoint.permanent=true
+      - --serverstransport.insecureskipverify=true
+      - --entrypoints.websecure.address=:443
+      - --accesslog=true
+      - --accesslog.format=json
+      - --ping=true
