@@ -55,47 +55,23 @@ export async function getRepositoryId(
   return response.data.id
 }
 
-export async function createSecret(
+async function getRepoPublicKey(
   octokit: Octokit,
-  repositoryId: number,
-  environment: string,
-  key: string,
-  keyId: string,
-  name: string,
-  secret: string
-): Promise<void> {
-  //Check if libsodium is ready and then proceed.
-  await sodium.ready
-
-  // Convert Secret & Base64 key to Uint8Array.
-  const binkey = sodium.from_base64(key, sodium.base64_variants.ORIGINAL)
-  const binsec = sodium.from_string(secret)
-
-  //Encrypt the secret using LibSodium
-  const encBytes = sodium.crypto_box_seal(binsec, binkey)
-
-  // Convert encrypted Uint8Array to Base64
-  const encryptedValue = sodium.to_base64(
-    encBytes,
-    sodium.base64_variants.ORIGINAL
-  )
-
-  await octokit.request(
-    `PUT /repositories/${repositoryId}/environments/${environment}/secrets/${name}`,
+  owner: string,
+  repo: string
+): Promise<any> {
+  const res = await octokit.request(
+    'GET /repos/{owner}/{repo}/actions/secrets/public-key',
     {
-      repository_id: repositoryId,
-      environment_name: environment,
-      secret_name: name,
-      encrypted_value: encryptedValue,
-      key_id: keyId,
-      headers: {
-        'X-GitHub-Api-Version': '2022-11-28'
-      }
+      owner: owner,
+      repo: repo
     }
   )
+
+  return res.data
 }
 
-export async function getPublicKey(
+async function getPublicKey(
   octokit: Octokit,
   environment: string,
   ORGANISATION: string,
@@ -129,6 +105,86 @@ export async function getPublicKey(
 
   return res.data
 }
+
+export async function createSecret(
+  octokit: Octokit,
+  repositoryId: number,
+  environment: string,
+  scope: 'ENVIRONMENT' | 'REPOSITORY',
+  name: string,
+  secret: string,
+  ORGANISATION: string,
+  REPOSITORY_NAME: string
+): Promise<void> {
+  //Check if libsodium is ready and then proceed.
+  await sodium.ready
+  const { key, key_id } =
+    scope === 'ENVIRONMENT'
+      ? await getPublicKey(octokit, environment, ORGANISATION, REPOSITORY_NAME)
+      : await getRepoPublicKey(octokit, ORGANISATION, REPOSITORY_NAME)
+
+  // Convert Secret & Base64 key to Uint8Array.
+  const binkey = sodium.from_base64(key, sodium.base64_variants.ORIGINAL)
+  const binsec = sodium.from_string(secret)
+
+  //Encrypt the secret using LibSodium
+  const encBytes = sodium.crypto_box_seal(binsec, binkey)
+
+  // Convert encrypted Uint8Array to Base64
+  const encryptedValue = sodium.to_base64(
+    encBytes,
+    sodium.base64_variants.ORIGINAL
+  )
+
+  if (scope === 'ENVIRONMENT') {
+    await octokit.request(
+      `PUT /repositories/${repositoryId}/environments/${environment}/secrets/${name}`,
+      {
+        repository_id: repositoryId,
+        environment_name: environment,
+        secret_name: name,
+        encrypted_value: encryptedValue,
+        key_id,
+        headers: {
+          'X-GitHub-Api-Version': '2022-11-28'
+        }
+      }
+    )
+  } else {
+    await octokit.request(
+      `PUT /repositories/${repositoryId}/actions/secrets/${name}`,
+      {
+        encrypted_value: encryptedValue,
+        key_id,
+        headers: {
+          'X-GitHub-Api-Version': '2022-11-28'
+        }
+      }
+    )
+  }
+}
+
+export async function createEnvironment(
+  octokit: Octokit,
+  environment: string,
+  ORGANISATION: string,
+  REPOSITORY_NAME: string
+): Promise<boolean> {
+  try {
+    await octokit.request(
+      `PUT /repos/${ORGANISATION}/${REPOSITORY_NAME}/environments/${environment}`,
+      {
+        headers: {
+          'X-GitHub-Api-Version': '2022-11-28'
+        }
+      }
+    )
+    return true
+  } catch (err) {
+    throw new Error('Cannot create environment')
+  }
+}
+
 export type Secret = { type: 'SECRET'; name: string }
 export type Variable = { type: 'VARIABLE'; name: string; value: string }
 

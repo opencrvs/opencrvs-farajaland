@@ -6,13 +6,13 @@ import kleur from 'kleur'
 import {
   Variable,
   Secret,
-  getPublicKey,
   getRepositoryId,
   listRepoSecrets,
   listRepoVariables,
   createSecret,
   createVariable,
-  updateVariable
+  updateVariable,
+  createEnvironment
 } from './github'
 
 import editor from '@inquirer/editor'
@@ -24,11 +24,13 @@ const notEmpty = (value: string | number) =>
 type Question<T extends string> = PromptObject<T> & {
   name: T
   valueType?: 'SECRET' | 'VARIABLE'
+  scope?: 'ENVIRONMENT' | 'REPOSITORY'
   valueLabel?: string
 }
 
 type SecretAnswer = {
   type: 'SECRET'
+  scope: 'ENVIRONMENT' | 'REPOSITORY'
   name: string
   value: string
   didExist: Secret | undefined
@@ -241,12 +243,13 @@ function storeSecrets(environment: string, answers: Answers) {
     auth: githubToken
   })
 
-  const { key, key_id } = await getPublicKey(
+  await createEnvironment(
     octokit,
     environment,
     githubOrganisation,
     githubRepository
   )
+
   const repositoryId = await getRepositoryId(
     octokit,
     githubOrganisation,
@@ -293,7 +296,8 @@ function storeSecrets(environment: string, answers: Answers) {
       valueType: 'SECRET' as const,
       valueLabel: 'DOCKERHUB_ACCOUNT',
       validate: notEmpty,
-      initial: process.env.DOCKER_ORGANISATION
+      initial: process.env.DOCKER_ORGANISATION,
+      scope: 'REPOSITORY' as const
     },
     {
       name: 'dockerhubRepository',
@@ -302,7 +306,8 @@ function storeSecrets(environment: string, answers: Answers) {
       valueType: 'SECRET' as const,
       valueLabel: 'DOCKERHUB_REPO',
       validate: notEmpty,
-      initial: process.env.DOCKER_REPO
+      initial: process.env.DOCKER_REPO,
+      scope: 'REPOSITORY' as const
     },
     {
       name: 'dockerhubUsername',
@@ -312,7 +317,8 @@ function storeSecrets(environment: string, answers: Answers) {
       valueType: 'SECRET' as const,
       valueLabel: 'DOCKER_USERNAME',
       validate: notEmpty,
-      initial: process.env.DOCKER_USERNAME
+      initial: process.env.DOCKER_USERNAME,
+      scope: 'REPOSITORY' as const
     },
     {
       name: 'dockerhubToken',
@@ -321,7 +327,8 @@ function storeSecrets(environment: string, answers: Answers) {
       valueType: 'SECRET' as const,
       valueLabel: 'DOCKER_TOKEN',
       validate: notEmpty,
-      initial: process.env.DOCKER_TOKEN
+      initial: process.env.DOCKER_TOKEN,
+      scope: 'REPOSITORY' as const
     }
   ]
 
@@ -336,7 +343,8 @@ function storeSecrets(environment: string, answers: Answers) {
       valueType: 'SECRET' as const,
       validate: notEmpty,
       valueLabel: 'SSH_HOST',
-      initial: process.env.SSH_HOST
+      initial: process.env.SSH_HOST,
+      scope: 'ENVIRONMENT' as const
     },
     {
       name: 'sshUser',
@@ -345,7 +353,8 @@ function storeSecrets(environment: string, answers: Answers) {
       valueType: 'SECRET' as const,
       validate: notEmpty,
       valueLabel: 'SSH_USER',
-      initial: process.env.SSH_USER || 'provision'
+      initial: process.env.SSH_USER || 'provision',
+      scope: 'ENVIRONMENT' as const
     },
     {
       name: 'sshArgs',
@@ -355,7 +364,8 @@ function storeSecrets(environment: string, answers: Answers) {
       valueType: 'VARIABLE' as const,
       valueLabel: 'SSH_ARGS',
       format: (value: string) => value.trim(),
-      initial: process.env.SSH_ARGS
+      initial: process.env.SSH_ARGS,
+      scope: 'ENVIRONMENT' as const
     }
   ]
   log('\n', kleur.bold().underline('SSH'))
@@ -439,7 +449,8 @@ function storeSecrets(environment: string, answers: Answers) {
         valueType: 'SECRET' as const,
         validate: notEmpty,
         valueLabel: 'KIBANA_USERNAME',
-        initial: process.env.KIBANA_USERNAME || 'opencrvs-admin'
+        initial: process.env.KIBANA_USERNAME || 'opencrvs-admin',
+        scope: 'ENVIRONMENT' as const
       },
       {
         name: 'kibanaPassword',
@@ -448,7 +459,8 @@ function storeSecrets(environment: string, answers: Answers) {
         valueType: 'SECRET' as const,
         validate: notEmpty,
         valueLabel: 'KIBANA_PASSWORD',
-        initial: process.env.KIBANA_PASSWORD || generateLongPassword()
+        initial: process.env.KIBANA_PASSWORD || generateLongPassword(),
+        scope: 'ENVIRONMENT'
       },
       {
         name: 'elasticsearchSuperuserPassword',
@@ -458,7 +470,9 @@ function storeSecrets(environment: string, answers: Answers) {
         validate: notEmpty,
         valueLabel: 'ELASTICSEARCH_SUPERUSER_PASSWORD',
         initial:
-          process.env.ELASTICSEARCH_SUPERUSER_PASSWORD || generateLongPassword()
+          process.env.ELASTICSEARCH_SUPERUSER_PASSWORD ||
+          generateLongPassword(),
+        scope: 'ENVIRONMENT' as const
       },
       {
         name: 'minioRootUser',
@@ -467,7 +481,8 @@ function storeSecrets(environment: string, answers: Answers) {
         valueType: 'SECRET' as const,
         validate: notEmpty,
         valueLabel: 'MINIO_ROOT_USER',
-        initial: process.env.MINIO_ROOT_USER || generateLongPassword()
+        initial: process.env.MINIO_ROOT_USER || generateLongPassword(),
+        scope: 'ENVIRONMENT' as const
       },
       {
         name: 'minioRootPassword',
@@ -476,7 +491,8 @@ function storeSecrets(environment: string, answers: Answers) {
         valueType: 'SECRET' as const,
         validate: notEmpty,
         valueLabel: 'MINIO_ROOT_PASSWORD',
-        initial: process.env.MINIO_ROOT_PASSWORD || generateLongPassword()
+        initial: process.env.MINIO_ROOT_PASSWORD || generateLongPassword(),
+        scope: 'ENVIRONMENT' as const
       },
       {
         name: 'mongodbAdminUser',
@@ -485,7 +501,8 @@ function storeSecrets(environment: string, answers: Answers) {
         valueType: 'SECRET' as const,
         validate: notEmpty,
         valueLabel: 'MONGODB_ADMIN_USER',
-        initial: process.env.MONGODB_ADMIN_USER || generateLongPassword()
+        initial: process.env.MONGODB_ADMIN_USER || generateLongPassword(),
+        scope: 'ENVIRONMENT' as const
       },
       {
         name: 'mongodbAdminPassword',
@@ -494,7 +511,8 @@ function storeSecrets(environment: string, answers: Answers) {
         valueType: 'SECRET' as const,
         validate: notEmpty,
         valueLabel: 'MONGODB_ADMIN_PASSWORD',
-        initial: process.env.MONGODB_ADMIN_PASSWORD || generateLongPassword()
+        initial: process.env.MONGODB_ADMIN_PASSWORD || generateLongPassword(),
+        scope: 'ENVIRONMENT' as const
       },
       {
         name: 'superUserPassword',
@@ -503,7 +521,8 @@ function storeSecrets(environment: string, answers: Answers) {
         valueType: 'SECRET' as const,
         validate: notEmpty,
         valueLabel: 'SUPER_USER_PASSWORD',
-        initial: process.env.SUPER_USER_PASSWORD || generateLongPassword()
+        initial: process.env.SUPER_USER_PASSWORD || generateLongPassword(),
+        scope: 'ENVIRONMENT' as const
       }
     ],
     existingValues
@@ -531,7 +550,8 @@ function storeSecrets(environment: string, answers: Answers) {
           valueType: 'SECRET' as const,
           validate: notEmpty,
           valueLabel: 'SENTRY_DSN',
-          initial: process.env.SENTRY_DSN
+          initial: process.env.SENTRY_DSN,
+          scope: 'ENVIRONMENT' as const
         }
       ],
       existingValues
@@ -547,7 +567,8 @@ function storeSecrets(environment: string, answers: Answers) {
         valueType: 'SECRET' as const,
         validate: notEmpty,
         valueLabel: 'BACKUP_HOST',
-        initial: process.env.BACKUP_HOST
+        initial: process.env.BACKUP_HOST,
+        scope: 'ENVIRONMENT' as const
       },
       {
         name: 'backupSshUser',
@@ -557,7 +578,8 @@ function storeSecrets(environment: string, answers: Answers) {
         valueType: 'SECRET' as const,
         validate: notEmpty,
         valueLabel: 'BACKUP_SSH_USER',
-        initial: process.env.BACKUP_SSH_USER
+        initial: process.env.BACKUP_SSH_USER,
+        scope: 'ENVIRONMENT' as const
       },
       {
         name: 'backupDirectory',
@@ -567,7 +589,8 @@ function storeSecrets(environment: string, answers: Answers) {
         valueType: 'SECRET' as const,
         validate: notEmpty,
         valueLabel: 'BACKUP_DIRECTORY',
-        initial: process.env.BACKUP_DIRECTORY
+        initial: process.env.BACKUP_DIRECTORY,
+        scope: 'ENVIRONMENT' as const
       },
       {
         name: 'backupEncryptionPassprase',
@@ -578,7 +601,8 @@ function storeSecrets(environment: string, answers: Answers) {
         validate: notEmpty,
         valueLabel: 'BACKUP_ENCRYPTION_PASSPHRASE',
         initial:
-          process.env.BACKUP_ENCRYPTION_PASSPHRASE || generateLongPassword()
+          process.env.BACKUP_ENCRYPTION_PASSPHRASE || generateLongPassword(),
+        scope: 'ENVIRONMENT' as const
       }
     ]
     log('\n', kleur.bold().underline('Backups'))
@@ -604,7 +628,8 @@ function storeSecrets(environment: string, answers: Answers) {
           message: `Please enter the IP address users logged in to the VPN will use`,
           initial: true,
           valueType: 'VARIABLE' as const,
-          valueLabel: 'VPN_HOST_ADDRESS'
+          valueLabel: 'VPN_HOST_ADDRESS',
+          scope: 'ENVIRONMENT' as const
         },
         {
           name: 'vpnAdminPassword',
@@ -612,7 +637,8 @@ function storeSecrets(environment: string, answers: Answers) {
           message: `Admin password for Wireguard UI`,
           initial: generateLongPassword(),
           valueType: 'VARIABLE' as const,
-          valueLabel: 'VPN_ADMIN_PASSWORD'
+          valueLabel: 'VPN_ADMIN_PASSWORD',
+          scope: 'ENVIRONMENT' as const
         }
       ]
 
@@ -628,7 +654,8 @@ function storeSecrets(environment: string, answers: Answers) {
       valueType: 'SECRET' as const,
       validate: notEmpty,
       valueLabel: 'INFOBIP_API_KEY',
-      initial: process.env.INFOBIP_API_KEY
+      initial: process.env.INFOBIP_API_KEY,
+      scope: 'ENVIRONMENT' as const
     },
     {
       name: 'infobipGatewayEndpoint',
@@ -637,7 +664,8 @@ function storeSecrets(environment: string, answers: Answers) {
       valueType: 'SECRET' as const,
       validate: notEmpty,
       valueLabel: 'INFOBIP_GATEWAY_ENDPOINT',
-      initial: process.env.INFOBIP_GATEWAY_ENDPOINT
+      initial: process.env.INFOBIP_GATEWAY_ENDPOINT,
+      scope: 'ENVIRONMENT' as const
     },
     {
       name: 'infobipSenderId',
@@ -646,7 +674,8 @@ function storeSecrets(environment: string, answers: Answers) {
       valueType: 'SECRET' as const,
       validate: notEmpty,
       valueLabel: 'INFOBIP_SENDER_ID',
-      initial: process.env.INFOBIP_SENDER_ID
+      initial: process.env.INFOBIP_SENDER_ID,
+      scope: 'ENVIRONMENT' as const
     }
   ]
 
@@ -658,7 +687,8 @@ function storeSecrets(environment: string, answers: Answers) {
       valueType: 'SECRET' as const,
       validate: notEmpty,
       valueLabel: 'SMTP_HOST',
-      initial: process.env.SMTP_HOST
+      initial: process.env.SMTP_HOST,
+      scope: 'ENVIRONMENT' as const
     },
     {
       name: 'smtpUsername',
@@ -667,7 +697,8 @@ function storeSecrets(environment: string, answers: Answers) {
       valueType: 'SECRET' as const,
       validate: notEmpty,
       valueLabel: 'SMTP_USERNAME',
-      initial: process.env.SMTP_USERNAME
+      initial: process.env.SMTP_USERNAME,
+      scope: 'ENVIRONMENT' as const
     },
     {
       name: 'smtpPassword',
@@ -676,7 +707,8 @@ function storeSecrets(environment: string, answers: Answers) {
       valueType: 'SECRET' as const,
       validate: notEmpty,
       valueLabel: 'SMTP_PASSWORD',
-      initial: process.env.SMTP_PASSWORD
+      initial: process.env.SMTP_PASSWORD,
+      scope: 'ENVIRONMENT' as const
     },
     {
       name: 'smtpPort',
@@ -685,7 +717,8 @@ function storeSecrets(environment: string, answers: Answers) {
       valueType: 'SECRET' as const,
       validate: notEmpty,
       valueLabel: 'SMTP_PORT',
-      initial: process.env.SMTP_PORT
+      initial: process.env.SMTP_PORT,
+      scope: 'ENVIRONMENT' as const
     },
     {
       name: 'senderEmailAddress',
@@ -694,7 +727,8 @@ function storeSecrets(environment: string, answers: Answers) {
       valueType: 'SECRET' as const,
       validate: notEmpty,
       valueLabel: 'SENDER_EMAIL_ADDRESS',
-      initial: process.env.SENDER_EMAIL_ADDRESS
+      initial: process.env.SENDER_EMAIL_ADDRESS,
+      scope: 'ENVIRONMENT' as const
     },
     {
       name: 'alertEmail',
@@ -704,7 +738,8 @@ function storeSecrets(environment: string, answers: Answers) {
       valueType: 'SECRET' as const,
       validate: notEmpty,
       valueLabel: 'ALERT_EMAIL',
-      initial: process.env.ALERT_EMAIL
+      initial: process.env.ALERT_EMAIL,
+      scope: 'ENVIRONMENT' as const
     }
   ]
 
@@ -758,7 +793,8 @@ function storeSecrets(environment: string, answers: Answers) {
       type: 'VARIABLE' as const,
       name: 'ACTIVATE_USERS',
       value: ['production', 'staging'].includes(environment) ? 'false' : 'true',
-      didExist: findExistingValue('ACTIVATE_USERS', 'VARIABLE', existingValues)
+      didExist: findExistingValue('ACTIVATE_USERS', 'VARIABLE', existingValues),
+      scope: 'ENVIRONMENT' as const
     },
     {
       type: 'VARIABLE' as const,
@@ -768,7 +804,8 @@ function storeSecrets(environment: string, answers: Answers) {
         findExistingValue('DOMAIN', 'VARIABLE', existingValues),
         (val) => `https://auth.${val}`
       ),
-      didExist: findExistingValue('AUTH_HOST', 'VARIABLE', existingValues)
+      didExist: findExistingValue('AUTH_HOST', 'VARIABLE', existingValues),
+      scope: 'ENVIRONMENT' as const
     },
     {
       type: 'VARIABLE' as const,
@@ -782,7 +819,8 @@ function storeSecrets(environment: string, answers: Answers) {
         'COUNTRY_CONFIG_HOST',
         'VARIABLE',
         existingValues
-      )
+      ),
+      scope: 'ENVIRONMENT' as const
     },
     {
       type: 'VARIABLE' as const,
@@ -792,7 +830,8 @@ function storeSecrets(environment: string, answers: Answers) {
         findExistingValue('DOMAIN', 'VARIABLE', existingValues),
         (val) => `https://gateway.${val}`
       ),
-      didExist: findExistingValue('GATEWAY_HOST', 'VARIABLE', existingValues)
+      didExist: findExistingValue('GATEWAY_HOST', 'VARIABLE', existingValues),
+      scope: 'ENVIRONMENT' as const
     },
     {
       type: 'VARIABLE' as const,
@@ -806,7 +845,8 @@ function storeSecrets(environment: string, answers: Answers) {
         'CONTENT_SECURITY_POLICY_WILDCARD',
         'VARIABLE',
         existingValues
-      )
+      ),
+      scope: 'ENVIRONMENT' as const
     },
     {
       type: 'VARIABLE' as const,
@@ -816,7 +856,8 @@ function storeSecrets(environment: string, answers: Answers) {
         findExistingValue('DOMAIN', 'VARIABLE', existingValues),
         (val) => `https://register.${val}`
       ),
-      didExist: findExistingValue('CLIENT_APP_URL', 'VARIABLE', existingValues)
+      didExist: findExistingValue('CLIENT_APP_URL', 'VARIABLE', existingValues),
+      scope: 'ENVIRONMENT' as const
     },
     {
       type: 'VARIABLE' as const,
@@ -826,7 +867,8 @@ function storeSecrets(environment: string, answers: Answers) {
         findExistingValue('DOMAIN', 'VARIABLE', existingValues),
         (val) => `https://login.${val}`
       ),
-      didExist: findExistingValue('LOGIN_URL', 'VARIABLE', existingValues)
+      didExist: findExistingValue('LOGIN_URL', 'VARIABLE', existingValues),
+      scope: 'ENVIRONMENT' as const
     }
   ]
 
@@ -920,10 +962,11 @@ function storeSecrets(environment: string, answers: Answers) {
       octokit,
       repositoryId,
       environment,
-      key,
-      key_id,
+      newSecret.scope,
       newSecret.name,
-      newSecret.value
+      newSecret.value,
+      githubOrganisation,
+      githubRepository
     )
   }
   for (const updatedSecret of updatedSecrets) {
@@ -934,10 +977,11 @@ function storeSecrets(environment: string, answers: Answers) {
       octokit,
       repositoryId,
       environment,
-      key,
-      key_id,
+      updatedSecret.scope,
       updatedSecret.name,
-      updatedSecret.value
+      updatedSecret.value,
+      githubOrganisation,
+      githubRepository
     )
   }
 
@@ -1007,7 +1051,8 @@ function getAnswers(existingValues: (Secret | Variable)[]): Answers {
           type: valueType,
           name: existingQuestion?.valueLabel!,
           value: value.toString(),
-          didExist: existingSecret
+          didExist: existingSecret,
+          scope: existingQuestion!.scope!
         }
       }
 
@@ -1019,7 +1064,8 @@ function getAnswers(existingValues: (Secret | Variable)[]): Answers {
           valueType,
           existingValues
         ),
-        value: value.toString()
+        value: value.toString(),
+        scope: existingQuestion!.scope!
       }
     })
   })
