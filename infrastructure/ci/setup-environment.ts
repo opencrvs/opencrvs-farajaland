@@ -523,6 +523,16 @@ function storeSecrets(environment: string, answers: Answers) {
         valueLabel: 'SUPER_USER_PASSWORD',
         initial: process.env.SUPER_USER_PASSWORD || generateLongPassword(),
         scope: 'ENVIRONMENT' as const
+      },
+      {
+        name: 'encryptionKey',
+        type: 'text' as const,
+        message: 'Input the password for the disk encryption key',
+        valueType: 'SECRET' as const,
+        validate: notEmpty,
+        valueLabel: 'ENCRYPTION_KEY',
+        initial: process.env.ENCRYPTION_KEY || generateLongPassword(),
+        scope: 'ENVIRONMENT' as const
       }
     ],
     existingValues
