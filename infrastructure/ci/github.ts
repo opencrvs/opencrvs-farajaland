@@ -55,6 +55,27 @@ export async function getRepositoryId(
   return response.data.id
 }
 
+interface IRepoKey {
+  repoKey: string
+  repoKeyId: string
+}
+
+export async function getRepoPublicKey(
+  octokit: Octokit,
+  owner: string,
+  repo: string
+): Promise<IRepoKey> {
+  const response = await octokit.request(
+    'GET /repos/{owner}/{repo}/actions/secrets/public-key',
+    {
+      owner: owner,
+      repo: repo
+    }
+  )
+
+  return { repoKey: response.data.key, repoKeyId: response.data.key_id }
+}
+
 export async function createSecret(
   octokit: Octokit,
   repositoryId: number,
@@ -62,10 +83,17 @@ export async function createSecret(
   key: string,
   keyId: string,
   name: string,
-  secret: string
+  secret: string,
+  repositorySecrets: string[],
+  repoKey: string,
+  repoKeyId: string
 ): Promise<void> {
   //Check if libsodium is ready and then proceed.
   await sodium.ready
+  if (repositorySecrets.includes(name)) {
+    key = repoKey
+    keyId = repoKeyId
+  }
 
   // Convert Secret & Base64 key to Uint8Array.
   const binkey = sodium.from_base64(key, sodium.base64_variants.ORIGINAL)
@@ -79,20 +107,32 @@ export async function createSecret(
     encBytes,
     sodium.base64_variants.ORIGINAL
   )
-
-  await octokit.request(
-    `PUT /repositories/${repositoryId}/environments/${environment}/secrets/${name}`,
-    {
-      repository_id: repositoryId,
-      environment_name: environment,
-      secret_name: name,
-      encrypted_value: encryptedValue,
-      key_id: keyId,
-      headers: {
-        'X-GitHub-Api-Version': '2022-11-28'
+  if (repositorySecrets.includes(name)) {
+    await octokit.request(
+      `PUT /repositories/${repositoryId}/actions/secrets/${name}`,
+      {
+        encrypted_value: encryptedValue,
+        key_id: keyId,
+        headers: {
+          'X-GitHub-Api-Version': '2022-11-28'
+        }
       }
-    }
-  )
+    )
+  } else {
+    await octokit.request(
+      `PUT /repositories/${repositoryId}/environments/${environment}/secrets/${name}`,
+      {
+        repository_id: repositoryId,
+        environment_name: environment,
+        secret_name: name,
+        encrypted_value: encryptedValue,
+        key_id: keyId,
+        headers: {
+          'X-GitHub-Api-Version': '2022-11-28'
+        }
+      }
+    )
+  }
 }
 
 export async function getPublicKey(

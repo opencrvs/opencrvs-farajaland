@@ -12,7 +12,8 @@ import {
   listRepoVariables,
   createSecret,
   createVariable,
-  updateVariable
+  updateVariable,
+  getRepoPublicKey
 } from './github'
 
 import editor from '@inquirer/editor'
@@ -248,6 +249,12 @@ function storeSecrets(environment: string, answers: Answers) {
     githubRepository
   )
   const repositoryId = await getRepositoryId(
+    octokit,
+    githubOrganisation,
+    githubRepository
+  )
+
+  const { repoKey, repoKeyId } = await getRepoPublicKey(
     octokit,
     githubOrganisation,
     githubRepository
@@ -914,6 +921,13 @@ function storeSecrets(environment: string, answers: Answers) {
     process.exit(0)
   }
 
+  const repositorySecrets = [
+    'DOCKERHUB_ACCOUNT',
+    'DOCKERHUB_REPO',
+    'DOCKER_USERNAME',
+    'DOCKER_TOKEN'
+  ]
+
   for (const newSecret of newSecrets) {
     log(`Creating secret ${newSecret.name} with value ${newSecret.value}`)
     await createSecret(
@@ -923,7 +937,10 @@ function storeSecrets(environment: string, answers: Answers) {
       key,
       key_id,
       newSecret.name,
-      newSecret.value
+      newSecret.value,
+      repositorySecrets,
+      repoKey,
+      repoKeyId
     )
   }
   for (const updatedSecret of updatedSecrets) {
@@ -937,7 +954,10 @@ function storeSecrets(environment: string, answers: Answers) {
       key,
       key_id,
       updatedSecret.name,
-      updatedSecret.value
+      updatedSecret.value,
+      repositorySecrets,
+      repoKey,
+      repoKeyId
     )
   }
 
