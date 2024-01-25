@@ -101,10 +101,15 @@ services:
       - NODE_ENV=production
 
   traefik:
-    image: 'traefik:v2.10'
-    environment:
-      - GOOGLE_DOMAINS_ACCESS_TOKEN=${GOOGLE_DOMAINS_ACCESS_TOKEN}
     command:
+      # Use HTTP-01 challenge as the web server is publicly available
+      # https://doc.traefik.io/traefik/https/acme/#httpchallenge
+      # For DNS-01 challenge and manual certificates, check staging and production configurations
+      - --certificatesresolvers.certResolver.acme.email=riku@opencrvs.org
+      - --certificatesresolvers.certResolver.acme.storage=acme.json
+      - --certificatesresolvers.certResolver.acme.caserver=https://acme-v02.api.letsencrypt.org/directory
+      - --certificatesresolvers.certResolver.acme.httpchallenge.entrypoint=web
+
       - --entrypoints.web.address=:80
       - --entrypoints.websecure.address=:443
       - --providers.docker
@@ -112,12 +117,6 @@ services:
       - --api.dashboard=true
       - --api.insecure=true
       - --log.level=WARNING
-
-      - --certificatesresolvers.certResolver.acme.dnschallenge=true
-      - --certificatesresolvers.certResolver.acme.dnschallenge.provider=googledomains
-      - --certificatesresolvers.certResolver.acme.email=riku@opencrvs.org
-      - --certificatesresolvers.certResolver.acme.storage=acme.json
-
       - --entrypoints.web.http.redirections.entryPoint.to=websecure
       - --entrypoints.web.http.redirections.entryPoint.scheme=https
       - --entrypoints.web.http.redirections.entrypoint.permanent=true
