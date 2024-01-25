@@ -732,8 +732,18 @@ function storeSecrets(environment: string, answers: Answers) {
     },
     {
       name: 'smtpSecure',
-      type: 'text' as const,
-      message: 'Is the SMTP connection made securely using TLS? true or false?',
+      type: 'select' as const,
+      message: 'Is the SMTP connection made securely using TLS?',
+      choices: [
+        {
+          title: 'True',
+          value: 'true'
+        },
+        {
+          title: 'False',
+          value: 'false'
+        }
+      ],
       valueType: 'SECRET' as const,
       validate: notEmpty,
       valueLabel: 'SMTP_SECURE',
