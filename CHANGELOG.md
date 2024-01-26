@@ -3,6 +3,7 @@
 ## [1.4.0](https://github.com/opencrvs/opencrvs-farajaland/compare/v1.3.3...v1.4.0) (TBD)
 
 - Adds examples of configuring HTTP-01, DNS-01 and manual HTTPS certificates By default development & QA uses HTTP-01 and others DNS-01.
+- All secrets & variables defined in Github Secrets are now passed automatically to the deployment script
 
 ### Bug fixes
 
