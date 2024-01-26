@@ -4,6 +4,7 @@
 
 - Adds examples of configuring HTTP-01, DNS-01 and manual HTTPS certificates By default development & QA uses HTTP-01 and others DNS-01.
 - All secrets & variables defined in Github Secrets are now passed automatically to the deployment script
+- Make VPN_HOST_ADDRESS variable required for staging and production installations. This is to verify deployments are not publicly accessible on public internet.
 
 ### Bug fixes
 
