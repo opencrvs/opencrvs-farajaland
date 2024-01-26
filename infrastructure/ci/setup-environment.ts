@@ -613,28 +613,6 @@ const backupQuestions = [
     scope: 'ENVIRONMENT' as const
   },
   {
-    name: 'backupSshUser',
-    type: 'text' as const,
-    message:
-      'What user should application servers use to login to the backup server?',
-    valueType: 'SECRET' as const,
-    validate: notEmpty,
-    valueLabel: 'BACKUP_SSH_USER',
-    initial: process.env.BACKUP_SSH_USER,
-    scope: 'ENVIRONMENT' as const
-  },
-  {
-    name: 'backupDirectory',
-    type: 'text' as const,
-    message:
-      'What is the full path to a directory on your backup server where encrypted backups will be stored?',
-    valueType: 'SECRET' as const,
-    validate: notEmpty,
-    valueLabel: 'BACKUP_DIRECTORY',
-    initial: process.env.BACKUP_DIRECTORY,
-    scope: 'ENVIRONMENT' as const
-  },
-  {
     name: 'backupEncryptionPassprase',
     type: 'text' as const,
     message: 'Input a long random passphrase to be used for encrypting backups',
