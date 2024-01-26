@@ -39,16 +39,16 @@ function main(): void {
   const missingValues = requiredValues.filter((name) => !process.env[name])
 
   if (missingValues.length > 0) {
-    console.log()
+    console.log('\n\n')
     console.error(
       'Missing secrets or variables for values found in docker compose files:'
     )
     console.error(missingValues)
     console.error(
-      'Check the following files for more details:\n',
+      '\nCheck the following files for more details:\n',
       filePaths.map((path) => `- ${basename(path)}`).join('\n')
     )
-    console.log()
+    console.log('\n')
     process.exit(1)
   }
 }
