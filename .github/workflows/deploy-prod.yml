@@ -30,9 +30,6 @@ jobs:
     environment: ${{ github.event.inputs.environment }}
     runs-on: ubuntu-20.04
     timeout-minutes: 60
-    strategy:
-      matrix:
-        node-version: [18.19.0]
     steps:
       - name: Clone core
         uses: actions/checkout@v3
