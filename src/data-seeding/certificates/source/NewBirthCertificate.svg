@@ -265,7 +265,7 @@
         letter-spacing="0px">
         <tspan x="289.95" y="471.974">{{location registrar.officeId 'name'}}&#x2028;</tspan>
         <tspan x="289.95" y="486.974">{{location registrar.districtId 'name'}}, {{location registrar.stateId 'name'},
-          Farajaland</tspan>
+          {{countryPlaceofbirth}}</tspan>
       </text>
     </g>
     <line x1="81.4" y1="496.045" x2="512.08" y2="496.045" stroke="#ECECEC" stroke-width="0.97" />
