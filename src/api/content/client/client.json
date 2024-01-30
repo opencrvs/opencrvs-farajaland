@@ -207,7 +207,7 @@
         "config.certificate.uploadCertificateDialogDescription": "This will replace the current certificate template. We recommend downloading the existing certificate template as a reference.",
         "config.certificate.uploadCertificateDialogTitle": "Upload new certificate?",
         "config.certificate.template": "Template",
-        "config.certificate.allowPrinting": "Allow printing in advanced of issuance",
+        "config.certificate.allowPrinting": "Allow printing in advance of issuance",
         "config.certificate.options": "Options",
         "config.certificate.printDescription": "Records printed off in advance of collections will be added to the ready to issue work-queue",
         "config.certificate.allowPrintingNotification": "Allow printing in advance of issuance updated",
