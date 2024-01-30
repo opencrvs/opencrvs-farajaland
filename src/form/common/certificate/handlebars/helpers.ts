@@ -12,3 +12,12 @@ export function noop(props: FactoryProps): Handlebars.HelperDelegate {
     return value
   }
 }
+/** console.logs available handlebar variables */
+export function debug(): Handlebars.HelperDelegate {
+  return function (this: any, value: string) {
+    // eslint-disable-next-line no-console
+    console.log(this)
+
+    return value
+  }
+}
