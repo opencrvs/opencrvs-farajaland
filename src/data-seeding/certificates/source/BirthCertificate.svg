@@ -92,7 +92,9 @@
   <pattern id="pattern1" patternContentUnits="objectBoundingBox" width="1" height="1">
   <use xlink:href="#image1_745_269" transform="translate(0 -0.0207101) scale(0.00295858)"/>
   </pattern>
+  {{#ifCond printInAdvance '!==' true }}
   <image id="image0_925_20" width="1222" height="446" data-content="signature" xlink:href="{{registrarSignature}}" />
+  {{/ifCond}}
   <image id="image1_745_269" width="338" height="352" xlink:href="{{qrCode}}" />
 </defs>
 </svg>
