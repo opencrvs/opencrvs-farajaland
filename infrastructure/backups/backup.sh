@@ -273,7 +273,7 @@ if [ "$IS_LOCAL" = true ]; then
   docker cp $INFLUXDB_CONTAINER_ID:/home/user/${LABEL:-$BACKUP_DATE} $ROOT_PATH/backups/influxdb/${LABEL:-$BACKUP_DATE}
 else
   echo "Backing up Influx in remote environment"
-  docker run --rm -v $ROOT_PATH/backups/influxdb/${LABEL:-$BACKUP_DATE}:/backup --network=$NETWORK influxdb:1.8.0 influxd backup -portable -host influxdb:8086 /backup
+  docker run --rm -v $ROOT_PATH/backups/influxdb/${LABEL:-$BACKUP_DATE}:/backup --network=$NETWORK influxdb:1.8.0 influxd backup -portable -host influxdb:8088 /backup
 fi
 
 echo "Creating a backup for Minio"
