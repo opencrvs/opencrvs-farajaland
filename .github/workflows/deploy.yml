@@ -142,7 +142,6 @@ jobs:
         continue-on-error: ${{ github.event.inputs.debug == 'true' }}
         run: |
           cd ./${{ github.event.repository.name }}
-          echo "yarn deploy --clear_data=no --environment=${{ github.event.inputs.environment }} --host=${{ vars.DOMAIN }} --ssh_host=${{ secrets.SSH_HOST }} --ssh_user=${{ secrets.SSH_USER }} --version=${{ github.event.inputs.core-image-tag }} --country_config_version=${{ github.event.inputs.countryconfig-image-tag }} --replicas=${{ vars.REPLICAS }}" >> cmd
           yarn deploy \
           --clear_data=no \
           --environment=${{ github.event.inputs.environment }} \
