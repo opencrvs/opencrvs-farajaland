@@ -76,6 +76,7 @@ import {
 import { certificateHandlebars } from './certficate-handlebars'
 import { getCommonSectionMapping } from '@countryconfig/utils/mapping/field-mapping-utils'
 //import { getSectionMapping } from '@countryconfig/utils/mapping/section/death/mapping-utils'
+import { getReasonForLateRegistration } from '../custom-fields'
 
 // import { createCustomFieldExample } from '../custom-fields'
 
@@ -229,6 +230,7 @@ export const deathForm = {
                 }
               ]
             ),
+            getReasonForLateRegistration('death'),
             getMannerOfDeath,
             getCauseOfDeath,
             getCauseOfDeathMethod,
