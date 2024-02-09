@@ -41,7 +41,35 @@ export function createCustomFieldExample(): SerializedFormField {
     initialValue: '',
     validator: [], // EDIT VALIDATORS AS YOU SEE FIT
     mapping: getCustomFieldMapping(fieldId), // ALL CUSTOM FIELDS MUST USE THIS MAPPING FUNCTION
-    conditionals: [], // EDIT VALIDATORS AS YOU SEE FIT
+    conditionals: [], // EDIT CONDITIONALS AS YOU SEE FIT
+    maxLength: 250
+  }
+}
+
+export function getReasonForLateRegistration(): SerializedFormField {
+  const fieldName: string = 'reasonForLateRegistration'
+  const fieldId: string = `birth.child.child-view-group.${fieldName}`
+  return {
+    name: fieldName,
+    customQuestionMappingId: fieldId,
+    custom: true,
+    required: true,
+    type: 'TEXT',
+    label: {
+      id: 'form.customField.label.reasonForLateRegistration',
+      description: 'A form field that asks the reason for a late registration.',
+      defaultMessage: 'Reason for delayed registration?'
+    },
+    initialValue: '',
+    validator: [],
+    mapping: getCustomFieldMapping(fieldId),
+    conditionals: [
+      {
+        action: 'hide',
+        expression:
+          'const pattern = /^\\d{4}-\\d{2}-\\d{2}$/; const today = new Date(); const eventDatePlusLateRegistrationTarget = new Date(values.childBirthDate); const lateRegistrationTarget = offlineCountryConfig && offlineCountryConfig.config.BIRTH.LATE_REGISTRATION_TARGET; eventDatePlusLateRegistrationTarget.setDate(eventDatePlusLateRegistrationTarget.getDate() + lateRegistrationTarget); !pattern.test(values.childBirthDate) || today < eventDatePlusLateRegistrationTarget;'
+      }
+    ], // EDIT CONDITIONALS AS YOU SEE FIT
     maxLength: 250
   }
 }
