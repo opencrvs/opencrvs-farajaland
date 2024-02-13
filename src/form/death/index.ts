@@ -65,7 +65,8 @@ import {
   spouseBirthDateConditionals,
   spouseFamilyNameConditionals,
   spouseFirstNameConditionals,
-  hideIfInformantSpouse
+  hideIfInformantSpouse,
+  hideIfNidIntegrationEnabled
 } from '../common/default-validation-conditionals'
 import { documentsSection, registrationSection } from './required-sections'
 import {
@@ -286,8 +287,17 @@ export const deathForm = {
               certificateHandlebars.informantNationality,
               hideIfInformantSpouse
             ),
-            getIDType('death', 'informant', hideIfInformantSpouse, true),
-            ...getIDNumberFields('informant', hideIfInformantSpouse, true),
+            getIDType(
+              'death',
+              'informant',
+              hideIfNidIntegrationEnabled.concat(hideIfInformantSpouse),
+              true
+            ),
+            ...getIDNumberFields(
+              'informant',
+              hideIfNidIntegrationEnabled.concat(hideIfInformantSpouse),
+              true
+            ),
             // ADDRESS FIELDS WILL RENDER HERE
             divider('informant-address-separator', hideIfInformantSpouse),
             registrationPhone,
