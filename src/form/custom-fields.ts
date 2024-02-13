@@ -142,6 +142,7 @@ export function getIDNumber(
     name: fieldName,
     required,
     type: 'TEXT',
+    custom: true,
     label: {
       id: 'form.field.label.iD',
       description: 'A form field that asks for the id number.',
