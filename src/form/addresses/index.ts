@@ -16,6 +16,7 @@ import {
   detailsDontExist,
   hideIfInformantBrideOrGroom,
   informantNotMotherOrFather,
+  isInformantSpouse,
   mothersDetailsDontExistOnOtherPage,
   primaryAddressSameAsOtherPrimaryAddress /*,
   SPOUSE_DETAILS_DONT_EXIST*/
@@ -168,11 +169,13 @@ export const defaultAddressConfiguration: IAddressConfiguration[] = [
   },
   {
     // INFORMANT ADDRESS FIELDS
-    precedingFieldId: 'death.informant.informant-view-group.informantID',
+    precedingFieldId:
+      'death.informant.informant-view-group.informantBirthRegistrationNumber',
     configurations: [
       {
         config: AddressCopyConfigCases.PRIMARY_ADDRESS_SAME_AS_OTHER_PRIMARY,
         label: formMessageDescriptors.primaryAddressSameAsDeceasedsPrimary,
+        conditionalCase: `${isInformantSpouse}`,
         xComparisonSection: 'informant',
         yComparisonSection: 'deceased'
       },

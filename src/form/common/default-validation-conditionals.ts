@@ -109,6 +109,16 @@ export const hideIfInformantMotherOrFather = [
   }
 ]
 
+export const isInformantSpouse =
+  '!values.informantType || values.informantType==="SPOUSE"'
+
+export const hideIfInformantSpouse = [
+  {
+    action: 'hide',
+    expression: isInformantSpouse
+  }
+]
+
 export const mothersDetailsExistConditionals = [
   {
     action: 'hide',

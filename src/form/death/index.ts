@@ -64,7 +64,8 @@ import {
   detailsExist,
   spouseBirthDateConditionals,
   spouseFamilyNameConditionals,
-  spouseFirstNameConditionals
+  spouseFirstNameConditionals,
+  hideIfInformantSpouse
 } from '../common/default-validation-conditionals'
 import { documentsSection, registrationSection } from './required-sections'
 import {
@@ -252,17 +253,17 @@ export const deathForm = {
             otherInformantType(Event.Death),
             getFirstNameField(
               'informantNameInEnglish',
-              informantFirstNameConditionals,
+              informantFirstNameConditionals.concat(hideIfInformantSpouse),
               certificateHandlebars.informantFirstName
             ), // Required field. In Farajaland, we have built the option to integrate with MOSIP. So we have different conditionals for each name to check MOSIP responses.  You could always refactor firstNamesEng for a basic setup
             getFamilyNameField(
               'informantNameInEnglish',
-              informantFamilyNameConditionals,
+              informantFamilyNameConditionals.concat(hideIfInformantSpouse),
               certificateHandlebars.informantFamilyName
             ), // Required field.
             getBirthDate(
               'informantBirthDate',
-              informantBirthDateConditionals,
+              informantBirthDateConditionals.concat(hideIfInformantSpouse),
               [
                 {
                   operation: 'dateFormatIsCorrect',
@@ -278,14 +279,17 @@ export const deathForm = {
             exactDateOfBirthUnknown([]),
             getAgeOfIndividualInYears(
               formMessageDescriptors.ageOfInformant,
-              exactDateOfBirthUnknownConditional,
+              exactDateOfBirthUnknownConditional.concat(hideIfInformantSpouse),
               ageOfIndividualConditionals
             ),
-            getNationality(certificateHandlebars.informantNationality, []),
-            getIDType('death', 'informant', [], true),
-            ...getIDNumberFields('informant', [], true),
+            getNationality(
+              certificateHandlebars.informantNationality,
+              hideIfInformantSpouse
+            ),
+            getIDType('death', 'informant', hideIfInformantSpouse, true),
+            ...getIDNumberFields('informant', hideIfInformantSpouse, true),
             // ADDRESS FIELDS WILL RENDER HERE
-            divider('informant-address-separator'),
+            divider('informant-address-separator', hideIfInformantSpouse),
             registrationPhone,
             registrationEmail
           ],
@@ -337,7 +341,8 @@ export const deathForm = {
             exactDateOfBirthUnknown([]),
             getAgeOfIndividualInYears(
               formMessageDescriptors.ageOfSpouse,
-              exactDateOfBirthUnknownConditional
+              exactDateOfBirthUnknownConditional,
+              ageOfIndividualConditionals
             ),
             getNationality(
               certificateHandlebars.spouseNationality,
