@@ -40,10 +40,9 @@ import {
 } from './required-fields'
 import { Event, ISerializedForm } from '../types/types'
 import {
-  ageOfIndividualConditionals,
+  ageOfIndividualValidators,
   brideOrGroomAgeValidators,
-  exactDateOfBirthUnknownConditional,
-  getNationalIDValidators
+  exactDateOfBirthUnknownConditional
 } from '../common/default-validation-conditionals'
 import {
   hideIfInformantBrideOrGroom,
@@ -131,7 +130,7 @@ export const marriageForm: ISerializedForm = {
               exactDateOfBirthUnknownConditional.concat(
                 hideIfInformantBrideOrGroom
               ),
-              ageOfIndividualConditionals
+              ageOfIndividualValidators
             ),
             getNationality(
               certificateHandlebars.informantNationality,

@@ -41,7 +41,7 @@ import { Event, ISerializedForm } from '../types/types'
 import {
   informantBirthDateConditionals,
   informantFamilyNameConditionals,
-  ageOfIndividualConditionals,
+  ageOfIndividualValidators,
   ageOfDeceasedConditionals,
   informantFirstNameConditionals,
   exactDateOfBirthUnknownConditional,
@@ -280,7 +280,7 @@ export const deathForm = {
             getAgeOfIndividualInYears(
               formMessageDescriptors.ageOfInformant,
               exactDateOfBirthUnknownConditional.concat(hideIfInformantSpouse),
-              ageOfIndividualConditionals
+              ageOfIndividualValidators
             ),
             getNationality(
               certificateHandlebars.informantNationality,
@@ -342,7 +342,7 @@ export const deathForm = {
             getAgeOfIndividualInYears(
               formMessageDescriptors.ageOfSpouse,
               exactDateOfBirthUnknownConditional,
-              ageOfIndividualConditionals
+              ageOfIndividualValidators
             ),
             getNationality(
               certificateHandlebars.spouseNationality,

@@ -251,7 +251,7 @@ export const brideOrGroomAgeValidators = [
   }
 ] satisfies Validator[]
 
-export const ageOfIndividualConditionals: Validator[] = [
+export const ageOfIndividualValidators: Validator[] = [
   {
     operation: 'range',
     parameters: [12, 120]
@@ -263,7 +263,7 @@ export const ageOfIndividualConditionals: Validator[] = [
 ]
 
 export const ageOfParentsConditionals = [
-  ...ageOfIndividualConditionals,
+  ...ageOfIndividualValidators,
   {
     operation: 'isValidParentsBirthDate',
     parameters: [10, true]
