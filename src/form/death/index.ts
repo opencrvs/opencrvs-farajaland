@@ -279,7 +279,7 @@ export const deathForm = {
               ],
               certificateHandlebars.informantBirthDate
             ), // Required field.
-            exactDateOfBirthUnknown([]),
+            exactDateOfBirthUnknown(hideIfInformantSpouse),
             getAgeOfIndividualInYears(
               formMessageDescriptors.ageOfInformant,
               exactDateOfBirthUnknownConditional.concat(hideIfInformantSpouse),
