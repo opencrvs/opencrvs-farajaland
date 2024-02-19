@@ -196,7 +196,8 @@ export const deathForm = {
             getAgeOfIndividualInYears(
               formMessageDescriptors.ageOfDeceased,
               exactDateOfBirthUnknownConditional,
-              ageOfDeceasedConditionals
+              ageOfDeceasedConditionals,
+              certificateHandlebars.ageOfDeceasedInYears
             ),
             getNationality(certificateHandlebars.deceasedNationality, []),
             getNationalID(
