@@ -10,6 +10,7 @@ on:
         default: 'staging'
         options:
           - staging
+          - riku-staging
           - qa
           - development
       core-image-tag:
