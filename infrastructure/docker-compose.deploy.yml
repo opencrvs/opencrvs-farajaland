@@ -87,7 +87,7 @@ services:
         - 'traefik.enable=false'
 
   metricbeat:
-    image: docker.elastic.co/beats/metricbeat:7.17.16
+    image: docker.elastic.co/beats/metricbeat:7.17.18
 
     user: root
     cap_add:
@@ -161,7 +161,7 @@ services:
         gelf-address: 'udp://127.0.0.1:12201'
         tag: 'setup-kibana-config'
   kibana:
-    image: docker.elastic.co/kibana/kibana:7.17.16
+    image: docker.elastic.co/kibana/kibana:7.17.18
     restart: always
     deploy:
       labels:
@@ -422,7 +422,7 @@ services:
         tag: 'elastalert'
 
   logstash:
-    image: logstash:7.17.16
+    image: logstash:7.17.18
     command: logstash -f /etc/logstash/logstash.conf --verbose
     depends_on:
       - elasticsearch
