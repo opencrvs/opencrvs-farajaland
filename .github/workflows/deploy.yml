@@ -105,6 +105,8 @@ jobs:
             ${{ toJSON(secrets) }}
           EOF)
 
+          echo "$SECRETS_JSON_WITH_NEWLINES" > .env.secrets
+
           #
           # Secrets & variables with newlines are filtered out automatically
           # This includes SSH_KEY and KNOWN_HOSTS
