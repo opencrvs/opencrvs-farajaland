@@ -112,6 +112,7 @@ jobs:
           # This includes SSH_KEY and KNOWN_HOSTS
           #
           while IFS= read -r secret; do
+            echo "$secret" >> .env.${{ github.event.inputs.environment }}.secrets
             echo "$secret" >> .env.${{ github.event.inputs.environment }}
           done < <(
             jq -r '
