@@ -162,20 +162,6 @@ services:
       - mongo1
       - mongo2
 
-  openhim-core:
-    environment:
-      - mongo_url=mongodb://openhim:${OPENHIM_MONGODB_PASSWORD}@mongo1,mongo2/openhim-dev?replicaSet=rs0
-      - mongo_atnaUrl=mongodb://openhim:${OPENHIM_MONGODB_PASSWORD}@mongo1,mongo2/openhim-dev?replicaSet=rs0
-    depends_on:
-      - mongo1
-      - mongo2
-    deploy:
-      replicas: 2
-
-  openhim-console:
-    deploy:
-      replicas: 2
-
   mongo2:
     image: mongo:4.4
     hostname: 'mongo2'
