@@ -1,6 +1,9 @@
 version: '3.3'
 
 services:
+  elasticsearch:
+    image: opensearchproject/opensearch:2
+
   notification:
     environment:
       - LANGUAGES=en,fr
