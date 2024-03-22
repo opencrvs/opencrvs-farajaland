@@ -31,7 +31,7 @@ function wait_for_elasticsearch {
   local -a args=( '-s' '-D-' '-m15' '-w' '%{http_code}' "http://${elasticsearch_host}:9200/" )
 
   if [[ -n "${ELASTIC_PASSWORD:-}" ]]; then
-    args+=( '-u' "elastic:${ELASTIC_PASSWORD}" )
+    args+=( '-u' "admin:${ELASTIC_PASSWORD}" )
   fi
 
   local -i result=1
@@ -66,7 +66,7 @@ function check_user_exists {
     )
 
   if [[ -n "${ELASTIC_PASSWORD:-}" ]]; then
-    args+=( '-u' "elastic:${ELASTIC_PASSWORD}" )
+    args+=( '-u' "admin:${ELASTIC_PASSWORD}" )
   fi
 
   local -i result=1
@@ -115,7 +115,7 @@ function update_user {
   fi
 
   if [[ -n "${ELASTIC_PASSWORD:-}" ]]; then
-    args+=( '-u' "elastic:${ELASTIC_PASSWORD}" )
+    args+=( '-u' "admin:${ELASTIC_PASSWORD}" )
   fi
 
   local -i result=1
@@ -149,7 +149,7 @@ function create_user {
     )
 
   if [[ -n "${ELASTIC_PASSWORD:-}" ]]; then
-    args+=( '-u' "elastic:${ELASTIC_PASSWORD}" )
+    args+=( '-u' "admin:${ELASTIC_PASSWORD}" )
   fi
 
   local -i result=1
@@ -182,7 +182,7 @@ function ensure_role {
     )
 
   if [[ -n "${ELASTIC_PASSWORD:-}" ]]; then
-    args+=( '-u' "elastic:${ELASTIC_PASSWORD}" )
+    args+=( '-u' "admin:${ELASTIC_PASSWORD}" )
   fi
 
   local -i result=1
@@ -213,7 +213,7 @@ function ensure_settings {
   )
 
   if [[ -n "${ELASTIC_PASSWORD:-}" ]]; then
-    args+=( '-u' "elastic:${ELASTIC_PASSWORD}" )
+    args+=( '-u' "admin:${ELASTIC_PASSWORD}" )
   fi
 
   local -i result=1
@@ -243,7 +243,7 @@ function create_elastic_index {
   )
 
   if [[ -n "${ELASTIC_PASSWORD:-}" ]]; then
-    args+=( '-u' "elastic:${ELASTIC_PASSWORD}" )
+    args+=( '-u' "admin:${ELASTIC_PASSWORD}" )
   fi
 
   local -i result=1

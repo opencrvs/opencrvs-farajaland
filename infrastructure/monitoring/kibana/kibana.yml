@@ -7,7 +7,7 @@
 #
 # Copyright (C) The OpenCRVS Authors located at https://github.com/opencrvs/opencrvs-core/blob/master/AUTHORS.
 # For more configuration options see the configuration guide for Kibana in
-# https://www.elastic.co/guide/index.html
+# https://www.admin.co/guide/index.html
 
 # =================== System: Kibana Server ===================
 # Kibana is served by a back end server. This setting specifies the port to use.

@@ -59,7 +59,7 @@ jobs:
           SSH_ARGS: ${{ vars.SSH_ARGS }}
         run: |
           ssh $SSH_USER@$SSH_HOST $SSH_ARGS "
-            ELASTICSEARCH_ADMIN_USER=elastic \
+            ELASTICSEARCH_ADMIN_USER=admin \
             ELASTICSEARCH_ADMIN_PASSWORD=$ELASTICSEARCH_SUPERUSER_PASSWORD \
             MONGODB_ADMIN_USER=$MONGODB_ADMIN_USER \
             MONGODB_ADMIN_PASSWORD=$MONGODB_ADMIN_PASSWORD \
@@ -70,6 +70,6 @@ jobs:
           echo "Running migrations..."
           echo
           ssh $SSH_USER@$SSH_HOST $SSH_ARGS "
-              ELASTICSEARCH_ADMIN_USER=elastic \
+              ELASTICSEARCH_ADMIN_USER=admin \
               ELASTICSEARCH_ADMIN_PASSWORD=$ELASTICSEARCH_SUPERUSER_PASSWORD \
               /opt/opencrvs/infrastructure/run-migrations.sh"

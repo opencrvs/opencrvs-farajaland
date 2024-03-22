@@ -232,4 +232,4 @@
       MONGODB_ADMIN_PASSWORD={{ mongodb_admin_password }}
       MONGODB_ADMIN_USER={{ mongodb_admin_username }}
       ELASTICSEARCH_ADMIN_PASSWORD={{elasticsearch_superuser_password}}
-      ELASTICSEARCH_ADMIN_USER=elastic
+      ELASTICSEARCH_ADMIN_USER=admin

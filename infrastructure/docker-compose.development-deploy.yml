@@ -3,6 +3,8 @@ version: '3.3'
 services:
   elasticsearch:
     image: opensearchproject/opensearch:2
+    environment:
+      - OPENSEARCH_INITIAL_ADMIN_PASSWORD=${ELASTICSEARCH_SUPERUSER_PASSWORD}
 
   notification:
     environment:
