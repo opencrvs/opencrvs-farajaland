@@ -49,7 +49,7 @@ services:
       replicas: 1
       labels:
         - 'traefik.http.services.traefik.loadbalancer.server.port=80'
-        - 'traefik.http.middlewares.test-compress.compress=true'
+        - 'traefik.http.middlewares.gzip-compression.compress=true'
       placement:
         constraints:
           - node.role == manager
@@ -498,7 +498,7 @@ services:
       labels:
         - 'traefik.enable=true'
         - 'traefik.http.routers.client.rule=Host(`register.{{hostname}}`,`{{hostname}}`)'
-        - 'traefik.http.routers.client.middlewares=test-replacepathregex'
+        - 'traefik.http.routers.client.middlewares=test-replacepathregex,gzip-compression'
         - 'traefik.http.routers.client.service=client'
         - 'traefik.http.services.client.loadbalancer.server.port=80'
         - 'traefik.http.routers.client.tls=true'
@@ -559,6 +559,7 @@ services:
         - 'traefik.http.routers.countryconfig.tls=true'
         - 'traefik.http.routers.countryconfig.tls.certresolver=certResolver'
         - 'traefik.http.routers.countryconfig.entrypoints=web,websecure'
+        - 'traefik.http.routers.countryconfig.middlewares=gzip-compression'
         - 'traefik.docker.network=opencrvs_overlay_net'
         - 'traefik.http.middlewares.countryconfig.headers.customresponseheaders.Pragma=no-cache'
         - 'traefik.http.middlewares.countryconfig.headers.customresponseheaders.Cache-control=no-store'
