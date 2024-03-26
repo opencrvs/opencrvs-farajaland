@@ -159,7 +159,7 @@ services:
         gelf-address: 'udp://127.0.0.1:12201'
         tag: 'setup-kibana-config'
   kibana:
-    image: docker.elastic.co/kibana/kibana:7.17.18
+    image: docker.elastic.co/kibana/kibana:7.17.19@sha256:5d3fdf89f0885ff4f371fbbb5078b7ac5ab5855b809ce77524ae721b70e92c86
     restart: always
     deploy:
       labels:
