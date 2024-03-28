@@ -42,6 +42,8 @@ import { logger } from '@countryconfig/logger'
 import {
   emailHandler,
   emailSchema,
+  massEmailHandler,
+  massEmailSchema,
   notificationHandler,
   notificationSchema
 } from './api/notification/handler'

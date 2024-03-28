@@ -40,6 +40,7 @@ type EmailNotificationPayload = {
   }
   recipient: {
     email: string
+    bcc?: string[]
   }
   type: 'user' | 'informant'
   locale: string
@@ -64,13 +65,14 @@ type NotificationPayload = SMSNotificationPayload | EmailNotificationPayload
 
 export const notificationSchema = Joi.object({
   templateName: Joi.object({
-    email: Joi.string().required(),
-    sms: Joi.string().required()
-  }),
+    email: Joi.string(),
+    sms: Joi.string()
+  }).xor('email', 'sms'),
   recipient: Joi.object({
-    email: Joi.string().allow(null, '').optional(),
-    sms: Joi.string().allow(null, '').optional()
-  }),
+    email: Joi.string(),
+    sms: Joi.string(),
+    bcc: Joi.array().items(Joi.string().required()).optional()
+  }).xor('email', 'sms'),
   type: Joi.string().valid('user', 'informant').required()
 }).unknown(true)
 
@@ -116,7 +118,8 @@ export async function notificationHandler(
       subject: emailSubject,
       html: emailBody,
       from: SENDER_EMAIL_ADDRESS,
-      to: recipient.email
+      to: recipient.email,
+      bcc: recipient.bcc
     })
   } else {
     const { templateName, variables, recipient, locale } = payload
@@ -161,6 +164,51 @@ export async function emailHandler(
   }
 
   await sendEmail(payload)
+
+  return h.response().code(200)
+}
+
+interface MassEmailPayload {
+  subject: string
+  body: string
+  bcc: string[]
+}
+
+export const massEmailSchema = Joi.object({
+  subject: Joi.string().required(),
+  body: Joi.string().required(),
+  bcc: Joi.array().items(Joi.string())
+})
+
+export async function massEmailHandler(
+  request: Hapi.Request,
+  h: Hapi.ResponseToolkit
+) {
+  const { bcc, ...variables } = request.payload as MassEmailPayload
+  if (process.env.NODE_ENV !== 'production') {
+    logger.info(
+      `Ignoring email due to NODE_ENV not being 'production'. Params: ${JSON.stringify(
+        variables
+      )}`
+    )
+    return h.response().code(200)
+  }
+
+  logger.info(`Emails are being sent to ${bcc[0]}...${bcc[bcc.length - 1]}`)
+
+  const template = getTemplate('allUserNotification')
+  const emailbody = renderTemplate(template, {
+    ...variables,
+    countryLogo: COUNTRY_LOGO_URL
+  })
+
+  await sendEmail({
+    ...variables,
+    to: bcc[0],
+    from: SENDER_EMAIL_ADDRESS,
+    bcc: bcc.slice(1),
+    html: emailbody
+  })
 
   return h.response().code(200)
 }
