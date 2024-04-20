@@ -159,7 +159,7 @@ services:
       - WAIT_HOSTS=mongo1:27017,mongo2:27017,influxdb:8086,minio:9000,elasticsearch:9200
 
   mongo2:
-    image: mongo:4.4
+    image: mongo:4.4@sha256:d41dabba79a5b5ef19067da6e770f513b339b6ad3126d394c21d516d3c7b1906
     hostname: 'mongo2'
     restart: unless-stopped
     command: mongod --auth --replSet rs0 --keyFile /etc/mongodb-keyfile

@@ -13,7 +13,7 @@ services:
   # Note: these published port will override UFW rules as Docker manages it's own iptables
   # Only publish the exact ports that are required for OpenCRVS to work
   traefik:
-    image: 'traefik:v2.10'
+    image: 'traefik:v2.10@sha256:6341b98aec5ec8969b99e9730f4c5b22cca3103d42b6bbe4b7a3c910758fe565'
     ports:
       - target: 80
         published: 80
@@ -62,7 +62,7 @@ services:
       - overlay_net
 
   filebeat:
-    image: docker.elastic.co/beats/filebeat:7.17.0
+    image: docker.elastic.co/beats/filebeat:7.17.0@sha256:f71bc98cae85db7812ff6e7fc3f7f3fdd37cda162ff3fefa5c3a55cb31e21e6e
     user: root
     networks:
       - overlay_net
@@ -87,7 +87,7 @@ services:
         - 'traefik.enable=false'
 
   metricbeat:
-    image: docker.elastic.co/beats/metricbeat:7.17.18
+    image: docker.elastic.co/beats/metricbeat:7.17.18@sha256:a4bea79c61adef804bb2b7f9119d53eda3606377534aa750d8fb517fc6914fa2
 
     user: root
     cap_add:
@@ -126,7 +126,7 @@ services:
         gelf-address: 'udp://127.0.0.1:12201'
         tag: 'metricbeat'
   setup-kibana-config:
-    image: curlimages/curl:7.88.1
+    image: curlimages/curl:7.88.1@sha256:48318407b8d98e8c7d5bd4741c88e8e1a5442de660b47f63ba656e5c910bc3da
     entrypoint:
       [
         'curl',
@@ -159,7 +159,7 @@ services:
         gelf-address: 'udp://127.0.0.1:12201'
         tag: 'setup-kibana-config'
   kibana:
-    image: docker.elastic.co/kibana/kibana:7.17.18
+    image: docker.elastic.co/kibana/kibana:7.17.18@sha256:92dd5b035465a032a80c83428f7d382fc65cb9dfb5e646e2599e2cb75b85e1a0
     restart: always
     deploy:
       labels:
@@ -220,7 +220,7 @@ services:
         gelf-address: 'udp://127.0.0.1:12201'
         tag: 'mongo1'
   mongo-on-update:
-    image: mongo:4.4
+    image: mongo:4.4@sha256:d41dabba79a5b5ef19067da6e770f513b339b6ad3126d394c21d516d3c7b1906
     command: bash /on-deploy.sh
     configs:
       - source: mongo-on-deploy.{{ts}}
@@ -335,7 +335,7 @@ services:
       - overlay_net
 
   minio-mc:
-    image: minio/mc
+    image: minio/mc@sha256:5a84109d6b29bab96c3122e4a7ba888fbf48d4cdc83bc8bf88e3a7ac67b970b8
     entrypoint: >
       /bin/sh -c "
       /usr/bin/mc admin trace --path ocrvs/* minio
@@ -358,7 +358,7 @@ services:
         tag: 'minio'
 
   setup-elasticsearch-users:
-    image: ubuntu:bionic
+    image: ubuntu:bionic@sha256:152dc042452c496007f07ca9127571cb9c29697f42acbfad72324b2bb2e43c98
     entrypoint: ['bash', '/usr/app/setup.sh']
     restart: on-failure
     environment:
@@ -387,7 +387,7 @@ services:
         gelf-address: 'udp://127.0.0.1:12201'
         tag: 'setup-elasticsearch-users'
   elastalert:
-    image: jertel/elastalert2:2.3.0
+    image: jertel/elastalert2:2.3.0@sha256:3dd3dee198c69f51ea27b91eda82d6997f43bbc0f431f62608aef5c8a7922486
     restart: unless-stopped
     environment:
       - ES_USERNAME=elastic
@@ -411,7 +411,7 @@ services:
         tag: 'elastalert'
 
   logstash:
-    image: logstash:7.17.18
+    image: logstash:7.17.18@sha256:cb910d351dd361487326ac34da734b61016eb93119c619fb61d571c8fdb0696e
     command: logstash -f /etc/logstash/logstash.conf --verbose
     ports:
       - '12201:12201'
@@ -434,7 +434,7 @@ services:
         - 'traefik.enable=false'
       replicas: 1
   apm-server:
-    image: docker.elastic.co/apm/apm-server:7.15.2
+    image: docker.elastic.co/apm/apm-server:7.15.2@sha256:485842e6db62086c197b80c1b37e031714655c5ba8548a1d1eeb5e338cfdaf3d
     cap_add: ['CHOWN', 'DAC_OVERRIDE', 'SETGID', 'SETUID']
     cap_drop: ['ALL']
     restart: always

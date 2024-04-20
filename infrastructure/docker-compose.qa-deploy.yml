@@ -131,7 +131,7 @@ services:
       - NODE_ENV=production
 
   wg-easy:
-    image: ghcr.io/wg-easy/wg-easy:8
+    image: ghcr.io/wg-easy/wg-easy:8@sha256:f185fec28bf4a811e62d5791b7f05351113d3fe3c5ed9582e368e978625e6685
     environment:
       - WG_HOST=vpn.{{hostname}}
       - PASSWORD=${VPN_ADMIN_PASSWORD}
