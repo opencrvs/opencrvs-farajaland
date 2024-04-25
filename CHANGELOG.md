@@ -24,6 +24,7 @@ See [Releases](https://github.com/opencrvs/opencrvs-farajaland/releases) for rel
 - Deployment: Removes some deprecated deployment code around Elastalert config file formatting
 - Provisioning: Creates backup user on backup servers automatically
 - Provisioning: Update ansible Github action task version
+- Change condition of Number of previous births 
 
 - Copy: All application copy is now located in src/translations as CSV files. This is so that copy would be easily editable in software like Excel and Google Sheets. After this change, `AVAILABLE_LANGUAGES_SELECT` doesn't need to be defined anymore by country config.
 
