@@ -83,7 +83,7 @@ export const multipleBirth: SerializedFormField = {
       expression: '!values.detailsExist'
     }
   ],
-  maxLength:2,
+  maxLength: 2,
   required: false,
   initialValue: '',
   validator: [],
@@ -91,5 +91,5 @@ export const multipleBirth: SerializedFormField = {
     'multipleBirth',
     certificateHandlebars.multipleBirth
   ),
-  inputFieldWidth: '64px',
+  inputFieldWidth: '64px'
 }
