@@ -11,8 +11,8 @@
   file:
     path: /data/traefik/certs
     state: directory
-    owner: root
-    group: application
+    owner: euan
+    group: euan
     # Owner has rwx, group r, others no permissions
     mode: '0740'
 
