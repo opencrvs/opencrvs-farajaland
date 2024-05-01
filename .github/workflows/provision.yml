@@ -76,6 +76,8 @@ jobs:
           external_backup_server_ip: ${{ secrets.BACKUP_HOST }}
           manager_production_server_ip: ${{ secrets.SSH_HOST }}
           ansible_user: ${{ secrets.SSH_USER }}
+          ssl_crt: ${{ secrets.SSL_CERT }}
+          ssl_key: ${{ secrets.SSL_KEY }}
 
       - name: Read known hosts
         run: |
