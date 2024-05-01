@@ -16,28 +16,28 @@
     # Owner has rwx, group r, others no permissions
     mode: '0740'
 
-  - name: Create crt template file with variable content
-    copy:
-      dest: "/data/traefik/certs/crt-template.j2"
-      content: |
-        {{ssl_crt}}
-    when: ssl_crt is defined and ssl_crt | length > 0
+- name: Create crt template file with variable content
+  copy:
+    dest: "/data/traefik/certs/crt-template.j2"
+    content: |
+      {{ssl_crt}}
+  when: ssl_crt is defined and ssl_crt | length > 0
 
-  - name: Create key template file with variable content
-    copy:
-      dest: "/data/traefik/certs/key-template.j2"
-      content: |
-        {{ssl_key}}
-    when: ssl_key is defined and ssl_key | length > 0
+- name: Create key template file with variable content
+  copy:
+    dest: "/data/traefik/certs/key-template.j2"
+    content: |
+      {{ssl_key}}
+  when: ssl_key is defined and ssl_key | length > 0
 
-  - name: Write crt file
-    ansible.builtin.template:
-      src: "/data/traefik/certs/crt-template.j2"
-      dest: "/data/traefik/certs/cert.crt"
-    when: ssl_crt is defined and ssl_crt | length > 0
+- name: Write crt file
+  ansible.builtin.template:
+    src: "/data/traefik/certs/crt-template.j2"
+    dest: "/data/traefik/certs/cert.crt"
+  when: ssl_crt is defined and ssl_crt | length > 0
 
-  - name: Write key file
-    ansible.builtin.template:
-      src: "/data/traefik/certs/key-template.j2"
-      dest: "/data/traefik/certs/cert.key"
-    when: ssl_key is defined and ssl_key | length > 0
+- name: Write key file
+  ansible.builtin.template:
+    src: "/data/traefik/certs/key-template.j2"
+    dest: "/data/traefik/certs/cert.key"
+  when: ssl_key is defined and ssl_key | length > 0
