@@ -23,6 +23,7 @@
       {{ssl_crt}}
     owner: euan
     group: euan
+    mode: 0644
   when: ssl_crt is defined and ssl_crt | length > 0
 
 - name: Create key file with variable content
@@ -32,4 +33,5 @@
       {{ssl_key}}
     owner: euan
     group: euan
+    mode: 0600
   when: ssl_key is defined and ssl_key | length > 0
