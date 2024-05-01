@@ -11,27 +11,7 @@
   file:
     path: /data/traefik/certs
     state: directory
-    owner: euan
-    group: euan
+    owner: root
+    group: application
     # Owner has rwx, group r, others no permissions
     mode: '0740'
-
-- name: Create crt file with variable content
-  copy:
-    dest: "/data/traefik/certs/cert.crt"
-    content: |
-      {{ssl_crt}}
-    owner: euan
-    group: euan
-    mode: 0644
-  when: ssl_crt is defined and ssl_crt | length > 0
-
-- name: Create key file with variable content
-  copy:
-    dest: "/data/traefik/certs/cert.key"
-    content: |
-      {{ssl_key}}
-    owner: euan
-    group: euan
-    mode: 0600
-  when: ssl_key is defined and ssl_key | length > 0
