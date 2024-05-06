@@ -93,6 +93,7 @@ jobs:
     runs-on: ubuntu-22.04
     environment: ${{ github.event.inputs.environment || 'development' }}
     strategy:
+      fail-fast: false
       matrix:
         test_dir: ${{ fromJson(needs.discover-tests.outputs.test_matrix) }}
     steps:
@@ -101,19 +102,31 @@ jobs:
         with:
           node-version: 18
 
-      - name: Runs dependency installation
+      - name: Check for Spec Files
+        id: check-specs
+        run: |
+          if ls ./e2e/testcases/${{ matrix.test_dir }}/*.spec.ts > /dev/null 2>&1; then
+            echo "::set-output name=has_spec_files::true"
+          else
+            echo "::set-output name=has_spec_files::false"
+          fi
+
+      - name: Install Dependencies
+        if: steps.check-specs.outputs.has_spec_files == 'true'
         run: yarn
 
       - name: Install Playwright Browsers
+        if: steps.check-specs.outputs.has_spec_files == 'true'
         run: npx playwright install --with-deps
 
-      - name: Run Playwright tests
+      - name: Run Playwright Tests
+        if: steps.check-specs.outputs.has_spec_files == 'true'
         run: npx playwright test ./e2e/testcases/${{ matrix.test_dir }}
         env:
           DOMAIN: '${{ vars.DOMAIN }}'
 
       - uses: actions/upload-artifact@v4
-        if: ${{ !cancelled() }}
+        if: steps.check-specs.outputs.has_spec_files == 'true'
         with:
           name: playwright-report-${{ matrix.test_dir }}
           path: playwright-report/
