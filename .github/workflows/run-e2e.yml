@@ -69,10 +69,36 @@ jobs:
       reset: 'true'
     secrets: inherit
 
+  discover-tests:
+    name: Discover Test Directories
+    runs-on: ubuntu-22.04
+    outputs:
+      test_matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: List Test Directories
+        id: list-tests
+        run: |
+          test_dirs=$(find ./e2e/testcases -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | jq -R -s -c 'split("\n")[:-1]')
+          echo "Test directories: $test_dirs"
+          echo "::set-output name=test_dirs::$test_dirs"
+
+      - name: Set Matrix
+        id: set-matrix
+        run: |
+          echo "{\"test_dir\": ${GITHUB_OUTPUT}}"
+        env:
+          GITHUB_OUTPUT: ${{ steps.list-tests.outputs.test_dirs }}
+
   test:
-    needs: deploy
+    needs: [deploy, discover-tests]
     runs-on: ubuntu-22.04
     environment: ${{ github.event.inputs.environment || 'development' }}
+    strategy:
+      matrix:
+        test_dir: ${{ fromJson(needs.discover-tests.outputs.test_matrix).test_dir }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -86,13 +112,13 @@ jobs:
         run: npx playwright install --with-deps
 
       - name: Run Playwright tests
-        run: npx playwright test
+        run: npx playwright test ./e2e/testcases/${{ matrix.test_dir }}
         env:
           DOMAIN: '${{ vars.DOMAIN }}'
 
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
-          name: playwright-report
+          name: playwright-report-${{ matrix.test_dir }}
           path: playwright-report/
           retention-days: 30
