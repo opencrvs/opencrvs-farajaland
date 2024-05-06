@@ -88,17 +88,6 @@ jobs:
           echo "test_matrix=$test_dirs" >> $GITHUB_OUTPUT
           echo "test_matrix=$test_dirs"
 
-  test-matrix-ok:
-    needs: [discover-tests]
-    runs-on: ubuntu-22.04
-    environment: ${{ github.event.inputs.environment || 'development' }}
-    strategy:
-      matrix:
-        test_dir: ${{ fromJson(needs.discover-tests.outputs.test_matrix) }}
-    steps:
-      - name: Runs dependency installation
-        run: echo "${{ matrix.test_dir }}"
-
   test:
     needs: [deploy, discover-tests]
     runs-on: ubuntu-22.04
