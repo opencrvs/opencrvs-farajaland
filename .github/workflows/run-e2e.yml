@@ -71,31 +71,28 @@ jobs:
 
   test:
     needs: deploy
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     environment: ${{ github.event.inputs.environment || 'development' }}
     steps:
-      - name: Checking out git repo
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          fetch-depth: 1
-
-      - name: Use Node.js 18.19
-        uses: actions/setup-node@v2
-        with:
-          node-version: '18.19'
-          cache: 'npm'
+          node-version: 18
 
       - name: Runs dependency installation
         run: yarn
 
-      - name: Run tests
-        uses: cypress-io/github-action@v6.6.1
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+
+      - name: Run Playwright tests
+        run: npx playwright test
         env:
-          CYPRESS_RECORD_KEY: '${{ secrets.CYPRESS_RECORD_KEY }}'
-          CYPRESS_COUNTRYCONFIG_URL: 'https://countryconfig.${{ vars.DOMAIN }}/'
-          CYPRESS_GATEWAY_URL: 'https://gateway.${{ vars.DOMAIN }}/'
-          CYPRESS_LOGIN_URL: 'https://login.${{ vars.DOMAIN }}/'
-          CYPRESS_CLIENT_URL: 'https://register.${{ vars.DOMAIN }}/'
-          CYPRESS_AUTH_URL: 'https://auth.${{ vars.DOMAIN }}/'
+          DOMAIN: '${{ vars.DOMAIN }}'
+
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
         with:
-          record: true
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
