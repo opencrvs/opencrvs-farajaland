@@ -6,6 +6,7 @@ on:
   push:
     branches:
       - develop
+      - e2e-test-cases
   workflow_dispatch:
     inputs:
       environment:
