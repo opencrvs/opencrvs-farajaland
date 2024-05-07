@@ -33,6 +33,13 @@ export async function login(page: Page, username: string, password: string) {
   await expect(page.locator('#appSpinner')).toBeVisible()
 }
 
+export async function createPIN(page: Page) {
+  await page.click('#pin-input')
+  for (let i = 1; i <= 8; i++) {
+    await page.type('#pin-input', `${i % 2}`)
+  }
+}
+
 async function getToken(username: string, password: string) {
   const authUrl = `${AUTH_URL}/authenticate`
   const verifyUrl = `${AUTH_URL}/verifyCode`
