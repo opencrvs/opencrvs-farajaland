@@ -1,11 +1,8 @@
 name: E2E
 run-name: Deploy to ${{ github.event.inputs.environment }} and E2E
 on:
-  repository_dispatch:
-    types: [run_e2e]
   push:
     branches:
-      - develop
       - e2e/*
   workflow_dispatch:
     inputs:
@@ -16,62 +13,8 @@ on:
         default: 'development'
         options:
           - development
-      core-image-tag:
-        description: Core DockerHub image tag
-        required: true
-        default: 'v1.4.1'
-      countryconfig-image-tag:
-        description: Your Country Config DockerHub image tag
-        required: true
-        default: 'v1.4.1'
-
-concurrency:
-  group: ci-build
-  cancel-in-progress: false
 
 jobs:
-  get-core-commit:
-    name: Resolve latest core tag
-    runs-on: ubuntu-latest
-    outputs:
-      latest_commit_sha: ${{ steps.get_latest_commit.outputs.commit_sha }}
-    steps:
-      - name: Checkout opencrvs-core repository
-        if: github.event_name == 'push' || github.event_name == 'repository_dispatch'
-        uses: actions/checkout@v3
-        with:
-          repository: 'opencrvs/opencrvs-core'
-          ref: 'develop'
-      - name: Get latest commit SHA
-        if: github.event_name == 'push' || github.event_name == 'repository_dispatch'
-        id: get_latest_commit
-        run: echo "::set-output name=commit_sha::$(git rev-parse HEAD | cut -c 1-7)"
-
-  get-country-config-commit:
-    name: Resolve latest Farajaland tag
-    runs-on: ubuntu-latest
-    needs: get-core-commit
-    outputs:
-      short_sha: ${{ steps.set_short_sha.outputs.short_sha }}
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-        if: github.event_name == 'push' || github.event_name == 'repository_dispatch'
-      - name: Get short commit hash
-        id: set_short_sha
-        run: echo "::set-output name=short_sha::${GITHUB_SHA:0:7}"
-        if: github.event_name == 'push' || github.event_name == 'repository_dispatch'
-
-  deploy:
-    needs: [get-country-config-commit, get-core-commit]
-    uses: ./.github/workflows/deploy.yml
-    with:
-      environment: ${{ github.event.inputs.environment || 'development' }}
-      core-image-tag: ${{ github.event.inputs.core-image-tag || needs.get-core-commit.outputs.latest_commit_sha }}
-      countryconfig-image-tag: ${{ github.event.inputs.countryconfig-image-tag || needs.get-country-config-commit.outputs.short_sha }}
-      reset: 'true'
-    secrets: inherit
-
   discover-tests:
     name: Discover test directories
     runs-on: ubuntu-22.04
@@ -90,7 +33,7 @@ jobs:
           echo "test_matrix=$test_dirs"
 
   test:
-    needs: [deploy, discover-tests]
+    needs: [discover-tests]
     runs-on: ubuntu-22.04
     environment: ${{ github.event.inputs.environment || 'development' }}
     strategy:
