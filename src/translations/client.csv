@@ -524,7 +524,7 @@ correction.corrector.groom,Label for groom option in certificate correction form
 correction.corrector.idCheck,,Check proof of ID,Vérifiez la preuve d'identité. Correspond-elle aux détails suivants ?
 correction.corrector.idCheckVerify,,Yes,Oui
 correction.corrector.idCheckWithoutVerify,,No,Non
-correction.corrector.informant,Label for informant option in certificate correction form,Informant ({informant}),Informateur
+correction.corrector.informant,Label for informant option in certificate correction form,"Informant ({informant, select, MOTHER {Mother} FATHER {Father} GRANDFATHER {Grandfather} GRANDMOTHER {Grandmother} BROTHER {Brother} SISTER {Sister} LEGAL_GUARDIAN {Legal guardian} other {{informant}}})","Informateur ({informant, select, MOTHER {Mère} FATHER {Père} GRANDFATHER {Grand-père} GRANDMOTHER {Grand-mère} BROTHER {Frère} SISTER {Sœur} LEGAL_GUARDIAN {Tuteur légal} other {{informant}}})"
 correction.corrector.legalGuardian,Label for legal guardian option in certificate correction form,Legal guardian,Tuteur légal
 correction.corrector.me,Label for registrar option in certificate correction form,Me,Moi
 correction.corrector.mother,Label for mother option in certificate correction form,Mother,Mère
