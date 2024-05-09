@@ -1,5 +1,8 @@
 import { expect, test } from '@playwright/test'
-import { createPIN, login } from '../../helpers'
+import { createPIN, getToken, login } from '../../helpers'
+import { createDeclaration } from './helpers'
+import TEST_DATA_1 from './data/1-both-mother-and-father.json'
+import faker from '@faker-js/faker'
 
 test.describe('1. Birth event declaration', () => {
   test.beforeEach(async ({ page }) => {
@@ -49,6 +52,44 @@ test.describe('1. Birth event declaration', () => {
       await expect(
         page.locator('#form_section_id_information-group')
       ).toBeVisible()
+    })
+  })
+})
+
+test.describe('Technical test for shortcuts', () => {
+  test('Shortcut for quickly creating declarations', async () => {
+    const token = await getToken('k.mweene', 'test')
+    const res = await createDeclaration(token, {
+      child: {
+        firstNames: faker.name.firstName(),
+        familyName: faker.name.firstName(),
+        gender: TEST_DATA_1['Child details'].Sex.toLowerCase() as 'male'
+      },
+      informant: {
+        type: TEST_DATA_1['Informant details'][
+          'Relationship to child'
+        ].toUpperCase() as 'MOTHER'
+      },
+      attendant: {
+        type: TEST_DATA_1['Child details'][
+          'Attendant at birth'
+        ].toUpperCase() as 'PHYSICIAN'
+      },
+      mother: {
+        firstNames: faker.name.firstName(),
+        familyName: faker.name.firstName()
+      },
+      father: {
+        firstNames: faker.name.firstName(),
+        familyName: faker.name.firstName()
+      }
+    })
+
+    expect(res).toStrictEqual({
+      trackingId: expect.any(String),
+      compositionId: expect.any(String),
+      isPotentiallyDuplicate: false,
+      __typename: 'CreatedIds'
     })
   })
 })

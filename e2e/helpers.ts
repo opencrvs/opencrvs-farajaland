@@ -14,7 +14,7 @@ export async function createPIN(page: Page) {
   }
 }
 
-async function getToken(username: string, password: string) {
+export async function getToken(username: string, password: string) {
   const authUrl = `${AUTH_URL}/authenticate`
   const verifyUrl = `${AUTH_URL}/verifyCode`
 
