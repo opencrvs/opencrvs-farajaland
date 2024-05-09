@@ -48,7 +48,7 @@ test.describe('2. Login with invalid information', () => {
     await page.getByText('Verify', { exact: true }).click()
     await page.fill('#code', 'expire')
 
-    // Expected result: User should navigate to the next page to verify through mobile number or email address
+    // Expected result: Should show toast saying: Incorrect verification code
     await expect(page.getByText('Incorrect verification code.')).toBeVisible()
   })
 })
