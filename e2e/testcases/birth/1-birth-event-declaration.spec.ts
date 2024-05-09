@@ -51,6 +51,57 @@ test.describe('1. Birth event declaration', () => {
         ).toBeVisible()
       })
     })
+
+    await test.step('1.3 Validate "Introduction" page', async () => {
+      await test.step('1.3.1 Validate the contents of Introduction page', async () => {})
+      await test.step('1.3.2. Verify the verbiage of Introduction page of birth event', async () => {})
+      await test.step('1.3.3. Click the "Continue" button ', async () => {})
+    })
+
+    await test.step('1.4 Validate "Child Details" page', async () => {
+      await test.step('1.4.1. Validate the contents of Child details page', async () => {})
+      await test.step('1.4.2. Validate Child details block', async () => {})
+      await test.step('1.4.3. Click Continue', async () => {})
+    })
+
+    await test.step('1.5 Validate "Informant details" page', async () => {
+      await test.step('1.5.1. Validate the contents of Informant type page', async () => {})
+      await test.step('1.5.2. Click the "Continue" button without selecting any Relationship to child', async () => {})
+      await test.step('1.5.3. Select any option in Relationship to child > Click Continue', async () => {})
+    })
+
+    await test.step('1.6 Validate "Mother Details" page', async () => {
+      await test.step("1.6.1. Validate the contents of Mother's details page", async () => {})
+      await test.step("1.6.2. Validate Mother's details block", async () => {})
+      await test.step('1.6.3. Click Continue', async () => {})
+    })
+
+    await test.step('1.7 Validate "Father Details" page', async () => {
+      await test.step("1.7.1. Validate the contents of Father's details page", async () => {})
+      await test.step("1.7.2. Validate Father's details block", async () => {})
+      await test.step('1.7.3. Click Continue', async () => {})
+    })
+
+    await test.step('1.8 Validate "Supporting document" page', async () => {
+      await test.step('1.8.1. Validate the contents of Supporting document page', async () => {})
+      await test.step('1.8.2. Validate Supporting document block', async () => {})
+      await test.step('1.8.3. Click Continue', async () => {})
+    })
+
+    await test.step('1.9 Click the "SAVE & EXIT" button from any page', async () => {
+      await test.step('1.9.1. Click Confirm', async () => {})
+      await test.step('1.9.2. Click Cancel', async () => {})
+    })
+
+    await test.step('1.10 Click the "EXIT" button from any page', async () => {
+      await test.step('1.10.1. Click Confirm', async () => {})
+      await test.step('1.10.2. Click Cancel', async () => {})
+    })
+
+    await test.step('1.11 Click the 3 dot menu > delete option from any page', async () => {
+      await test.step('1.11.1. Click Confirm', async () => {})
+      await test.step('1.11.2. Click Cancel', async () => {})
+    })
   })
 })
 
