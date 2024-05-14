@@ -26,6 +26,10 @@ on:
         description: Open SSH session to the runner after deployment
         default: false
         required: false
+      git_hash:
+        type: string
+        description: Git commit hash to deploy
+        default: ${{ github.sha }}
   workflow_dispatch:
     inputs:
       environment:
