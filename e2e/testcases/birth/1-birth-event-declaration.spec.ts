@@ -411,16 +411,8 @@ test.describe('1. Birth event declaration', () => {
       })
     })
   })
-  test.describe.serial('1.10 Validate "Exit" Button  ', async () => {
-    let page: Page
-    test.beforeAll(async ({ browser }) => {
-      page = await browser.newPage()
-    })
-
-    test.afterAll(async () => {
-      await page.close()
-    })
-    test('1.10.1 Click the "Exit" button from any page', async () => {
+  test.describe('1.10 Validate "Exit" Button  ', async () => {
+    test.beforeEach(async ({ page }) => {
       await login(page, 'k.mweene', 'test')
       await createPIN(page)
       await page.click('#header_new_event')
@@ -428,7 +420,9 @@ test.describe('1. Birth event declaration', () => {
       await page.getByRole('button', { name: 'Continue' }).click()
 
       await page.getByRole('button', { name: 'Exit', exact: true }).click()
+    })
 
+    test('1.10.1 Click the "Exit" button from any page', async ({ page }) => {
       /*
        * Expected result: should open modal with:
        * - Title: Exit without saving changes?
@@ -448,7 +442,7 @@ test.describe('1. Birth event declaration', () => {
       await expect(page.getByRole('button', { name: 'Confirm' })).toBeVisible()
     })
 
-    test('1.10.2 Click Cancel', async () => {
+    test('1.10.2 Click Cancel', async ({ page }) => {
       await page.getByRole('button', { name: 'Cancel' }).click()
 
       /*
@@ -459,29 +453,18 @@ test.describe('1. Birth event declaration', () => {
       ).toBeHidden()
     })
 
-    test('1.10.3 Click Confirm', async () => {
-      await page.getByRole('button', { name: 'Exit', exact: true }).click()
+    test('1.10.3 Click Confirm', async ({ page }) => {
       await page.getByRole('button', { name: 'Confirm' }).click()
-
       /*
        * Expected result: should be navigated to "in-progress" tab but no draft will be saved
        */
-      await expect(page.locator('#content-name')).toHaveText('In progress')
+      expect(page.locator('#content-name', { hasText: 'In progress' }))
       await expect(page.getByText('0 seconds ago')).toBeHidden()
     })
   })
 
-  test.describe
-    .serial('1.11 Validate "Delete Declaration" Button  ', async () => {
-    let page: Page
-    test.beforeAll(async ({ browser }) => {
-      page = await browser.newPage()
-    })
-
-    test.afterAll(async () => {
-      await page.close()
-    })
-    test('1.11.1 Click the "Delete Declaration" button from any page', async () => {
+  test.describe('1.11 Validate "Delete Declaration" Button  ', async () => {
+    test.beforeEach(async ({ page }) => {
       await login(page, 'k.mweene', 'test')
       await createPIN(page)
       await page.click('#header_new_event')
@@ -492,7 +475,11 @@ test.describe('1. Birth event declaration', () => {
       await page
         .getByRole('button', { name: 'Delete declaration', exact: true })
         .click()
+    })
 
+    test('1.11.1 Click the "Delete Declaration" button from any page', async ({
+      page
+    }) => {
       /*
        * Expected result: should open modal with:
        * - Title: Delete draft?
@@ -512,7 +499,7 @@ test.describe('1. Birth event declaration', () => {
       await expect(page.getByRole('button', { name: 'Confirm' })).toBeVisible()
     })
 
-    test('1.11.2 Click Cancel', async () => {
+    test('1.11.2 Click Cancel', async ({ page }) => {
       await page.getByRole('button', { name: 'Cancel' }).click()
 
       /*
@@ -523,17 +510,13 @@ test.describe('1. Birth event declaration', () => {
       ).toBeHidden()
     })
 
-    test('1.11.3 Click Confirm', async () => {
-      await page.locator('#eventToggleMenuToggleButton').click()
-      await page
-        .getByRole('button', { name: 'Delete declaration', exact: true })
-        .click()
+    test('1.11.3 Click Confirm', async ({ page }) => {
       await page.getByRole('button', { name: 'Confirm' }).click()
 
       /*
        * Expected result: should be navigated to "in-progress" tab but no draft will be saved
        */
-      await expect(page.locator('#content-name')).toHaveText('In progress')
+      expect(page.locator('#content-name', { hasText: 'In progress' }))
       await expect(page.getByText('0 seconds ago')).toBeHidden()
     })
   })
