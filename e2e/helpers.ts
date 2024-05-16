@@ -44,3 +44,12 @@ export async function getToken(username: string, password: string) {
   const verifyBody = await verifyResponse.json()
   return verifyBody.token
 }
+
+export const goToSection = async (
+  page: Page,
+  section: 'child' | 'informant' | 'father' | 'mother' | 'documents' | 'preview'
+) => {
+  while (!page.url().includes(section)) {
+    await page.getByRole('button', { name: 'Continue' }).click()
+  }
+}
