@@ -1,16 +1,7 @@
 import { test, expect, type Page } from '@playwright/test'
-import { createPIN, goToSection, login } from '../../helpers'
+import { createPIN, getRandomDate, goToSection, login } from '../../helpers'
 import faker from '@faker-js/faker'
 import { format } from 'date-fns'
-
-const getRandomDate = (minAge: number, range: number) => {
-  const randomDate = new Date()
-  randomDate.setDate(
-    new Date().getDate() - Math.random() * range - minAge * 365
-  )
-  const [yyyy, mm, dd] = randomDate.toISOString().split('T')[0].split('-')
-  return { dd, mm, yyyy }
-}
 
 test.describe.serial('8. Validate declaration review page', () => {
   let page: Page
@@ -29,6 +20,7 @@ test.describe.serial('8. Validate declaration review page', () => {
     placeOfBirth: 'Health Institution',
     birthLocation: 'Bombwe Health Post',
     informantType: 'Mother',
+    informantEmail: '',
     mother: {
       name: {
         firstNames: faker.name.firstName('female'),
@@ -44,8 +36,7 @@ test.describe.serial('8. Validate declaration review page', () => {
         Country: 'Farajaland',
         Province: 'Pualula',
         District: 'Pili'
-      },
-      email: ''
+      }
     },
     father: {
       name: {
@@ -135,13 +126,15 @@ test.describe.serial('8. Validate declaration review page', () => {
 
         await page.waitForTimeout(500) // Temporary measurement untill the bug is fixed. BUG: rerenders after selecting relation with child
 
-        declaration.mother.email =
+        declaration.informantEmail =
           declaration.mother.name.firstNames.toLowerCase() +
           '.' +
           declaration.mother.name.familyName.toLowerCase() +
           (Math.random() * 1000).toFixed(0) +
           '@gmail.com'
-        await page.locator('#registrationEmail').fill(declaration.mother.email)
+        await page
+          .locator('#registrationEmail')
+          .fill(declaration.informantEmail)
 
         await page.getByRole('button', { name: 'Continue' }).click()
       })
@@ -178,8 +171,6 @@ test.describe.serial('8. Validate declaration review page', () => {
           .getByText(declaration.mother.address.District, { exact: true })
           .click()
 
-        await page.getByText('Back').click()
-        await page.getByRole('button', { name: 'Continue' }).click()
         await page.getByRole('button', { name: 'Continue' }).click()
       })
 
@@ -328,7 +319,7 @@ test.describe.serial('8. Validate declaration review page', () => {
          * - Change button
          */
         await expect(page.locator('#informant-content #Email')).toContainText(
-          declaration.mother.email
+          declaration.informantEmail
         )
         await expect(page.locator('#informant-content #Email')).toContainText(
           'Change'
@@ -499,8 +490,444 @@ test.describe.serial('8. Validate declaration review page', () => {
     })
 
     test.describe('8.1.2 Click any "Change" link', async () => {
-      test.skip('Skipped for now', async () => {})
+      test("8.1.2.1 Change child's name", async () => {
+        await page.locator('#child-content #Full').getByText('Change').click()
+
+        declaration.child.name = {
+          firstNames: faker.name.firstName('male'),
+          familyName: faker.name.lastName('male')
+        }
+        await page
+          .locator('#firstNamesEng')
+          .fill(declaration.child.name.firstNames)
+        await page
+          .locator('#familyNameEng')
+          .fill(declaration.child.name.familyName)
+
+        await page.getByRole('button', { name: 'Back to review' }).click()
+
+        /*
+         * Expected result: should change child's name
+         */
+        await expect(page.locator('#child-content #Full')).toContainText(
+          declaration.child.name.firstNames
+        )
+        await expect(page.locator('#child-content #Full')).toContainText(
+          declaration.child.name.familyName
+        )
+      })
+
+      test("8.1.2.2 Change child's gender", async () => {
+        await page.locator('#child-content #Sex').getByText('Change').click()
+
+        declaration.child.gender = 'Female'
+
+        await page.locator('#gender').click()
+        await page.getByText(declaration.child.gender, { exact: true }).click()
+        await page.getByRole('button', { name: 'Back to review' }).click()
+
+        /*
+         * Expected result: should change child's gender
+         */
+        await expect(page.locator('#child-content #Sex')).toContainText(
+          declaration.child.gender
+        )
+      })
+
+      test("8.1.2.3 Change child's birthday", async () => {
+        await page.locator('#child-content #Date').getByText('Change').click()
+
+        declaration.child.birthDate = getRandomDate(0, 200)
+        await page.getByPlaceholder('dd').fill(declaration.child.birthDate.dd)
+        await page.getByPlaceholder('mm').fill(declaration.child.birthDate.mm)
+        await page
+          .getByPlaceholder('yyyy')
+          .fill(declaration.child.birthDate.yyyy)
+
+        await page.getByRole('button', { name: 'Back to review' }).click()
+
+        /*
+         * Expected result: should change child's birthday
+         */
+        await expect(page.locator('#child-content #Date')).toContainText(
+          format(
+            new Date(
+              Number(declaration.child.birthDate.yyyy),
+              Number(declaration.child.birthDate.mm) - 1,
+              Number(declaration.child.birthDate.dd)
+            ),
+            'dd MMMM yyyy'
+          )
+        )
+      })
+
+      test("8.1.2.4 Change child's birth location", async () => {
+        await page.locator('#child-content #Place').getByText('Change').click()
+
+        declaration.birthLocation = 'Chikonkomene Health Post'
+        await page
+          .locator('#birthLocation')
+          .fill(declaration.birthLocation.slice(0, 3))
+        await page.getByText(declaration.birthLocation).click()
+        await page.getByRole('button', { name: 'Back to review' }).click()
+
+        /*
+         * Expected result: should change child's place of birth
+         */
+        await expect(page.locator('#child-content #Place')).toContainText(
+          declaration.birthLocation
+        )
+      })
+
+      test('8.1.2.5 Change attendant at birth', async () => {
+        await page
+          .locator('#child-content #Attendant')
+          .getByText('Change')
+          .click()
+
+        declaration.attendantAtBirth = 'Midwife'
+        await page.locator('#attendantAtBirth').click()
+        await page
+          .getByText(declaration.attendantAtBirth, {
+            exact: true
+          })
+          .click()
+        await page.getByRole('button', { name: 'Back to review' }).click()
+
+        /*
+         * Expected result: should change attendant at birth
+         */
+        await expect(page.locator('#child-content #Attendant')).toContainText(
+          declaration.attendantAtBirth
+        )
+      })
+
+      test('8.1.2.6 Change type of birth', async () => {
+        await page.locator('#child-content #Type').getByText('Change').click()
+
+        declaration.birthType = 'Twin'
+        await page.locator('#birthType').click()
+        await page
+          .getByText(declaration.birthType, {
+            exact: true
+          })
+          .click()
+        await page.getByRole('button', { name: 'Back to review' }).click()
+
+        /*
+         * Expected result: should change type of birth
+         */
+        await expect(page.locator('#child-content #Type')).toContainText(
+          declaration.birthType
+        )
+      })
+
+      test("8.1.2.7 Change child's weight at birth", async () => {
+        await page.locator('#child-content #Weight').getByText('Change').click()
+
+        declaration.weightAtBirth = 2.7
+        await page
+          .locator('#weightAtBirth')
+          .fill(declaration.weightAtBirth.toString())
+        await page.getByRole('button', { name: 'Back to review' }).click()
+
+        /*
+         * Expected result: should change weight at birth
+         */
+        await expect(page.locator('#child-content #Weight')).toContainText(
+          declaration.weightAtBirth.toString()
+        )
+      })
+
+      test('8.1.2.8 Change informant type', async () => {
+        await page
+          .locator('#informant-content #Relationship')
+          .getByText('Change')
+          .click()
+
+        declaration.informantType = 'Father'
+        await page.locator('#informantType').click()
+        await page
+          .getByText(declaration.informantType, {
+            exact: true
+          })
+          .click()
+        await page.getByRole('button', { name: 'Back to review' }).click()
+
+        /*
+         * Expected result: should change informant type
+         */
+        await expect(
+          page.locator('#informant-content #Relationship')
+        ).toContainText(declaration.informantType)
+      })
+
+      test('8.1.2.9 Change registration email', async () => {
+        await page
+          .locator('#informant-content #Email')
+          .getByText('Change')
+          .click()
+
+        declaration.informantEmail =
+          declaration.father.name.firstNames.toLowerCase() +
+          '.' +
+          declaration.father.name.familyName.toLowerCase() +
+          (Math.random() * 1000).toFixed(0) +
+          '@gmail.com'
+        await page
+          .locator('#registrationEmail')
+          .fill(declaration.informantEmail)
+        await page.getByRole('button', { name: 'Back to review' }).click()
+
+        /*
+         * Expected result: should change registration email
+         */
+        await expect(page.locator('#informant-content #Email')).toContainText(
+          declaration.informantEmail
+        )
+      })
+
+      test("8.1.2.10 Change mother's name", async () => {
+        await page.locator('#mother-content #Full').getByText('Change').click()
+
+        declaration.mother.name.firstNames = faker.name.firstName('female')
+        declaration.mother.name.familyName = faker.name.lastName('female')
+        await page
+          .locator('#firstNamesEng')
+          .fill(declaration.mother.name.firstNames)
+        await page
+          .locator('#familyNameEng')
+          .fill(declaration.mother.name.familyName)
+        await page.getByRole('button', { name: 'Back to review' }).click()
+
+        /*
+         * Expected result: should change mother's name
+         */
+        await expect(page.locator('#mother-content #Full')).toContainText(
+          declaration.mother.name.firstNames
+        )
+      })
+
+      test("8.1.2.11 Change mother's birthday", async () => {
+        await page.locator('#mother-content #Date').getByText('Change').click()
+
+        declaration.mother.birthDate = getRandomDate(19, 200)
+        await page.getByPlaceholder('dd').fill(declaration.mother.birthDate.dd)
+        await page.getByPlaceholder('mm').fill(declaration.mother.birthDate.mm)
+        await page
+          .getByPlaceholder('yyyy')
+          .fill(declaration.mother.birthDate.yyyy)
+
+        await page.getByRole('button', { name: 'Back to review' }).click()
+
+        /*
+         * Expected result: should change mother's birthday
+         */
+        await expect(page.locator('#mother-content #Date')).toContainText(
+          format(
+            new Date(
+              Number(declaration.mother.birthDate.yyyy),
+              Number(declaration.mother.birthDate.mm) - 1,
+              Number(declaration.mother.birthDate.dd)
+            ),
+            'dd MMMM yyyy'
+          )
+        )
+      })
+
+      test("8.1.2.12 Change mother's nationality", async () => {
+        await page
+          .locator('#mother-content #Nationality')
+          .getByText('Change')
+          .click()
+
+        declaration.mother.nationality = 'Holy See'
+        await page.locator('#nationality').click()
+        await page
+          .getByText(declaration.mother.nationality, {
+            exact: true
+          })
+          .click()
+        await page.getByRole('button', { name: 'Back to review' }).click()
+
+        /*
+         * Expected result: should change mother's nationality
+         */
+        await expect(
+          page.locator('#mother-content #Nationality')
+        ).toContainText(declaration.mother.nationality)
+      })
+
+      test("8.1.2.13 Change mother's ID type", async () => {
+        await page.locator('#mother-content #Type').getByText('Change').click()
+
+        declaration.mother.identifier.type = 'Passport'
+        await page.locator('#motherIdType').click()
+        await page
+          .getByText(declaration.mother.identifier.type, {
+            exact: true
+          })
+          .click()
+        await page.getByRole('button', { name: 'Back to review' }).click()
+
+        /*
+         * Expected result: should change mother's ID type
+         */
+        await expect(page.locator('#mother-content #Type')).toContainText(
+          declaration.mother.identifier.type
+        )
+      })
+
+      test("8.1.2.14 Change mother's ID", async () => {
+        await page.locator('#mother-content #ID').getByText('Change').click()
+        declaration.mother.identifier.id = faker.random.numeric(10)
+        await page
+          .locator('#motherPassport')
+          .fill(declaration.mother.identifier.id)
+        await page.getByRole('button', { name: 'Back to review' }).click()
+
+        /*
+         * Expected result: should change mother's ID
+         */
+        await expect(page.locator('#mother-content #ID')).toContainText(
+          declaration.mother.identifier.id
+        )
+      })
+
+      test("8.1.2.15 Change mother's address", async () => {
+        await page.locator('#mother-content #Usual').getByText('Change').click()
+
+        declaration.mother.address.Province = 'Sulaka'
+        declaration.mother.address.District = 'Afue'
+        await page.locator('#statePrimaryMother').click()
+        await page
+          .getByText(declaration.mother.address.Province, { exact: true })
+          .click()
+        await page.locator('#districtPrimaryMother').click()
+        await page
+          .getByText(declaration.mother.address.District, { exact: true })
+          .click()
+        await page.getByRole('button', { name: 'Back to review' }).click()
+
+        /*
+         * Expected result: should change mother's address
+         */
+        await expect(page.locator('#mother-content #Usual')).toContainText(
+          declaration.mother.address.District
+        )
+        await expect(page.locator('#mother-content #Usual')).toContainText(
+          declaration.mother.address.Province
+        )
+      })
+
+      test("8.1.2.16 Change father's name", async () => {
+        await page.locator('#father-content #Full').getByText('Change').click()
+
+        declaration.father.name.firstNames = faker.name.firstName('male')
+        declaration.father.name.familyName = faker.name.lastName('male')
+        await page
+          .locator('#firstNamesEng')
+          .fill(declaration.father.name.firstNames)
+        await page
+          .locator('#familyNameEng')
+          .fill(declaration.father.name.familyName)
+        await page.getByRole('button', { name: 'Back to review' }).click()
+
+        /*
+         * Expected result: should change father's name
+         */
+        await expect(page.locator('#father-content #Full')).toContainText(
+          declaration.father.name.firstNames
+        )
+      })
+
+      test("8.1.2.17 Change father's birthday", async () => {
+        await page.locator('#father-content #Date').getByText('Change').click()
+
+        declaration.father.birthDate = getRandomDate(21, 200)
+        await page.getByPlaceholder('dd').fill(declaration.father.birthDate.dd)
+        await page.getByPlaceholder('mm').fill(declaration.father.birthDate.mm)
+        await page
+          .getByPlaceholder('yyyy')
+          .fill(declaration.father.birthDate.yyyy)
+
+        await page.getByRole('button', { name: 'Back to review' }).click()
+
+        /*
+         * Expected result: should change father's birthday
+         */
+        await expect(page.locator('#father-content #Date')).toContainText(
+          format(
+            new Date(
+              Number(declaration.father.birthDate.yyyy),
+              Number(declaration.father.birthDate.mm) - 1,
+              Number(declaration.father.birthDate.dd)
+            ),
+            'dd MMMM yyyy'
+          )
+        )
+      })
+
+      test("8.1.2.18 Change father's nationality", async () => {
+        await page
+          .locator('#father-content #Nationality')
+          .getByText('Change')
+          .click()
+
+        declaration.father.nationality = 'Holy See'
+        await page.locator('#nationality').click()
+        await page
+          .getByText(declaration.father.nationality, {
+            exact: true
+          })
+          .click()
+        await page.getByRole('button', { name: 'Back to review' }).click()
+
+        /*
+         * Expected result: should change father's nationality
+         */
+        await expect(
+          page.locator('#father-content #Nationality')
+        ).toContainText(declaration.father.nationality)
+      })
+
+      test("8.1.2.19 Change father's ID type", async () => {
+        await page.locator('#father-content #Type').getByText('Change').click()
+
+        declaration.father.identifier.type = 'Passport'
+        await page.locator('#fatherIdType').click()
+        await page
+          .getByText(declaration.father.identifier.type, {
+            exact: true
+          })
+          .click()
+        await page.getByRole('button', { name: 'Back to review' }).click()
+
+        /*
+         * Expected result: should change father's ID type
+         */
+        await expect(page.locator('#father-content #Type')).toContainText(
+          declaration.father.identifier.type
+        )
+      })
+
+      test("8.1.2.20 Change father's ID", async () => {
+        await page.locator('#father-content #ID').getByText('Change').click()
+        declaration.father.identifier.id = faker.random.numeric(10)
+        await page
+          .locator('#fatherPassport')
+          .fill(declaration.father.identifier.id)
+        await page.getByRole('button', { name: 'Back to review' }).click()
+
+        /*
+         * Expected result: should change father's ID
+         */
+        await expect(page.locator('#father-content #ID')).toContainText(
+          declaration.father.identifier.id
+        )
+      })
     })
+
     test.describe('8.1.3 Validate supporting document', async () => {
       test.skip('Skipped for now', async () => {})
     })
@@ -663,7 +1090,7 @@ test.describe.serial('8. Validate declaration review page', () => {
        * - Change button
        */
       await expect(page.locator('#informant-content #Email')).toContainText(
-        declaration.mother.email
+        declaration.informantEmail
       )
       await expect(page.locator('#informant-content #Email')).toContainText(
         'Change'
@@ -992,7 +1419,7 @@ test.describe.serial('8. Validate declaration review page', () => {
        * - Change button
        */
       await expect(page.locator('#informant-content #Email')).toContainText(
-        declaration.mother.email
+        declaration.informantEmail
       )
       await expect(page.locator('#informant-content #Email')).toContainText(
         'Change'

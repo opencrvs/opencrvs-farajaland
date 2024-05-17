@@ -53,3 +53,15 @@ export const goToSection = async (
     await page.getByRole('button', { name: 'Continue' }).click()
   }
 }
+
+export const getRandomDate = (minAge: number, range: number) => {
+  const randomDate = new Date()
+  randomDate.setDate(
+    new Date().getDate() -
+      Math.random() * range -
+      minAge * 365 -
+      (minAge + 3) / 4
+  )
+  const [yyyy, mm, dd] = randomDate.toISOString().split('T')[0].split('-')
+  return { dd, mm, yyyy }
+}
