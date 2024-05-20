@@ -35,6 +35,11 @@ all:
           - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINUml9O5ySwPtEMD1yGEYHlf9Z3jro97NWAnM9+ew9gn tahmidrahman.dsi@gmail.com
         state: present
         sudoer: true
+      - name: jamil
+        ssh_keys:
+          - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOyAGCqgAJ98+lYS2RBxxYgbMlIDZF1VqexG+WHIznbe jamil31415926@gmail.com
+        state: present
+        sudoer: true
     enable_backups: false
 docker-manager-first:
   hosts:
