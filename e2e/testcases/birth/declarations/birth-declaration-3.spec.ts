@@ -104,9 +104,9 @@ test.describe.serial('3. Birth declaration case - 3', () => {
     await page.close()
   })
 
-  test.describe('3.1 Declaratin started by FA', async () => {
+  test.describe('3.1 Declaratin started by RA', async () => {
     test.beforeAll(async () => {
-      await login(page, 'k.bwalya', 'test')
+      await login(page, 'f.katongo', 'test')
       await createPIN(page)
       await page.click('#header_new_event')
       await page.getByLabel('Birth').click()
@@ -695,9 +695,9 @@ test.describe.serial('3. Birth declaration case - 3', () => {
       )
     })
 
-    test('3.1.8 Send for review', async () => {
-      await page.getByRole('button', { name: 'Send for review' }).click()
-      await expect(page.getByText('Send for review?')).toBeVisible()
+    test('3.1.8 Send for approval', async () => {
+      await page.getByRole('button', { name: 'Send for approval' }).click()
+      await expect(page.getByText('Send for approval?')).toBeVisible()
       await page.getByRole('button', { name: 'Confirm' }).click()
       await expect(page.getByText('Farajaland CRS')).toBeVisible()
 
@@ -710,10 +710,10 @@ test.describe.serial('3. Birth declaration case - 3', () => {
         timeout: 1000 * 10
       })
 
-      await page.getByRole('button', { name: 'Sent for review' }).click()
+      await page.getByRole('button', { name: 'Sent for approval' }).click()
 
       /*
-       * Expected result: The declaration should be in sent for review
+       * Expected result: The declaration should be in sent for approval
        */
       await expect(
         page.getByRole('button', {
@@ -723,9 +723,9 @@ test.describe.serial('3. Birth declaration case - 3', () => {
     })
   })
 
-  test.describe('3.2 Declaration Review by RA', async () => {
-    test('3.2.1 Navigate to the declaration preview page', async () => {
-      await login(page, 'f.katongo', 'test')
+  test.describe('3.2 Declaration Review by Local Registrar', async () => {
+    test('3.2.1 Navigate to the declaration review page', async () => {
+      await login(page, 'k.mweene', 'test')
       await createPIN(page)
       await page.getByRole('button', { name: 'Ready for review' }).click()
       await page
