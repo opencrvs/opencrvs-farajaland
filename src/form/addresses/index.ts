@@ -19,7 +19,9 @@ import {
   informantNotMotherOrFather,
   isInformantSpouse,
   mothersDetailsDontExistOnOtherPage,
-  primaryAddressSameAsOtherPrimaryAddress /*,
+  primaryAddressSameAsOtherPrimaryAddress,
+  isDeceasedAddressNotAvailable,
+  isMotherAddressNotAvailable /*,
   SPOUSE_DETAILS_DONT_EXIST*/
 } from '../common/default-validation-conditionals'
 import { formMessageDescriptors } from '../common/messages'
@@ -128,7 +130,7 @@ export const defaultAddressConfiguration: IAddressConfiguration[] = [
         label: formMessageDescriptors.primaryAddressSameAsOtherPrimary,
         xComparisonSection: 'father',
         yComparisonSection: 'mother',
-        conditionalCase: `(${detailsDontExist} || ${mothersDetailsDontExistOnOtherPage})`
+        conditionalCase: `(${detailsDontExist} || ${mothersDetailsDontExistOnOtherPage}) || ${isMotherAddressNotAvailable}`
       },
       {
         config: AddressCases.PRIMARY_ADDRESS,
@@ -176,7 +178,7 @@ export const defaultAddressConfiguration: IAddressConfiguration[] = [
       {
         config: AddressCopyConfigCases.PRIMARY_ADDRESS_SAME_AS_OTHER_PRIMARY,
         label: formMessageDescriptors.primaryAddressSameAsDeceasedsPrimary,
-        conditionalCase: `${isInformantSpouse}`,
+        conditionalCase: `${isInformantSpouse} || ${isDeceasedAddressNotAvailable}`,
         xComparisonSection: 'informant',
         yComparisonSection: 'deceased'
       },
@@ -249,7 +251,7 @@ export const defaultAddressConfiguration: IAddressConfiguration[] = [
         label: formMessageDescriptors.primaryAddressSameAsDeceasedsPrimary,
         xComparisonSection: 'spouse',
         yComparisonSection: 'deceased',
-        conditionalCase: `${detailsDontExist}`
+        conditionalCase: `${detailsDontExist} || ${isDeceasedAddressNotAvailable}`
       },
       {
         config: AddressCases.PRIMARY_ADDRESS,
