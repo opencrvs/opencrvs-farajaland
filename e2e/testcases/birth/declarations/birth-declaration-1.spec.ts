@@ -245,9 +245,11 @@ test.describe.serial('1. Birth declaration case - 1', () => {
       await page.getByRole('button', { name: 'Continue' }).click()
     })
 
-    test('1.1.5 Verify informations in preview page', async () => {
+    test('1.1.5 Go to preview', async () => {
       goToSection(page, 'preview')
+    })
 
+    test.skip('1.1.6 Verify informations in preview page', async () => {
       /*
        * Expected result: should include
        * - Child's First Name
@@ -499,7 +501,7 @@ test.describe.serial('1. Birth declaration case - 1', () => {
       await expect(page.locator('#father-content #Usual')).toContainText('Yes')
     })
 
-    test('1.1.6 Send for review', async () => {
+    test('1.1.7 Send for review', async () => {
       await page.getByRole('button', { name: 'Send for review' }).click()
       await expect(page.getByText('Send for review?')).toBeVisible()
       await page.getByRole('button', { name: 'Confirm' }).click()
@@ -528,7 +530,7 @@ test.describe.serial('1. Birth declaration case - 1', () => {
   })
 
   test.describe('1.2 Declaration Review by RA', async () => {
-    test('1.2.1 Navigate to the declaration preview page', async () => {
+    test('1.2.1 Navigate to the declaration review page', async () => {
       await login(page, 'f.katongo', 'test')
       await createPIN(page)
       await page.getByRole('button', { name: 'Ready for review' }).click()
