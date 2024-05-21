@@ -37,6 +37,7 @@ See [Releases](https://github.com/opencrvs/opencrvs-farajaland/releases) for rel
 - Each environment now has a dedicated docker-compose-<environment>-deploy.yml. Use `environment:init` to create a new environment and generate a corresponding file for customizable configurations.
 - 🔒 OpenHIM console is no longer exposed via HTTP.
 - Ansible playbooks are refactored into smaller task files.
+- Fixed National ID validation for informant, father and mother. 
 
 ### New features
 
