@@ -412,9 +412,6 @@ test.describe.serial('4. Birth declaration case - 4', () => {
         declaration.placeOfBirth
       )
       await expect(page.locator('#child-content #Place')).toContainText(
-        declaration.placeOfBirth
-      )
-      await expect(page.locator('#child-content #Place')).toContainText(
         declaration.birthLocation.country
       )
       await expect(page.locator('#child-content #Place')).toContainText(
@@ -779,9 +776,6 @@ test.describe.serial('4. Birth declaration case - 4', () => {
        * - Child's Place of birth type
        * - Child's Place of birth details
        */
-      await expect(page.locator('#child-content #Place')).toContainText(
-        declaration.placeOfBirth
-      )
       await expect(page.locator('#child-content #Place')).toContainText(
         declaration.placeOfBirth
       )

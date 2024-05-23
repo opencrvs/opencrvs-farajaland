@@ -544,7 +544,7 @@ test.describe.serial('1. Birth declaration case - 1', () => {
       await page.getByRole('button', { name: 'Review', exact: true }).click()
     })
 
-    test('1.2.2 Verify informations in preview page', async () => {
+    test('1.2.2 Verify informations in review page', async () => {
       /*
        * Expected result: should include
        * - Child's First Name
