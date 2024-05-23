@@ -61,7 +61,7 @@ import {
   detailsExistConditional,
   ageOfIndividualValidators,
   ageOfParentsConditionals,
-  isMotherAddressNotAvailable
+  hideIfMotherAddressNotAvailable
 } from '../common/default-validation-conditionals'
 import {
   informantFirstNameConditionals,
@@ -443,10 +443,7 @@ export const birthForm: ISerializedForm = {
             // ADDRESS FIELDS WILL RENDER HERE
             divider('father-address-seperator', [
               ...detailsExist,
-              {
-                action: 'hide',
-                expression: isMotherAddressNotAvailable
-              }
+              ...hideIfMotherAddressNotAvailable
             ]),
             getMaritalStatus(certificateHandlebars.fatherMaritalStatus, [
               {

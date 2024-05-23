@@ -20,8 +20,8 @@ import {
   isInformantSpouse,
   mothersDetailsDontExistOnOtherPage,
   primaryAddressSameAsOtherPrimaryAddress,
-  isDeceasedAddressNotAvailable,
-  isMotherAddressNotAvailable /*,
+  hideIfDeceasedAddressNotAvailable,
+  hideIfMotherAddressNotAvailable /*,
   SPOUSE_DETAILS_DONT_EXIST*/
 } from '../common/default-validation-conditionals'
 import { formMessageDescriptors } from '../common/messages'
@@ -123,14 +123,14 @@ export const defaultAddressConfiguration: IAddressConfiguration[] = [
       {
         config: AddressSubsections.PRIMARY_ADDRESS_SUBSECTION,
         label: formMessageDescriptors.primaryAddress,
-        conditionalCase: `${FATHER_DETAILS_DONT_EXIST} || ${isMotherAddressNotAvailable}`
+        conditionalCase: `${FATHER_DETAILS_DONT_EXIST} || ${hideIfMotherAddressNotAvailable[0].expression}`
       },
       {
         config: AddressCopyConfigCases.PRIMARY_ADDRESS_SAME_AS_OTHER_PRIMARY,
         label: formMessageDescriptors.primaryAddressSameAsOtherPrimary,
         xComparisonSection: 'father',
         yComparisonSection: 'mother',
-        conditionalCase: `(${detailsDontExist} || ${mothersDetailsDontExistOnOtherPage}) || ${isMotherAddressNotAvailable}`
+        conditionalCase: `(${detailsDontExist} || ${mothersDetailsDontExistOnOtherPage}) || ${hideIfMotherAddressNotAvailable[0].expression}`
       },
       {
         config: AddressCases.PRIMARY_ADDRESS,
@@ -178,7 +178,7 @@ export const defaultAddressConfiguration: IAddressConfiguration[] = [
       {
         config: AddressCopyConfigCases.PRIMARY_ADDRESS_SAME_AS_OTHER_PRIMARY,
         label: formMessageDescriptors.primaryAddressSameAsDeceasedsPrimary,
-        conditionalCase: `${isInformantSpouse} || ${isDeceasedAddressNotAvailable}`,
+        conditionalCase: `${isInformantSpouse} || ${hideIfDeceasedAddressNotAvailable[0].expression}`,
         xComparisonSection: 'informant',
         yComparisonSection: 'deceased'
       },
@@ -244,14 +244,14 @@ export const defaultAddressConfiguration: IAddressConfiguration[] = [
       {
         config: AddressSubsections.PRIMARY_ADDRESS_SUBSECTION,
         label: formMessageDescriptors.primaryAddress,
-        conditionalCase: `${SPOUSE_DETAILS_DONT_EXIST} || ${isDeceasedAddressNotAvailable}`
+        conditionalCase: `${SPOUSE_DETAILS_DONT_EXIST} || ${hideIfDeceasedAddressNotAvailable[0].expression}`
       },
       {
         config: AddressCopyConfigCases.PRIMARY_ADDRESS_SAME_AS_OTHER_PRIMARY,
         label: formMessageDescriptors.primaryAddressSameAsDeceasedsPrimary,
         xComparisonSection: 'spouse',
         yComparisonSection: 'deceased',
-        conditionalCase: `${detailsDontExist} || ${isDeceasedAddressNotAvailable}`
+        conditionalCase: `${detailsDontExist} || ${hideIfDeceasedAddressNotAvailable[0].expression}`
       },
       {
         config: AddressCases.PRIMARY_ADDRESS,
