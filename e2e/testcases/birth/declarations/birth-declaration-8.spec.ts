@@ -255,7 +255,15 @@ test.describe.serial('8. Birth declaration case - 8', () => {
       await createPIN(page)
       await page.getByRole('button', { name: 'In Progress' }).click()
       await page.getByRole('button', { name: 'Field Agents' }).click()
-      await page.locator('#name_0').click()
+
+      await expect(page.locator('#name_0')).toBeVisible()
+      const [firstButton] = await page
+        .getByRole('button', {
+          name: 'No name provided'
+        })
+        .all()
+      await firstButton.click()
+
       await page.getByLabel('Assign record').click()
       await page.getByRole('button', { name: 'Assign', exact: true }).click()
       await page.getByRole('button', { name: 'Update', exact: true }).click()
