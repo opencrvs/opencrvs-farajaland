@@ -123,7 +123,7 @@ export const defaultAddressConfiguration: IAddressConfiguration[] = [
       {
         config: AddressSubsections.PRIMARY_ADDRESS_SUBSECTION,
         label: formMessageDescriptors.primaryAddress,
-        conditionalCase: `${FATHER_DETAILS_DONT_EXIST}`
+        conditionalCase: `${FATHER_DETAILS_DONT_EXIST} || ${isMotherAddressNotAvailable}`
       },
       {
         config: AddressCopyConfigCases.PRIMARY_ADDRESS_SAME_AS_OTHER_PRIMARY,
@@ -244,7 +244,7 @@ export const defaultAddressConfiguration: IAddressConfiguration[] = [
       {
         config: AddressSubsections.PRIMARY_ADDRESS_SUBSECTION,
         label: formMessageDescriptors.primaryAddress,
-        conditionalCase: `${SPOUSE_DETAILS_DONT_EXIST}`
+        conditionalCase: `${SPOUSE_DETAILS_DONT_EXIST} || ${isDeceasedAddressNotAvailable}`
       },
       {
         config: AddressCopyConfigCases.PRIMARY_ADDRESS_SAME_AS_OTHER_PRIMARY,

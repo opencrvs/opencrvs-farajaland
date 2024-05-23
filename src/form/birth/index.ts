@@ -60,7 +60,8 @@ import {
   informantNotMotherOrFather,
   detailsExistConditional,
   ageOfIndividualValidators,
-  ageOfParentsConditionals
+  ageOfParentsConditionals,
+  isMotherAddressNotAvailable
 } from '../common/default-validation-conditionals'
 import {
   informantFirstNameConditionals,
@@ -440,7 +441,13 @@ export const birthForm: ISerializedForm = {
             // preceding field of address fields
             divider('father-nid-seperator', detailsExist),
             // ADDRESS FIELDS WILL RENDER HERE
-            divider('father-address-seperator', detailsExist),
+            divider('father-address-seperator', [
+              ...detailsExist,
+              {
+                action: 'hide',
+                expression: isMotherAddressNotAvailable
+              }
+            ]),
             getMaritalStatus(certificateHandlebars.fatherMaritalStatus, [
               {
                 action: 'hide',

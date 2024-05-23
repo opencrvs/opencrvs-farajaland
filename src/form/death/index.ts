@@ -62,7 +62,8 @@ import {
   spouseFamilyNameConditionals,
   spouseFirstNameConditionals,
   hideIfInformantSpouse,
-  hideIfNidIntegrationEnabled
+  hideIfNidIntegrationEnabled,
+  isDeceasedAddressNotAvailable
 } from '../common/default-validation-conditionals'
 import { documentsSection, registrationSection } from './required-sections'
 import {
@@ -360,9 +361,20 @@ export const deathForm = {
             getIDType('death', 'spouse', detailsExist, true),
             ...getIDNumberFields('spouse', detailsExist, true),
             // preceding field of address fields
-            divider('spouse-nid-seperator', detailsExist),
+            divider('spouse-nid-seperator', [
+              ...detailsExist,
+              {
+                action: 'hide',
+                expression: isDeceasedAddressNotAvailable
+              }
+            ]),
             // ADDRESS FIELDS WILL RENDER HERE
-            divider('spouse-address-separator')
+            divider('spouse-address-separator', [
+              {
+                action: 'hide',
+                expression: isDeceasedAddressNotAvailable
+              }
+            ])
           ],
           previewGroups: [spouseNameInEnglish]
         }
