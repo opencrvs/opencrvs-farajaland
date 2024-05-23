@@ -123,7 +123,7 @@ test.describe('1. Marriage event validation', () => {
       await expect(page.locator('#name_0')).toBeVisible()
     })
   })
-  test('Testcase 1 Exit button', async ({ page }) => {
+  test('1.12 Validate exit button', async ({ page }) => {
     await page.click('#header_new_event')
     await page.click('#select_marriage_event')
     await page.click('#continue')
