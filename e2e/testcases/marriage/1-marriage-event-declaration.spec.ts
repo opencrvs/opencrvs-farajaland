@@ -154,7 +154,7 @@ test.describe('1. Marriage event validation', () => {
     })
   })
 
-  test('Testcase 1 Three dot menu button', async ({ page }) => {
+  test('1.13 Validate three dot menu button', async ({ page }) => {
     await page.click('#header_new_event')
     await page.click('#select_marriage_event')
     await page.click('#continue')
