@@ -97,7 +97,7 @@ test.describe('1. Marriage event validation', () => {
       await expect(page.locator('#review_header')).toBeVisible()
     })
   })
-  test('Testcase 1 Save and exit button', async ({ page }) => {
+  test('1.11 Validate save and exit button', async ({ page }) => {
     await page.click('#header_new_event')
     await page.click('#select_marriage_event')
     await page.click('#continue')
