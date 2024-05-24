@@ -166,7 +166,7 @@ jobs:
         id: deploy
         continue-on-error: ${{ inputs.debug == 'true' }}
         run: |
-          sudo apt-get update && apt-get install -y moreutils
+          sudo apt-get update && sudo apt-get install -y moreutils
           cd ./${{ github.event.repository.name }}
           yarn deploy \
           --clear_data=no \
