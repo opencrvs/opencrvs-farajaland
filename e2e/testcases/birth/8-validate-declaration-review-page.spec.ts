@@ -127,12 +127,6 @@ test.describe.serial('8. Validate declaration review page', () => {
 
         await page.waitForTimeout(500) // Temporary measurement untill the bug is fixed. BUG: rerenders after selecting relation with child
 
-        declaration.informantEmail =
-          declaration.mother.name.firstNames.toLowerCase() +
-          '.' +
-          declaration.mother.name.familyName.toLowerCase() +
-          (Math.random() * 1000).toFixed(0) +
-          '@gmail.com'
         await page
           .locator('#registrationEmail')
           .fill(declaration.informantEmail)
