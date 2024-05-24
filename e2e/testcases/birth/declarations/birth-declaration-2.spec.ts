@@ -165,6 +165,7 @@ test.describe.serial('2. Birth declaration case - 2', () => {
     })
 
     test('2.1.2 Fill informant details', async () => {
+      await page.waitForTimeout(500)
       await page.locator('#informantType').click()
       await page
         .getByText(declaration.informantType, {

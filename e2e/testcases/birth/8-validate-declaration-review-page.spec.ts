@@ -117,6 +117,7 @@ test.describe.serial('8. Validate declaration review page', () => {
       })
 
       test('8.1.0.2 Fill informant details', async () => {
+        await page.waitForTimeout(500)
         await page.locator('#informantType').click()
         await page
           .getByText(declaration.informantType, {
@@ -646,6 +647,7 @@ test.describe.serial('8. Validate declaration review page', () => {
           .click()
 
         declaration.informantType = 'Father'
+        await page.waitForTimeout(500)
         await page.locator('#informantType').click()
         await page
           .getByText(declaration.informantType, {
