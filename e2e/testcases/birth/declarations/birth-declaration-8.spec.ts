@@ -57,6 +57,8 @@ test.describe.serial('8. Birth declaration case - 8', () => {
         .locator('#otherInformantType')
         .fill(declaration.informant.relation)
 
+      await page.waitForTimeout(500)
+
       await page.getByRole('button', { name: 'Continue' }).click()
     })
 

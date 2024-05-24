@@ -141,6 +141,8 @@ test.describe.serial('1. Birth declaration case - 1', () => {
 
       await page.locator('#registrationEmail').fill(declaration.informantEmail)
 
+      await page.waitForTimeout(500)
+
       await page.getByRole('button', { name: 'Continue' }).click()
     })
 
@@ -201,6 +203,8 @@ test.describe.serial('1. Birth declaration case - 1', () => {
       await page
         .getByText(declaration.mother.levelOfEducation, { exact: true })
         .click()
+
+      await page.waitForTimeout(500)
 
       await page.getByRole('button', { name: 'Continue' }).click()
     })

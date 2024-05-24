@@ -61,6 +61,8 @@ test.describe.serial('10. Birth declaration case - 10', () => {
     test("10.1.3 Fill mother's details", async () => {
       await page.getByLabel("Mother's details are not available").check()
 
+      await page.waitForTimeout(500)
+
       await page.getByRole('button', { name: 'Continue' }).click()
     })
 
