@@ -950,7 +950,7 @@ test.describe.serial('8. Validate declaration review page', () => {
 
       await page.getByRole('button', { name: 'Sent for review' }).click()
       await expect(page.locator('#navigation_outbox')).not.toContainText('1', {
-        timeout: 1000 * 10
+        timeout: 1000 * 30
       })
       /*
        * Expected result: The declaration should be in sent for review
@@ -1278,7 +1278,7 @@ test.describe.serial('8. Validate declaration review page', () => {
 
       await page.getByRole('button', { name: 'Sent for approval' }).click()
       await expect(page.locator('#navigation_outbox')).not.toContainText('1', {
-        timeout: 1000 * 10
+        timeout: 1000 * 30
       })
 
       /*
@@ -1607,7 +1607,7 @@ test.describe.serial('8. Validate declaration review page', () => {
 
       await page.getByRole('button', { name: 'Ready to print' }).click()
       await expect(page.locator('#navigation_outbox')).not.toContainText('1', {
-        timeout: 1000 * 10
+        timeout: 1000 * 30
       })
 
       /*

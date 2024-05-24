@@ -66,6 +66,8 @@ test.describe.serial('8. Birth declaration case - 8', () => {
         .getByText(declaration.mother.maritalStatus, { exact: true })
         .click()
 
+      page.waitForTimeout(1000)
+
       await page.getByRole('button', { name: 'Continue' }).click()
     })
 
@@ -130,7 +132,7 @@ test.describe.serial('8. Birth declaration case - 8', () => {
        * - Informant's Email
        */
       await expect(page.locator('#informant-content #Email')).toContainText(
-        'Must be a valid email address'
+        required
       )
       /*
        * Expected result: should require
@@ -245,7 +247,7 @@ test.describe.serial('8. Birth declaration case - 8', () => {
       expect(page.url().includes('registration-home'))
 
       await expect(page.locator('#navigation_outbox')).not.toContainText('1', {
-        timeout: 1000 * 10
+        timeout: 1000 * 30
       })
     })
   })

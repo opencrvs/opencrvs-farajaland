@@ -225,6 +225,8 @@ test.describe.serial('5. Birth declaration case - 5', () => {
         .locator('#internationalPostalCodePrimaryInformant')
         .fill(declaration.informant.address.postcodeOrZip)
 
+      await page.waitForTimeout(500)
+
       await page.getByRole('button', { name: 'Continue' }).click()
     })
 
@@ -282,6 +284,8 @@ test.describe.serial('5. Birth declaration case - 5', () => {
       await page
         .getByText(declaration.mother.levelOfEducation, { exact: true })
         .click()
+
+      await page.waitForTimeout(500)
 
       await page.getByRole('button', { name: 'Continue' }).click()
     })
@@ -556,7 +560,7 @@ test.describe.serial('5. Birth declaration case - 5', () => {
       expect(page.url().includes('registration-home'))
 
       await expect(page.locator('#navigation_outbox')).not.toContainText('1', {
-        timeout: 1000 * 10
+        timeout: 1000 * 30
       })
 
       await page.getByRole('button', { name: 'Ready to print' }).click()

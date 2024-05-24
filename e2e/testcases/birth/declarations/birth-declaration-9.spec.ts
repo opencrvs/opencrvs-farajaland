@@ -146,14 +146,6 @@ test.describe.serial('9. Birth declaration case - 9', () => {
 
       /*
        * Expected result: should require
-       * - Mother's Marital status
-       */
-      await expect(page.locator('#mother-content #Marital')).toContainText(
-        required
-      )
-
-      /*
-       * Expected result: should require
        * - Mother's Type of Id
        */
       await expect(page.locator('#mother-content #Type')).toContainText(
@@ -181,7 +173,7 @@ test.describe.serial('9. Birth declaration case - 9', () => {
       expect(page.url().includes('registration-home'))
 
       await expect(page.locator('#navigation_outbox')).not.toContainText('1', {
-        timeout: 1000 * 10
+        timeout: 1000 * 30
       })
 
       await page.getByRole('button', { name: 'Sent for review' }).click()

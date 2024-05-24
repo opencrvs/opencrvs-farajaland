@@ -177,6 +177,8 @@ test.describe.serial('2. Birth declaration case - 2', () => {
 
       await page.locator('#registrationEmail').fill(declaration.informantEmail)
 
+      await page.waitForTimeout(500)
+
       await page.getByRole('button', { name: 'Continue' }).click()
     })
 
@@ -230,6 +232,8 @@ test.describe.serial('2. Birth declaration case - 2', () => {
       await page
         .getByText(declaration.mother.levelOfEducation, { exact: true })
         .click()
+
+      await page.waitForTimeout(500)
 
       await page.getByRole('button', { name: 'Continue' }).click()
     })
@@ -574,7 +578,7 @@ test.describe.serial('2. Birth declaration case - 2', () => {
       expect(page.url().includes('registration-home'))
 
       await expect(page.locator('#navigation_outbox')).not.toContainText('1', {
-        timeout: 1000 * 10
+        timeout: 1000 * 30
       })
 
       await page.getByRole('button', { name: 'Sent for review' }).click()

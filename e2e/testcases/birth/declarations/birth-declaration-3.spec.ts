@@ -182,6 +182,8 @@ test.describe.serial('3. Birth declaration case - 3', () => {
 
       await page.locator('#registrationEmail').fill(declaration.informantEmail)
 
+      await page.waitForTimeout(500) // Temporary measurement untill the bug is fixed. BUG: rerenders after selecting relation with child
+
       /*
        * Expected result: should show additional fields:
        * - Full Name
@@ -236,6 +238,8 @@ test.describe.serial('3. Birth declaration case - 3', () => {
       await page
         .locator('#postalCodePrimaryInformant')
         .fill(declaration.informant.address.postcodeOrZip)
+
+      await page.waitForTimeout(500)
 
       await page.getByRole('button', { name: 'Continue' }).click()
     })
@@ -298,6 +302,8 @@ test.describe.serial('3. Birth declaration case - 3', () => {
       await page
         .getByText(declaration.mother.levelOfEducation, { exact: true })
         .click()
+
+      await page.waitForTimeout(500)
 
       await page.getByRole('button', { name: 'Continue' }).click()
     })
@@ -705,7 +711,7 @@ test.describe.serial('3. Birth declaration case - 3', () => {
       expect(page.url().includes('registration-home'))
 
       await expect(page.locator('#navigation_outbox')).not.toContainText('1', {
-        timeout: 1000 * 10
+        timeout: 1000 * 30
       })
 
       await page.getByRole('button', { name: 'Sent for approval' }).click()

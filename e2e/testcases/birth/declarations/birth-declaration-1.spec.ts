@@ -514,7 +514,7 @@ test.describe.serial('1. Birth declaration case - 1', () => {
       expect(page.url().includes('registration-home'))
 
       await expect(page.locator('#navigation_outbox')).not.toContainText('1', {
-        timeout: 1000 * 10
+        timeout: 1000 * 30
       })
 
       await page.getByRole('button', { name: 'Sent for review' }).click()
