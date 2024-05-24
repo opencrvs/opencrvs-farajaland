@@ -264,6 +264,12 @@ split_and_join() {
 }
 
 download_docker_image() {
+  if [[ $EXISTING_IMAGES == *"$tag"* ]]; then
+    echo "$tag already exists on the machine. Skipping..."
+    return
+  fi
+
+  echo "Downloading $tag"
   until configured_ssh "cd /opt/opencrvs && docker pull $1"
   do
     echo "Server failed to download $1. Retrying..."
@@ -280,12 +286,6 @@ docker_stack_deploy() {
   IMAGE_TAGS_TO_DOWNLOAD=$(get_docker_tags_from_compose_files "$COMPOSE_FILES_USED")
 
   for tag in ${IMAGE_TAGS_TO_DOWNLOAD[@]}; do
-    if [[ $EXISTING_IMAGES == *"$tag"* ]]; then
-      echo "$tag already exists on the machine. Skipping..."
-      continue
-    fi
-
-    echo "Downloading $tag"
     download_docker_image "$tag" &
   done
   wait
