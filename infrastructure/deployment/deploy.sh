@@ -256,11 +256,19 @@ get_docker_tags_from_compose_files() {
 }
 
 split_and_join() {
-   separator_for_splitting=$1
-   separator_for_joining=$2
-   text=$3
-   SPLIT=$(echo $text | sed -e "s/$separator_for_splitting/$separator_for_joining/g")
-   echo $SPLIT
+  separator_for_splitting=$1
+  separator_for_joining=$2
+  text=$3
+  SPLIT=$(echo $text | sed -e "s/$separator_for_splitting/$separator_for_joining/g")
+  echo $SPLIT
+}
+
+download_docker_image() {
+  until configured_ssh "cd /opt/opencrvs && docker pull $1"
+  do
+    echo "Server failed to download $1. Retrying..."
+    sleep 2
+  done
 }
 
 docker_stack_deploy() {
@@ -278,13 +286,9 @@ docker_stack_deploy() {
     fi
 
     echo "Downloading $tag"
-
-    until configured_ssh "cd /opt/opencrvs && docker pull $tag"
-    do
-      echo "Server failed to download $tag. Retrying..."
-      sleep 5
-    done
+    download_docker_image "$tag" &
   done
+  wait
 
   echo "Updating docker swarm stack with new compose files"
 
