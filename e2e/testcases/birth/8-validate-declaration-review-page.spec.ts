@@ -20,7 +20,7 @@ test.describe.serial('8. Validate declaration review page', () => {
     placeOfBirth: 'Health Institution',
     birthLocation: 'Bombwe Health Post',
     informantType: 'Mother',
-    informantEmail: '',
+    informantEmail: faker.internet.email(),
     mother: {
       name: {
         firstNames: faker.name.firstName('female'),
