@@ -82,7 +82,7 @@ test.describe.serial('8. Birth declaration case - 8', () => {
       goToSection(page, 'preview')
     })
 
-    test.skip('8.1.6 Verify informations in preview page', async () => {
+    test('8.1.6 Verify informations in preview page', async () => {
       /*
        * Expected result: should require
        * - Child's First Name

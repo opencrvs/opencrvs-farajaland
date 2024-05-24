@@ -298,7 +298,7 @@ test.describe.serial('2. Birth declaration case - 2', () => {
       goToSection(page, 'preview')
     })
 
-    test.skip('2.1.6 Verify informations in preview page', async () => {
+    test('2.1.6 Verify informations in preview page', async () => {
       /*
        * Expected result: should include
        * - Child's First Name
