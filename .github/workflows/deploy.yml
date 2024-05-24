@@ -175,7 +175,8 @@ jobs:
           --ssh_user=${{ secrets.SSH_USER }} \
           --version=${{ inputs.core-image-tag }} \
           --country_config_version=${{ inputs.countryconfig-image-tag }} \
-          --replicas=${{ vars.REPLICAS }}
+          --replicas=${{ vars.REPLICAS }} \
+          | ts
 
       - name: Setup tmate session
         uses: mxschmitt/action-tmate@v3
