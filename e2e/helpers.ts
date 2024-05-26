@@ -57,8 +57,8 @@ export async function ensureLoginPageReady(page: Page) {
 }
 
 export async function validateSectionButtons(page: Page) {
-  await expect(page.locator('#next_section')).toBeVisible()
+  await expect(page.getByText('Continue', { exact: true })).toBeVisible()
   await expect(page.getByText('Exit', { exact: true })).toBeVisible()
-  await expect(page.locator('#save-exit-btn')).toBeVisible()
+  await expect(page.getByText('Save & Exit', { exact: true })).toBeVisible()
   await expect(page.locator('#eventToggleMenuToggleButton')).toBeVisible()
 }
