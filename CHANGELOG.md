@@ -2,7 +2,14 @@
 ## 1.5.0 (TBD)
 
 - Remove dependency on openhim. The openhim db is kept for backwards compatibility reasons and will be removed in v1.6
-- Change condition of Number of previous births 
+- Change condition of Number of previous births
+
+**Infrastructure**
+
+- Treat backup host identically to other hosts. To migrate:
+  1. Move all inventory files (qa.yml, production.yml...) from `infrastructure/server-setup` to `infrastructure/server-setup/inventory`
+  2. Run environment creator for your backup server `yarn environment:init --environment=backup`
+
 
 ## [1.3.4](https://github.com/opencrvs/opencrvs-farajaland/compare/v1.3.3...v1.3.4)
 
