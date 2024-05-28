@@ -16,9 +16,7 @@ all:
       - 165.22.110.53
     # Enable backups
     enable_backups: true
-    external_backup_server_remote_directory: /home/backup/backups
-    # external_backup_server_ssh_port: Defined in --extra-vars by the provisioning pipeline
-    # external_backup_server_ip: Defined in --extra-vars by the provisioning pipeline
+    backup_server_remote_target_directory: /home/backup/backups
     users:
       # If you need to remove access from someone, do not remove them from this list, but instead set their state: absent
       - name: riku
@@ -57,3 +55,6 @@ backups:
   hosts:
     farajaland-backup:
       ansible_host: '64.226.95.104'
+      # Written by provision pipeline. Assumes "backup" environment
+      # exists in Github environments
+      ansible_ssh_private_key_file: /tmp/backup_ssh_private_key

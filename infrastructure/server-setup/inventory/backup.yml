@@ -10,6 +10,7 @@
 all:
   vars:
     amount_of_backups_to_keep: 7
+    backup_server_remote_target_directory: /home/backup/backups
     users:
       - name: riku
         ssh_keys:
@@ -27,7 +28,7 @@ all:
         state: present
         sudoer: true
 
-backups:
+backup-host:
   hosts:
     farajaland-backup:
       ansible_host: '64.226.95.104'
