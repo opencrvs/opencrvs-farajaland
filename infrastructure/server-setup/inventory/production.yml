@@ -55,7 +55,5 @@ docker-workers:
 
 backups:
   hosts:
-    farajaland-qa:
-      ansible_host: '165.22.110.53'
-      # @todo how many days to store backups for?
-      amount_of_backups_to_keep: 3
+    farajaland-backup:
+      ansible_host: '64.226.95.104'
