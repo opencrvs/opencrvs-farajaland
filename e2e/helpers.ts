@@ -65,3 +65,14 @@ export const getRandomDate = (minAge: number, range: number) => {
   const [yyyy, mm, dd] = randomDate.toISOString().split('T')[0].split('-')
   return { dd, mm, yyyy }
 }
+
+export async function ensureLoginPageReady(page: Page) {
+  /*
+   * Wait until config for loading page has been loaded
+   */
+  await page.waitForSelector('#Box img', { state: 'attached' })
+  await page.waitForFunction(() => {
+    const img = document.querySelector<HTMLImageElement>('#Box img')!
+    return img && img.src && img.src.trim() !== ''
+  })
+}
