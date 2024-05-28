@@ -35,7 +35,7 @@ test.describe('1. Marriage event validation', () => {
       await page.getByText('Marriage', { exact: true }).click()
       await page.getByText('Continue', { exact: true }).click()
       await expect(
-        page.locator('#form_section_id_who-is-applying-view-group')
+        page.getByText("Informant's details", { exact: true })
       ).toBeVisible()
     })
     // 1.2. Is missing because marriage declaration does not have an "Introduction" page.
@@ -56,48 +56,48 @@ test.describe('1. Marriage event validation', () => {
       await page.getByText('Groom', { exact: true }).click()
       await page.getByText('Continue', { exact: true }).click()
       await expect(
-        page.locator('#form_section_id_groom-view-group')
+        page.getByText("Groom's details", { exact: true })
       ).toBeVisible()
     })
     await test.step('1.4. Validate Groom Details page', async () => {
       await validateSectionButtons(page)
       await page.getByText('Continue', { exact: true }).click()
       await expect(
-        page.locator('#form_section_id_bride-view-group')
+        page.getByText("Bride's details", { exact: true })
       ).toBeVisible()
     })
     await test.step('1.5. Validate Bridge Details page', async () => {
       await validateSectionButtons(page)
       await page.getByText('Continue', { exact: true }).click()
       await expect(
-        page.locator('#form_section_id_marriage-event-details')
+        page.getByText('Marriage details', { exact: true })
       ).toBeVisible()
     })
     await test.step('1.6. Validate Marriage Details page', async () => {
       await validateSectionButtons(page)
       await page.getByText('Continue', { exact: true }).click()
       await expect(
-        page.locator('#form_section_id_witness-view-group')
+        page.getByText('Witness 1 details', { exact: true })
       ).toBeVisible()
     })
     await test.step('1.7. Validate witness 1 Details page', async () => {
       await validateSectionButtons(page)
       await page.getByText('Continue', { exact: true }).click()
       await expect(
-        page.locator('#form_section_id_witness-view-group')
+        page.getByText('Witness 2 details', { exact: true })
       ).toBeVisible()
     })
     await test.step('1.8. Validate witness 2 Details page', async () => {
       await validateSectionButtons(page)
       await page.getByText('Continue', { exact: true }).click()
       await expect(
-        page.locator('#form_section_id_documents-view-group')
+        page.getByText('Upload supporting documents', { exact: true })
       ).toBeVisible()
     })
     await test.step('1.9. Validate Supporting document page', async () => {
       await validateSectionButtons(page)
       await page.getByText('Continue', { exact: true }).click()
-      await expect(page.locator('#review_header')).toBeVisible()
+      page.getByText('Register event', { exact: true })
     })
   })
   test('1.11 Validate save and exit button', async ({ page }) => {
