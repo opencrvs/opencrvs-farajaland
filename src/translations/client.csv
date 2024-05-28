@@ -1296,7 +1296,7 @@ form.section.accountDetails,,Account details,Coordonnées du compte
 form.section.assignedRegistrationOffice,,Assign to a registration office,A quel bureau voulez-vous affecter un nouvel utilisateur ?
 form.section.assignedRegistrationOfficeGroupTitle,,Assigned registration office,Bureau d'enregistrement assigné
 form.section.bride.headOfBrideFamily,,Head of bride's family,Chef de la famille de la mariée
-form.section.bride.name,,Print and issue to bride,Imprimer et envoyer à la mariée
+form.section.bride.name,,Bride,Mariée
 form.section.bride.title,,Bride's details,Détails de la mariée
 form.section.causeOfDeath.name,,Cause of Death,Cause du décès
 form.section.causeOfDeath.title,,What is the medically certified cause of death?,Quelle est la cause de décès médicalement certifiée ?
@@ -1333,7 +1333,7 @@ form.section.documents.uploadImage,,Upload a photo of the supporting document,T�
 form.section.father.name,,Father,Père
 form.section.father.title,,Father's details,Information du père
 form.section.groom.headOfGroomFamily,,Head of groom's family,Chef de la famille du marié
-form.section.groom.name,,Print and issue to groom,Imprimer et envoyer au marié
+form.section.groom.name,,Groom,Marié
 form.section.groom.title,,Groom's details,Détails du marié
 form.section.informant.name,,Informant,Informateur
 form.section.informant.title,,Informant's details,information de l'informateur
