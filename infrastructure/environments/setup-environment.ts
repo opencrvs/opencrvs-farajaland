@@ -19,7 +19,7 @@ import {
 } from './github'
 
 import editor from '@inquirer/editor'
-import { readFileSync, writeFileSync } from 'fs'
+import { writeFileSync } from 'fs'
 import { exec as callbackExec } from 'child_process'
 import { promisify } from 'util'
 import { join } from 'path'
@@ -27,7 +27,6 @@ import { error, info, log, success, warn } from './logger'
 import { verifyConnection } from './ssh'
 
 const exec = promisify(callbackExec)
-const dotenv = require('dotenv')
 
 const notEmpty = (value: string | number) =>
   value.toString().trim().length > 0 ? true : 'Please enter a value'
@@ -39,12 +38,8 @@ type Question<T extends string> = PromptObject<T> & {
   valueLabel?: string
 }
 
-type QuestionWithHiddenType<T extends string> = Omit<Question<T>, 'type'> & {
-  type: PromptObject<T>['type'] | 'hidden'
-}
-
 type QuestionDescriptor<T extends string> = Omit<Question<T>, 'type'> & {
-  type: 'hidden' | 'disabled' | PromptObject<T>['type']
+  type: 'disabled' | PromptObject<T>['type']
 }
 
 type SecretAnswer = {
@@ -86,7 +81,7 @@ if (!environment || typeof environment !== 'string') {
 }
 
 // Read users .env file based on the environment name they gave above, e.g. .env.production
-dotenv.config({
+require('dotenv').config({
   path: `${process.cwd()}/.env.${environment}`
 })
 
@@ -106,7 +101,7 @@ function findExistingValue<T extends string>(
 
 async function promptAndStoreAnswer(
   environment: string,
-  questions: Array<QuestionWithHiddenType<any>>,
+  questions: Array<QuestionDescriptor<any>>,
   existingValues: Array<Secret | Variable>
 ) {
   log('')
@@ -126,7 +121,7 @@ async function promptAndStoreAnswer(
         questionWithVariableLabel.scope,
         existingValues
       )
-      if (existingVariable && questionWithVariableLabel.type !== 'hidden') {
+      if (existingVariable) {
         return [
           {
             name: 'overWrite' + questionWithVariableLabel.name,
@@ -148,10 +143,7 @@ async function promptAndStoreAnswer(
       }
     }
 
-    if (
-      questionWithVariableLabel.valueType === 'SECRET' &&
-      questionWithVariableLabel.type !== 'hidden'
-    ) {
+    if (questionWithVariableLabel.valueType === 'SECRET') {
       const existingSecret = findExistingValue(
         questionWithVariableLabel.valueLabel,
         'SECRET',
@@ -186,34 +178,14 @@ async function promptAndStoreAnswer(
     return questionWithVariableLabel
   })
 
-  const promptQuestions = processedQuestions
-    .filter(({ type }) => type !== 'hidden')
-    .map(questionToPrompt)
+  const promptQuestions = processedQuestions.map(questionToPrompt)
 
-  const visibleQuestionResults = await prompts(promptQuestions, {
+  const result = await prompts(promptQuestions, {
     onCancel: () => {
       process.exit(1)
     }
   })
-  const hiddenResults = Object.fromEntries(
-    processedQuestions
-      .filter(({ type }) => type === 'hidden')
-      .map((question) => {
-        if (question.valueType === 'VARIABLE') {
-          const existingVariable = findExistingValue(
-            question.valueLabel!,
-            'VARIABLE',
-            question.scope,
-            existingValues
-          )
-          return [question.name, existingVariable?.value || question.initial]
-        }
-        return undefined
-      })
-      .filter((x): x is [string, string] => Boolean(x))
-  )
 
-  const result = { ...visibleQuestionResults, ...hiddenResults }
   ALL_ANSWERS.push(result)
   storeSecrets(environment, getAnswers(existingValues))
 
@@ -243,27 +215,9 @@ function generateLongPassword() {
 }
 
 function storeSecrets(environment: string, answers: Answers) {
-  let currentConfig: Record<string, string> = {}
-  try {
-    currentConfig = dotenv.parse(readFileSync(`.env.${environment}`))
-  } catch (error) {
-    /* empty */
-  }
-  const allKnownKeys = Array.from(
-    new Set([...Object.keys(currentConfig), ...answers.map((a) => a.name)])
-  )
-
-  const secretsFromAnswers = Object.fromEntries(
-    answers.map((update) => [update.name, update.value])
-  )
-  const secrets = allKnownKeys.map((key) => [
-    key,
-    secretsFromAnswers[key] || currentConfig[key]
-  ])
-
   writeFileSync(
     `.env.${environment}`,
-    secrets.map(([name, value]) => `${name}="${value}"`).join('\n')
+    answers.map((update) => `${update.name}="${update.value}"`).join('\n')
   )
 }
 
@@ -775,6 +729,14 @@ ALL_QUESTIONS.push(
   ...sentryQuestions,
   ...derivedVariables
 )
+
+/*
+ * These environment only need a subset of the environment variables
+ * as they are not used for application hosting
+ */
+
+const SPECIAL_NON_APPLICATION_ENVIRONMENTS = ['jump', 'backup']
+
 ;(async () => {
   const { type } = await prompts(
     [
@@ -794,6 +756,7 @@ ALL_QUESTIONS.push(
           },
           { title: 'Quality assurance (no PII data)', value: 'qa' },
           { title: 'Backup', value: 'backup' },
+          { title: 'Jump / Bastion', value: 'jump' },
           { title: 'Other', value: 'development' }
         ]
       }
@@ -883,14 +846,13 @@ ALL_QUESTIONS.push(
     existingValues
   )
 
-  const sshKeyExists = existingValues.find(
+  const SSH_KEY_EXISTS = existingValues.find(
     (value) => value.name === 'SSH_KEY' && value.scope === 'ENVIRONMENT'
   )
 
-  if (!sshKeyExists) {
+  if (!SSH_KEY_EXISTS) {
     const sshKey = await editor({
-      message: `Paste the SSH private key for ${kleur.cyan('SSH_USER')} here:`,
-      default: process.env.SSH_KEY
+      message: `Paste the SSH private key for ${kleur.cyan('SSH_USER')} here:`
     })
 
     const formattedSSHKey = sshKey.endsWith('\n') ? sshKey : sshKey + '\n'
@@ -923,7 +885,7 @@ ALL_QUESTIONS.push(
 
   await promptAndStoreAnswer(environment, dockerhubQuestions, existingValues)
 
-  if (type === 'backup') {
+  if (SPECIAL_NON_APPLICATION_ENVIRONMENTS.includes(type)) {
     const { updateHosts } = await prompts(
       [
         {
@@ -1216,7 +1178,7 @@ ALL_QUESTIONS.push(
     }
   ]
 
-  if (type !== 'backup') {
+  if (!SPECIAL_NON_APPLICATION_ENVIRONMENTS.includes(type)) {
     derivedUpdates.push(...applicationServerUpdates)
   }
 
