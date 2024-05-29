@@ -90,6 +90,7 @@ services:
 
   scheduler:
     environment:
+      - QA_ENV=true
       - NODE_ENV=production
       - OPENHIM_MONGO_URL=mongodb://openhim:${OPENHIM_MONGODB_PASSWORD}@mongo1/openhim-dev?replicaSet=rs0
 

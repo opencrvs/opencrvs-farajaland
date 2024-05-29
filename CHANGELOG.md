@@ -1,8 +1,9 @@
 # Changelog
-## 1.5.0 (TBD)
+
+## 1.5.0
 
 - Remove dependency on openhim. The openhim db is kept for backwards compatibility reasons and will be removed in v1.6
-- Change condition of Number of previous births 
+- Change condition of Number of previous births
 
 ## [1.3.4](https://github.com/opencrvs/opencrvs-farajaland/compare/v1.3.3...v1.3.4)
 
