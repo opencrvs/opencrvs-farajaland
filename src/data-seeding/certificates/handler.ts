@@ -11,7 +11,6 @@
 
 import { Request, ResponseToolkit } from '@hapi/hapi'
 import { readFileSync } from 'fs'
-import { capitalize } from 'lodash'
 
 export async function certificateHandler(request: Request, h: ResponseToolkit) {
   if (request.params.event) {

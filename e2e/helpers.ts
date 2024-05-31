@@ -1,31 +1,5 @@
 import { Page, expect } from '@playwright/test'
 import { AUTH_URL, CLIENT_URL } from './constants'
-type Store = {
-  getState: () => any
-  dispatch: (action: any) => void
-}
-
-export function dispatchAction(page: Page, reduxAction: any) {
-  return page.evaluate<Store>((reduxAction) => {
-    const root = window.document.getElementById('root')!
-    const container = Object.entries(root).find(([x]) =>
-      x.includes('reactContainer')
-    )![1]
-
-    if (!container) {
-      throw new Error('React container not found')
-    }
-
-    const store = container.memoizedState?.element?.props?.store
-
-    if (!store) {
-      throw new Error('Redux store not found')
-    }
-
-    store.dispatch(reduxAction)
-    return store
-  }, reduxAction)
-}
 
 export async function login(page: Page, username: string, password: string) {
   const token = await getToken(username, password)
@@ -40,7 +14,7 @@ export async function createPIN(page: Page) {
   }
 }
 
-async function getToken(username: string, password: string) {
+export async function getToken(username: string, password: string) {
   const authUrl = `${AUTH_URL}/authenticate`
   const verifyUrl = `${AUTH_URL}/verifyCode`
 
@@ -69,4 +43,43 @@ async function getToken(username: string, password: string) {
 
   const verifyBody = await verifyResponse.json()
   return verifyBody.token
+}
+
+export const goToSection = async (
+  page: Page,
+  section: 'child' | 'informant' | 'father' | 'mother' | 'documents' | 'preview'
+) => {
+  while (!page.url().includes(section)) {
+    await page.getByRole('button', { name: 'Continue' }).click()
+  }
+}
+
+export const getRandomDate = (minAge: number, range: number) => {
+  const randomDate = new Date()
+  randomDate.setDate(
+    new Date().getDate() -
+      Math.random() * range -
+      minAge * 365 -
+      (minAge + 3) / 4
+  )
+  const [yyyy, mm, dd] = randomDate.toISOString().split('T')[0].split('-')
+  return { dd, mm, yyyy }
+}
+
+export async function ensureLoginPageReady(page: Page) {
+  /*
+   * Wait until config for loading page has been loaded
+   */
+  await page.waitForSelector('#Box img', { state: 'attached' })
+  await page.waitForFunction(() => {
+    const img = document.querySelector<HTMLImageElement>('#Box img')!
+    return img && img.src && img.src.trim() !== ''
+  })
+}
+
+export async function validateSectionButtons(page: Page) {
+  await expect(page.getByText('Continue', { exact: true })).toBeVisible()
+  await expect(page.getByText('Exit', { exact: true })).toBeVisible()
+  await expect(page.getByText('Save & Exit', { exact: true })).toBeVisible()
+  await expect(page.locator('#eventToggleMenuToggleButton')).toBeVisible()
 }
