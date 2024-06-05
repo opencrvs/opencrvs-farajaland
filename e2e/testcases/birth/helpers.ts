@@ -4,11 +4,9 @@ import { GATEWAY_HOST } from '../../constants'
 import { BirthRegistrationInput } from '../../gateway'
 import faker from '@faker-js/faker'
 
-import type testData from './data/1-both-mother-and-father.json'
 import { readFileSync } from 'fs'
 import uuid from 'uuid'
 import { format, subDays, subYears } from 'date-fns'
-import { Bundle } from 'typescript'
 import { join } from 'path'
 
 export const CREATE_BIRTH_REGISTRATION = print(gql`
@@ -18,6 +16,313 @@ export const CREATE_BIRTH_REGISTRATION = print(gql`
       compositionId
       isPotentiallyDuplicate
       __typename
+    }
+  }
+`)
+
+export const GET_BIRTH_REGISTRATION_FOR_REVIEW = print(gql`
+  query fetchBirthRegistrationForReview($id: ID!) {
+    fetchBirthRegistration(id: $id) {
+      _fhirIDMap
+      id
+      child {
+        id
+        identifier {
+          id
+          type
+          otherType
+        }
+        name {
+          use
+          firstNames
+          middleName
+          familyName
+        }
+        birthDate
+        gender
+      }
+      informant {
+        id
+        relationship
+        otherRelationship
+        _fhirIDPatient
+        identifier {
+          id
+          type
+          otherType
+          fieldsModifiedByIdentity
+        }
+        name {
+          use
+          firstNames
+          middleName
+          familyName
+        }
+        occupation
+        nationality
+        birthDate
+        ageOfIndividualInYears
+        exactDateOfBirthUnknown
+        address {
+          type
+          line
+          district
+          state
+          city
+          postalCode
+          country
+        }
+      }
+      mother {
+        id
+        name {
+          use
+          firstNames
+          middleName
+          familyName
+        }
+        multipleBirth
+        birthDate
+        maritalStatus
+        occupation
+        detailsExist
+        reasonNotApplying
+        ageOfIndividualInYears
+        exactDateOfBirthUnknown
+        dateOfMarriage
+        educationalAttainment
+        nationality
+        identifier {
+          id
+          type
+          otherType
+          fieldsModifiedByIdentity
+        }
+        address {
+          type
+          line
+          district
+          state
+          city
+          postalCode
+          country
+        }
+        telecom {
+          system
+          value
+        }
+      }
+      father {
+        id
+        name {
+          use
+          firstNames
+          middleName
+          familyName
+        }
+        birthDate
+        maritalStatus
+        occupation
+        detailsExist
+        reasonNotApplying
+        ageOfIndividualInYears
+        exactDateOfBirthUnknown
+        dateOfMarriage
+        educationalAttainment
+        nationality
+        identifier {
+          id
+          type
+          otherType
+          fieldsModifiedByIdentity
+        }
+        address {
+          type
+          line
+          district
+          state
+          city
+          postalCode
+          country
+        }
+        telecom {
+          system
+          value
+        }
+      }
+      registration {
+        id
+        informantType
+        otherInformantType
+        contact
+        contactRelationship
+        contactPhoneNumber
+        contactEmail
+        duplicates {
+          compositionId
+          trackingId
+        }
+        informantsSignature
+        informantsSignatureURI
+        attachments {
+          data
+          uri
+          type
+          contentType
+          subject
+        }
+        status {
+          comments {
+            comment
+          }
+          type
+          timestamp
+          office {
+            name
+            alias
+            address {
+              district
+              state
+            }
+            partOf
+          }
+        }
+        type
+        trackingId
+        registrationNumber
+        mosipAid
+      }
+      attendantAtBirth
+      weightAtBirth
+      birthType
+      eventLocation {
+        id
+        type
+        address {
+          line
+          district
+          state
+          city
+          postalCode
+          country
+        }
+      }
+      questionnaire {
+        fieldId
+        value
+      }
+      history {
+        otherReason
+        requester
+        requesterOther
+        noSupportingDocumentationRequired
+        hasShowedVerifiedDocument
+        date
+        action
+        regStatus
+        dhis2Notification
+        ipAddress
+        documents {
+          id
+          data
+          uri
+          type
+        }
+        payment {
+          id
+          type
+          amount
+          outcome
+          date
+          attachmentURL
+        }
+        statusReason {
+          text
+        }
+        reason
+        location {
+          id
+          name
+        }
+        office {
+          id
+          name
+          alias
+          address {
+            state
+            district
+          }
+        }
+        system {
+          name
+          type
+        }
+        user {
+          id
+          role {
+            _id
+            labels {
+              lang
+              label
+            }
+          }
+          systemRole
+          name {
+            firstNames
+            familyName
+            use
+          }
+          avatar {
+            data
+            type
+          }
+        }
+        signature {
+          data
+          type
+        }
+        comments {
+          user {
+            id
+            username
+            avatar {
+              data
+              type
+            }
+          }
+          comment
+          createdAt
+        }
+        input {
+          valueCode
+          valueId
+          value
+        }
+        output {
+          valueCode
+          valueId
+          value
+        }
+        certificates {
+          hasShowedVerifiedDocument
+          collector {
+            relationship
+            otherRelationship
+            name {
+              use
+              firstNames
+              familyName
+            }
+            telecom {
+              system
+              value
+              use
+            }
+          }
+        }
+        duplicateOf
+        potentialDuplicates
+      }
     }
   }
 `)
@@ -244,6 +549,26 @@ export async function createDeclaration(token: string, details: Details) {
     })
   })
   return res.json().then((r) => r.data.createBirthRegistration)
+}
+
+export const fetchDeclaration = async (
+  token: string,
+  compositionId: string
+) => {
+  const res = await fetch(`${GATEWAY_HOST}/graphql`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    },
+    body: JSON.stringify({
+      query: GET_BIRTH_REGISTRATION_FOR_REVIEW,
+      variables: {
+        id: compositionId
+      }
+    })
+  })
+  return await res.json()
 }
 
 type ConvertEnumsToStrings<T> = T extends (infer U)[]
