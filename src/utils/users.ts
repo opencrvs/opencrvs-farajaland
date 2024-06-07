@@ -2,36 +2,18 @@ import { APPLICATION_CONFIG_URL, GATEWAY_URL } from '@countryconfig/constants'
 import fetch from 'node-fetch'
 import gql from 'graphql-tag'
 import { print } from 'graphql/language/printer'
-import {
-  Maybe,
-  Scalars,
-  HumanName,
-  Role,
-  Status,
-  SystemRoleType,
-  Location
-} from '@countryconfig/data-generator/gateway'
 import { URL } from 'url'
 
 type GetUser = {
-  __typename?: 'User'
-  id: Scalars['ID']
-  creationDate: Scalars['String']
-  username?: Maybe<Scalars['String']>
-  practitionerId: Scalars['String']
-  mobile?: Maybe<Scalars['String']>
-  systemRole: SystemRoleType
-  role: Role
-  status: Status
-  name: Array<HumanName>
   primaryOffice?: {
-    __typename?: 'Location'
-    id: Scalars['ID']
-    name?: Maybe<Scalars['String']>
-    alias?: Maybe<Array<Scalars['String']>>
-    status?: Maybe<Scalars['String']>
+    id: string
   }
 }
+
+type Location = {
+  id: string
+}
+
 async function getUser(token: string, userId: string): Promise<GetUser> {
   const url = new URL('graphql', GATEWAY_URL)
   const getUsersRes = await fetch(url, {
