@@ -58,9 +58,7 @@ test.describe('6. Validate Marriage details page', () => {
     await page.getByText('Continue', { exact: true }).click()
     await page.getByText('Continue', { exact: true }).click()
     await expect(
-      page.getByText('Required for registration. Enter a valid date', {
-        exact: true
-      })
+      page.locator('#required_label_marriageEvent_marriageDate')
     ).toBeVisible()
   })
   test('1.4. Enter date Less than the current date But before Groom and Bride DOB', async ({
