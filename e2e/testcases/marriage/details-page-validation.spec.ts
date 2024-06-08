@@ -69,9 +69,7 @@ test.describe('6. Validate Marriage details page', () => {
     await page.getByPlaceholder('yyyy').fill('1980')
     await page.locator('#typeOfMarriage').click()
     await expect(
-      page.getByText('Illegal age of marriage', {
-        exact: true
-      })
+      page.locator('#marriageDate_error').getByText('Illegal age of marriage')
     ).toBeVisible()
   })
 
