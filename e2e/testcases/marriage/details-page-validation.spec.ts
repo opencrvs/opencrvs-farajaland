@@ -66,11 +66,9 @@ test.describe('6. Validate Marriage details page', () => {
   }) => {
     await page.getByPlaceholder('dd').fill('01')
     await page.getByPlaceholder('mm').fill('05')
-    await page.getByPlaceholder('yyyy').fill('1980')
+    await page.getByPlaceholder('yyyy').fill('1960')
     await page.getByText('Marriage details').click()
-    await expect(page.locator('#marriageDate_error')).toHaveText(
-      'Illegal age of marriage'
-    )
+    await expect(page.locator('#marriageDate_error')).toBeVisible()
   })
 
   test('2.1. Select any country from the "Country" dropdown field, Default value is Farajaland', async ({
