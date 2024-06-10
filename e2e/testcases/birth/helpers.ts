@@ -8,328 +8,14 @@ import { readFileSync } from 'fs'
 import uuid from 'uuid'
 import { format, subDays, subYears } from 'date-fns'
 import { join } from 'path'
-
-export const CREATE_BIRTH_REGISTRATION = print(gql`
-  mutation createBirthRegistration($details: BirthRegistrationInput!) {
-    createBirthRegistration(details: $details) {
-      trackingId
-      compositionId
-      isPotentiallyDuplicate
-      __typename
-    }
-  }
-`)
-
-export const GET_BIRTH_REGISTRATION_FOR_REVIEW = print(gql`
-  query fetchBirthRegistrationForReview($id: ID!) {
-    fetchBirthRegistration(id: $id) {
-      _fhirIDMap
-      id
-      child {
-        id
-        identifier {
-          id
-          type
-          otherType
-        }
-        name {
-          use
-          firstNames
-          middleName
-          familyName
-        }
-        birthDate
-        gender
-      }
-      informant {
-        id
-        relationship
-        otherRelationship
-        _fhirIDPatient
-        identifier {
-          id
-          type
-          otherType
-          fieldsModifiedByIdentity
-        }
-        name {
-          use
-          firstNames
-          middleName
-          familyName
-        }
-        occupation
-        nationality
-        birthDate
-        ageOfIndividualInYears
-        exactDateOfBirthUnknown
-        address {
-          type
-          line
-          district
-          state
-          city
-          postalCode
-          country
-        }
-      }
-      mother {
-        id
-        name {
-          use
-          firstNames
-          middleName
-          familyName
-        }
-        multipleBirth
-        birthDate
-        maritalStatus
-        occupation
-        detailsExist
-        reasonNotApplying
-        ageOfIndividualInYears
-        exactDateOfBirthUnknown
-        dateOfMarriage
-        educationalAttainment
-        nationality
-        identifier {
-          id
-          type
-          otherType
-          fieldsModifiedByIdentity
-        }
-        address {
-          type
-          line
-          district
-          state
-          city
-          postalCode
-          country
-        }
-        telecom {
-          system
-          value
-        }
-      }
-      father {
-        id
-        name {
-          use
-          firstNames
-          middleName
-          familyName
-        }
-        birthDate
-        maritalStatus
-        occupation
-        detailsExist
-        reasonNotApplying
-        ageOfIndividualInYears
-        exactDateOfBirthUnknown
-        dateOfMarriage
-        educationalAttainment
-        nationality
-        identifier {
-          id
-          type
-          otherType
-          fieldsModifiedByIdentity
-        }
-        address {
-          type
-          line
-          district
-          state
-          city
-          postalCode
-          country
-        }
-        telecom {
-          system
-          value
-        }
-      }
-      registration {
-        id
-        informantType
-        otherInformantType
-        contact
-        contactRelationship
-        contactPhoneNumber
-        contactEmail
-        duplicates {
-          compositionId
-          trackingId
-        }
-        informantsSignature
-        informantsSignatureURI
-        attachments {
-          data
-          uri
-          type
-          contentType
-          subject
-        }
-        status {
-          comments {
-            comment
-          }
-          type
-          timestamp
-          office {
-            name
-            alias
-            address {
-              district
-              state
-            }
-            partOf
-          }
-        }
-        type
-        trackingId
-        registrationNumber
-        mosipAid
-      }
-      attendantAtBirth
-      weightAtBirth
-      birthType
-      eventLocation {
-        id
-        type
-        address {
-          line
-          district
-          state
-          city
-          postalCode
-          country
-        }
-      }
-      questionnaire {
-        fieldId
-        value
-      }
-      history {
-        otherReason
-        requester
-        requesterOther
-        noSupportingDocumentationRequired
-        hasShowedVerifiedDocument
-        date
-        action
-        regStatus
-        dhis2Notification
-        ipAddress
-        documents {
-          id
-          data
-          uri
-          type
-        }
-        payment {
-          id
-          type
-          amount
-          outcome
-          date
-          attachmentURL
-        }
-        statusReason {
-          text
-        }
-        reason
-        location {
-          id
-          name
-        }
-        office {
-          id
-          name
-          alias
-          address {
-            state
-            district
-          }
-        }
-        system {
-          name
-          type
-        }
-        user {
-          id
-          role {
-            _id
-            labels {
-              lang
-              label
-            }
-          }
-          systemRole
-          name {
-            firstNames
-            familyName
-            use
-          }
-          avatar {
-            data
-            type
-          }
-        }
-        signature {
-          data
-          type
-        }
-        comments {
-          user {
-            id
-            username
-            avatar {
-              data
-              type
-            }
-          }
-          comment
-          createdAt
-        }
-        input {
-          valueCode
-          valueId
-          value
-        }
-        output {
-          valueCode
-          valueId
-          value
-        }
-        certificates {
-          hasShowedVerifiedDocument
-          collector {
-            relationship
-            otherRelationship
-            name {
-              use
-              firstNames
-              familyName
-            }
-            telecom {
-              system
-              value
-              use
-            }
-          }
-        }
-        duplicateOf
-        potentialDuplicates
-      }
-    }
-  }
-`)
+import {
+  CREATE_BIRTH_REGISTRATION,
+  GET_BIRTH_REGISTRATION_FOR_REVIEW
+} from './queries'
 
 type Details = {
   informant: {
-    type: 'MOTHER' | 'FATHER'
+    type: 'MOTHER' | 'FATHER' | 'BROTHER'
   }
   child: {
     firstNames: string
@@ -399,7 +85,7 @@ export async function createDeclaration(token: string, details: Details) {
                 join(__dirname, './data/assets/528KB-random.png')
               ).toString('base64'),
             informantType: details.informant.type,
-            contactPhoneNumber: '+260' + faker.random.numeric(9),
+            contactPhoneNumber: '0' + faker.random.numeric(9),
             contactEmail: faker.internet.email(),
             draftId: uuid.v4()
           },
@@ -489,6 +175,10 @@ export async function createDeclaration(token: string, details: Details) {
             {
               fieldId: 'birth.father.father-view-group.fatherIdType',
               value: 'NATIONAL_ID'
+            },
+            {
+              fieldId: 'birth.informant.informant-view-group.informantIdType',
+              value: 'NATIONAL_ID'
             }
           ],
           father: {
@@ -543,6 +233,54 @@ export async function createDeclaration(token: string, details: Details) {
             ],
             maritalStatus: 'SINGLE',
             educationalAttainment: 'NO_SCHOOLING'
+          },
+          informant: {
+            name: [
+              {
+                use: 'en',
+                firstNames: faker.name.findName(),
+                familyName: faker.name.lastName()
+              }
+            ],
+            birthDate: format(
+              subYears(new Date(), 16 + Math.ceil(10 * Math.random())),
+              'yyyy-MM-dd'
+            ),
+            nationality: ['FAR'],
+            identifier: [
+              {
+                id: faker.random.numeric(10),
+                type: 'NATIONAL_ID'
+              }
+            ],
+            address: [
+              {
+                type: 'PRIMARY_ADDRESS',
+                line: [
+                  '343',
+                  'Example Street',
+                  'Example Residential Area',
+                  '',
+                  '',
+                  'URBAN',
+                  '',
+                  '',
+                  '',
+                  '',
+                  '',
+                  '',
+                  '',
+                  '',
+                  ''
+                ],
+                country: 'FAR',
+                state: getLocationIdByName(locations, 'Central'),
+                partOf: getLocationIdByName(locations, 'Ibombo'),
+                district: getLocationIdByName(locations, 'Ibombo'),
+                city: 'Example Town',
+                postalCode: '534534'
+              }
+            ]
           }
         } satisfies ConvertEnumsToStrings<BirthRegistrationInput>
       }
@@ -571,7 +309,7 @@ export const fetchDeclaration = async (
   return await res.json()
 }
 
-type ConvertEnumsToStrings<T> = T extends (infer U)[]
+export type ConvertEnumsToStrings<T> = T extends (infer U)[]
   ? ConvertEnumsToStrings<U>[]
   : T extends string
   ? `${T}`
