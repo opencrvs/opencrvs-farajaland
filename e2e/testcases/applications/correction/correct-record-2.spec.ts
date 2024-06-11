@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test'
-import { createPIN, getToken, login, uploadImage } from '../../../helpers'
+import { createPIN, getToken, login } from '../../../helpers'
 import faker from '@faker-js/faker'
 import {
   ConvertEnumsToStrings,
@@ -8,14 +8,12 @@ import {
 } from '../../birth/helpers'
 import { BirthDeclaration, BirthInputDetails } from '../../birth/types'
 import { format, parseISO, subDays } from 'date-fns'
-import { stringify } from 'csv-stringify'
 
 test.describe.serial(' Correct record - 2', () => {
   let declaration: BirthDeclaration
   let trackingId = ''
 
   let page: Page
-  let childBirthLocationName: string | undefined
 
   const updatedInformantDetails = {
     relationship: 'Sister',
