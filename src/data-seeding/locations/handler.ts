@@ -45,7 +45,7 @@ type Facility = {
   locationType: 'HEALTH_FACILITY' | 'CRVS_OFFICE'
 }
 
-type Location = {
+export type Location = {
   id: string
   name: string
   alias: string
@@ -63,7 +63,7 @@ const JURISDICTION_TYPE = [
   'LOCATION_LEVEL_5'
 ] as const
 
-export async function locationsHandler(_: Request, h: ResponseToolkit) {
+export async function composeLocationsFromCsv() {
   const [humdataLocations, healthFacilities, crvsFacilities, statistics] =
     await Promise.all([
       readCSVToJSON<HumdataLocation[]>(
@@ -110,5 +110,10 @@ export async function locationsHandler(_: Request, h: ResponseToolkit) {
       alias: healthFacility.name
     })
   })
-  return h.response(Array.from(locations.values()))
+  return Array.from(locations.values())
+}
+
+export async function locationsHandler(_: Request, h: ResponseToolkit) {
+  const locations = await composeLocationsFromCsv()
+  return h.response(locations)
 }
