@@ -318,3 +318,9 @@ export const GET_BIRTH_REGISTRATION_FOR_REVIEW = print(gql`
     }
   }
 `)
+
+export const REGISTER_BIRTH_DECLARATION = print(gql`
+  mutation markBirthAsRegistered($id: ID!, $details: BirthRegistrationInput!) {
+    markBirthAsRegistered(id: $id, details: $details)
+  }
+`)

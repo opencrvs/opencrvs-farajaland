@@ -8,7 +8,8 @@ import { format, subDays, subYears } from 'date-fns'
 import { join } from 'path'
 import {
   CREATE_BIRTH_REGISTRATION,
-  GET_BIRTH_REGISTRATION_FOR_REVIEW
+  GET_BIRTH_REGISTRATION_FOR_REVIEW,
+  REGISTER_BIRTH_DECLARATION
 } from './queries'
 
 type Details = {
@@ -305,6 +306,34 @@ export const fetchDeclaration = async (
     })
   })
   return await res.json()
+}
+
+export const registerDeclaration = async (
+  token: string,
+  compositionId: string
+) => {
+  await fetchDeclaration(token, compositionId)
+  const res = await fetch(`${GATEWAY_HOST}/graphql`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    },
+    body: JSON.stringify({
+      query: REGISTER_BIRTH_DECLARATION,
+      variables: {
+        id: compositionId,
+        details: {
+          createdAt: new Date().toISOString()
+        } satisfies ConvertEnumsToStrings<BirthRegistrationInput>
+      }
+    })
+  })
+  const t = await res.json()
+  console.log(t)
+  console.log(JSON.stringify(t))
+
+  return await t
 }
 
 export type ConvertEnumsToStrings<T> = T extends (infer U)[]
