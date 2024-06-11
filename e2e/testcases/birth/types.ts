@@ -27,19 +27,29 @@ export type BirthInputDetails = {
 }
 
 export type BirthDeclaration = {
-  _fhirIDMap: string
+  _fhirIDMap: {
+    composition: string
+    encounter: string
+    eventLocation: string
+    observation: {
+      birthType: string
+      weightAtBirth: string
+      attendantAtBirth: string
+    }
+    questionnaireResponse: string
+  }
   id: string
   child: {
     id: string
     identifier: {
       id: string
       type: string
-      otherType?: string
+      otherType: string | null
     }[]
     name: {
       use: string
       firstNames: string
-      middleName?: string
+      middleName: string
       familyName: string
     }[]
     birthDate: string
@@ -48,283 +58,195 @@ export type BirthDeclaration = {
   informant: {
     id: string
     relationship: string
-    otherRelationship?: string
-    _fhirIDPatient?: string
+    otherRelationship: string | null
+    _fhirIDPatient: string
     identifier: {
       id: string
       type: string
-      otherType?: string
-      fieldsModifiedByIdentity?: string
+      otherType: string | null
+      fieldsModifiedByIdentity: string | null
     }[]
     name: {
       use: string
       firstNames: string
-      middleName?: string
+      middleName: string
       familyName: string
     }[]
-    occupation: string
-    nationality: string
+    occupation: string | null
+    nationality: string[]
     birthDate: string
-    ageOfIndividualInYears: number
-    exactDateOfBirthUnknown: boolean
+    ageOfIndividualInYears: number | null
+    exactDateOfBirthUnknown: boolean | null
     address: {
       type: string
-      line: string
+      line: string[]
       district: string
       state: string
       city: string
       postalCode: string
       country: string
-    }
+    }[]
   }
   mother: {
     id: string
     name: {
       use: string
       firstNames: string
-      middleName?: string
+      middleName: string
       familyName: string
     }[]
-    multipleBirth: boolean
+    multipleBirth: boolean | null
     birthDate: string
     maritalStatus: string
-    occupation: string
+    occupation: string | null
     detailsExist: boolean
-    reasonNotApplying?: string
-    ageOfIndividualInYears: number
-    exactDateOfBirthUnknown: boolean
-    dateOfMarriage?: string
+    reasonNotApplying: string | null
+    ageOfIndividualInYears: number | null
+    exactDateOfBirthUnknown: boolean | null
+    dateOfMarriage: string | null
     educationalAttainment: string
-    nationality: string
+    nationality: string[]
     identifier: {
       id: string
       type: string
-      otherType?: string
-      fieldsModifiedByIdentity?: string
+      otherType: string | null
+      fieldsModifiedByIdentity: string | null
     }[]
     address: {
       type: string
-      line: string
+      line: string[]
       district: string
       state: string
       city: string
       postalCode: string
       country: string
-    }
-    telecom?: {
-      system: string
-      value: string
-    }
+    }[]
+    telecom: string | null
   }
   father: {
     id: string
     name: {
       use: string
       firstNames: string
-      middleName?: string
+      middleName: string
       familyName: string
     }[]
     birthDate: string
     maritalStatus: string
-    occupation: string
+    occupation: string | null
     detailsExist: boolean
-    reasonNotApplying?: string
-    ageOfIndividualInYears: number
-    exactDateOfBirthUnknown: boolean
-    dateOfMarriage?: string
+    reasonNotApplying: string | null
+    ageOfIndividualInYears: number | null
+    exactDateOfBirthUnknown: boolean | null
+    dateOfMarriage: string | null
     educationalAttainment: string
-    nationality: string
+    nationality: string[]
     identifier: {
       id: string
       type: string
-      otherType?: string
-      fieldsModifiedByIdentity?: string
+      otherType: string | null
+      fieldsModifiedByIdentity: string | null
     }[]
     address: {
       type: string
-      line: string
+      line: string[]
       district: string
       state: string
       city: string
       postalCode: string
       country: string
-    }
-    telecom?: {
-      system: string
-      value: string
-    }
+    }[]
+    telecom: string | null
   }
   registration: {
     id: string
     informantType: string
-    otherInformantType?: string
-    contact: string
-    contactRelationship: string
+    otherInformantType: string | null
+    contact: string | null
+    contactRelationship: string | null
     contactPhoneNumber: string
     contactEmail: string
-    duplicates?: {
-      compositionId: string
-      trackingId: string
-    }[]
-    informantsSignature?: string
-    informantsSignatureURI?: string
-    attachments?: {
-      data: string
-      uri: string
-      type: string
-      contentType: string
-      subject: string
-    }[]
+    duplicates: string | null
+    informantsSignature: string
+    informantsSignatureURI: string
+    attachments: string | null
     status: {
-      comments?: {
-        comment: string
-      }[]
+      comments: string | null
       type: string
       timestamp: string
       office: {
         name: string
-        alias: string
-        address: {
-          district: string
-          state: string
-        }
-        partOf?: string
+        alias: string[]
+        address: string | null
+        partOf: string
       }
     }[]
     type: string
     trackingId: string
     registrationNumber: string
-    mosipAid?: string
+    mosipAid: string | null
   }
-  attendantAtBirth?: string
-  weightAtBirth?: string
-  birthType?: string
-  eventLocation?: {
+  attendantAtBirth: string
+  weightAtBirth: number
+  birthType: string
+  eventLocation: {
     id: string
     type: string
-    address: {
-      line: string
-      district: string
-      state: string
-      city: string
-      postalCode: string
-      country: string
-    }
+    address: string | null
   }
-  questionnaire?: {
+  questionnaire: {
     fieldId: string
     value: string
   }[]
-  history?: {
-    otherReason?: string
-    requester?: string
-    requesterOther?: string
-    noSupportingDocumentationRequired?: boolean
-    hasShowedVerifiedDocument?: boolean
+  history: {
+    otherReason: string
+    requester: string
+    requesterOther: string
+    noSupportingDocumentationRequired: boolean
+    hasShowedVerifiedDocument: boolean
     date: string
-    action: string
+    action: string | null
     regStatus: string
-    dhis2Notification?: boolean
-    ipAddress?: string
-    documents?: {
-      id: string
-      data: string
-      uri: string
-      type: string
-    }[]
-    payment?: {
-      id: string
-      type: string
-      amount: string
-      outcome: string
-      date: string
-      attachmentURL?: string
-    }
-    statusReason?: {
-      text: string
-    }
-    reason?: string
-    location?: {
+    dhis2Notification: boolean
+    ipAddress: string | null
+    documents: string[]
+    payment: string | null
+    statusReason: string | null
+    reason: string | null
+    location: {
       id: string
       name: string
     }
-    office?: {
+    office: {
       id: string
       name: string
-      alias: string
-      address: {
-        state: string
-        district: string
-      }
+      alias: string[]
+      address: string | null
     }
-    system?: {
-      name: string
-      type: string
-    }
-    user?: {
+    system: string | null
+    user: {
       id: string
-      role?: {
+      role: {
         _id: string
-        labels?: {
+        labels: {
           lang: string
           label: string
         }[]
       }
-      systemRole?: string
-      name?: {
+      systemRole: string
+      name: {
         firstNames: string
         familyName: string
         use: string
-      }
-      avatar?: {
-        data: string
-        type: string
-      }
+      }[]
+      avatar: string | null
     }
-    signature?: {
-      data: string
-      type: string
-    }
-    comments?: {
-      user?: {
-        id: string
-        username: string
-        avatar?: {
-          data: string
-          type: string
-        }
-      }
-      comment: string
-      createdAt: string
-    }[]
-    input?: {
-      valueCode: string
-      valueId: string
-      value: string
-    }[]
-    output?: {
-      valueCode: string
-      valueId: string
-      value: string
-    }[]
-    certificates?: {
-      hasShowedVerifiedDocument?: boolean
-      collector?: {
-        relationship: string
-        otherRelationship?: string
-        name?: {
-          use: string
-          firstNames: string
-          familyName: string
-        }
-        telecom?: {
-          system: string
-          value: string
-          use: string
-        }
-      }
-    }[]
-    duplicateOf?: string
-    potentialDuplicates?: string[]
+    signature: string | null
+    comments: string[]
+    input: string[]
+    output: string[]
+    certificates: string[]
+    duplicateOf: string | null
+    potentialDuplicates: string | null
   }[]
 }
