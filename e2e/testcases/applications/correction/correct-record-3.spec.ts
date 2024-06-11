@@ -87,63 +87,69 @@ test.describe.serial(' Correct record - 3', () => {
       .fetchBirthRegistration as BirthDeclaration
   })
 
-  test('3.1 Print > Ready to issue', async () => {
-    await login(page, 'f.katongo', 'test')
-    await createPIN(page)
+  test.describe('3.1 Print > Ready to issue', async () => {
+    test('3.1.1 Print', async () => {
+      await login(page, 'f.katongo', 'test')
+      await createPIN(page)
 
-    await page.getByPlaceholder('Search for a tracking ID').fill(trackingId)
-    await page.getByPlaceholder('Search for a tracking ID').press('Enter')
-    await page.locator('#ListItemAction-0-icon').click()
-    await page.locator('#name_0').click()
+      await page.getByPlaceholder('Search for a tracking ID').fill(trackingId)
+      await page.getByPlaceholder('Search for a tracking ID').press('Enter')
+      await page.locator('#ListItemAction-0-icon').click()
+      await page.locator('#name_0').click()
 
-    await page.getByRole('button', { name: 'Print', exact: true }).click()
+      await page.getByRole('button', { name: 'Print', exact: true }).click()
 
-    await page.getByLabel('Print in advance').check()
-    await page.getByRole('button', { name: 'Continue' }).click()
-    await page.getByRole('button', { name: 'Yes, print certificate' }).click()
-    await page.getByRole('button', { name: 'Print', exact: true }).click()
-
-    await page.getByRole('button', { name: 'Ready to issue' }).click()
-
-    /*
-     * Expected result: should
-     * - be navigated to ready to isssue tab
-     * - include the declaration in this tab
-     */
-    expect(page.url().includes('registration-home/readyToIssue'))
-    await expect(page.locator('#navigation_outbox')).not.toContainText('1', {
-      timeout: 1000 * 30
+      await page.getByLabel('Print in advance').check()
+      await page.getByRole('button', { name: 'Continue' }).click()
+      await page.getByRole('button', { name: 'Yes, print certificate' }).click()
+      await page.getByRole('button', { name: 'Print', exact: true }).click()
     })
 
-    await expect(
-      page.getByText(
-        declaration.child.name[0].firstNames +
-          ' ' +
-          declaration.child.name[0].familyName
-      )
-    ).toBeVisible()
+    test('3.1.2 Ready to issue', async () => {
+      await page.getByRole('button', { name: 'Ready to issue' }).click()
 
-    await page
-      .getByText(
-        declaration.child.name[0].firstNames +
-          ' ' +
-          declaration.child.name[0].familyName
-      )
-      .click()
+      /*
+       * Expected result: should
+       * - be navigated to ready to isssue tab
+       * - include the declaration in this tab
+       */
+      expect(page.url().includes('registration-home/readyToIssue'))
+      await expect(page.locator('#navigation_outbox')).not.toContainText('1', {
+        timeout: 1000 * 30
+      })
 
-    await page.getByLabel('Assign record').click()
-    await page.getByRole('button', { name: 'Assign', exact: true }).click()
+      await expect(
+        page.getByText(
+          declaration.child.name[0].firstNames +
+            ' ' +
+            declaration.child.name[0].familyName
+        )
+      ).toBeVisible()
+    })
 
-    /*
-     * Expected result: should show correct record button
-     */
-    await expect(
-      page.getByRole('button', { name: 'Correct record', exact: true })
-    ).toBeVisible()
+    test('3.1.3 Record audit', async () => {
+      await page
+        .getByText(
+          declaration.child.name[0].firstNames +
+            ' ' +
+            declaration.child.name[0].familyName
+        )
+        .click()
 
-    await page
-      .getByRole('button', { name: 'Correct record', exact: true })
-      .click()
+      await page.getByLabel('Assign record').click()
+      await page.getByRole('button', { name: 'Assign', exact: true }).click()
+
+      /*
+       * Expected result: should show correct record button
+       */
+      await expect(
+        page.getByRole('button', { name: 'Correct record', exact: true })
+      ).toBeVisible()
+
+      await page
+        .getByRole('button', { name: 'Correct record', exact: true })
+        .click()
+    })
   })
 
   test('3.2 Correction requester: child', async () => {
