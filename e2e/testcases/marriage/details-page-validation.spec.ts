@@ -107,7 +107,6 @@ test.describe('6. Validate Marriage details page', () => {
       })
     ).toBeVisible()
   })
-  // Kesken
   test('2.4. Select Urban address', async ({ page }) => {
     const townValue = 'My town'
     const residentalAreaValue = 'My residential area'
