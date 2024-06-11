@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test'
-import { createPIN, getToken, login } from '../../../helpers'
+import { createPIN, getToken, login, uploadImage } from '../../../helpers'
 import faker from '@faker-js/faker'
 import {
   ConvertEnumsToStrings,
@@ -9,15 +9,15 @@ import {
 import { BirthDeclaration, BirthInputDetails } from '../../birth/types'
 import { format, parseISO, subDays } from 'date-fns'
 
-test.describe.serial(' Correct record - 3', () => {
+test.describe.serial(' Correct record - 4', () => {
   let declaration: BirthDeclaration
   let trackingId = ''
 
   let page: Page
 
-  const updatedMotherDetails = {
-    firstNames: faker.name.firstName('female'),
-    familyName: faker.name.firstName('female'),
+  const updatedFatherDetails = {
+    firstNames: faker.name.firstName('male'),
+    familyName: faker.name.firstName('male'),
     birthDate: format(
       subDays(new Date(), Math.ceil(50 * Math.random() + 365 * 25)),
       'yyyy-MM-dd'
@@ -47,8 +47,8 @@ test.describe.serial(' Correct record - 3', () => {
     await page.close()
   })
 
-  test('3.0 Shortcut declaration', async () => {
-    let token = await getToken('k.mweene', 'test')
+  test('4.0 Shortcut declaration', async () => {
+    let token = await getToken('j.musonda', 'test')
     const declarationInput = {
       child: {
         firstNames: faker.name.firstName(),
@@ -81,14 +81,14 @@ test.describe.serial(' Correct record - 3', () => {
 
     trackingId = res.trackingId
 
-    token = await getToken('f.katongo', 'test')
+    token = await getToken('k.mweene', 'test')
 
     declaration = (await fetchDeclaration(token, res.compositionId)).data
       .fetchBirthRegistration as BirthDeclaration
   })
 
-  test('3.1 Print > Ready to issue', async () => {
-    await login(page, 'f.katongo', 'test')
+  test('4.1 Ready to print > record audit', async () => {
+    await login(page, 'k.mweene', 'test')
     await createPIN(page)
 
     await page.getByPlaceholder('Search for a tracking ID').fill(trackingId)
@@ -96,81 +96,21 @@ test.describe.serial(' Correct record - 3', () => {
     await page.locator('#ListItemAction-0-icon').click()
     await page.locator('#name_0').click()
 
-    await page.getByRole('button', { name: 'Print', exact: true }).click()
-
-    await page.getByLabel('Print in advance').check()
-    await page.getByRole('button', { name: 'Continue' }).click()
-    await page.getByRole('button', { name: 'Yes, print certificate' }).click()
-    await page.getByRole('button', { name: 'Print', exact: true }).click()
-
-    await page.getByRole('button', { name: 'Ready to issue' }).click()
-
-    /*
-     * Expected result: should
-     * - be navigated to ready to isssue tab
-     * - include the declaration in this tab
-     */
-    expect(page.url().includes('registration-home/readyToIssue'))
-    await expect(page.locator('#navigation_outbox')).not.toContainText('1', {
-      timeout: 1000 * 30
-    })
-
-    await expect(
-      page.getByText(
-        declaration.child.name[0].firstNames +
-          ' ' +
-          declaration.child.name[0].familyName
-      )
-    ).toBeVisible()
-
-    await page
-      .getByText(
-        declaration.child.name[0].firstNames +
-          ' ' +
-          declaration.child.name[0].familyName
-      )
-      .click()
-
-    await page.getByLabel('Assign record').click()
-    await page.getByRole('button', { name: 'Assign', exact: true }).click()
-
-    /*
-     * Expected result: should show correct record button
-     */
-    await expect(
-      page.getByRole('button', { name: 'Correct record', exact: true })
-    ).toBeVisible()
-
     await page
       .getByRole('button', { name: 'Correct record', exact: true })
       .click()
   })
 
-  test('3.2 Correction requester: child', async () => {
-    await page.getByLabel('Child').check()
+  test('4.2 Correction requester: legal guardian', async () => {
+    await page.getByLabel('Legal guardian').check()
     await page.getByRole('button', { name: 'Continue' }).click()
   })
 
-  test('3.3 Verify identity', async () => {
+  test('4.3 Verify identity', async () => {
     /*
      * Expected result: should Confirm
-     * First Name
-     * Last Name
-     * Date of Birth
+     * nothing
      */
-    await expect(
-      page.getByText(`First name(s): ${declaration.child.name[0].firstNames}`)
-    ).toBeVisible()
-    await expect(
-      page.getByText(`Last name: ${declaration.child.name[0].familyName}`)
-    ).toBeVisible()
-    await expect(
-      page.getByText(
-        `Date of Birth:
-        ${format(parseISO(declaration.child.birthDate), 'dd MMMM yyyy')}
-        `
-      )
-    ).toBeVisible()
 
     await page.getByRole('button', { name: 'Verified' }).click()
 
@@ -181,25 +121,25 @@ test.describe.serial(' Correct record - 3', () => {
     expect(page.url().includes('review'))
   })
 
-  test.describe('3.4 Correction made on mother details', async () => {
-    test('3.4.1 Change name', async () => {
+  test.describe('4.4 Correction made on father details', async () => {
+    test('4.4.1 Change name', async () => {
       await page
-        .locator('#mother-content #Full')
+        .locator('#father-content #Full')
         .getByRole('button', { name: 'Change', exact: true })
         .click()
 
       /*
        * Expected result: should
-       * - redirect to mother's details page
-       * - focus on mother's family name
+       * - redirect to father's details page
+       * - focus on father's family name
        */
 
       expect(page.url().includes('correction'))
-      expect(page.url().includes('mother-view-group'))
+      expect(page.url().includes('father-view-group'))
       expect(page.url().includes('#familyNameEng'))
 
-      await page.locator('#firstNamesEng').fill(updatedMotherDetails.firstNames)
-      await page.locator('#familyNameEng').fill(updatedMotherDetails.familyName)
+      await page.locator('#firstNamesEng').fill(updatedFatherDetails.firstNames)
+      await page.locator('#familyNameEng').fill(updatedFatherDetails.familyName)
 
       await page.waitForTimeout(500)
 
@@ -216,41 +156,41 @@ test.describe.serial(' Correct record - 3', () => {
       expect(page.url().includes('review'))
 
       const oldData = await page
-        .locator('#mother-content #Full')
+        .locator('#father-content #Full')
         .getByRole('deletion')
         .all()
 
-      await expect(oldData[0]).toHaveText(declaration.mother.name[0].firstNames)
-      await expect(oldData[1]).toHaveText(declaration.mother.name[0].familyName)
+      await expect(oldData[0]).toHaveText(declaration.father.name[0].firstNames)
+      await expect(oldData[1]).toHaveText(declaration.father.name[0].familyName)
 
       await expect(
         page
-          .locator('#mother-content #Full')
-          .getByText(updatedMotherDetails.firstNames)
+          .locator('#father-content #Full')
+          .getByText(updatedFatherDetails.firstNames)
       ).toBeVisible()
       await expect(
         page
-          .locator('#mother-content #Full')
-          .getByText(updatedMotherDetails.familyName)
+          .locator('#father-content #Full')
+          .getByText(updatedFatherDetails.familyName)
       ).toBeVisible()
     })
 
-    test('3.4.2 Change date of birth', async () => {
+    test('4.4.2 Change date of birth', async () => {
       await page
-        .locator('#mother-content #Date')
+        .locator('#father-content #Date')
         .getByRole('button', { name: 'Change', exact: true })
         .click()
 
       /*
        * Expected result: should
-       * - redirect to mother's details page
-       * - focus on mother's date of birth
+       * - redirect to father's details page
+       * - focus on father's date of birth
        */
       expect(page.url().includes('correction'))
-      expect(page.url().includes('mother-view-group'))
-      expect(page.url().includes('#motherBirthDate'))
+      expect(page.url().includes('father-view-group'))
+      expect(page.url().includes('#fatherBirthDate'))
 
-      const birthDay = updatedMotherDetails.birthDate.split('-')
+      const birthDay = updatedFatherDetails.birthDate.split('-')
 
       await page.getByPlaceholder('dd').fill(birthDay[2])
       await page.getByPlaceholder('mm').fill(birthDay[1])
@@ -271,39 +211,39 @@ test.describe.serial(' Correct record - 3', () => {
       expect(page.url().includes('review'))
 
       await expect(
-        page.locator('#mother-content #Date').getByRole('deletion')
+        page.locator('#father-content #Date').getByRole('deletion')
       ).toHaveText(
-        format(parseISO(declaration.mother.birthDate), 'dd MMMM yyyy'),
+        format(parseISO(declaration.father.birthDate), 'dd MMMM yyyy'),
         { ignoreCase: true }
       )
 
       await expect(
         page
-          .locator('#mother-content #Date')
+          .locator('#father-content #Date')
           .getByText(
-            format(parseISO(updatedMotherDetails.birthDate), 'dd MMMM yyyy')
+            format(parseISO(updatedFatherDetails.birthDate), 'dd MMMM yyyy')
           )
       ).toBeVisible()
     })
 
-    test('3.4.3 Change nationality', async () => {
+    test('4.4.3 Change nationality', async () => {
       await page
-        .locator('#mother-content #Nationality')
+        .locator('#father-content #Nationality')
         .getByRole('button', { name: 'Change', exact: true })
         .click()
 
       /*
        * Expected result: should
-       * - redirect to mother's details page
-       * - focus on mother's nationality
+       * - redirect to father's details page
+       * - focus on father's nationality
        */
 
       expect(page.url().includes('correction'))
-      expect(page.url().includes('mother-view-group'))
+      expect(page.url().includes('father-view-group'))
       expect(page.url().includes('#nationality'))
 
       await page.locator('#nationality').click()
-      await page.getByText(updatedMotherDetails.nationality).click()
+      await page.getByText(updatedFatherDetails.nationality).click()
 
       await page.waitForTimeout(500)
 
@@ -320,36 +260,36 @@ test.describe.serial(' Correct record - 3', () => {
       expect(page.url().includes('review'))
 
       await expect(
-        page.locator('#mother-content #Nationality').getByRole('deletion')
+        page.locator('#father-content #Nationality').getByRole('deletion')
       ).toHaveText('Farajaland', {
         ignoreCase: true
       })
 
       await expect(
         page
-          .locator('#mother-content #Nationality')
-          .getByText(updatedMotherDetails.nationality)
+          .locator('#father-content #Nationality')
+          .getByText(updatedFatherDetails.nationality)
       ).toBeVisible()
     })
 
-    test('3.4.4 Change id type', async () => {
+    test('4.4.4 Change id type', async () => {
       await page
-        .locator('#mother-content #Type')
+        .locator('#father-content #Type')
         .getByRole('button', { name: 'Change', exact: true })
         .click()
 
       /*
        * Expected result: should
-       * - redirect to mother's details page
-       * - focus on mother's id type
+       * - redirect to father's details page
+       * - focus on father's id type
        */
 
       expect(page.url().includes('correction'))
-      expect(page.url().includes('mother-view-group'))
-      expect(page.url().includes('#motherIdType'))
+      expect(page.url().includes('father-view-group'))
+      expect(page.url().includes('#fatherIdType'))
 
-      await page.locator('#motherIdType').click()
-      await page.getByText(updatedMotherDetails.idType).click()
+      await page.locator('#fatherIdType').click()
+      await page.getByText(updatedFatherDetails.idType).click()
 
       await page.waitForTimeout(500)
 
@@ -366,35 +306,35 @@ test.describe.serial(' Correct record - 3', () => {
       expect(page.url().includes('review'))
 
       await expect(
-        page.locator('#mother-content #Type').getByRole('deletion')
+        page.locator('#father-content #Type').getByRole('deletion')
       ).toHaveText('National Id', {
         ignoreCase: true
       })
 
       await expect(
         page
-          .locator('#mother-content #Type')
-          .getByText(updatedMotherDetails.idType)
+          .locator('#father-content #Type')
+          .getByText(updatedFatherDetails.idType)
       ).toBeVisible()
     })
 
-    test('3.4.5 Change id', async () => {
+    test('4.4.5 Change id', async () => {
       await page
-        .locator('#mother-content #ID')
+        .locator('#father-content #ID')
         .getByRole('button', { name: 'Change', exact: true })
         .click()
 
       /*
        * Expected result: should
-       * - redirect to mother's details page
-       * - focus on mother's id
+       * - redirect to father's details page
+       * - focus on father's id
        */
 
       expect(page.url().includes('correction'))
-      expect(page.url().includes('mother-view-group'))
-      expect(page.url().includes('#motherPassport'))
+      expect(page.url().includes('father-view-group'))
+      expect(page.url().includes('#fatherPassport'))
 
-      await page.locator('#motherPassport').fill(updatedMotherDetails.id)
+      await page.locator('#fatherPassport').fill(updatedFatherDetails.id)
 
       await page.waitForTimeout(500)
 
@@ -411,51 +351,51 @@ test.describe.serial(' Correct record - 3', () => {
       expect(page.url().includes('review'))
 
       await expect(
-        page.locator('#mother-content #ID').getByText(updatedMotherDetails.id)
+        page.locator('#father-content #ID').getByText(updatedFatherDetails.id)
       ).toBeVisible()
     })
 
-    test('3.4.6 Change usual place of residence', async () => {
+    test('4.4.6 Change usual place of residence', async () => {
       await page
-        .locator('#mother-content #Usual')
+        .locator('#father-content #Usual')
         .getByRole('button', { name: 'Change', exact: true })
         .click()
 
       /*
        * Expected result: should
-       * - redirect to mother's details page
-       * - focus on mother's Usual place of resiedence
+       * - redirect to father's details page
+       * - focus on father's Usual place of resiedence
        */
 
       expect(page.url().includes('correction'))
-      expect(page.url().includes('mother-view-group'))
+      expect(page.url().includes('father-view-group'))
       expect(page.url().includes('#countryPrimary'))
 
-      await page.locator('#statePrimaryMother').click()
-      await page.getByText(updatedMotherDetails.address.province).click()
+      await page.locator('#statePrimaryFather').click()
+      await page.getByText(updatedFatherDetails.address.province).click()
 
-      await page.locator('#districtPrimaryMother').click()
-      await page.getByText(updatedMotherDetails.address.district).click()
-
-      await page
-        .locator('#cityPrimaryMother')
-        .fill(updatedMotherDetails.address.town)
+      await page.locator('#districtPrimaryFather').click()
+      await page.getByText(updatedFatherDetails.address.district).click()
 
       await page
-        .locator('#addressLine1UrbanOptionPrimaryMother')
-        .fill(updatedMotherDetails.address.residentialArea)
+        .locator('#cityPrimaryFather')
+        .fill(updatedFatherDetails.address.town)
 
       await page
-        .locator('#addressLine2UrbanOptionPrimaryMother')
-        .fill(updatedMotherDetails.address.street)
+        .locator('#addressLine1UrbanOptionPrimaryFather')
+        .fill(updatedFatherDetails.address.residentialArea)
 
       await page
-        .locator('#addressLine3UrbanOptionPrimaryMother')
-        .fill(updatedMotherDetails.address.number)
+        .locator('#addressLine2UrbanOptionPrimaryFather')
+        .fill(updatedFatherDetails.address.street)
 
       await page
-        .locator('#postalCodePrimaryMother')
-        .fill(updatedMotherDetails.address.zipCode)
+        .locator('#addressLine3UrbanOptionPrimaryFather')
+        .fill(updatedFatherDetails.address.number)
+
+      await page
+        .locator('#postalCodePrimaryFather')
+        .fill(updatedFatherDetails.address.zipCode)
 
       await page.waitForTimeout(500)
 
@@ -471,100 +411,105 @@ test.describe.serial(' Correct record - 3', () => {
       expect(page.url().includes('correction'))
       expect(page.url().includes('review'))
       await expect(
-        page.locator('#mother-content #Usual').getByRole('deletion').nth(1)
+        page.locator('#father-content #Usual').getByRole('deletion').nth(1)
+      ).toHaveText('No', {
+        ignoreCase: true
+      })
+      await expect(
+        page.locator('#father-content #Usual').getByRole('deletion').nth(2)
       ).toHaveText('Farajaland', {
         ignoreCase: true
       })
       await expect(
-        page.locator('#mother-content #Usual').getByRole('deletion').nth(2)
+        page.locator('#father-content #Usual').getByRole('deletion').nth(3)
       ).toHaveText('Central', { ignoreCase: true })
       await expect(
-        page.locator('#mother-content #Usual').getByRole('deletion').nth(3)
+        page.locator('#father-content #Usual').getByRole('deletion').nth(4)
       ).toHaveText('Ibombo', {
         ignoreCase: true
       })
       await expect(
-        page.locator('#mother-content #Usual').getByRole('deletion').nth(5)
-      ).toHaveText(declaration.mother.address[0].city, { ignoreCase: true })
+        page.locator('#father-content #Usual').getByRole('deletion').nth(6)
+      ).toHaveText(declaration.father.address[0].city, { ignoreCase: true })
       await expect(
-        page.locator('#mother-content #Usual').getByRole('deletion').nth(6)
-      ).toHaveText(declaration.mother.address[0].line[2], {
+        page.locator('#father-content #Usual').getByRole('deletion').nth(7)
+      ).toHaveText(declaration.father.address[0].line[2], {
         ignoreCase: true
       })
       await expect(
-        page.locator('#mother-content #Usual').getByRole('deletion').nth(7)
-      ).toHaveText(declaration.mother.address[0].line[1], {
+        page.locator('#father-content #Usual').getByRole('deletion').nth(8)
+      ).toHaveText(declaration.father.address[0].line[1], {
         ignoreCase: true
       })
       await expect(
-        page.locator('#mother-content #Usual').getByRole('deletion').nth(8)
-      ).toHaveText(declaration.mother.address[0].line[0], {
+        page.locator('#father-content #Usual').getByRole('deletion').nth(9)
+      ).toHaveText(declaration.father.address[0].line[0], {
         ignoreCase: true
       })
       await expect(
-        page.locator('#mother-content #Usual').getByRole('deletion').nth(9)
-      ).toHaveText(declaration.mother.address[0].postalCode, {
+        page.locator('#father-content #Usual').getByRole('deletion').nth(10)
+      ).toHaveText(declaration.father.address[0].postalCode, {
         ignoreCase: true
       })
 
       await expect(
-        page.locator('#mother-content #Usual').getByText('Farajaland')
+        page.locator('#father-content #Usual').getByText('Farajaland')
       ).toBeVisible()
       await expect(
         page
-          .locator('#mother-content #Usual')
-          .getByText(updatedMotherDetails.address.province)
+          .locator('#father-content #Usual')
+          .getByText(updatedFatherDetails.address.province)
       ).toBeVisible()
       await expect(
         page
-          .locator('#mother-content #Usual')
-          .getByText(updatedMotherDetails.address.district)
+          .locator('#father-content #Usual')
+          .getByText(updatedFatherDetails.address.district)
       ).toBeVisible()
       await expect(
         page
-          .locator('#mother-content #Usual')
-          .getByText(updatedMotherDetails.address.town)
+          .locator('#father-content #Usual')
+          .getByText(updatedFatherDetails.address.town)
       ).toBeVisible()
       await expect(
         page
-          .locator('#mother-content #Usual')
-          .getByText(updatedMotherDetails.address.residentialArea)
+          .locator('#father-content #Usual')
+          .getByText(updatedFatherDetails.address.residentialArea)
       ).toBeVisible()
       await expect(
         page
-          .locator('#mother-content #Usual')
-          .getByText(updatedMotherDetails.address.street)
+          .locator('#father-content #Usual')
+          .getByText(updatedFatherDetails.address.street)
       ).toBeVisible()
       await expect(
         page
-          .locator('#mother-content #Usual')
-          .getByText(updatedMotherDetails.address.number)
+          .locator('#father-content #Usual')
+          .getByText(updatedFatherDetails.address.number)
       ).toBeVisible()
       await expect(
         page
-          .locator('#mother-content #Usual')
-          .getByText(updatedMotherDetails.address.zipCode)
+          .locator('#father-content #Usual')
+          .getByText(updatedFatherDetails.address.zipCode)
       ).toBeVisible()
     })
 
-    test('3.4.7 Change marital status', async () => {
+    test('4.4.7 Change marital status', async () => {
       await page
-        .locator('#mother-content #Marital')
+        .locator('#father-content #Marital')
         .getByRole('button', { name: 'Change', exact: true })
         .click()
 
       /*
        * Expected result: should
-       * - redirect to mother's details page
-       * - focus on mother's marital status
+       * - redirect to father's details page
+       * - focus on father's marital status
        */
 
       expect(page.url().includes('correction'))
-      expect(page.url().includes('mother-view-group'))
+      expect(page.url().includes('father-view-group'))
       expect(page.url().includes('#maritalStatus'))
 
       await page.locator('#maritalStatus').click()
-      await page.getByText(updatedMotherDetails.maritalStatus).click()
+      await page.getByText(updatedFatherDetails.maritalStatus).click()
 
       await page.waitForTimeout(500)
 
@@ -581,36 +526,36 @@ test.describe.serial(' Correct record - 3', () => {
       expect(page.url().includes('review'))
 
       await expect(
-        page.locator('#mother-content #Marital').getByRole('deletion')
-      ).toHaveText(declaration.mother.maritalStatus, {
+        page.locator('#father-content #Marital').getByRole('deletion')
+      ).toHaveText(declaration.father.maritalStatus, {
         ignoreCase: true
       })
 
       await expect(
         page
-          .locator('#mother-content #Marital')
-          .getByText(updatedMotherDetails.maritalStatus)
+          .locator('#father-content #Marital')
+          .getByText(updatedFatherDetails.maritalStatus)
       ).toBeVisible()
     })
 
-    test('3.4.8 Change level of education', async () => {
+    test('4.4.8 Change level of education', async () => {
       await page
-        .locator('#mother-content #Level')
+        .locator('#father-content #Level')
         .getByRole('button', { name: 'Change', exact: true })
         .click()
 
       /*
        * Expected result: should
-       * - redirect to mother's details page
-       * - focus on mother's level of education
+       * - redirect to father's details page
+       * - focus on father's level of education
        */
 
       expect(page.url().includes('correction'))
-      expect(page.url().includes('mother-view-group'))
+      expect(page.url().includes('father-view-group'))
       expect(page.url().includes('#educationalAttainment'))
 
       await page.locator('#educationalAttainment').click()
-      await page.getByText(updatedMotherDetails.educationLevel).click()
+      await page.getByText(updatedFatherDetails.educationLevel).click()
 
       await page.waitForTimeout(500)
 
@@ -627,20 +572,20 @@ test.describe.serial(' Correct record - 3', () => {
       expect(page.url().includes('review'))
 
       await expect(
-        page.locator('#mother-content #Level').getByRole('deletion')
+        page.locator('#father-content #Level').getByRole('deletion')
       ).toHaveText('No Schooling', {
         ignoreCase: true
       })
 
       await expect(
         page
-          .locator('#mother-content #Level')
-          .getByText(updatedMotherDetails.educationLevel)
+          .locator('#father-content #Level')
+          .getByText(updatedFatherDetails.educationLevel)
       ).toBeVisible()
     })
   })
 
-  test('3.5 Upload supporting documents', async () => {
+  test('4.5 Upload supporting documents', async () => {
     await page.getByRole('button', { name: 'Continue' }).click()
 
     /*
@@ -653,8 +598,17 @@ test.describe.serial(' Correct record - 3', () => {
 
     await expect(page.getByRole('button', { name: 'Continue' })).toBeDisabled()
 
-    await page.getByLabel('No supporting documents required').check()
+    await page.getByText('Select...').click()
+    await page.getByText('Affidavit', { exact: true }).click()
+    await uploadImage(page, page.getByRole('button', { name: 'Upload' }))
 
+    await page.getByText('Select...').click()
+    await page.getByText('Court Document', { exact: true }).click()
+    await uploadImage(page, page.getByRole('button', { name: 'Upload' }))
+
+    await page.getByText('Select...').click()
+    await page.getByText('Other', { exact: true }).click()
+    await uploadImage(page, page.getByRole('button', { name: 'Upload' }))
     /*
      * Expected result: should enable the continue button
      */
@@ -662,7 +616,7 @@ test.describe.serial(' Correct record - 3', () => {
     await page.getByRole('button', { name: 'Continue' }).click()
   })
 
-  test('3.6 Reason for correction', async () => {
+  test('4.6 Reason for correction', async () => {
     /*
      * Expected result: should
      * - navigate to reason for correction
@@ -674,9 +628,7 @@ test.describe.serial(' Correct record - 3', () => {
     await expect(page.getByRole('button', { name: 'Continue' })).toBeDisabled()
 
     await page
-      .getByLabel(
-        'Informant did not provide this information (Material omission)'
-      )
+      .getByLabel('Requested to do so by the court (Judicial order)')
       .check()
 
     await page
@@ -690,17 +642,17 @@ test.describe.serial(' Correct record - 3', () => {
     await page.getByRole('button', { name: 'Continue' }).click()
   })
 
-  test('3.7 Correction Summery', async () => {
+  test('4.7 Correction Summery', async () => {
     /*
      * Expected result: should
      * - navigate to correction summery
-     * - Send for approval button is disabled
+     * - Make correction button is disabled
      */
     expect(page.url().includes('summery'))
     expect(page.url().includes('reason'))
 
     await expect(
-      page.getByRole('button', { name: 'Send for approval' })
+      page.getByRole('button', { name: 'Make correction' })
     ).toBeDisabled()
 
     /*
@@ -714,72 +666,100 @@ test.describe.serial(' Correct record - 3', () => {
 
     await expect(
       page.getByText(
-        'Full name (mother)' +
-          declaration.mother.name[0].firstNames +
+        'Full name (father)' +
+          declaration.father.name[0].firstNames +
           ' ' +
-          declaration.mother.name[0].familyName +
-          updatedMotherDetails.firstNames +
+          declaration.father.name[0].familyName +
+          updatedFatherDetails.firstNames +
           ' ' +
-          updatedMotherDetails.familyName
+          updatedFatherDetails.familyName
       )
     ).toBeVisible()
 
     await expect(
       page.getByText(
-        'Date of birth (mother)' +
-          format(parseISO(declaration.mother.birthDate), 'dd MMMM yyyy') +
-          format(parseISO(updatedMotherDetails.birthDate), 'dd MMMM yyyy')
+        'Date of birth (father)' +
+          format(parseISO(declaration.father.birthDate), 'dd MMMM yyyy') +
+          format(parseISO(updatedFatherDetails.birthDate), 'dd MMMM yyyy')
       )
     ).toBeVisible()
 
     await expect(
       page.getByText(
-        'Nationality (Mother)Farajaland' + updatedMotherDetails.nationality
+        'Nationality (Father)Farajaland' + updatedFatherDetails.nationality
       )
     ).toBeVisible()
 
     await expect(
       page.getByText(
-        'Type of ID (Mother)National ID' + updatedMotherDetails.idType
+        'Type of ID (Father)National ID' + updatedFatherDetails.idType
       )
     ).toBeVisible()
     await expect(
-      page.getByText('ID Number (Mother)-' + updatedMotherDetails.id)
+      page.getByText('ID Number (Father)-' + updatedFatherDetails.id)
     ).toBeVisible()
 
     await expect(
       page.getByText(
-        'Usual place of residence (Mother)FarajalandCentralIbombo-' +
-          declaration.mother.address[0].city +
-          declaration.mother.address[0].line[2] +
-          declaration.mother.address[0].line[1] +
-          declaration.mother.address[0].line[0] +
-          declaration.mother.address[0].postalCode +
-          'Farajaland' +
-          updatedMotherDetails.address.province +
-          updatedMotherDetails.address.district +
-          updatedMotherDetails.address.town +
-          updatedMotherDetails.address.residentialArea +
-          updatedMotherDetails.address.street +
-          updatedMotherDetails.address.number +
-          updatedMotherDetails.address.zipCode
-      )
-    ).toBeVisible()
-
-    await expect(
-      page.getByText(
-        'Marital status (Mother)' +
-          declaration.mother.maritalStatus +
-          updatedMotherDetails.maritalStatus
+        'Usual place of residence (Father)NoFarajalandCentralIbombo-' +
+          declaration.father.address[0].city +
+          declaration.father.address[0].line[2] +
+          declaration.father.address[0].line[1] +
+          declaration.father.address[0].line[0] +
+          declaration.father.address[0].postalCode +
+          'NoFarajaland' +
+          updatedFatherDetails.address.province +
+          updatedFatherDetails.address.district +
+          updatedFatherDetails.address.town +
+          updatedFatherDetails.address.residentialArea +
+          updatedFatherDetails.address.street +
+          updatedFatherDetails.address.number +
+          updatedFatherDetails.address.zipCode
       )
     ).toBeVisible()
 
     await expect(
       page.getByText(
-        'Level of education (Mother)No schooling' +
-          updatedMotherDetails.educationLevel
+        'Marital status (Father)' +
+          declaration.father.maritalStatus +
+          updatedFatherDetails.maritalStatus
       )
     ).toBeVisible()
+
+    await expect(
+      page.getByText(
+        'Level of education (Father)No schooling' +
+          updatedFatherDetails.educationLevel
+      )
+    ).toBeVisible()
+
+    await expect(page.getByText('Legal guardian')).toBeVisible()
+    await expect(page.getByText('Verified')).toBeVisible()
+    await expect(
+      page.getByText('Requested to do so by the court (Judicial order)')
+    ).toBeVisible()
+    await expect(
+      page.getByText(declaration.registration.registrationNumber)
+    ).toBeVisible()
+
+    await page.getByLabel('Yes').check()
+    await page.locator('#correctionFees\\.nestedFields\\.totalFees').fill('15')
+
+    await uploadImage(page, page.locator('#upload_document'))
+    /*
+     * Expected result: should enable the Make correction button
+     */
+    await page.getByRole('button', { name: 'Make correction' }).click()
+
+    /*
+     * Expected result: should
+     * - be navigated to ready for review tab
+     * - include the declaration in this tab
+     */
+    expect(page.url().includes('registration-home/readyForReview'))
+    await expect(page.locator('#navigation_outbox')).not.toContainText('1', {
+      timeout: 1000 * 30
+    })
 
     await expect(
       page.getByText(
@@ -788,38 +768,5 @@ test.describe.serial(' Correct record - 3', () => {
           declaration.child.name[0].familyName
       )
     ).toBeVisible()
-    await expect(page.getByText('Verified')).toBeVisible()
-    await expect(
-      page.getByText(
-        'Informant did not provide this information (Material omission)'
-      )
-    ).toBeVisible()
-    await expect(
-      page.getByText(declaration.registration.registrationNumber)
-    ).toBeVisible()
-
-    await page.getByLabel('No').check()
-
-    /*
-     * Expected result: should enable the Send for approval button
-     */
-    await page.getByRole('button', { name: 'Send for approval' }).click()
-    await page.getByRole('button', { name: 'Confirm' }).click()
-
-    /*
-     * Expected result: should
-     * - be navigated to sent for approval tab
-     * - include the declaration in this tab
-     */
-    expect(page.url().includes('registration-home/approvals'))
-    await expect(page.locator('#navigation_outbox')).not.toContainText('1', {
-      timeout: 1000 * 30
-    })
-
-    // await expect(
-    //   page.getByText(
-    //     updatedMotherDetails.firstNames + ' ' + updatedMotherDetails.familyName
-    //   )
-    // ).toBeVisible()
   })
 })
