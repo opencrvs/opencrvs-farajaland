@@ -1,5 +1,3 @@
-import gql from 'graphql-tag'
-import { print } from 'graphql/language/printer'
 import { GATEWAY_HOST } from '../../constants'
 import { BirthRegistrationInput } from '../../gateway'
 import faker from '@faker-js/faker'
