@@ -800,10 +800,156 @@ test.describe.serial(' Correct record - 2', () => {
       timeout: 1000 * 30
     })
 
-    // await expect(
-    //   page.getByText(
-    //     updatedInformantDetails.firstNames + ' ' + updatedInformantDetails.familyName
-    //   )
-    // ).toBeVisible()
+    await expect(
+      page.getByText(
+        declaration.child.name[0].firstNames +
+          ' ' +
+          declaration.child.name[0].familyName
+      )
+    ).toBeVisible()
+  })
+  test.describe('2.8 Correction Approval', async () => {
+    test.beforeAll(async ({ browser }) => {
+      await page.close()
+
+      page = await browser.newPage()
+
+      await login(page, 'k.mweene', 'test')
+      await createPIN(page)
+    })
+
+    test('2.8.1 Record audit by local registrar', async () => {
+      await page.getByPlaceholder('Search for a tracking ID').fill(trackingId)
+      await page.getByPlaceholder('Search for a tracking ID').press('Enter')
+      await page.locator('#ListItemAction-0-icon').click()
+      await page.getByRole('button', { name: 'Assign', exact: true }).click()
+
+      await page.locator('#name_0').click()
+    })
+
+    test('2.8.2 Correction review', async () => {
+      await page.getByRole('button', { name: 'Review', exact: true }).click()
+
+      /*
+       * Expected result: should show
+       * - Submitter
+       * - Requested by
+       * - Reason for request
+       * - Comments
+       * - Original vs correction
+       */
+
+      await expect(page.getByText('Submitter' + 'Felix Katongo')).toBeVisible()
+
+      await expect(
+        page.getByText(
+          'Requested by' +
+            declaration.father.name[0].firstNames +
+            ' ' +
+            declaration.father.name[0].familyName
+        )
+      ).toBeVisible()
+
+      await expect(
+        page.getByText(
+          'Reason for request' +
+            'Informant provided incorrect information (Material error)'
+        )
+      ).toBeVisible()
+
+      await expect(
+        page.getByText(
+          'Relationship to child (Informant)' +
+            declaration.informant.relationship +
+            updatedInformantDetails.relationship
+        )
+      ).toBeVisible()
+
+      await expect(
+        page.getByText(
+          'Full name (informant)' +
+            declaration.informant.name[0].firstNames +
+            ' ' +
+            declaration.informant.name[0].familyName +
+            updatedInformantDetails.firstNames +
+            ' ' +
+            updatedInformantDetails.familyName
+        )
+      ).toBeVisible()
+
+      await expect(
+        page.getByText(
+          'Date of birth (informant)' +
+            format(parseISO(declaration.informant.birthDate), 'dd MMMM yyyy') +
+            format(parseISO(updatedInformantDetails.birthDate), 'dd MMMM yyyy')
+        )
+      ).toBeVisible()
+
+      await expect(
+        page.getByText(
+          'Nationality (Informant)Farajaland' +
+            updatedInformantDetails.nationality
+        )
+      ).toBeVisible()
+
+      await expect(
+        page.getByText(
+          'Type of ID (Informant)National ID' + updatedInformantDetails.idType
+        )
+      ).toBeVisible()
+      await expect(
+        page.getByText('ID Number (Informant)-' + updatedInformantDetails.id)
+      ).toBeVisible()
+
+      await expect(
+        page.getByText(
+          'Usual place of residence (Informant)FarajalandCentralIbombo-' +
+            declaration.informant.address[0].city +
+            declaration.informant.address[0].line[2] +
+            declaration.informant.address[0].line[1] +
+            declaration.informant.address[0].line[0] +
+            declaration.informant.address[0].postalCode +
+            'Farajaland' +
+            updatedInformantDetails.address.province +
+            updatedInformantDetails.address.district +
+            updatedInformantDetails.address.town +
+            updatedInformantDetails.address.residentialArea +
+            updatedInformantDetails.address.street +
+            updatedInformantDetails.address.number +
+            updatedInformantDetails.address.zipCode
+        )
+      ).toBeVisible()
+
+      await expect(
+        page.getByText(
+          'Email (Informant)' +
+            declaration.registration.contactEmail +
+            updatedInformantDetails.email
+        )
+      ).toBeVisible()
+    })
+
+    test('2.8.3 Approve correction', async () => {
+      await page.getByRole('button', { name: 'Approve', exact: true }).click()
+      await page.getByRole('button', { name: 'Confirm', exact: true }).click()
+
+      /*
+       * Expected result: should
+       * - be navigated to ready to print tab
+       * - include the updated declaration in this tab
+       */
+      expect(page.url().includes('registration-home/print'))
+      await expect(page.locator('#navigation_outbox')).not.toContainText('1', {
+        timeout: 1000 * 30
+      })
+
+      await expect(
+        page.getByText(
+          declaration.child.name[0].firstNames +
+            ' ' +
+            declaration.child.name[0].familyName
+        )
+      ).toBeVisible()
+    })
   })
 })

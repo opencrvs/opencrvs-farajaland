@@ -600,22 +600,22 @@ test.describe.serial(' Correct record - 5', () => {
      */
     await page.getByRole('button', { name: 'Make correction' }).click()
 
+    await page.getByRole('button', { name: 'Ready to print' }).click()
     /*
      * Expected result: should
-     * - be navigated to ready for review tab
+     * - be navigated to ready to print tab
      * - include the declaration in this tab
      */
-    expect(page.url().includes('registration-home/readyForReview'))
     await expect(page.locator('#navigation_outbox')).not.toContainText('1', {
       timeout: 1000 * 30
     })
 
-    // await expect(
-    //   page.getByText(
-    //     declaration.child.name[0].firstNames +
-    //       ' ' +
-    //       declaration.child.name[0].familyName
-    //   )
-    // ).toBeVisible()
+    await expect(
+      page.getByText(
+        declaration.child.name[0].firstNames +
+          ' ' +
+          declaration.child.name[0].familyName
+      )
+    ).toBeVisible()
   })
 })

@@ -822,10 +822,158 @@ test.describe.serial(' Correct record - 3', () => {
       timeout: 1000 * 30
     })
 
-    // await expect(
-    //   page.getByText(
-    //     updatedMotherDetails.firstNames + ' ' + updatedMotherDetails.familyName
-    //   )
-    // ).toBeVisible()
+    await expect(
+      page.getByText(
+        declaration.child.name[0].firstNames +
+          ' ' +
+          declaration.child.name[0].familyName
+      )
+    ).toBeVisible()
+  })
+
+  test.describe('3.8 Correction Approval', async () => {
+    test.beforeAll(async ({ browser }) => {
+      await page.close()
+
+      page = await browser.newPage()
+
+      await login(page, 'k.mweene', 'test')
+      await createPIN(page)
+    })
+
+    test('3.8.1 Record audit by local registrar', async () => {
+      await page.getByPlaceholder('Search for a tracking ID').fill(trackingId)
+      await page.getByPlaceholder('Search for a tracking ID').press('Enter')
+      await page.locator('#ListItemAction-0-icon').click()
+      await page.getByRole('button', { name: 'Assign', exact: true }).click()
+
+      await page.locator('#name_0').click()
+    })
+
+    test('3.8.2 Correction review', async () => {
+      await page.getByRole('button', { name: 'Review', exact: true }).click()
+
+      /*
+       * Expected result: should show
+       * - Submitter
+       * - Requested by
+       * - Reason for request
+       * - Comments
+       * - Original vs correction
+       */
+
+      await expect(page.getByText('Submitter' + 'Felix Katongo')).toBeVisible()
+
+      await expect(
+        page.getByText(
+          'Requested by' +
+            declaration.child.name[0].firstNames +
+            ' ' +
+            declaration.child.name[0].familyName
+        )
+      ).toBeVisible()
+      await expect(
+        page.getByText(
+          'Reason for request' +
+            'Informant did not provide this information (Material omission)'
+        )
+      ).toBeVisible()
+
+      await expect(
+        page.getByText('Comments' + declaration.registration.registrationNumber)
+      ).toBeVisible()
+
+      await expect(
+        page.getByText(
+          'Full name (mother)' +
+            declaration.mother.name[0].firstNames +
+            ' ' +
+            declaration.mother.name[0].familyName +
+            updatedMotherDetails.firstNames +
+            ' ' +
+            updatedMotherDetails.familyName
+        )
+      ).toBeVisible()
+
+      await expect(
+        page.getByText(
+          'Date of birth (mother)' +
+            format(parseISO(declaration.mother.birthDate), 'dd MMMM yyyy') +
+            format(parseISO(updatedMotherDetails.birthDate), 'dd MMMM yyyy')
+        )
+      ).toBeVisible()
+
+      await expect(
+        page.getByText(
+          'Nationality (Mother)Farajaland' + updatedMotherDetails.nationality
+        )
+      ).toBeVisible()
+
+      await expect(
+        page.getByText(
+          'Type of ID (Mother)National ID' + updatedMotherDetails.idType
+        )
+      ).toBeVisible()
+      await expect(
+        page.getByText('ID Number (Mother)-' + updatedMotherDetails.id)
+      ).toBeVisible()
+
+      await expect(
+        page.getByText(
+          'Usual place of residence (Mother)FarajalandCentralIbombo-' +
+            declaration.mother.address[0].city +
+            declaration.mother.address[0].line[2] +
+            declaration.mother.address[0].line[1] +
+            declaration.mother.address[0].line[0] +
+            declaration.mother.address[0].postalCode +
+            'Farajaland' +
+            updatedMotherDetails.address.province +
+            updatedMotherDetails.address.district +
+            updatedMotherDetails.address.town +
+            updatedMotherDetails.address.residentialArea +
+            updatedMotherDetails.address.street +
+            updatedMotherDetails.address.number +
+            updatedMotherDetails.address.zipCode
+        )
+      ).toBeVisible()
+
+      await expect(
+        page.getByText(
+          'Marital status (Mother)' +
+            declaration.mother.maritalStatus +
+            updatedMotherDetails.maritalStatus
+        )
+      ).toBeVisible()
+
+      await expect(
+        page.getByText(
+          'Level of education (Mother)No schooling' +
+            updatedMotherDetails.educationLevel
+        )
+      ).toBeVisible()
+    })
+
+    test('3.8.3 Approve correction', async () => {
+      await page.getByRole('button', { name: 'Approve', exact: true }).click()
+      await page.getByRole('button', { name: 'Confirm', exact: true }).click()
+
+      /*
+       * Expected result: should
+       * - be navigated to ready to print tab
+       * - include the updated declaration in this tab
+       */
+      expect(page.url().includes('registration-home/print'))
+      await expect(page.locator('#navigation_outbox')).not.toContainText('1', {
+        timeout: 1000 * 30
+      })
+
+      await expect(
+        page.getByText(
+          declaration.child.name[0].firstNames +
+            ' ' +
+            declaration.child.name[0].familyName
+        )
+      ).toBeVisible()
+    })
   })
 })

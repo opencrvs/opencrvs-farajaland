@@ -774,11 +774,158 @@ test.describe('1. Correct record - 1', () => {
         timeout: 1000 * 30
       })
 
-      // await expect(
-      //   page.getByText(
-      //     updatedChildDetails.firstNames + ' ' + updatedChildDetails.familyName
-      //   )
-      // ).toBeVisible()
+      await expect(
+        page.getByText(
+          declaration.child.name[0].firstNames +
+            ' ' +
+            declaration.child.name[0].familyName
+        )
+      ).toBeVisible()
+    })
+
+    test.describe('1.2.6 Correction Approval', async () => {
+      test.beforeAll(async ({ browser }) => {
+        await page.close()
+        page = await browser.newPage()
+
+        await login(page, 'k.mweene', 'test')
+        await createPIN(page)
+      })
+
+      test('1.2.6.1 Record audit by local registrar', async () => {
+        await page.getByPlaceholder('Search for a tracking ID').fill(trackingId)
+        await page.getByPlaceholder('Search for a tracking ID').press('Enter')
+        await page.locator('#ListItemAction-0-icon').click()
+        await page.getByRole('button', { name: 'Assign', exact: true }).click()
+
+        await page.locator('#name_0').click()
+      })
+
+      test('1.2.6.2 Correction review', async () => {
+        await page.getByRole('button', { name: 'Review', exact: true }).click()
+
+        /*
+         * Expected result: should show
+         * - Submitter
+         * - Requested by
+         * - Reason for request
+         * - Comments
+         * - Original vs correction
+         */
+
+        await expect(
+          page.getByText('Submitter' + 'Felix Katongo')
+        ).toBeVisible()
+
+        await expect(
+          page.getByText(
+            'Requested by' +
+              declaration.mother.name[0].firstNames +
+              ' ' +
+              declaration.mother.name[0].familyName
+          )
+        ).toBeVisible()
+
+        await expect(
+          page.getByText(
+            'Reason for request' +
+              'Myself or an agent made a mistake (Clerical error)'
+          )
+        ).toBeVisible()
+        await expect(
+          page.getByText(
+            'Comments' + declaration.registration.registrationNumber
+          )
+        ).toBeVisible()
+
+        await expect(
+          page.getByText(
+            'Full name (Child)' +
+              declaration.child.name[0].firstNames +
+              ' ' +
+              declaration.child.name[0].familyName +
+              updatedChildDetails.firstNames +
+              ' ' +
+              updatedChildDetails.familyName
+          )
+        ).toBeVisible()
+
+        await expect(
+          page.getByText(
+            'Sex (Child)' +
+              declaration.child.gender +
+              updatedChildDetails.gender
+          )
+        ).toBeVisible()
+
+        await expect(
+          page.getByText(
+            'Date of birth (Child)' +
+              format(parseISO(declaration.child.birthDate), 'dd MMMM yyyy') +
+              format(parseISO(updatedChildDetails.birthDate), 'dd MMMM yyyy')
+          )
+        ).toBeVisible()
+
+        await expect(
+          page.getByText(
+            'Place of delivery (Child)' +
+              'Health Institution' +
+              childBirthLocationName +
+              'Health Institution' +
+              updatedChildDetails.placeOfBirth
+          )
+        ).toBeVisible()
+
+        await expect(
+          page.getByText(
+            'Attendant at birth (Child)' +
+              declaration.attendantAtBirth +
+              updatedChildDetails.attendantAtBirth
+          )
+        ).toBeVisible()
+
+        await expect(
+          page.getByText(
+            'Type of birth (Child)' +
+              declaration.birthType +
+              updatedChildDetails.typeOfBirth
+          )
+        ).toBeVisible()
+
+        await expect(
+          page.getByText(
+            'Weight at birth (Child)' +
+              declaration.weightAtBirth +
+              updatedChildDetails.weightAtBirth
+          )
+        ).toBeVisible()
+      })
+
+      test('1.2.6.3 Approve correction', async () => {
+        await page.getByRole('button', { name: 'Approve', exact: true }).click()
+        await page.getByRole('button', { name: 'Confirm', exact: true }).click()
+
+        /*
+         * Expected result: should
+         * - be navigated to ready to print tab
+         * - include the updated declaration in this tab
+         */
+        expect(page.url().includes('registration-home/print'))
+        await expect(page.locator('#navigation_outbox')).not.toContainText(
+          '1',
+          {
+            timeout: 1000 * 30
+          }
+        )
+
+        await expect(
+          page.getByText(
+            updatedChildDetails.firstNames +
+              ' ' +
+              updatedChildDetails.familyName
+          )
+        ).toBeVisible()
+      })
     })
   })
 })
