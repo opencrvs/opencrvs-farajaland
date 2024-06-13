@@ -760,4 +760,35 @@ test.describe.serial(' Correct record - 8', () => {
       )
     ).toBeVisible()
   })
+  test.skip('8.8 Validate history in record audit', async () => {
+    await page
+      .getByText(
+        declaration.child.name[0].firstNames +
+          ' ' +
+          declaration.child.name[0].familyName
+      )
+      .click()
+
+    await page.getByLabel('Assign record').click()
+
+    if (await page.getByText('Unassign record?', { exact: true }).isVisible())
+      await page.getByRole('button', { name: 'Cancel', exact: true }).click()
+    else if (
+      await page
+        .getByRole('button', { name: 'Assign', exact: true })
+        .isVisible()
+    )
+      await page.getByRole('button', { name: 'Assign', exact: true }).click()
+
+    /*
+     * Expected result: should show in task history
+     * - Record corrected
+     */
+
+    await expect(
+      page
+        .locator('#listTable-task-history')
+        .getByRole('button', { name: 'Record corrected' })
+    ).toBeVisible()
+  })
 })

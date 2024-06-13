@@ -917,13 +917,42 @@ test.describe('1. Correct record - 1', () => {
             timeout: 1000 * 30
           }
         )
-
         await expect(
           page.getByText(
             updatedChildDetails.firstNames +
               ' ' +
               updatedChildDetails.familyName
           )
+        ).toBeVisible()
+      })
+      test('1.2.6.4 Validate history in record audit', async () => {
+        await page
+          .getByText(
+            updatedChildDetails.firstNames +
+              ' ' +
+              updatedChildDetails.familyName
+          )
+          .click()
+
+        await page.getByLabel('Assign record').click()
+        await page.getByRole('button', { name: 'Assign', exact: true }).click()
+
+        /*
+         * Expected result: should show in task history
+         * - Correction requested
+         * - Correction approved
+         */
+
+        await expect(
+          page
+            .locator('#listTable-task-history')
+            .getByRole('button', { name: 'Correction requested' })
+        ).toBeVisible()
+
+        await expect(
+          page
+            .locator('#listTable-task-history')
+            .getByRole('button', { name: 'Correction approved' })
         ).toBeVisible()
       })
     })

@@ -975,5 +975,41 @@ test.describe.serial(' Correct record - 3', () => {
         )
       ).toBeVisible()
     })
+
+    test('3.8.4 Validate history in record audit', async () => {
+      await page
+        .getByText(
+          declaration.child.name[0].firstNames +
+            ' ' +
+            declaration.child.name[0].familyName
+        )
+        .click()
+
+      await page.getByLabel('Assign record').click()
+      if (
+        await page
+          .getByRole('button', { name: 'Assign', exact: true })
+          .isVisible()
+      )
+        await page.getByRole('button', { name: 'Assign', exact: true }).click()
+
+      /*
+       * Expected result: should show in task history
+       * - Correction requested
+       * - Correction approved
+       */
+
+      await expect(
+        page
+          .locator('#listTable-task-history')
+          .getByRole('button', { name: 'Correction requested' })
+      ).toBeVisible()
+
+      await expect(
+        page
+          .locator('#listTable-task-history')
+          .getByRole('button', { name: 'Correction approved' })
+      ).toBeVisible()
+    })
   })
 })
