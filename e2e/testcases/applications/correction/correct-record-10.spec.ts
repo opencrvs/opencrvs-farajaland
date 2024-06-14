@@ -331,8 +331,8 @@ test.describe('10. Correct record - 10', () => {
          * - show updated gender
          */
 
-        expect(page.url().includes('correction'))
-        expect(page.url().includes('review'))
+        expect(page.url().includes('correction')).toBeTruthy()
+        expect(page.url().includes('review')).toBeTruthy()
 
         await expect(
           page.locator('#deceased-content #Sex').getByRole('deletion')
@@ -936,7 +936,7 @@ test.describe('10. Correct record - 10', () => {
        * - be navigated to sent for approval tab
        * - include the declaration in this tab
        */
-      expect(page.url().includes('registration-home/approvals'))
+      expect(page.url().includes('registration-home/approvals')).toBeTruthy()
       await expect(page.locator('#navigation_outbox')).not.toContainText('1', {
         timeout: 1000 * 30
       })

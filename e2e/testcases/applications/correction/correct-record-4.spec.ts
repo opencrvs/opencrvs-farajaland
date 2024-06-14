@@ -117,8 +117,8 @@ test.describe.serial(' Correct record - 4', () => {
     /*
      * Expected result: should navigate to review page
      */
-    expect(page.url().includes('correction'))
-    expect(page.url().includes('review'))
+    expect(page.url().includes('correction')).toBeTruthy()
+    expect(page.url().includes('review')).toBeTruthy()
   })
 
   test.describe('4.4 Correction made on father details', async () => {
@@ -134,9 +134,9 @@ test.describe.serial(' Correct record - 4', () => {
        * - focus on father's family name
        */
 
-      expect(page.url().includes('correction'))
-      expect(page.url().includes('father-view-group'))
-      expect(page.url().includes('#familyNameEng'))
+      expect(page.url().includes('correction')).toBeTruthy()
+      expect(page.url().includes('father-view-group')).toBeTruthy()
+      expect(page.url().includes('#familyNameEng')).toBeTruthy()
 
       await page.locator('#firstNamesEng').fill(updatedFatherDetails.firstNames)
       await page.locator('#familyNameEng').fill(updatedFatherDetails.familyName)
@@ -152,8 +152,8 @@ test.describe.serial(' Correct record - 4', () => {
        * - show updated name
        */
 
-      expect(page.url().includes('correction'))
-      expect(page.url().includes('review'))
+      expect(page.url().includes('correction')).toBeTruthy()
+      expect(page.url().includes('review')).toBeTruthy()
 
       const oldData = await page
         .locator('#father-content #Full')
@@ -186,9 +186,9 @@ test.describe.serial(' Correct record - 4', () => {
        * - redirect to father's details page
        * - focus on father's date of birth
        */
-      expect(page.url().includes('correction'))
-      expect(page.url().includes('father-view-group'))
-      expect(page.url().includes('#fatherBirthDate'))
+      expect(page.url().includes('correction')).toBeTruthy()
+      expect(page.url().includes('father-view-group')).toBeTruthy()
+      expect(page.url().includes('#fatherBirthDate')).toBeTruthy()
 
       const birthDay = updatedFatherDetails.birthDate.split('-')
 
@@ -207,8 +207,8 @@ test.describe.serial(' Correct record - 4', () => {
        * - show updated gender
        */
 
-      expect(page.url().includes('correction'))
-      expect(page.url().includes('review'))
+      expect(page.url().includes('correction')).toBeTruthy()
+      expect(page.url().includes('review')).toBeTruthy()
 
       await expect(
         page.locator('#father-content #Date').getByRole('deletion')
@@ -238,9 +238,9 @@ test.describe.serial(' Correct record - 4', () => {
        * - focus on father's nationality
        */
 
-      expect(page.url().includes('correction'))
-      expect(page.url().includes('father-view-group'))
-      expect(page.url().includes('#nationality'))
+      expect(page.url().includes('correction')).toBeTruthy()
+      expect(page.url().includes('father-view-group')).toBeTruthy()
+      expect(page.url().includes('#nationality')).toBeTruthy()
 
       await page.locator('#nationality').click()
       await page.getByText(updatedFatherDetails.nationality).click()
@@ -256,8 +256,8 @@ test.describe.serial(' Correct record - 4', () => {
        * - show updated nationality
        */
 
-      expect(page.url().includes('correction'))
-      expect(page.url().includes('review'))
+      expect(page.url().includes('correction')).toBeTruthy()
+      expect(page.url().includes('review')).toBeTruthy()
 
       await expect(
         page.locator('#father-content #Nationality').getByRole('deletion')
@@ -284,9 +284,9 @@ test.describe.serial(' Correct record - 4', () => {
        * - focus on father's id type
        */
 
-      expect(page.url().includes('correction'))
-      expect(page.url().includes('father-view-group'))
-      expect(page.url().includes('#fatherIdType'))
+      expect(page.url().includes('correction')).toBeTruthy()
+      expect(page.url().includes('father-view-group')).toBeTruthy()
+      expect(page.url().includes('#fatherIdType')).toBeTruthy()
 
       await page.locator('#fatherIdType').click()
       await page.getByText(updatedFatherDetails.idType).click()
@@ -302,8 +302,8 @@ test.describe.serial(' Correct record - 4', () => {
        * - show updated id type
        */
 
-      expect(page.url().includes('correction'))
-      expect(page.url().includes('review'))
+      expect(page.url().includes('correction')).toBeTruthy()
+      expect(page.url().includes('review')).toBeTruthy()
 
       await expect(
         page.locator('#father-content #Type').getByRole('deletion')
@@ -330,9 +330,9 @@ test.describe.serial(' Correct record - 4', () => {
        * - focus on father's id
        */
 
-      expect(page.url().includes('correction'))
-      expect(page.url().includes('father-view-group'))
-      expect(page.url().includes('#fatherPassport'))
+      expect(page.url().includes('correction')).toBeTruthy()
+      expect(page.url().includes('father-view-group')).toBeTruthy()
+      expect(page.url().includes('#fatherPassport')).toBeTruthy()
 
       await page.locator('#fatherPassport').fill(updatedFatherDetails.id)
 
@@ -347,8 +347,8 @@ test.describe.serial(' Correct record - 4', () => {
        * - show updated id
        */
 
-      expect(page.url().includes('correction'))
-      expect(page.url().includes('review'))
+      expect(page.url().includes('correction')).toBeTruthy()
+      expect(page.url().includes('review')).toBeTruthy()
 
       await expect(
         page.locator('#father-content #ID').getByText(updatedFatherDetails.id)
@@ -367,9 +367,9 @@ test.describe.serial(' Correct record - 4', () => {
        * - focus on father's Usual place of resiedence
        */
 
-      expect(page.url().includes('correction'))
-      expect(page.url().includes('father-view-group'))
-      expect(page.url().includes('#countryPrimary'))
+      expect(page.url().includes('correction')).toBeTruthy()
+      expect(page.url().includes('father-view-group')).toBeTruthy()
+      expect(page.url().includes('#countryPrimary')).toBeTruthy()
 
       await page.locator('#statePrimaryFather').click()
       await page.getByText(updatedFatherDetails.address.province).click()
@@ -408,8 +408,8 @@ test.describe.serial(' Correct record - 4', () => {
        * - show updated Usual place of resiedence
        */
 
-      expect(page.url().includes('correction'))
-      expect(page.url().includes('review'))
+      expect(page.url().includes('correction')).toBeTruthy()
+      expect(page.url().includes('review')).toBeTruthy()
       await expect(
         page.locator('#father-content #Usual').getByRole('deletion').nth(1)
       ).toHaveText('No', {
@@ -504,9 +504,9 @@ test.describe.serial(' Correct record - 4', () => {
        * - focus on father's marital status
        */
 
-      expect(page.url().includes('correction'))
-      expect(page.url().includes('father-view-group'))
-      expect(page.url().includes('#maritalStatus'))
+      expect(page.url().includes('correction')).toBeTruthy()
+      expect(page.url().includes('father-view-group')).toBeTruthy()
+      expect(page.url().includes('#maritalStatus')).toBeTruthy()
 
       await page.locator('#maritalStatus').click()
       await page.getByText(updatedFatherDetails.maritalStatus).click()
@@ -522,8 +522,8 @@ test.describe.serial(' Correct record - 4', () => {
        * - show updated marital status
        */
 
-      expect(page.url().includes('correction'))
-      expect(page.url().includes('review'))
+      expect(page.url().includes('correction')).toBeTruthy()
+      expect(page.url().includes('review')).toBeTruthy()
 
       await expect(
         page.locator('#father-content #Marital').getByRole('deletion')
@@ -550,9 +550,9 @@ test.describe.serial(' Correct record - 4', () => {
        * - focus on father's level of education
        */
 
-      expect(page.url().includes('correction'))
-      expect(page.url().includes('father-view-group'))
-      expect(page.url().includes('#educationalAttainment'))
+      expect(page.url().includes('correction')).toBeTruthy()
+      expect(page.url().includes('father-view-group')).toBeTruthy()
+      expect(page.url().includes('#educationalAttainment')).toBeTruthy()
 
       await page.locator('#educationalAttainment').click()
       await page.getByText(updatedFatherDetails.educationLevel).click()
@@ -568,8 +568,8 @@ test.describe.serial(' Correct record - 4', () => {
        * - show updated level of education
        */
 
-      expect(page.url().includes('correction'))
-      expect(page.url().includes('review'))
+      expect(page.url().includes('correction')).toBeTruthy()
+      expect(page.url().includes('review')).toBeTruthy()
 
       await expect(
         page.locator('#father-content #Level').getByRole('deletion')
@@ -593,9 +593,9 @@ test.describe.serial(' Correct record - 4', () => {
      * - navigate to supporting document
      * - continue button is disabled
      */
-    expect(page.url().includes('correction'))
+    expect(page.url().includes('correction')).toBeTruthy()
 
-    expect(page.url().includes('supportingDocuments'))
+    expect(page.url().includes('supportingDocuments')).toBeTruthy()
 
     await expect(page.getByRole('button', { name: 'Continue' })).toBeDisabled()
 
@@ -623,9 +623,9 @@ test.describe.serial(' Correct record - 4', () => {
      * - navigate to reason for correction
      * - continue button is disabled
      */
-    expect(page.url().includes('correction'))
+    expect(page.url().includes('correction')).toBeTruthy()
 
-    expect(page.url().includes('reason'))
+    expect(page.url().includes('reason')).toBeTruthy()
 
     await expect(page.getByRole('button', { name: 'Continue' })).toBeDisabled()
 
@@ -650,8 +650,8 @@ test.describe.serial(' Correct record - 4', () => {
      * - navigate to correction summary
      * - Make correction button is disabled
      */
-    expect(page.url().includes('summary'))
-    expect(page.url().includes('reason'))
+    expect(page.url().includes('summary')).toBeTruthy()
+    expect(page.url().includes('reason')).toBeTruthy()
 
     await expect(
       page.getByRole('button', { name: 'Make correction' })

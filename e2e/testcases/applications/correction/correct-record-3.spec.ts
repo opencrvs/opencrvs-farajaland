@@ -113,7 +113,7 @@ test.describe.serial(' Correct record - 3', () => {
        * - be navigated to ready to isssue tab
        * - include the declaration in this tab
        */
-      expect(page.url().includes('registration-home/readyToIssue'))
+      expect(page.url().includes('registration-home/readyToIssue')).toBeTruthy()
       await expect(page.locator('#navigation_outbox')).not.toContainText('1', {
         timeout: 1000 * 30
       })
@@ -183,8 +183,8 @@ test.describe.serial(' Correct record - 3', () => {
     /*
      * Expected result: should navigate to review page
      */
-    expect(page.url().includes('correction'))
-    expect(page.url().includes('review'))
+    expect(page.url().includes('correction')).toBeTruthy()
+    expect(page.url().includes('review')).toBeTruthy()
   })
 
   test.describe('3.4 Correction made on mother details', async () => {
@@ -200,9 +200,9 @@ test.describe.serial(' Correct record - 3', () => {
        * - focus on mother's family name
        */
 
-      expect(page.url().includes('correction'))
-      expect(page.url().includes('mother-view-group'))
-      expect(page.url().includes('#familyNameEng'))
+      expect(page.url().includes('correction')).toBeTruthy()
+      expect(page.url().includes('mother-view-group')).toBeTruthy()
+      expect(page.url().includes('#familyNameEng')).toBeTruthy()
 
       await page.locator('#firstNamesEng').fill(updatedMotherDetails.firstNames)
       await page.locator('#familyNameEng').fill(updatedMotherDetails.familyName)
@@ -218,8 +218,8 @@ test.describe.serial(' Correct record - 3', () => {
        * - show updated name
        */
 
-      expect(page.url().includes('correction'))
-      expect(page.url().includes('review'))
+      expect(page.url().includes('correction')).toBeTruthy()
+      expect(page.url().includes('review')).toBeTruthy()
 
       const oldData = await page
         .locator('#mother-content #Full')
@@ -252,9 +252,9 @@ test.describe.serial(' Correct record - 3', () => {
        * - redirect to mother's details page
        * - focus on mother's date of birth
        */
-      expect(page.url().includes('correction'))
-      expect(page.url().includes('mother-view-group'))
-      expect(page.url().includes('#motherBirthDate'))
+      expect(page.url().includes('correction')).toBeTruthy()
+      expect(page.url().includes('mother-view-group')).toBeTruthy()
+      expect(page.url().includes('#motherBirthDate')).toBeTruthy()
 
       const birthDay = updatedMotherDetails.birthDate.split('-')
 
@@ -273,8 +273,8 @@ test.describe.serial(' Correct record - 3', () => {
        * - show updated gender
        */
 
-      expect(page.url().includes('correction'))
-      expect(page.url().includes('review'))
+      expect(page.url().includes('correction')).toBeTruthy()
+      expect(page.url().includes('review')).toBeTruthy()
 
       await expect(
         page.locator('#mother-content #Date').getByRole('deletion')
@@ -304,9 +304,9 @@ test.describe.serial(' Correct record - 3', () => {
        * - focus on mother's nationality
        */
 
-      expect(page.url().includes('correction'))
-      expect(page.url().includes('mother-view-group'))
-      expect(page.url().includes('#nationality'))
+      expect(page.url().includes('correction')).toBeTruthy()
+      expect(page.url().includes('mother-view-group')).toBeTruthy()
+      expect(page.url().includes('#nationality')).toBeTruthy()
 
       await page.locator('#nationality').click()
       await page.getByText(updatedMotherDetails.nationality).click()
@@ -322,8 +322,8 @@ test.describe.serial(' Correct record - 3', () => {
        * - show updated nationality
        */
 
-      expect(page.url().includes('correction'))
-      expect(page.url().includes('review'))
+      expect(page.url().includes('correction')).toBeTruthy()
+      expect(page.url().includes('review')).toBeTruthy()
 
       await expect(
         page.locator('#mother-content #Nationality').getByRole('deletion')
@@ -350,9 +350,9 @@ test.describe.serial(' Correct record - 3', () => {
        * - focus on mother's id type
        */
 
-      expect(page.url().includes('correction'))
-      expect(page.url().includes('mother-view-group'))
-      expect(page.url().includes('#motherIdType'))
+      expect(page.url().includes('correction')).toBeTruthy()
+      expect(page.url().includes('mother-view-group')).toBeTruthy()
+      expect(page.url().includes('#motherIdType')).toBeTruthy()
 
       await page.locator('#motherIdType').click()
       await page.getByText(updatedMotherDetails.idType).click()
@@ -368,8 +368,8 @@ test.describe.serial(' Correct record - 3', () => {
        * - show updated id type
        */
 
-      expect(page.url().includes('correction'))
-      expect(page.url().includes('review'))
+      expect(page.url().includes('correction')).toBeTruthy()
+      expect(page.url().includes('review')).toBeTruthy()
 
       await expect(
         page.locator('#mother-content #Type').getByRole('deletion')
@@ -396,9 +396,9 @@ test.describe.serial(' Correct record - 3', () => {
        * - focus on mother's id
        */
 
-      expect(page.url().includes('correction'))
-      expect(page.url().includes('mother-view-group'))
-      expect(page.url().includes('#motherPassport'))
+      expect(page.url().includes('correction')).toBeTruthy()
+      expect(page.url().includes('mother-view-group')).toBeTruthy()
+      expect(page.url().includes('#motherPassport')).toBeTruthy()
 
       await page.locator('#motherPassport').fill(updatedMotherDetails.id)
 
@@ -413,8 +413,8 @@ test.describe.serial(' Correct record - 3', () => {
        * - show updated id
        */
 
-      expect(page.url().includes('correction'))
-      expect(page.url().includes('review'))
+      expect(page.url().includes('correction')).toBeTruthy()
+      expect(page.url().includes('review')).toBeTruthy()
 
       await expect(
         page.locator('#mother-content #ID').getByText(updatedMotherDetails.id)
@@ -433,9 +433,9 @@ test.describe.serial(' Correct record - 3', () => {
        * - focus on mother's Usual place of resiedence
        */
 
-      expect(page.url().includes('correction'))
-      expect(page.url().includes('mother-view-group'))
-      expect(page.url().includes('#countryPrimary'))
+      expect(page.url().includes('correction')).toBeTruthy()
+      expect(page.url().includes('mother-view-group')).toBeTruthy()
+      expect(page.url().includes('#countryPrimary')).toBeTruthy()
 
       await page.locator('#statePrimaryMother').click()
       await page.getByText(updatedMotherDetails.address.province).click()
@@ -474,8 +474,8 @@ test.describe.serial(' Correct record - 3', () => {
        * - show updated Usual place of resiedence
        */
 
-      expect(page.url().includes('correction'))
-      expect(page.url().includes('review'))
+      expect(page.url().includes('correction')).toBeTruthy()
+      expect(page.url().includes('review')).toBeTruthy()
       await expect(
         page.locator('#mother-content #Usual').getByRole('deletion').nth(1)
       ).toHaveText('Farajaland', {
@@ -565,9 +565,9 @@ test.describe.serial(' Correct record - 3', () => {
        * - focus on mother's marital status
        */
 
-      expect(page.url().includes('correction'))
-      expect(page.url().includes('mother-view-group'))
-      expect(page.url().includes('#maritalStatus'))
+      expect(page.url().includes('correction')).toBeTruthy()
+      expect(page.url().includes('mother-view-group')).toBeTruthy()
+      expect(page.url().includes('#maritalStatus')).toBeTruthy()
 
       await page.locator('#maritalStatus').click()
       await page.getByText(updatedMotherDetails.maritalStatus).click()
@@ -583,8 +583,8 @@ test.describe.serial(' Correct record - 3', () => {
        * - show updated marital status
        */
 
-      expect(page.url().includes('correction'))
-      expect(page.url().includes('review'))
+      expect(page.url().includes('correction')).toBeTruthy()
+      expect(page.url().includes('review')).toBeTruthy()
 
       await expect(
         page.locator('#mother-content #Marital').getByRole('deletion')
@@ -611,9 +611,9 @@ test.describe.serial(' Correct record - 3', () => {
        * - focus on mother's level of education
        */
 
-      expect(page.url().includes('correction'))
-      expect(page.url().includes('mother-view-group'))
-      expect(page.url().includes('#educationalAttainment'))
+      expect(page.url().includes('correction')).toBeTruthy()
+      expect(page.url().includes('mother-view-group')).toBeTruthy()
+      expect(page.url().includes('#educationalAttainment')).toBeTruthy()
 
       await page.locator('#educationalAttainment').click()
       await page.getByText(updatedMotherDetails.educationLevel).click()
@@ -629,8 +629,8 @@ test.describe.serial(' Correct record - 3', () => {
        * - show updated level of education
        */
 
-      expect(page.url().includes('correction'))
-      expect(page.url().includes('review'))
+      expect(page.url().includes('correction')).toBeTruthy()
+      expect(page.url().includes('review')).toBeTruthy()
 
       await expect(
         page.locator('#mother-content #Level').getByRole('deletion')
@@ -654,8 +654,8 @@ test.describe.serial(' Correct record - 3', () => {
      * - navigate to supporting document
      * - continue button is disabled
      */
-    expect(page.url().includes('correction'))
-    expect(page.url().includes('supportingDocuments'))
+    expect(page.url().includes('correction')).toBeTruthy()
+    expect(page.url().includes('supportingDocuments')).toBeTruthy()
 
     await expect(page.getByRole('button', { name: 'Continue' })).toBeDisabled()
 
@@ -674,8 +674,8 @@ test.describe.serial(' Correct record - 3', () => {
      * - navigate to reason for correction
      * - continue button is disabled
      */
-    expect(page.url().includes('correction'))
-    expect(page.url().includes('reason'))
+    expect(page.url().includes('correction')).toBeTruthy()
+    expect(page.url().includes('reason')).toBeTruthy()
 
     await expect(page.getByRole('button', { name: 'Continue' })).toBeDisabled()
 
@@ -702,8 +702,8 @@ test.describe.serial(' Correct record - 3', () => {
      * - navigate to correction summary
      * - Send for approval button is disabled
      */
-    expect(page.url().includes('summary'))
-    expect(page.url().includes('reason'))
+    expect(page.url().includes('summary')).toBeTruthy()
+    expect(page.url().includes('reason')).toBeTruthy()
 
     await expect(
       page.getByRole('button', { name: 'Send for approval' })
@@ -817,7 +817,7 @@ test.describe.serial(' Correct record - 3', () => {
      * - be navigated to sent for approval tab
      * - include the declaration in this tab
      */
-    expect(page.url().includes('registration-home/approvals'))
+    expect(page.url().includes('registration-home/approvals')).toBeTruthy()
     await expect(page.locator('#navigation_outbox')).not.toContainText('1', {
       timeout: 1000 * 30
     })
@@ -962,7 +962,7 @@ test.describe.serial(' Correct record - 3', () => {
        * - be navigated to ready to print tab
        * - include the updated declaration in this tab
        */
-      expect(page.url().includes('registration-home/print'))
+      expect(page.url().includes('registration-home/print')).toBeTruthy()
       await expect(page.locator('#navigation_outbox')).not.toContainText('1', {
         timeout: 1000 * 30
       })
