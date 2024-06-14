@@ -240,8 +240,8 @@ test.describe.serial(' Correct record - 5', () => {
       /*
        * Expected result: should
        * - redirect to review page
-       * - show previous gender with strikethrough
-       * - show updated gender
+       * - show previous date of birth with strikethrough
+       * - show updated date of birth
        */
 
       expect(page.url().includes('correction')).toBeTruthy()
@@ -513,7 +513,7 @@ test.describe.serial(' Correct record - 5', () => {
      * - Make correction button is disabled
      */
     expect(page.url().includes('summary')).toBeTruthy()
-    expect(page.url().includes('reason')).toBeTruthy()
+    expect(page.url().includes('correction')).toBeTruthy()
 
     await expect(
       page.getByRole('button', { name: 'Make correction' })
