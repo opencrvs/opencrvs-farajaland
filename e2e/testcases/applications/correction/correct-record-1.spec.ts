@@ -654,13 +654,13 @@ test.describe('1. Correct record - 1', () => {
       await page.getByRole('button', { name: 'Continue' }).click()
     })
 
-    test('1.2.5 Correction Summery', async () => {
+    test('1.2.5 Correction summary', async () => {
       /*
        * Expected result: should
-       * - navigate to correction summery
+       * - navigate to correction summary
        * - Send for approval button is disabled
        */
-      expect(page.url().includes('summery'))
+      expect(page.url().includes('summary'))
       expect(page.url().includes('reason'))
 
       await expect(

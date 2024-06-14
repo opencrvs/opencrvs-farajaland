@@ -655,13 +655,13 @@ test.describe.serial(' Correct record - 7', () => {
     await page.getByRole('button', { name: 'Continue' }).click()
   })
 
-  test('7.7 Correction Summery', async () => {
+  test('7.7 Correction summary', async () => {
     /*
      * Expected result: should
-     * - navigate to correction summery
+     * - navigate to correction summary
      * - Make correction button is disabled
      */
-    expect(page.url().includes('summery'))
+    expect(page.url().includes('summary'))
     expect(page.url().includes('reason'))
 
     await expect(
