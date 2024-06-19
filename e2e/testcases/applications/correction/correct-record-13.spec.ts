@@ -97,7 +97,7 @@ test.describe.serial(' Correct record - 13', () => {
   })
 
   test.describe('13.4 Correction made on spouse details', async () => {
-    test('13.13.1 Change name', async () => {
+    test('13.4.1 Change name', async () => {
       await page
         .locator('#spouse-content #Full')
         .getByRole('button', { name: 'Change', exact: true })
@@ -150,7 +150,7 @@ test.describe.serial(' Correct record - 13', () => {
       ).toBeVisible()
     })
 
-    test('13.13.2 Change date of birth', async () => {
+    test('13.4.2 Change date of birth', async () => {
       await page
         .locator('#spouse-content #Date')
         .getByRole('button', { name: 'Change', exact: true })
@@ -201,7 +201,7 @@ test.describe.serial(' Correct record - 13', () => {
       ).toBeVisible()
     })
 
-    test('13.13.3 Change nationality', async () => {
+    test('13.4.3 Change nationality', async () => {
       await page
         .locator('#spouse-content #Nationality')
         .getByRole('button', { name: 'Change', exact: true })
@@ -247,7 +247,7 @@ test.describe.serial(' Correct record - 13', () => {
       ).toBeVisible()
     })
 
-    test('13.13.4 Change id type', async () => {
+    test('13.4.4 Change id type', async () => {
       await page
         .locator('#spouse-content #Type')
         .getByRole('button', { name: 'Change', exact: true })
@@ -293,7 +293,7 @@ test.describe.serial(' Correct record - 13', () => {
       ).toBeVisible()
     })
 
-    test('13.13.5 Change id', async () => {
+    test('13.4.5 Change id', async () => {
       await page
         .locator('#spouse-content #ID')
         .getByRole('button', { name: 'Change', exact: true })
@@ -330,7 +330,7 @@ test.describe.serial(' Correct record - 13', () => {
       ).toBeVisible()
     })
 
-    test('13.13.6 Change usual place of residence', async () => {
+    test('13.4.6 Change usual place of residence', async () => {
       await page
         .locator('#spouse-content #Usual')
         .getByRole('button', { name: 'Change', exact: true })
