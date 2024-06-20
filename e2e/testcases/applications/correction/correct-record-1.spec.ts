@@ -661,7 +661,7 @@ test.describe('1. Correct record - 1', () => {
        * - Send for approval button is disabled
        */
       expect(page.url().includes('summary')).toBeTruthy()
-      expect(page.url().includes('reason')).toBeTruthy()
+      expect(page.url().includes('correction')).toBeTruthy()
 
       await expect(
         page.getByRole('button', { name: 'Send for approval' })
