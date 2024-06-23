@@ -17,18 +17,15 @@ test.describe('7. Validate Witness 1 details page', () => {
   // 1.1. Enter Non-English characters
   test('1.1. Validate "First Name(s)" text field', async ({ page }) => {
     await page.locator('#firstNamesEng').fill('*')
-    await expect(
-      page.getByText(
-        `Input contains invalid characters. Please use only letters (a-z, A-Z), numbers (0-9), hyphens (-), apostrophes(') and underscores (_)`,
-        { exact: true }
-      )
-    ).toBeVisible()
+    await expect(page.locator('#firstNamesEng_error')).toHaveText(
+      `Input contains invalid characters. Please use only letters (a-z, A-Z), numbers (0-9), hyphens (-), apostrophes(') and underscores (_)`
+    )
   })
 
   // 1.2. Enter less than 33 English characters
   test('1.2. Enter less than 33 English characters', async ({ page }) => {
     await page.locator('#firstNamesEng').fill('Rakibul Islam')
-    await page.getByText('Birth declaration').click()
+    await page.getByText('Witness 1 details').click()
 
     await expect(page.locator('#firstNamesEng_error')).toBeHidden()
   })
@@ -55,13 +52,10 @@ test.describe('7. Validate Witness 1 details page', () => {
 
   // 2.1. Enter Non-English characters
   test('2.1. Validate "Last Name(s)" text field', async ({ page }) => {
-    await page.locator('#familyNameEng').fill('O’Neill')
-    await expect(
-      page.getByText(
-        `Input contains invalid characters. Please use only letters (a-z, A-Z), numbers (0-9), hyphens (-), apostrophes(') and underscores (_)`,
-        { exact: true }
-      )
-    ).toBeVisible()
+    await page.locator('#familyNameEng').fill('*')
+    await expect(page.locator('#familyNamesEng_error')).toHaveText(
+      `Input contains invalid characters. Please use only letters (a-z, A-Z), numbers (0-9), hyphens (-), apostrophes(') and underscores (_)`
+    )
   })
 
   // 2.2. Enter less than 33 English characters
