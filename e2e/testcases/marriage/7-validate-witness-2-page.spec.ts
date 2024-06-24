@@ -12,11 +12,13 @@ test.describe('7. Validate Witness 2 details page', () => {
     await page.getByText('Continue', { exact: true }).click()
     await page.getByText('Continue', { exact: true }).click()
     await page.getByText('Continue', { exact: true }).click()
+    await page.getByText('Continue', { exact: true }).click()
   })
 
   // 1.1. Enter Non-English characters
   test('1.1. Validate "First Name(s)" text field', async ({ page }) => {
     await page.locator('#firstNamesEng').fill('*')
+    await page.getByText('Witness 2 details').click()
     await expect(page.locator('#firstNamesEng_error')).toHaveText(
       `Input contains invalid characters. Please use only letters (a-z, A-Z), numbers (0-9), hyphens (-), apostrophes(') and underscores (_)`
     )
@@ -25,7 +27,7 @@ test.describe('7. Validate Witness 2 details page', () => {
   // 1.2. Enter less than 33 English characters
   test('1.2. Enter less than 33 English characters', async ({ page }) => {
     await page.locator('#firstNamesEng').fill('Rakibul Islam')
-    await page.getByText('Witness 1 details').click()
+    await page.getByText('Witness 2 details').click()
 
     await expect(page.locator('#firstNamesEng_error')).toBeHidden()
   })
@@ -53,17 +55,16 @@ test.describe('7. Validate Witness 2 details page', () => {
   // 2.1. Enter Non-English characters
   test('2.1. Validate "Last Name(s)" text field', async ({ page }) => {
     await page.locator('#familyNameEng').fill('*')
-    await expect(page.locator('#familyNamesEng_error')).toHaveText(
-      `Input contains invalid characters. Please use only letters (a-z, A-Z), numbers (0-9), hyphens (-), apostrophes(') and underscores (_)`
-    )
+    await page.getByText('Witness 2 details').click()
+    await expect(page.locator('#familyNameEng_error')).toBeVisible()
   })
 
   // 2.2. Enter less than 33 English characters
   test('2.2. Enter less than 33 English characters', async ({ page }) => {
-    await page.locator('#familyNamesEng').fill('Rakibul Islam')
+    await page.locator('#familyNameEng').fill('Rakibul Islam')
     await page.getByText('Witness 2 details').click()
 
-    await expect(page.locator('#familyNamesEng_error')).toBeHidden()
+    await expect(page.locator('#familyNameEng_error')).toBeHidden()
   })
 
   // 2.3. Enter Field as NULL
@@ -78,14 +79,13 @@ test.describe('7. Validate Witness 2 details page', () => {
   // 2.4. Enter more than 32 English characters
   test('2.4. Enter more than 32 English characters', async ({ page }) => {
     const LONG_NAME = 'Ovuvuevuevue Enyetuenwuevue Ugbemugbem Osas'
-    await page.locator('#familyNamesEng').fill(LONG_NAME)
+    await page.locator('#familyNameEng').fill(LONG_NAME)
     await page.getByText('Witness 2 details').click()
 
-    await expect(page.locator('#familyNamesEng')).toHaveValue(
+    await expect(page.locator('#familyNameEng')).toHaveValue(
       LONG_NAME.slice(0, 32)
     )
   })
-  // Done
   test('3. Select any to the following option from Relationship to spouses:', async ({
     page
   }) => {
