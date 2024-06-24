@@ -624,7 +624,7 @@ test.describe.serial(' Correct record - 17', () => {
       )
     ).toBeVisible()
   })
-  test.skip('17.8 Validate history in record audit', async () => {
+  test('17.8 Validate history in record audit', async () => {
     await page
       .getByText(
         declaration.deceased.name[0].firstNames +

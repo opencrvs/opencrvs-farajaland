@@ -616,7 +616,7 @@ test.describe.serial(' Correct record - 5', () => {
       )
     ).toBeVisible()
   })
-  test.skip('5.8 Validate history in record audit', async () => {
+  test('5.8 Validate history in record audit', async () => {
     await page
       .getByText(
         updatedChildDetails.firstNames + ' ' + updatedChildDetails.familyName

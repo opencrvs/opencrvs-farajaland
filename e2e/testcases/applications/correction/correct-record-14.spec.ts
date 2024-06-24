@@ -782,27 +782,20 @@ test.describe.serial(' Correct record - 14', () => {
       timeout: 1000 * 30
     })
 
-    // await expect(
-    //   page.getByText(
-    //     updatedDeceasedDetails.firstNames +
-    //       ' ' +
-    //       updatedDeceasedDetails.familyName
-    //   )
-    // ).toBeVisible()
     await expect(
       page.getByText(
-        declaration.deceased.name[0].firstNames +
+        updatedDeceasedDetails.firstNames +
           ' ' +
-          declaration.deceased.name[0].familyName
+          updatedDeceasedDetails.familyName
       )
     ).toBeVisible()
   })
-  test.skip('14.8 Validate history in record audit', async () => {
+  test('14.8 Validate history in record audit', async () => {
     await page
       .getByText(
-        declaration.deceased.name[0].firstNames +
+        updatedDeceasedDetails.firstNames +
           ' ' +
-          declaration.deceased.name[0].familyName
+          updatedDeceasedDetails.familyName
       )
       .click()
 

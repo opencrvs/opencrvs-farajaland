@@ -760,7 +760,7 @@ test.describe.serial(' Correct record - 8', () => {
       )
     ).toBeVisible()
   })
-  test.skip('8.8 Validate history in record audit', async () => {
+  test('8.8 Validate history in record audit', async () => {
     await page
       .getByText(
         declaration.child.name[0].firstNames +
