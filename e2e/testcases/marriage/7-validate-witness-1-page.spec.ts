@@ -88,12 +88,10 @@ test.describe('7. Validate Witness 1 details page', () => {
   test('3. Select any to the following option from Relationship to spouses:', async ({
     page
   }) => {
-    // label: "Relationship to spouses" input id: "#relationship"
     await page.locator('#relationship').click()
     await page.getByText('Other', { exact: true }).click()
     await expect(page.getByText('Other', { exact: true })).toBeVisible()
   })
-  // Done
   test('4. Click continue', async ({ page }) => {
     await page.getByText('Continue', { exact: true }).click()
     await expect(
