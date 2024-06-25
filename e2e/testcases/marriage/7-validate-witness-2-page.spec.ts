@@ -19,7 +19,6 @@ test.describe('7. Validate Witness 2 details page', () => {
     )
   })
 
-  // 1.2. Enter less than 33 English characters
   test('1.2. Enter less than 33 English characters', async ({ page }) => {
     await page.locator('#firstNamesEng').fill('Rakibul Islam')
     await page.getByText('Witness 2 details').click()
@@ -27,7 +26,6 @@ test.describe('7. Validate Witness 2 details page', () => {
     await expect(page.locator('#firstNamesEng_error')).toBeHidden()
   })
 
-  // 1.3. Enter Field as NULL
   test('1.3. Enter Field as NULL', async ({ page }) => {
     await page.locator('#firstNamesEng').click()
     await page.locator('#relationship').click()
@@ -36,7 +34,6 @@ test.describe('7. Validate Witness 2 details page', () => {
     ).toBeVisible()
   })
 
-  // 1.4. Enter more than 32 English characters
   test('1.4. Enter more than 32 English characters', async ({ page }) => {
     const LONG_NAME = 'Ovuvuevuevue Enyetuenwuevue Ugbemugbem Osas'
     await page.locator('#firstNamesEng').fill(LONG_NAME)
@@ -54,7 +51,6 @@ test.describe('7. Validate Witness 2 details page', () => {
     await expect(page.locator('#familyNameEng_error')).toBeVisible()
   })
 
-  // 2.2. Enter less than 33 English characters
   test('2.2. Enter less than 33 English characters', async ({ page }) => {
     await page.locator('#familyNameEng').fill('Rakibul Islam')
     await page.getByText('Witness 2 details').click()
@@ -62,7 +58,6 @@ test.describe('7. Validate Witness 2 details page', () => {
     await expect(page.locator('#familyNameEng_error')).toBeHidden()
   })
 
-  // 2.3. Enter Field as NULL
   test('2.3. Enter Field as NULL', async ({ page }) => {
     await page.locator('#familyNameEng').click()
     await page.locator('#relationship').click()
@@ -71,7 +66,6 @@ test.describe('7. Validate Witness 2 details page', () => {
     ).toBeVisible()
   })
 
-  // 2.4. Enter more than 32 English characters
   test('2.4. Enter more than 32 English characters', async ({ page }) => {
     const LONG_NAME = 'Ovuvuevuevue Enyetuenwuevue Ugbemugbem Osas'
     await page.locator('#familyNameEng').fill(LONG_NAME)
@@ -84,7 +78,6 @@ test.describe('7. Validate Witness 2 details page', () => {
   test('3. Select any to the following option from Relationship to spouses:', async ({
     page
   }) => {
-    // label: "Relationship to spouses" input id: "#relationship"
     await page.locator('#relationship').click()
     await page.getByText('Other', { exact: true }).click()
     await expect(page.getByText('Other', { exact: true })).toBeVisible()
