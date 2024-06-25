@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test'
-import { createPIN, login } from '../../helpers'
+import { createPIN, login, goToSection } from '../../helpers'
 
 test.describe('7. Validate Witness 2 details page', () => {
   test.beforeEach(async ({ page }) => {
@@ -7,12 +7,7 @@ test.describe('7. Validate Witness 2 details page', () => {
     await createPIN(page)
     await page.click('#header_new_event')
     await page.getByText('Marriage', { exact: true }).click()
-    await page.getByText('Continue', { exact: true }).click()
-    await page.getByText('Continue', { exact: true }).click()
-    await page.getByText('Continue', { exact: true }).click()
-    await page.getByText('Continue', { exact: true }).click()
-    await page.getByText('Continue', { exact: true }).click()
-    await page.getByText('Continue', { exact: true }).click()
+    goToSection(page, 'witnessTwo')
   })
 
   // 1.1. Enter Non-English characters
@@ -94,7 +89,6 @@ test.describe('7. Validate Witness 2 details page', () => {
     await page.getByText('Other', { exact: true }).click()
     await expect(page.getByText('Other', { exact: true })).toBeVisible()
   })
-  // Done
   test('4. Click continue', async ({ page }) => {
     await page.getByText('Continue', { exact: true }).click()
     await expect(
