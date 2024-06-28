@@ -54,6 +54,11 @@ export const goToSection = async (
   }
 }
 
+/*
+  Generates a random past date 
+  at least 'minAge' years ago 
+  and up to an additional 'range' days earlier
+*/
 export const getRandomDate = (minAge: number, range: number) => {
   const randomDate = new Date()
   randomDate.setDate(
@@ -75,4 +80,11 @@ export async function ensureLoginPageReady(page: Page) {
     const img = document.querySelector<HTMLImageElement>('#Box img')!
     return img && img.src && img.src.trim() !== ''
   })
+}
+
+export async function validateSectionButtons(page: Page) {
+  await expect(page.getByText('Continue', { exact: true })).toBeVisible()
+  await expect(page.getByText('Exit', { exact: true })).toBeVisible()
+  await expect(page.getByText('Save & Exit', { exact: true })).toBeVisible()
+  await expect(page.locator('#eventToggleMenuToggleButton')).toBeVisible()
 }

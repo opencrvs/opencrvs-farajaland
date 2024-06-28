@@ -70,18 +70,18 @@ export interface ITokenPayload {
 }
 
 export default function getPlugins() {
-  const plugins: any[] = [
-    inert,
-    JWT,
-    {
+  const plugins: any[] = [inert, JWT]
+
+  if (process.env.NODE_ENV === 'production') {
+    plugins.push({
       plugin: Pino,
       options: {
         prettyPrint: false,
         logPayload: false,
         instance: logger
       }
-    }
-  ]
+    })
+  }
 
   if (SENTRY_DSN) {
     plugins.push({
@@ -166,7 +166,7 @@ async function getPublicKey(): Promise<string> {
     const response = await fetch(`${AUTH_URL}/.well-known`)
     return response.text()
   } catch (error) {
-    console.log(
+    logger.error(
       `Failed to fetch public key from Core. Make sure Core is running, and you are able to connect to ${AUTH_URL}/.well-known.`
     )
     if (process.env.NODE_ENV === 'production') {
@@ -375,6 +375,7 @@ export async function createServer() {
     handler: dashboardQueriesHandler,
     options: {
       tags: ['api'],
+      auth: false,
       description: 'Serves dashboard view refresher queries'
     }
   })
@@ -474,7 +475,7 @@ export async function createServer() {
       validate: {
         payload: emailSchema
       },
-      description: 'Handles sending SMS'
+      description: 'Handles sending email using a predefined template file'
     }
   })
 
@@ -516,7 +517,6 @@ export async function createServer() {
     path: '/roles',
     handler: rolesHandler,
     options: {
-      auth: false,
       tags: ['api', 'user-roles'],
       description: 'Returns user roles metadata'
     }
@@ -527,7 +527,6 @@ export async function createServer() {
     path: '/users',
     handler: usersHandler,
     options: {
-      auth: false,
       tags: ['api', 'users'],
       description: 'Returns users metadata'
     }
