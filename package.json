@@ -35,7 +35,8 @@
     "snapshot": "bash infrastructure/backups/backup.sh",
     "port-forward": "bash infrastructure/port-forward.sh",
     "sort-translations": "ts-node -r tsconfig-paths/register src/sort-translations.ts",
-    "environment:init": "ts-node infrastructure/environments/setup-environment.ts"
+    "environment:init": "ts-node infrastructure/environments/setup-environment.ts",
+    "upgrade:code": "ts-node -r tsconfig-paths/register src/upgrade-to-1_7.ts"
   },
   "devDependencies": {
     "@graphql-codegen/add": "^3.1.1",
@@ -93,7 +94,7 @@
     "@types/jwt-decode": "^2.2.1",
     "@types/lodash": "^4.14.117",
     "@types/node-fetch": "^2.6.2",
-    "@types/node": "^10.12.5",
+    "@types/node": "^18.19.1",
     "@types/nodemailer": "^6.4.14",
     "app-module-path": "^2.2.0",
     "chalk": "^2.4.1",

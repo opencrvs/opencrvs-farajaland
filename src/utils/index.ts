@@ -175,7 +175,9 @@ export const convertToMSISDN = (phone: string, countryAlpha3: string) => {
   )
 }
 
-const csvStringify = promisify<Array<Record<string, any>>, Options>(stringify)
+const csvStringify = promisify<Array<Record<string, any>>, Options, string>(
+  stringify
+)
 export async function writeJSONToCSV(
   filename: string,
   data: Array<Record<string, any>>
