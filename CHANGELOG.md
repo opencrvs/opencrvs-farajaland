@@ -27,6 +27,8 @@
 - Add support for image compression configuration
 - Provide env variables for metabase admin credentials
 - Rename `farajaland-map.geojson` to `map.geojson` to not tie implementations into example country naming
+- Resolved the issue of National ID validation to prevent the informant, father, and mother from having the same ID. 
+- Hide "other" document dropdown when informant mother/father
 
 **Infrastructure**
 
@@ -62,7 +64,6 @@
 - Each environment now has a dedicated docker-compose-<environment>-deploy.yml. Use `environment:init` to create a new environment and generate a corresponding file for customizable configurations.
 - 🔒 OpenHIM console is no longer exposed via HTTP.
 - Ansible playbooks are refactored into smaller task files.
-- Resolved the issue of National ID validation to prevent the informant, father, and mother from having the same ID. 
 
 ### New features
 
