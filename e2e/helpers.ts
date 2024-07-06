@@ -45,6 +45,25 @@ async function getToken(username: string, password: string) {
   return verifyBody.token
 }
 
+type DeclarationSection =
+  | 'child'
+  | 'informant'
+  | 'father'
+  | 'mother'
+  | 'documents'
+  | 'preview'
+  | 'groom'
+  | 'bride'
+  | 'marriageEvent'
+  | 'witnessOne'
+  | 'witnessTwo'
+
+export const goToSection = async (page: Page, section: DeclarationSection) => {
+  while (!page.url().includes(section)) {
+    await page.getByRole('button', { name: 'Continue' }).click()
+  }
+}
+
 export async function ensureLoginPageReady(page: Page) {
   /*
    * Wait until config for loading page has been loaded

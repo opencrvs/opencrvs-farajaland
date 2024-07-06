@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test'
-import { createPIN, login } from '../../helpers'
+import { createPIN, goToSection, login } from '../../helpers'
 
 test.describe('6. Validate Marriage details page', () => {
   test.beforeEach(async ({ page }) => {
@@ -53,10 +53,7 @@ test.describe('6. Validate Marriage details page', () => {
     )
   })
   test('1.3. Keep field as null', async ({ page }) => {
-    await page.getByText('Continue', { exact: true }).click()
-    await page.getByText('Continue', { exact: true }).click()
-    await page.getByText('Continue', { exact: true }).click()
-    await page.getByText('Continue', { exact: true }).click()
+    goToSection(page, 'preview')
     await expect(
       page.locator('#required_label_marriageEvent_marriageDate')
     ).toBeVisible()
