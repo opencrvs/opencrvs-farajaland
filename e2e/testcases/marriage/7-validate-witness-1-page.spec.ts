@@ -8,7 +8,7 @@ test.describe('7. Validate Witness 1 details page', () => {
     await page.click('#header_new_event')
     await page.getByText('Marriage', { exact: true }).click()
     goToSection(page, 'witnessOne')
-  })
+    await goToSection(page, 'witnessOne')
 
   // 1.1. Enter Non-English characters
   test('1.1. Validate "First Name(s)" text field', async ({ page }) => {
