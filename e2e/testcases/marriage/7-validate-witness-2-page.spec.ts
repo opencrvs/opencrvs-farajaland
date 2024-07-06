@@ -76,7 +76,7 @@ test.describe('7. Validate Witness 2 details page', () => {
     )
   })
   test('3. Select any to the following option from Relationship to spouses:', async ({
-    page
+  test('3. Select any of the following option from Relationship to spouses:', async ({
   }) => {
     await page.locator('#relationship').click()
     await page.getByText('Other', { exact: true }).click()
