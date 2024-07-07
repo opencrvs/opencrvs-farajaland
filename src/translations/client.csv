@@ -13,6 +13,7 @@ advancedSearch.form.placeOfRegistrationHelperText,Helper text for input Place of
 advancedSearch.form.recordStatusAchived,Option for form field: status of record,Archived,Archivé
 advancedSearch.form.recordStatusAny,Option for form field: status of record,Any status,Tout statut
 advancedSearch.form.recordStatusCertified,Option for form field: status of record,Certified,Agréé
+advancedSearch.form.recordStatusCorrectionRequested,Option for form field: status of record,Correction requested,Correction demandée
 advancedSearch.form.recordStatusInReview,Option for form field: status of record,In review,En cours d'examen
 advancedSearch.form.recordStatusInprogress,Option for form field: status of record,In progress,En cours
 advancedSearch.form.recordStatusRegistered,Option for form field: status of record,Registered,Inscrit
@@ -383,7 +384,7 @@ constants.issueConfirmationMessage,Confirmation of issuance,Please confirm that 
 constants.issueToBride,Issuing to bride,Issue to bride,Délivré à) la mariée
 constants.issueToFather,Issuing to father,Issue to father,Délivré au père
 constants.issueToGroom,Issuing to groom,Issue to groom,délivré au marié
-constants.issueToInformant,Issuance of death to informant,Issue to informant ({informant}),Delivré à l'informateur
+constants.issueToInformant,Issuance of death to informant,"Issue to informant ({informant, select, MOTHER {Mother} FATHER {Father} GRANDFATHER {Grandfather} GRANDMOTHER {Grandmother} BROTHER {Brother} SISTER {Sister} LEGAL_GUARDIAN {Legal guardian} BRIDE {Bride} GROOM {Groom} HEAD_OF_GROOM_FAMILY {Head of groom's family} HEAD_OF_BRIDE_FAMILY {Head of bride's family} SPOUSE {Spouse} SON {Son} DAUGHTER {Daughter} SON_IN_LAW {Son in law} DAUGHTER_IN_LAW {Daughter in law} GRANDSON {Grandson} GRANDDAUGHTER {Granddaughter} other {{informant}}})","Delivré à l'informateur ({informant, select, MOTHER {Mère} FATHER {Père} GRANDFATHER {Grand-père} GRANDMOTHER {Grand-mère} BROTHER {Frère} SISTER {Sœur} LEGAL_GUARDIAN {Tuteur légal} BRIDE {Mariée} GROOM {Marié} HEAD_OF_GROOM_FAMILY {Chef de la famille du marié} HEAD_OF_BRIDE_FAMILY {Chef de la famille de la mariée} SPOUSE {Conjoint} SON {Fils} DAUGHTER {Fille} SON_IN_LAW {Beau-fils} DAUGHTER_IN_LAW {Belle-fille} GRANDSON {Petit-fils} GRANDDAUGHTER {Petite-fille} other {{informant}}})"
 constants.issueToMother,Issuing to mother,Issue to mother,Délivré à la mère
 constants.issueToSomeoneElse,Issuing to someone else,Issue to someone else,Délivrer à quelqu'un d'autre
 constants.issuedBy,The issued by sec text,Issued by,Délivré par
@@ -508,6 +509,8 @@ correction.certificate.corrector.idCheck,The title for id check component,Verify
 correction.certificate.corrector.idCheckVerify,The label for id check component action when verify details,Verified,Vérifié
 correction.certificate.corrector.idCheckWithoutVerify,The label for id check component action when does not verify details,Identity does not match,L'identité ne correspond pas
 correction.certificate.corrector.otherIdCheck,The title for other id check component,Check proof of ID,Avez-vous vérifié leur preuve d'identification ?
+correction.correctRecordDialog.description,The description for the dialog when record correction sent by a registrar,The informant will be notified of this correction and a record of this decision will be recorded,L'informateur sera informé de cette correction et une trace de cette décision sera enregistrée.
+correction.correctRecordDialog.title,The title for the dialog when record correction sent by a registrar,Correct record ?,enregistrement correct ?
 correction.correctionForApprovalDialog.actions.cancel,The cancel button for the dialog when record correction sent by registration agent for approval,Cancel,Annuler
 correction.correctionForApprovalDialog.actions.send,The send button for the dialog when record correction sent by registration agent for approval,Confirm,Confirmer
 correction.correctionForApprovalDialog.description,The description for the dialog when record correction sent by registration agent for approval,The Registrar will be notified of this correction request and a record of this request will be recorded,Le greffier sera informé de cette demande de correction et un enregistrement de cette demande sera effectué
@@ -524,7 +527,7 @@ correction.corrector.groom,Label for groom option in certificate correction form
 correction.corrector.idCheck,,Check proof of ID,Vérifiez la preuve d'identité. Correspond-elle aux détails suivants ?
 correction.corrector.idCheckVerify,,Yes,Oui
 correction.corrector.idCheckWithoutVerify,,No,Non
-correction.corrector.informant,Label for informant option in certificate correction form,Informant ({informant}),Informateur
+correction.corrector.informant,Label for informant option in certificate correction form,"Informant ({informant, select, MOTHER {Mother} FATHER {Father} GRANDFATHER {Grandfather} GRANDMOTHER {Grandmother} BROTHER {Brother} SISTER {Sister} LEGAL_GUARDIAN {Legal guardian} BRIDE {Bride} GROOM {Groom} HEAD_OF_GROOM_FAMILY {Head of groom's family} HEAD_OF_BRIDE_FAMILY {Head of bride's family} SPOUSE {Spouse} SON {Son} DAUGHTER {Daughter} SON_IN_LAW {Son in law} DAUGHTER_IN_LAW {Daughter in law} GRANDSON {Grandson} GRANDDAUGHTER {Granddaughter} other {{informant}}})","Informateur ({informant, select, MOTHER {Mère} FATHER {Père} GRANDFATHER {Grand-père} GRANDMOTHER {Grand-mère} BROTHER {Frère} SISTER {Sœur} LEGAL_GUARDIAN {Tuteur légal} BRIDE {Mariée} GROOM {Marié} HEAD_OF_GROOM_FAMILY {Chef de la famille du marié} HEAD_OF_BRIDE_FAMILY {Chef de la famille de la mariée} SPOUSE {Conjoint} SON {Fils} DAUGHTER {Fille} SON_IN_LAW {Beau-fils} DAUGHTER_IN_LAW {Belle-fille} GRANDSON {Petit-fils} GRANDDAUGHTER {Petite-fille} other {{informant}}})"
 correction.corrector.legalGuardian,Label for legal guardian option in certificate correction form,Legal guardian,Tuteur légal
 correction.corrector.me,Label for registrar option in certificate correction form,Me,Moi
 correction.corrector.mother,Label for mother option in certificate correction form,Mother,Mère
@@ -672,7 +675,7 @@ countries.GTM,,Guatemala,Guatemala
 countries.GUF,,French Guiana,Guyane française
 countries.GUM,,Guam,Guam
 countries.GUY,,Guyana,Guyane
-countries.HKG,,"""China, Hong Kong Special Administrative Region"",""Chine, région administrative spéciale de Hong Kong",
+countries.HKG,,"China, Hong Kong Special Administrative Region","Chine, région administrative spéciale de Hong Kong"
 countries.HMD,,Heard Island and McDonald Islands,Île Heard et îles McDonald
 countries.HND,,Honduras,Honduras
 countries.HRV,,Croatia,Croatie
@@ -710,7 +713,7 @@ countries.LSO,,Lesotho,Lesotho
 countries.LTU,,Lithuania,Lituanie
 countries.LUX,,Luxembourg,Luxembourg
 countries.LVA,,Latvia,Lettonie
-countries.MAC,,"""China, Macao Special Administrative Region"",""Chine, Région administrative spéciale de Macao",
+countries.MAC,,"China, Macao Special Administrative Region","Chine, Région administrative spéciale de Macao"
 countries.MAF,,Saint Martin (French Part),Saint Martin (partie française)
 countries.MAR,,Morocco,Maroc
 countries.MCO,,Monaco,Monaco
@@ -910,8 +913,10 @@ form.field.label.ageOfGroom,,Age of groom,Âge du marié
 form.field.label.ageOfInformant,,Age of informant,Âge de l'informateur
 form.field.label.ageOfMother,,Age of mother,Âge de la mère
 form.field.label.ageOfSpouse,,Age of spouse,Âge du conjoint
+form.field.label.app.certifyRecordTo.bride,,Print and issue to bride,Imprimer et envoyer à la mariée
 form.field.label.app.certifyRecordTo.father,,Print and issue to father,Imprimer et remettre au père
-form.field.label.app.certifyRecordTo.informant,,Print and issue to informant ({informant}),Imprimer et remettre à l'informateur ({informant})
+form.field.label.app.certifyRecordTo.groom,,Print and issue to groom,Imprimer et envoyer au marié
+form.field.label.app.certifyRecordTo.informant,,"Print and issue to informant ({informant, select, MOTHER {Mother} FATHER {Father} GRANDFATHER {Grandfather} GRANDMOTHER {Grandmother} BROTHER {Brother} SISTER {Sister} LEGAL_GUARDIAN {Legal guardian} BRIDE {Bride} GROOM {Groom} HEAD_OF_GROOM_FAMILY {Head of groom's family} HEAD_OF_BRIDE_FAMILY {Head of bride's family} SPOUSE {Spouse} SON {Son} DAUGHTER {Daughter} SON_IN_LAW {Son in law} DAUGHTER_IN_LAW {Daughter in law} GRANDSON {Grandson} GRANDDAUGHTER {Granddaughter} other {{informant}}})","Imprimer et remettre à l'informateur ({informant, select, MOTHER {Mère} FATHER {Père} GRANDFATHER {Grand-père} GRANDMOTHER {Grand-mère} BROTHER {Frère} SISTER {Sœur} LEGAL_GUARDIAN {Tuteur légal} BRIDE {Mariée} GROOM {Marié} HEAD_OF_GROOM_FAMILY {Chef de la famille du marié} HEAD_OF_BRIDE_FAMILY {Chef de la famille de la mariée} SPOUSE {Conjoint} SON {Fils} DAUGHTER {Fille} SON_IN_LAW {Beau-fils} DAUGHTER_IN_LAW {Belle-fille} GRANDSON {Petit-fils} GRANDDAUGHTER {Petite-fille} other {{informant}}})"
 form.field.label.app.certifyRecordTo.mother,,Print and issue to mother,Imprimer et remettre à la mère
 form.field.label.app.phoneVerWarn,,Check with the informant that the mobile phone number you have entered is correct,Vérifiez auprès de l'informateur que le numéro de téléphone mobile que vous avez indiqué est correct.
 form.field.label.app.whoContDet.app,,Informant,Informateur
@@ -1040,7 +1045,7 @@ form.field.label.educationAttainmentISCED6,,Second stage tertiary,Second degré 
 form.field.label.educationAttainmentNone,,No schooling,Pas de scolarité
 form.field.label.educationAttainmentNotStated,,Not stated,Non déclaré
 form.field.label.email,,Email,e-mail
-form.field.label.empty,,,
+form.field.label.empty,empty string,,
 form.field.label.exactDateOfBirthUnknown,,Exact date of birth unknown,Date de naissance exacte inconnue
 form.field.label.familyName,,Last name,Nom de famille
 form.field.label.father.nationality,,Nationality,Nationalité
@@ -1296,7 +1301,7 @@ form.section.accountDetails,,Account details,Coordonnées du compte
 form.section.assignedRegistrationOffice,,Assign to a registration office,A quel bureau voulez-vous affecter un nouvel utilisateur ?
 form.section.assignedRegistrationOfficeGroupTitle,,Assigned registration office,Bureau d'enregistrement assigné
 form.section.bride.headOfBrideFamily,,Head of bride's family,Chef de la famille de la mariée
-form.section.bride.name,,Print and issue to bride,Imprimer et envoyer à la mariée
+form.section.bride.name,,Bride,Mariée
 form.section.bride.title,,Bride's details,Détails de la mariée
 form.section.causeOfDeath.name,,Cause of Death,Cause du décès
 form.section.causeOfDeath.title,,What is the medically certified cause of death?,Quelle est la cause de décès médicalement certifiée ?
@@ -1333,17 +1338,17 @@ form.section.documents.uploadImage,,Upload a photo of the supporting document,T�
 form.section.father.name,,Father,Père
 form.section.father.title,,Father's details,Information du père
 form.section.groom.headOfGroomFamily,,Head of groom's family,Chef de la famille du marié
-form.section.groom.name,,Print and issue to groom,Imprimer et envoyer au marié
+form.section.groom.name,,Groom,Marié
 form.section.groom.title,,Groom's details,Détails du marié
 form.section.informant.name,,Informant,Informateur
 form.section.informant.title,,Informant's details,information de l'informateur
 form.section.information.birth.bullet1,,I am going to help you make a declaration of birth.,Je vais vous aider à faire une déclaration de naissance.
 form.section.information.birth.bullet2,,As the legal Informant it is important that all the information provided by you is accurate.,"En tant qu'informateur légal, il est important que toutes les informations que vous fournissez soient exactes."
-form.section.information.birth.bullet3,,Once the declaration is processed you will receive you will receive an email to tell you when to visit the office to collect the certificate - Take your ID with you.,"Une fois la déclaration traitée, vous recevrez un courriel vous indiquant quand vous rendre au bureau pour retirer le certificat - Munissez-vous d'une pièce d'identité."
+form.section.information.birth.bullet3,,Once the declaration is processed you will receive an email to tell you when to visit the office to collect the certificate - Take your ID with you.,"Une fois la déclaration traitée, vous recevrez un courriel vous indiquant quand vous rendre au bureau pour retirer le certificat - Munissez-vous d'une pièce d'identité."
 form.section.information.birth.bullet4,,"Make sure you collect the certificate. A birth certificate is critical for this child, especially to make their life easy later on. It will help to access health services, school examinations and government benefits.","Veillez à récupérer le certificat. Un certificat de naissance est essentiel pour cet enfant, notamment pour lui faciliter la vie plus tard. Il l'aidera à accéder aux services de santé, aux examens scolaires et aux prestations de l'État."
 form.section.information.death.bullet1,,I am going to help you make a declaration of death.,Je vais vous aider à faire une déclaration de décès.
 form.section.information.death.bullet2,,As the legal Informant it is important that all the information provided by you is accurate.,"En tant qu'informateur légal, il est important que toutes les informations que vous fournissez soient exactes."
-form.section.information.death.bullet3,,Once the declaration is processed you will receive you will receive an email to tell you when to visit the office to collect the certificate - Take your ID with you.,"Une fois la déclaration traitée, vous recevrez un courriel vous indiquant quand vous rendre au bureau pour retirer le certificat - Munissez-vous d'une pièce d'identité."
+form.section.information.death.bullet3,,Once the declaration is processed you will receive an email to tell you when to visit the office to collect the certificate - Take your ID with you.,"Une fois la déclaration traitée, vous recevrez un courriel vous indiquant quand vous rendre au bureau pour retirer le certificat - Munissez-vous d'une pièce d'identité."
 form.section.information.death.bullet4,,Make sure you collect the certificate. A death certificate is critical to support with inheritance claims and to resolve the affairs of the deceased e.g. closing bank accounts and setting loans.,"Veillez à récupérer le certificat. Le certificat de décès est essentiel pour les demandes d'héritage et pour régler les affaires de la personne décédée, par exemple la fermeture des comptes bancaires et la mise en place des prêts."
 form.section.information.name,,Information,Informations
 form.section.marriageEvent.date,,Date of marriage,Date du mariage
@@ -1357,8 +1362,9 @@ form.section.upload.documentsTitle,,Upload supporting documents,Joindre des docu
 form.section.user.preview.title,,Confirm details,Confirmer les détails
 form.section.user.title,,Create new user,Créer un nouvel utilisateur
 form.section.userDetails,,User details,information utilisateur
-form.section.witness.name,,Witness,Témoin
+form.section.witnessOne.name,Form section name for Witness one,Witness 1,Témoin 1
 form.section.witnessOne.title,,Witness 1 details,Détails du témoin 1
+form.section.witnessTwo.name,Form section name for Witness two,Witness 2,Témoin 2
 form.section.witnessTwo.title,,Witness 2 details,Détails du témoin 2
 home.header.advancedSearch,Search menu advanced search type,Advanced Search,Recherche avancée
 home.header.email,Search email type,Email,E-mail
@@ -1379,9 +1385,9 @@ home.header.typeName,Search menu name type,Name,Nom
 home.header.typePhone,Search menu phone no type,Phone no.,N° de téléphone
 home.header.typeRN,Search menu brn drn type,Registration no.,N ° d'enregistrement.
 imageUploadOption.upload.documentType,Show error message if the document type is not selected,Please select the type of document first,Veuillez d'abord sélectionner le type de document
-imageUploadOption.upload.error,Show error messages while uploading,File format not supported. Please upload a .png or .jpg (max 5mb),"Format de fichier non pris en charge. Veuillez joindre un png, jpg (max 5mb)"
-imageUploadOption.upload.imageFormat,Show error message if the selected image type is not supported,File format not supported. Please upload a .png or .jpg (max 5mb),Le format d'image n'est pas supporté. Veuillez joindre un png ou un jpg (max 5mb)
-imageUploadOption.upload.overSized,Error message for Attachment size greater than 5mb.,File is too large. Please upload a file less than 5mb,Le fichier est trop volumineux. Veuillez joindre un fichier de moins de 5mb
+imageUploadOption.upload.error,Show error messages while uploading,File format not supported. Please upload a .png or .jpg (max {maxSize}mb),"Format de fichier non pris en charge. Veuillez joindre un png, jpg (max {maxSize}mb)"
+imageUploadOption.upload.imageFormat,Show error message if the selected image type is not supported,File format not supported. Please upload a .png or .jpg (max {maxSize}mb),Le format d'image n'est pas supporté. Veuillez joindre un png ou un jpg (max {maxSize}mb)
+imageUploadOption.upload.overSized,Error message for Attachment size greater than defined max size.,File is too large. Please upload a file less than {maxSize}mb,Le fichier est trop volumineux. Veuillez joindre un fichier de moins de {maxSize}mb
 informant.name,Informant section name,Informant,Informateur
 informant.title,Informant section title,Informant type,Sélectionner l'informateur
 integrations.activate,Label for activate option,Activate,Activer
@@ -1704,7 +1710,7 @@ recordAudit.regAction.verified,Verified action,Certificate verified,Certificate 
 recordAudit.regAction.viewed,,Viewed,Vu
 recordAudit.regStatus.archived,,Archived,Archivé
 recordAudit.regStatus.certified,,Certified,Certifié
-recordAudit.regStatus.correctionRequested,Label for when someone requested correction,Correction requested,Correction requested
+recordAudit.regStatus.correctionRequested,Label for when someone requested correction,Correction requested,Correction demandée
 recordAudit.regStatus.declared,,Declaration started,Déclaration initiée
 recordAudit.regStatus.declared.sentNotification,Field agent sent notification,Sent notification for review,Envoi d'une notification pour examen
 recordAudit.regStatus.issued,,Issued,Émis
@@ -1725,6 +1731,8 @@ regHome.inPro.selector.hospital.drafts,The title of In progress Hospitals,Health
 regHome.inPro.selector.own.drafts,The title of In progress own drafts,My drafts,Mes brouillons
 regHome.inProgress,The title of In progress,In progress,En cours
 regHome.issued,Label for registration status issued,Issued,Émis
+regHome.outbox.failed,Label for declaration status failed,Failed to send,Échec de l'envoi
+regHome.outbox.retry,Label for Retry button in Outbox shown for records that failed to send,Retry,Réessayer
 regHome.outbox.statusArchiving,Label for application status Archiving,Archiving...,Archivage en cours
 regHome.outbox.statusCertifying,Label for declaration status Certifying,Certifying...,Certification en cours...
 regHome.outbox.statusIssuing,Label for declaration status Issuing,Issuing...,En cours d'émission...
@@ -2095,6 +2103,7 @@ validations.englishOnlyNameFormat,"The error message that appears when a non Eng
 validations.facilityMustBeSelected,The error message appears when no valid facility is selected,No facility selected,Aucun établissement sélectionné
 validations.greaterThanZero,The error message appears when input is less than or equal to 0,Must be a greater than zero,Doit être supérieur à zéro
 validations.illegalMarriageAge,The error message appears when the birth date is not old enough to register for marriage,Illegal age of marriage,Age illègale pour mariage
+validations.invalidDate,The error message that appears when a date field is invalid,Invalid date field,Champ de date invalide
 validations.isDateNotAfterDeath,The error message appears when the given date of death is not valid,Date of birth must be before date of death,La date doit être antérieure à la date de décès
 validations.isDateNotBeforeBirth,The error message appears when the given date of death is not valid,Date of death must be after deceased date of birth,La date doit être postérieure à la date de naissance du défunt
 validations.isInformantOfLegalAge,The error message appears when the informant is not old enough to register an event,Informant is not of legal age,L'informateur n'est pas majeur
@@ -2121,7 +2130,7 @@ validations.validNationalIDLengths,Nid valid lengths,9,9
 validations.validNationalId,The error message that appears when an invalid value is used as nid,The National ID can only be numeric and must be 10 digits long,Le numéro d'identification national ne peut être que numérique et doit avoir une longueur de 9 chiffres.
 validations.validPassportNumber,The error message that appears when an invalid value is used as passport number,The Passport Number can only be alpha numeric and must be {validLength} characters long,Le numéro de passeport ne peut être qu'alphanumérique et doit comporter {validLength} caractères.
 verifyCertificate.brn,Label for Birth Registration Number,BRN,Numéro de régistre de naissance
-verifyCertificate.createdAt,Label for date of certification,Date of certification,Date de l'émission du certificat de naissance
+verifyCertificate.certifiedAt,Label for date of certification,Date of certification,Date de l'émission du certificat de naissance
 verifyCertificate.dateOfBirth,Label for date of birth,Date of birth,Date de naissance
 verifyCertificate.dateOfDeath,Label for date of death,Date of death,Date du décès
 verifyCertificate.drn,Label for Death Registration Number,DRN,Numéro de régistre de décès
@@ -2136,7 +2145,7 @@ verifyCertificate.registrationCenter,Label for registration center,Registration 
 verifyCertificate.sex,Label for sex,Sex,Sexe
 verifyCertificate.sexFemale,Option for form field: Sex name,Female,Femme
 verifyCertificate.sexMale,Option for form field: Sex name,Male,Homme
-verifyCertificate.successMessage,message for success alert,Compare the partial details of the record below against those against those recorded on the certificate,Comparez les données partielles de l'enregistrement ci-dessous avec celles qui figurent sur le certificat.
+verifyCertificate.successMessage,message for success alert,Compare the partial details of the record below against those recorded on the certificate,Comparez les données partielles de l'enregistrement ci-dessous avec celles qui figurent sur le certificat.
 verifyCertificate.successTitle,title for success alert,Valid QR code,Code QR valide
 verifyCertificate.successUrl,title for success alert for url validation,URL Verification,Vérification des URL
 verifyCertificate.timeOut,message when time out after few minute,You been timed out,Délais expirée

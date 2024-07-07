@@ -62,7 +62,8 @@ import {
   spouseFamilyNameConditionals,
   spouseFirstNameConditionals,
   hideIfInformantSpouse,
-  hideIfNidIntegrationEnabled
+  hideIfNidIntegrationEnabled,
+  hideIfDeceasedAddressNotAvailable
 } from '../common/default-validation-conditionals'
 import { documentsSection, registrationSection } from './required-sections'
 import {
@@ -143,7 +144,7 @@ export const deathForm = {
                 },
                 {
                   defaultMessage:
-                    'Once the declaration is processed you will receive you will receive an SMS to tell you when to visit the office to collect the certificate - Take your ID with you.',
+                    'Once the declaration is processed you will receive an SMS to tell you when to visit the office to collect the certificate - Take your ID with you.',
                   description: 'Form information for birth',
                   id: 'form.section.information.death.bullet3'
                 },
@@ -360,9 +361,15 @@ export const deathForm = {
             getIDType('death', 'spouse', detailsExist, true),
             ...getIDNumberFields('spouse', detailsExist, true),
             // preceding field of address fields
-            divider('spouse-nid-seperator', detailsExist),
+            divider('spouse-nid-seperator', [
+              ...detailsExist,
+              ...hideIfDeceasedAddressNotAvailable
+            ]),
             // ADDRESS FIELDS WILL RENDER HERE
-            divider('spouse-address-separator')
+            divider(
+              'spouse-address-separator',
+              hideIfDeceasedAddressNotAvailable
+            )
           ],
           previewGroups: [spouseNameInEnglish]
         }

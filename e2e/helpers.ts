@@ -14,7 +14,7 @@ export async function createPIN(page: Page) {
   }
 }
 
-async function getToken(username: string, password: string) {
+export async function getToken(username: string, password: string) {
   const authUrl = `${AUTH_URL}/authenticate`
   const verifyUrl = `${AUTH_URL}/verifyCode`
 
@@ -64,6 +64,23 @@ export const goToSection = async (page: Page, section: DeclarationSection) => {
   }
 }
 
+/*
+  Generates a random past date 
+  at least 'minAge' years ago 
+  and up to an additional 'range' days earlier
+*/
+export const getRandomDate = (minAge: number, range: number) => {
+  const randomDate = new Date()
+  randomDate.setDate(
+    new Date().getDate() -
+      Math.random() * range -
+      minAge * 365 -
+      (minAge + 3) / 4
+  )
+  const [yyyy, mm, dd] = randomDate.toISOString().split('T')[0].split('-')
+  return { dd, mm, yyyy }
+}
+
 export async function ensureLoginPageReady(page: Page) {
   /*
    * Wait until config for loading page has been loaded
@@ -73,4 +90,11 @@ export async function ensureLoginPageReady(page: Page) {
     const img = document.querySelector<HTMLImageElement>('#Box img')!
     return img && img.src && img.src.trim() !== ''
   })
+}
+
+export async function validateSectionButtons(page: Page) {
+  await expect(page.getByText('Continue', { exact: true })).toBeVisible()
+  await expect(page.getByText('Exit', { exact: true })).toBeVisible()
+  await expect(page.getByText('Save & Exit', { exact: true })).toBeVisible()
+  await expect(page.locator('#eventToggleMenuToggleButton')).toBeVisible()
 }

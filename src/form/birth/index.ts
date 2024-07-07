@@ -60,7 +60,8 @@ import {
   informantNotMotherOrFather,
   detailsExistConditional,
   ageOfIndividualValidators,
-  ageOfParentsConditionals
+  ageOfParentsConditionals,
+  hideIfMotherAddressNotAvailable
 } from '../common/default-validation-conditionals'
 import {
   informantFirstNameConditionals,
@@ -138,7 +139,7 @@ export const birthForm: ISerializedForm = {
                 },
                 {
                   defaultMessage:
-                    'Once the declaration is processed you will receive you will receive an SMS to tell you when to visit the office to collect the certificate - Take your ID with you.',
+                    'Once the declaration is processed you will receive an SMS to tell you when to visit the office to collect the certificate - Take your ID with you.',
                   description: 'Form information for birth',
                   id: 'form.section.information.birth.bullet3'
                 },
@@ -440,7 +441,10 @@ export const birthForm: ISerializedForm = {
             // preceding field of address fields
             divider('father-nid-seperator', detailsExist),
             // ADDRESS FIELDS WILL RENDER HERE
-            divider('father-address-seperator', detailsExist),
+            divider('father-address-seperator', [
+              ...detailsExist,
+              ...hideIfMotherAddressNotAvailable
+            ]),
             getMaritalStatus(certificateHandlebars.fatherMaritalStatus, [
               {
                 action: 'hide',
