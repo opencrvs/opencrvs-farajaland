@@ -7,7 +7,7 @@ test.describe('7. Validate Witness 2 details page', () => {
     await createPIN(page)
     await page.click('#header_new_event')
     await page.getByText('Marriage', { exact: true }).click()
-    goToSection(page, 'witnessTwo')
+    await goToSection(page, 'witnessTwo')
     await goToSection(page, 'witnessTwo')
 
   // 1.1. Enter Non-English characters
