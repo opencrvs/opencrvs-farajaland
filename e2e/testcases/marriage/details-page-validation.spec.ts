@@ -53,7 +53,7 @@ test.describe('6. Validate Marriage details page', () => {
     )
   })
   test('1.3. Keep field as null', async ({ page }) => {
-    goToSection(page, 'preview')
+    await goToSection(page, 'preview')
     await expect(
       page.locator('#required_label_marriageEvent_marriageDate')
     ).toBeVisible()
