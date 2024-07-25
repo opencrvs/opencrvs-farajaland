@@ -221,8 +221,7 @@ async function promptAndStoreAnswer(
 }
 
 function generateLongPassword() {
-  const chars =
-    '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_'
+  const chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
   let result = ''
   for (let i = 16; i > 0; --i)
     result += chars[Math.floor(Math.random() * chars.length)]
@@ -650,6 +649,13 @@ const derivedVariables = [
   {
     name: 'ELASTICSEARCH_SUPERUSER_PASSWORD',
     valueLabel: 'ELASTICSEARCH_SUPERUSER_PASSWORD',
+    valueType: 'SECRET',
+    type: 'disabled',
+    scope: 'ENVIRONMENT'
+  },
+  {
+    name: 'KIBANA_SYSTEM_PASSWORD',
+    valueLabel: 'KIBANA_SYSTEM_PASSWORD',
     valueType: 'SECRET',
     type: 'disabled',
     scope: 'ENVIRONMENT'
@@ -1098,6 +1104,23 @@ const SPECIAL_NON_APPLICATION_ENVIRONMENTS = ['jump', 'backup']
       ),
       value: findExistingOrDefine(
         'ELASTICSEARCH_SUPERUSER_PASSWORD',
+        'SECRET',
+        'ENVIRONMENT',
+        generateLongPassword()
+      ),
+      scope: 'ENVIRONMENT' as const
+    },
+    {
+      name: 'KIBANA_SYSTEM_PASSWORD',
+      type: 'SECRET' as const,
+      didExist: findExistingValue(
+        'KIBANA_SYSTEM_PASSWORD',
+        'SECRET',
+        'ENVIRONMENT',
+        existingValues
+      ),
+      value: findExistingOrDefine(
+        'KIBANA_SYSTEM_PASSWORD',
         'SECRET',
         'ENVIRONMENT',
         generateLongPassword()
