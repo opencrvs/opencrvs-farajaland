@@ -85,7 +85,7 @@ services:
         - 'traefik.enable=false'
 
   metricbeat:
-    image: docker.elastic.co/beats/metricbeat:7.17.18
+    image: docker.elastic.co/beats/metricbeat:7.17.23
 
     user: root
     cap_add:
