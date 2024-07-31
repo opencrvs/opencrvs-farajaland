@@ -195,10 +195,10 @@ services:
     #   - --tls.stores.default.defaultcertificate.keyfile=/certs/crvs.cm.key
 
     environment:
-      - GOOGLE_DOMAINS_ACCESS_TOKEN=${GOOGLE_DOMAINS_ACCESS_TOKEN}
+      - CLOUDFLARE_DNS_API_TOKEN=${CLOUDFLARE_DNS_API_TOKEN}
     command:
       - --certificatesresolvers.certResolver.acme.dnschallenge=true
-      - --certificatesresolvers.certResolver.acme.dnschallenge.provider=googledomains
+      - --certificatesresolvers.certResolver.acme.dnschallenge.provider=cloudflare
       - --certificatesresolvers.certResolver.acme.email=riku@opencrvs.org
       - --certificatesresolvers.certResolver.acme.storage=acme.json
 
