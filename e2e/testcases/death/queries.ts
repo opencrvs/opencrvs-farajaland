@@ -219,7 +219,6 @@ export const GET_DEATH_REGISTRATION_FOR_REVIEW = print(gql`
           trackingId
         }
         informantsSignature
-        informantsSignatureURI
         attachments {
           data
           uri

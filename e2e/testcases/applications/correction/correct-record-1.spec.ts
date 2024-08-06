@@ -73,141 +73,141 @@ test.describe('1. Correct record - 1', () => {
       .fetchBirthRegistration as BirthDeclaration
   })
 
-  // test.describe('1.1 Validate verbiage', async () => {
-  //   test.beforeEach(async ({ page }) => {
-  //     // test.step('Login', async () => {
-  //     await login(page, 'f.katongo', 'test')
-  //     await createPIN(page)
-  //     // })
+  test.describe('1.1 Validate verbiage', async () => {
+    test.beforeEach(async ({ page }) => {
+      // test.step('Login', async () => {
+      await login(page, 'f.katongo', 'test')
+      await createPIN(page)
+      // })
 
-  //     // test.step('Go to record audit', async () => {
-  //     await page.getByPlaceholder('Search for a tracking ID').fill(trackingId)
-  //     await page.getByPlaceholder('Search for a tracking ID').press('Enter')
-  //     await page.locator('#ListItemAction-0-icon').click()
-  //     await page.locator('#name_0').click()
-  //     // })
-  //   })
+      // test.step('Go to record audit', async () => {
+      await page.getByPlaceholder('Search for a tracking ID').fill(trackingId)
+      await page.getByPlaceholder('Search for a tracking ID').press('Enter')
+      await page.locator('#ListItemAction-0-icon').click()
+      await page.locator('#name_0').click()
+      // })
+    })
 
-  //   test('1.1.1 Validate record audit page', async ({ page }) => {
-  //     /*
-  //      * Expected result: should
-  //      * - See in header child's name and correct record option
-  //      * - Navigate to record audit page
-  //      * - See status, event, trackingId, BRN, DOB, Place of birth, Informant contact
-  //      */
-  //     await expect(
-  //       page.getByText(
-  //         declaration.child.name[0].firstNames +
-  //           ' ' +
-  //           declaration.child.name[0].familyName
-  //       )
-  //     ).toBeVisible()
-  //     await expect(
-  //       page.getByRole('button', { name: 'Correct record' })
-  //     ).toBeVisible()
+    test('1.1.1 Validate record audit page', async ({ page }) => {
+      /*
+       * Expected result: should
+       * - See in header child's name and correct record option
+       * - Navigate to record audit page
+       * - See status, event, trackingId, BRN, DOB, Place of birth, Informant contact
+       */
+      await expect(
+        page.getByText(
+          declaration.child.name[0].firstNames +
+            ' ' +
+            declaration.child.name[0].familyName
+        )
+      ).toBeVisible()
+      await expect(
+        page.getByRole('button', { name: 'Correct record' })
+      ).toBeVisible()
 
-  //     expect(page.url().includes('record-audit')).toBeTruthy()
+      expect(page.url().includes('record-audit')).toBeTruthy()
 
-  //     await expect(
-  //       page.getByText(`Status${declaration.registration.status[0].type}`)
-  //     ).toBeVisible()
-  //     await expect(
-  //       page.getByText(`Event${declaration.registration.type}`)
-  //     ).toBeVisible()
-  //     await expect(page.getByText(`Tracking ID${trackingId}`)).toBeVisible()
-  //     await expect(
-  //       page.getByText(
-  //         `Registration No${declaration.registration.registrationNumber}`
-  //       )
-  //     ).toBeVisible()
-  //     await expect(
-  //       page.getByText(`Date of birth${format(
-  //         parseISO(declaration.child.birthDate),
-  //         'MMMM dd, yyyy'
-  //       )}
-  //   `)
-  //     ).toBeVisible()
-  //     // await expect(page.getByText(`Place of birth${}`)).toBeVisible()
-  //     await expect(
-  //       page.getByText(declaration.registration.contactEmail)
-  //     ).toBeVisible()
-  //   })
+      await expect(
+        page.getByText(`Status${declaration.registration.status[0].type}`)
+      ).toBeVisible()
+      await expect(
+        page.getByText(`Event${declaration.registration.type}`)
+      ).toBeVisible()
+      await expect(page.getByText(`Tracking ID${trackingId}`)).toBeVisible()
+      await expect(
+        page.getByText(
+          `Registration No${declaration.registration.registrationNumber}`
+        )
+      ).toBeVisible()
+      await expect(
+        page.getByText(`Date of birth${format(
+          parseISO(declaration.child.birthDate),
+          'MMMM dd, yyyy'
+        )}
+    `)
+      ).toBeVisible()
+      // await expect(page.getByText(`Place of birth${}`)).toBeVisible()
+      await expect(
+        page.getByText(declaration.registration.contactEmail)
+      ).toBeVisible()
+    })
 
-  //   test('1.1.2 Validate correction requester page', async ({ page }) => {
-  //     await page.getByRole('button', { name: 'Correct record' }).click()
+    test('1.1.2 Validate correction requester page', async ({ page }) => {
+      await page.getByRole('button', { name: 'Correct record' }).click()
 
-  //     /*
-  //      * Expected result: should
-  //      * - Navigate to Correction Requester Page
-  //      */
-  //     await expect(page.getByText('Correction requester')).toBeVisible()
-  //     expect(page.url().includes('correction')).toBeTruthy()
-  //     expect(page.url().includes('corrector')).toBeTruthy()
+      /*
+       * Expected result: should
+       * - Navigate to Correction Requester Page
+       */
+      await expect(page.getByText('Correction requester')).toBeVisible()
+      expect(page.url().includes('correction')).toBeTruthy()
+      expect(page.url().includes('corrector')).toBeTruthy()
 
-  //     /*
-  //      * Expected result: should say
-  //      * - Note: In the case that the child is now of legal age (18) then only they should be able to request a change to their birth record.
-  //      */
-  //     await expect(
-  //       page.getByText(
-  //         'Note: In the case that the child is now of legal age (18) then only they should be able to request a change to their birth record.'
-  //       )
-  //     ).toBeVisible()
-  //   })
+      /*
+       * Expected result: should say
+       * - Note: In the case that the child is now of legal age (18) then only they should be able to request a change to their birth record.
+       */
+      await expect(
+        page.getByText(
+          'Note: In the case that the child is now of legal age (18) then only they should be able to request a change to their birth record.'
+        )
+      ).toBeVisible()
+    })
 
-  //   test('1.1.3 Validate identity verification page for Mother', async ({
-  //     page
-  //   }) => {
-  //     await page.getByRole('button', { name: 'Correct record' }).click()
+    test('1.1.3 Validate identity verification page for Mother', async ({
+      page
+    }) => {
+      await page.getByRole('button', { name: 'Correct record' }).click()
 
-  //     await page.getByLabel('Mother').check()
-  //     await page.getByRole('button', { name: 'Continue' }).click()
+      await page.getByLabel('Mother').check()
+      await page.getByRole('button', { name: 'Continue' }).click()
 
-  //     /*
-  //      * Expected result: should show
-  //      * Text: Verify their identity
-  //      * Button: Verified
-  //      * Button: Identity does not match
-  //      */
-  //     await expect(page.getByText('Verify their identity')).toBeVisible()
-  //     await expect(page.getByRole('button', { name: 'Verified' })).toBeVisible()
-  //     await expect(
-  //       page.getByRole('button', { name: 'Identity does not match' })
-  //     ).toBeVisible()
+      /*
+       * Expected result: should show
+       * Text: Verify their identity
+       * Button: Verified
+       * Button: Identity does not match
+       */
+      await expect(page.getByText('Verify their identity')).toBeVisible()
+      await expect(page.getByRole('button', { name: 'Verified' })).toBeVisible()
+      await expect(
+        page.getByRole('button', { name: 'Identity does not match' })
+      ).toBeVisible()
 
-  //     /*
-  //      * Expected result: should Confirm
-  //      * ID
-  //      * First Name
-  //      * Last Name
-  //      * Date of Birth
-  //      * Nationality
-  //      */
-  //     await expect(
-  //       page.getByText(
-  //         `ID: National Id | ${declaration.mother.identifier[0].id}`
-  //       )
-  //     ).toBeVisible()
-  //     await expect(
-  //       page.getByText(
-  //         `First name(s): ${declaration.mother.name[0].firstNames}`
-  //       )
-  //     ).toBeVisible()
-  //     await expect(
-  //       page.getByText(`Last name: ${declaration.mother.name[0].familyName}`)
-  //     ).toBeVisible()
-  //     await expect(
-  //       page.getByText(
-  //         `Date of Birth:
-  //       ${format(parseISO(declaration.mother.birthDate), 'dd MMMM yyyy')}
-  //       `
-  //       )
-  //     ).toBeVisible()
-  //     await expect(
-  //       page.getByText(`Nationality: ${declaration.mother.nationality}`)
-  //     ).toBeVisible()
-  //   })
-  // })
+      /*
+       * Expected result: should Confirm
+       * ID
+       * First Name
+       * Last Name
+       * Date of Birth
+       * Nationality
+       */
+      await expect(
+        page.getByText(
+          `ID: National Id | ${declaration.mother.identifier[0].id}`
+        )
+      ).toBeVisible()
+      await expect(
+        page.getByText(
+          `First name(s): ${declaration.mother.name[0].firstNames}`
+        )
+      ).toBeVisible()
+      await expect(
+        page.getByText(`Last name: ${declaration.mother.name[0].familyName}`)
+      ).toBeVisible()
+      await expect(
+        page.getByText(
+          `Date of Birth:
+        ${format(parseISO(declaration.mother.birthDate), 'dd MMMM yyyy')}
+        `
+        )
+      ).toBeVisible()
+      await expect(
+        page.getByText(`Nationality: ${declaration.mother.nationality}`)
+      ).toBeVisible()
+    })
+  })
 
   test.describe.serial('1.2 Record correction by mother', async () => {
     let page: Page

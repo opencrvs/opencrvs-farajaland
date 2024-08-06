@@ -410,44 +410,40 @@ test.describe.serial(' Correct record - 8', () => {
 
       expect(page.url().includes('correction')).toBeTruthy()
       expect(page.url().includes('review')).toBeTruthy()
+
       await expect(
         page.locator('#father-content #Usual').getByRole('deletion').nth(1)
-      ).toHaveText('No', {
-        ignoreCase: true
-      })
-      await expect(
-        page.locator('#father-content #Usual').getByRole('deletion').nth(2)
       ).toHaveText('Farajaland', {
         ignoreCase: true
       })
       await expect(
-        page.locator('#father-content #Usual').getByRole('deletion').nth(3)
+        page.locator('#father-content #Usual').getByRole('deletion').nth(2)
       ).toHaveText('Central', { ignoreCase: true })
       await expect(
-        page.locator('#father-content #Usual').getByRole('deletion').nth(4)
+        page.locator('#father-content #Usual').getByRole('deletion').nth(3)
       ).toHaveText('Ibombo', {
         ignoreCase: true
       })
       await expect(
-        page.locator('#father-content #Usual').getByRole('deletion').nth(6)
+        page.locator('#father-content #Usual').getByRole('deletion').nth(5)
       ).toHaveText(declaration.father.address[0].city, { ignoreCase: true })
       await expect(
-        page.locator('#father-content #Usual').getByRole('deletion').nth(7)
+        page.locator('#father-content #Usual').getByRole('deletion').nth(6)
       ).toHaveText(declaration.father.address[0].line[2], {
         ignoreCase: true
       })
       await expect(
-        page.locator('#father-content #Usual').getByRole('deletion').nth(8)
+        page.locator('#father-content #Usual').getByRole('deletion').nth(7)
       ).toHaveText(declaration.father.address[0].line[1], {
         ignoreCase: true
       })
       await expect(
-        page.locator('#father-content #Usual').getByRole('deletion').nth(9)
+        page.locator('#father-content #Usual').getByRole('deletion').nth(8)
       ).toHaveText(declaration.father.address[0].line[0], {
         ignoreCase: true
       })
       await expect(
-        page.locator('#father-content #Usual').getByRole('deletion').nth(10)
+        page.locator('#father-content #Usual').getByRole('deletion').nth(9)
       ).toHaveText(declaration.father.address[0].postalCode, {
         ignoreCase: true
       })
@@ -695,13 +691,13 @@ test.describe.serial(' Correct record - 8', () => {
 
     await expect(
       page.getByText(
-        'Usual place of residence (Father)NoFarajalandCentralIbombo-' +
+        'Usual place of residence (Father)FarajalandCentralIbombo-' +
           declaration.father.address[0].city +
           declaration.father.address[0].line[2] +
           declaration.father.address[0].line[1] +
           declaration.father.address[0].line[0] +
           declaration.father.address[0].postalCode +
-          'NoFarajaland' +
+          'Farajaland' +
           updatedFatherDetails.address.province +
           updatedFatherDetails.address.district +
           updatedFatherDetails.address.town +
@@ -740,6 +736,7 @@ test.describe.serial(' Correct record - 8', () => {
      * Expected result: should enable the Make correction button
      */
     await page.getByRole('button', { name: 'Make correction' }).click()
+    await page.getByRole('button', { name: 'Confirm' }).click()
 
     await page.getByRole('button', { name: 'Ready to print' }).click()
     /*

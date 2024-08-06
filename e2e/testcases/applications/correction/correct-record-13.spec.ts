@@ -332,7 +332,7 @@ test.describe.serial(' Correct record - 13', () => {
 
     test('13.4.6 Change usual place of residence', async () => {
       await page
-        .locator('#spouse-content #Usual')
+        .locator('#spouse-content #Same')
         .getByRole('button', { name: 'Change', exact: true })
         .click()
 
@@ -344,7 +344,9 @@ test.describe.serial(' Correct record - 13', () => {
 
       expect(page.url().includes('correction')).toBeTruthy()
       expect(page.url().includes('spouse-view-group')).toBeTruthy()
-      expect(page.url().includes('#countryPrimary')).toBeTruthy()
+      expect(
+        page.url().includes('#primaryAddressSameAsOtherPrimary')
+      ).toBeTruthy()
 
       await page.getByLabel('No', { exact: true }).check()
 
@@ -387,44 +389,40 @@ test.describe.serial(' Correct record - 13', () => {
 
       expect(page.url().includes('correction')).toBeTruthy()
       expect(page.url().includes('review')).toBeTruthy()
+
       await expect(
         page.locator('#spouse-content #Usual').getByRole('deletion').nth(1)
-      ).toHaveText('Yes', {
-        ignoreCase: true
-      })
-      await expect(
-        page.locator('#spouse-content #Usual').getByRole('deletion').nth(2)
       ).toHaveText('Farajaland', {
         ignoreCase: true
       })
       await expect(
-        page.locator('#spouse-content #Usual').getByRole('deletion').nth(3)
+        page.locator('#spouse-content #Usual').getByRole('deletion').nth(2)
       ).toHaveText('Sulaka', { ignoreCase: true })
       await expect(
-        page.locator('#spouse-content #Usual').getByRole('deletion').nth(4)
+        page.locator('#spouse-content #Usual').getByRole('deletion').nth(3)
       ).toHaveText('Zobwe', {
         ignoreCase: true
       })
       await expect(
-        page.locator('#spouse-content #Usual').getByRole('deletion').nth(6)
+        page.locator('#spouse-content #Usual').getByRole('deletion').nth(5)
       ).toHaveText(declaration.spouse.address[0].city, { ignoreCase: true })
       await expect(
-        page.locator('#spouse-content #Usual').getByRole('deletion').nth(7)
+        page.locator('#spouse-content #Usual').getByRole('deletion').nth(6)
       ).toHaveText(declaration.spouse.address[0].line[2], {
         ignoreCase: true
       })
       await expect(
-        page.locator('#spouse-content #Usual').getByRole('deletion').nth(8)
+        page.locator('#spouse-content #Usual').getByRole('deletion').nth(7)
       ).toHaveText(declaration.spouse.address[0].line[1], {
         ignoreCase: true
       })
       await expect(
-        page.locator('#spouse-content #Usual').getByRole('deletion').nth(9)
+        page.locator('#spouse-content #Usual').getByRole('deletion').nth(8)
       ).toHaveText(declaration.spouse.address[0].line[0], {
         ignoreCase: true
       })
       await expect(
-        page.locator('#spouse-content #Usual').getByRole('deletion').nth(10)
+        page.locator('#spouse-content #Usual').getByRole('deletion').nth(9)
       ).toHaveText(declaration.spouse.address[0].postalCode, {
         ignoreCase: true
       })
@@ -589,13 +587,13 @@ test.describe.serial(' Correct record - 13', () => {
 
     await expect(
       page.getByText(
-        'Usual place of residence (Spouse details)YesFarajalandSulakaZobwe-' +
+        'Usual place of residence (Spouse details)FarajalandSulakaZobwe-' +
           declaration.spouse.address[0].city +
           declaration.spouse.address[0].line[2] +
           declaration.spouse.address[0].line[1] +
           declaration.spouse.address[0].line[0] +
           declaration.spouse.address[0].postalCode +
-          'NoFarajaland' +
+          'Farajaland' +
           updatedSpouseDetails.address.province +
           updatedSpouseDetails.address.district +
           updatedSpouseDetails.address.town +
@@ -603,6 +601,14 @@ test.describe.serial(' Correct record - 13', () => {
           updatedSpouseDetails.address.street +
           updatedSpouseDetails.address.number +
           updatedSpouseDetails.address.zipCode
+      )
+    ).toBeVisible()
+
+    await expect(
+      page.getByText(
+        "Same as deceased's usual place of residence? (Spouse details)" +
+          'Yes' +
+          'No'
       )
     ).toBeVisible()
 
@@ -623,6 +629,26 @@ test.describe.serial(' Correct record - 13', () => {
      * Expected result: should enable the Make correction button
      */
     await page.getByRole('button', { name: 'Make correction' }).click()
+
+    /*
+     * Expected result: should open modal saying
+     * Correct record ?
+     * The informant will be notified of this correction and a record of this decision will be recorded
+     * Cancel button
+     * Confirm button
+     */
+
+    await expect(page.getByText('Correct record ?')).toBeVisible()
+    await expect(
+      page.getByText(
+        'The informant will be notified of this correction and a record of this decision will be recorded'
+      )
+    ).toBeVisible()
+
+    await expect(page.getByRole('button', { name: 'Cancel' })).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Confirm' })).toBeVisible()
+
+    await page.getByRole('button', { name: 'Confirm' }).click()
 
     await page.getByRole('button', { name: 'Ready to print' }).click()
 

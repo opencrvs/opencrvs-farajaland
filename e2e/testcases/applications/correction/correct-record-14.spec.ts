@@ -771,6 +771,7 @@ test.describe.serial(' Correct record - 14', () => {
      * Expected result: should enable the Make correction button
      */
     await page.getByRole('button', { name: 'Make correction' }).click()
+    await page.getByRole('button', { name: 'Confirm' }).click()
 
     await page.getByRole('button', { name: 'Ready to print' }).click()
     /*

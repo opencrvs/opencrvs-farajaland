@@ -383,7 +383,7 @@ test.describe.serial(' Correct record - 16', () => {
 
     test('16.4.7 Change usual place of residence', async () => {
       await page
-        .locator('#informant-content #Usual')
+        .locator('#informant-content #Same')
         .getByRole('button', { name: 'Change', exact: true })
         .click()
 
@@ -395,7 +395,9 @@ test.describe.serial(' Correct record - 16', () => {
 
       expect(page.url().includes('correction')).toBeTruthy()
       expect(page.url().includes('informant-view-group')).toBeTruthy()
-      expect(page.url().includes('#countryPrimary')).toBeTruthy()
+      expect(
+        page.url().includes('#primaryAddressSameAsOtherPrimary')
+      ).toBeTruthy()
 
       await page.getByLabel('No', { exact: true }).check()
 
@@ -438,15 +440,7 @@ test.describe.serial(' Correct record - 16', () => {
 
       expect(page.url().includes('correction')).toBeTruthy()
       expect(page.url().includes('review')).toBeTruthy()
-      await expect(
-        page.locator('#informant-content #Usual').getByRole('deletion').nth(0)
-      ).toHaveText('Yes', {
-        ignoreCase: true
-      })
 
-      await expect(
-        page.locator('#informant-content #Usual').getByText('No')
-      ).toBeVisible()
       await expect(
         page.locator('#informant-content #Usual').getByText('Farajaland')
       ).toBeVisible()
@@ -661,13 +655,21 @@ test.describe.serial(' Correct record - 16', () => {
 
     await expect(
       page.getByText(
-        'Usual place of residence (Informant)Yes-FarajalandSulakaZobwe-' +
+        "Same as deceased's usual place of residence? (Informant)" +
+          'Yes' +
+          'No'
+      )
+    ).toBeVisible()
+
+    await expect(
+      page.getByText(
+        'Usual place of residence (Informant)FarajalandSulakaZobwe-' +
           declaration.deceased.address[0].city +
           declaration.deceased.address[0].line[2] +
           declaration.deceased.address[0].line[1] +
           declaration.deceased.address[0].line[0] +
           declaration.deceased.address[0].postalCode +
-          'NoFarajaland' +
+          'Farajaland' +
           updatedInformantDetails.address.province +
           updatedInformantDetails.address.district +
           updatedInformantDetails.address.town +
@@ -708,6 +710,7 @@ test.describe.serial(' Correct record - 16', () => {
      * Expected result: should enable the Make correction button
      */
     await page.getByRole('button', { name: 'Make correction' }).click()
+    await page.getByRole('button', { name: 'Confirm' }).click()
 
     await page.getByRole('button', { name: 'Ready to print' }).click()
 

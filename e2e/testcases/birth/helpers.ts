@@ -330,8 +330,6 @@ export const registerDeclaration = async (
     })
   })
   const t = await res.json()
-  console.log(t)
-  console.log(JSON.stringify(t))
 
   return await t
 }
