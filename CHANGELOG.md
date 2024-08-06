@@ -429,8 +429,6 @@ validations.invalidDate,The error message that appears when a date field is inva
 verifyCertificate.certifiedAt,Label for date of certification,Date of certification
 ```
 
-## [1.4.1](https://github.com/opencrvs/opencrvs-farajaland/compare/v1.4.0...v1.4.1)
-
 ### Other changes
 
 - Upgrade Node.js to 18
