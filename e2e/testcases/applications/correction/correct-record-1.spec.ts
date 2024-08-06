@@ -75,17 +75,13 @@ test.describe('1. Correct record - 1', () => {
 
   test.describe('1.1 Validate verbiage', async () => {
     test.beforeEach(async ({ page }) => {
-      // test.step('Login', async () => {
       await login(page, 'f.katongo', 'test')
       await createPIN(page)
-      // })
 
-      // test.step('Go to record audit', async () => {
       await page.getByPlaceholder('Search for a tracking ID').fill(trackingId)
       await page.getByPlaceholder('Search for a tracking ID').press('Enter')
       await page.locator('#ListItemAction-0-icon').click()
       await page.locator('#name_0').click()
-      // })
     })
 
     test('1.1.1 Validate record audit page', async ({ page }) => {
