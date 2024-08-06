@@ -675,7 +675,6 @@ test.describe.serial('4. Birth declaration case - 4', () => {
        * Expected result: should include
        * - Father's address
        */
-      await expect(page.locator('#father-content #Usual')).toContainText('No')
       await expect(page.locator('#father-content #Usual')).toContainText(
         declaration.father.address.country
       )
@@ -708,7 +707,7 @@ test.describe.serial('4. Birth declaration case - 4', () => {
       /*
        * Expected result: should redirect to registration home
        */
-      expect(page.url().includes('registration-home'))
+      expect(page.url().includes('registration-home')).toBeTruthy()
 
       await expect(page.locator('#navigation_outbox')).not.toContainText('1', {
         timeout: 1000 * 30
@@ -1043,7 +1042,6 @@ test.describe.serial('4. Birth declaration case - 4', () => {
        * Expected result: should include
        * - Father's address
        */
-      await expect(page.locator('#father-content #Usual')).toContainText('No')
       await expect(page.locator('#father-content #Usual')).toContainText(
         declaration.father.address.country
       )

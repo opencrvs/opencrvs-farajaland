@@ -409,9 +409,7 @@ test.describe.serial('8. Validate declaration review page', () => {
          * - Spouse's address
          * - Change button
          */
-        await expect(page.locator('#spouse-content #Usual')).toContainText(
-          'Yes'
-        )
+        await expect(page.locator('#spouse-content #Same')).toContainText('Yes')
       })
     })
 
@@ -929,7 +927,7 @@ test.describe.serial('8. Validate declaration review page', () => {
        * - Spouse's address
        * - Change button
        */
-      await expect(page.locator('#spouse-content #Usual')).toContainText('Yes')
+      await expect(page.locator('#spouse-content #Same')).toContainText('Yes')
     })
 
     test.describe('8.2.2 Click any "Change" link', async () => {
@@ -1466,7 +1464,7 @@ test.describe.serial('8. Validate declaration review page', () => {
        * - Spouse's address
        * - Change button
        */
-      await expect(page.locator('#spouse-content #Usual')).toContainText('Yes')
+      await expect(page.locator('#spouse-content #Same')).toContainText('Yes')
     })
 
     test.describe('8.3.2 Click any "Change" link', async () => {

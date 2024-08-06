@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.6.0 (TBD)
+
+- Remove `splitView` option from DOCUMENT_UPLOADER_WITH_OPTION field
+- New required sections preview & review added. Signature field definitions are now part of these two sections same as normal form fields.
+
 ## [1.5.0]
 
 - Change auth URLs to access them via gateway
@@ -19,12 +24,63 @@
 - Generate default address according to logged-in user's location
 - Remove authentication from dashboard queries route
 - Added french translation of informant for print certificate flow, issue certificate flow & correction flow
+- In the certificate, the 'Place of Certification' now accurately reflects the correct location.
+- Added french translation of informant for print certificate flow, issue certificate flow & correction flow
 - Groom's and Bride's name, printIssue translation variables updated [#124](https://github.com/opencrvs/opencrvs-countryconfig/pull/124)
 - Change condition of Number of previous births
+- Add query mapper for International Postal Code field
+- Add support for image compression configuration
+- Provide env variables for metabase admin credentials
 - Remove 'Other' dropdown when informant is mother or father [#7011](https://github.com/opencrvs/opencrvs-core/issues/7011)
 - Hide same as other primary address field if the other person's details not available [#7000](https://github.com/opencrvs/opencrvs-core/issues/7000)
+- Improved formatting of informant name for inProgress declaration emails
+- Rename `farajaland-map.geojson` to `map.geojson` to not tie implementations into example country naming
+
+**Infrastructure**
+
+- Treat backup host identically to other hosts. To migrate:
+
+  1. Move all inventory files (qa.yml, production.yml...) from `infrastructure/server-setup` to `infrastructure/server-setup/inventory`
+  2. Run environment creator for your backup server `yarn environment:init --environment=backup`
+
+- Allow using staging to both period restore of production backup and also for backing up its own data to a different location using `backup_server_remote_target_directory` and `backup_server_remote_source_directory` ansible variables. This use case is mostly meant for OpenCRVS team internal use.
+
+- Automate SSH key exchange between application and backup server. For staging servers, automatically fetch production backup encryption key if periodic restore is enabled
+
+- Improved support for non-22 SSH port
 
 ## [1.4.1](https://github.com/opencrvs/opencrvs-farajaland/compare/v1.4.0...v1.4.1)
+
+### Other changes
+
+- Upgrade Node.js to 18
+- Remove dependency OpenHIM. The OpenHIM database is kept for backwards compatibility reasons and will be removed in v1.6
+- Change auth URLs to access them via gateway
+- Add hearth URL to search service
+- Include an endpoint for serving individual certificates in development mode
+- Include compositionId in confirm registration payload
+- Remove logrocket refrences
+- Enable gzip compression in client & login
+- Make SENTRY_DSN variable optional
+- Use docker compose v2 in github workflows
+- Mass email from national system admin
+- Add SMTP environment variables in qa compose file
+- Use image tag instead of patterns in certificate SVGs
+- Generate default address according to logged-in user's location
+- Remove authentication from dashboard queries route
+- Added french translation of informant for print certificate flow, issue certificate flow & correction flow
+- In the certificate, the 'Place of Certification' now accurately reflects the correct location.
+- Added french translation of informant for print certificate flow, issue certificate flow & correction flow
+- Groom's and Bride's name, printIssue translation variables updated [#124](https://github.com/opencrvs/opencrvs-countryconfig/pull/124)
+- Add query mapper for International Postal Code field
+- Add support for image compression configuration
+- Provide env variables for metabase admin credentials
+- Improved formatting of informant name for inProgress declaration emails
+- Rename `farajaland-map.geojson` to `map.geojson` to not tie implementations into example country naming
+- Remove `splitView` option from DOCUMENT_UPLOADER_WITH_OPTION field [#114](https://github.com/opencrvs/opencrvs-countryconfig/pull/114)
+- Enable authentication for certificates endpoint [#188](https://github.com/opencrvs/opencrvs-countryconfig/pull/188)
+
+## [1.4.1](https://github.com/opencrvs/opencrvs-countryconfig/compare/v1.4.0...v1.4.1)
 
 - Improved logging for emails being sent
 - Updated default Metabase init file so that it's compatible with the current Metabase version
@@ -45,7 +101,7 @@
 - Each environment now has a dedicated docker-compose-<environment>-deploy.yml. Use `environment:init` to create a new environment and generate a corresponding file for customizable configurations.
 - 🔒 OpenHIM console is no longer exposed via HTTP.
 - Ansible playbooks are refactored into smaller task files.
-- Resolved the issue of National ID validation to prevent the informant, father, and mother from having the same ID. 
+- Resolved the issue of National ID validation to prevent the informant, father, and mother from having the same ID.
 
 ### New features
 

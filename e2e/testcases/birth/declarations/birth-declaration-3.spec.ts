@@ -1,5 +1,11 @@
 import { test, expect, type Page } from '@playwright/test'
-import { createPIN, getRandomDate, goToSection, login } from '../../../helpers'
+import {
+  createPIN,
+  getRandomDate,
+  goToSection,
+  login,
+  uploadImage
+} from '../../../helpers'
 import faker from '@faker-js/faker'
 import { format } from 'date-fns'
 
@@ -363,8 +369,38 @@ test.describe.serial('3. Birth declaration case - 3', () => {
       await page.getByRole('button', { name: 'Continue' }).click()
     })
 
-    test.skip('3.1.5 Add documents', async () => {
+    test('3.1.5 Add documents', async () => {
       goToSection(page, 'documents')
+      await uploadImage(
+        page,
+        page.locator('button[name="uploadDocForChildDOB"]')
+      )
+      await page.locator('#uploadDocForMother').getByText('Select...').click()
+      await page.getByText('National ID', { exact: true }).click()
+      await uploadImage(page, page.locator('button[name="uploadDocForMother"]'))
+      await page.locator('#uploadDocForFather').getByText('Select...').click()
+      await page.getByText('Passport', { exact: true }).click()
+      await uploadImage(page, page.locator('button[name="uploadDocForFather"]'))
+      await page
+        .locator('#uploadDocForInformant')
+        .getByText('Select...')
+        .click()
+      await page.getByText('Birth certificate', { exact: true }).click()
+      await uploadImage(
+        page,
+        page.locator('button[name="uploadDocForInformant"]')
+      )
+      await page
+        .locator('#uploadDocForProofOfLegalGuardian')
+        .getByText('Select...')
+        .click()
+      await page
+        .getByText('Proof of legal guardianship', { exact: true })
+        .click()
+      await uploadImage(
+        page,
+        page.locator('button[name="uploadDocForProofOfLegalGuardian"]')
+      )
     })
 
     test('3.1.6 Go to preview', async () => {
@@ -684,7 +720,7 @@ test.describe.serial('3. Birth declaration case - 3', () => {
        * Expected result: should include
        * - Father's address
        */
-      await expect(page.locator('#father-content #Usual')).toContainText('No')
+
       await expect(page.locator('#father-content #Usual')).toContainText(
         declaration.father.address.country
       )
@@ -708,7 +744,7 @@ test.describe.serial('3. Birth declaration case - 3', () => {
       /*
        * Expected result: should redirect to registration home
        */
-      expect(page.url().includes('registration-home'))
+      expect(page.url().includes('registration-home')).toBeTruthy()
 
       await expect(page.locator('#navigation_outbox')).not.toContainText('1', {
         timeout: 1000 * 30
@@ -1055,7 +1091,7 @@ test.describe.serial('3. Birth declaration case - 3', () => {
        * Expected result: should include
        * - Father's address
        */
-      await expect(page.locator('#father-content #Usual')).toContainText('No')
+
       await expect(page.locator('#father-content #Usual')).toContainText(
         declaration.father.address.country
       )

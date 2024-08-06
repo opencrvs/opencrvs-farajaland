@@ -503,7 +503,7 @@ test.describe.serial('1. Birth declaration case - 1', () => {
        * Expected result: should include
        * - Father's address
        */
-      await expect(page.locator('#father-content #Usual')).toContainText('Yes')
+      await expect(page.locator('#father-content #Same')).toContainText('Yes')
     })
 
     test('1.1.7 Send for review', async () => {
@@ -515,7 +515,7 @@ test.describe.serial('1. Birth declaration case - 1', () => {
       /*
        * Expected result: should redirect to registration home
        */
-      expect(page.url().includes('registration-home'))
+      expect(page.url().includes('registration-home')).toBeTruthy()
 
       await expect(page.locator('#navigation_outbox')).not.toContainText('1', {
         timeout: 1000 * 30
@@ -798,7 +798,7 @@ test.describe.serial('1. Birth declaration case - 1', () => {
        * Expected result: should include
        * - Father's address
        */
-      await expect(page.locator('#father-content #Usual')).toContainText('Yes')
+      await expect(page.locator('#father-content #Same')).toContainText('Yes')
     })
   })
 })
