@@ -448,12 +448,12 @@ test.describe.serial(' Correct record - 5', () => {
 
       await expect(
         page.locator('#child-content #Weight').getByRole('deletion')
-      ).toHaveText(declaration.weightAtBirth! + ' kg')
+      ).toHaveText(declaration.weightAtBirth! + ' kilograms (kg)')
 
       await expect(
         page
           .locator('#child-content #Weight')
-          .getByText(updatedChildDetails.weightAtBirth + ' kg')
+          .getByText(updatedChildDetails.weightAtBirth + ' kilograms (kg)')
       ).toBeVisible()
     })
   })
@@ -599,6 +599,7 @@ test.describe.serial(' Correct record - 5', () => {
      * Expected result: should enable the Make correction button
      */
     await page.getByRole('button', { name: 'Make correction' }).click()
+    await page.getByRole('button', { name: 'Confirm' }).click()
 
     await page.getByRole('button', { name: 'Ready to print' }).click()
     /*
