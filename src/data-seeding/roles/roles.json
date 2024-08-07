@@ -23,6 +23,29 @@
     ]
   },
   {
+    "id": "LOCAL_LEADER",
+    "label": {
+      "defaultMessage": "Field Agent",
+      "description": "Name for user role Field Agent",
+      "id": "userRole.fieldAgent"
+    },
+    "scopes": [
+      "declare",
+
+      "record.declare-birth",
+      "record.declare-death",
+      "record.declare-marriage",
+      "record.submit-incomplete",
+      "record.submit-for-review",
+      "search.birth",
+      "search.death",
+      "search.marriage",
+      "record.read",
+      "record.read-audit",
+      "record.read-comments"
+    ]
+  },
+  {
     "id": "SOCIAL_WORKER",
     "label": {
       "defaultMessage": "Social Worker",
