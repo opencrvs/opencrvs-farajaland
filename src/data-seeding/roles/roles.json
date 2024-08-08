@@ -25,9 +25,9 @@
   {
     "id": "LOCAL_LEADER",
     "label": {
-      "defaultMessage": "Field Agent",
-      "description": "Name for user role Field Agent",
-      "id": "userRole.fieldAgent"
+      "defaultMessage": "Local Leader",
+      "description": "Name for user role Local Leader",
+      "id": "userRole.localLeader"
     },
     "scopes": [
       "declare",
