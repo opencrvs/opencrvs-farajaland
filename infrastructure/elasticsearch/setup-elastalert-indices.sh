@@ -38,15 +38,14 @@ if [ "$bulk_delete_status_code" -ne 200 ]; then
   echo "Could not delete indices. API returned status code: $bulk_delete_status_code" 
 fi
 
+
+non_404_error_when_deleting_one_by_one=0
+
 if [ "$bulk_delete_status_code" -eq 404 ]; then
   echo "Some of the indices do not exist. Attempting to delete them one by one."
-  
+
   # Convert the comma-separated indices into an array
   IFS=',' read -r -a indices_array <<< "$indices"
-
-
-
-  non_404_error_when_deleting_one_by_one=0
 
   for index in "${indices_array[@]}"; do
     echo "Deleting index: $index"
@@ -70,6 +69,5 @@ docker service scale opencrvs_elastalert=1
 if [ "$non_404_error_when_deleting_one_by_one" -eq 0 ] && { [ "$bulk_delete_status_code" -eq 200 ] || [ "$bulk_delete_status_code" -eq 404 ]; }; then
   exit 0
 fi
-
 
 exit 1
