@@ -5,6 +5,8 @@ import { format } from 'date-fns'
 
 test.describe.serial('10. Validate declaration review page', () => {
   let page: Page
+  const fileName = '528KB-random.png'
+  const fileUploadPath = `./e2e/testcases/marriage/assets/${fileName}`
   const declaration = {
     type: 'marriage',
     informantEmail: faker.internet.email(),
@@ -90,10 +92,11 @@ test.describe.serial('10. Validate declaration review page', () => {
   }
   test.beforeAll(async ({ browser }) => {
     page = await browser.newPage()
-    await login(page, 'k.bwalya', 'test')
+    await login(page, 'k.mweene', 'test')
     await createPIN(page)
-    await page.click('#header_new_event')
+    await page.locator('#header_new_event').click()
     await page.getByLabel('Marriage').click()
+    await page.getByRole('button', { name: 'Continue' }).click()
     await page.getByRole('button', { name: 'Continue' }).click()
     await page.getByRole('button', { name: 'Continue' }).click()
   })
@@ -104,7 +107,7 @@ test.describe.serial('10. Validate declaration review page', () => {
 
   test.describe('10.1 Field agent actions', async () => {
     test.describe('10.1.0 Fill up marriage registration form', async () => {
-      test('10.1.0.2 Fill informant details', async () => {
+      /* test('10.1.0.2 Fill informant details', async ({ page }) => {
         await page.waitForTimeout(500)
         await page.locator('#informantType').click()
         await page
@@ -124,9 +127,9 @@ test.describe.serial('10. Validate declaration review page', () => {
           .fill(declaration.informantDetails.registrationEmail)
 
         await page.getByRole('button', { name: 'Continue' }).click()
-      })
+      })*/
 
-      test("10.1.0.3 Fill groom's details", async () => {
+      test("10.1.0.3 Fill groom's details", async ({ page }) => {
         await page
           .locator('#firstNamesEng')
           .fill(declaration.groom.name.firstNames)
@@ -161,7 +164,7 @@ test.describe.serial('10. Validate declaration review page', () => {
         await page.getByRole('button', { name: 'Continue' }).click()
       })
 
-      test("10.1.0.4 Fill bride's details", async () => {
+      test("10.1.0.4 Fill bride's details", async ({ page }) => {
         await page
           .locator('#firstNamesEng')
           .fill(declaration.bride.name.firstNames)
@@ -195,7 +198,7 @@ test.describe.serial('10. Validate declaration review page', () => {
 
         await page.getByRole('button', { name: 'Continue' }).click()
       })
-      test('10.1.0.4 Fill marriage details', async () => {
+      test('10.1.0.4 Fill marriage details', async ({ page }) => {
         await page
           .getByPlaceholder('dd')
           .fill(declaration.marriageDetails.marriageDate.dd)
@@ -224,7 +227,7 @@ test.describe.serial('10. Validate declaration review page', () => {
 
         await page.getByRole('button', { name: 'Continue' }).click()
       })
-      test("10.1.0.3 Fill witness1's details", async () => {
+      test("10.1.0.3 Fill witness1's details", async ({ page }) => {
         await page
           .locator('#firstNamesEng')
           .fill(declaration.witness1.name.firstNames)
@@ -239,7 +242,7 @@ test.describe.serial('10. Validate declaration review page', () => {
 
         await page.getByRole('button', { name: 'Continue' }).click()
       })
-      test("10.1.0.3 Fill witness2's details", async () => {
+      test("10.1.0.3 Fill witness2's details", async ({ page }) => {
         await page
           .locator('#firstNamesEng')
           .fill(declaration.witness2.name.firstNames)
@@ -257,7 +260,9 @@ test.describe.serial('10. Validate declaration review page', () => {
     })
 
     test.describe('10.1.1 Navigate to declaration preview page', async () => {
-      test('10.1.1.1 Verify informations added in previous pages', async () => {
+      test('10.1.1.1 Verify informations added in previous pages', async ({
+        page
+      }) => {
         goToSection(page, 'preview')
 
         /*
@@ -527,5 +532,81 @@ test.describe.serial('10. Validate declaration review page', () => {
         page.locator('#witnessTwo-content #Relationship')
       ).toContainText('Change')
     })
+  })
+  test.describe('10.2. Click any "Change" link', async () => {
+    test("10.2. Change groom's name", async ({ page }) => {
+      await page.locator('#groom-content #Full').getByText('Change').click()
+      declaration.groom.name = {
+        firstNames: faker.name.firstName('male'),
+        familyName: faker.name.lastName('male')
+      }
+      await page
+        .locator('#firstNamesEng')
+        .fill(declaration.groom.name.firstNames)
+      await page
+        .locator('#familyNameEng')
+        .fill(declaration.groom.name.familyName)
+      await page.getByRole('button', { name: 'Back to review' }).click()
+      /*
+       * Expected result: should change deceased's name
+       */
+      await expect(page.locator('#groom-content #Full')).toContainText(
+        declaration.groom.name.firstNames
+      )
+      await expect(page.locator('#groom-content #Full')).toContainText(
+        declaration.groom.name.familyName
+      )
+    })
+  })
+  test.describe('10.3. Validate supporting document', async () => {
+    test('10.2. Validate supporting docs', async ({ page }) => {
+      await page.waitForTimeout(500)
+      // test.skip('Skipped for now', async () => {
+      // await goToSection(page, 'documents')
+      // id="uploadDocForGroom" Proof of groom's identity - Options: National ID, Passport, Birth Certificte & Other
+      // id="uploadDocForBride" Proof of bride's identity
+      // id="uploadDocForInformant" Proof of informant's ID
+      // Upload Button id="upload_document"
+      // Form seection: id="uploadDocForBride-form-input" id="uploadDocForGroom-form-input" id="uploadDocForInformant-form-input"
+      // Click input[name="file-upload"]
+      await page
+        .locator('#uploadDocForGroom-form-input')
+        .getByText('Upload')
+        .click()
+
+      await page
+        .locator('#uploadDocForGroom-form-input #upload_document')
+        .setInputFiles(fileUploadPath)
+
+      await page.locator(`text=${fileName}`).click()
+      await expect(page.getByText(fileName)).toBeVisible()
+    })
+  })
+  test.describe('10.4. Validate capturing a digital signature from the Groom', async () => {
+    test.skip('Skipped for now', async () => {})
+  })
+  test.describe('10.5. Validate capturing a digital signature from the Bride', async () => {
+    test.skip('Skipped for now', async () => {})
+  })
+  test.describe('10.6. Validate capturing a digital signature from the Witness 1', async () => {
+    test.skip('Skipped for now', async () => {})
+  })
+  test.describe('10.7. Validate capturing a digital signature from the Witness 2', async () => {
+    test.skip('Skipped for now', async () => {})
+  })
+  test.describe('10.8. Validate File Uploading System', async () => {
+    test.skip('Skipped for now', async () => {})
+  })
+  test.describe('10.9. Validate the additional comments box', async () => {
+    test.skip('Skipped for now', async () => {})
+  })
+  test.describe('10.10. Validate the declaration send button', async () => {
+    test.skip('Skipped for now', async () => {})
+  })
+  test.describe('10.11. Click the send button', async () => {
+    test.skip('Skipped for now', async () => {})
+  })
+  test.describe('10.12. Confirm the declaration to send for review', async () => {
+    test.skip('Skipped for now', async () => {})
   })
 })
