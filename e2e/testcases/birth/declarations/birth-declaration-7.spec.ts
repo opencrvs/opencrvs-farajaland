@@ -88,6 +88,14 @@ test.describe.serial('7. Birth declaration case - 7', () => {
         page,
         page.locator('button[name="uploadDocForChildDOB"]')
       )
+
+      /*
+       * Expected result:
+       * As mother and father's details are not given, upload document for mother and father should not be visible
+       */
+      await expect(page.locator('#uploadDocForMother')).toBeHidden()
+      await expect(page.locator('#uploadDocForFather')).toBeHidden()
+
       await page
         .locator('#uploadDocForInformant')
         .getByText('Select...')
