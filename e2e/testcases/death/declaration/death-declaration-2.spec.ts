@@ -278,47 +278,198 @@ test.describe.serial('2. Death declaration case - 2', () => {
       await page.getByRole('button', { name: 'Continue' }).click()
     })
 
-    test('2.1.5 Upload supporting document', async () => {
-      goToSection(page, 'documents')
+    test.describe('2.1.5 Upload supporting document', async () => {
+      test('2.1.5.0 Go To upload supporting document page', async () => {
+        goToSection(page, 'documents')
+      })
 
-      await page.locator('#uploadDocForDeceased').getByText('Select...').click()
-      await page.getByText('National ID', { exact: true }).click()
-      await uploadImage(
-        page,
-        page.locator('button[name="uploadDocForDeceased"]')
-      )
+      test('2.1.5.1 Upload proof for deceased', async () => {
+        const deceasedDocumentSection = page.locator('#uploadDocForDeceased')
+        await deceasedDocumentSection.getByText('Select...').click()
+        await deceasedDocumentSection
+          .getByText('National ID', { exact: true })
+          .click()
+        await uploadImage(
+          page,
+          page.locator('button[name="uploadDocForDeceased"]')
+        )
 
-      await page
-        .locator('#uploadDocForInformant')
-        .getByText('Select...')
-        .click()
-      await page.getByText('Passport', { exact: true }).click()
-      await uploadImage(
-        page,
-        page.locator('button[name="uploadDocForInformant"]')
-      )
+        await deceasedDocumentSection.getByText('Select...').click()
+        await deceasedDocumentSection
+          .getByText('Passport', { exact: true })
+          .click()
+        await uploadImage(
+          page,
+          page.locator('button[name="uploadDocForDeceased"]')
+        )
 
-      await page
-        .locator('#uploadDocForDeceasedDeath')
-        .getByText('Select...')
-        .click()
-      await page.getByText('Attested letter of death', { exact: true }).click()
-      await uploadImage(
-        page,
-        page.locator('button[name="uploadDocForDeceasedDeath"]')
-      )
+        await deceasedDocumentSection.getByText('Select...').click()
+        await deceasedDocumentSection
+          .getByText('Birth certificate', { exact: true })
+          .click()
+        await uploadImage(
+          page,
+          page.locator('button[name="uploadDocForDeceased"]')
+        )
 
-      await page
-        .locator('#uploadDocForCauseOfDeath')
-        .getByText('Select...')
-        .click()
-      await page
-        .getByText('Medically Certified Cause of Death', { exact: true })
-        .click()
-      await uploadImage(
-        page,
-        page.locator('button[name="uploadDocForCauseOfDeath"]')
-      )
+        await deceasedDocumentSection.getByText('Select...').click()
+        await deceasedDocumentSection
+          .getByText('Other', { exact: true })
+          .click()
+        await uploadImage(
+          page,
+          page.locator('button[name="uploadDocForDeceased"]')
+        )
+      })
+
+      test('2.1.5.2 Upload proof for informant', async () => {
+        const informantDocumentSection = page.locator('#uploadDocForInformant')
+        await informantDocumentSection.getByText('Select...').click()
+        await informantDocumentSection
+          .getByText('National ID', { exact: true })
+          .click()
+        await uploadImage(
+          page,
+          page.locator('button[name="uploadDocForInformant"]')
+        )
+
+        await informantDocumentSection.getByText('Select...').click()
+        await informantDocumentSection
+          .getByText('Passport', { exact: true })
+          .click()
+        await uploadImage(
+          page,
+          page.locator('button[name="uploadDocForInformant"]')
+        )
+
+        await informantDocumentSection.getByText('Select...').click()
+        await informantDocumentSection
+          .getByText('Birth certificate', { exact: true })
+          .click()
+        await uploadImage(
+          page,
+          page.locator('button[name="uploadDocForInformant"]')
+        )
+
+        await informantDocumentSection.getByText('Select...').click()
+        await informantDocumentSection
+          .getByText('Other', { exact: true })
+          .click()
+        await uploadImage(
+          page,
+          page.locator('button[name="uploadDocForInformant"]')
+        )
+      })
+
+      test('2.1.5.3 Upload proof of death', async () => {
+        await page
+          .locator('#uploadDocForDeceasedDeath')
+          .getByText('Select...')
+          .click()
+        await page
+          .getByText('Attested letter of death', { exact: true })
+          .click()
+        await uploadImage(
+          page,
+          page.locator('button[name="uploadDocForDeceasedDeath"]')
+        )
+
+        await page
+          .locator('#uploadDocForDeceasedDeath')
+          .getByText('Select...')
+          .click()
+        await page
+          .getByText('Police certificate of death', { exact: true })
+          .click()
+        await uploadImage(
+          page,
+          page.locator('button[name="uploadDocForDeceasedDeath"]')
+        )
+
+        await page
+          .locator('#uploadDocForDeceasedDeath')
+          .getByText('Select...')
+          .click()
+        await page
+          .getByText('Hospital certificate of death', { exact: true })
+          .click()
+        await uploadImage(
+          page,
+          page.locator('button[name="uploadDocForDeceasedDeath"]')
+        )
+
+        await page
+          .locator('#uploadDocForDeceasedDeath')
+          .getByText('Select...')
+          .click()
+        await page.getByText("Coroner's report", { exact: true }).click()
+        await uploadImage(
+          page,
+          page.locator('button[name="uploadDocForDeceasedDeath"]')
+        )
+
+        await page
+          .locator('#uploadDocForDeceasedDeath')
+          .getByText('Select...')
+          .click()
+        await page
+          .getByText('Certified copy of burial receipt', { exact: true })
+          .click()
+        await uploadImage(
+          page,
+          page.locator('button[name="uploadDocForDeceasedDeath"]')
+        )
+
+        await page
+          .locator('#uploadDocForDeceasedDeath')
+          .getByText('Select...')
+          .click()
+        await page
+          .locator('#uploadDocForDeceasedDeath')
+          .getByText('Other', { exact: true })
+          .click()
+        await uploadImage(
+          page,
+          page.locator('button[name="uploadDocForDeceasedDeath"]')
+        )
+      })
+
+      test('2.1.5.4 Upload proof of cause of death', async () => {
+        await page
+          .locator('#uploadDocForCauseOfDeath')
+          .getByText('Select...')
+          .click()
+        await page
+          .getByText('Medically Certified Cause of Death', { exact: true })
+          .click()
+        await uploadImage(
+          page,
+          page.locator('button[name="uploadDocForCauseOfDeath"]')
+        )
+
+        await page
+          .locator('#uploadDocForCauseOfDeath')
+          .getByText('Select...')
+          .click()
+        await page.getByText('Verbal autopsy report', { exact: true }).click()
+        await uploadImage(
+          page,
+          page.locator('button[name="uploadDocForCauseOfDeath"]')
+        )
+
+        await page
+          .locator('#uploadDocForCauseOfDeath')
+          .getByText('Select...')
+          .click()
+        await page
+          .locator('#uploadDocForCauseOfDeath')
+          .getByText('Other', { exact: true })
+          .click()
+        await uploadImage(
+          page,
+          page.locator('button[name="uploadDocForCauseOfDeath"]')
+        )
+      })
     })
 
     test('2.1.6 Verify informations in preview page', async () => {
