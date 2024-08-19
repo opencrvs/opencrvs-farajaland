@@ -140,7 +140,7 @@ test.describe.serial(' Correct record - 7', () => {
   })
 
   test.describe('7.4 Correction made on mother details', async () => {
-    test('7.4.1 Change name', async () => {
+    test('7.4.1 Change mother details', async () => {
       await page
         .locator('#mother-content #Full')
         .getByRole('button', { name: 'Change', exact: true })
@@ -159,6 +159,54 @@ test.describe.serial(' Correct record - 7', () => {
       await page.locator('#firstNamesEng').fill(updatedMotherDetails.firstNames)
       await page.locator('#familyNameEng').fill(updatedMotherDetails.familyName)
 
+      const birthDay = updatedMotherDetails.birthDate.split('-')
+
+      await page.getByPlaceholder('dd').fill(birthDay[2])
+      await page.getByPlaceholder('mm').fill(birthDay[1])
+      await page.getByPlaceholder('yyyy').fill(birthDay[0])
+
+      await page.locator('#nationality').click()
+      await page.getByText(updatedMotherDetails.nationality).click()
+
+      await page.locator('#motherIdType').click()
+      await page.getByText(updatedMotherDetails.idType).click()
+
+      await page.locator('#motherPassport').fill(updatedMotherDetails.id)
+
+      await page.locator('#statePrimaryMother').click()
+      await page.getByText(updatedMotherDetails.address.province).click()
+
+      await page.locator('#districtPrimaryMother').click()
+      await page.getByText(updatedMotherDetails.address.district).click()
+
+      await page
+        .locator('#cityPrimaryMother')
+        .fill(updatedMotherDetails.address.town)
+
+      await page
+        .locator('#addressLine1UrbanOptionPrimaryMother')
+        .fill(updatedMotherDetails.address.residentialArea)
+
+      await page
+        .locator('#addressLine2UrbanOptionPrimaryMother')
+        .fill(updatedMotherDetails.address.street)
+
+      await page
+        .locator('#addressLine3UrbanOptionPrimaryMother')
+        .fill(updatedMotherDetails.address.number)
+
+      await page
+        .locator('#postalCodePrimaryMother')
+        .fill(updatedMotherDetails.address.zipCode)
+
+      await page.locator('#maritalStatus').click()
+      await page.getByText(updatedMotherDetails.maritalStatus).click()
+
+      await page.locator('#educationalAttainment').click()
+      await page.getByText(updatedMotherDetails.educationLevel).click()
+    })
+
+    test('7.4.2 Verify changes', async () => {
       await page.waitForTimeout(500)
 
       await page.getByRole('button', { name: 'Back to review' }).click()
@@ -191,42 +239,12 @@ test.describe.serial(' Correct record - 7', () => {
           .locator('#mother-content #Full')
           .getByText(updatedMotherDetails.familyName)
       ).toBeVisible()
-    })
-
-    test('7.4.2 Change date of birth', async () => {
-      await page
-        .locator('#mother-content #Date')
-        .getByRole('button', { name: 'Change', exact: true })
-        .click()
 
       /*
        * Expected result: should
-       * - redirect to mother's details page
-       * - focus on mother's date of birth
-       */
-      expect(page.url().includes('correction')).toBeTruthy()
-      expect(page.url().includes('mother-view-group')).toBeTruthy()
-      expect(page.url().includes('#motherBirthDate')).toBeTruthy()
-
-      const birthDay = updatedMotherDetails.birthDate.split('-')
-
-      await page.getByPlaceholder('dd').fill(birthDay[2])
-      await page.getByPlaceholder('mm').fill(birthDay[1])
-      await page.getByPlaceholder('yyyy').fill(birthDay[0])
-
-      await page.waitForTimeout(500)
-
-      await page.getByRole('button', { name: 'Back to review' }).click()
-
-      /*
-       * Expected result: should
-       * - redirect to review page
        * - show previous gender with strikethrough
        * - show updated gender
        */
-
-      expect(page.url().includes('correction')).toBeTruthy()
-      expect(page.url().includes('review')).toBeTruthy()
 
       await expect(
         page.locator('#mother-content #Date').getByRole('deletion')
@@ -242,40 +260,12 @@ test.describe.serial(' Correct record - 7', () => {
             format(parseISO(updatedMotherDetails.birthDate), 'dd MMMM yyyy')
           )
       ).toBeVisible()
-    })
-
-    test('7.4.3 Change nationality', async () => {
-      await page
-        .locator('#mother-content #Nationality')
-        .getByRole('button', { name: 'Change', exact: true })
-        .click()
 
       /*
        * Expected result: should
-       * - redirect to mother's details page
-       * - focus on mother's nationality
-       */
-
-      expect(page.url().includes('correction')).toBeTruthy()
-      expect(page.url().includes('mother-view-group')).toBeTruthy()
-      expect(page.url().includes('#nationality')).toBeTruthy()
-
-      await page.locator('#nationality').click()
-      await page.getByText(updatedMotherDetails.nationality).click()
-
-      await page.waitForTimeout(500)
-
-      await page.getByRole('button', { name: 'Back to review' }).click()
-
-      /*
-       * Expected result: should
-       * - redirect to review page
        * - show previous nationality with strikethrough
        * - show updated nationality
        */
-
-      expect(page.url().includes('correction')).toBeTruthy()
-      expect(page.url().includes('review')).toBeTruthy()
 
       await expect(
         page.locator('#mother-content #Nationality').getByRole('deletion')
@@ -288,40 +278,12 @@ test.describe.serial(' Correct record - 7', () => {
           .locator('#mother-content #Nationality')
           .getByText(updatedMotherDetails.nationality)
       ).toBeVisible()
-    })
-
-    test('7.4.4 Change id type', async () => {
-      await page
-        .locator('#mother-content #Type')
-        .getByRole('button', { name: 'Change', exact: true })
-        .click()
 
       /*
        * Expected result: should
-       * - redirect to mother's details page
-       * - focus on mother's id type
-       */
-
-      expect(page.url().includes('correction')).toBeTruthy()
-      expect(page.url().includes('mother-view-group')).toBeTruthy()
-      expect(page.url().includes('#motherIdType')).toBeTruthy()
-
-      await page.locator('#motherIdType').click()
-      await page.getByText(updatedMotherDetails.idType).click()
-
-      await page.waitForTimeout(500)
-
-      await page.getByRole('button', { name: 'Back to review' }).click()
-
-      /*
-       * Expected result: should
-       * - redirect to review page
        * - show previous id type with strikethrough
        * - show updated id type
        */
-
-      expect(page.url().includes('correction')).toBeTruthy()
-      expect(page.url().includes('review')).toBeTruthy()
 
       await expect(
         page.locator('#mother-content #Type').getByRole('deletion')
@@ -334,100 +296,23 @@ test.describe.serial(' Correct record - 7', () => {
           .locator('#mother-content #Type')
           .getByText(updatedMotherDetails.idType)
       ).toBeVisible()
-    })
-
-    test('7.4.5 Change id', async () => {
-      await page
-        .locator('#mother-content #ID')
-        .getByRole('button', { name: 'Change', exact: true })
-        .click()
 
       /*
        * Expected result: should
-       * - redirect to mother's details page
-       * - focus on mother's id
-       */
-
-      expect(page.url().includes('correction')).toBeTruthy()
-      expect(page.url().includes('mother-view-group')).toBeTruthy()
-      expect(page.url().includes('#motherPassport')).toBeTruthy()
-
-      await page.locator('#motherPassport').fill(updatedMotherDetails.id)
-
-      await page.waitForTimeout(500)
-
-      await page.getByRole('button', { name: 'Back to review' }).click()
-
-      /*
-       * Expected result: should
-       * - redirect to review page
        * - show previous id with strikethrough
        * - show updated id
        */
 
-      expect(page.url().includes('correction')).toBeTruthy()
-      expect(page.url().includes('review')).toBeTruthy()
-
       await expect(
         page.locator('#mother-content #ID').getByText(updatedMotherDetails.id)
       ).toBeVisible()
-    })
-
-    test('7.4.6 Change usual place of residence', async () => {
-      await page
-        .locator('#mother-content #Usual')
-        .getByRole('button', { name: 'Change', exact: true })
-        .click()
 
       /*
        * Expected result: should
-       * - redirect to mother's details page
-       * - focus on mother's Usual place of resiedence
-       */
-
-      expect(page.url().includes('correction')).toBeTruthy()
-      expect(page.url().includes('mother-view-group')).toBeTruthy()
-      expect(page.url().includes('#countryPrimary')).toBeTruthy()
-
-      await page.locator('#statePrimaryMother').click()
-      await page.getByText(updatedMotherDetails.address.province).click()
-
-      await page.locator('#districtPrimaryMother').click()
-      await page.getByText(updatedMotherDetails.address.district).click()
-
-      await page
-        .locator('#cityPrimaryMother')
-        .fill(updatedMotherDetails.address.town)
-
-      await page
-        .locator('#addressLine1UrbanOptionPrimaryMother')
-        .fill(updatedMotherDetails.address.residentialArea)
-
-      await page
-        .locator('#addressLine2UrbanOptionPrimaryMother')
-        .fill(updatedMotherDetails.address.street)
-
-      await page
-        .locator('#addressLine3UrbanOptionPrimaryMother')
-        .fill(updatedMotherDetails.address.number)
-
-      await page
-        .locator('#postalCodePrimaryMother')
-        .fill(updatedMotherDetails.address.zipCode)
-
-      await page.waitForTimeout(500)
-
-      await page.getByRole('button', { name: 'Back to review' }).click()
-
-      /*
-       * Expected result: should
-       * - redirect to review page
        * - show previous Usual place of resiedence with strikethrough
        * - show updated Usual place of resiedence
        */
 
-      expect(page.url().includes('correction')).toBeTruthy()
-      expect(page.url().includes('review')).toBeTruthy()
       await expect(
         page.locator('#mother-content #Usual').getByRole('deletion').nth(1)
       ).toHaveText('Farajaland', {
@@ -503,40 +388,12 @@ test.describe.serial(' Correct record - 7', () => {
           .locator('#mother-content #Usual')
           .getByText(updatedMotherDetails.address.zipCode)
       ).toBeVisible()
-    })
-
-    test('7.4.7 Change marital status', async () => {
-      await page
-        .locator('#mother-content #Marital')
-        .getByRole('button', { name: 'Change', exact: true })
-        .click()
 
       /*
        * Expected result: should
-       * - redirect to mother's details page
-       * - focus on mother's marital status
-       */
-
-      expect(page.url().includes('correction')).toBeTruthy()
-      expect(page.url().includes('mother-view-group')).toBeTruthy()
-      expect(page.url().includes('#maritalStatus')).toBeTruthy()
-
-      await page.locator('#maritalStatus').click()
-      await page.getByText(updatedMotherDetails.maritalStatus).click()
-
-      await page.waitForTimeout(500)
-
-      await page.getByRole('button', { name: 'Back to review' }).click()
-
-      /*
-       * Expected result: should
-       * - redirect to review page
        * - show previous marital status with strikethrough
        * - show updated marital status
        */
-
-      expect(page.url().includes('correction')).toBeTruthy()
-      expect(page.url().includes('review')).toBeTruthy()
 
       await expect(
         page.locator('#mother-content #Marital').getByRole('deletion')
@@ -549,40 +406,12 @@ test.describe.serial(' Correct record - 7', () => {
           .locator('#mother-content #Marital')
           .getByText(updatedMotherDetails.maritalStatus)
       ).toBeVisible()
-    })
-
-    test('7.4.8 Change level of education', async () => {
-      await page
-        .locator('#mother-content #Level')
-        .getByRole('button', { name: 'Change', exact: true })
-        .click()
 
       /*
        * Expected result: should
-       * - redirect to mother's details page
-       * - focus on mother's level of education
-       */
-
-      expect(page.url().includes('correction')).toBeTruthy()
-      expect(page.url().includes('mother-view-group')).toBeTruthy()
-      expect(page.url().includes('#educationalAttainment')).toBeTruthy()
-
-      await page.locator('#educationalAttainment').click()
-      await page.getByText(updatedMotherDetails.educationLevel).click()
-
-      await page.waitForTimeout(500)
-
-      await page.getByRole('button', { name: 'Back to review' }).click()
-
-      /*
-       * Expected result: should
-       * - redirect to review page
        * - show previous level of education with strikethrough
        * - show updated level of education
        */
-
-      expect(page.url().includes('correction')).toBeTruthy()
-      expect(page.url().includes('review')).toBeTruthy()
 
       await expect(
         page.locator('#mother-content #Level').getByRole('deletion')
