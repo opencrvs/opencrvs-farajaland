@@ -3,6 +3,7 @@ import {
   createPIN,
   getLocationNameFromFhirId,
   getToken,
+  goToSection,
   login,
   uploadImage
 } from '../../../helpers'
@@ -543,53 +544,6 @@ test.describe('1. Correct record - 1', () => {
             .getByText(updatedChildDetails.typeOfBirth)
         ).toBeVisible()
       })
-
-      test('1.2.2.7 Change weight at birth', async () => {
-        await page
-          .locator('#child-content #Weight')
-          .getByRole('button', { name: 'Change', exact: true })
-          .click()
-
-        /*
-         * Expected result: should
-         * - redirect to child's details page
-         * - focus on child's weight at birth
-         */
-
-        expect(page.url().includes('correction')).toBeTruthy()
-        expect(page.url().includes('child-view-group')).toBeTruthy()
-        expect(page.url().includes('#weightAtBirth')).toBeTruthy()
-
-        await page
-          .locator('#weightAtBirth')
-          .fill(updatedChildDetails.weightAtBirth)
-
-        await page.waitForTimeout(500)
-
-        await page.getByRole('button', { name: 'Back to review' }).click()
-
-        /*
-         * Expected result: should
-         * - redirect to review page
-         * - show previous weight at birth with strikethrough
-         * - show updated weight at birth
-         */
-
-        expect(page.url().includes('correction')).toBeTruthy()
-        expect(page.url().includes('review')).toBeTruthy()
-
-        expect(declaration.weightAtBirth).toBeDefined
-
-        await expect(
-          page.locator('#child-content #Weight').getByRole('deletion')
-        ).toHaveText(declaration.weightAtBirth! + ' kilograms (kg)')
-
-        await expect(
-          page
-            .locator('#child-content #Weight')
-            .getByText(updatedChildDetails.weightAtBirth + ' kilograms (kg)')
-        ).toBeVisible()
-      })
     })
 
     test('1.2.3 Upload supporting documents', async () => {
@@ -654,133 +608,206 @@ test.describe('1. Correct record - 1', () => {
       await page.getByRole('button', { name: 'Continue' }).click()
     })
 
-    test('1.2.5 Correction summary', async () => {
-      /*
-       * Expected result: should
-       * - navigate to correction summary
-       * - Send for approval button is disabled
-       */
-      expect(page.url().includes('summary')).toBeTruthy()
-      expect(page.url().includes('correction')).toBeTruthy()
+    test.describe('1.2.5 Correction summary', async () => {
+      test('1.2.5.1 Go back to review', async () => {
+        /* Expected result: should
+         * - navigate to correction summary
+         */
+        expect(page.url().includes('correction')).toBeTruthy()
+        expect(page.url().includes('summary')).toBeTruthy()
 
-      await expect(
-        page.getByRole('button', { name: 'Send for approval' })
-      ).toBeDisabled()
+        await page
+          .getByRole('button', { name: 'Back to review', exact: true })
+          .click()
 
-      /*
-       * Expected result: should show
-       * - Original vs correction
-       * - Requested by
-       * - ID check
-       * - Reason for request
-       * - Comments
-       */
-
-      await expect(
-        page.getByText(
-          'Full name (Child)' +
-            declaration.child.name[0].firstNames +
-            ' ' +
-            declaration.child.name[0].familyName +
-            updatedChildDetails.firstNames +
-            ' ' +
-            updatedChildDetails.familyName
-        )
-      ).toBeVisible()
-
-      await expect(
-        page.getByText(
-          'Sex (Child)' + declaration.child.gender + updatedChildDetails.gender
-        )
-      ).toBeVisible()
-
-      await expect(
-        page.getByText(
-          'Date of birth (Child)' +
-            format(parseISO(declaration.child.birthDate), 'dd MMMM yyyy') +
-            format(parseISO(updatedChildDetails.birthDate), 'dd MMMM yyyy')
-        )
-      ).toBeVisible()
-
-      await expect(
-        page.getByText(
-          'Place of delivery (Child)' +
-            'Health Institution' +
-            childBirthLocationName +
-            'Health Institution' +
-            updatedChildDetails.placeOfBirth
-        )
-      ).toBeVisible()
-
-      await expect(
-        page.getByText(
-          'Attendant at birth (Child)' +
-            declaration.attendantAtBirth +
-            updatedChildDetails.attendantAtBirth
-        )
-      ).toBeVisible()
-
-      await expect(
-        page.getByText(
-          'Type of birth (Child)' +
-            declaration.birthType +
-            updatedChildDetails.typeOfBirth
-        )
-      ).toBeVisible()
-
-      await expect(
-        page.getByText(
-          'Weight at birth (Child)' +
-            declaration.weightAtBirth +
-            updatedChildDetails.weightAtBirth
-        )
-      ).toBeVisible()
-
-      await expect(
-        page.getByText(
-          declaration.mother.name[0].firstNames +
-            ' ' +
-            declaration.mother.name[0].familyName
-        )
-      ).toBeVisible()
-      await expect(page.getByText('Verified')).toBeVisible()
-      await expect(
-        page.getByText('Myself or an agent made a mistake (Clerical error)')
-      ).toBeVisible()
-      await expect(
-        page.getByText(declaration.registration.registrationNumber)
-      ).toBeVisible()
-
-      await page.getByLabel('Yes').check()
-      await page
-        .locator('#correctionFees\\.nestedFields\\.totalFees')
-        .fill('15')
-
-      await uploadImage(page, page.locator('#upload_document'))
-
-      /*
-       * Expected result: should enable the Send for approval button
-       */
-      await page.getByRole('button', { name: 'Send for approval' }).click()
-      await page.getByRole('button', { name: 'Confirm' }).click()
-
-      /*
-       * Expected result: should
-       * - be navigated to sent for approval tab
-       * - include the declaration in this tab
-       */
-      expect(page.url().includes('registration-home/approvals')).toBeTruthy()
-      await expect(page.locator('#navigation_outbox')).not.toContainText('1', {
-        timeout: 1000 * 30
+        /* Expected result: should
+         * - navigate to correction review
+         */
+        expect(page.url().includes('correction')).toBeTruthy()
+        expect(page.url().includes('review')).toBeTruthy()
       })
 
-      await expect(
-        page.getByText(
-          declaration.child.name[0].firstNames +
-            ' ' +
-            declaration.child.name[0].familyName
+      test('1.2.5.2 Change weight at birth', async () => {
+        await page
+          .locator('#child-content #Weight')
+          .getByRole('button', { name: 'Change', exact: true })
+          .click()
+
+        /*
+         * Expected result: should
+         * - redirect to child's details page
+         * - focus on child's weight at birth
+         */
+
+        expect(page.url().includes('correction')).toBeTruthy()
+        expect(page.url().includes('child-view-group')).toBeTruthy()
+        expect(page.url().includes('#weightAtBirth')).toBeTruthy()
+
+        await page
+          .locator('#weightAtBirth')
+          .fill(updatedChildDetails.weightAtBirth)
+
+        await page.waitForTimeout(500)
+
+        await page.getByRole('button', { name: 'Back to review' }).click()
+
+        /*
+         * Expected result: should
+         * - redirect to review page
+         * - show previous weight at birth with strikethrough
+         * - show updated weight at birth
+         */
+
+        expect(page.url().includes('correction')).toBeTruthy()
+        expect(page.url().includes('review')).toBeTruthy()
+
+        expect(declaration.weightAtBirth).toBeDefined
+
+        await expect(
+          page.locator('#child-content #Weight').getByRole('deletion')
+        ).toHaveText(declaration.weightAtBirth! + ' kilograms (kg)')
+
+        await expect(
+          page
+            .locator('#child-content #Weight')
+            .getByText(updatedChildDetails.weightAtBirth + ' kilograms (kg)')
+        ).toBeVisible()
+      })
+
+      test('1.2.5.3 Validate information in correction summary page', async () => {
+        await goToSection(page, 'summary')
+        /*
+         * Expected result: should
+         * - navigate to correction summary
+         * - Send for approval button is disabled
+         */
+        expect(page.url().includes('summary')).toBeTruthy()
+        expect(page.url().includes('correction')).toBeTruthy()
+
+        await expect(
+          page.getByRole('button', { name: 'Send for approval' })
+        ).toBeDisabled()
+
+        /*
+         * Expected result: should show
+         * - Original vs correction
+         * - Requested by
+         * - ID check
+         * - Reason for request
+         * - Comments
+         */
+
+        await expect(
+          page.getByText(
+            'Full name (Child)' +
+              declaration.child.name[0].firstNames +
+              ' ' +
+              declaration.child.name[0].familyName +
+              updatedChildDetails.firstNames +
+              ' ' +
+              updatedChildDetails.familyName
+          )
+        ).toBeVisible()
+
+        await expect(
+          page.getByText(
+            'Sex (Child)' +
+              declaration.child.gender +
+              updatedChildDetails.gender
+          )
+        ).toBeVisible()
+
+        await expect(
+          page.getByText(
+            'Date of birth (Child)' +
+              format(parseISO(declaration.child.birthDate), 'dd MMMM yyyy') +
+              format(parseISO(updatedChildDetails.birthDate), 'dd MMMM yyyy')
+          )
+        ).toBeVisible()
+
+        await expect(
+          page.getByText(
+            'Place of delivery (Child)' +
+              'Health Institution' +
+              childBirthLocationName +
+              'Health Institution' +
+              updatedChildDetails.placeOfBirth
+          )
+        ).toBeVisible()
+
+        await expect(
+          page.getByText(
+            'Attendant at birth (Child)' +
+              declaration.attendantAtBirth +
+              updatedChildDetails.attendantAtBirth
+          )
+        ).toBeVisible()
+
+        await expect(
+          page.getByText(
+            'Type of birth (Child)' +
+              declaration.birthType +
+              updatedChildDetails.typeOfBirth
+          )
+        ).toBeVisible()
+
+        await expect(
+          page.getByText(
+            'Weight at birth (Child)' +
+              declaration.weightAtBirth +
+              updatedChildDetails.weightAtBirth
+          )
+        ).toBeVisible()
+
+        await expect(
+          page.getByText(
+            declaration.mother.name[0].firstNames +
+              ' ' +
+              declaration.mother.name[0].familyName
+          )
+        ).toBeVisible()
+        await expect(page.getByText('Verified')).toBeVisible()
+        await expect(
+          page.getByText('Myself or an agent made a mistake (Clerical error)')
+        ).toBeVisible()
+        await expect(
+          page.getByText(declaration.registration.registrationNumber)
+        ).toBeVisible()
+
+        await page.getByLabel('Yes').check()
+        await page
+          .locator('#correctionFees\\.nestedFields\\.totalFees')
+          .fill('15')
+
+        await uploadImage(page, page.locator('#upload_document'))
+
+        /*
+         * Expected result: should enable the Send for approval button
+         */
+        await page.getByRole('button', { name: 'Send for approval' }).click()
+        await page.getByRole('button', { name: 'Confirm' }).click()
+
+        /*
+         * Expected result: should
+         * - be navigated to sent for approval tab
+         * - include the declaration in this tab
+         */
+        expect(page.url().includes('registration-home/approvals')).toBeTruthy()
+        await expect(page.locator('#navigation_outbox')).not.toContainText(
+          '1',
+          {
+            timeout: 1000 * 30
+          }
         )
-      ).toBeVisible()
+
+        await expect(
+          page.getByText(
+            declaration.child.name[0].firstNames +
+              ' ' +
+              declaration.child.name[0].familyName
+          )
+        ).toBeVisible()
+      })
     })
 
     test.describe('1.2.6 Correction Approval', async () => {
