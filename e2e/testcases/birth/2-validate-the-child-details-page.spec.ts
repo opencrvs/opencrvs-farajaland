@@ -296,7 +296,7 @@ test.describe("2. Validate the child's details page", () => {
 
     test('2.6.2.a Validate Health Institution', async ({ page }) => {
       await test.step('Select Health Institution', async () => {
-        await page.locator('#birthLocation').click()
+        await page.locator('#placeOfBirth').click()
         await page.getByText('Health Institution', { exact: true }).click()
         /*
          * Expected result: should show input field for:
@@ -317,25 +317,25 @@ test.describe("2. Validate the child's details page", () => {
     })
 
     test('2.6.2.b Select Residential address', async ({ page }) => {
-      await page.locator('#birthLocation').click()
+      await page.locator('#placeOfBirth').click()
       await page.getByText('Residential address', { exact: true }).click()
 
       /*
        * Expected result: should select "Residential address" as place of birth
        */
-      await expect(page.locator('#birthLocation')).toContainText(
+      await expect(page.locator('#placeOfBirth')).toContainText(
         'Residential address'
       )
     })
 
     test('2.6.2.c Select Other', async ({ page }) => {
-      await page.locator('#birthLocation').click()
+      await page.locator('#placeOfBirth').click()
       await page.getByText('Other', { exact: true }).click()
 
       /*
        * Expected result: should select "Other" as place of birth
        */
-      await expect(page.locator('#birthLocation')).toContainText('Other')
+      await expect(page.locator('#placeOfBirth')).toContainText('Other')
     })
   })
 })

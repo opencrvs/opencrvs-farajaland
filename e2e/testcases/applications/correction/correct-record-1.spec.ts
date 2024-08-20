@@ -28,7 +28,7 @@ test.describe('1. Correct record - 1', () => {
       subDays(new Date(), Math.ceil(50 * Math.random())),
       'yyyy-MM-dd'
     ),
-    birthLocation: 'Tembwe Rural Health Centre',
+    placeOfBirth: 'Tembwe Rural Health Centre',
     attendantAtBirth: 'Nurse',
     typeOfBirth: 'Twin',
     weightAtBirth: '3.1'
@@ -412,12 +412,12 @@ test.describe('1. Correct record - 1', () => {
 
         expect(page.url().includes('correction')).toBeTruthy()
         expect(page.url().includes('child-view-group')).toBeTruthy()
-        expect(page.url().includes('#birthLocation')).toBeTruthy()
+        expect(page.url().includes('#placeOfBirth')).toBeTruthy()
 
         await page
           .locator('#birthLocation')
-          .fill(updatedChildDetails.birthLocation.slice(0, 2))
-        await page.getByText(updatedChildDetails.birthLocation).click()
+          .fill(updatedChildDetails.placeOfBirth.slice(0, 2))
+        await page.getByText(updatedChildDetails.placeOfBirth).click()
 
         await page.waitForTimeout(500)
 
@@ -449,7 +449,7 @@ test.describe('1. Correct record - 1', () => {
         await expect(
           page
             .locator('#child-content #Place')
-            .getByText(updatedChildDetails.birthLocation)
+            .getByText(updatedChildDetails.placeOfBirth)
         ).toBeVisible()
       })
 
@@ -731,7 +731,7 @@ test.describe('1. Correct record - 1', () => {
               'Health Institution' +
               childBirthLocationName +
               'Health Institution' +
-              updatedChildDetails.birthLocation
+              updatedChildDetails.placeOfBirth
           )
         ).toBeVisible()
 
@@ -899,7 +899,7 @@ test.describe('1. Correct record - 1', () => {
               'Health Institution' +
               childBirthLocationName +
               'Health Institution' +
-              updatedChildDetails.birthLocation
+              updatedChildDetails.placeOfBirth
           )
         ).toBeVisible()
 
