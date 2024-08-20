@@ -1,5 +1,5 @@
 import { GATEWAY_HOST } from '../../constants'
-import { BirthRegistrationInput } from '../../gateway'
+import { AddressInput, BirthRegistrationInput } from '../../gateway'
 import faker from '@faker-js/faker'
 
 import { readFileSync } from 'fs'
@@ -23,6 +23,9 @@ type Details = {
     gender: 'male' | 'female'
     birthType?: 'SINGLE' | 'MULTIPLE'
     weightAtBirth?: number
+    placeOfBirth?: 'Health Institution' | 'Residential address' | 'Other'
+    birthFacility?: string
+    birthLocation?: AddressInput
   }
   mother: {
     firstNames: string
@@ -105,12 +108,18 @@ export async function createDeclaration(token: string, details: Details) {
               ),
             identifier: []
           },
-          eventLocation: {
-            _fhirID: getLocationIdByName(
-              facilities,
-              'Chikobo Rural Health Centre'
-            )
-          },
+          eventLocation:
+            details.child.placeOfBirth &&
+            details.child.placeOfBirth !== 'Health Institution'
+              ? {
+                  address: details.child.birthLocation
+                }
+              : {
+                  _fhirID: getLocationIdByName(
+                    facilities,
+                    details.child.birthFacility || 'Chikobo Rural Health Centre'
+                  )
+                },
           attendantAtBirth: details.attendant.type || 'PHYSICIAN',
           birthType: details.child.birthType || 'SINGLE',
           weightAtBirth: details.child.weightAtBirth || 2,
