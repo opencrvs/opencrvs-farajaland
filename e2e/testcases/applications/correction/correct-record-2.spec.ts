@@ -37,6 +37,7 @@ test.describe.serial(' Correct record - 2', () => {
       zipCode: faker.address.zipCode()
     }
   }
+  const updatedChildDetails = {}
 
   test.beforeAll(async ({ browser }) => {
     page = await browser.newPage()
@@ -163,466 +164,534 @@ test.describe.serial(' Correct record - 2', () => {
     expect(page.url().includes('review')).toBeTruthy()
   })
 
-  test.describe('2.4 Correction made on informant details', async () => {
-    test('2.4.1 Change relationship to child', async () => {
-      await page
-        .locator('#informant-content #Relationship')
-        .getByRole('button', { name: 'Change', exact: true })
-        .click()
-
-      /*
-       * Expected result: should
-       * - redirect to informant's details page
-       * - focus on informantType
-       */
-      expect(page.url().includes('correction')).toBeTruthy()
-      expect(page.url().includes('informant-view-group')).toBeTruthy()
-      expect(page.url().includes('#informantType')).toBeTruthy()
-
-      await page.locator('#informantType').click()
-      await page.getByText(updatedInformantDetails.relationship).click()
-      await page.waitForTimeout(500)
-
-      await page.getByRole('button', { name: 'Back to review' }).click()
-
-      /*
-       * Expected result: should
-       * - redirect to review page
-       * - show previous relation with strikethrough
-       * - show updated relation
-       */
-
-      expect(page.url().includes('correction')).toBeTruthy()
-      expect(page.url().includes('review')).toBeTruthy()
-
-      await expect(
-        page.locator('#informant-content #Relationship').getByRole('deletion')
-      ).toHaveText(declaration.registration.informantType, { ignoreCase: true })
-
-      await expect(
-        page
+  test.describe('2.4.1 Make correction', async () => {
+    test.describe('2.4.1 Make correction on informant details', async () => {
+      test('2.4.1.1 Change relationship to child', async () => {
+        await page
           .locator('#informant-content #Relationship')
-          .getByText(updatedInformantDetails.relationship)
-      ).toBeVisible()
-    })
+          .getByRole('button', { name: 'Change', exact: true })
+          .click()
 
-    test('2.4.2 Change name', async () => {
-      await page
-        .locator('#informant-content #Full')
-        .getByRole('button', { name: 'Change', exact: true })
-        .click()
+        /*
+         * Expected result: should
+         * - redirect to informant's details page
+         * - focus on informantType
+         */
+        expect(page.url().includes('correction')).toBeTruthy()
+        expect(page.url().includes('informant-view-group')).toBeTruthy()
+        expect(page.url().includes('#informantType')).toBeTruthy()
 
-      /*
-       * Expected result: should
-       * - redirect to informant's details page
-       * - focus on informant's family name
-       */
+        await page.locator('#informantType').click()
+        await page.getByText(updatedInformantDetails.relationship).click()
+        await page.waitForTimeout(500)
 
-      expect(page.url().includes('correction')).toBeTruthy()
-      expect(page.url().includes('informant-view-group')).toBeTruthy()
-      // expect(page.url().includes('#familyNameEng')).toBeTruthy() // fail: does not focus on infirmant's family name
+        await page.getByRole('button', { name: 'Back to review' }).click()
 
-      await page
-        .locator('#firstNamesEng')
-        .fill(updatedInformantDetails.firstNames)
-      await page
-        .locator('#familyNameEng')
-        .fill(updatedInformantDetails.familyName)
+        /*
+         * Expected result: should
+         * - redirect to review page
+         * - show previous relation with strikethrough
+         * - show updated relation
+         */
 
-      await page.waitForTimeout(500)
+        expect(page.url().includes('correction')).toBeTruthy()
+        expect(page.url().includes('review')).toBeTruthy()
 
-      await page.getByRole('button', { name: 'Back to review' }).click()
+        await expect(
+          page.locator('#informant-content #Relationship').getByRole('deletion')
+        ).toHaveText(declaration.registration.informantType, {
+          ignoreCase: true
+        })
 
-      /*
-       * Expected result: should
-       * - redirect to review page
-       * - show previous name with strikethrough
-       * - show updated name
-       */
+        await expect(
+          page
+            .locator('#informant-content #Relationship')
+            .getByText(updatedInformantDetails.relationship)
+        ).toBeVisible()
+      })
 
-      expect(page.url().includes('correction')).toBeTruthy()
-      expect(page.url().includes('review')).toBeTruthy()
-
-      const oldData = await page
-        .locator('#informant-content #Full')
-        .getByRole('deletion')
-        .all()
-
-      await expect(oldData[0]).toHaveText(
-        declaration.informant.name[0].firstNames
-      )
-      await expect(oldData[1]).toHaveText(
-        declaration.informant.name[0].familyName
-      )
-
-      await expect(
-        page
+      test('2.4.1.2 Change name', async () => {
+        await page
           .locator('#informant-content #Full')
-          .getByText(updatedInformantDetails.firstNames)
-      ).toBeVisible()
-      await expect(
-        page
+          .getByRole('button', { name: 'Change', exact: true })
+          .click()
+
+        /*
+         * Expected result: should
+         * - redirect to informant's details page
+         * - focus on informant's family name
+         */
+
+        expect(page.url().includes('correction')).toBeTruthy()
+        expect(page.url().includes('informant-view-group')).toBeTruthy()
+        // expect(page.url().includes('#familyNameEng')).toBeTruthy() // fail: does not focus on infirmant's family name
+
+        await page
+          .locator('#firstNamesEng')
+          .fill(updatedInformantDetails.firstNames)
+        await page
+          .locator('#familyNameEng')
+          .fill(updatedInformantDetails.familyName)
+
+        await page.waitForTimeout(500)
+
+        await page.getByRole('button', { name: 'Back to review' }).click()
+
+        /*
+         * Expected result: should
+         * - redirect to review page
+         * - show previous name with strikethrough
+         * - show updated name
+         */
+
+        expect(page.url().includes('correction')).toBeTruthy()
+        expect(page.url().includes('review')).toBeTruthy()
+
+        const oldData = await page
           .locator('#informant-content #Full')
-          .getByText(updatedInformantDetails.familyName)
-      ).toBeVisible()
-    })
+          .getByRole('deletion')
+          .all()
 
-    test('2.4.3 Change date of birth', async () => {
-      await page
-        .locator('#informant-content #Date')
-        .getByRole('button', { name: 'Change', exact: true })
-        .click()
+        await expect(oldData[0]).toHaveText(
+          declaration.informant.name[0].firstNames
+        )
+        await expect(oldData[1]).toHaveText(
+          declaration.informant.name[0].familyName
+        )
 
-      /*
-       * Expected result: should
-       * - redirect to informant's details page
-       * - focus on informant's date of birth
-       */
-      expect(page.url().includes('correction')).toBeTruthy()
-      expect(page.url().includes('informant-view-group')).toBeTruthy()
-      expect(page.url().includes('#informantBirthDate')).toBeTruthy()
+        await expect(
+          page
+            .locator('#informant-content #Full')
+            .getByText(updatedInformantDetails.firstNames)
+        ).toBeVisible()
+        await expect(
+          page
+            .locator('#informant-content #Full')
+            .getByText(updatedInformantDetails.familyName)
+        ).toBeVisible()
+      })
 
-      const birthDay = updatedInformantDetails.birthDate.split('-')
-
-      await page.getByPlaceholder('dd').fill(birthDay[2])
-      await page.getByPlaceholder('mm').fill(birthDay[1])
-      await page.getByPlaceholder('yyyy').fill(birthDay[0])
-
-      await page.waitForTimeout(500)
-
-      await page.getByRole('button', { name: 'Back to review' }).click()
-
-      /*
-       * Expected result: should
-       * - redirect to review page
-       * - show previous gender with strikethrough
-       * - show updated gender
-       */
-
-      expect(page.url().includes('correction')).toBeTruthy()
-      expect(page.url().includes('review')).toBeTruthy()
-
-      await expect(
-        page.locator('#informant-content #Date').getByRole('deletion')
-      ).toHaveText(
-        format(parseISO(declaration.informant.birthDate), 'dd MMMM yyyy'),
-        { ignoreCase: true }
-      )
-
-      await expect(
-        page
+      test('2.4.1.3 Change date of birth', async () => {
+        await page
           .locator('#informant-content #Date')
-          .getByText(
-            format(parseISO(updatedInformantDetails.birthDate), 'dd MMMM yyyy')
-          )
-      ).toBeVisible()
-    })
+          .getByRole('button', { name: 'Change', exact: true })
+          .click()
 
-    test('2.4.4 Change nationality', async () => {
-      await page
-        .locator('#informant-content #Nationality')
-        .getByRole('button', { name: 'Change', exact: true })
-        .click()
+        /*
+         * Expected result: should
+         * - redirect to informant's details page
+         * - focus on informant's date of birth
+         */
+        expect(page.url().includes('correction')).toBeTruthy()
+        expect(page.url().includes('informant-view-group')).toBeTruthy()
+        expect(page.url().includes('#informantBirthDate')).toBeTruthy()
 
-      /*
-       * Expected result: should
-       * - redirect to informant's details page
-       * - focus on informant's nationality
-       */
+        const birthDay = updatedInformantDetails.birthDate.split('-')
 
-      expect(page.url().includes('correction')).toBeTruthy()
-      expect(page.url().includes('informant-view-group')).toBeTruthy()
-      expect(page.url().includes('#nationality')).toBeTruthy()
+        await page.getByPlaceholder('dd').fill(birthDay[2])
+        await page.getByPlaceholder('mm').fill(birthDay[1])
+        await page.getByPlaceholder('yyyy').fill(birthDay[0])
 
-      await page.locator('#nationality').click()
-      await page.getByText(updatedInformantDetails.nationality).click()
+        await page.waitForTimeout(500)
 
-      await page.waitForTimeout(500)
+        await page.getByRole('button', { name: 'Back to review' }).click()
 
-      await page.getByRole('button', { name: 'Back to review' }).click()
+        /*
+         * Expected result: should
+         * - redirect to review page
+         * - show previous gender with strikethrough
+         * - show updated gender
+         */
 
-      /*
-       * Expected result: should
-       * - redirect to review page
-       * - show previous nationality with strikethrough
-       * - show updated nationality
-       */
+        expect(page.url().includes('correction')).toBeTruthy()
+        expect(page.url().includes('review')).toBeTruthy()
 
-      expect(page.url().includes('correction')).toBeTruthy()
-      expect(page.url().includes('review')).toBeTruthy()
+        await expect(
+          page.locator('#informant-content #Date').getByRole('deletion')
+        ).toHaveText(
+          format(parseISO(declaration.informant.birthDate), 'dd MMMM yyyy'),
+          { ignoreCase: true }
+        )
 
-      await expect(
-        page.locator('#informant-content #Nationality').getByRole('deletion')
-      ).toHaveText('Farajaland', {
-        ignoreCase: true
+        await expect(
+          page
+            .locator('#informant-content #Date')
+            .getByText(
+              format(
+                parseISO(updatedInformantDetails.birthDate),
+                'dd MMMM yyyy'
+              )
+            )
+        ).toBeVisible()
       })
 
-      await expect(
-        page
+      test('2.4.1.4 Change nationality', async () => {
+        await page
           .locator('#informant-content #Nationality')
-          .getByText(updatedInformantDetails.nationality)
-      ).toBeVisible()
-    })
+          .getByRole('button', { name: 'Change', exact: true })
+          .click()
 
-    test('2.4.5 Change id type', async () => {
-      await page
-        .locator('#informant-content #Type')
-        .getByRole('button', { name: 'Change', exact: true })
-        .click()
+        /*
+         * Expected result: should
+         * - redirect to informant's details page
+         * - focus on informant's nationality
+         */
 
-      /*
-       * Expected result: should
-       * - redirect to informant's details page
-       * - focus on informant's id type
-       */
+        expect(page.url().includes('correction')).toBeTruthy()
+        expect(page.url().includes('informant-view-group')).toBeTruthy()
+        expect(page.url().includes('#nationality')).toBeTruthy()
 
-      expect(page.url().includes('correction')).toBeTruthy()
-      expect(page.url().includes('informant-view-group')).toBeTruthy()
-      expect(page.url().includes('#informantIdType')).toBeTruthy()
+        await page.locator('#nationality').click()
+        await page.getByText(updatedInformantDetails.nationality).click()
 
-      await page.locator('#informantIdType').click()
-      await page.getByText(updatedInformantDetails.idType).click()
+        await page.waitForTimeout(500)
 
-      await page.waitForTimeout(500)
+        await page.getByRole('button', { name: 'Back to review' }).click()
 
-      await page.getByRole('button', { name: 'Back to review' }).click()
+        /*
+         * Expected result: should
+         * - redirect to review page
+         * - show previous nationality with strikethrough
+         * - show updated nationality
+         */
 
-      /*
-       * Expected result: should
-       * - redirect to review page
-       * - show previous id type with strikethrough
-       * - show updated id type
-       */
+        expect(page.url().includes('correction')).toBeTruthy()
+        expect(page.url().includes('review')).toBeTruthy()
 
-      expect(page.url().includes('correction')).toBeTruthy()
-      expect(page.url().includes('review')).toBeTruthy()
+        await expect(
+          page.locator('#informant-content #Nationality').getByRole('deletion')
+        ).toHaveText('Farajaland', {
+          ignoreCase: true
+        })
 
-      await expect(
-        page.locator('#informant-content #Type').getByRole('deletion')
-      ).toHaveText('National Id', {
-        ignoreCase: true
+        await expect(
+          page
+            .locator('#informant-content #Nationality')
+            .getByText(updatedInformantDetails.nationality)
+        ).toBeVisible()
       })
 
-      await expect(
-        page
+      test('2.4.1.5 Change id type', async () => {
+        await page
           .locator('#informant-content #Type')
-          .getByText(updatedInformantDetails.idType)
-      ).toBeVisible()
-    })
+          .getByRole('button', { name: 'Change', exact: true })
+          .click()
 
-    test('2.4.6 Change id', async () => {
-      await page
-        .locator('#informant-content #ID')
-        .getByRole('button', { name: 'Change', exact: true })
-        .click()
+        /*
+         * Expected result: should
+         * - redirect to informant's details page
+         * - focus on informant's id type
+         */
 
-      /*
-       * Expected result: should
-       * - redirect to informant's details page
-       * - focus on informant's id
-       */
+        expect(page.url().includes('correction')).toBeTruthy()
+        expect(page.url().includes('informant-view-group')).toBeTruthy()
+        expect(page.url().includes('#informantIdType')).toBeTruthy()
 
-      expect(page.url().includes('correction')).toBeTruthy()
-      expect(page.url().includes('informant-view-group')).toBeTruthy()
-      expect(page.url().includes('#informantPassport')).toBeTruthy()
+        await page.locator('#informantIdType').click()
+        await page.getByText(updatedInformantDetails.idType).click()
 
-      await page.locator('#informantPassport').fill(updatedInformantDetails.id)
+        await page.waitForTimeout(500)
 
-      await page.waitForTimeout(500)
+        await page.getByRole('button', { name: 'Back to review' }).click()
 
-      await page.getByRole('button', { name: 'Back to review' }).click()
+        /*
+         * Expected result: should
+         * - redirect to review page
+         * - show previous id type with strikethrough
+         * - show updated id type
+         */
 
-      /*
-       * Expected result: should
-       * - redirect to review page
-       * - show previous id with strikethrough
-       * - show updated id
-       */
+        expect(page.url().includes('correction')).toBeTruthy()
+        expect(page.url().includes('review')).toBeTruthy()
 
-      expect(page.url().includes('correction')).toBeTruthy()
-      expect(page.url().includes('review')).toBeTruthy()
+        await expect(
+          page.locator('#informant-content #Type').getByRole('deletion')
+        ).toHaveText('National Id', {
+          ignoreCase: true
+        })
 
-      await expect(
-        page
+        await expect(
+          page
+            .locator('#informant-content #Type')
+            .getByText(updatedInformantDetails.idType)
+        ).toBeVisible()
+      })
+
+      test('2.4.1.6 Change id', async () => {
+        await page
           .locator('#informant-content #ID')
-          .getByText(updatedInformantDetails.id)
-      ).toBeVisible()
-    })
+          .getByRole('button', { name: 'Change', exact: true })
+          .click()
 
-    test('2.4.7 Change usual place of residence', async () => {
-      await page
-        .locator('#informant-content #Usual')
-        .getByRole('button', { name: 'Change', exact: true })
-        .click()
+        /*
+         * Expected result: should
+         * - redirect to informant's details page
+         * - focus on informant's id
+         */
 
-      /*
-       * Expected result: should
-       * - redirect to informant's details page
-       * - focus on informant's Usual place of resiedence
-       */
+        expect(page.url().includes('correction')).toBeTruthy()
+        expect(page.url().includes('informant-view-group')).toBeTruthy()
+        expect(page.url().includes('#informantPassport')).toBeTruthy()
 
-      expect(page.url().includes('correction')).toBeTruthy()
-      expect(page.url().includes('informant-view-group')).toBeTruthy()
-      expect(page.url().includes('#countryPrimary')).toBeTruthy()
+        await page
+          .locator('#informantPassport')
+          .fill(updatedInformantDetails.id)
 
-      await page.locator('#statePrimaryInformant').click()
-      await page.getByText(updatedInformantDetails.address.province).click()
+        await page.waitForTimeout(500)
 
-      await page.locator('#districtPrimaryInformant').click()
-      await page.getByText(updatedInformantDetails.address.district).click()
+        await page.getByRole('button', { name: 'Back to review' }).click()
 
-      await page
-        .locator('#cityPrimaryInformant')
-        .fill(updatedInformantDetails.address.town)
+        /*
+         * Expected result: should
+         * - redirect to review page
+         * - show previous id with strikethrough
+         * - show updated id
+         */
 
-      await page
-        .locator('#addressLine1UrbanOptionPrimaryInformant')
-        .fill(updatedInformantDetails.address.residentialArea)
+        expect(page.url().includes('correction')).toBeTruthy()
+        expect(page.url().includes('review')).toBeTruthy()
 
-      await page
-        .locator('#addressLine2UrbanOptionPrimaryInformant')
-        .fill(updatedInformantDetails.address.street)
-
-      await page
-        .locator('#addressLine3UrbanOptionPrimaryInformant')
-        .fill(updatedInformantDetails.address.number)
-
-      await page
-        .locator('#postalCodePrimaryInformant')
-        .fill(updatedInformantDetails.address.zipCode)
-
-      await page.waitForTimeout(500)
-
-      await page.getByRole('button', { name: 'Back to review' }).click()
-
-      /*
-       * Expected result: should
-       * - redirect to review page
-       * - show previous Usual place of resiedence with strikethrough
-       * - show updated Usual place of resiedence
-       */
-
-      expect(page.url().includes('correction')).toBeTruthy()
-      expect(page.url().includes('review')).toBeTruthy()
-      await expect(
-        page.locator('#informant-content #Usual').getByRole('deletion').nth(1)
-      ).toHaveText('Farajaland', {
-        ignoreCase: true
-      })
-      await expect(
-        page.locator('#informant-content #Usual').getByRole('deletion').nth(2)
-      ).toHaveText('Central', { ignoreCase: true })
-      await expect(
-        page.locator('#informant-content #Usual').getByRole('deletion').nth(3)
-      ).toHaveText('Ibombo', {
-        ignoreCase: true
-      })
-      await expect(
-        page.locator('#informant-content #Usual').getByRole('deletion').nth(5)
-      ).toHaveText(declaration.informant.address[0].city, { ignoreCase: true })
-      await expect(
-        page.locator('#informant-content #Usual').getByRole('deletion').nth(6)
-      ).toHaveText(declaration.informant.address[0].line[2], {
-        ignoreCase: true
-      })
-      await expect(
-        page.locator('#informant-content #Usual').getByRole('deletion').nth(7)
-      ).toHaveText(declaration.informant.address[0].line[1], {
-        ignoreCase: true
-      })
-      await expect(
-        page.locator('#informant-content #Usual').getByRole('deletion').nth(8)
-      ).toHaveText(declaration.informant.address[0].line[0], {
-        ignoreCase: true
-      })
-      await expect(
-        page.locator('#informant-content #Usual').getByRole('deletion').nth(9)
-      ).toHaveText(declaration.informant.address[0].postalCode, {
-        ignoreCase: true
+        await expect(
+          page
+            .locator('#informant-content #ID')
+            .getByText(updatedInformantDetails.id)
+        ).toBeVisible()
       })
 
-      await expect(
-        page.locator('#informant-content #Usual').getByText('Farajaland')
-      ).toBeVisible()
-      await expect(
-        page
+      test('2.4.1.7 Change usual place of residence', async () => {
+        await page
           .locator('#informant-content #Usual')
-          .getByText(updatedInformantDetails.address.province)
-      ).toBeVisible()
-      await expect(
-        page
-          .locator('#informant-content #Usual')
-          .getByText(updatedInformantDetails.address.district)
-      ).toBeVisible()
-      await expect(
-        page
-          .locator('#informant-content #Usual')
-          .getByText(updatedInformantDetails.address.town)
-      ).toBeVisible()
-      await expect(
-        page
-          .locator('#informant-content #Usual')
-          .getByText(updatedInformantDetails.address.residentialArea)
-      ).toBeVisible()
-      await expect(
-        page
-          .locator('#informant-content #Usual')
-          .getByText(updatedInformantDetails.address.street)
-      ).toBeVisible()
-      await expect(
-        page
-          .locator('#informant-content #Usual')
-          .getByText(updatedInformantDetails.address.number)
-      ).toBeVisible()
-      await expect(
-        page
-          .locator('#informant-content #Usual')
-          .getByText(updatedInformantDetails.address.zipCode)
-      ).toBeVisible()
-    })
+          .getByRole('button', { name: 'Change', exact: true })
+          .click()
 
-    test('2.4.8 Change email', async () => {
-      await page
-        .locator('#informant-content #Email')
-        .getByRole('button', { name: 'Change', exact: true })
-        .click()
+        /*
+         * Expected result: should
+         * - redirect to informant's details page
+         * - focus on informant's Usual place of resiedence
+         */
 
-      /*
-       * Expected result: should
-       * - redirect to informant's details page
-       * - focus on informant's Email
-       */
+        expect(page.url().includes('correction')).toBeTruthy()
+        expect(page.url().includes('informant-view-group')).toBeTruthy()
+        expect(page.url().includes('#countryPrimary')).toBeTruthy()
 
-      expect(page.url().includes('correction')).toBeTruthy()
-      expect(page.url().includes('informant-view-group')).toBeTruthy()
-      expect(page.url().includes('#registrationEmail')).toBeTruthy()
+        await page.locator('#statePrimaryInformant').click()
+        await page.getByText(updatedInformantDetails.address.province).click()
 
-      await page
-        .locator('#registrationEmail')
-        .fill(updatedInformantDetails.email)
+        await page.locator('#districtPrimaryInformant').click()
+        await page.getByText(updatedInformantDetails.address.district).click()
 
-      await page.waitForTimeout(500)
+        await page
+          .locator('#cityPrimaryInformant')
+          .fill(updatedInformantDetails.address.town)
 
-      await page.getByRole('button', { name: 'Back to review' }).click()
+        await page
+          .locator('#addressLine1UrbanOptionPrimaryInformant')
+          .fill(updatedInformantDetails.address.residentialArea)
 
-      /*
-       * Expected result: should
-       * - redirect to review page
-       * - show previous Email with strikethrough
-       * - show updated Email
-       */
+        await page
+          .locator('#addressLine2UrbanOptionPrimaryInformant')
+          .fill(updatedInformantDetails.address.street)
 
-      expect(page.url().includes('correction')).toBeTruthy()
-      expect(page.url().includes('review')).toBeTruthy()
+        await page
+          .locator('#addressLine3UrbanOptionPrimaryInformant')
+          .fill(updatedInformantDetails.address.number)
 
-      await expect(
-        page.locator('#informant-content #Email').getByRole('deletion')
-      ).toHaveText(declaration.registration.contactEmail, { ignoreCase: true })
+        await page
+          .locator('#postalCodePrimaryInformant')
+          .fill(updatedInformantDetails.address.zipCode)
 
-      await expect(
-        page
+        await page.waitForTimeout(500)
+
+        await page.getByRole('button', { name: 'Back to review' }).click()
+
+        /*
+         * Expected result: should
+         * - redirect to review page
+         * - show previous Usual place of resiedence with strikethrough
+         * - show updated Usual place of resiedence
+         */
+
+        expect(page.url().includes('correction')).toBeTruthy()
+        expect(page.url().includes('review')).toBeTruthy()
+        await expect(
+          page.locator('#informant-content #Usual').getByRole('deletion').nth(1)
+        ).toHaveText('Farajaland', {
+          ignoreCase: true
+        })
+        await expect(
+          page.locator('#informant-content #Usual').getByRole('deletion').nth(2)
+        ).toHaveText('Central', { ignoreCase: true })
+        await expect(
+          page.locator('#informant-content #Usual').getByRole('deletion').nth(3)
+        ).toHaveText('Ibombo', {
+          ignoreCase: true
+        })
+        await expect(
+          page.locator('#informant-content #Usual').getByRole('deletion').nth(5)
+        ).toHaveText(declaration.informant.address[0].city, {
+          ignoreCase: true
+        })
+        await expect(
+          page.locator('#informant-content #Usual').getByRole('deletion').nth(6)
+        ).toHaveText(declaration.informant.address[0].line[2], {
+          ignoreCase: true
+        })
+        await expect(
+          page.locator('#informant-content #Usual').getByRole('deletion').nth(7)
+        ).toHaveText(declaration.informant.address[0].line[1], {
+          ignoreCase: true
+        })
+        await expect(
+          page.locator('#informant-content #Usual').getByRole('deletion').nth(8)
+        ).toHaveText(declaration.informant.address[0].line[0], {
+          ignoreCase: true
+        })
+        await expect(
+          page.locator('#informant-content #Usual').getByRole('deletion').nth(9)
+        ).toHaveText(declaration.informant.address[0].postalCode, {
+          ignoreCase: true
+        })
+
+        await expect(
+          page.locator('#informant-content #Usual').getByText('Farajaland')
+        ).toBeVisible()
+        await expect(
+          page
+            .locator('#informant-content #Usual')
+            .getByText(updatedInformantDetails.address.province)
+        ).toBeVisible()
+        await expect(
+          page
+            .locator('#informant-content #Usual')
+            .getByText(updatedInformantDetails.address.district)
+        ).toBeVisible()
+        await expect(
+          page
+            .locator('#informant-content #Usual')
+            .getByText(updatedInformantDetails.address.town)
+        ).toBeVisible()
+        await expect(
+          page
+            .locator('#informant-content #Usual')
+            .getByText(updatedInformantDetails.address.residentialArea)
+        ).toBeVisible()
+        await expect(
+          page
+            .locator('#informant-content #Usual')
+            .getByText(updatedInformantDetails.address.street)
+        ).toBeVisible()
+        await expect(
+          page
+            .locator('#informant-content #Usual')
+            .getByText(updatedInformantDetails.address.number)
+        ).toBeVisible()
+        await expect(
+          page
+            .locator('#informant-content #Usual')
+            .getByText(updatedInformantDetails.address.zipCode)
+        ).toBeVisible()
+      })
+
+      test('2.4.1.8 Change email', async () => {
+        await page
           .locator('#informant-content #Email')
-          .getByText(updatedInformantDetails.email)
+          .getByRole('button', { name: 'Change', exact: true })
+          .click()
+
+        /*
+         * Expected result: should
+         * - redirect to informant's details page
+         * - focus on informant's Email
+         */
+
+        expect(page.url().includes('correction')).toBeTruthy()
+        expect(page.url().includes('informant-view-group')).toBeTruthy()
+        expect(page.url().includes('#registrationEmail')).toBeTruthy()
+
+        await page
+          .locator('#registrationEmail')
+          .fill(updatedInformantDetails.email)
+
+        await page.waitForTimeout(500)
+
+        await page.getByRole('button', { name: 'Back to review' }).click()
+
+        /*
+         * Expected result: should
+         * - redirect to review page
+         * - show previous Email with strikethrough
+         * - show updated Email
+         */
+
+        expect(page.url().includes('correction')).toBeTruthy()
+        expect(page.url().includes('review')).toBeTruthy()
+
+        await expect(
+          page.locator('#informant-content #Email').getByRole('deletion')
+        ).toHaveText(declaration.registration.contactEmail, {
+          ignoreCase: true
+        })
+
+        await expect(
+          page
+            .locator('#informant-content #Email')
+            .getByText(updatedInformantDetails.email)
+        ).toBeVisible()
+      })
+    })
+
+    test('2.4.2 Change place of delivery', async () => {
+      await page
+        .locator('#child-content #Place')
+        .getByRole('button', { name: 'Change', exact: true })
+        .click()
+
+      /*
+       * Expected result: should
+       * - redirect to child's details page
+       * - focus on child's place of birth
+       */
+
+      expect(page.url().includes('correction')).toBeTruthy()
+      expect(page.url().includes('child-view-group')).toBeTruthy()
+      expect(page.url().includes('#birthLocation')).toBeTruthy()
+
+      await page
+        .locator('#birthLocation')
+        .fill(updatedChildDetails.birthLocation.slice(0, 2))
+      await page.getByText(updatedChildDetails.birthLocation).click()
+
+      await page.waitForTimeout(500)
+
+      await page.getByRole('button', { name: 'Back to review' }).click()
+
+      /*
+       * Expected result: should
+       * - redirect to review page
+       * - show previous place of birth with strikethrough
+       * - show updated place of birth
+       */
+
+      expect(page.url().includes('correction')).toBeTruthy()
+      expect(page.url().includes('review')).toBeTruthy()
+
+      expect(declaration.eventLocation).toBeDefined()
+
+      childBirthLocationName = await getLocationNameFromFhirId(
+        declaration.eventLocation!.id
+      )
+      expect(childBirthLocationName).toBeDefined()
+
+      await expect(
+        page.locator('#child-content #Place').getByRole('deletion').nth(1)
+      ).toHaveText(childBirthLocationName!, {
+        ignoreCase: true
+      })
+
+      await expect(
+        page
+          .locator('#child-content #Place')
+          .getByText(updatedChildDetails.birthLocation)
       ).toBeVisible()
     })
   })

@@ -16,7 +16,7 @@ test.describe.serial('2. Birth declaration case - 2', () => {
     },
     attendantAtBirth: 'Nurse',
     birthType: 'Twin',
-    placeOfBirth: 'Residential address',
+    birthLocation: 'Residential address',
     birthLocation: {
       country: 'Farajaland',
       province: 'Pualula',
@@ -110,21 +110,21 @@ test.describe.serial('2. Birth declaration case - 2', () => {
       await page.getByPlaceholder('mm').fill(declaration.child.birthDate.mm)
       await page.getByPlaceholder('yyyy').fill(declaration.child.birthDate.yyyy)
 
-      await page.locator('#placeOfBirth').click()
+      await page.locator('#birthLocation').click()
       await page
-        .getByText(declaration.placeOfBirth, {
+        .getByText(declaration.birthLocation, {
           exact: true
         })
         .click()
 
-      await page.locator('#statePlaceofbirth').click()
+      await page.locator('#statebirthLocation').click()
       await page
         .getByText(declaration.birthLocation.province, {
           exact: true
         })
         .click()
 
-      await page.locator('#districtPlaceofbirth').click()
+      await page.locator('#districtbirthLocation').click()
       await page
         .getByText(declaration.birthLocation.district, {
           exact: true
@@ -132,19 +132,19 @@ test.describe.serial('2. Birth declaration case - 2', () => {
         .click()
 
       await page
-        .locator('#cityPlaceofbirth')
+        .locator('#citybirthLocation')
         .fill(declaration.birthLocation.town)
       await page
-        .locator('#addressLine1UrbanOptionPlaceofbirth')
+        .locator('#addressLine1UrbanOptionbirthLocation')
         .fill(declaration.birthLocation.residentialArea)
       await page
-        .locator('#addressLine2UrbanOptionPlaceofbirth')
+        .locator('#addressLine2UrbanOptionbirthLocation')
         .fill(declaration.birthLocation.street)
       await page
-        .locator('#addressLine3UrbanOptionPlaceofbirth')
+        .locator('#addressLine3UrbanOptionbirthLocation')
         .fill(declaration.birthLocation.number)
       await page
-        .locator('#postalCodePlaceofbirth')
+        .locator('#postalCodebirthLocation')
         .fill(declaration.birthLocation.postcodeOrZip)
 
       await page.locator('#attendantAtBirth').click()
@@ -344,7 +344,7 @@ test.describe.serial('2. Birth declaration case - 2', () => {
        * - Child's Place of birth details
        */
       await expect(page.locator('#child-content #Place')).toContainText(
-        declaration.placeOfBirth
+        declaration.birthLocation
       )
       await expect(page.locator('#child-content #Place')).toContainText(
         declaration.birthLocation.country
@@ -650,7 +650,7 @@ test.describe.serial('2. Birth declaration case - 2', () => {
        * - Child's Place of birth details
        */
       await expect(page.locator('#child-content #Place')).toContainText(
-        declaration.placeOfBirth
+        declaration.birthLocation
       )
       await expect(page.locator('#child-content #Place')).toContainText(
         declaration.birthLocation.country

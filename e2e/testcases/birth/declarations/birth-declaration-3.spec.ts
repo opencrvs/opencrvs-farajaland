@@ -22,7 +22,7 @@ test.describe.serial('3. Birth declaration case - 3', () => {
     },
     attendantAtBirth: 'Midwife',
     birthType: 'Triplet',
-    placeOfBirth: 'Residential address',
+    birthLocation: 'Residential address',
     birthLocation: {
       country: 'Farajaland',
       province: 'Pualula',
@@ -134,20 +134,20 @@ test.describe.serial('3. Birth declaration case - 3', () => {
       await page.getByPlaceholder('mm').fill(declaration.child.birthDate.mm)
       await page.getByPlaceholder('yyyy').fill(declaration.child.birthDate.yyyy)
 
-      await page.locator('#placeOfBirth').click()
+      await page.locator('#birthLocation').click()
       await page
-        .getByText(declaration.placeOfBirth, {
+        .getByText(declaration.birthLocation, {
           exact: true
         })
         .click()
-      await page.locator('#statePlaceofbirth').click()
+      await page.locator('#statebirthLocation').click()
       await page
         .getByText(declaration.birthLocation.province, {
           exact: true
         })
         .click()
 
-      await page.locator('#districtPlaceofbirth').click()
+      await page.locator('#districtbirthLocation').click()
       await page
         .getByText(declaration.birthLocation.district, {
           exact: true
@@ -155,7 +155,7 @@ test.describe.serial('3. Birth declaration case - 3', () => {
         .click()
       await page.getByLabel(declaration.birthLocation.urbanOrRural).check()
       await page
-        .locator('#addressLine1RuralOptionPlaceofbirth')
+        .locator('#addressLine1RuralOptionbirthLocation')
         .fill(declaration.birthLocation.village)
 
       await page.locator('#attendantAtBirth').click()
@@ -565,7 +565,7 @@ test.describe.serial('3. Birth declaration case - 3', () => {
        * - Child's Place of birth details
        */
       await expect(page.locator('#child-content #Place')).toContainText(
-        declaration.placeOfBirth
+        declaration.birthLocation
       )
       await expect(page.locator('#child-content #Place')).toContainText(
         declaration.birthLocation.country
@@ -936,7 +936,7 @@ test.describe.serial('3. Birth declaration case - 3', () => {
        * - Child's Place of birth details
        */
       await expect(page.locator('#child-content #Place')).toContainText(
-        declaration.placeOfBirth
+        declaration.birthLocation
       )
       await expect(page.locator('#child-content #Place')).toContainText(
         declaration.birthLocation.country

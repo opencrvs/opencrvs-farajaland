@@ -16,7 +16,7 @@ test.describe.serial('5. Birth declaration case - 5', () => {
     },
     attendantAtBirth: 'Layperson',
     birthType: 'Higher multiple delivery',
-    placeOfBirth: 'Other',
+    birthLocation: 'Other',
     birthLocation: {
       country: 'Farajaland',
       province: 'Pualula',
@@ -108,20 +108,20 @@ test.describe.serial('5. Birth declaration case - 5', () => {
       await page.getByPlaceholder('mm').fill(declaration.child.birthDate.mm)
       await page.getByPlaceholder('yyyy').fill(declaration.child.birthDate.yyyy)
 
-      await page.locator('#placeOfBirth').click()
+      await page.locator('#birthLocation').click()
       await page
-        .getByText(declaration.placeOfBirth, {
+        .getByText(declaration.birthLocation, {
           exact: true
         })
         .click()
-      await page.locator('#statePlaceofbirth').click()
+      await page.locator('#statebirthLocation').click()
       await page
         .getByText(declaration.birthLocation.province, {
           exact: true
         })
         .click()
 
-      await page.locator('#districtPlaceofbirth').click()
+      await page.locator('#districtbirthLocation').click()
       await page
         .getByText(declaration.birthLocation.district, {
           exact: true
@@ -131,7 +131,7 @@ test.describe.serial('5. Birth declaration case - 5', () => {
       await page.getByLabel(declaration.birthLocation.urbanOrRural).check()
 
       await page
-        .locator('#addressLine1RuralOptionPlaceofbirth')
+        .locator('#addressLine1RuralOptionbirthLocation')
         .fill(declaration.birthLocation.village)
 
       await page.locator('#attendantAtBirth').click()
@@ -342,7 +342,7 @@ test.describe.serial('5. Birth declaration case - 5', () => {
        */
 
       await expect(page.locator('#child-content #Place')).toContainText(
-        declaration.placeOfBirth
+        declaration.birthLocation
       )
       await expect(page.locator('#child-content #Place')).toContainText(
         declaration.birthLocation.country

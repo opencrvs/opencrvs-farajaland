@@ -17,7 +17,7 @@ test.describe.serial('1. Birth declaration case - 1', () => {
     attendantAtBirth: 'Physician',
     birthType: 'Single',
     weightAtBirth: 2.4,
-    placeOfBirth: 'Health Institution',
+    birthLocation: 'Health Institution',
     birthLocation: 'Golden Valley Rural Health Centre',
     informantType: 'Mother',
     informantEmail: faker.internet.email(),
@@ -96,9 +96,9 @@ test.describe.serial('1. Birth declaration case - 1', () => {
       await page.getByPlaceholder('mm').fill(declaration.child.birthDate.mm)
       await page.getByPlaceholder('yyyy').fill(declaration.child.birthDate.yyyy)
 
-      await page.locator('#placeOfBirth').click()
+      await page.locator('#birthLocation').click()
       await page
-        .getByText(declaration.placeOfBirth, {
+        .getByText(declaration.birthLocation, {
           exact: true
         })
         .click()
@@ -296,7 +296,7 @@ test.describe.serial('1. Birth declaration case - 1', () => {
        * - Child's Place of birth details
        */
       await expect(page.locator('#child-content #Place')).toContainText(
-        declaration.placeOfBirth
+        declaration.birthLocation
       )
       await expect(page.locator('#child-content #Place')).toContainText(
         declaration.birthLocation
@@ -591,7 +591,7 @@ test.describe.serial('1. Birth declaration case - 1', () => {
        * - Child's Place of birth details
        */
       await expect(page.locator('#child-content #Place')).toContainText(
-        declaration.placeOfBirth
+        declaration.birthLocation
       )
       await expect(page.locator('#child-content #Place')).toContainText(
         declaration.birthLocation

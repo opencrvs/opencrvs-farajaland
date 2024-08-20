@@ -23,7 +23,7 @@ test.describe.serial('8. Validate declaration review page', () => {
     attendantAtBirth: 'Physician',
     birthType: 'Single',
     weightAtBirth: 2.4,
-    placeOfBirth: 'Health Institution',
+    birthLocation: 'Health Institution',
     birthLocation: 'Bombwe Health Post',
     informantType: 'Mother',
     informantEmail: faker.internet.email(),
@@ -90,9 +90,9 @@ test.describe.serial('8. Validate declaration review page', () => {
           .getByPlaceholder('yyyy')
           .fill(declaration.child.birthDate.yyyy)
 
-        await page.locator('#placeOfBirth').click()
+        await page.locator('#birthLocation').click()
         await page
-          .getByText(declaration.placeOfBirth, {
+          .getByText(declaration.birthLocation, {
             exact: true
           })
           .click()
@@ -257,7 +257,7 @@ test.describe.serial('8. Validate declaration review page', () => {
          * - Change button
          */
         await expect(page.locator('#child-content #Place')).toContainText(
-          declaration.placeOfBirth
+          declaration.birthLocation
         )
         await expect(page.locator('#child-content #Place')).toContainText(
           declaration.birthLocation
@@ -1029,7 +1029,7 @@ test.describe.serial('8. Validate declaration review page', () => {
        * - Change button
        */
       await expect(page.locator('#child-content #Place')).toContainText(
-        declaration.placeOfBirth
+        declaration.birthLocation
       )
       await expect(page.locator('#child-content #Place')).toContainText(
         declaration.birthLocation
@@ -1358,7 +1358,7 @@ test.describe.serial('8. Validate declaration review page', () => {
        * - Change button
        */
       await expect(page.locator('#child-content #Place')).toContainText(
-        declaration.placeOfBirth
+        declaration.birthLocation
       )
       await expect(page.locator('#child-content #Place')).toContainText(
         declaration.birthLocation
