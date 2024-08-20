@@ -1,5 +1,11 @@
 import { expect, test, type Page } from '@playwright/test'
-import { createPIN, getToken, login, uploadImage } from '../../../helpers'
+import {
+  createPIN,
+  getToken,
+  goToSection,
+  login,
+  uploadImage
+} from '../../../helpers'
 import faker from '@faker-js/faker'
 import { format, parseISO, subDays } from 'date-fns'
 import { createDeathDeclaration, fetchDeclaration } from '../../death/helpers'
@@ -702,46 +708,6 @@ test.describe('10. Correct record - 10', () => {
             .getByText(updatedDeceasedDetails.maritalStatus)
         ).toBeVisible()
       })
-
-      test('10.2.2.9 Change number of depandants', async () => {
-        await page
-          .getByRole('row', { name: 'No. of dependants' })
-          .getByRole('button', { name: 'Change', exact: true })
-          .click()
-
-        /*
-         * Expected result: should
-         * - redirect to deceased's details page
-         * - focus on deceased's number of depandants
-         */
-
-        expect(page.url().includes('correction')).toBeTruthy()
-        expect(page.url().includes('deceased-view-group')).toBeTruthy()
-        expect(page.url().includes('#numberOfDependants')).toBeTruthy()
-
-        await page
-          .locator('#numberOfDependants')
-          .fill(updatedDeceasedDetails.NOdependants)
-
-        await page.waitForTimeout(500)
-
-        await page.getByRole('button', { name: 'Back to review' }).click()
-
-        /*
-         * Expected result: should
-         * - redirect to review page
-         * - show new number of depandants
-         */
-
-        expect(page.url().includes('correction')).toBeTruthy()
-        expect(page.url().includes('review')).toBeTruthy()
-
-        await expect(
-          page
-            .getByRole('row', { name: 'No. of dependants' })
-            .getByText(updatedDeceasedDetails.NOdependants)
-        ).toBeVisible()
-      })
     })
 
     test('10.2.3 Upload supporting documents', async () => {
@@ -806,148 +772,216 @@ test.describe('10. Correct record - 10', () => {
       await page.getByRole('button', { name: 'Continue' }).click()
     })
 
-    test('10.2.5 Correction summary', async () => {
-      /*
-       * Expected result: should
-       * - navigate to correction summary
-       * - Send for approval button is disabled
-       */
-      expect(page.url().includes('correction')).toBeTruthy()
-      expect(page.url().includes('summary')).toBeTruthy()
+    test.describe('10.2.5 Correction summary', async () => {
+      test('10.2.5.1 Go back to review', async () => {
+        /*
+         * Expected result: should
+         * - navigate to correction summary
+         */
+        expect(page.url().includes('correction')).toBeTruthy()
+        expect(page.url().includes('summary')).toBeTruthy()
 
-      await expect(
-        page.getByRole('button', { name: 'Send for approval' })
-      ).toBeDisabled()
+        await page
+          .getByRole('button', { name: 'Back to review', exact: true })
+          .click()
 
-      /*
-       * Expected result: should show
-       * - Original vs correction
-       * - Requested by
-       * - ID check
-       * - Reason for request
-       * - Comments
-       */
-
-      await expect(
-        page.getByText(
-          'Full name (Deceased)' +
-            declaration.deceased.name[0].firstNames +
-            ' ' +
-            declaration.deceased.name[0].familyName +
-            updatedDeceasedDetails.firstNames +
-            ' ' +
-            updatedDeceasedDetails.familyName
-        )
-      ).toBeVisible()
-
-      await expect(
-        page.getByText(
-          'Sex (Deceased)' +
-            declaration.deceased.gender +
-            updatedDeceasedDetails.gender
-        )
-      ).toBeVisible()
-
-      await expect(
-        page.getByText(
-          'Date of birth (Deceased)' +
-            format(parseISO(declaration.deceased.birthDate), 'dd MMMM yyyy') +
-            format(parseISO(updatedDeceasedDetails.birthDate), 'dd MMMM yyyy')
-        )
-      ).toBeVisible()
-
-      await expect(
-        page.getByText(
-          'Nationality (Deceased)Farajaland' +
-            updatedDeceasedDetails.nationality
-        )
-      ).toBeVisible()
-
-      await expect(
-        page.getByText(
-          'Type of ID (Deceased)National ID' + updatedDeceasedDetails.idType
-        )
-      ).toBeVisible()
-      await expect(
-        page.getByText('ID Number (Deceased)-' + updatedDeceasedDetails.id)
-      ).toBeVisible()
-
-      await expect(
-        page.getByText(
-          'Usual place of residence (Deceased)FarajalandSulakaZobwe-' +
-            declaration.deceased.address[0].city +
-            declaration.deceased.address[0].line[2] +
-            declaration.deceased.address[0].line[1] +
-            declaration.deceased.address[0].line[0] +
-            declaration.deceased.address[0].postalCode +
-            'Farajaland' +
-            updatedDeceasedDetails.address.province +
-            updatedDeceasedDetails.address.district +
-            updatedDeceasedDetails.address.town +
-            updatedDeceasedDetails.address.residentialArea +
-            updatedDeceasedDetails.address.street +
-            updatedDeceasedDetails.address.number +
-            updatedDeceasedDetails.address.zipCode
-        )
-      ).toBeVisible()
-
-      await expect(
-        page.getByText(
-          'Marital status (Deceased)-' + updatedDeceasedDetails.maritalStatus
-        )
-      ).toBeVisible()
-
-      await expect(
-        page.getByText(
-          'No. of dependants (Deceased)-' + updatedDeceasedDetails.NOdependants
-        )
-      ).toBeVisible()
-
-      await expect(
-        page.getByText(
-          declaration.informant.name[0].firstNames +
-            ' ' +
-            declaration.informant.name[0].familyName
-        )
-      ).toBeVisible()
-      await expect(page.getByText('Verified')).toBeVisible()
-      await expect(
-        page.getByText('Myself or an agent made a mistake (Clerical error)')
-      ).toBeVisible()
-      await expect(
-        page.getByText(declaration.registration.registrationNumber)
-      ).toBeVisible()
-
-      await page.getByLabel('Yes').check()
-      await page
-        .locator('#correctionFees\\.nestedFields\\.totalFees')
-        .fill('15')
-
-      await uploadImage(page, page.locator('#upload_document'))
-
-      /*
-       * Expected result: should enable the Send for approval button
-       */
-      await page.getByRole('button', { name: 'Send for approval' }).click()
-      await page.getByRole('button', { name: 'Confirm' }).click()
-
-      /*
-       * Expected result: should
-       * - be navigated to sent for approval tab
-       * - include the declaration in this tab
-       */
-      expect(page.url().includes('registration-home/approvals')).toBeTruthy()
-      await expect(page.locator('#navigation_outbox')).not.toContainText('1', {
-        timeout: 1000 * 30
+        /*
+         * Expected result: should
+         * - navigate to correction review
+         */
+        expect(page.url().includes('correction')).toBeTruthy()
+        expect(page.url().includes('review')).toBeTruthy()
       })
 
-      await expect(
-        page.getByText(
-          declaration.deceased.name[0].firstNames +
-            ' ' +
-            declaration.deceased.name[0].familyName
+      test('10.2.5.2 Change number of depandants', async () => {
+        await page
+          .getByRole('row', { name: 'No. of dependants' })
+          .getByRole('button', { name: 'Change', exact: true })
+          .click()
+
+        /*
+         * Expected result: should
+         * - redirect to deceased's details page
+         * - focus on deceased's number of depandants
+         */
+
+        expect(page.url().includes('correction')).toBeTruthy()
+        expect(page.url().includes('deceased-view-group')).toBeTruthy()
+        expect(page.url().includes('#numberOfDependants')).toBeTruthy()
+
+        await page
+          .locator('#numberOfDependants')
+          .fill(updatedDeceasedDetails.NOdependants)
+
+        await page.waitForTimeout(500)
+
+        await page.getByRole('button', { name: 'Back to review' }).click()
+
+        /*
+         * Expected result: should
+         * - redirect to review page
+         * - show new number of depandants
+         */
+
+        expect(page.url().includes('correction')).toBeTruthy()
+        expect(page.url().includes('review')).toBeTruthy()
+
+        await expect(
+          page
+            .getByRole('row', { name: 'No. of dependants' })
+            .getByText(updatedDeceasedDetails.NOdependants)
+        ).toBeVisible()
+      })
+
+      test('10.2.5.3 Validate information in correction summary page', async () => {
+        await goToSection(page, 'summary')
+
+        /*
+         * Expected result: should
+         * - navigate to correction summary
+         * - Send for approval button is disabled
+         */
+        expect(page.url().includes('correction')).toBeTruthy()
+        expect(page.url().includes('summary')).toBeTruthy()
+
+        await expect(
+          page.getByRole('button', { name: 'Send for approval' })
+        ).toBeDisabled()
+
+        /*
+         * Expected result: should show
+         * - Original vs correction
+         * - Requested by
+         * - ID check
+         * - Reason for request
+         * - Comments
+         */
+
+        await expect(
+          page.getByText(
+            'Full name (Deceased)' +
+              declaration.deceased.name[0].firstNames +
+              ' ' +
+              declaration.deceased.name[0].familyName +
+              updatedDeceasedDetails.firstNames +
+              ' ' +
+              updatedDeceasedDetails.familyName
+          )
+        ).toBeVisible()
+
+        await expect(
+          page.getByText(
+            'Sex (Deceased)' +
+              declaration.deceased.gender +
+              updatedDeceasedDetails.gender
+          )
+        ).toBeVisible()
+
+        await expect(
+          page.getByText(
+            'Date of birth (Deceased)' +
+              format(parseISO(declaration.deceased.birthDate), 'dd MMMM yyyy') +
+              format(parseISO(updatedDeceasedDetails.birthDate), 'dd MMMM yyyy')
+          )
+        ).toBeVisible()
+
+        await expect(
+          page.getByText(
+            'Nationality (Deceased)Farajaland' +
+              updatedDeceasedDetails.nationality
+          )
+        ).toBeVisible()
+
+        await expect(
+          page.getByText(
+            'Type of ID (Deceased)National ID' + updatedDeceasedDetails.idType
+          )
+        ).toBeVisible()
+        await expect(
+          page.getByText('ID Number (Deceased)-' + updatedDeceasedDetails.id)
+        ).toBeVisible()
+
+        await expect(
+          page.getByText(
+            'Usual place of residence (Deceased)FarajalandSulakaZobwe-' +
+              declaration.deceased.address[0].city +
+              declaration.deceased.address[0].line[2] +
+              declaration.deceased.address[0].line[1] +
+              declaration.deceased.address[0].line[0] +
+              declaration.deceased.address[0].postalCode +
+              'Farajaland' +
+              updatedDeceasedDetails.address.province +
+              updatedDeceasedDetails.address.district +
+              updatedDeceasedDetails.address.town +
+              updatedDeceasedDetails.address.residentialArea +
+              updatedDeceasedDetails.address.street +
+              updatedDeceasedDetails.address.number +
+              updatedDeceasedDetails.address.zipCode
+          )
+        ).toBeVisible()
+
+        await expect(
+          page.getByText(
+            'Marital status (Deceased)-' + updatedDeceasedDetails.maritalStatus
+          )
+        ).toBeVisible()
+
+        await expect(
+          page.getByText(
+            'No. of dependants (Deceased)-' +
+              updatedDeceasedDetails.NOdependants
+          )
+        ).toBeVisible()
+
+        await expect(
+          page.getByText(
+            declaration.informant.name[0].firstNames +
+              ' ' +
+              declaration.informant.name[0].familyName
+          )
+        ).toBeVisible()
+        await expect(page.getByText('Verified')).toBeVisible()
+        await expect(
+          page.getByText('Myself or an agent made a mistake (Clerical error)')
+        ).toBeVisible()
+        await expect(
+          page.getByText(declaration.registration.registrationNumber)
+        ).toBeVisible()
+
+        await page.getByLabel('Yes').check()
+        await page
+          .locator('#correctionFees\\.nestedFields\\.totalFees')
+          .fill('15')
+
+        await uploadImage(page, page.locator('#upload_document'))
+
+        /*
+         * Expected result: should enable the Send for approval button
+         */
+        await page.getByRole('button', { name: 'Send for approval' }).click()
+        await page.getByRole('button', { name: 'Confirm' }).click()
+
+        /*
+         * Expected result: should
+         * - be navigated to sent for approval tab
+         * - include the declaration in this tab
+         */
+        expect(page.url().includes('registration-home/approvals')).toBeTruthy()
+        await expect(page.locator('#navigation_outbox')).not.toContainText(
+          '1',
+          {
+            timeout: 1000 * 30
+          }
         )
-      ).toBeVisible()
+
+        await expect(
+          page.getByText(
+            declaration.deceased.name[0].firstNames +
+              ' ' +
+              declaration.deceased.name[0].familyName
+          )
+        ).toBeVisible()
+      })
     })
 
     test.describe('10.2.6 Correction Approval', async () => {
