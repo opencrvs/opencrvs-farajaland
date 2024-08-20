@@ -1,5 +1,11 @@
 import { test, expect, type Page } from '@playwright/test'
-import { createPIN, getRandomDate, goToSection, login } from '../../helpers'
+import {
+  continueForm,
+  createPIN,
+  getRandomDate,
+  goToSection,
+  login
+} from '../../helpers'
 import faker from '@faker-js/faker'
 import { format } from 'date-fns'
 
@@ -113,7 +119,7 @@ test.describe.serial('8. Validate declaration review page', () => {
           .locator('#weightAtBirth')
           .fill(declaration.weightAtBirth.toString())
 
-        await page.getByRole('button', { name: 'Continue' }).click()
+        await continueForm(page)
       })
 
       test('8.1.0.2 Fill informant details', async () => {
@@ -131,7 +137,7 @@ test.describe.serial('8. Validate declaration review page', () => {
           .locator('#registrationEmail')
           .fill(declaration.informantEmail)
 
-        await page.getByRole('button', { name: 'Continue' }).click()
+        await continueForm(page)
       })
 
       test("8.1.0.3 Fill mother's details", async () => {
@@ -166,7 +172,7 @@ test.describe.serial('8. Validate declaration review page', () => {
           .getByText(declaration.mother.address.District, { exact: true })
           .click()
 
-        await page.getByRole('button', { name: 'Continue' }).click()
+        await continueForm(page)
       })
 
       test("8.1.0.4 Fill father's details", async () => {
@@ -192,7 +198,7 @@ test.describe.serial('8. Validate declaration review page', () => {
           .locator('#fatherNationalId')
           .fill(declaration.father.identifier.id)
 
-        await page.getByRole('button', { name: 'Continue' }).click()
+        await continueForm(page)
       })
     })
 
