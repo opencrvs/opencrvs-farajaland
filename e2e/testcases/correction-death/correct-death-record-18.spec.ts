@@ -1,11 +1,11 @@
 import { expect, test, type Page } from '@playwright/test'
-import { createPIN, getToken, login } from '../../../helpers'
+import { createPIN, getToken, login } from '../../helpers'
 import faker from '@faker-js/faker'
 import { format, parseISO, subDays } from 'date-fns'
-import { DeathDeclaration } from '../../death/types'
-import { createDeathDeclaration, fetchDeclaration } from '../../death/helpers'
+import { DeathDeclaration } from '../death/types'
+import { createDeathDeclaration, fetchDeclaration } from '../death/helpers'
 
-test.describe.serial(' Correct record - 14', () => {
+test.describe.serial(' Correct record - 18', () => {
   let declaration: DeathDeclaration
   let trackingId = ''
 
@@ -31,8 +31,7 @@ test.describe.serial(' Correct record - 14', () => {
       zipCode: faker.address.zipCode()
     },
     maritalStatus: 'Married',
-    NOdependants: '3',
-    reason: 'Change of mind'
+    NOdependants: '3'
   }
 
   test.beforeAll(async ({ browser }) => {
@@ -43,8 +42,9 @@ test.describe.serial(' Correct record - 14', () => {
     await page.close()
   })
 
-  test('14.0 Shortcut declaration', async () => {
-    let token = await getToken('k.mweene', 'test')
+  test('18.0 Shortcut declaration', async () => {
+    let token = await getToken('j.musonda', 'test')
+
     const res = await createDeathDeclaration(token)
     expect(res).toStrictEqual({
       trackingId: expect.any(String),
@@ -55,25 +55,69 @@ test.describe.serial(' Correct record - 14', () => {
 
     trackingId = res.trackingId
 
-    token = await getToken('k.mweene', 'test')
+    token = await getToken('j.musonda', 'test')
     declaration = (await fetchDeclaration(token, res.compositionId)).data
       .fetchDeathRegistration as DeathDeclaration
   })
 
-  test('14.1 Certificate preview', async () => {
-    await login(page, 'k.mweene', 'test')
-    await createPIN(page)
+  test.describe('18.1 Print > Ready to issue', async () => {
+    test('18.1.1 print', async () => {
+      await login(page, 'j.musonda', 'test')
+      await createPIN(page)
 
-    await page.getByPlaceholder('Search for a tracking ID').fill(trackingId)
-    await page.getByPlaceholder('Search for a tracking ID').press('Enter')
-    await page.locator('#ListItemAction-0-icon').click()
-    await page.locator('#name_0').click()
+      await page.getByPlaceholder('Search for a tracking ID').fill(trackingId)
+      await page.getByPlaceholder('Search for a tracking ID').press('Enter')
+      await page.locator('#ListItemAction-0-icon').click()
+      await page.locator('#name_0').click()
 
-    await page.getByRole('button', { name: 'Print', exact: true }).click()
+      await page.getByRole('button', { name: 'Print', exact: true }).click()
 
-    await page.getByLabel('Print in advance').check()
-    await page.getByRole('button', { name: 'Continue' }).click()
-    await page.getByRole('button', { name: 'No, make correction' }).click()
+      await page.getByLabel('Print in advance').check()
+      await page.getByRole('button', { name: 'Continue' }).click()
+      await page.getByRole('button', { name: 'Yes, print certificate' }).click()
+      await page.getByRole('button', { name: 'Print', exact: true }).click()
+    })
+    test('18.1.2 Ready to issue', async () => {
+      await page.getByRole('button', { name: 'Ready to issue' }).click()
+
+      /*
+       * Expected result: should
+       * - be navigated to ready to isssue tab
+       * - include the declaration in this tab
+       */
+      expect(page.url().includes('registration-home/readyToIssue')).toBeTruthy()
+      await expect(page.locator('#navigation_outbox')).not.toContainText('1', {
+        timeout: 1000 * 30
+      })
+
+      await expect(
+        page.getByText(
+          declaration.deceased.name[0].firstNames +
+            ' ' +
+            declaration.deceased.name[0].familyName
+        )
+      ).toBeVisible()
+
+      await page
+        .getByText(
+          declaration.deceased.name[0].firstNames +
+            ' ' +
+            declaration.deceased.name[0].familyName
+        )
+        .click()
+    })
+    test('18.1.3 Record audit', async () => {
+      await page.getByLabel('Assign record').click()
+      await page.getByRole('button', { name: 'Assign', exact: true }).click()
+
+      /*
+       * Expected result: should show correct record button
+       */
+
+      await page
+        .getByRole('button', { name: 'Correct record', exact: true })
+        .click()
+    })
   })
 
   test('14.2 Correction requester: Court', async () => {
@@ -619,7 +663,7 @@ test.describe.serial(' Correct record - 14', () => {
     })
   })
 
-  test('14.5 Upload supporting documents', async () => {
+  test('18.5 Upload supporting documents', async () => {
     await page.getByRole('button', { name: 'Continue' }).click()
 
     /*
@@ -628,15 +672,12 @@ test.describe.serial(' Correct record - 14', () => {
      * - continue button is disabled
      */
     expect(page.url().includes('correction')).toBeTruthy()
+
     expect(page.url().includes('supportingDocuments')).toBeTruthy()
 
     await expect(page.getByRole('button', { name: 'Continue' })).toBeDisabled()
 
-    await page
-      .getByLabel(
-        'I attest to seeing supporting documentation and have a copy filed at my office'
-      )
-      .check()
+    await page.getByLabel('No supporting documents required').check()
 
     /*
      * Expected result: should enable the continue button
@@ -645,29 +686,30 @@ test.describe.serial(' Correct record - 14', () => {
     await page.getByRole('button', { name: 'Continue' }).click()
   })
 
-  test('14.6 Reason for correction', async () => {
+  test('18.6 Reason for correction', async () => {
     /*
      * Expected result: should
      * - navigate to reason for correction
      * - continue button is disabled
      */
     expect(page.url().includes('correction')).toBeTruthy()
+
     expect(page.url().includes('reason')).toBeTruthy()
 
     await expect(page.getByRole('button', { name: 'Continue' })).toBeDisabled()
 
-    await page.getByLabel('Other').check()
     await page
-      .locator('#type\\.nestedFields\\.otherReason')
-      .fill(updatedDeceasedDetails.reason)
-    /*
-     * Expected result: should enable the continue button
-     */
+      .getByLabel('Requested to do so by the court (Judicial order)')
+      .check()
+
+    await page
+      .locator('#additionalComment')
+      .fill(declaration.registration.registrationNumber)
 
     await page.getByRole('button', { name: 'Continue' }).click()
   })
 
-  test('14.7 Correction summary', async () => {
+  test('18.7 Correction summary', async () => {
     /*
      * Expected result: should
      * - navigate to correction summary
@@ -762,8 +804,14 @@ test.describe.serial(' Correct record - 14', () => {
         'No. of dependants (Deceased)-' + updatedDeceasedDetails.NOdependants
       )
     ).toBeVisible()
-    await expect(page.getByText('Court')).toBeVisible()
-    await expect(page.getByText(updatedDeceasedDetails.reason)).toBeVisible()
+    await expect(page.getByText('Court', { exact: true })).toBeVisible()
+
+    await expect(
+      page.getByText('Requested to do so by the court (Judicial order)')
+    ).toBeVisible()
+    await expect(
+      page.getByText(declaration.registration.registrationNumber)
+    ).toBeVisible()
 
     await page.getByLabel('No').check()
 
@@ -774,6 +822,7 @@ test.describe.serial(' Correct record - 14', () => {
     await page.getByRole('button', { name: 'Confirm' }).click()
 
     await page.getByRole('button', { name: 'Ready to print' }).click()
+
     /*
      * Expected result: should
      * - be navigated to ready to print tab
@@ -791,7 +840,7 @@ test.describe.serial(' Correct record - 14', () => {
       )
     ).toBeVisible()
   })
-  test('14.8 Validate history in record audit', async () => {
+  test('18.8 Validate history in record audit', async () => {
     await page
       .getByText(
         updatedDeceasedDetails.firstNames +
@@ -801,10 +850,7 @@ test.describe.serial(' Correct record - 14', () => {
       .click()
 
     await page.getByLabel('Assign record').click()
-
-    if (await page.getByText('Unassign record?', { exact: true }).isVisible())
-      await page.getByRole('button', { name: 'Cancel', exact: true }).click()
-    else if (
+    if (
       await page
         .getByRole('button', { name: 'Assign', exact: true })
         .isVisible()

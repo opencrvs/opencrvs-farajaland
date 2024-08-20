@@ -1,18 +1,21 @@
 import { expect, test, type Page } from '@playwright/test'
-import { createPIN, getToken, login } from '../../../helpers'
+import { createPIN, getToken, login } from '../../helpers'
 import faker from '@faker-js/faker'
+import {
+  ConvertEnumsToStrings,
+  createDeclaration,
+  fetchDeclaration
+} from '../birth/helpers'
+import { BirthDeclaration, BirthInputDetails } from '../birth/types'
 import { format, parseISO, subDays } from 'date-fns'
-import { DeathDeclaration } from '../../death/types'
-import { createDeathDeclaration, fetchDeclaration } from '../../death/helpers'
 
-test.describe.serial(' Correct record - 12', () => {
-  let declaration: DeathDeclaration
+test.describe.serial(' Correct record - 9', () => {
+  let declaration: BirthDeclaration
   let trackingId = ''
 
   let page: Page
-
   const updatedInformantDetails = {
-    type: 'Son',
+    relationship: 'Sister',
     firstNames: faker.name.firstName('female'),
     familyName: faker.name.firstName('female'),
     birthDate: format(
@@ -24,8 +27,6 @@ test.describe.serial(' Correct record - 12', () => {
     id: faker.random.numeric(10),
     idType: 'Passport',
     address: {
-      sameAsDeceased: false,
-      country: 'Farajaland',
       province: 'Sulaka',
       district: 'Irundu',
       town: faker.address.city(),
@@ -44,9 +45,31 @@ test.describe.serial(' Correct record - 12', () => {
     await page.close()
   })
 
-  test('12.0 Shortcut declaration', async () => {
-    let token = await getToken('k.mweene', 'test')
-    const res = await createDeathDeclaration(token)
+  test('9.0 Shortcut declaration', async () => {
+    let token = await getToken('j.musonda', 'test')
+    const declarationInput = {
+      child: {
+        firstNames: faker.name.firstName(),
+        familyName: faker.name.firstName(),
+        gender: 'male'
+      },
+      informant: {
+        type: 'BROTHER'
+      },
+      attendant: {
+        type: 'PHYSICIAN'
+      },
+      mother: {
+        firstNames: faker.name.firstName(),
+        familyName: faker.name.firstName()
+      },
+      father: {
+        firstNames: faker.name.firstName(),
+        familyName: faker.name.firstName()
+      }
+    } as ConvertEnumsToStrings<BirthInputDetails>
+
+    const res = await createDeclaration(token, declarationInput)
     expect(res).toStrictEqual({
       trackingId: expect.any(String),
       compositionId: expect.any(String),
@@ -56,15 +79,14 @@ test.describe.serial(' Correct record - 12', () => {
 
     trackingId = res.trackingId
 
-    token = await getToken('f.katongo', 'test')
-
+    token = await getToken('j.musonda', 'test')
     declaration = (await fetchDeclaration(token, res.compositionId)).data
-      .fetchDeathRegistration as DeathDeclaration
+      .fetchBirthRegistration as BirthDeclaration
   })
 
-  test.describe('12.1 Print > Ready to issue', async () => {
-    test('12.1.1 Print', async () => {
-      await login(page, 'f.katongo', 'test')
+  test.describe('9.1 Print > Ready to issue', async () => {
+    test('9.1.1 print', async () => {
+      await login(page, 'j.musonda', 'test')
       await createPIN(page)
 
       await page.getByPlaceholder('Search for a tracking ID').fill(trackingId)
@@ -79,8 +101,7 @@ test.describe.serial(' Correct record - 12', () => {
       await page.getByRole('button', { name: 'Yes, print certificate' }).click()
       await page.getByRole('button', { name: 'Print', exact: true }).click()
     })
-
-    test('12.1.2 Ready to issue', async () => {
+    test('9.1.2 Ready to issue', async () => {
       await page.getByRole('button', { name: 'Ready to issue' }).click()
 
       /*
@@ -95,31 +116,27 @@ test.describe.serial(' Correct record - 12', () => {
 
       await expect(
         page.getByText(
-          declaration.deceased.name[0].firstNames +
+          declaration.child.name[0].firstNames +
             ' ' +
-            declaration.deceased.name[0].familyName
+            declaration.child.name[0].familyName
         )
       ).toBeVisible()
-    })
 
-    test('12.1.3 Record audit', async () => {
       await page
         .getByText(
-          declaration.deceased.name[0].firstNames +
+          declaration.child.name[0].firstNames +
             ' ' +
-            declaration.deceased.name[0].familyName
+            declaration.child.name[0].familyName
         )
         .click()
-
+    })
+    test('9.1.3 Record audit', async () => {
       await page.getByLabel('Assign record').click()
       await page.getByRole('button', { name: 'Assign', exact: true }).click()
 
       /*
        * Expected result: should show correct record button
        */
-      await expect(
-        page.getByRole('button', { name: 'Correct record', exact: true })
-      ).toBeVisible()
 
       await page
         .getByRole('button', { name: 'Correct record', exact: true })
@@ -127,41 +144,40 @@ test.describe.serial(' Correct record - 12', () => {
     })
   })
 
-  test('12.2 Correction requester: Me', async () => {
+  test('9.2 Correction requester: Me', async () => {
     await page.getByLabel('Me', { exact: true }).check()
     await page.getByRole('button', { name: 'Continue' }).click()
   })
 
-  test('12.3 Verify identity', async () => {
+  test('9.3 Verify identity', async () => {
     /*
-     * Expected result: should directly navigate to review page
+     * Expected result:
+     * - should not show verify identity
+     * - should directly navigate to review page
      */
     expect(page.url().includes('correction')).toBeTruthy()
+
     expect(page.url().includes('review')).toBeTruthy()
   })
 
-  test.describe('12.4 Correction made on informant details', async () => {
-    test('12.4.1 Change informant type', async () => {
+  test.describe('9.4 Correction made on informant details', async () => {
+    test('9.4.1 Change relationship to child', async () => {
       await page
-        .locator('#informant-content #Informant')
+        .locator('#informant-content #Relationship')
         .getByRole('button', { name: 'Change', exact: true })
         .click()
 
       /*
        * Expected result: should
        * - redirect to informant's details page
-       * - focus on informant's type
+       * - focus on informantType
        */
-
       expect(page.url().includes('correction')).toBeTruthy()
       expect(page.url().includes('informant-view-group')).toBeTruthy()
       expect(page.url().includes('#informantType')).toBeTruthy()
 
       await page.locator('#informantType').click()
-      await page
-        .getByText(updatedInformantDetails.type, { exact: true })
-        .click()
-
+      await page.getByText(updatedInformantDetails.relationship).click()
       await page.waitForTimeout(500)
 
       await page.getByRole('button', { name: 'Back to review' }).click()
@@ -169,27 +185,25 @@ test.describe.serial(' Correct record - 12', () => {
       /*
        * Expected result: should
        * - redirect to review page
-       * - show previous type with strikethrough
-       * - show updated type
+       * - show previous relation with strikethrough
+       * - show updated relation
        */
 
       expect(page.url().includes('correction')).toBeTruthy()
       expect(page.url().includes('review')).toBeTruthy()
 
       await expect(
-        page.locator('#informant-content #Informant').getByRole('deletion')
-      ).toHaveText(declaration.registration.informantType, {
-        ignoreCase: true
-      })
+        page.locator('#informant-content #Relationship').getByRole('deletion')
+      ).toHaveText(declaration.registration.informantType, { ignoreCase: true })
 
       await expect(
         page
-          .locator('#informant-content #Informant')
-          .getByText(updatedInformantDetails.type)
+          .locator('#informant-content #Relationship')
+          .getByText(updatedInformantDetails.relationship)
       ).toBeVisible()
     })
 
-    test('12.4.2 Change name', async () => {
+    test('9.4.2 Change name', async () => {
       await page
         .locator('#informant-content #Full')
         .getByRole('button', { name: 'Change', exact: true })
@@ -203,7 +217,7 @@ test.describe.serial(' Correct record - 12', () => {
 
       expect(page.url().includes('correction')).toBeTruthy()
       expect(page.url().includes('informant-view-group')).toBeTruthy()
-      // expect(page.url().includes('#familyNameEng')).toBeTruthy()   => this fails
+      // expect(page.url().includes('#familyNameEng')).toBeTruthy()  // fail: does not focus on infirmant's family name
 
       await page
         .locator('#firstNamesEng')
@@ -250,7 +264,7 @@ test.describe.serial(' Correct record - 12', () => {
       ).toBeVisible()
     })
 
-    test('12.4.3 Change date of birth', async () => {
+    test('9.4.3 Change date of birth', async () => {
       await page
         .locator('#informant-content #Date')
         .getByRole('button', { name: 'Change', exact: true })
@@ -301,7 +315,7 @@ test.describe.serial(' Correct record - 12', () => {
       ).toBeVisible()
     })
 
-    test('12.4.4 Change nationality', async () => {
+    test('9.4.4 Change nationality', async () => {
       await page
         .locator('#informant-content #Nationality')
         .getByRole('button', { name: 'Change', exact: true })
@@ -347,7 +361,7 @@ test.describe.serial(' Correct record - 12', () => {
       ).toBeVisible()
     })
 
-    test('12.4.5 Change id type', async () => {
+    test('9.4.5 Change id type', async () => {
       await page
         .locator('#informant-content #Type')
         .getByRole('button', { name: 'Change', exact: true })
@@ -382,7 +396,9 @@ test.describe.serial(' Correct record - 12', () => {
 
       await expect(
         page.locator('#informant-content #Type').getByRole('deletion')
-      ).toHaveText('-')
+      ).toHaveText('National Id', {
+        ignoreCase: true
+      })
 
       await expect(
         page
@@ -391,7 +407,7 @@ test.describe.serial(' Correct record - 12', () => {
       ).toBeVisible()
     })
 
-    test('12.4.6 Change id', async () => {
+    test('9.4.6 Change id', async () => {
       await page
         .locator('#informant-content #ID')
         .getByRole('button', { name: 'Change', exact: true })
@@ -430,9 +446,9 @@ test.describe.serial(' Correct record - 12', () => {
       ).toBeVisible()
     })
 
-    test('12.4.7 Change usual place of residence', async () => {
+    test('9.4.7 Change usual place of residence', async () => {
       await page
-        .locator('#informant-content #Same')
+        .locator('#informant-content #Usual')
         .getByRole('button', { name: 'Change', exact: true })
         .click()
 
@@ -444,11 +460,7 @@ test.describe.serial(' Correct record - 12', () => {
 
       expect(page.url().includes('correction')).toBeTruthy()
       expect(page.url().includes('informant-view-group')).toBeTruthy()
-      expect(
-        page.url().includes('#primaryAddressSameAsOtherPrimary')
-      ).toBeTruthy()
-
-      await page.getByLabel('No', { exact: true }).check()
+      expect(page.url().includes('#countryPrimary')).toBeTruthy()
 
       await page.locator('#statePrimaryInformant').click()
       await page.getByText(updatedInformantDetails.address.province).click()
@@ -489,6 +501,42 @@ test.describe.serial(' Correct record - 12', () => {
 
       expect(page.url().includes('correction')).toBeTruthy()
       expect(page.url().includes('review')).toBeTruthy()
+      await expect(
+        page.locator('#informant-content #Usual').getByRole('deletion').nth(1)
+      ).toHaveText('Farajaland', {
+        ignoreCase: true
+      })
+      await expect(
+        page.locator('#informant-content #Usual').getByRole('deletion').nth(2)
+      ).toHaveText('Central', { ignoreCase: true })
+      await expect(
+        page.locator('#informant-content #Usual').getByRole('deletion').nth(3)
+      ).toHaveText('Ibombo', {
+        ignoreCase: true
+      })
+      await expect(
+        page.locator('#informant-content #Usual').getByRole('deletion').nth(5)
+      ).toHaveText(declaration.informant.address[0].city, { ignoreCase: true })
+      await expect(
+        page.locator('#informant-content #Usual').getByRole('deletion').nth(6)
+      ).toHaveText(declaration.informant.address[0].line[2], {
+        ignoreCase: true
+      })
+      await expect(
+        page.locator('#informant-content #Usual').getByRole('deletion').nth(7)
+      ).toHaveText(declaration.informant.address[0].line[1], {
+        ignoreCase: true
+      })
+      await expect(
+        page.locator('#informant-content #Usual').getByRole('deletion').nth(8)
+      ).toHaveText(declaration.informant.address[0].line[0], {
+        ignoreCase: true
+      })
+      await expect(
+        page.locator('#informant-content #Usual').getByRole('deletion').nth(9)
+      ).toHaveText(declaration.informant.address[0].postalCode, {
+        ignoreCase: true
+      })
 
       await expect(
         page.locator('#informant-content #Usual').getByText('Farajaland')
@@ -530,7 +578,7 @@ test.describe.serial(' Correct record - 12', () => {
       ).toBeVisible()
     })
 
-    test('12.4.8 Change email', async () => {
+    test('9.4.8 Change email', async () => {
       await page
         .locator('#informant-content #Email')
         .getByRole('button', { name: 'Change', exact: true })
@@ -539,7 +587,7 @@ test.describe.serial(' Correct record - 12', () => {
       /*
        * Expected result: should
        * - redirect to informant's details page
-       * - focus on registration email
+       * - focus on informant's Email
        */
 
       expect(page.url().includes('correction')).toBeTruthy()
@@ -557,8 +605,8 @@ test.describe.serial(' Correct record - 12', () => {
       /*
        * Expected result: should
        * - redirect to review page
-       * - show previous email with strikethrough
-       * - show updated email
+       * - show previous Email with strikethrough
+       * - show updated Email
        */
 
       expect(page.url().includes('correction')).toBeTruthy()
@@ -566,9 +614,8 @@ test.describe.serial(' Correct record - 12', () => {
 
       await expect(
         page.locator('#informant-content #Email').getByRole('deletion')
-      ).toHaveText(declaration.registration.contactEmail, {
-        ignoreCase: true
-      })
+      ).toHaveText(declaration.registration.contactEmail, { ignoreCase: true })
+
       await expect(
         page
           .locator('#informant-content #Email')
@@ -577,7 +624,7 @@ test.describe.serial(' Correct record - 12', () => {
     })
   })
 
-  test('12.5 Upload supporting documents', async () => {
+  test('9.5 Upload supporting documents', async () => {
     await page.getByRole('button', { name: 'Continue' }).click()
 
     /*
@@ -586,6 +633,7 @@ test.describe.serial(' Correct record - 12', () => {
      * - continue button is disabled
      */
     expect(page.url().includes('correction')).toBeTruthy()
+
     expect(page.url().includes('supportingDocuments')).toBeTruthy()
 
     await expect(page.getByRole('button', { name: 'Continue' })).toBeDisabled()
@@ -599,45 +647,40 @@ test.describe.serial(' Correct record - 12', () => {
     await page.getByRole('button', { name: 'Continue' }).click()
   })
 
-  test('12.6 Reason for correction', async () => {
+  test('9.6 Reason for correction', async () => {
     /*
      * Expected result: should
      * - navigate to reason for correction
      * - continue button is disabled
      */
     expect(page.url().includes('correction')).toBeTruthy()
+
     expect(page.url().includes('reason')).toBeTruthy()
 
     await expect(page.getByRole('button', { name: 'Continue' })).toBeDisabled()
 
     await page
-      .getByLabel(
-        'Informant did not provide this information (Material omission)'
-      )
+      .getByLabel('Requested to do so by the court (Judicial order)')
       .check()
 
     await page
       .locator('#additionalComment')
       .fill(declaration.registration.registrationNumber)
 
-    /*
-     * Expected result: should enable the continue button
-     */
-
     await page.getByRole('button', { name: 'Continue' }).click()
   })
 
-  test('12.7 Correction summary', async () => {
+  test('9.7 Correction summary', async () => {
     /*
      * Expected result: should
      * - navigate to correction summary
-     * - Send for approval button is disabled
+     * - Make correction button is disabled
      */
     expect(page.url().includes('summary')).toBeTruthy()
     expect(page.url().includes('correction')).toBeTruthy()
 
     await expect(
-      page.getByRole('button', { name: 'Send for approval' })
+      page.getByRole('button', { name: 'Make correction' })
     ).toBeDisabled()
 
     /*
@@ -651,9 +694,9 @@ test.describe.serial(' Correct record - 12', () => {
 
     await expect(
       page.getByText(
-        'Informant type (Informant)' +
-          declaration.registration.informantType +
-          updatedInformantDetails.type
+        'Relationship to child (Informant)' +
+          declaration.informant.relationship +
+          updatedInformantDetails.relationship
       )
     ).toBeVisible()
 
@@ -685,7 +728,9 @@ test.describe.serial(' Correct record - 12', () => {
     ).toBeVisible()
 
     await expect(
-      page.getByText('Type of ID (Informant)-' + updatedInformantDetails.idType)
+      page.getByText(
+        'Type of ID (Informant)National ID' + updatedInformantDetails.idType
+      )
     ).toBeVisible()
     await expect(
       page.getByText('ID Number (Informant)-' + updatedInformantDetails.id)
@@ -693,20 +738,12 @@ test.describe.serial(' Correct record - 12', () => {
 
     await expect(
       page.getByText(
-        "Same as deceased's usual place of residence? (Informant)" +
-          'Yes' +
-          'No'
-      )
-    ).toBeVisible()
-
-    await expect(
-      page.getByText(
-        'Usual place of residence (Informant)FarajalandSulakaZobwe-' +
-          declaration.deceased.address[0].city +
-          declaration.deceased.address[0].line[2] +
-          declaration.deceased.address[0].line[1] +
-          declaration.deceased.address[0].line[0] +
-          declaration.deceased.address[0].postalCode +
+        'Usual place of residence (Informant)FarajalandCentralIbombo-' +
+          declaration.informant.address[0].city +
+          declaration.informant.address[0].line[2] +
+          declaration.informant.address[0].line[1] +
+          declaration.informant.address[0].line[0] +
+          declaration.informant.address[0].postalCode +
           'Farajaland' +
           updatedInformantDetails.address.province +
           updatedInformantDetails.address.district +
@@ -728,9 +765,7 @@ test.describe.serial(' Correct record - 12', () => {
 
     await expect(page.getByText('Me', { exact: true })).toBeVisible()
     await expect(
-      page.getByText(
-        'Informant did not provide this information (Material omission)'
-      )
+      page.getByText('Requested to do so by the court (Judicial order)')
     ).toBeVisible()
     await expect(
       page.getByText(declaration.registration.registrationNumber)
@@ -739,212 +774,56 @@ test.describe.serial(' Correct record - 12', () => {
     await page.getByLabel('No').check()
 
     /*
-     * Expected result: should enable the Send for approval button
+     * Expected result: should enable the Make correction button
      */
-    await page.getByRole('button', { name: 'Send for approval' }).click()
+    await page.getByRole('button', { name: 'Make correction' }).click()
     await page.getByRole('button', { name: 'Confirm' }).click()
+
+    await page.getByRole('button', { name: 'Ready to print' }).click()
 
     /*
      * Expected result: should
-     * - be navigated to sent for approval tab
+     * - be navigated to ready to print tab
      * - include the declaration in this tab
      */
-    expect(page.url().includes('registration-home/approvals')).toBeTruthy()
     await expect(page.locator('#navigation_outbox')).not.toContainText('1', {
       timeout: 1000 * 30
     })
 
     await expect(
       page.getByText(
-        declaration.deceased.name[0].firstNames +
+        declaration.child.name[0].firstNames +
           ' ' +
-          declaration.deceased.name[0].familyName
+          declaration.child.name[0].familyName
       )
     ).toBeVisible()
   })
+  test('9.8 Validate history in record audit', async () => {
+    await page
+      .getByText(
+        declaration.child.name[0].firstNames +
+          ' ' +
+          declaration.child.name[0].familyName
+      )
+      .click()
 
-  test.describe('12.8 Correction Approval', async () => {
-    test.beforeAll(async ({ browser }) => {
-      await page.close()
-
-      page = await browser.newPage()
-
-      await login(page, 'k.mweene', 'test')
-      await createPIN(page)
-    })
-
-    test('12.8.1 Record audit by local registrar', async () => {
-      await page.getByPlaceholder('Search for a tracking ID').fill(trackingId)
-      await page.getByPlaceholder('Search for a tracking ID').press('Enter')
-      await page.locator('#ListItemAction-0-icon').click()
+    await page.getByLabel('Assign record').click()
+    if (
+      await page
+        .getByRole('button', { name: 'Assign', exact: true })
+        .isVisible()
+    )
       await page.getByRole('button', { name: 'Assign', exact: true }).click()
 
-      await page.locator('#name_0').click()
-    })
+    /*
+     * Expected result: should show in task history
+     * - Record corrected
+     */
 
-    test('12.8.2 Correction review', async () => {
-      await page.getByRole('button', { name: 'Review', exact: true }).click()
-
-      /*
-       * Expected result: should show
-       * - Submitter
-       * - Requested by
-       * - Reason for request
-       * - Comments
-       * - Original vs correction
-       */
-
-      await expect(page.getByText('Submitter' + 'Felix Katongo')).toBeVisible()
-
-      await expect(page.getByText('Requested by' + 'Me')).toBeVisible()
-      await expect(
-        page.getByText(
-          'Reason for request' +
-            'Informant did not provide this information (Material omission)'
-        )
-      ).toBeVisible()
-
-      await expect(
-        page.getByText('Comments' + declaration.registration.registrationNumber)
-      ).toBeVisible()
-
-      await expect(
-        page.getByText(
-          'Informant type (Informant)' +
-            declaration.registration.informantType +
-            updatedInformantDetails.type
-        )
-      ).toBeVisible()
-
-      await expect(
-        page.getByText(
-          'Full name (informant)' +
-            declaration.informant.name[0].firstNames +
-            ' ' +
-            declaration.informant.name[0].familyName +
-            updatedInformantDetails.firstNames +
-            ' ' +
-            updatedInformantDetails.familyName
-        )
-      ).toBeVisible()
-
-      await expect(
-        page.getByText(
-          'Date of birth (informant)' +
-            format(parseISO(declaration.informant.birthDate), 'dd MMMM yyyy') +
-            format(parseISO(updatedInformantDetails.birthDate), 'dd MMMM yyyy')
-        )
-      ).toBeVisible()
-
-      await expect(
-        page.getByText(
-          'Nationality (Informant)Farajaland' +
-            updatedInformantDetails.nationality
-        )
-      ).toBeVisible()
-
-      await expect(
-        page.getByText(
-          'Type of ID (Informant)-' + updatedInformantDetails.idType
-        )
-      ).toBeVisible()
-      await expect(
-        page.getByText('ID Number (Informant)-' + updatedInformantDetails.id)
-      ).toBeVisible()
-
-      await expect(
-        page.getByText(
-          "Same as deceased's usual place of residence? (Informant)" +
-            'Yes' +
-            'No'
-        )
-      ).toBeVisible()
-
-      await expect(
-        page.getByText(
-          'Usual place of residence (Informant)FarajalandSulakaZobwe-' +
-            declaration.deceased.address[0].city +
-            declaration.deceased.address[0].line[2] +
-            declaration.deceased.address[0].line[1] +
-            declaration.deceased.address[0].line[0] +
-            declaration.deceased.address[0].postalCode +
-            'Farajaland' +
-            updatedInformantDetails.address.province +
-            updatedInformantDetails.address.district +
-            updatedInformantDetails.address.town +
-            updatedInformantDetails.address.residentialArea +
-            updatedInformantDetails.address.street +
-            updatedInformantDetails.address.number +
-            updatedInformantDetails.address.zipCode
-        )
-      ).toBeVisible()
-
-      await expect(
-        page.getByText(
-          'Email (Informant)' +
-            declaration.registration.contactEmail +
-            updatedInformantDetails.email
-        )
-      ).toBeVisible()
-    })
-
-    test('12.8.3 Approve correction', async () => {
-      await page.getByRole('button', { name: 'Approve', exact: true }).click()
-      await page.getByRole('button', { name: 'Confirm', exact: true }).click()
-
-      /*
-       * Expected result: should
-       * - be navigated to ready to print tab
-       * - include the updated declaration in this tab
-       */
-      expect(page.url().includes('registration-home/print')).toBeTruthy()
-      await expect(page.locator('#navigation_outbox')).not.toContainText('1', {
-        timeout: 1000 * 30
-      })
-
-      await expect(
-        page.getByText(
-          declaration.deceased.name[0].firstNames +
-            ' ' +
-            declaration.deceased.name[0].familyName
-        )
-      ).toBeVisible()
-    })
-
-    test('12.8.4 Validate history in record audit', async () => {
-      await page
-        .getByText(
-          declaration.deceased.name[0].firstNames +
-            ' ' +
-            declaration.deceased.name[0].familyName
-        )
-        .click()
-
-      await page.getByLabel('Assign record').click()
-      if (
-        await page
-          .getByRole('button', { name: 'Assign', exact: true })
-          .isVisible()
-      )
-        await page.getByRole('button', { name: 'Assign', exact: true }).click()
-
-      /*
-       * Expected result: should show in task history
-       * - Correction requested
-       * - Correction approved
-       */
-
-      await expect(
-        page
-          .locator('#listTable-task-history')
-          .getByRole('button', { name: 'Correction requested' })
-      ).toBeVisible()
-
-      await expect(
-        page
-          .locator('#listTable-task-history')
-          .getByRole('button', { name: 'Correction approved' })
-      ).toBeVisible()
-    })
+    await expect(
+      page
+        .locator('#listTable-task-history')
+        .getByRole('button', { name: 'Record corrected' })
+    ).toBeVisible()
   })
 })

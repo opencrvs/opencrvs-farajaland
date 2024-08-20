@@ -1,15 +1,15 @@
 import { expect, test, type Page } from '@playwright/test'
-import { createPIN, getToken, login } from '../../../helpers'
+import { createPIN, getToken, login } from '../../helpers'
 import faker from '@faker-js/faker'
 import {
   ConvertEnumsToStrings,
   createDeclaration,
   fetchDeclaration
-} from '../../birth/helpers'
-import { BirthDeclaration, BirthInputDetails } from '../../birth/types'
+} from '../birth/helpers'
+import { BirthDeclaration, BirthInputDetails } from '../birth/types'
 import { format, parseISO, subDays } from 'date-fns'
 
-test.describe.serial(' Correct record - 9', () => {
+test.describe.serial(' Correct record - 6', () => {
   let declaration: BirthDeclaration
   let trackingId = ''
 
@@ -45,8 +45,8 @@ test.describe.serial(' Correct record - 9', () => {
     await page.close()
   })
 
-  test('9.0 Shortcut declaration', async () => {
-    let token = await getToken('j.musonda', 'test')
+  test('6.0 Shortcut declaration', async () => {
+    let token = await getToken('k.mweene', 'test')
     const declarationInput = {
       child: {
         firstNames: faker.name.firstName(),
@@ -79,14 +79,14 @@ test.describe.serial(' Correct record - 9', () => {
 
     trackingId = res.trackingId
 
-    token = await getToken('j.musonda', 'test')
+    token = await getToken('k.mweene', 'test')
     declaration = (await fetchDeclaration(token, res.compositionId)).data
       .fetchBirthRegistration as BirthDeclaration
   })
 
-  test.describe('9.1 Print > Ready to issue', async () => {
-    test('9.1.1 print', async () => {
-      await login(page, 'j.musonda', 'test')
+  test.describe('6.1 Print > Ready to issue', async () => {
+    test('6.1.1 print', async () => {
+      await login(page, 'k.mweene', 'test')
       await createPIN(page)
 
       await page.getByPlaceholder('Search for a tracking ID').fill(trackingId)
@@ -101,7 +101,7 @@ test.describe.serial(' Correct record - 9', () => {
       await page.getByRole('button', { name: 'Yes, print certificate' }).click()
       await page.getByRole('button', { name: 'Print', exact: true }).click()
     })
-    test('9.1.2 Ready to issue', async () => {
+    test('6.1.2 Ready to issue', async () => {
       await page.getByRole('button', { name: 'Ready to issue' }).click()
 
       /*
@@ -130,7 +130,7 @@ test.describe.serial(' Correct record - 9', () => {
         )
         .click()
     })
-    test('9.1.3 Record audit', async () => {
+    test('6.1.3 Record audit', async () => {
       await page.getByLabel('Assign record').click()
       await page.getByRole('button', { name: 'Assign', exact: true }).click()
 
@@ -144,24 +144,23 @@ test.describe.serial(' Correct record - 9', () => {
     })
   })
 
-  test('9.2 Correction requester: Me', async () => {
+  test('6.2 Correction requester: Me', async () => {
     await page.getByLabel('Me', { exact: true }).check()
     await page.getByRole('button', { name: 'Continue' }).click()
   })
 
-  test('9.3 Verify identity', async () => {
+  test('6.3 Verify identity', async () => {
     /*
      * Expected result:
      * - should not show verify identity
      * - should directly navigate to review page
      */
     expect(page.url().includes('correction')).toBeTruthy()
-
     expect(page.url().includes('review')).toBeTruthy()
   })
 
-  test.describe('9.4 Correction made on informant details', async () => {
-    test('9.4.1 Change relationship to child', async () => {
+  test.describe('6.4 Correction made on informant details', async () => {
+    test('6.4.1 Change relationship to child', async () => {
       await page
         .locator('#informant-content #Relationship')
         .getByRole('button', { name: 'Change', exact: true })
@@ -203,7 +202,7 @@ test.describe.serial(' Correct record - 9', () => {
       ).toBeVisible()
     })
 
-    test('9.4.2 Change name', async () => {
+    test('6.4.2 Change name', async () => {
       await page
         .locator('#informant-content #Full')
         .getByRole('button', { name: 'Change', exact: true })
@@ -264,7 +263,7 @@ test.describe.serial(' Correct record - 9', () => {
       ).toBeVisible()
     })
 
-    test('9.4.3 Change date of birth', async () => {
+    test('6.4.3 Change date of birth', async () => {
       await page
         .locator('#informant-content #Date')
         .getByRole('button', { name: 'Change', exact: true })
@@ -315,7 +314,7 @@ test.describe.serial(' Correct record - 9', () => {
       ).toBeVisible()
     })
 
-    test('9.4.4 Change nationality', async () => {
+    test('6.4.4 Change nationality', async () => {
       await page
         .locator('#informant-content #Nationality')
         .getByRole('button', { name: 'Change', exact: true })
@@ -361,7 +360,7 @@ test.describe.serial(' Correct record - 9', () => {
       ).toBeVisible()
     })
 
-    test('9.4.5 Change id type', async () => {
+    test('6.4.5 Change id type', async () => {
       await page
         .locator('#informant-content #Type')
         .getByRole('button', { name: 'Change', exact: true })
@@ -407,7 +406,7 @@ test.describe.serial(' Correct record - 9', () => {
       ).toBeVisible()
     })
 
-    test('9.4.6 Change id', async () => {
+    test('6.4.6 Change id', async () => {
       await page
         .locator('#informant-content #ID')
         .getByRole('button', { name: 'Change', exact: true })
@@ -446,7 +445,7 @@ test.describe.serial(' Correct record - 9', () => {
       ).toBeVisible()
     })
 
-    test('9.4.7 Change usual place of residence', async () => {
+    test('6.4.7 Change usual place of residence', async () => {
       await page
         .locator('#informant-content #Usual')
         .getByRole('button', { name: 'Change', exact: true })
@@ -578,7 +577,7 @@ test.describe.serial(' Correct record - 9', () => {
       ).toBeVisible()
     })
 
-    test('9.4.8 Change email', async () => {
+    test('6.4.8 Change email', async () => {
       await page
         .locator('#informant-content #Email')
         .getByRole('button', { name: 'Change', exact: true })
@@ -624,7 +623,7 @@ test.describe.serial(' Correct record - 9', () => {
     })
   })
 
-  test('9.5 Upload supporting documents', async () => {
+  test('6.5 Upload supporting documents', async () => {
     await page.getByRole('button', { name: 'Continue' }).click()
 
     /*
@@ -633,7 +632,6 @@ test.describe.serial(' Correct record - 9', () => {
      * - continue button is disabled
      */
     expect(page.url().includes('correction')).toBeTruthy()
-
     expect(page.url().includes('supportingDocuments')).toBeTruthy()
 
     await expect(page.getByRole('button', { name: 'Continue' })).toBeDisabled()
@@ -647,20 +645,19 @@ test.describe.serial(' Correct record - 9', () => {
     await page.getByRole('button', { name: 'Continue' }).click()
   })
 
-  test('9.6 Reason for correction', async () => {
+  test('6.6 Reason for correction', async () => {
     /*
      * Expected result: should
      * - navigate to reason for correction
      * - continue button is disabled
      */
     expect(page.url().includes('correction')).toBeTruthy()
-
     expect(page.url().includes('reason')).toBeTruthy()
 
     await expect(page.getByRole('button', { name: 'Continue' })).toBeDisabled()
 
     await page
-      .getByLabel('Requested to do so by the court (Judicial order)')
+      .getByLabel('Myself or an agent made a mistake (Clerical error)')
       .check()
 
     await page
@@ -670,7 +667,7 @@ test.describe.serial(' Correct record - 9', () => {
     await page.getByRole('button', { name: 'Continue' }).click()
   })
 
-  test('9.7 Correction summary', async () => {
+  test('6.7 Correction summary', async () => {
     /*
      * Expected result: should
      * - navigate to correction summary
@@ -765,7 +762,7 @@ test.describe.serial(' Correct record - 9', () => {
 
     await expect(page.getByText('Me', { exact: true })).toBeVisible()
     await expect(
-      page.getByText('Requested to do so by the court (Judicial order)')
+      page.getByText('Myself or an agent made a mistake (Clerical error)')
     ).toBeVisible()
     await expect(
       page.getByText(declaration.registration.registrationNumber)
@@ -798,7 +795,7 @@ test.describe.serial(' Correct record - 9', () => {
       )
     ).toBeVisible()
   })
-  test('9.8 Validate history in record audit', async () => {
+  test('6.8 Validate history in record audit', async () => {
     await page
       .getByText(
         declaration.child.name[0].firstNames +

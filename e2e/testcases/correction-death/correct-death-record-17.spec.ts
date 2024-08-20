@@ -1,11 +1,11 @@
 import { expect, test, type Page } from '@playwright/test'
-import { createPIN, getToken, login, uploadImage } from '../../../helpers'
+import { createPIN, getToken, login } from '../../helpers'
 import faker from '@faker-js/faker'
 import { format, parseISO, subDays } from 'date-fns'
-import { DeathDeclaration } from '../../death/types'
-import { createDeathDeclaration, fetchDeclaration } from '../../death/helpers'
+import { DeathDeclaration } from '../death/types'
+import { createDeathDeclaration, fetchDeclaration } from '../death/helpers'
 
-test.describe.serial(' Correct record - 13', () => {
+test.describe.serial(' Correct record - 17', () => {
   let declaration: DeathDeclaration
   let trackingId = ''
 
@@ -42,7 +42,7 @@ test.describe.serial(' Correct record - 13', () => {
     await page.close()
   })
 
-  test('13.0 Shortcut declaration', async () => {
+  test('17.0 Shortcut declaration', async () => {
     let token = await getToken('j.musonda', 'test')
 
     const res = await createDeathDeclaration(token)
@@ -55,14 +55,13 @@ test.describe.serial(' Correct record - 13', () => {
 
     trackingId = res.trackingId
 
-    token = await getToken('k.mweene', 'test')
-
+    token = await getToken('j.musonda', 'test')
     declaration = (await fetchDeclaration(token, res.compositionId)).data
       .fetchDeathRegistration as DeathDeclaration
   })
 
-  test('13.1 Ready to print > record audit', async () => {
-    await login(page, 'k.mweene', 'test')
+  test('17.1 Certificate preview', async () => {
+    await login(page, 'j.musonda', 'test')
     await createPIN(page)
 
     await page.getByPlaceholder('Search for a tracking ID').fill(trackingId)
@@ -70,34 +69,28 @@ test.describe.serial(' Correct record - 13', () => {
     await page.locator('#ListItemAction-0-icon').click()
     await page.locator('#name_0').click()
 
-    await page
-      .getByRole('button', { name: 'Correct record', exact: true })
-      .click()
+    await page.getByRole('button', { name: 'Print', exact: true }).click()
+
+    await page.getByLabel('Print in advance').check()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.getByRole('button', { name: 'No, make correction' }).click()
   })
 
-  test('13.2 Correction requester: Someone Else (Cousin)', async () => {
-    await page.getByLabel('Someone Else').check()
-    await page.getByPlaceholder('Eg. Grandmother').fill('Cousin')
+  test('17.2 Correction requester: Me', async () => {
+    await page.getByLabel('Me', { exact: true }).check()
     await page.getByRole('button', { name: 'Continue' }).click()
   })
 
-  test('13.3 Verify identity', async () => {
+  test('17.3 Verify identity', async () => {
     /*
-     * Expected result: should Confirm
-     * nothing
-     */
-
-    await page.getByRole('button', { name: 'Verified' }).click()
-
-    /*
-     * Expected result: should navigate to review page
+     * Expected result: should directly navigate to review page
      */
     expect(page.url().includes('correction')).toBeTruthy()
     expect(page.url().includes('review')).toBeTruthy()
   })
 
-  test.describe('13.4 Correction made on spouse details', async () => {
-    test('13.4.1 Change name', async () => {
+  test.describe('17.4 Correction made on spouse details', async () => {
+    test('17.4.1 Change name', async () => {
       await page
         .locator('#spouse-content #Full')
         .getByRole('button', { name: 'Change', exact: true })
@@ -150,7 +143,7 @@ test.describe.serial(' Correct record - 13', () => {
       ).toBeVisible()
     })
 
-    test('13.4.2 Change date of birth', async () => {
+    test('17.4.2 Change date of birth', async () => {
       await page
         .locator('#spouse-content #Date')
         .getByRole('button', { name: 'Change', exact: true })
@@ -201,7 +194,7 @@ test.describe.serial(' Correct record - 13', () => {
       ).toBeVisible()
     })
 
-    test('13.4.3 Change nationality', async () => {
+    test('17.4.3 Change nationality', async () => {
       await page
         .locator('#spouse-content #Nationality')
         .getByRole('button', { name: 'Change', exact: true })
@@ -247,7 +240,7 @@ test.describe.serial(' Correct record - 13', () => {
       ).toBeVisible()
     })
 
-    test('13.4.4 Change id type', async () => {
+    test('17.4.4 Change id type', async () => {
       await page
         .locator('#spouse-content #Type')
         .getByRole('button', { name: 'Change', exact: true })
@@ -293,7 +286,7 @@ test.describe.serial(' Correct record - 13', () => {
       ).toBeVisible()
     })
 
-    test('13.4.5 Change id', async () => {
+    test('17.4.5 Change id', async () => {
       await page
         .locator('#spouse-content #ID')
         .getByRole('button', { name: 'Change', exact: true })
@@ -330,7 +323,7 @@ test.describe.serial(' Correct record - 13', () => {
       ).toBeVisible()
     })
 
-    test('13.4.6 Change usual place of residence', async () => {
+    test('17.4.6 Change usual place of residence', async () => {
       await page
         .locator('#spouse-content #Same')
         .getByRole('button', { name: 'Change', exact: true })
@@ -468,7 +461,7 @@ test.describe.serial(' Correct record - 13', () => {
     })
   })
 
-  test('13.5 Upload supporting documents', async () => {
+  test('17.5 Upload supporting documents', async () => {
     await page.getByRole('button', { name: 'Continue' }).click()
 
     /*
@@ -482,17 +475,12 @@ test.describe.serial(' Correct record - 13', () => {
 
     await expect(page.getByRole('button', { name: 'Continue' })).toBeDisabled()
 
-    await page.getByText('Select...').click()
-    await page.getByText('Affidavit', { exact: true }).click()
-    await uploadImage(page, page.getByRole('button', { name: 'Upload' }))
+    await page
+      .getByLabel(
+        'I attest to seeing supporting documentation and have a copy filed at my office'
+      )
+      .check()
 
-    await page.getByText('Select...').click()
-    await page.getByText('Court Document', { exact: true }).click()
-    await uploadImage(page, page.getByRole('button', { name: 'Upload' }))
-
-    await page.getByText('Select...').click()
-    await page.getByText('Other', { exact: true }).click()
-    await uploadImage(page, page.getByRole('button', { name: 'Upload' }))
     /*
      * Expected result: should enable the continue button
      */
@@ -500,7 +488,7 @@ test.describe.serial(' Correct record - 13', () => {
     await page.getByRole('button', { name: 'Continue' }).click()
   })
 
-  test('13.6 Reason for correction', async () => {
+  test('17.6 Reason for correction', async () => {
     /*
      * Expected result: should
      * - navigate to reason for correction
@@ -513,13 +501,10 @@ test.describe.serial(' Correct record - 13', () => {
     await expect(page.getByRole('button', { name: 'Continue' })).toBeDisabled()
 
     await page
-      .getByLabel('Requested to do so by the court (Judicial order)')
+      .getByLabel(
+        'Informant did not provide this information (Material omission)'
+      )
       .check()
-
-    await page
-      .locator('#additionalComment')
-      .fill(declaration.registration.registrationNumber)
-
     /*
      * Expected result: should enable the continue button
      */
@@ -527,7 +512,7 @@ test.describe.serial(' Correct record - 13', () => {
     await page.getByRole('button', { name: 'Continue' }).click()
   })
 
-  test('13.7 Correction summary', async () => {
+  test('17.7 Correction summary', async () => {
     /*
      * Expected result: should
      * - navigate to correction summary
@@ -612,51 +597,28 @@ test.describe.serial(' Correct record - 13', () => {
       )
     ).toBeVisible()
 
-    await expect(page.getByText('Cousin')).toBeVisible()
-    await expect(page.getByText('Verified')).toBeVisible()
+    await expect(page.getByText('Me', { exact: true })).toBeVisible()
     await expect(
-      page.getByText('Requested to do so by the court (Judicial order)')
-    ).toBeVisible()
-    await expect(
-      page.getByText(declaration.registration.registrationNumber)
+      page.getByText(
+        'Informant did not provide this information (Material omission)'
+      )
     ).toBeVisible()
 
-    await page.getByLabel('Yes').check()
-    await page.locator('#correctionFees\\.nestedFields\\.totalFees').fill('15')
+    await page.getByLabel('No').check()
 
-    await uploadImage(page, page.locator('#upload_document'))
     /*
      * Expected result: should enable the Make correction button
      */
     await page.getByRole('button', { name: 'Make correction' }).click()
-
-    /*
-     * Expected result: should open modal saying
-     * Correct record ?
-     * The informant will be notified of this correction and a record of this decision will be recorded
-     * Cancel button
-     * Confirm button
-     */
-
-    await expect(page.getByText('Correct record ?')).toBeVisible()
-    await expect(
-      page.getByText(
-        'The informant will be notified of this correction and a record of this decision will be recorded'
-      )
-    ).toBeVisible()
-
-    await expect(page.getByRole('button', { name: 'Cancel' })).toBeVisible()
-    await expect(page.getByRole('button', { name: 'Confirm' })).toBeVisible()
-
     await page.getByRole('button', { name: 'Confirm' }).click()
 
     await page.getByRole('button', { name: 'Ready to print' }).click()
-
     /*
      * Expected result: should
      * - be navigated to ready to print tab
      * - include the declaration in this tab
      */
+
     await expect(page.locator('#navigation_outbox')).not.toContainText('1', {
       timeout: 1000 * 30
     })
@@ -669,7 +631,7 @@ test.describe.serial(' Correct record - 13', () => {
       )
     ).toBeVisible()
   })
-  test('13.8 Validate history in record audit', async () => {
+  test('17.8 Validate history in record audit', async () => {
     await page
       .getByText(
         declaration.deceased.name[0].firstNames +
@@ -679,7 +641,10 @@ test.describe.serial(' Correct record - 13', () => {
       .click()
 
     await page.getByLabel('Assign record').click()
-    if (
+
+    if (await page.getByText('Unassign record?', { exact: true }).isVisible())
+      await page.getByRole('button', { name: 'Cancel', exact: true }).click()
+    else if (
       await page
         .getByRole('button', { name: 'Assign', exact: true })
         .isVisible()

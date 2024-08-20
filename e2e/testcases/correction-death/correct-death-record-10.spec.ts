@@ -5,11 +5,11 @@ import {
   goToSection,
   login,
   uploadImage
-} from '../../../helpers'
+} from '../../helpers'
 import faker from '@faker-js/faker'
 import { format, parseISO, subDays } from 'date-fns'
-import { createDeathDeclaration, fetchDeclaration } from '../../death/helpers'
-import { DeathDeclaration } from '../../death/types'
+import { createDeathDeclaration, fetchDeclaration } from '../death/helpers'
+import { DeathDeclaration } from '../death/types'
 
 test.describe('10. Correct record - 10', () => {
   let declaration: DeathDeclaration

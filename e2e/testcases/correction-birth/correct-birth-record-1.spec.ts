@@ -6,14 +6,14 @@ import {
   goToSection,
   login,
   uploadImage
-} from '../../../helpers'
+} from '../../helpers'
 import faker from '@faker-js/faker'
 import {
   ConvertEnumsToStrings,
   createDeclaration,
   fetchDeclaration
-} from '../../birth/helpers'
-import { BirthDeclaration, BirthInputDetails } from '../../birth/types'
+} from '../birth/helpers'
+import { BirthDeclaration, BirthInputDetails } from '../birth/types'
 import { format, parseISO, subDays } from 'date-fns'
 
 test.describe('1. Correct record - 1', () => {

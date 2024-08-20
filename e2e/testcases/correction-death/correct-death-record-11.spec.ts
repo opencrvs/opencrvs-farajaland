@@ -4,10 +4,10 @@ import {
   getLocationNameFromFhirId,
   getToken,
   login
-} from '../../../helpers'
+} from '../../helpers'
 import { format, parseISO, subDays } from 'date-fns'
-import { DeathDeclaration } from '../../death/types'
-import { createDeathDeclaration, fetchDeclaration } from '../../death/helpers'
+import { DeathDeclaration } from '../death/types'
+import { createDeathDeclaration, fetchDeclaration } from '../death/helpers'
 
 test.describe.serial(' Correct record - 11', () => {
   let declaration: DeathDeclaration
