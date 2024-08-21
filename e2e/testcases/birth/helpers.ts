@@ -1,5 +1,5 @@
 import { GATEWAY_HOST } from '../../constants'
-import { AddressInput, BirthRegistrationInput } from '../../gateway'
+import { BirthRegistrationInput } from '../../gateway'
 import faker from '@faker-js/faker'
 
 import { readFileSync } from 'fs'
@@ -25,7 +25,10 @@ type Details = {
     weightAtBirth?: number
     placeOfBirth?: 'Health Institution' | 'Residential address' | 'Other'
     birthFacility?: string
-    birthLocation?: AddressInput
+    birthLocation?: {
+      state: string
+      district: string
+    }
   }
   mother: {
     firstNames: string
@@ -112,12 +115,46 @@ export async function createDeclaration(token: string, details: Details) {
             details.child.placeOfBirth &&
             details.child.placeOfBirth !== 'Health Institution'
               ? {
-                  address: details.child.birthLocation
+                  type: 'PRIVATE_HOME',
+                  address: {
+                    line: [
+                      faker.address.buildingNumber(),
+                      faker.address.streetName(),
+                      faker.address.cityName(),
+                      '',
+                      '',
+                      'URBAN',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      ''
+                    ],
+                    country: 'FAR',
+                    state: getLocationIdByName(
+                      locations,
+                      details.child.birthLocation?.state || 'Central'
+                    ),
+                    partOf: getLocationIdByName(
+                      locations,
+                      details.child.birthLocation?.district || 'Ibombo'
+                    ),
+                    district: getLocationIdByName(
+                      locations,
+                      details.child.birthLocation?.district || 'Ibombo'
+                    ),
+                    city: faker.address.cityName(),
+                    postalCode: faker.address.zipCode()
+                  }
                 }
               : {
                   _fhirID: getLocationIdByName(
                     facilities,
-                    details.child.birthFacility || 'Chikobo Rural Health Centre'
+                    details.child.birthFacility || 'Ibombo Rural Health Centre'
                   )
                 },
           attendantAtBirth: details.attendant.type || 'PHYSICIAN',
