@@ -251,7 +251,8 @@ export async function createDeathDeclaration(
               : {
                   _fhirID: getLocationIdByName(
                     facilities,
-                    'Chikobo Rural Health Centre'
+                    details.event?.deathFacility ||
+                      'Chikobo Rural Health Centre'
                   )
                 },
           informant: { relationship: 'SPOUSE' },
