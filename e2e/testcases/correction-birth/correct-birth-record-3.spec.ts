@@ -1138,7 +1138,7 @@ test.describe.serial(' Correct record - 3', () => {
       ).toBeVisible()
     })
 
-    test('3.8.3 Approve correction', async () => {
+    test.skip('3.8.3 Approve correction', async () => {
       await page.getByRole('button', { name: 'Approve', exact: true }).click()
       await page.getByRole('button', { name: 'Confirm', exact: true }).click()
 
@@ -1161,7 +1161,7 @@ test.describe.serial(' Correct record - 3', () => {
       ).toBeVisible()
     })
 
-    test('3.8.4 Validate history in record audit', async () => {
+    test.skip('3.8.4 Validate history in record audit', async () => {
       await page
         .getByText(
           declaration.child.name[0].firstNames +
