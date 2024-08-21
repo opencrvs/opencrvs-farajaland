@@ -1,12 +1,8 @@
 import { expect, test, type Page } from '@playwright/test'
-import {
-  createPIN,
-  getLocationNameFromFhirId,
-  getToken,
-  login
-} from '../../helpers'
+import { createPIN, getToken, login } from '../../helpers'
 import faker from '@faker-js/faker'
 import {
+  BirthDetails,
   ConvertEnumsToStrings,
   createDeclaration,
   fetchDeclaration
@@ -18,7 +14,7 @@ test.describe.serial(' Correct record - 5', () => {
   let declaration: BirthDeclaration
   let trackingId = ''
 
-  let childBirthLocationName: string | undefined
+  let declarationInput: BirthDetails
 
   let page: Page
   const updatedChildDetails = {
@@ -29,7 +25,16 @@ test.describe.serial(' Correct record - 5', () => {
       subDays(new Date(), Math.ceil(50 * Math.random())),
       'yyyy-MM-dd'
     ),
-    birthLocation: 'Tembwe Rural Health Centre',
+    placeOfBirth: 'Other',
+    birthLocation: {
+      state: 'Sulaka',
+      district: 'Irundu',
+      town: faker.address.city(),
+      residentialArea: faker.address.county(),
+      street: faker.address.streetName(),
+      number: faker.address.buildingNumber(),
+      zipCode: faker.address.zipCode()
+    },
     attendantAtBirth: 'Nurse',
     typeOfBirth: 'Twin',
     weightAtBirth: '3.1',
@@ -46,11 +51,16 @@ test.describe.serial(' Correct record - 5', () => {
 
   test('5.0 Shortcut declaration', async () => {
     let token = await getToken('k.mweene', 'test')
-    const declarationInput = {
+    declarationInput = {
       child: {
         firstNames: faker.name.firstName(),
         familyName: faker.name.firstName(),
-        gender: 'male'
+        gender: 'male',
+        placeOfBirth: 'Residential address',
+        birthLocation: {
+          state: 'Pualula',
+          district: 'Ienge'
+        }
       },
       informant: {
         type: 'BROTHER'
@@ -279,10 +289,30 @@ test.describe.serial(' Correct record - 5', () => {
       expect(page.url().includes('child-view-group')).toBeTruthy()
       expect(page.url().includes('#placeOfBirth')).toBeTruthy()
 
+      await page.locator('#placeOfBirth').click()
+      await page.getByText(updatedChildDetails.placeOfBirth).click()
+
+      await page.locator('#statePlaceofbirth').click()
+      await page.getByText(updatedChildDetails.birthLocation.state).click()
+
+      await page.locator('#districtPlaceofbirth').click()
+      await page.getByText(updatedChildDetails.birthLocation.district).click()
+
       await page
-        .locator('#birthLocation')
-        .fill(updatedChildDetails.birthLocation.slice(0, 2))
-      await page.getByText(updatedChildDetails.birthLocation).click()
+        .locator('#cityPlaceofbirth')
+        .fill(updatedChildDetails.birthLocation.town)
+      await page
+        .locator('#addressLine1UrbanOptionPlaceofbirth')
+        .fill(updatedChildDetails.birthLocation.residentialArea)
+      await page
+        .locator('#addressLine2UrbanOptionPlaceofbirth')
+        .fill(updatedChildDetails.birthLocation.street)
+      await page
+        .locator('#addressLine3UrbanOptionPlaceofbirth')
+        .fill(updatedChildDetails.birthLocation.number)
+      await page
+        .locator('#postalCodePlaceofbirth')
+        .fill(updatedChildDetails.birthLocation.zipCode)
 
       await page.waitForTimeout(500)
 
@@ -298,23 +328,76 @@ test.describe.serial(' Correct record - 5', () => {
       expect(page.url().includes('correction')).toBeTruthy()
       expect(page.url().includes('review')).toBeTruthy()
 
-      expect(declaration.eventLocation).toBeDefined()
-
-      childBirthLocationName = await getLocationNameFromFhirId(
-        declaration.eventLocation!.id
-      )
-      expect(childBirthLocationName).toBeDefined()
-
+      await expect(
+        page.locator('#child-content #Place').getByRole('deletion').nth(0)
+      ).toHaveText(declarationInput.child.placeOfBirth!)
       await expect(
         page.locator('#child-content #Place').getByRole('deletion').nth(1)
-      ).toHaveText(childBirthLocationName!, {
-        ignoreCase: true
-      })
+      ).toHaveText('Farajaland')
+      await expect(
+        page.locator('#child-content #Place').getByRole('deletion').nth(2)
+      ).toHaveText(declarationInput.child.birthLocation!.state)
+      await expect(
+        page.locator('#child-content #Place').getByRole('deletion').nth(3)
+      ).toHaveText(declarationInput.child.birthLocation!.district)
+      await expect(
+        page.locator('#child-content #Place').getByRole('deletion').nth(5)
+      ).toHaveText(declaration.eventLocation.address.city)
+      await expect(
+        page.locator('#child-content #Place').getByRole('deletion').nth(6)
+      ).toHaveText(declaration.eventLocation.address.line[2])
+      await expect(
+        page.locator('#child-content #Place').getByRole('deletion').nth(7)
+      ).toHaveText(declaration.eventLocation.address.line[1])
+      await expect(
+        page.locator('#child-content #Place').getByRole('deletion').nth(8)
+      ).toHaveText(declaration.eventLocation.address.line[0])
+      await expect(
+        page.locator('#child-content #Place').getByRole('deletion').nth(9)
+      ).toHaveText(declaration.eventLocation.address.postalCode)
 
       await expect(
         page
           .locator('#child-content #Place')
-          .getByText(updatedChildDetails.birthLocation)
+          .getByText(updatedChildDetails.placeOfBirth)
+      ).toBeVisible()
+      await expect(
+        page.locator('#child-content #Place').getByText('Farajaland')
+      ).toBeVisible()
+      await expect(
+        page
+          .locator('#child-content #Place')
+          .getByText(updatedChildDetails.birthLocation.state)
+      ).toBeVisible()
+      await expect(
+        page
+          .locator('#child-content #Place')
+          .getByText(updatedChildDetails.birthLocation.district)
+      ).toBeVisible()
+      await expect(
+        page
+          .locator('#child-content #Place')
+          .getByText(updatedChildDetails.birthLocation.town)
+      ).toBeVisible()
+      await expect(
+        page
+          .locator('#child-content #Place')
+          .getByText(updatedChildDetails.birthLocation.residentialArea)
+      ).toBeVisible()
+      await expect(
+        page
+          .locator('#child-content #Place')
+          .getByText(updatedChildDetails.birthLocation.street)
+      ).toBeVisible()
+      await expect(
+        page
+          .locator('#child-content #Place')
+          .getByText(updatedChildDetails.birthLocation.number)
+      ).toBeVisible()
+      await expect(
+        page
+          .locator('#child-content #Place')
+          .getByText(updatedChildDetails.birthLocation.zipCode)
       ).toBeVisible()
     })
 
@@ -557,10 +640,25 @@ test.describe.serial(' Correct record - 5', () => {
     await expect(
       page.getByText(
         'Place of delivery (Child)' +
-          'Health Institution' +
-          childBirthLocationName +
-          'Health Institution' +
-          updatedChildDetails.birthLocation
+          declarationInput.child.placeOfBirth! +
+          'Farajaland' +
+          declarationInput.child.birthLocation!.state +
+          declarationInput.child.birthLocation!.district +
+          '-' +
+          declaration.eventLocation.address.city +
+          declaration.eventLocation.address.line[2] +
+          declaration.eventLocation.address.line[1] +
+          declaration.eventLocation.address.line[0] +
+          declaration.eventLocation.address.postalCode +
+          updatedChildDetails.placeOfBirth +
+          'Farajaland' +
+          updatedChildDetails.birthLocation.state +
+          updatedChildDetails.birthLocation.district +
+          updatedChildDetails.birthLocation.town +
+          updatedChildDetails.birthLocation.residentialArea +
+          updatedChildDetails.birthLocation.street +
+          updatedChildDetails.birthLocation.number +
+          updatedChildDetails.birthLocation.zipCode
       )
     ).toBeVisible()
 

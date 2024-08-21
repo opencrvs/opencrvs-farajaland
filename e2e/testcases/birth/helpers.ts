@@ -12,7 +12,7 @@ import {
   REGISTER_BIRTH_DECLARATION
 } from './queries'
 
-type Details = {
+export type BirthDetails = {
   informant: {
     type: 'MOTHER' | 'FATHER' | 'BROTHER'
   }
@@ -48,9 +48,9 @@ type Details = {
 async function getAllLocations(
   type: 'ADMIN_STRUCTURE' | 'HEALTH_FACILITY' | 'CRVS_OFFICE'
 ) {
-  const locations = (await fetch(`${GATEWAY_HOST}/location?type=${type}`).then(
-    (res) => res.json()
-  )) as fhir.Bundle
+  const locations = (await fetch(
+    `${GATEWAY_HOST}/location?type=${type}&_count=0`
+  ).then((res) => res.json())) as fhir.Bundle
 
   return locations.entry!.map((entry) => entry.resource as fhir.Location)
 }
@@ -62,7 +62,7 @@ function getLocationIdByName(locations: fhir.Location[], name: string) {
   }
   return location.id
 }
-export async function createDeclaration(token: string, details: Details) {
+export async function createDeclaration(token: string, details: BirthDetails) {
   const locations = await getAllLocations('ADMIN_STRUCTURE')
   const facilities = await getAllLocations('HEALTH_FACILITY')
 
