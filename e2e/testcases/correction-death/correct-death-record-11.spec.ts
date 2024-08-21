@@ -36,7 +36,9 @@ test.describe.serial(' Correct record - 11', () => {
     let token = await getToken('k.mweene', 'test')
 
     const res = await createDeathDeclaration(token, {
-      placeOfDeath: "Deceased's usual place of residence"
+      event: {
+        placeOfDeath: "Deceased's usual place of residence"
+      }
     })
     expect(res).toStrictEqual({
       trackingId: expect.any(String),

@@ -13,11 +13,19 @@ import {
 } from './queries'
 
 export type DeathDeclarationInput = {
-  placeOfDeath?:
-    | 'Health Institution'
-    | "Deceased's usual place of residence"
-    | 'Other'
-  deathFacility?: string
+  deceased?: {
+    usual?: {
+      province: string
+      district: string
+    }
+  }
+  event?: {
+    placeOfDeath?:
+      | 'Health Institution'
+      | "Deceased's usual place of residence"
+      | 'Other'
+    deathFacility?: string
+  }
 }
 
 const declaration = {
@@ -198,14 +206,10 @@ export async function createDeathDeclaration(
             }
           },
           eventLocation:
-            details.placeOfDeath === 'Health Institution'
-              ? {
-                  _fhirID: getLocationIdByName(
-                    facilities,
-                    'Chikobo Rural Health Centre'
-                  )
-                }
-              : details.placeOfDeath === "Deceased's usual place of residence"
+            details.event?.placeOfDeath === 'Other'
+              ? {}
+              : details.event?.placeOfDeath ===
+                "Deceased's usual place of residence"
               ? {
                   type: 'DECEASED_USUAL_RESIDENCE',
                   address: {
@@ -244,7 +248,12 @@ export async function createDeathDeclaration(
                     postalCode: declaration.deceased.address.postcodeOrZip
                   }
                 }
-              : {},
+              : {
+                  _fhirID: getLocationIdByName(
+                    facilities,
+                    'Chikobo Rural Health Centre'
+                  )
+                },
           informant: { relationship: 'SPOUSE' },
           questionnaire: [
             {
