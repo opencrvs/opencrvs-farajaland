@@ -1,10 +1,5 @@
 import { expect, test, type Page } from '@playwright/test'
-import {
-  createPIN,
-  getLocationNameFromFhirId,
-  getToken,
-  login
-} from '../../helpers'
+import { createPIN, getToken, login } from '../../helpers'
 import { format, parseISO, subDays } from 'date-fns'
 import { DeathDeclaration } from '../death/types'
 import { createDeathDeclaration, fetchDeclaration } from '../death/helpers'
@@ -12,7 +7,6 @@ import { createDeathDeclaration, fetchDeclaration } from '../death/helpers'
 test.describe.serial(' Correct record - 11', () => {
   let declaration: DeathDeclaration
   let trackingId = ''
-  let deathLocation = ''
 
   let page: Page
 
@@ -26,7 +20,8 @@ test.describe.serial(' Correct record - 11', () => {
       established: true,
       source: 'Physician'
     },
-    placeOfDeath: 'Estate Urban Health Centre'
+    placeOfDeath: 'Health Institution',
+    deathLocation: 'Pondo Rural Health Centre'
   }
 
   test.beforeAll(async ({ browser }) => {
@@ -40,7 +35,9 @@ test.describe.serial(' Correct record - 11', () => {
   test('11.0 Shortcut declaration', async () => {
     let token = await getToken('k.mweene', 'test')
 
-    const res = await createDeathDeclaration(token)
+    const res = await createDeathDeclaration(token, {
+      placeOfDeath: "Deceased's usual place of residence"
+    })
     expect(res).toStrictEqual({
       trackingId: expect.any(String),
       compositionId: expect.any(String),
@@ -54,10 +51,6 @@ test.describe.serial(' Correct record - 11', () => {
 
     declaration = (await fetchDeclaration(token, res.compositionId)).data
       .fetchDeathRegistration as DeathDeclaration
-
-    deathLocation =
-      (await getLocationNameFromFhirId(declaration.eventLocation.id)) ||
-      'Not found'
   })
 
   test('11.1 Certificate preview', async () => {
@@ -275,11 +268,16 @@ test.describe.serial(' Correct record - 11', () => {
       expect(page.url().includes('death-event-details')).toBeTruthy()
       expect(page.url().includes('#placeOfDeath')).toBeTruthy()
 
-      await page
-        .locator('#deathLocation')
-        .fill(updatedEventDetails.placeOfDeath.slice(0, 3))
+      await page.locator('#placeOfDeath').click()
       await page
         .getByText(updatedEventDetails.placeOfDeath, { exact: true })
+        .click()
+
+      await page
+        .locator('#deathLocation')
+        .fill(updatedEventDetails.deathLocation.slice(0, 3))
+      await page
+        .getByText(updatedEventDetails.deathLocation, { exact: true })
         .click()
 
       await page.waitForTimeout(500)
@@ -297,15 +295,15 @@ test.describe.serial(' Correct record - 11', () => {
       expect(page.url().includes('review')).toBeTruthy()
 
       await expect(
-        page.locator('#deathEvent-content #Place').getByRole('deletion').nth(1)
-      ).toHaveText(deathLocation, {
-        ignoreCase: true
-      })
+        page.locator('#deathEvent-content #Place').getByRole('deletion').nth(0)
+      ).toHaveText("Deceased's usual place of residence")
 
       await expect(
         page
           .locator('#deathEvent-content #Place')
-          .getByText('Health Institution' + updatedEventDetails.placeOfDeath)
+          .getByText(
+            updatedEventDetails.placeOfDeath + updatedEventDetails.deathLocation
+          )
       ).toBeVisible()
     })
   })
@@ -411,13 +409,15 @@ test.describe.serial(' Correct record - 11', () => {
       )
     ).toBeVisible()
 
+    console.log(await page.content())
+
     await expect(
       page.getByText(
         'Place of death (Death event details)' +
-          'Health Institution' +
-          deathLocation +
-          'Health Institution' +
-          updatedEventDetails.placeOfDeath
+          "Deceased's usual place of residence" +
+          '-' +
+          updatedEventDetails.placeOfDeath +
+          updatedEventDetails.deathLocation
       )
     ).toBeVisible()
 
@@ -537,10 +537,10 @@ test.describe.serial(' Correct record - 11', () => {
       await expect(
         page.getByText(
           'Place of death (Death event details)' +
-            'Health Institution' +
-            deathLocation +
-            'Health Institution' +
-            updatedEventDetails.placeOfDeath
+            "Deceased's usual place of residence" +
+            '-' +
+            updatedEventDetails.placeOfDeath +
+            updatedEventDetails.deathLocation
         )
       ).toBeVisible()
 

@@ -12,6 +12,14 @@ import {
   GET_DEATH_REGISTRATION_FOR_REVIEW
 } from './queries'
 
+export type DeathDeclarationInput = {
+  placeOfDeath?:
+    | 'Health Institution'
+    | "Deceased's usual place of residence"
+    | 'Other'
+  deathFacility?: string
+}
+
 const declaration = {
   deceased: {
     name: {
@@ -82,7 +90,10 @@ function getLocationIdByName(locations: fhir.Location[], name: string) {
   return location.id
 }
 
-export async function createDeathDeclaration(token: string) {
+export async function createDeathDeclaration(
+  token: string,
+  details: DeathDeclarationInput = {}
+) {
   const locations = await getAllLocations('ADMIN_STRUCTURE')
   const facilities = await getAllLocations('HEALTH_FACILITY')
 
@@ -186,12 +197,54 @@ export async function createDeathDeclaration(token: string) {
               )
             }
           },
-          eventLocation: {
-            _fhirID: getLocationIdByName(
-              facilities,
-              'Chikobo Rural Health Centre'
-            )
-          },
+          eventLocation:
+            details.placeOfDeath === 'Health Institution'
+              ? {
+                  _fhirID: getLocationIdByName(
+                    facilities,
+                    'Chikobo Rural Health Centre'
+                  )
+                }
+              : details.placeOfDeath === "Deceased's usual place of residence"
+              ? {
+                  type: 'DECEASED_USUAL_RESIDENCE',
+                  address: {
+                    type: 'PRIMARY_ADDRESS',
+                    line: [
+                      declaration.deceased.address.number,
+                      declaration.deceased.address.street,
+                      declaration.deceased.address.residentialArea,
+                      '',
+                      '',
+                      'URBAN',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      '',
+                      ''
+                    ],
+                    country: declaration.deceased.address.country,
+                    state: getLocationIdByName(
+                      locations,
+                      declaration.deceased.address.province
+                    ),
+                    partOf: getLocationIdByName(
+                      locations,
+                      declaration.deceased.address.district
+                    ),
+                    district: getLocationIdByName(
+                      locations,
+                      declaration.deceased.address.district
+                    ),
+                    city: declaration.deceased.address.town,
+                    postalCode: declaration.deceased.address.postcodeOrZip
+                  }
+                }
+              : {},
           informant: { relationship: 'SPOUSE' },
           questionnaire: [
             {
