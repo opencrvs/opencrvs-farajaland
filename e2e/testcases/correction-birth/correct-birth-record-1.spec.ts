@@ -952,35 +952,191 @@ test.describe('1. Correct record - 1', () => {
           )
         ).toBeVisible()
       })
-      test('1.2.6.4 Validate history in record audit', async () => {
-        await page
-          .getByText(
-            updatedChildDetails.firstNames +
-              ' ' +
-              updatedChildDetails.familyName
+      test.describe('1.2.6.4 Validate history in record audit', async () => {
+        test('1.2.6.4.1 Validate entries in record audit', async () => {
+          await page
+            .getByText(
+              updatedChildDetails.firstNames +
+                ' ' +
+                updatedChildDetails.familyName
+            )
+            .click()
+
+          await page.getByLabel('Assign record').click()
+          await page
+            .getByRole('button', { name: 'Assign', exact: true })
+            .click()
+
+          /*
+           * Expected result: should show in task history
+           * - Correction requested
+           * - Correction approved
+           */
+
+          await expect(
+            page
+              .locator('#listTable-task-history')
+              .getByRole('button', { name: 'Correction requested' })
+          ).toBeVisible()
+
+          await expect(
+            page
+              .locator('#listTable-task-history')
+              .getByRole('button', { name: 'Correction approved' })
+          ).toBeVisible()
+        })
+
+        test('1.2.6.4.2 Validate correction requested modal', async () => {
+          const correctionRequestedRow = page.locator(
+            '#listTable-task-history #row_4'
           )
-          .click()
+          await correctionRequestedRow.getByText('Correction requested').click()
 
-        await page.getByLabel('Assign record').click()
-        await page.getByRole('button', { name: 'Assign', exact: true }).click()
+          const time = await correctionRequestedRow
+            .locator('span')
+            .nth(1)
+            .innerText()
 
-        /*
-         * Expected result: should show in task history
-         * - Correction requested
-         * - Correction approved
-         */
+          const requester = await correctionRequestedRow
+            .locator('span')
+            .nth(2)
+            .innerText()
 
-        await expect(
-          page
-            .locator('#listTable-task-history')
-            .getByRole('button', { name: 'Correction requested' })
-        ).toBeVisible()
+          /*
+           * Expected result: Should show
+           * - Correction requested header
+           * - Requester & time
+           * - Requested by
+           * - Id check
+           * - Reason
+           * - Comment
+           * - Original vs Correction
+           */
 
-        await expect(
-          page
-            .locator('#listTable-task-history')
-            .getByRole('button', { name: 'Correction approved' })
-        ).toBeVisible()
+          await expect(
+            page.locator('h1:text("Correction requested")')
+          ).toBeVisible()
+
+          await expect(page.getByText(requester + ' — ' + time)).toBeVisible()
+
+          await expect(page.getByText('Requested by' + 'Mother')).toBeVisible()
+          await expect(page.getByText('ID check' + 'Verified')).toBeVisible()
+          await expect(
+            page.getByText(
+              'Reason for request' +
+                'Myself or an agent made a mistake (Clerical error)'
+            )
+          ).toBeVisible()
+
+          await expect(
+            page.getByText(
+              'Comment' + declaration.registration.registrationNumber
+            )
+          ).toBeVisible()
+
+          await expect(
+            page.getByText(
+              'First name(s) (Child)' +
+                declaration.child.name[0].firstNames +
+                updatedChildDetails.firstNames
+            )
+          ).toBeVisible()
+
+          await expect(
+            page.getByText(
+              'Last name (Child)' +
+                declaration.child.name[0].familyName +
+                updatedChildDetails.familyName
+            )
+          ).toBeVisible()
+
+          await expect(
+            page.getByText(
+              'Sex (Child)' +
+                declaration.child.gender +
+                updatedChildDetails.gender
+            )
+          ).toBeVisible()
+
+          await expect(
+            page.getByText(
+              'Date of birth (Child)' +
+                format(parseISO(declaration.child.birthDate), 'yyyy-MM-dd') +
+                format(parseISO(updatedChildDetails.birthDate), 'yyyy-MM-dd')
+            )
+          ).toBeVisible()
+
+          await expect(
+            page.getByText(
+              'Health Institution (Child)' +
+                childBirthLocationName +
+                updatedChildDetails.birthLocation
+            )
+          ).toBeVisible()
+
+          await expect(
+            page.getByText(
+              'Attendant at birth (Child)' +
+                declaration.attendantAtBirth +
+                updatedChildDetails.attendantAtBirth
+            )
+          ).toBeVisible()
+
+          await expect(
+            page.getByText(
+              'Type of birth (Child)' +
+                declaration.birthType +
+                updatedChildDetails.typeOfBirth
+            )
+          ).toBeVisible()
+
+          await expect(
+            page.getByText(
+              'Weight at birth (Child)' +
+                declaration.weightAtBirth +
+                updatedChildDetails.weightAtBirth
+            )
+          ).toBeVisible()
+
+          await page
+            .locator('h1:text("Correction requested")')
+            .locator('xpath=following-sibling::*[1]')
+            .click()
+        })
+
+        test('1.2.6.4.3 Validate correction approved modal', async () => {
+          const correctionApprovedRow = page.locator(
+            '#listTable-task-history #row_6'
+          )
+          await correctionApprovedRow.getByText('Correction approved').click()
+
+          const time = await correctionApprovedRow
+            .locator('span')
+            .nth(1)
+            .innerText()
+
+          const reviewer = await correctionApprovedRow
+            .locator('span')
+            .nth(2)
+            .innerText()
+
+          /*
+           * Expected result: Should show
+           * - Correction approved header
+           * - Reviewer & time
+           * - Reason
+           */
+
+          await expect(
+            page.locator('h1:text("Correction approved")')
+          ).toBeVisible()
+
+          await expect(page.getByText(reviewer + ' — ' + time)).toBeVisible()
+          await page
+            .locator('h1:text("Correction approved")')
+            .locator('xpath=following-sibling::*[1]')
+            .click()
+        })
       })
     })
   })

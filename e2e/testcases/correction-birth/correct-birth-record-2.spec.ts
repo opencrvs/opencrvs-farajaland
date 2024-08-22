@@ -1403,8 +1403,6 @@ test.describe.serial(' Correct record - 2', () => {
           )
         ).toBeVisible()
 
-        // await page.getByRole('button', { name: 'close-btn' }).click()
-
         await page
           .locator('h1:text("Correction requested")')
           .locator('xpath=following-sibling::*[1]')
@@ -1443,7 +1441,6 @@ test.describe.serial(' Correct record - 2', () => {
           page.getByText('Reason' + 'Wrong information')
         ).toBeVisible()
 
-        // await page.getByRole('button', { name: 'close-btn' }).click()
         await page
           .locator('h1:text("Correction rejected")')
           .locator('xpath=following-sibling::*[1]')
