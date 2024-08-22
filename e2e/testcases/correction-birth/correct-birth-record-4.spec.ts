@@ -41,7 +41,7 @@ test.describe.serial(' Correct record - 4', () => {
 
   const updatedChildDetails = {
     placeOfBirth: 'Health Institution',
-    birthFacility: 'Water FallsRural Health Centre'
+    birthFacility: 'Mwenekombe Health Post'
   }
 
   test.beforeAll(async ({ browser }) => {
