@@ -1,5 +1,11 @@
 import { test, expect, type Page } from '@playwright/test'
-import { createPIN, getRandomDate, goToSection, login } from '../../../helpers'
+import {
+  continueForm,
+  createPIN,
+  getRandomDate,
+  goToSection,
+  login
+} from '../../../helpers'
 import faker from '@faker-js/faker'
 import { format } from 'date-fns'
 
@@ -838,7 +844,7 @@ test.describe.serial('11. Death declaration case - 11', () => {
           .locator('#postalCodePrimaryInformant')
           .fill(declaration.informant.address.postcodeOrZip)
 
-        await page.getByRole('button', { name: 'Back to review' }).click()
+        await continueForm(page, 'Back to review')
         /*
          * Expected result: should change informant's address
          */

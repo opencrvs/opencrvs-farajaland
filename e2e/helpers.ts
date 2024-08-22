@@ -122,12 +122,12 @@ export const getLocationNameFromFhirId = async (fhirId: string) => {
   return location.name
 }
 
-export async function continueForm(page: Page) {
+export async function continueForm(page: Page, label: string = 'Continue') {
   /*
    * This timeout is to ensure that all previous actions have been completed
    * including filling inputs and that the changed values have been reflected
    * also to the Redux state. 500ms is selected as a safe value.
    */
   await page.waitForTimeout(500)
-  return page.getByText('Continue', { exact: true }).click()
+  return page.getByText(label, { exact: true }).click()
 }
