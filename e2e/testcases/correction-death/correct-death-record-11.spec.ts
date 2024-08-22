@@ -411,8 +411,6 @@ test.describe.serial(' Correct record - 11', () => {
       )
     ).toBeVisible()
 
-    console.log(await page.content())
-
     await expect(
       page.getByText(
         'Place of death (Death event details)' +
@@ -613,6 +611,148 @@ test.describe.serial(' Correct record - 11', () => {
           .locator('#listTable-task-history')
           .getByRole('button', { name: 'Correction rejected' })
       ).toBeVisible()
+    })
+    test('11.8.5 Validate correction requested modal', async () => {
+      const correctionRequestedRow = page.locator(
+        '#listTable-task-history #row_4'
+      )
+      await correctionRequestedRow.getByText('Correction requested').click()
+
+      const time = await correctionRequestedRow
+        .locator('span')
+        .nth(1)
+        .innerText()
+
+      const requester = await correctionRequestedRow
+        .locator('span')
+        .nth(2)
+        .innerText()
+
+      /*
+       * Expected result: Should show
+       * - Correction requested header
+       * - Requester & time
+       * - Requested by
+       * - Id check
+       * - Reason
+       * - Comment
+       * - Original vs Correction
+       */
+
+      await expect(
+        page.locator('h1:text("Correction requested")')
+      ).toBeVisible()
+
+      await expect(page.getByText(requester + ' — ' + time)).toBeVisible()
+
+      await expect(
+        page.getByText(
+          'Requested by' + 'Another registration agent or field agent'
+        )
+      ).toBeVisible()
+
+      await expect(
+        page.getByText(
+          'Reason for request' +
+            'Informant provided incorrect information (Material error)'
+        )
+      ).toBeVisible()
+
+      await expect(page.getByText('Comment')).toBeVisible()
+
+      await expect(
+        page.getByText(
+          'Date of death (Death event details)' +
+            format(
+              parseISO(declaration.deceased.deceased.deathDate),
+              'yyyy-MM-dd'
+            ) +
+            format(parseISO(updatedEventDetails.dateOfDeath), 'yyyy-MM-dd')
+        )
+      ).toBeVisible()
+      await expect(
+        page.getByText(
+          'Manner of death (Death event details)' + updatedEventDetails.manner
+        )
+      ).toBeVisible()
+
+      await expect(
+        page.getByText(
+          'Cause of death has been established (Death event details)' +
+            declaration.causeOfDeathEstablished +
+            updatedEventDetails.cause.established
+        )
+      ).toBeVisible()
+
+      // await expect(
+      //   page.getByText(
+      //     'Cause of death has been established (Death event details)' +
+      //       (declaration.causeOfDeathEstablished == 'true' ? 'Yes' : 'No') +
+      //       (updatedEventDetails.cause.established ? 'Yes' : 'No')
+      //   )
+      // ).toBeVisible()
+
+      await expect(
+        page.getByText(
+          'Source of cause of death (Death event details)' +
+            updatedEventDetails.cause.source
+        )
+      ).toBeVisible()
+
+      await expect(
+        page.getByText(
+          'Place of death (Death event details)' +
+            "Deceased's usual place of residence" +
+            updatedEventDetails.placeOfDeath
+        )
+      ).toBeVisible()
+
+      await expect(
+        page.getByText(
+          updatedEventDetails.placeOfDeath +
+            ' (Death event details)' +
+            updatedEventDetails.deathLocation
+        )
+      ).toBeVisible()
+
+      await page
+        .locator('h1:text("Correction requested")')
+        .locator('xpath=following-sibling::*[1]')
+        .click()
+    })
+    test('11.8.6 Validate correction rejected modal', async () => {
+      const correctionRejectedRow = page.locator(
+        '#listTable-task-history #row_6'
+      )
+      await correctionRejectedRow.getByText('Correction rejected').click()
+
+      const time = await correctionRejectedRow
+        .locator('span')
+        .nth(1)
+        .innerText()
+
+      const reviewer = await correctionRejectedRow
+        .locator('span')
+        .nth(2)
+        .innerText()
+
+      /*
+       * Expected result: Should show
+       * - Correction rejected header
+       * - Reviewer & time
+       * - Reason
+       */
+
+      await expect(page.locator('h1:text("Correction rejected")')).toBeVisible()
+
+      await expect(page.getByText(reviewer + ' — ' + time)).toBeVisible()
+
+      await expect(page.getByText('Reason' + 'Wrong information')).toBeVisible()
+
+      await page
+        .locator('h1:text("Correction rejected")')
+        .locator('xpath=following-sibling::*[1]')
+        .click()
     })
   })
 })
