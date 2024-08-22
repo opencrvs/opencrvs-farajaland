@@ -56,8 +56,7 @@ test.describe.serial(' Correct record - 13', () => {
 
     declarationInput = {
       event: {
-        placeOfDeath: 'Health Institution',
-        deathFacility: 'Chikobo Rural Health Centre'
+        placeOfDeath: 'Health Institution'
       }
     }
 
