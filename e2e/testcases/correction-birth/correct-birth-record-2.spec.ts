@@ -1144,40 +1144,265 @@ test.describe.serial(' Correct record - 2', () => {
       ).toBeVisible()
     })
 
-    test('2.8.4 Validate history in record audit', async () => {
-      await page
-        .getByText(
-          declaration.child.name[0].firstNames +
-            ' ' +
-            declaration.child.name[0].familyName
-        )
-        .click()
-
-      await page.getByLabel('Assign record').click()
-      if (
+    test.describe('2.8.4 Validate history in record audit', async () => {
+      test('2.8.4.1 Validate entries in record audit', async () => {
         await page
-          .getByRole('button', { name: 'Assign', exact: true })
-          .isVisible()
-      )
-        await page.getByRole('button', { name: 'Assign', exact: true }).click()
+          .getByText(
+            declaration.child.name[0].firstNames +
+              ' ' +
+              declaration.child.name[0].familyName
+          )
+          .click()
 
-      /*
-       * Expected result: should show in task history
-       * - Correction requested
-       * - Correction rejected
-       */
+        await page.getByLabel('Assign record').click()
+        if (
+          await page
+            .getByRole('button', { name: 'Assign', exact: true })
+            .isVisible()
+        )
+          await page
+            .getByRole('button', { name: 'Assign', exact: true })
+            .click()
 
-      await expect(
-        page
-          .locator('#listTable-task-history')
-          .getByRole('button', { name: 'Correction requested' })
-      ).toBeVisible()
+        /*
+         * Expected result: should show in task history
+         * - Correction requested
+         * - Correction rejected
+         */
 
-      await expect(
-        page
-          .locator('#listTable-task-history')
-          .getByRole('button', { name: 'Correction rejected' })
-      ).toBeVisible()
+        await expect(
+          page
+            .locator('#listTable-task-history')
+            .getByRole('button', { name: 'Correction requested' })
+        ).toBeVisible()
+
+        await expect(
+          page
+            .locator('#listTable-task-history')
+            .getByRole('button', { name: 'Correction rejected' })
+        ).toBeVisible()
+      })
+
+      test('2.8.4.2 Validate correction requested modal', async () => {
+        const correctionRequestedRow = page.locator(
+          '#listTable-task-history #row_4'
+        )
+        await correctionRequestedRow.getByText('Correction requested').click()
+
+        const time = await correctionRequestedRow
+          .locator('span')
+          .nth(1)
+          .innerText()
+
+        const requester = await correctionRequestedRow
+          .locator('span')
+          .nth(2)
+          .innerText()
+
+        /*
+         * Expected result: Should show
+         * - Correction requested header
+         * - Requester & time
+         * - Requested by
+         * - Id check
+         * - Reason
+         * - Comment
+         * - Original vs Correction
+         */
+
+        await expect(
+          page.locator('h1:text("Correction requested")')
+        ).toBeVisible()
+
+        await expect(page.getByText(requester + ' — ' + time)).toBeVisible()
+
+        await expect(page.getByText('Requested by' + 'Father')).toBeVisible()
+        await expect(
+          page.getByText('ID check' + 'Identity does not match')
+        ).toBeVisible()
+        await expect(
+          page.getByText(
+            'Reason for request' +
+              'Informant provided incorrect information (Material error)'
+          )
+        ).toBeVisible()
+
+        await expect(page.getByText('Comment')).toBeVisible()
+
+        await expect(
+          page.getByText(
+            'Place of delivery (Child)' +
+              'Health Institution' +
+              'Residential address'
+          )
+        ).toBeVisible()
+
+        await expect(
+          page.getByText(
+            'Province (Child)' +
+              'Central' +
+              updatedChildDetails.birthLocation.province
+          )
+        ).toBeVisible()
+
+        await expect(
+          page.getByText(
+            'District (Child)' +
+              'Ibombo' +
+              updatedChildDetails.birthLocation.district
+          )
+        ).toBeVisible()
+
+        await expect(
+          page.getByText(
+            'Town (Child)' + updatedChildDetails.birthLocation.town
+          )
+        ).toBeVisible()
+
+        await expect(
+          page.getByText(
+            'Residential Area (Child)' +
+              updatedChildDetails.birthLocation.residentialArea
+          )
+        ).toBeVisible()
+
+        await expect(
+          page.getByText(
+            'Street (Child)' + updatedChildDetails.birthLocation.street
+          )
+        ).toBeVisible()
+
+        await expect(
+          page.getByText(
+            'Number (Child)' + updatedChildDetails.birthLocation.number
+          )
+        ).toBeVisible()
+
+        await expect(
+          page.getByText(
+            'Postcode / Zip (Child)' + updatedChildDetails.birthLocation.zipCode
+          )
+        ).toBeVisible()
+
+        await expect(
+          page.getByText(
+            'Relationship to child (Informant)' +
+              declaration.informant.relationship +
+              updatedInformantDetails.relationship
+          )
+        ).toBeVisible()
+
+        await expect(
+          page.getByText(
+            'First name(s) (Informant)' +
+              declaration.informant.name[0].firstNames +
+              updatedInformantDetails.firstNames
+          )
+        ).toBeVisible()
+
+        await page.getByRole('button', { name: 'Next page' }).click()
+
+        await expect(
+          page.getByText(
+            'Last name (informant)' +
+              declaration.informant.name[0].familyName +
+              updatedInformantDetails.familyName
+          )
+        ).toBeVisible()
+
+        await expect(
+          page.getByText(
+            'Date of birth (informant)' +
+              format(parseISO(declaration.informant.birthDate), 'yyyy-MM-dd') +
+              format(parseISO(updatedInformantDetails.birthDate), 'yyyy-MM-dd')
+          )
+        ).toBeVisible()
+
+        await expect(
+          page.getByText(
+            'Nationality (Informant)' +
+              'Farajaland' +
+              updatedInformantDetails.nationality
+          )
+        ).toBeVisible()
+
+        await expect(
+          page.getByText(
+            'Type of ID (Informant)' +
+              'National ID' +
+              updatedInformantDetails.idType
+          )
+        ).toBeVisible()
+        await expect(
+          page.getByText('ID Number (Informant)' + updatedInformantDetails.id)
+        ).toBeVisible()
+
+        await expect(
+          page.getByText(
+            'Province (Informant)' +
+              'Central' +
+              updatedInformantDetails.address.province
+          )
+        ).toBeVisible()
+
+        await expect(
+          page.getByText(
+            'District (Informant)' +
+              'Ibombo' +
+              updatedInformantDetails.address.district
+          )
+        ).toBeVisible()
+
+        await expect(
+          page.getByText(
+            'Town (Informant)' +
+              declaration.informant.address[0].city +
+              updatedInformantDetails.address.town
+          )
+        ).toBeVisible()
+
+        await expect(
+          page.getByText(
+            'Residential Area (Informant)' +
+              declaration.informant.address[0].line[2] +
+              updatedInformantDetails.address.residentialArea
+          )
+        ).toBeVisible()
+
+        await expect(
+          page.getByText(
+            'Street (Informant)' +
+              declaration.informant.address[0].line[1] +
+              updatedInformantDetails.address.street
+          )
+        ).toBeVisible()
+
+        await page.getByRole('button', { name: 'Next page' }).click()
+
+        await expect(
+          page.getByText(
+            'Number (Informant)' +
+              declaration.informant.address[0].line[0] +
+              updatedInformantDetails.address.number
+          )
+        ).toBeVisible()
+
+        await expect(
+          page.getByText(
+            'Postcode / Zip (Informant)' +
+              declaration.informant.address[0].postalCode +
+              updatedInformantDetails.address.zipCode
+          )
+        ).toBeVisible()
+
+        await expect(
+          page.getByText(
+            'Email (Informant)' +
+              declaration.registration.contactEmail +
+              updatedInformantDetails.email
+          )
+        ).toBeVisible()
+      })
     })
   })
 })
