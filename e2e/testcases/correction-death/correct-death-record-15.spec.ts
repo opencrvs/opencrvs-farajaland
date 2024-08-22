@@ -39,7 +39,11 @@ test.describe.serial(' Correct record - 15', () => {
   test('15.0 Shortcut declaration', async () => {
     let token = await getToken('k.mweene', 'test')
 
-    const res = await createDeathDeclaration(token)
+    const res = await createDeathDeclaration(token, {
+      event: {
+        deathFacility: 'Itumbwe Health Post'
+      }
+    })
     expect(res).toStrictEqual({
       trackingId: expect.any(String),
       compositionId: expect.any(String),
@@ -574,5 +578,98 @@ test.describe.serial(' Correct record - 15', () => {
         .locator('#listTable-task-history')
         .getByRole('button', { name: 'Record corrected' })
     ).toBeVisible()
+  })
+  test('15.9 Validate record corrected modal', async () => {
+    const correctedRow = page.locator('#listTable-task-history #row_6')
+    await correctedRow.getByText('Record corrected').click()
+
+    const time = await correctedRow.locator('span').nth(1).innerText()
+
+    const correcter = await correctedRow.locator('span').nth(2).innerText()
+
+    /*
+     * Expected result: Should show
+     * - Record corrected header
+     * - Correcter & time
+     * - Requested by
+     * - Id check
+     * - Reason
+     * - Comment
+     * - Original vs Correction
+     */
+
+    await expect(page.locator('h1:text("Record corrected")')).toBeVisible()
+
+    await expect(page.getByText(correcter + ' — ' + time)).toBeVisible()
+
+    await expect(
+      page.getByText('Requested by' + 'Informant (Spouse)')
+    ).toBeVisible()
+    await expect(
+      page.getByText('ID check' + 'Identity does not match')
+    ).toBeVisible()
+
+    await expect(
+      page.getByText(
+        'Reason for request' +
+          'Myself or an agent made a mistake (Clerical error)'
+      )
+    ).toBeVisible()
+
+    await expect(
+      page.getByText('Comment' + declaration.registration.registrationNumber)
+    ).toBeVisible()
+
+    await expect(
+      page.getByText(
+        'Date of death (Death event details)' +
+          format(
+            parseISO(declaration.deceased.deceased.deathDate),
+            'yyyy-MM-dd'
+          ) +
+          format(parseISO(updatedEventDetails.dateOfDeath), 'yyyy-MM-dd')
+      )
+    ).toBeVisible()
+    await expect(
+      page.getByText(
+        'Manner of death (Death event details)' + updatedEventDetails.manner
+      )
+    ).toBeVisible()
+
+    await expect(
+      page.getByText(
+        'Cause of death has been established (Death event details)' +
+          declaration.causeOfDeathEstablished +
+          updatedEventDetails.cause.established
+      )
+    ).toBeVisible()
+
+    // await expect(
+    //   page.getByText(
+    //     'Cause of death has been established (Death event details)' +
+    //       (declaration.causeOfDeathEstablished == 'true' ? 'Yes' : 'No') +
+    //       (updatedEventDetails.cause.established ? 'Yes' : 'No')
+    //   )
+    // ).toBeVisible()
+
+    await expect(
+      page.getByText(
+        'Source of cause of death (Death event details)' +
+          updatedEventDetails.cause.source
+      )
+    ).toBeVisible()
+
+    await expect(
+      page.getByText(
+        'Health Institution (Death event details)' +
+          deathLocation +
+          updatedEventDetails.placeOfDeath
+      )
+    ).toBeVisible()
+
+    await page
+      .locator('h1:text("Record corrected")')
+      .locator('xpath=following-sibling::*[1]')
+      .click()
   })
 })
