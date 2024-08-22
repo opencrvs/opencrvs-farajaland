@@ -881,4 +881,173 @@ test.describe.serial(' Correct record - 4', () => {
         .getByRole('button', { name: 'Record corrected' })
     ).toBeVisible()
   })
+  test('4.9 Validate record corrected modal', async () => {
+    const correctionRequestedRow = page.locator(
+      '#listTable-task-history #row_4'
+    )
+    await correctionRequestedRow.getByText('Record corrected').click()
+
+    const time = await correctionRequestedRow.locator('span').nth(1).innerText()
+
+    const requester = await correctionRequestedRow
+      .locator('span')
+      .nth(2)
+      .innerText()
+
+    /*
+     * Expected result: Should show
+     * - Record corrected header
+     * - Requester & time
+     * - Requested by
+     * - Id check
+     * - Reason
+     * - Comment
+     * - Original vs Correction
+     */
+    await expect(page.locator('h1:text("Record corrected")')).toBeVisible()
+
+    await expect(page.getByText(requester + ' — ' + time)).toBeVisible()
+
+    await expect(
+      page.getByText('Requested by' + 'Legal guardian')
+    ).toBeVisible()
+    await expect(page.getByText('ID check' + 'Verified')).toBeVisible()
+    await expect(
+      page.getByText(
+        'Reason for request' +
+          'Requested to do so by the court (Judicial order)'
+      )
+    ).toBeVisible()
+
+    await expect(
+      page.getByText('Comment' + declaration.registration.registrationNumber)
+    ).toBeVisible()
+
+    await expect(
+      page.getByText(
+        'Place of delivery (Child)' +
+          'Residential address' +
+          'Health Institution'
+      )
+    ).toBeVisible()
+    await expect(
+      page.getByText(
+        'Health Institution (Child)' + updatedChildDetails.birthFacility
+      )
+    ).toBeVisible()
+
+    await expect(
+      page.getByText(
+        'First name(s) (Father)' +
+          declaration.father.name[0].firstNames +
+          updatedFatherDetails.firstNames
+      )
+    ).toBeVisible()
+
+    await expect(
+      page.getByText(
+        'Last name (Father)' +
+          declaration.father.name[0].familyName +
+          updatedFatherDetails.familyName
+      )
+    ).toBeVisible()
+
+    await expect(
+      page.getByText(
+        'Date of birth (father)' +
+          format(parseISO(declaration.father.birthDate), 'yyyy-MM-dd') +
+          format(parseISO(updatedFatherDetails.birthDate), 'yyyy-MM-dd')
+      )
+    ).toBeVisible()
+
+    await expect(
+      page.getByText(
+        'Nationality (Father)' + 'Farajaland' + updatedFatherDetails.nationality
+      )
+    ).toBeVisible()
+
+    await expect(
+      page.getByText(
+        'Type of ID (Father)' + 'National ID' + updatedFatherDetails.idType
+      )
+    ).toBeVisible()
+    await expect(
+      page.getByText('ID Number (Father)' + updatedFatherDetails.id)
+    ).toBeVisible()
+
+    await expect(
+      page.getByText(
+        'Province (Father)' + 'Central' + updatedFatherDetails.address.province
+      )
+    ).toBeVisible()
+
+    await expect(
+      page.getByText(
+        'District (Father)' + 'Ibombo' + updatedFatherDetails.address.district
+      )
+    ).toBeVisible()
+
+    await page.getByRole('button', { name: 'Next page' }).click()
+
+    await expect(
+      page.getByText(
+        'Town (Father)' +
+          declaration.father.address[0].city +
+          updatedFatherDetails.address.town
+      )
+    ).toBeVisible()
+
+    await expect(
+      page.getByText(
+        'Residential Area (Father)' +
+          declaration.father.address[0].line[2] +
+          updatedFatherDetails.address.residentialArea
+      )
+    ).toBeVisible()
+
+    await expect(
+      page.getByText(
+        'Street (Father)' +
+          declaration.father.address[0].line[1] +
+          updatedFatherDetails.address.street
+      )
+    ).toBeVisible()
+
+    await expect(
+      page.getByText(
+        'Number (Father)' +
+          declaration.father.address[0].line[0] +
+          updatedFatherDetails.address.number
+      )
+    ).toBeVisible()
+
+    await expect(
+      page.getByText(
+        'Postcode / Zip (Father)' +
+          declaration.father.address[0].postalCode +
+          updatedFatherDetails.address.zipCode
+      )
+    ).toBeVisible()
+
+    await expect(
+      page.getByText(
+        'Marital status (Father)' +
+          declaration.father.maritalStatus +
+          updatedFatherDetails.maritalStatus
+      )
+    ).toBeVisible()
+
+    await expect(
+      page.getByText(
+        'Level of education (Father)' +
+          'No schooling' +
+          updatedFatherDetails.educationLevel
+      )
+    ).toBeVisible()
+
+    await page
+      .locator('h1:text("Record corrected")')
+      .locator('xpath=following-sibling::*[1]')
+      .click()
+  })
 })
