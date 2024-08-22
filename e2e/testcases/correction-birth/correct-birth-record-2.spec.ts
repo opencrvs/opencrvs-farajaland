@@ -1402,6 +1402,52 @@ test.describe.serial(' Correct record - 2', () => {
               updatedInformantDetails.email
           )
         ).toBeVisible()
+
+        // await page.getByRole('button', { name: 'close-btn' }).click()
+
+        await page
+          .locator('h1:text("Correction requested")')
+          .locator('xpath=following-sibling::*[1]')
+          .click()
+      })
+
+      test('2.8.4.3 Validate correction rejected modal', async () => {
+        const correctionRejectedRow = page.locator(
+          '#listTable-task-history #row_6'
+        )
+        await correctionRejectedRow.getByText('Correction rejected').click()
+
+        const time = await correctionRejectedRow
+          .locator('span')
+          .nth(1)
+          .innerText()
+
+        const reviewer = await correctionRejectedRow
+          .locator('span')
+          .nth(2)
+          .innerText()
+
+        /*
+         * Expected result: Should show
+         * - Correction rejected header
+         * - Reviewer & time
+         * - Reason
+         */
+
+        await expect(
+          page.locator('h1:text("Correction rejected")')
+        ).toBeVisible()
+
+        await expect(page.getByText(reviewer + ' — ' + time)).toBeVisible()
+        await expect(
+          page.getByText('Reason' + 'Wrong information')
+        ).toBeVisible()
+
+        // await page.getByRole('button', { name: 'close-btn' }).click()
+        await page
+          .locator('h1:text("Correction rejected")')
+          .locator('xpath=following-sibling::*[1]')
+          .click()
       })
     })
   })
