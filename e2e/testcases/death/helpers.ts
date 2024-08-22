@@ -251,8 +251,7 @@ export async function createDeathDeclaration(
               : {
                   _fhirID: getLocationIdByName(
                     facilities,
-                    details.event?.deathFacility ||
-                      'Water FallsRural Health Centre'
+                    details.event?.deathFacility || 'Kalela Health Post'
                   )
                 },
           informant: { relationship: 'SPOUSE' },

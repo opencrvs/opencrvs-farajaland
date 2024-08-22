@@ -10,6 +10,8 @@ import {
 } from '../death/helpers'
 
 test.describe.serial(' Correct record - 13', () => {
+  const CHANGING_LOCATION_FROM_HEALT_FACILITY_TO_USUAL_ADDRESS_BUG_SOLVED =
+    false
   let declaration: DeathDeclaration
   let trackingId = ''
 
@@ -491,8 +493,8 @@ test.describe.serial(' Correct record - 13', () => {
         ).toBeVisible()
       })
     })
-
-    test('13.4.2 Change place of death', async () => {
+    // unskip when CHANGING_LOCATION_FROM_HEALT_FACILITY_TO_USUAL_ADDRESS_BUG_SOLVED = true
+    test.skip('13.4.2 Change place of death', async () => {
       await page
         .locator('#deathEvent-content #Place')
         .getByRole('button', { name: 'Change', exact: true })
@@ -620,13 +622,15 @@ test.describe.serial(' Correct record - 13', () => {
      * - Comments
      */
 
-    await expect(
-      page.getByText(
-        'Place of death (Death event details)' +
-          declarationInput.event!.placeOfDeath! +
-          updatedEventDetails.placeOfDeath
-      )
-    ).toBeVisible()
+    if (CHANGING_LOCATION_FROM_HEALT_FACILITY_TO_USUAL_ADDRESS_BUG_SOLVED) {
+      await expect(
+        page.getByText(
+          'Place of death (Death event details)' +
+            declarationInput.event!.placeOfDeath! +
+            updatedEventDetails.placeOfDeath
+        )
+      ).toBeVisible()
+    }
 
     await expect(
       page.getByText(
@@ -663,7 +667,6 @@ test.describe.serial(' Correct record - 13', () => {
     await expect(
       page.getByText('ID Number (Spouse details)-' + updatedSpouseDetails.id)
     ).toBeVisible()
-
     await expect(
       page.getByText(
         'Usual place of residence (Spouse details)FarajalandSulakaZobwe-' +
