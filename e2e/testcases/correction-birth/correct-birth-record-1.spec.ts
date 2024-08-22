@@ -1124,7 +1124,6 @@ test.describe('1. Correct record - 1', () => {
            * Expected result: Should show
            * - Correction approved header
            * - Reviewer & time
-           * - Reason
            */
 
           await expect(

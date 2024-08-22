@@ -1170,6 +1170,213 @@ test.describe('10. Correct record - 10', () => {
             .getByRole('button', { name: 'Correction approved' })
         ).toBeVisible()
       })
+      test('10.2.6.5 Validate correction requested modal', async () => {
+        const correctionRequestedRow = page.locator(
+          '#listTable-task-history #row_4'
+        )
+        await correctionRequestedRow.getByText('Correction requested').click()
+
+        const time = await correctionRequestedRow
+          .locator('span')
+          .nth(1)
+          .innerText()
+
+        const requester = await correctionRequestedRow
+          .locator('span')
+          .nth(2)
+          .innerText()
+
+        /*
+         * Expected result: Should show
+         * - Correction requested header
+         * - Requester & time
+         * - Requested by
+         * - Id check
+         * - Reason
+         * - Comment
+         * - Original vs Correction
+         */
+
+        await expect(
+          page.locator('h1:text("Correction requested")')
+        ).toBeVisible()
+
+        await expect(page.getByText(requester + ' — ' + time)).toBeVisible()
+        await expect(
+          page.getByText('Requested by' + 'Informant (Spouse)')
+        ).toBeVisible()
+
+        await expect(page.getByText('ID check' + 'Verified')).toBeVisible()
+
+        await expect(
+          page.getByText(
+            'Reason for request' +
+              'Myself or an agent made a mistake (Clerical error)'
+          )
+        ).toBeVisible()
+
+        await expect(
+          page.getByText(
+            'Comment' + declaration.registration.registrationNumber
+          )
+        ).toBeVisible()
+
+        await expect(
+          page.getByText(
+            'First name(s) (Deceased)' +
+              declaration.deceased.name[0].firstNames +
+              updatedDeceasedDetails.firstNames
+          )
+        ).toBeVisible()
+
+        await expect(
+          page.getByText(
+            'Last name (Deceased)' +
+              declaration.deceased.name[0].familyName +
+              updatedDeceasedDetails.familyName
+          )
+        ).toBeVisible()
+
+        await expect(
+          page.getByText(
+            'Sex (Deceased)' +
+              declaration.deceased.gender +
+              updatedDeceasedDetails.gender
+          )
+        ).toBeVisible()
+
+        await expect(
+          page.getByText(
+            'Date of birth (Deceased)' +
+              format(parseISO(declaration.deceased.birthDate), 'yyyy-MM-dd') +
+              format(parseISO(updatedDeceasedDetails.birthDate), 'yyyy-MM-dd')
+          )
+        ).toBeVisible()
+
+        await expect(
+          page.getByText(
+            'Nationality (Deceased)' +
+              'Farajaland' +
+              updatedDeceasedDetails.nationality
+          )
+        ).toBeVisible()
+
+        await expect(
+          page.getByText(
+            'Type of ID (Deceased)National ID' + updatedDeceasedDetails.idType
+          )
+        ).toBeVisible()
+        await expect(
+          page.getByText('ID Number (Deceased)' + updatedDeceasedDetails.id)
+        ).toBeVisible()
+
+        await expect(
+          page.getByText(
+            'Marital status (Deceased)' + updatedDeceasedDetails.maritalStatus
+          )
+        ).toBeVisible()
+
+        await expect(
+          page.getByText(
+            'No. of dependants (Deceased)' + updatedDeceasedDetails.NOdependants
+          )
+        ).toBeVisible()
+
+        await expect(
+          page.getByText(
+            'Province (Deceased)' +
+              'Sulaka' +
+              updatedDeceasedDetails.address.province
+          )
+        ).toBeVisible()
+
+        await page.getByRole('button', { name: 'Next page' }).click()
+
+        await expect(
+          page.getByText(
+            'District (Deceased)' +
+              'Zobwe' +
+              updatedDeceasedDetails.address.district
+          )
+        ).toBeVisible()
+
+        await expect(
+          page.getByText(
+            'Town (Deceased)' +
+              declaration.deceased.address[0].city +
+              updatedDeceasedDetails.address.town
+          )
+        ).toBeVisible()
+
+        await expect(
+          page.getByText(
+            'Residential Area (Deceased)' +
+              declaration.deceased.address[0].line[2] +
+              updatedDeceasedDetails.address.residentialArea
+          )
+        ).toBeVisible()
+
+        await expect(
+          page.getByText(
+            'Street (Deceased)' +
+              declaration.deceased.address[0].line[1] +
+              updatedDeceasedDetails.address.street
+          )
+        ).toBeVisible()
+
+        await expect(
+          page.getByText(
+            'Number (Deceased)' +
+              declaration.deceased.address[0].line[0] +
+              updatedDeceasedDetails.address.number
+          )
+        ).toBeVisible()
+
+        await expect(
+          page.getByText(
+            'Postcode / Zip (Deceased)' +
+              declaration.deceased.address[0].postalCode +
+              updatedDeceasedDetails.address.zipCode
+          )
+        ).toBeVisible()
+
+        await page
+          .locator('h1:text("Correction requested")')
+          .locator('xpath=following-sibling::*[1]')
+          .click()
+      })
+      test('10.2.6.6 Validate correction approved modal', async () => {
+        const correctionApprovedRow = page.locator(
+          '#listTable-task-history #row_6'
+        )
+        await correctionApprovedRow.getByText('Correction approved').click()
+
+        const time = await correctionApprovedRow
+          .locator('span')
+          .nth(1)
+          .innerText()
+
+        const reviewer = await correctionApprovedRow
+          .locator('span')
+          .nth(2)
+          .innerText()
+
+        /*
+         * Expected result: Should show
+         * - Correction approved header
+         * - Reviewer & time
+         */
+
+        await expect(
+          page.locator('h1:text("Correction approved")')
+        ).toBeVisible()
+
+        await expect(page.getByText(reviewer + ' — ' + time)).toBeVisible()
+        await page
+          .locator('h1:text("Correction approved")')
+          .locator('xpath=following-sibling::*[1]')
+          .click()
+      })
     })
   })
 })
