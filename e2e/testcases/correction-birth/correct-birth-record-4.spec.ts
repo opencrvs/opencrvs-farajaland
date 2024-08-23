@@ -622,7 +622,7 @@ test.describe.serial(' Correct record - 4', () => {
         .click()
       await page
         .locator('#birthLocation')
-        .fill(updatedChildDetails.birthFacility.slice(0, 2))
+        .fill(updatedChildDetails.birthFacility.slice(0, 4))
       await page.getByText(updatedChildDetails.birthFacility).click()
 
       await page.waitForTimeout(500)
