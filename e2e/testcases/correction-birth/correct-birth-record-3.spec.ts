@@ -1,5 +1,10 @@
 import { expect, test, type Page } from '@playwright/test'
-import { createPIN, getToken, login } from '../../helpers'
+import {
+  createPIN,
+  formatDateTo_ddMMMMyyyy,
+  getToken,
+  login
+} from '../../helpers'
 import faker from '@faker-js/faker'
 import {
   ConvertEnumsToStrings,
@@ -185,7 +190,7 @@ test.describe.serial(' Correct record - 3', () => {
     await expect(
       page.getByText(
         `Date of Birth:
-        ${format(parseISO(declaration.child.birthDate), 'dd MMMM yyyy')}
+        ${formatDateTo_ddMMMMyyyy(declaration.child.birthDate)}
         `
       )
     ).toBeVisible()
@@ -299,17 +304,14 @@ test.describe.serial(' Correct record - 3', () => {
 
         await expect(
           page.locator('#mother-content #Date').getByRole('deletion')
-        ).toHaveText(
-          format(parseISO(declaration.mother.birthDate), 'dd MMMM yyyy'),
-          { ignoreCase: true }
-        )
+        ).toHaveText(formatDateTo_ddMMMMyyyy(declaration.mother.birthDate), {
+          ignoreCase: true
+        })
 
         await expect(
           page
             .locator('#mother-content #Date')
-            .getByText(
-              format(parseISO(updatedMotherDetails.birthDate), 'dd MMMM yyyy')
-            )
+            .getByText(formatDateTo_ddMMMMyyyy(updatedMotherDetails.birthDate))
         ).toBeVisible()
       })
 
@@ -891,8 +893,8 @@ test.describe.serial(' Correct record - 3', () => {
     await expect(
       page.getByText(
         'Date of birth (mother)' +
-          format(parseISO(declaration.mother.birthDate), 'dd MMMM yyyy') +
-          format(parseISO(updatedMotherDetails.birthDate), 'dd MMMM yyyy')
+          formatDateTo_ddMMMMyyyy(declaration.mother.birthDate) +
+          formatDateTo_ddMMMMyyyy(updatedMotherDetails.birthDate)
       )
     ).toBeVisible()
 
@@ -1083,8 +1085,8 @@ test.describe.serial(' Correct record - 3', () => {
       await expect(
         page.getByText(
           'Date of birth (mother)' +
-            format(parseISO(declaration.mother.birthDate), 'dd MMMM yyyy') +
-            format(parseISO(updatedMotherDetails.birthDate), 'dd MMMM yyyy')
+            formatDateTo_ddMMMMyyyy(declaration.mother.birthDate) +
+            formatDateTo_ddMMMMyyyy(updatedMotherDetails.birthDate)
         )
       ).toBeVisible()
 

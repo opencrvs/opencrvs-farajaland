@@ -1,6 +1,8 @@
 import { expect, test, type Page } from '@playwright/test'
 import {
   createPIN,
+  formatDateTo_ddMMMMyyyy,
+  formatDateTo_yyyyMMdd,
   getLocationNameFromFhirId,
   getToken,
   login
@@ -144,7 +146,7 @@ test.describe.serial(' Correct record - 15', () => {
     await expect(
       page.getByText(
         `Date of Birth:
-      ${format(parseISO(declaration.informant.birthDate), 'dd MMMM yyyy')}
+      ${formatDateTo_ddMMMMyyyy(declaration.informant.birthDate)}
       `
       )
     ).toBeVisible()
@@ -229,9 +231,7 @@ test.describe.serial(' Correct record - 15', () => {
       await expect(
         page
           .locator('#deathEvent-content #Date')
-          .getByText(
-            format(parseISO(updatedEventDetails.dateOfDeath), 'dd MMMM yyyy')
-          )
+          .getByText(formatDateTo_ddMMMMyyyy(updatedEventDetails.dateOfDeath))
       ).toBeVisible()
     })
 
@@ -472,7 +472,7 @@ test.describe.serial(' Correct record - 15', () => {
             parseISO(declaration.deceased.deceased.deathDate),
             'dd MMMM yyyy'
           ) +
-          format(parseISO(updatedEventDetails.dateOfDeath), 'dd MMMM yyyy')
+          formatDateTo_ddMMMMyyyy(updatedEventDetails.dateOfDeath)
       )
     ).toBeVisible()
     await expect(
@@ -629,7 +629,7 @@ test.describe.serial(' Correct record - 15', () => {
             parseISO(declaration.deceased.deceased.deathDate),
             'yyyy-MM-dd'
           ) +
-          format(parseISO(updatedEventDetails.dateOfDeath), 'yyyy-MM-dd')
+          formatDateTo_yyyyMMdd(updatedEventDetails.dateOfDeath)
       )
     ).toBeVisible()
     await expect(

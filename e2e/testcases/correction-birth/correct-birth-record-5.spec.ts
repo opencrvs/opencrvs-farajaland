@@ -1,5 +1,10 @@
 import { expect, test, type Page } from '@playwright/test'
-import { createPIN, getToken, login } from '../../helpers'
+import {
+  createPIN,
+  formatDateTo_ddMMMMyyyy,
+  getToken,
+  login
+} from '../../helpers'
 import faker from '@faker-js/faker'
 import {
   BirthDetails,
@@ -259,17 +264,14 @@ test.describe.serial(' Correct record - 5', () => {
 
       await expect(
         page.locator('#child-content #Date').getByRole('deletion')
-      ).toHaveText(
-        format(parseISO(declaration.child.birthDate), 'dd MMMM yyyy'),
-        { ignoreCase: true }
-      )
+      ).toHaveText(formatDateTo_ddMMMMyyyy(declaration.child.birthDate), {
+        ignoreCase: true
+      })
 
       await expect(
         page
           .locator('#child-content #Date')
-          .getByText(
-            format(parseISO(updatedChildDetails.birthDate), 'dd MMMM yyyy')
-          )
+          .getByText(formatDateTo_ddMMMMyyyy(updatedChildDetails.birthDate))
       ).toBeVisible()
     })
 
@@ -632,8 +634,8 @@ test.describe.serial(' Correct record - 5', () => {
     await expect(
       page.getByText(
         'Date of birth (Child)' +
-          format(parseISO(declaration.child.birthDate), 'dd MMMM yyyy') +
-          format(parseISO(updatedChildDetails.birthDate), 'dd MMMM yyyy')
+          formatDateTo_ddMMMMyyyy(declaration.child.birthDate) +
+          formatDateTo_ddMMMMyyyy(updatedChildDetails.birthDate)
       )
     ).toBeVisible()
 

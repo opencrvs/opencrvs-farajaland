@@ -1,5 +1,10 @@
 import { expect, test, type Page } from '@playwright/test'
-import { createPIN, getToken, login } from '../../helpers'
+import {
+  createPIN,
+  formatDateTo_ddMMMMyyyy,
+  getToken,
+  login
+} from '../../helpers'
 import faker from '@faker-js/faker'
 import { format, parseISO, subDays } from 'date-fns'
 import { DeathDeclaration } from '../death/types'
@@ -318,10 +323,9 @@ test.describe.serial(' Correct record - 12', () => {
 
         await expect(
           page.locator('#informant-content #Date').getByRole('deletion')
-        ).toHaveText(
-          format(parseISO(declaration.informant.birthDate), 'dd MMMM yyyy'),
-          { ignoreCase: true }
-        )
+        ).toHaveText(formatDateTo_ddMMMMyyyy(declaration.informant.birthDate), {
+          ignoreCase: true
+        })
 
         await expect(
           page
@@ -862,8 +866,8 @@ test.describe.serial(' Correct record - 12', () => {
     await expect(
       page.getByText(
         'Date of birth (informant)' +
-          format(parseISO(declaration.informant.birthDate), 'dd MMMM yyyy') +
-          format(parseISO(updatedInformantDetails.birthDate), 'dd MMMM yyyy')
+          formatDateTo_ddMMMMyyyy(declaration.informant.birthDate) +
+          formatDateTo_ddMMMMyyyy(updatedInformantDetails.birthDate)
       )
     ).toBeVisible()
 
@@ -1046,8 +1050,8 @@ test.describe.serial(' Correct record - 12', () => {
       await expect(
         page.getByText(
           'Date of birth (informant)' +
-            format(parseISO(declaration.informant.birthDate), 'dd MMMM yyyy') +
-            format(parseISO(updatedInformantDetails.birthDate), 'dd MMMM yyyy')
+            formatDateTo_ddMMMMyyyy(declaration.informant.birthDate) +
+            formatDateTo_ddMMMMyyyy(updatedInformantDetails.birthDate)
         )
       ).toBeVisible()
 

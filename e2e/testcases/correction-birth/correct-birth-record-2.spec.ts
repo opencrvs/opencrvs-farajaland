@@ -1,5 +1,11 @@
 import { expect, test, type Page } from '@playwright/test'
-import { createPIN, getToken, login } from '../../helpers'
+import {
+  createPIN,
+  formatDateTo_ddMMMMyyyy,
+  formatDateTo_yyyyMMdd,
+  getToken,
+  login
+} from '../../helpers'
 import faker from '@faker-js/faker'
 import {
   ConvertEnumsToStrings,
@@ -140,7 +146,7 @@ test.describe.serial(' Correct record - 2', () => {
     await expect(
       page.getByText(
         `Date of Birth:
-        ${format(parseISO(declaration.father.birthDate), 'dd MMMM yyyy')}
+        ${formatDateTo_ddMMMMyyyy(declaration.father.birthDate)}
         `
       )
     ).toBeVisible()
@@ -319,10 +325,9 @@ test.describe.serial(' Correct record - 2', () => {
 
         await expect(
           page.locator('#informant-content #Date').getByRole('deletion')
-        ).toHaveText(
-          format(parseISO(declaration.informant.birthDate), 'dd MMMM yyyy'),
-          { ignoreCase: true }
-        )
+        ).toHaveText(formatDateTo_ddMMMMyyyy(declaration.informant.birthDate), {
+          ignoreCase: true
+        })
 
         await expect(
           page
@@ -881,8 +886,8 @@ test.describe.serial(' Correct record - 2', () => {
     await expect(
       page.getByText(
         'Date of birth (informant)' +
-          format(parseISO(declaration.informant.birthDate), 'dd MMMM yyyy') +
-          format(parseISO(updatedInformantDetails.birthDate), 'dd MMMM yyyy')
+          formatDateTo_ddMMMMyyyy(declaration.informant.birthDate) +
+          formatDateTo_ddMMMMyyyy(updatedInformantDetails.birthDate)
       )
     ).toBeVisible()
 
@@ -1067,8 +1072,8 @@ test.describe.serial(' Correct record - 2', () => {
       await expect(
         page.getByText(
           'Date of birth (informant)' +
-            format(parseISO(declaration.informant.birthDate), 'dd MMMM yyyy') +
-            format(parseISO(updatedInformantDetails.birthDate), 'dd MMMM yyyy')
+            formatDateTo_ddMMMMyyyy(declaration.informant.birthDate) +
+            formatDateTo_ddMMMMyyyy(updatedInformantDetails.birthDate)
         )
       ).toBeVisible()
 
@@ -1313,8 +1318,8 @@ test.describe.serial(' Correct record - 2', () => {
         await expect(
           page.getByText(
             'Date of birth (informant)' +
-              format(parseISO(declaration.informant.birthDate), 'yyyy-MM-dd') +
-              format(parseISO(updatedInformantDetails.birthDate), 'yyyy-MM-dd')
+              formatDateTo_yyyyMMdd(declaration.informant.birthDate) +
+              formatDateTo_yyyyMMdd(updatedInformantDetails.birthDate)
           )
         ).toBeVisible()
 

@@ -1,6 +1,8 @@
 import { expect, test, type Page } from '@playwright/test'
 import {
   createPIN,
+  formatDateTo_ddMMMMyyyy,
+  formatDateTo_yyyyMMdd,
   getLocationNameFromFhirId,
   getToken,
   goToSection,
@@ -196,7 +198,7 @@ test.describe('1. Correct record - 1', () => {
       await expect(
         page.getByText(
           `Date of Birth:
-        ${format(parseISO(declaration.mother.birthDate), 'dd MMMM yyyy')}
+        ${formatDateTo_ddMMMMyyyy(declaration.mother.birthDate)}
         `
         )
       ).toBeVisible()
@@ -384,17 +386,14 @@ test.describe('1. Correct record - 1', () => {
 
         await expect(
           page.locator('#child-content #Date').getByRole('deletion')
-        ).toHaveText(
-          format(parseISO(declaration.child.birthDate), 'dd MMMM yyyy'),
-          { ignoreCase: true }
-        )
+        ).toHaveText(formatDateTo_ddMMMMyyyy(declaration.child.birthDate), {
+          ignoreCase: true
+        })
 
         await expect(
           page
             .locator('#child-content #Date')
-            .getByText(
-              format(parseISO(updatedChildDetails.birthDate), 'dd MMMM yyyy')
-            )
+            .getByText(formatDateTo_ddMMMMyyyy(updatedChildDetails.birthDate))
         ).toBeVisible()
       })
 
@@ -720,8 +719,8 @@ test.describe('1. Correct record - 1', () => {
         await expect(
           page.getByText(
             'Date of birth (Child)' +
-              format(parseISO(declaration.child.birthDate), 'dd MMMM yyyy') +
-              format(parseISO(updatedChildDetails.birthDate), 'dd MMMM yyyy')
+              formatDateTo_ddMMMMyyyy(declaration.child.birthDate) +
+              formatDateTo_ddMMMMyyyy(updatedChildDetails.birthDate)
           )
         ).toBeVisible()
 
@@ -888,8 +887,8 @@ test.describe('1. Correct record - 1', () => {
         await expect(
           page.getByText(
             'Date of birth (Child)' +
-              format(parseISO(declaration.child.birthDate), 'dd MMMM yyyy') +
-              format(parseISO(updatedChildDetails.birthDate), 'dd MMMM yyyy')
+              formatDateTo_ddMMMMyyyy(declaration.child.birthDate) +
+              formatDateTo_ddMMMMyyyy(updatedChildDetails.birthDate)
           )
         ).toBeVisible()
 
@@ -1061,8 +1060,8 @@ test.describe('1. Correct record - 1', () => {
           await expect(
             page.getByText(
               'Date of birth (Child)' +
-                format(parseISO(declaration.child.birthDate), 'yyyy-MM-dd') +
-                format(parseISO(updatedChildDetails.birthDate), 'yyyy-MM-dd')
+                formatDateTo_yyyyMMdd(declaration.child.birthDate) +
+                formatDateTo_yyyyMMdd(updatedChildDetails.birthDate)
             )
           ).toBeVisible()
 

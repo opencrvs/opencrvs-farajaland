@@ -1,6 +1,8 @@
 import { expect, test, type Page } from '@playwright/test'
 import {
   createPIN,
+  formatDateTo_ddMMMMyyyy,
+  formatDateTo_yyyyMMdd,
   getToken,
   goToSection,
   login,
@@ -170,7 +172,7 @@ test.describe('10. Correct record - 10', () => {
       await expect(
         page.getByText(
           `Date of Birth:
-        ${format(parseISO(declaration.informant.birthDate), 'dd MMMM yyyy')}
+        ${formatDateTo_ddMMMMyyyy(declaration.informant.birthDate)}
         `
         )
       ).toBeVisible()
@@ -228,7 +230,7 @@ test.describe('10. Correct record - 10', () => {
       await expect(
         page.getByText(
           `Date of Birth:
-        ${format(parseISO(declaration.informant.birthDate), 'dd MMMM yyyy')}
+        ${formatDateTo_ddMMMMyyyy(declaration.informant.birthDate)}
         `
         )
       ).toBeVisible()
@@ -388,16 +390,15 @@ test.describe('10. Correct record - 10', () => {
 
         await expect(
           page.locator('#deceased-content #Date').getByRole('deletion')
-        ).toHaveText(
-          format(parseISO(declaration.deceased.birthDate), 'dd MMMM yyyy'),
-          { ignoreCase: true }
-        )
+        ).toHaveText(formatDateTo_ddMMMMyyyy(declaration.deceased.birthDate), {
+          ignoreCase: true
+        })
 
         await expect(
           page
             .locator('#deceased-content #Date')
             .getByText(
-              format(parseISO(updatedDeceasedDetails.birthDate), 'dd MMMM yyyy')
+              formatDateTo_ddMMMMyyyy(updatedDeceasedDetails.birthDate)
             )
         ).toBeVisible()
       })
@@ -880,8 +881,8 @@ test.describe('10. Correct record - 10', () => {
         await expect(
           page.getByText(
             'Date of birth (Deceased)' +
-              format(parseISO(declaration.deceased.birthDate), 'dd MMMM yyyy') +
-              format(parseISO(updatedDeceasedDetails.birthDate), 'dd MMMM yyyy')
+              formatDateTo_ddMMMMyyyy(declaration.deceased.birthDate) +
+              formatDateTo_ddMMMMyyyy(updatedDeceasedDetails.birthDate)
           )
         ).toBeVisible()
 
@@ -1062,8 +1063,8 @@ test.describe('10. Correct record - 10', () => {
         await expect(
           page.getByText(
             'Date of birth (Deceased)' +
-              format(parseISO(declaration.deceased.birthDate), 'dd MMMM yyyy') +
-              format(parseISO(updatedDeceasedDetails.birthDate), 'dd MMMM yyyy')
+              formatDateTo_ddMMMMyyyy(declaration.deceased.birthDate) +
+              formatDateTo_ddMMMMyyyy(updatedDeceasedDetails.birthDate)
           )
         ).toBeVisible()
 
@@ -1248,8 +1249,8 @@ test.describe('10. Correct record - 10', () => {
         await expect(
           page.getByText(
             'Date of birth (Deceased)' +
-              format(parseISO(declaration.deceased.birthDate), 'yyyy-MM-dd') +
-              format(parseISO(updatedDeceasedDetails.birthDate), 'yyyy-MM-dd')
+              formatDateTo_yyyyMMdd(declaration.deceased.birthDate) +
+              formatDateTo_yyyyMMdd(updatedDeceasedDetails.birthDate)
           )
         ).toBeVisible()
 

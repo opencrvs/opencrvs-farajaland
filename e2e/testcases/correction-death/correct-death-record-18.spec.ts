@@ -1,7 +1,12 @@
 import { expect, test, type Page } from '@playwright/test'
-import { createPIN, getToken, login } from '../../helpers'
+import {
+  createPIN,
+  formatDateTo_ddMMMMyyyy,
+  getToken,
+  login
+} from '../../helpers'
 import faker from '@faker-js/faker'
-import { format, parseISO, subDays } from 'date-fns'
+import { format, subDays } from 'date-fns'
 import { DeathDeclaration } from '../death/types'
 import { createDeathDeclaration, fetchDeclaration } from '../death/helpers'
 
@@ -301,17 +306,14 @@ test.describe.serial(' Correct record - 18', () => {
 
       await expect(
         page.locator('#deceased-content #Date').getByRole('deletion')
-      ).toHaveText(
-        format(parseISO(declaration.deceased.birthDate), 'dd MMMM yyyy'),
-        { ignoreCase: true }
-      )
+      ).toHaveText(formatDateTo_ddMMMMyyyy(declaration.deceased.birthDate), {
+        ignoreCase: true
+      })
 
       await expect(
         page
           .locator('#deceased-content #Date')
-          .getByText(
-            format(parseISO(updatedDeceasedDetails.birthDate), 'dd MMMM yyyy')
-          )
+          .getByText(formatDateTo_ddMMMMyyyy(updatedDeceasedDetails.birthDate))
       ).toBeVisible()
     })
 
@@ -754,8 +756,8 @@ test.describe.serial(' Correct record - 18', () => {
     await expect(
       page.getByText(
         'Date of birth (Deceased)' +
-          format(parseISO(declaration.deceased.birthDate), 'dd MMMM yyyy') +
-          format(parseISO(updatedDeceasedDetails.birthDate), 'dd MMMM yyyy')
+          formatDateTo_ddMMMMyyyy(declaration.deceased.birthDate) +
+          formatDateTo_ddMMMMyyyy(updatedDeceasedDetails.birthDate)
       )
     ).toBeVisible()
 
