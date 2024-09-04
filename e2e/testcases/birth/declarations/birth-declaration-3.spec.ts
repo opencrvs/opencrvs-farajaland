@@ -416,7 +416,7 @@ test.describe.serial('3. Birth declaration case - 3', () => {
           page.locator('button[name="uploadDocForMother"]')
         )
       })
-      test("3.1.5.3 Upload proof of fatehr's id", async () => {
+      test("3.1.5.3 Upload proof of father's id", async () => {
         const fathersDocumentSection = page.locator('#uploadDocForFather')
         await fathersDocumentSection.getByText('Select...').click()
         await fathersDocumentSection
