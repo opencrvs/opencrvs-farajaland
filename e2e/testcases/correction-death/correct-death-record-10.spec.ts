@@ -1198,7 +1198,7 @@ test.describe('10. Correct record - 10', () => {
          */
 
         await expect(
-          page.locator('h1:text("Correction requested")')
+          page.getByRole('heading', { name: 'Correction requested' })
         ).toBeVisible()
 
         await expect(page.getByText(requester + ' — ' + time)).toBeVisible()
@@ -1341,7 +1341,7 @@ test.describe('10. Correct record - 10', () => {
         ).toBeVisible()
 
         await page
-          .locator('h1:text("Correction requested")')
+          .getByRole('heading', { name: 'Correction requested' })
           .locator('xpath=following-sibling::*[1]')
           .click()
       })
@@ -1368,12 +1368,12 @@ test.describe('10. Correct record - 10', () => {
          */
 
         await expect(
-          page.locator('h1:text("Correction approved")')
+          page.getByRole('heading', { name: 'Correction approved' })
         ).toBeVisible()
 
         await expect(page.getByText(reviewer + ' — ' + time)).toBeVisible()
         await page
-          .locator('h1:text("Correction approved")')
+          .getByRole('heading', { name: 'Correction approved' })
           .locator('xpath=following-sibling::*[1]')
           .click()
       })

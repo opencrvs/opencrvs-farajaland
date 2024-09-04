@@ -904,7 +904,9 @@ test.describe.serial(' Correct record - 4', () => {
      * - Comment
      * - Original vs Correction
      */
-    await expect(page.locator('h1:text("Record corrected")')).toBeVisible()
+    await expect(
+      page.getByRole('heading', { name: 'Record corrected' })
+    ).toBeVisible()
 
     await expect(page.getByText(requester + ' — ' + time)).toBeVisible()
 
@@ -1046,7 +1048,7 @@ test.describe.serial(' Correct record - 4', () => {
     ).toBeVisible()
 
     await page
-      .locator('h1:text("Record corrected")')
+      .getByRole('heading', { name: 'Record corrected' })
       .locator('xpath=following-sibling::*[1]')
       .click()
   })

@@ -1211,7 +1211,7 @@ test.describe.serial(' Correct record - 2', () => {
          */
 
         await expect(
-          page.locator('h1:text("Correction requested")')
+          page.getByRole('heading', { name: 'Correction requested' })
         ).toBeVisible()
 
         await expect(page.getByText(requester + ' — ' + time)).toBeVisible()
@@ -1404,7 +1404,7 @@ test.describe.serial(' Correct record - 2', () => {
         ).toBeVisible()
 
         await page
-          .locator('h1:text("Correction requested")')
+          .getByRole('heading', { name: 'Correction requested' })
           .locator('xpath=following-sibling::*[1]')
           .click()
       })
@@ -1433,7 +1433,7 @@ test.describe.serial(' Correct record - 2', () => {
          */
 
         await expect(
-          page.locator('h1:text("Correction rejected")')
+          page.getByRole('heading', { name: 'Correction rejected' })
         ).toBeVisible()
 
         await expect(page.getByText(reviewer + ' — ' + time)).toBeVisible()
@@ -1442,7 +1442,7 @@ test.describe.serial(' Correct record - 2', () => {
         ).toBeVisible()
 
         await page
-          .locator('h1:text("Correction rejected")')
+          .getByRole('heading', { name: 'Correction rejected' })
           .locator('xpath=following-sibling::*[1]')
           .click()
       })
