@@ -3,6 +3,7 @@ import {
   createPIN,
   formatDateTo_ddMMMMyyyy,
   formatDateTo_yyyyMMdd,
+  formatName,
   getToken,
   login
 } from '../../helpers'
@@ -454,11 +455,7 @@ test.describe.serial(' Correct record - 11', () => {
     })
 
     await expect(
-      page.getByText(
-        declaration.deceased.name[0].firstNames +
-          ' ' +
-          declaration.deceased.name[0].familyName
-      )
+      page.getByText(formatName(declaration.deceased.name[0]))
     ).toBeVisible()
   })
   test.describe('11.8 Correction Approval', async () => {
@@ -573,22 +570,12 @@ test.describe.serial(' Correct record - 11', () => {
       })
 
       await expect(
-        page.getByText(
-          declaration.deceased.name[0].firstNames +
-            ' ' +
-            declaration.deceased.name[0].familyName
-        )
+        page.getByText(formatName(declaration.deceased.name[0]))
       ).toBeVisible()
     })
 
     test('11.8.4 Validate history in record audit', async () => {
-      await page
-        .getByText(
-          declaration.deceased.name[0].firstNames +
-            ' ' +
-            declaration.deceased.name[0].familyName
-        )
-        .click()
+      await page.getByText(formatName(declaration.deceased.name[0])).click()
 
       await page.getByLabel('Assign record').click()
       if (

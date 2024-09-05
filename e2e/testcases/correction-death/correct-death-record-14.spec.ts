@@ -2,6 +2,7 @@ import { expect, test, type Page } from '@playwright/test'
 import {
   createPIN,
   formatDateTo_ddMMMMyyyy,
+  formatName,
   getToken,
   login
 } from '../../helpers'
@@ -694,12 +695,8 @@ test.describe.serial(' Correct record - 14', () => {
     await expect(
       page.getByText(
         'Full name (Deceased)' +
-          declaration.deceased.name[0].firstNames +
-          ' ' +
-          declaration.deceased.name[0].familyName +
-          updatedDeceasedDetails.firstNames +
-          ' ' +
-          updatedDeceasedDetails.familyName
+          formatName(declaration.deceased.name[0]) +
+          formatName(updatedDeceasedDetails)
       )
     ).toBeVisible()
 
@@ -764,7 +761,7 @@ test.describe.serial(' Correct record - 14', () => {
         'No. of dependants (Deceased)-' + updatedDeceasedDetails.NOdependants
       )
     ).toBeVisible()
-    await expect(page.getByText('Court')).toBeVisible()
+    await expect(page.getByText('Court', { exact: true })).toBeVisible()
     await expect(page.getByText(updatedDeceasedDetails.reason)).toBeVisible()
 
     await page.getByLabel('No').check()
@@ -786,21 +783,11 @@ test.describe.serial(' Correct record - 14', () => {
     })
 
     await expect(
-      page.getByText(
-        updatedDeceasedDetails.firstNames +
-          ' ' +
-          updatedDeceasedDetails.familyName
-      )
+      page.getByText(formatName(updatedDeceasedDetails))
     ).toBeVisible()
   })
   test('14.8 Validate history in record audit', async () => {
-    await page
-      .getByText(
-        updatedDeceasedDetails.firstNames +
-          ' ' +
-          updatedDeceasedDetails.familyName
-      )
-      .click()
+    await page.getByText(formatName(updatedDeceasedDetails)).click()
 
     await page.getByLabel('Assign record').click()
 

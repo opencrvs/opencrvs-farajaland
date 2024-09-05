@@ -3,6 +3,7 @@ import {
   createPIN,
   formatDateTo_ddMMMMyyyy,
   formatDateTo_yyyyMMdd,
+  formatName,
   getLocationNameFromFhirId,
   getToken,
   goToSection,
@@ -95,11 +96,7 @@ test.describe('1. Correct record - 1', () => {
        * - See status, event, trackingId, BRN, DOB, Place of birth, Informant contact
        */
       await expect(
-        page.getByText(
-          declaration.child.name[0].firstNames +
-            ' ' +
-            declaration.child.name[0].familyName
-        )
+        page.getByText(formatName(declaration.child.name[0]))
       ).toBeVisible()
       await expect(
         page.getByRole('button', { name: 'Correct record' })
@@ -699,12 +696,8 @@ test.describe('1. Correct record - 1', () => {
         await expect(
           page.getByText(
             'Full name (Child)' +
-              declaration.child.name[0].firstNames +
-              ' ' +
-              declaration.child.name[0].familyName +
-              updatedChildDetails.firstNames +
-              ' ' +
-              updatedChildDetails.familyName
+              formatName(declaration.child.name[0]) +
+              formatName(updatedChildDetails)
           )
         ).toBeVisible()
 
@@ -759,11 +752,7 @@ test.describe('1. Correct record - 1', () => {
         ).toBeVisible()
 
         await expect(
-          page.getByText(
-            declaration.mother.name[0].firstNames +
-              ' ' +
-              declaration.mother.name[0].familyName
-          )
+          page.getByText(formatName(declaration.mother.name[0]))
         ).toBeVisible()
         await expect(page.getByText('Verified')).toBeVisible()
         await expect(
@@ -800,11 +789,7 @@ test.describe('1. Correct record - 1', () => {
         )
 
         await expect(
-          page.getByText(
-            declaration.child.name[0].firstNames +
-              ' ' +
-              declaration.child.name[0].familyName
-          )
+          page.getByText(formatName(declaration.child.name[0]))
         ).toBeVisible()
       })
     })
@@ -845,10 +830,7 @@ test.describe('1. Correct record - 1', () => {
 
         await expect(
           page.getByText(
-            'Requested by' +
-              declaration.mother.name[0].firstNames +
-              ' ' +
-              declaration.mother.name[0].familyName
+            'Requested by' + formatName(declaration.mother.name[0])
           )
         ).toBeVisible()
 
@@ -867,12 +849,8 @@ test.describe('1. Correct record - 1', () => {
         await expect(
           page.getByText(
             'Full name (Child)' +
-              declaration.child.name[0].firstNames +
-              ' ' +
-              declaration.child.name[0].familyName +
-              updatedChildDetails.firstNames +
-              ' ' +
-              updatedChildDetails.familyName
+              formatName(declaration.child.name[0]) +
+              formatName(updatedChildDetails)
           )
         ).toBeVisible()
 
@@ -944,22 +922,12 @@ test.describe('1. Correct record - 1', () => {
           }
         )
         await expect(
-          page.getByText(
-            updatedChildDetails.firstNames +
-              ' ' +
-              updatedChildDetails.familyName
-          )
+          page.getByText(formatName(updatedChildDetails))
         ).toBeVisible()
       })
       test.describe('1.2.6.4 Validate history in record audit', async () => {
         test('1.2.6.4.1 Validate entries in record audit', async () => {
-          await page
-            .getByText(
-              updatedChildDetails.firstNames +
-                ' ' +
-                updatedChildDetails.familyName
-            )
-            .click()
+          await page.getByText(formatName(updatedChildDetails)).click()
 
           await page.getByLabel('Assign record').click()
           await page

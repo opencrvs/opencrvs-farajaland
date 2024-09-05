@@ -2,6 +2,7 @@ import { expect, test, type Page } from '@playwright/test'
 import {
   createPIN,
   formatDateTo_ddMMMMyyyy,
+  formatName,
   getToken,
   login
 } from '../../helpers'
@@ -129,22 +130,12 @@ test.describe.serial(' Correct record - 12', () => {
       })
 
       await expect(
-        page.getByText(
-          declaration.deceased.name[0].firstNames +
-            ' ' +
-            declaration.deceased.name[0].familyName
-        )
+        page.getByText(formatName(declaration.deceased.name[0]))
       ).toBeVisible()
     })
 
     test('12.1.3 Record audit', async () => {
-      await page
-        .getByText(
-          declaration.deceased.name[0].firstNames +
-            ' ' +
-            declaration.deceased.name[0].familyName
-        )
-        .click()
+      await page.getByText(formatName(declaration.deceased.name[0])).click()
 
       await page.getByLabel('Assign record').click()
       await page.getByRole('button', { name: 'Assign', exact: true }).click()
@@ -854,12 +845,8 @@ test.describe.serial(' Correct record - 12', () => {
     await expect(
       page.getByText(
         'Full name (informant)' +
-          declaration.informant.name[0].firstNames +
-          ' ' +
-          declaration.informant.name[0].familyName +
-          updatedInformantDetails.firstNames +
-          ' ' +
-          updatedInformantDetails.familyName
+          formatName(declaration.informant.name[0]) +
+          formatName(updatedInformantDetails)
       )
     ).toBeVisible()
 
@@ -949,11 +936,7 @@ test.describe.serial(' Correct record - 12', () => {
     })
 
     await expect(
-      page.getByText(
-        declaration.deceased.name[0].firstNames +
-          ' ' +
-          declaration.deceased.name[0].familyName
-      )
+      page.getByText(formatName(declaration.deceased.name[0]))
     ).toBeVisible()
   })
 
@@ -1038,12 +1021,8 @@ test.describe.serial(' Correct record - 12', () => {
       await expect(
         page.getByText(
           'Full name (informant)' +
-            declaration.informant.name[0].firstNames +
-            ' ' +
-            declaration.informant.name[0].familyName +
-            updatedInformantDetails.firstNames +
-            ' ' +
-            updatedInformantDetails.familyName
+            formatName(declaration.informant.name[0]) +
+            formatName(updatedInformantDetails)
         )
       ).toBeVisible()
 
@@ -1122,22 +1101,12 @@ test.describe.serial(' Correct record - 12', () => {
       })
 
       await expect(
-        page.getByText(
-          declaration.deceased.name[0].firstNames +
-            ' ' +
-            declaration.deceased.name[0].familyName
-        )
+        page.getByText(formatName(declaration.deceased.name[0]))
       ).toBeVisible()
     })
 
     test('12.8.4 Validate history in record audit', async () => {
-      await page
-        .getByText(
-          declaration.deceased.name[0].firstNames +
-            ' ' +
-            declaration.deceased.name[0].familyName
-        )
-        .click()
+      await page.getByText(formatName(declaration.deceased.name[0])).click()
 
       await page.getByLabel('Assign record').click()
       if (

@@ -2,6 +2,7 @@ import { expect, test, type Page } from '@playwright/test'
 import {
   createPIN,
   formatDateTo_ddMMMMyyyy,
+  formatName,
   getToken,
   login
 } from '../../helpers'
@@ -136,22 +137,12 @@ test.describe.serial(' Correct record - 3', () => {
       })
 
       await expect(
-        page.getByText(
-          declaration.child.name[0].firstNames +
-            ' ' +
-            declaration.child.name[0].familyName
-        )
+        page.getByText(formatName(declaration.child.name[0]))
       ).toBeVisible()
     })
 
     test('3.1.3 Record audit', async () => {
-      await page
-        .getByText(
-          declaration.child.name[0].firstNames +
-            ' ' +
-            declaration.child.name[0].familyName
-        )
-        .click()
+      await page.getByText(formatName(declaration.child.name[0])).click()
 
       await page.getByLabel('Assign record').click()
       await page.getByRole('button', { name: 'Assign', exact: true }).click()
@@ -881,12 +872,8 @@ test.describe.serial(' Correct record - 3', () => {
     await expect(
       page.getByText(
         'Full name (mother)' +
-          declaration.mother.name[0].firstNames +
-          ' ' +
-          declaration.mother.name[0].familyName +
-          updatedMotherDetails.firstNames +
-          ' ' +
-          updatedMotherDetails.familyName
+          formatName(declaration.mother.name[0]) +
+          formatName(updatedMotherDetails)
       )
     ).toBeVisible()
 
@@ -948,11 +935,7 @@ test.describe.serial(' Correct record - 3', () => {
     ).toBeVisible()
 
     await expect(
-      page.getByText(
-        declaration.child.name[0].firstNames +
-          ' ' +
-          declaration.child.name[0].familyName
-      )
+      page.getByText(formatName(declaration.child.name[0]))
     ).toBeVisible()
     await expect(page.getByText('Verified')).toBeVisible()
     await expect(
@@ -983,11 +966,7 @@ test.describe.serial(' Correct record - 3', () => {
     })
 
     await expect(
-      page.getByText(
-        declaration.child.name[0].firstNames +
-          ' ' +
-          declaration.child.name[0].familyName
-      )
+      page.getByText(formatName(declaration.child.name[0]))
     ).toBeVisible()
   })
 
@@ -1025,12 +1004,7 @@ test.describe.serial(' Correct record - 3', () => {
       await expect(page.getByText('Submitter' + 'Felix Katongo')).toBeVisible()
 
       await expect(
-        page.getByText(
-          'Requested by' +
-            declaration.child.name[0].firstNames +
-            ' ' +
-            declaration.child.name[0].familyName
-        )
+        page.getByText('Requested by' + formatName(declaration.child.name[0]))
       ).toBeVisible()
       await expect(
         page.getByText(
@@ -1073,12 +1047,8 @@ test.describe.serial(' Correct record - 3', () => {
       await expect(
         page.getByText(
           'Full name (mother)' +
-            declaration.mother.name[0].firstNames +
-            ' ' +
-            declaration.mother.name[0].familyName +
-            updatedMotherDetails.firstNames +
-            ' ' +
-            updatedMotherDetails.familyName
+            formatName(declaration.mother.name[0]) +
+            formatName(updatedMotherDetails)
         )
       ).toBeVisible()
 
@@ -1155,22 +1125,12 @@ test.describe.serial(' Correct record - 3', () => {
       })
 
       await expect(
-        page.getByText(
-          declaration.child.name[0].firstNames +
-            ' ' +
-            declaration.child.name[0].familyName
-        )
+        page.getByText(formatName(declaration.child.name[0]))
       ).toBeVisible()
     })
 
     test.skip('3.8.4 Validate history in record audit', async () => {
-      await page
-        .getByText(
-          declaration.child.name[0].firstNames +
-            ' ' +
-            declaration.child.name[0].familyName
-        )
-        .click()
+      await page.getByText(formatName(declaration.child.name[0])).click()
 
       await page.getByLabel('Assign record').click()
       if (

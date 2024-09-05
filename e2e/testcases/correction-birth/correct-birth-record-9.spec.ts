@@ -2,6 +2,7 @@ import { expect, test, type Page } from '@playwright/test'
 import {
   createPIN,
   formatDateTo_ddMMMMyyyy,
+  formatName,
   getToken,
   login
 } from '../../helpers'
@@ -120,20 +121,10 @@ test.describe.serial(' Correct record - 9', () => {
       })
 
       await expect(
-        page.getByText(
-          declaration.child.name[0].firstNames +
-            ' ' +
-            declaration.child.name[0].familyName
-        )
+        page.getByText(formatName(declaration.child.name[0]))
       ).toBeVisible()
 
-      await page
-        .getByText(
-          declaration.child.name[0].firstNames +
-            ' ' +
-            declaration.child.name[0].familyName
-        )
-        .click()
+      await page.getByText(formatName(declaration.child.name[0])).click()
     })
     test('9.1.3 Record audit', async () => {
       await page.getByLabel('Assign record').click()
@@ -705,12 +696,8 @@ test.describe.serial(' Correct record - 9', () => {
     await expect(
       page.getByText(
         'Full name (informant)' +
-          declaration.informant.name[0].firstNames +
-          ' ' +
-          declaration.informant.name[0].familyName +
-          updatedInformantDetails.firstNames +
-          ' ' +
-          updatedInformantDetails.familyName
+          formatName(declaration.informant.name[0]) +
+          formatName(updatedInformantDetails)
       )
     ).toBeVisible()
 
@@ -793,21 +780,11 @@ test.describe.serial(' Correct record - 9', () => {
     })
 
     await expect(
-      page.getByText(
-        declaration.child.name[0].firstNames +
-          ' ' +
-          declaration.child.name[0].familyName
-      )
+      page.getByText(formatName(declaration.child.name[0]))
     ).toBeVisible()
   })
   test('9.8 Validate history in record audit', async () => {
-    await page
-      .getByText(
-        declaration.child.name[0].firstNames +
-          ' ' +
-          declaration.child.name[0].familyName
-      )
-      .click()
+    await page.getByText(formatName(declaration.child.name[0])).click()
 
     await page.getByLabel('Assign record').click()
     if (

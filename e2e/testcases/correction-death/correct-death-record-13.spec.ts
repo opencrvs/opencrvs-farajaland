@@ -2,6 +2,7 @@ import { expect, test, type Page } from '@playwright/test'
 import {
   createPIN,
   formatDateTo_ddMMMMyyyy,
+  formatName,
   getToken,
   login,
   uploadImage
@@ -638,12 +639,8 @@ test.describe.serial(' Correct record - 13', () => {
     await expect(
       page.getByText(
         'Full name (Spouse details)' +
-          declaration.spouse.name[0].firstNames +
-          ' ' +
-          declaration.spouse.name[0].familyName +
-          updatedSpouseDetails.firstNames +
-          ' ' +
-          updatedSpouseDetails.familyName
+          formatName(declaration.spouse.name[0]) +
+          formatName(updatedSpouseDetails)
       )
     ).toBeVisible()
 
@@ -747,21 +744,11 @@ test.describe.serial(' Correct record - 13', () => {
     })
 
     await expect(
-      page.getByText(
-        declaration.deceased.name[0].firstNames +
-          ' ' +
-          declaration.deceased.name[0].familyName
-      )
+      page.getByText(formatName(declaration.deceased.name[0]))
     ).toBeVisible()
   })
   test('13.8 Validate history in record audit', async () => {
-    await page
-      .getByText(
-        declaration.deceased.name[0].firstNames +
-          ' ' +
-          declaration.deceased.name[0].familyName
-      )
-      .click()
+    await page.getByText(formatName(declaration.deceased.name[0])).click()
 
     await page.getByLabel('Assign record').click()
     if (

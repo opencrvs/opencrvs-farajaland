@@ -3,6 +3,7 @@ import {
   createPIN,
   formatDateTo_ddMMMMyyyy,
   formatDateTo_yyyyMMdd,
+  formatName,
   getLocationNameFromFhirId,
   getToken,
   login
@@ -94,13 +95,7 @@ test.describe.serial(' Correct record - 15', () => {
         timeout: 1000 * 30
       })
 
-      await page
-        .getByText(
-          declaration.deceased.name[0].firstNames +
-            ' ' +
-            declaration.deceased.name[0].familyName
-        )
-        .click()
+      await page.getByText(formatName(declaration.deceased.name[0])).click()
     })
     test('15.1.3 Record audit', async () => {
       await page.getByLabel('Assign record').click()
@@ -507,11 +502,7 @@ test.describe.serial(' Correct record - 15', () => {
     ).toBeVisible()
 
     await expect(
-      page.getByText(
-        declaration.informant.name[0].firstNames +
-          ' ' +
-          declaration.informant.name[0].familyName
-      )
+      page.getByText(formatName(declaration.informant.name[0]))
     ).toBeVisible()
 
     await expect(page.getByText('Identity does not match')).toBeVisible()
@@ -544,21 +535,11 @@ test.describe.serial(' Correct record - 15', () => {
     })
 
     await expect(
-      page.getByText(
-        declaration.deceased.name[0].firstNames +
-          ' ' +
-          declaration.deceased.name[0].familyName
-      )
+      page.getByText(formatName(declaration.deceased.name[0]))
     ).toBeVisible()
   })
   test('15.8 Validate history in record audit', async () => {
-    await page
-      .getByText(
-        declaration.deceased.name[0].firstNames +
-          ' ' +
-          declaration.deceased.name[0].familyName
-      )
-      .click()
+    await page.getByText(formatName(declaration.deceased.name[0])).click()
 
     await page.getByLabel('Assign record').click()
     if (

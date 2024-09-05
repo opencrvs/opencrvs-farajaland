@@ -3,6 +3,7 @@ import {
   createPIN,
   formatDateTo_ddMMMMyyyy,
   formatDateTo_yyyyMMdd,
+  formatName,
   getToken,
   goToSection,
   login,
@@ -79,11 +80,7 @@ test.describe('10. Correct record - 10', () => {
        * - See status, event, trackingId, BRN, DOB, Place of birth, Informant contact
        */
       await expect(
-        page.getByText(
-          declaration.deceased.name[0].firstNames +
-            ' ' +
-            declaration.deceased.name[0].familyName
-        )
+        page.getByText(formatName(declaration.deceased.name[0]))
       ).toBeVisible()
       await expect(
         page.getByRole('button', { name: 'Correct record' })
@@ -861,12 +858,8 @@ test.describe('10. Correct record - 10', () => {
         await expect(
           page.getByText(
             'Full name (Deceased)' +
-              declaration.deceased.name[0].firstNames +
-              ' ' +
-              declaration.deceased.name[0].familyName +
-              updatedDeceasedDetails.firstNames +
-              ' ' +
-              updatedDeceasedDetails.familyName
+              formatName(declaration.deceased.name[0]) +
+              formatName(updatedDeceasedDetails)
           )
         ).toBeVisible()
 
@@ -935,11 +928,7 @@ test.describe('10. Correct record - 10', () => {
         ).toBeVisible()
 
         await expect(
-          page.getByText(
-            declaration.informant.name[0].firstNames +
-              ' ' +
-              declaration.informant.name[0].familyName
-          )
+          page.getByText(formatName(declaration.informant.name[0]))
         ).toBeVisible()
         await expect(page.getByText('Verified')).toBeVisible()
         await expect(
@@ -976,11 +965,7 @@ test.describe('10. Correct record - 10', () => {
         )
 
         await expect(
-          page.getByText(
-            declaration.deceased.name[0].firstNames +
-              ' ' +
-              declaration.deceased.name[0].familyName
-          )
+          page.getByText(formatName(declaration.deceased.name[0]))
         ).toBeVisible()
       })
     })
@@ -1021,10 +1006,7 @@ test.describe('10. Correct record - 10', () => {
 
         await expect(
           page.getByText(
-            'Requested by' +
-              declaration.spouse.name[0].firstNames +
-              ' ' +
-              declaration.spouse.name[0].familyName
+            'Requested by' + formatName(declaration.spouse.name[0])
           )
         ).toBeVisible()
 
@@ -1043,12 +1025,8 @@ test.describe('10. Correct record - 10', () => {
         await expect(
           page.getByText(
             'Full name (Deceased)' +
-              declaration.deceased.name[0].firstNames +
-              ' ' +
-              declaration.deceased.name[0].familyName +
-              updatedDeceasedDetails.firstNames +
-              ' ' +
-              updatedDeceasedDetails.familyName
+              formatName(declaration.deceased.name[0]) +
+              formatName(updatedDeceasedDetails)
           )
         ).toBeVisible()
 
@@ -1134,21 +1112,11 @@ test.describe('10. Correct record - 10', () => {
           }
         )
         await expect(
-          page.getByText(
-            updatedDeceasedDetails.firstNames +
-              ' ' +
-              updatedDeceasedDetails.familyName
-          )
+          page.getByText(formatName(updatedDeceasedDetails))
         ).toBeVisible()
       })
       test('10.2.6.4 Validate history in record audit', async () => {
-        await page
-          .getByText(
-            updatedDeceasedDetails.firstNames +
-              ' ' +
-              updatedDeceasedDetails.familyName
-          )
-          .click()
+        await page.getByText(formatName(updatedDeceasedDetails)).click()
 
         await page.getByLabel('Assign record').click()
         await page.getByRole('button', { name: 'Assign', exact: true }).click()

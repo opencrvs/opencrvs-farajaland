@@ -2,6 +2,7 @@ import { expect, test, type Page } from '@playwright/test'
 import {
   createPIN,
   formatDateTo_ddMMMMyyyy,
+  formatName,
   getToken,
   login
 } from '../../helpers'
@@ -96,20 +97,10 @@ test.describe.serial(' Correct record - 18', () => {
       })
 
       await expect(
-        page.getByText(
-          declaration.deceased.name[0].firstNames +
-            ' ' +
-            declaration.deceased.name[0].familyName
-        )
+        page.getByText(formatName(declaration.deceased.name[0]))
       ).toBeVisible()
 
-      await page
-        .getByText(
-          declaration.deceased.name[0].firstNames +
-            ' ' +
-            declaration.deceased.name[0].familyName
-        )
-        .click()
+      await page.getByText(formatName(declaration.deceased.name[0])).click()
     })
     test('18.1.3 Record audit', async () => {
       await page.getByLabel('Assign record').click()
@@ -736,12 +727,8 @@ test.describe.serial(' Correct record - 18', () => {
     await expect(
       page.getByText(
         'Full name (Deceased)' +
-          declaration.deceased.name[0].firstNames +
-          ' ' +
-          declaration.deceased.name[0].familyName +
-          updatedDeceasedDetails.firstNames +
-          ' ' +
-          updatedDeceasedDetails.familyName
+          formatName(declaration.deceased.name[0]) +
+          formatName(updatedDeceasedDetails)
       )
     ).toBeVisible()
 
@@ -835,21 +822,11 @@ test.describe.serial(' Correct record - 18', () => {
     })
 
     await expect(
-      page.getByText(
-        updatedDeceasedDetails.firstNames +
-          ' ' +
-          updatedDeceasedDetails.familyName
-      )
+      page.getByText(formatName(updatedDeceasedDetails))
     ).toBeVisible()
   })
   test('18.8 Validate history in record audit', async () => {
-    await page
-      .getByText(
-        updatedDeceasedDetails.firstNames +
-          ' ' +
-          updatedDeceasedDetails.familyName
-      )
-      .click()
+    await page.getByText(formatName(updatedDeceasedDetails)).click()
 
     await page.getByLabel('Assign record').click()
     if (

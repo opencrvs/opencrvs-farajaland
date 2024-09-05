@@ -1,5 +1,7 @@
 import { Locator, Page, expect } from '@playwright/test'
 import { AUTH_URL, CLIENT_URL, GATEWAY_HOST } from './constants'
+import { format, parseISO } from 'date-fns'
+import { HumanName } from './gateway'
 
 export async function login(page: Page, username: string, password: string) {
   const token = await getToken(username, password)
@@ -130,4 +132,26 @@ export async function continueForm(page: Page, label: string = 'Continue') {
    */
   await page.waitForTimeout(500)
   return page.getByText(label, { exact: true }).click()
+}
+
+export const formatDateTo_yyyyMMdd = (date: string) =>
+  format(parseISO(date), 'yyyy-MM-dd')
+
+export const formatDateTo_ddMMMMyyyy = (date: string) =>
+  format(parseISO(date), 'dd MMMM yyyy')
+
+export const joinValuesWith = (
+  values: (string | null | undefined)[],
+  separator = ' '
+) => {
+  return values.filter(Boolean).join(separator)
+}
+
+type PersonOrName = {
+  firstNames: string
+  familyName: string
+  [key: string]: any
+}
+export const formatName = (name: PersonOrName) => {
+  return joinValuesWith([name.firstNames, name.familyName])
 }
