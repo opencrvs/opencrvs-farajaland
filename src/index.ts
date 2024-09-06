@@ -12,14 +12,17 @@ require('app-module-path').addPath(require('path').join(__dirname))
 require('dotenv').config()
 
 import fetch from 'node-fetch'
+import path from 'path'
 import * as Hapi from '@hapi/hapi'
 import * as Pino from 'hapi-pino'
 import * as JWT from 'hapi-auth-jwt2'
 import * as inert from '@hapi/inert'
 import * as Sentry from 'hapi-sentry'
+import * as H2o2 from '@hapi/h2o2'
 import {
   CLIENT_APP_URL,
   DOMAIN,
+  GATEWAY_URL,
   LOGIN_URL,
   SENTRY_DSN
 } from '@countryconfig/constants'
@@ -49,13 +52,13 @@ import { ErrorContext } from 'hapi-auth-jwt2'
 import { mapGeojsonHandler } from '@countryconfig/api/dashboards/handler'
 import { formHandler } from '@countryconfig/form'
 import { locationsHandler } from './data-seeding/locations/handler'
-import { certificateHandler } from './data-seeding/certificates/handler'
+import { certificateHandler } from './api/certificates/handler'
 import { rolesHandler } from './data-seeding/roles/handler'
 import { usersHandler } from './data-seeding/employees/handler'
 import { applicationConfigHandler } from './api/application/handler'
 import { validatorsHandler } from './form/common/custom-validation-conditionals/validators-handler'
 import { conditionalsHandler } from './form/common/custom-validation-conditionals/conditionals-handler'
-import { COUNTRY_WIDE_CRUDE_DEATH_RATE } from './api/application/application-config-default'
+import { COUNTRY_WIDE_CRUDE_DEATH_RATE } from './api/application/application-config'
 import { handlebarsHandler } from './form/common/certificate/handlebars/handler'
 import { trackingIDHandler } from './api/tracking-id/handler'
 import { dashboardQueriesHandler } from './api/dashboards/handler'
@@ -70,7 +73,7 @@ export interface ITokenPayload {
 }
 
 export default function getPlugins() {
-  const plugins: any[] = [inert, JWT]
+  const plugins: any[] = [inert, JWT, H2o2]
 
   if (process.env.NODE_ENV === 'production') {
     plugins.push({
@@ -238,18 +241,15 @@ export async function createServer() {
 
   server.auth.default('jwt')
 
-  if (process.env.NODE_ENV !== 'production') {
-    server.route({
-      method: 'GET',
-      path: '/certificates/{event}.svg',
-      handler: certificateHandler,
-      options: {
-        auth: false,
-        tags: ['api', 'certificates'],
-        description: 'Returns only one certificate metadata'
-      }
-    })
-  }
+  server.route({
+    method: 'GET',
+    path: '/certificates/{event}.svg',
+    handler: certificateHandler,
+    options: {
+      tags: ['api', 'certificates'],
+      description: 'Returns only one certificate metadata'
+    }
+  })
   // add ping route by default for health check
   server.route({
     method: 'GET',
@@ -503,16 +503,6 @@ export async function createServer() {
 
   server.route({
     method: 'GET',
-    path: '/certificates',
-    handler: certificateHandler,
-    options: {
-      tags: ['api', 'certificates'],
-      description: 'Returns certificate metadata'
-    }
-  })
-
-  server.route({
-    method: 'GET',
     path: '/roles',
     handler: rolesHandler,
     options: {
@@ -538,6 +528,54 @@ export async function createServer() {
     options: {
       tags: ['api'],
       description: 'Provides a tracking id'
+    }
+  })
+
+  server.route({
+    method: '*',
+    path: '/graphql',
+    handler: (_, h) =>
+      h.proxy({
+        uri: `${GATEWAY_URL}/graphql`,
+        passThrough: true
+      }),
+    options: {
+      auth: false,
+      payload: {
+        output: 'data',
+        parse: false
+      }
+    }
+  })
+
+  server.route({
+    method: 'GET',
+    path: '/{param*}',
+    options: {
+      auth: false
+    },
+    handler: {
+      directory: {
+        path: 'public',
+        index: ['index.html', 'default.html']
+      }
+    }
+  })
+
+  server.route({
+    method: 'GET',
+    path: '/static/{param*}',
+    handler: {
+      directory: {
+        path: path.join(__dirname, 'client-static'),
+        redirectToSlash: true,
+        index: false
+      }
+    },
+    options: {
+      auth: false,
+      tags: ['api', 'static'],
+      description: 'Server static files for client'
     }
   })
 
