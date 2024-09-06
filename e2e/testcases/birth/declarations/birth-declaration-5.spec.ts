@@ -556,7 +556,7 @@ test.describe.serial('5. Birth declaration case - 5', () => {
 
     test('5.1.7 Fill up informant signature', async () => {
       await page.getByRole('button', { name: 'Sign' }).click()
-      drawSignature(page)
+      await drawSignature(page)
       await page
         .locator('#informantSignature_modal')
         .getByRole('button', { name: 'Apply' })

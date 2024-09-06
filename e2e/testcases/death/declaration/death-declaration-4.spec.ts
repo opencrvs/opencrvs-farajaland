@@ -719,7 +719,7 @@ test.describe.serial('4. Death declaration case - 4', () => {
 
     test('4.1.7 Fill up informant signature', async () => {
       await page.getByRole('button', { name: 'Sign' }).click()
-      drawSignature(page)
+      await drawSignature(page)
       await page
         .locator('#informantSignature_modal')
         .getByRole('button', { name: 'Apply' })

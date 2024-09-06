@@ -702,7 +702,7 @@ test.describe.serial('8. Validate declaration review page', () => {
 
     test('8.1.6 Fill up informant signature', async () => {
       await page.getByRole('button', { name: 'Sign' }).click()
-      drawSignature(page)
+      await drawSignature(page)
       await page
         .locator('#informantSignature_modal')
         .getByRole('button', { name: 'Apply' })
