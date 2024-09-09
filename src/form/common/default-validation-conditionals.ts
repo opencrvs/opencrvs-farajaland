@@ -12,6 +12,19 @@ import { Conditional } from '../types/types'
 import { IntegratingSystemType } from '../types/types'
 import { Validator } from '../types/validators'
 
+/**
+ * Turns a string expression into a Conditional object
+ * @param expression conditional expression
+ * @param action conditional action. e.g. 'hide' |'hideInPreview'. Defaults to 'hide'
+ */
+export const expressionToConditional = (
+  expression: string,
+  action: string = 'hide'
+): Conditional => ({
+  action,
+  expression: `${expression}`
+})
+
 export const isValidChildBirthDate = [
   {
     operation: 'isValidChildBirthDate'
@@ -106,6 +119,30 @@ export const hideIfInformantMotherOrFather = [
   {
     action: 'hide',
     expression: informantNotMotherOrFather
+  }
+]
+
+export const isInformantSpouse =
+  '!values.informantType || values.informantType==="SPOUSE"'
+
+export const hideIfDeceasedAddressNotAvailable = [
+  {
+    action: 'hide',
+    expression: '!(draftData && draftData.deceased?.countryPrimaryDeceased)'
+  }
+]
+
+export const hideIfMotherAddressNotAvailable = [
+  {
+    action: 'hide',
+    expression: '!(draftData && draftData.mother?.countryPrimaryMother)'
+  }
+]
+
+export const hideIfInformantSpouse = [
+  {
+    action: 'hide',
+    expression: isInformantSpouse
   }
 ]
 
@@ -230,6 +267,47 @@ export const brideOrGroomBirthDateValidators = (spouseType: string) => [
   }
 ]
 
+export const brideOrGroomAgeValidators = [
+  {
+    operation: 'range',
+    parameters: [18, 120]
+  },
+  {
+    operation: 'maxLength',
+    parameters: [3]
+  }
+] satisfies Validator[]
+
+export const ageOfIndividualValidators: Validator[] = [
+  {
+    operation: 'range',
+    parameters: [12, 120]
+  },
+  {
+    operation: 'maxLength',
+    parameters: [3]
+  }
+]
+
+export const ageOfParentsConditionals = [
+  ...ageOfIndividualValidators,
+  {
+    operation: 'isValidParentsBirthDate',
+    parameters: [10, true]
+  }
+] satisfies Validator[]
+
+export const ageOfDeceasedConditionals = [
+  {
+    operation: 'range',
+    parameters: [0, 120]
+  },
+  {
+    operation: 'maxLength',
+    parameters: [3]
+  }
+] satisfies Validator[]
+
 export const exactDateOfBirthUnknownConditional = [
   {
     action: 'hide',
@@ -252,7 +330,7 @@ export function getNationalIDValidators(configCase: string): Validator[] {
       },
       {
         operation: 'duplicateIDNumber',
-        parameters: ['mother.iD']
+        parameters: ['mother.motherNationalId']
       }
     ]
   } else if (configCase === 'mother') {
@@ -263,7 +341,7 @@ export function getNationalIDValidators(configCase: string): Validator[] {
       },
       {
         operation: 'duplicateIDNumber',
-        parameters: ['father.iD']
+        parameters: ['father.fatherNationalId']
       }
     ]
   } else if (configCase === 'deceased') {
@@ -274,7 +352,7 @@ export function getNationalIDValidators(configCase: string): Validator[] {
       },
       {
         operation: 'duplicateIDNumber',
-        parameters: ['informant.informantID']
+        parameters: ['informant.informantNationalId']
       }
     ]
   } else if (configCase === 'groom') {
@@ -285,11 +363,7 @@ export function getNationalIDValidators(configCase: string): Validator[] {
       },
       {
         operation: 'duplicateIDNumber',
-        parameters: ['bride.iD']
-      },
-      {
-        operation: 'duplicateIDNumber',
-        parameters: ['informant.informantID']
+        parameters: ['bride.brideNationalId']
       }
     ]
   } else if (configCase === 'bride') {
@@ -300,11 +374,7 @@ export function getNationalIDValidators(configCase: string): Validator[] {
       },
       {
         operation: 'duplicateIDNumber',
-        parameters: ['groom.iD']
-      },
-      {
-        operation: 'duplicateIDNumber',
-        parameters: ['informant.informantID']
+        parameters: ['groom.groomNationalId']
       }
     ]
   } else {
@@ -316,23 +386,23 @@ export function getNationalIDValidators(configCase: string): Validator[] {
       },
       {
         operation: 'duplicateIDNumber',
-        parameters: ['deceased.deceasedID']
+        parameters: ['deceased.deceasedNationalId']
       },
       {
         operation: 'duplicateIDNumber',
-        parameters: ['mother.iD']
+        parameters: ['mother.motherNationalId']
       },
       {
         operation: 'duplicateIDNumber',
-        parameters: ['father.iD']
+        parameters: ['father.fatherNationalId']
       },
       {
         operation: 'duplicateIDNumber',
-        parameters: ['groom.iD']
+        parameters: ['groom.groomNationalId']
       },
       {
         operation: 'duplicateIDNumber',
-        parameters: ['bride.iD']
+        parameters: ['bride.brideNationalId']
       }
     ]
   }

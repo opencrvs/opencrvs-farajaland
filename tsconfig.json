@@ -10,6 +10,7 @@
     "module": "commonjs",
     "outDir": "build/dist",
     "sourceMap": true,
+    "resolveJsonModule": true,
     "moduleResolution": "node",
     "rootDir": ".",
     "lib": [
@@ -19,6 +20,7 @@
       "es2019"
     ],
     "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true,
     "noImplicitReturns": true,
     "noImplicitThis": true,
     "noImplicitAny": true,
@@ -32,6 +34,7 @@
   },
   "include": [
     "src/**/*.ts",
+    "infrastructure/environments/**/*.ts",
     "typings"
   ],
   "exclude": [

@@ -21,8 +21,7 @@ import {
   getFamilyNameField,
   getFirstNameField,
   getNationality,
-  otherInformantType,
-  getNationalID
+  otherInformantType
 } from '../common/common-required-fields'
 import {
   formMessageDescriptors,
@@ -41,14 +40,20 @@ import {
 } from './required-fields'
 import { Event, ISerializedForm } from '../types/types'
 import {
-  exactDateOfBirthUnknownConditional,
-  getNationalIDValidators
+  ageOfIndividualValidators,
+  brideOrGroomAgeValidators,
+  exactDateOfBirthUnknownConditional
 } from '../common/default-validation-conditionals'
 import {
   hideIfInformantBrideOrGroom,
   brideOrGroomBirthDateValidators
 } from '../common/default-validation-conditionals'
-import { documentsSection, registrationSection } from './required-sections'
+import {
+  documentsSection,
+  previewSection,
+  registrationSection,
+  reviewSection
+} from './required-sections'
 import {
   brideNameInEnglish,
   groomNameInEnglish,
@@ -58,6 +63,7 @@ import {
 } from '../common/preview-groups'
 import { certificateHandlebars } from './certificate-handlebars'
 import { getCommonSectionMapping } from '@countryconfig/utils/mapping/field-mapping-utils'
+import { getIDNumberFields, getIDType } from '../custom-fields'
 
 // import { createCustomFieldExample } from '../custom-fields'
 
@@ -83,7 +89,7 @@ export const marriageForm: ISerializedForm = {
     {
       id: 'informant',
       viewType: 'form',
-      name: formMessageDescriptors.registrationName,
+      name: formMessageDescriptors.informantName,
       title: formMessageDescriptors.informantTitle,
       groups: [
         {
@@ -128,17 +134,23 @@ export const marriageForm: ISerializedForm = {
               formMessageDescriptors.ageOfInformant,
               exactDateOfBirthUnknownConditional.concat(
                 hideIfInformantBrideOrGroom
-              )
+              ),
+              ageOfIndividualValidators
             ),
             getNationality(
               certificateHandlebars.informantNationality,
               hideIfInformantBrideOrGroom
             ), // Required field
-            getNationalID(
-              'informantID',
+            getIDType(
+              'marriage',
+              'informant',
               hideIfInformantBrideOrGroom,
-              getNationalIDValidators('informant'),
-              certificateHandlebars.informantNID
+              true
+            ),
+            ...getIDNumberFields(
+              'informant',
+              hideIfInformantBrideOrGroom,
+              true
             ),
             // ADDRESS FIELDS WILL RENDER HERE
             registrationPhone,
@@ -183,15 +195,12 @@ export const marriageForm: ISerializedForm = {
             exactDateOfBirthUnknown([]),
             getAgeOfIndividualInYears(
               formMessageDescriptors.ageOfGroom,
-              exactDateOfBirthUnknownConditional
+              exactDateOfBirthUnknownConditional,
+              brideOrGroomAgeValidators
             ),
             getNationality(certificateHandlebars.groomNationality, []), // Required field
-            getNationalID(
-              'iD',
-              [],
-              getNationalIDValidators('groom'),
-              certificateHandlebars.groomNID
-            ),
+            getIDType('marriage', 'groom', [], true),
+            ...getIDNumberFields('groom', [], true),
             getMarriedLastName(certificateHandlebars.groomMarriedLastNameEng)
           ],
           previewGroups: [groomNameInEnglish]
@@ -230,19 +239,14 @@ export const marriageForm: ISerializedForm = {
               certificateHandlebars.brideBirthDate
             ), // Required field
             exactDateOfBirthUnknown([]),
-            getAgeOfIndividualInYears(formMessageDescriptors.ageOfBride, [
-              {
-                action: 'hide',
-                expression: '!values.exactDateOfBirthUnknown'
-              }
-            ]),
-            getNationality(certificateHandlebars.brideNationality, []), // Required field
-            getNationalID(
-              'iD',
-              [],
-              getNationalIDValidators('bride'),
-              certificateHandlebars.brideNID
+            getAgeOfIndividualInYears(
+              formMessageDescriptors.ageOfBride,
+              exactDateOfBirthUnknownConditional,
+              brideOrGroomAgeValidators
             ),
+            getNationality(certificateHandlebars.brideNationality, []), // Required field
+            getIDType('marriage', 'bride', [], true),
+            ...getIDNumberFields('bride', [], true),
             getMarriedLastName(certificateHandlebars.brideMarriedLastNameEng)
           ],
           previewGroups: [brideNameInEnglish]
@@ -260,8 +264,7 @@ export const marriageForm: ISerializedForm = {
           fields: [
             getMarriageDate, // Required field
             getTypeOfMarriage,
-            placeOfMarriageSubsection,
-            divider('place-of-marriage-seperator')
+            placeOfMarriageSubsection
             // PLACE OF MARRIAGE FIELDS WILL RENDER HERE
           ]
         }
@@ -270,7 +273,7 @@ export const marriageForm: ISerializedForm = {
     {
       id: 'witnessOne',
       viewType: 'form',
-      name: formMessageDescriptors.witnessName,
+      name: formMessageDescriptors.witnessOneName,
       title: formMessageDescriptors.witnessOneTitle,
       groups: [
         {
@@ -297,7 +300,7 @@ export const marriageForm: ISerializedForm = {
     {
       id: 'witnessTwo',
       viewType: 'form',
-      name: formMessageDescriptors.witnessName,
+      name: formMessageDescriptors.witnessTwoName,
       title: formMessageDescriptors.witnessTwoTitle,
       groups: [
         {
@@ -321,6 +324,8 @@ export const marriageForm: ISerializedForm = {
       ],
       mapping: getCommonSectionMapping('informant')
     },
-    documentsSection
+    documentsSection,
+    previewSection,
+    reviewSection
   ]
 }

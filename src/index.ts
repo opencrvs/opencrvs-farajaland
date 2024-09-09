@@ -9,16 +9,20 @@
  * Copyright (C) The OpenCRVS Authors located at https://github.com/opencrvs/opencrvs-core/blob/master/AUTHORS.
  */
 require('app-module-path').addPath(require('path').join(__dirname))
+require('dotenv').config()
 
 import fetch from 'node-fetch'
+import path from 'path'
 import * as Hapi from '@hapi/hapi'
 import * as Pino from 'hapi-pino'
 import * as JWT from 'hapi-auth-jwt2'
 import * as inert from '@hapi/inert'
 import * as Sentry from 'hapi-sentry'
+import * as H2o2 from '@hapi/h2o2'
 import {
   CLIENT_APP_URL,
-  HOSTNAME,
+  DOMAIN,
+  GATEWAY_URL,
   LOGIN_URL,
   SENTRY_DSN
 } from '@countryconfig/constants'
@@ -35,25 +39,26 @@ import {
   countryLogoHandler
 } from '@countryconfig/api/content/handler'
 import { eventRegistrationHandler } from '@countryconfig/api/event-registration/handler'
-import * as decode from 'jwt-decode'
+import decode from 'jwt-decode'
 import { join } from 'path'
 import { logger } from '@countryconfig/logger'
 import {
+  emailHandler,
+  emailSchema,
   notificationHandler,
-  notificationScheme
+  notificationSchema
 } from './api/notification/handler'
-import { mosipMediatorHandler } from '@countryconfig/api/mediators/mosip-openhim-mediator/handler'
 import { ErrorContext } from 'hapi-auth-jwt2'
 import { mapGeojsonHandler } from '@countryconfig/api/dashboards/handler'
 import { formHandler } from '@countryconfig/form'
 import { locationsHandler } from './data-seeding/locations/handler'
-import { certificateHandler } from './data-seeding/certificates/handler'
+import { certificateHandler } from './api/certificates/handler'
 import { rolesHandler } from './data-seeding/roles/handler'
 import { usersHandler } from './data-seeding/employees/handler'
 import { applicationConfigHandler } from './api/application/handler'
 import { validatorsHandler } from './form/common/custom-validation-conditionals/validators-handler'
 import { conditionalsHandler } from './form/common/custom-validation-conditionals/conditionals-handler'
-import { COUNTRY_WIDE_CRUDE_DEATH_RATE } from './api/application/application-config-default'
+import { COUNTRY_WIDE_CRUDE_DEATH_RATE } from './api/application/application-config'
 import { handlebarsHandler } from './form/common/certificate/handlebars/handler'
 import { trackingIDHandler } from './api/tracking-id/handler'
 import { dashboardQueriesHandler } from './api/dashboards/handler'
@@ -68,18 +73,18 @@ export interface ITokenPayload {
 }
 
 export default function getPlugins() {
-  const plugins: any[] = [
-    inert,
-    JWT,
-    {
+  const plugins: any[] = [inert, JWT, H2o2]
+
+  if (process.env.NODE_ENV === 'production') {
+    plugins.push({
       plugin: Pino,
       options: {
         prettyPrint: false,
         logPayload: false,
         instance: logger
       }
-    }
-  ]
+    })
+  }
 
   if (SENTRY_DSN) {
     plugins.push({
@@ -164,7 +169,7 @@ async function getPublicKey(): Promise<string> {
     const response = await fetch(`${AUTH_URL}/.well-known`)
     return response.text()
   } catch (error) {
-    console.log(
+    logger.error(
       `Failed to fetch public key from Core. Make sure Core is running, and you are able to connect to ${AUTH_URL}/.well-known.`
     )
     if (process.env.NODE_ENV === 'production') {
@@ -176,8 +181,8 @@ async function getPublicKey(): Promise<string> {
 }
 
 export async function createServer() {
-  let whitelist: string[] = [HOSTNAME]
-  if (HOSTNAME[0] !== '*') {
+  let whitelist: string[] = [DOMAIN]
+  if (DOMAIN[0] !== '*') {
     whitelist = [LOGIN_URL, CLIENT_APP_URL]
   }
   logger.info(`Whitelist: ${JSON.stringify(whitelist)}`)
@@ -236,18 +241,15 @@ export async function createServer() {
 
   server.auth.default('jwt')
 
-  if (process.env.NODE_ENV !== 'production') {
-    server.route({
-      method: 'GET',
-      path: '/certificates/{event}.svg',
-      handler: certificateHandler,
-      options: {
-        auth: false,
-        tags: ['api', 'certificates'],
-        description: 'Returns only one certificate metadata'
-      }
-    })
-  }
+  server.route({
+    method: 'GET',
+    path: '/certificates/{event}.svg',
+    handler: certificateHandler,
+    options: {
+      tags: ['api', 'certificates'],
+      description: 'Returns only one certificate metadata'
+    }
+  })
   // add ping route by default for health check
   server.route({
     method: 'GET',
@@ -373,6 +375,7 @@ export async function createServer() {
     handler: dashboardQueriesHandler,
     options: {
       tags: ['api'],
+      auth: false,
       description: 'Serves dashboard view refresher queries'
     }
   })
@@ -389,7 +392,7 @@ export async function createServer() {
 
   server.route({
     method: 'GET',
-    path: '/content/farajaland-map.geojson',
+    path: '/content/map.geojson',
     handler: mapGeojsonHandler,
     options: {
       auth: false,
@@ -449,20 +452,30 @@ export async function createServer() {
     handler: notificationHandler,
     options: {
       tags: ['api'],
+      auth: false,
       validate: {
-        payload: notificationScheme
+        payload: notificationSchema
       },
-      description: 'Handles sending SMS'
+      description:
+        'Handles sending either SMS or email using a predefined template file'
     }
   })
 
   server.route({
     method: 'POST',
-    path: '/mosip-openhim-mediator',
-    handler: mosipMediatorHandler,
+    path: '/email',
+    handler: emailHandler,
     options: {
+      /*
+       * In deployed environments, the email path is blocked by Traefik.
+       * See docker-compose.deploy.yml for more details.
+       */
+      auth: false,
       tags: ['api'],
-      description: 'Handles submission of mosip generaed NID'
+      validate: {
+        payload: emailSchema
+      },
+      description: 'Handles sending email using a predefined template file'
     }
   })
 
@@ -490,21 +503,9 @@ export async function createServer() {
 
   server.route({
     method: 'GET',
-    path: '/certificates',
-    handler: certificateHandler,
-    options: {
-      auth: false,
-      tags: ['api', 'certificates'],
-      description: 'Returns certificate metadata'
-    }
-  })
-
-  server.route({
-    method: 'GET',
     path: '/roles',
     handler: rolesHandler,
     options: {
-      auth: false,
       tags: ['api', 'user-roles'],
       description: 'Returns user roles metadata'
     }
@@ -515,7 +516,6 @@ export async function createServer() {
     path: '/users',
     handler: usersHandler,
     options: {
-      auth: false,
       tags: ['api', 'users'],
       description: 'Returns users metadata'
     }
@@ -528,6 +528,54 @@ export async function createServer() {
     options: {
       tags: ['api'],
       description: 'Provides a tracking id'
+    }
+  })
+
+  server.route({
+    method: '*',
+    path: '/graphql',
+    handler: (_, h) =>
+      h.proxy({
+        uri: `${GATEWAY_URL}/graphql`,
+        passThrough: true
+      }),
+    options: {
+      auth: false,
+      payload: {
+        output: 'data',
+        parse: false
+      }
+    }
+  })
+
+  server.route({
+    method: 'GET',
+    path: '/{param*}',
+    options: {
+      auth: false
+    },
+    handler: {
+      directory: {
+        path: 'public',
+        index: ['index.html', 'default.html']
+      }
+    }
+  })
+
+  server.route({
+    method: 'GET',
+    path: '/static/{param*}',
+    handler: {
+      directory: {
+        path: path.join(__dirname, 'client-static'),
+        redirectToSlash: true,
+        index: false
+      }
+    },
+    options: {
+      auth: false,
+      tags: ['api', 'static'],
+      description: 'Server static files for client'
     }
   })
 

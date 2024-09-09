@@ -141,6 +141,8 @@ export const TIME = 'TIME'
 export const NID_VERIFICATION_BUTTON = 'NID_VERIFICATION_BUTTON'
 export const DIVIDER = 'DIVIDER'
 export const HEADING3 = 'HEADING3'
+export const SIGNATURE = 'SIGNATURE'
+
 export enum RadioSize {
   LARGE = 'large',
   NORMAL = 'normal'
@@ -155,10 +157,6 @@ export enum IntegratingSystemType {
   Mosip = 'MOSIP',
   Osia = 'OSIA',
   Other = 'OTHER'
-}
-
-export declare enum THEME_MODE {
-  DARK = 'dark'
 }
 
 export interface IPreviewGroup {
@@ -346,8 +344,8 @@ export interface INumberFormField extends IFormFieldBase {
   type: typeof NUMBER
   step?: number
   max?: number
-  inputFieldWidth?: string
   inputWidth?: number
+  maxLength?: number
 }
 export interface IBigNumberFormField extends IFormFieldBase {
   type: typeof BIG_NUMBER
@@ -413,7 +411,8 @@ export interface IDocumentUploaderWithOptionsFormField extends IFormFieldBase {
   type: typeof DOCUMENT_UPLOADER_WITH_OPTION
   options: ISelectOption[]
   hideOnEmptyOption?: boolean
-  splitView?: boolean
+  compressImagesToSizeMB?: number
+  maxSizeMB?: number
 }
 export interface ISimpleDocumentUploaderFormField extends IFormFieldBase {
   type: typeof SIMPLE_DOCUMENT_UPLOADER
@@ -481,6 +480,12 @@ export interface IHeading3Field extends IFormFieldBase {
   type: typeof HEADING3
 }
 
+export interface ISignatureFormField extends IFormFieldBase {
+  type: typeof SIGNATURE
+  maxSizeMb?: number
+  allowedFileFormats?: ('png' | 'jpg' | 'jpeg' | 'svg')[]
+}
+
 export type IFormField =
   | ITextFormField
   | ITelFormField
@@ -513,6 +518,7 @@ export type IFormField =
   | INidVerificationButton
   | IDividerField
   | IHeading3Field
+  | ISignatureFormField
 
 export interface SelectComponentOption {
   value: string
@@ -528,7 +534,6 @@ export interface IDynamicOptions {
   jurisdictionType?: string
   resource?: string
   options?: { [key: string]: ISelectOption[] }
-  initialValue?: string
 }
 
 export type IFormFieldTemplateMapOperation =
@@ -561,7 +566,6 @@ export interface IFormFieldBase {
   mapping?: IFormFieldMapping
   hideAsterisk?: boolean
   hideHeader?: boolean
-  mode?: THEME_MODE
   hidden?: boolean
   previewGroup?: string
   nestedFields?: { [key: string]: IFormField[] }
@@ -585,7 +589,6 @@ export interface IFormFieldBase {
   ignoreFieldLabelOnErrorMessage?: boolean
   ignoreBottomMargin?: boolean
   customQuestionMappingId?: string
-  ignoreMediaQuery?: boolean
 }
 
 export interface Conditional {
@@ -853,8 +856,6 @@ export interface IFormData {
   [key: string]: IFormSectionData
 }
 
-// Initial type as it's always used as an object.
-// @todo should be stricter than this
 export type TransformedData = { [key: string]: any }
 
 export type IFormSectionMutationMapFunction = (
@@ -929,7 +930,7 @@ export type AllowedAddressConfigurations = {
   label?: MessageDescriptor
   xComparisonSection?: string
   yComparisonSection?: string
-  conditionalCase?: string
+  conditionalCase?: string | Conditional[]
 }
 
 export type AdministrativeLevel = 1 | 2 | 3 | 4 | 5

@@ -17,11 +17,12 @@ import {
 } from './select-options'
 import { certificateHandlebars } from '../birth/certificate-handlebars'
 import { getFieldMapping } from '@countryconfig/utils/mapping/field-mapping-utils'
+import { Validator } from '../types/validators'
 
 const exactDobConditional: Conditional[] = [
   {
     action: 'hide',
-    expression: '!window.config.DATE_OF_BIRTH_UNKNOWN'
+    expression: '!window.config.FEATURES.DATE_OF_BIRTH_UNKNOWN'
   }
 ]
 
@@ -53,30 +54,21 @@ export const exactDateOfBirthUnknown = (
 
 export const getAgeOfIndividualInYears = (
   label: MessageDescriptor,
-  conditionals: Conditional[]
+  conditionals: Conditional[],
+  validators: Validator[],
+  certificateHandlebar?: string
 ): SerializedFormField => ({
   name: 'ageOfIndividualInYears',
   type: 'NUMBER',
   label,
   required: true,
   initialValue: '',
-  validator: [
-    {
-      operation: 'range',
-      parameters: [12, 120]
-    },
-    {
-      operation: 'maxLength',
-      parameters: [3]
-    },
-    {
-      operation: 'isValidParentsBirthDate',
-      parameters: [10, true]
-    }
-  ],
+  validator: validators,
   conditionals,
   postfix: 'years',
-  inputFieldWidth: '78px'
+  ...(certificateHandlebar && {
+    mapping: getFieldMapping('ageOfIndividualInYears', certificateHandlebar)
+  })
 })
 
 export const getMaritalStatus = (
@@ -171,7 +163,8 @@ export const getNIDVerificationButton = (
   labelForOffline: formMessageDescriptors.nidOffline
 })
 export const getOccupation = (
-  certificateHandlebar: string
+  certificateHandlebar: string,
+  conditionals: Conditional[] = []
 ): SerializedFormField => ({
   name: 'occupation',
   type: 'TEXT',
@@ -183,12 +176,7 @@ export const getOccupation = (
   required: false,
   initialValue: '',
   validator: [],
-  conditionals: [
-    {
-      action: 'hide',
-      expression: '!values.detailsExist'
-    }
-  ],
+  conditionals,
   mapping: getFieldMapping('occupation', certificateHandlebar)
 })
 
@@ -211,3 +199,25 @@ export const getEducation = (
   options: educationalAttainmentOptions,
   mapping: getFieldMapping('educationalAttainment', certificateHandlebar)
 })
+
+export const informantsSignature = {
+  name: 'informantSignature',
+  label: {
+    defaultMessage: 'Signature of informant',
+    description: 'Label for informants signature input',
+    id: 'review.inputs.informantsSignature'
+  },
+  validator: [],
+  required: true,
+  type: 'SIGNATURE',
+  mapping: {
+    mutation: {
+      operation: 'fieldValueSectionExchangeTransformer',
+      parameters: ['registration', 'informantsSignature']
+    },
+    query: {
+      operation: 'fieldValueSectionExchangeTransformer',
+      parameters: ['registration', 'informantsSignature']
+    }
+  }
+} satisfies SerializedFormField

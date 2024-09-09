@@ -15,8 +15,8 @@ import {
   getMaritalStatus,
   registrationEmail,
   registrationPhone,
-  divider,
-  getOccupation
+  divider
+  // getOccupation
 } from '../common/common-optional-fields'
 import {
   getGender,
@@ -25,9 +25,8 @@ import {
   getFirstNameField,
   getNationality,
   otherInformantType,
-  getNationalID /*,
   getDetailsExist,
-  getReasonNotExisting*/
+  getReasonNotExisting
 } from '../common/common-required-fields'
 import {
   deathInformantType,
@@ -40,40 +39,52 @@ import {
 import { formMessageDescriptors } from '../common/messages'
 import { Event, ISerializedForm } from '../types/types'
 import {
-  getNationalIDValidators,
-  hideIfNidIntegrationEnabled,
   informantBirthDateConditionals,
   informantFamilyNameConditionals,
+  ageOfIndividualValidators,
+  ageOfDeceasedConditionals,
   informantFirstNameConditionals,
   exactDateOfBirthUnknownConditional,
   isValidBirthDate /*,
-  spouseFirstNameConditionals,
-  spouseFamilyNameConditionals,
-  spouseBirthDateConditionals,
   fathersDetailsExistConditionals,
   fatherFirstNameConditionals,
   fatherFamilyNameConditionals,
   fathersBirthDateConditionals,
   parentsBirthDateValidators,
   detailsExistConditional,
-  detailsExist,
   motherFirstNameConditionals,
   motherFamilyNameConditionals,
   mothersBirthDateConditionals,
-  mothersDetailsExistConditionals,
-  spouseDetailsExistConditionals*/
+  mothersDetailsExistConditionals,*/,
+  spouseDetailsExistConditionals,
+  detailsExist,
+  spouseBirthDateConditionals,
+  spouseFamilyNameConditionals,
+  spouseFirstNameConditionals,
+  hideIfInformantSpouse,
+  hideIfNidIntegrationEnabled,
+  hideIfDeceasedAddressNotAvailable
 } from '../common/default-validation-conditionals'
-import { documentsSection, registrationSection } from './required-sections'
+import {
+  documentsSection,
+  previewSection,
+  registrationSection,
+  reviewSection
+} from './required-sections'
 import {
   deceasedNameInEnglish,
   informantNameInEnglish /*,
   fatherNameInEnglish,
-  motherNameInEnglish,
-  spouseNameInEnglish*/
+  motherNameInEnglish,*/,
+  spouseNameInEnglish
 } from '../common/preview-groups'
 import { certificateHandlebars } from './certficate-handlebars'
 import { getCommonSectionMapping } from '@countryconfig/utils/mapping/field-mapping-utils'
+import { getNumberOfDependants } from '@countryconfig/form/death/custom-fields'
+import { getIDNumberFields, getIDType } from '@countryconfig/form/custom-fields'
+import { getSectionMapping } from '@countryconfig/utils/mapping/section/death/mapping-utils'
 //import { getSectionMapping } from '@countryconfig/utils/mapping/section/death/mapping-utils'
+import { getReasonForLateRegistration } from '../custom-fields'
 
 // import { createCustomFieldExample } from '../custom-fields'
 
@@ -138,7 +149,7 @@ export const deathForm = {
                 },
                 {
                   defaultMessage:
-                    'Once the declaration is processed you will receive you will receive an SMS to tell you when to visit the office to collect the certificate - Take your ID with you.',
+                    'Once the declaration is processed you will receive an SMS to tell you when to visit the office to collect the certificate - Take your ID with you.',
                   description: 'Form information for birth',
                   id: 'form.section.information.death.bullet3'
                 },
@@ -192,17 +203,16 @@ export const deathForm = {
             ), // Required field.,
             exactDateOfBirthUnknown([]),
             getAgeOfIndividualInYears(
-              formMessageDescriptors.ageOfInformant,
-              exactDateOfBirthUnknownConditional
+              formMessageDescriptors.ageOfDeceased,
+              exactDateOfBirthUnknownConditional,
+              ageOfDeceasedConditionals,
+              certificateHandlebars.ageOfDeceasedInYears
             ),
             getNationality(certificateHandlebars.deceasedNationality, []),
-            getNationalID(
-              'deceasedID',
-              [],
-              getNationalIDValidators('deceased'),
-              certificateHandlebars.deceasedNID
-            ),
-            getMaritalStatus(certificateHandlebars.deceasedMaritalStatus, [])
+            getIDType('death', 'deceased', [], true),
+            ...getIDNumberFields('deceased', [], true),
+            getMaritalStatus(certificateHandlebars.deceasedMaritalStatus, []),
+            getNumberOfDependants()
           ],
           previewGroups: [deceasedNameInEnglish]
         }
@@ -226,6 +236,7 @@ export const deathForm = {
                 }
               ]
             ),
+            getReasonForLateRegistration('death'),
             getMannerOfDeath,
             getCauseOfDeath,
             getCauseOfDeathMethod,
@@ -248,17 +259,17 @@ export const deathForm = {
             otherInformantType(Event.Death),
             getFirstNameField(
               'informantNameInEnglish',
-              informantFirstNameConditionals,
+              informantFirstNameConditionals.concat(hideIfInformantSpouse),
               certificateHandlebars.informantFirstName
             ), // Required field. In Farajaland, we have built the option to integrate with MOSIP. So we have different conditionals for each name to check MOSIP responses.  You could always refactor firstNamesEng for a basic setup
             getFamilyNameField(
               'informantNameInEnglish',
-              informantFamilyNameConditionals,
+              informantFamilyNameConditionals.concat(hideIfInformantSpouse),
               certificateHandlebars.informantFamilyName
             ), // Required field.
             getBirthDate(
               'informantBirthDate',
-              informantBirthDateConditionals,
+              informantBirthDateConditionals.concat(hideIfInformantSpouse),
               [
                 {
                   operation: 'dateFormatIsCorrect',
@@ -271,20 +282,29 @@ export const deathForm = {
               ],
               certificateHandlebars.informantBirthDate
             ), // Required field.
-            exactDateOfBirthUnknown([]),
+            exactDateOfBirthUnknown(hideIfInformantSpouse),
             getAgeOfIndividualInYears(
               formMessageDescriptors.ageOfInformant,
-              exactDateOfBirthUnknownConditional
+              exactDateOfBirthUnknownConditional.concat(hideIfInformantSpouse),
+              ageOfIndividualValidators
             ),
-            getNationality(certificateHandlebars.informantNationality, []),
-            getNationalID(
-              'informantID',
-              hideIfNidIntegrationEnabled,
-              getNationalIDValidators('informant'),
-              certificateHandlebars.informantNID
+            getNationality(
+              certificateHandlebars.informantNationality,
+              hideIfInformantSpouse
+            ),
+            getIDType(
+              'death',
+              'informant',
+              hideIfNidIntegrationEnabled.concat(hideIfInformantSpouse),
+              true
+            ),
+            ...getIDNumberFields(
+              'informant',
+              hideIfNidIntegrationEnabled.concat(hideIfInformantSpouse),
+              true
             ),
             // ADDRESS FIELDS WILL RENDER HERE
-            divider('informant-address-separator'),
+            divider('informant-address-separator', hideIfInformantSpouse),
             registrationPhone,
             registrationEmail
           ],
@@ -293,9 +313,6 @@ export const deathForm = {
       ],
       mapping: getCommonSectionMapping('informant')
     },
-    /*
-    OTHER POSSIBLE SECTIONS FOR DEATH INCLUDE:
-    
     {
       id: 'spouse',
       viewType: 'form',
@@ -336,31 +353,31 @@ export const deathForm = {
               ],
               certificateHandlebars.spouseBirthDate
             ), // Required field.
-            exactDateOfBirthUnknown([]),
+            exactDateOfBirthUnknown(detailsExist),
             getAgeOfIndividualInYears(
               formMessageDescriptors.ageOfSpouse,
-              exactDateOfBirthUnknownConditional
+              exactDateOfBirthUnknownConditional.concat(detailsExist),
+              ageOfIndividualValidators
             ),
             getNationality(
               certificateHandlebars.spouseNationality,
               detailsExist
             ),
-            getNationalID(
-              'iD',
-              hideIfNidIntegrationEnabled.concat(detailsExist),
-              getNationalIDValidators('spouse'),
-              certificateHandlebars.spouseNID
-            ),
-            // preceding field of address fields
-            divider('spouse-nid-seperator', detailsExist),
+            getIDType('death', 'spouse', detailsExist, true),
+            ...getIDNumberFields('spouse', detailsExist, true),
             // ADDRESS FIELDS WILL RENDER HERE
-            divider('spouse-address-separator')
+            divider(
+              'spouse-address-separator',
+              hideIfDeceasedAddressNotAvailable
+            )
           ],
           previewGroups: [spouseNameInEnglish]
         }
       ],
       mapping: getSectionMapping('spouse')
     },
+    /*
+    OTHER POSSIBLE SECTIONS FOR DEATH INCLUDE:
     {
       id: 'mother',
       viewType: 'form',
@@ -414,7 +431,12 @@ export const deathForm = {
             divider('mother-nid-seperator', detailsExist),
             // ADDRESS FIELDS WILL RENDER HERE
             divider('mother-address-seperator', detailsExist),
-            getOccupation(certificateHandlebars.motherOccupation)
+            getOccupation(certificateHandlebars.motherOccupation, [
+              {
+                action: 'hide',
+                expression: '!values.detailsExist'
+              }
+            ])
           ],
           previewGroups: [motherNameInEnglish]
         }
@@ -482,13 +504,20 @@ export const deathForm = {
             divider('father-nid-seperator', detailsExist),
             // ADDRESS FIELDS WILL RENDER HERE
             divider('father-address-seperator', detailsExist),
-            getOccupation(certificateHandlebars.fatherOccupation)
+            getOccupation(certificateHandlebars.fatherOccupation, [
+              {
+                action: 'hide',
+                expression: '!values.detailsExist'
+              }
+            ])
           ],
           previewGroups: [fatherNameInEnglish]
         }
       ],
       mapping: getSectionMapping('father')
     },*/
-    documentsSection
+    documentsSection,
+    previewSection,
+    reviewSection
   ]
 } satisfies ISerializedForm

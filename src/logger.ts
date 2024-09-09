@@ -8,8 +8,20 @@
  *
  * Copyright (C) The OpenCRVS Authors located at https://github.com/opencrvs/opencrvs-core/blob/master/AUTHORS.
  */
-import * as pino from 'pino'
-export const logger = pino()
+import pino from 'pino'
+export const logger =
+  process.env.NODE_ENV === 'production'
+    ? pino()
+    : pino({
+        transport: {
+          target: 'pino-pretty',
+          options: {
+            colorize: true,
+            ignore: 'pid,hostname'
+          }
+        }
+      })
+
 if (process.env.NODE_ENV === 'test') {
   logger.level = 'silent'
 }

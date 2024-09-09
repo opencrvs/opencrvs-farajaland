@@ -12,8 +12,9 @@
 import fetch from 'node-fetch'
 import { APPLICATION_CONFIG_URL, FHIR_URL } from '@countryconfig/constants'
 import { callingCountries } from 'country-data'
-import * as csv2json from 'csv2json'
+import csv2json from 'csv2json'
 import { createReadStream } from 'fs'
+import fs from 'fs'
 import { PhoneNumberFormat, PhoneNumberUtil } from 'google-libphonenumber'
 import { URL } from 'url'
 import { build } from 'esbuild'
@@ -23,6 +24,8 @@ export const CHILD_CODE = 'child-details'
 export const DECEASED_CODE = 'deceased-details'
 export const OPENCRVS_SPECIFICATION_URL = 'http://opencrvs.org/specs/'
 import { join } from 'path'
+import { promisify } from 'util'
+import { stringify, Options } from 'csv-stringify'
 
 export interface ILocation {
   id?: string
@@ -47,12 +50,11 @@ interface ICountryLogo {
   file: string
 }
 
-interface IApplicationConfig {
+export interface IApplicationConfig {
   APPLICATION_NAME: string
   COUNTRY: string
   COUNTRY_LOGO: ICountryLogo
   SENTRY: string
-  LOGROCKET: string
   LOGIN_BACKGROUND: ILoginBackground
   USER_NOTIFICATION_DELIVERY_METHOD: string
   INFORMANT_NOTIFICATION_DELIVERY_METHOD: string
@@ -173,6 +175,17 @@ export const convertToMSISDN = (phone: string, countryAlpha3: string) => {
   )
 }
 
+const csvStringify = promisify<Array<Record<string, any>>, Options>(stringify)
+export async function writeJSONToCSV(
+  filename: string,
+  data: Array<Record<string, any>>
+) {
+  const csv = await csvStringify(data, {
+    header: true
+  })
+  return fs.promises.writeFile(filename, csv, 'utf8')
+}
+
 export async function readCSVToJSON<T>(filename: string) {
   return new Promise<T>((resolve, reject) => {
     const chunks: string[] = []
@@ -277,4 +290,8 @@ export function createCustomFieldHandlebarName(fieldId: string) {
   return `${fieldIdNameArray[0]}${fieldIdNameArray[1]}${
     fieldIdNameArray[fieldIdNameArray.length - 1]
   }`
+}
+
+export function uppercaseFirstLetter(str: string) {
+  return str.charAt(0).toUpperCase() + str.slice(1)
 }

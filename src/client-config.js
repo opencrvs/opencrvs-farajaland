@@ -17,15 +17,14 @@ window.config = {
   COUNTRY_CONFIG_URL: 'http://localhost:3040',
   // Country code in uppercase ALPHA-3 format
   COUNTRY: 'FAR',
-  AVAILABLE_LANGUAGES_SELECT: 'en:English,fr:Français',
   LANGUAGES: 'en,fr',
   SENTRY: '',
-  LOGROCKET: '',
   // Use the values in comments when Metabase is running locally
   // http://localhost:4444/public/dashboard/acae0527-74be-4804-a3ee-f8b3c9c8784c#bordered=false&titled=false&refresh=300
   LEADERBOARDS_DASHBOARD_URL: '',
   // http://localhost:4444/public/dashboard/fec78656-e4f9-4b51-b540-0fed81dbd821#bordered=false&titled=false&refresh=300
   REGISTRATIONS_DASHBOARD_URL: '',
   // http://localhost:4444/public/dashboard/a17e9bc0-15a2-4bd1-92fa-ab0f346227ca#bordered=false&titled=false&refresh=300
-  STATISTICS_DASHBOARD_URL: ''
+  STATISTICS_DASHBOARD_URL: '',
+  FEATURES: {}
 }

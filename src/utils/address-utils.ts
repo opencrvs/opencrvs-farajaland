@@ -34,6 +34,7 @@ import {
 } from '../form/addresses/address-fields'
 import { getPreviewGroups } from '../form/common/preview-groups'
 import { cloneDeep } from 'lodash'
+import { expressionToConditional } from '../form/common/default-validation-conditionals'
 
 // Use this function to edit the visibility of fields depending on user input
 function getLocationLevelConditionals(
@@ -794,6 +795,10 @@ function getQueryMapping(
           fieldName ===
             `postalCode${sentenceCase(useCase)}${sentenceCase(section)}` ||
           fieldName ===
+            `internationalPostalCode${sentenceCase(useCase)}${sentenceCase(
+              section
+            )}` ||
+          fieldName ===
             `internationalState${sentenceCase(useCase)}${sentenceCase(
               section
             )}` ||
@@ -1055,7 +1060,7 @@ export function isUseCaseForPlaceOfEvent(useCase: string): Boolean {
 export const getAddressSubsection = (
   previewGroup: AddressSubsections,
   label: MessageDescriptor,
-  conditionalCase?: string
+  conditionalCase?: string | Conditional[]
 ): SerializedFormField[] => {
   const fields: SerializedFormField[] = []
   const subsection: SerializedFormField = {
@@ -1068,13 +1073,12 @@ export const getAddressSubsection = (
   }
 
   if (conditionalCase) {
-    subsection['conditionals'] = [
-      {
-        action: 'hide',
-        expression: `${conditionalCase}`
-      }
-    ]
+    subsection['conditionals'] =
+      typeof conditionalCase === 'string'
+        ? [expressionToConditional(conditionalCase)]
+        : conditionalCase
   }
+
   fields.push(subsection)
   return fields
 }
@@ -1082,23 +1086,26 @@ export const getAddressSubsection = (
 // You should never need to edit this function.  If there is a bug here raise an issue in [Github](https://github.com/opencrvs/opencrvs-farajaland)
 function getAddressFieldsByConfiguration(
   configuration: AllowedAddressConfigurations,
-  section: string
+  section: string,
+  addressHierarchy: string[]
 ): SerializedFormField[] {
   switch (configuration.config) {
     case EventLocationAddressCases.PLACE_OF_BIRTH:
     case EventLocationAddressCases.PLACE_OF_DEATH:
     case EventLocationAddressCases.PLACE_OF_MARRIAGE:
-      return getAddressFields('', configuration.config)
+      return getAddressFields('', configuration.config, addressHierarchy)
     case AddressCases.PRIMARY_ADDRESS:
       return getAddress(
         section,
         AddressCases.PRIMARY_ADDRESS,
+        addressHierarchy,
         configuration.conditionalCase
       )
     case AddressCases.SECONDARY_ADDRESS:
       return getAddress(
         section,
         AddressCases.SECONDARY_ADDRESS,
+        addressHierarchy,
         configuration.conditionalCase
       )
     case AddressCopyConfigCases.PRIMARY_ADDRESS_SAME_AS_OTHER_PRIMARY:
@@ -1137,7 +1144,8 @@ function getAddressFieldsByConfiguration(
 // You should never need to edit this function.  If there is a bug here raise an issue in [Github](https://github.com/opencrvs/opencrvs-farajaland)
 export function decorateFormsWithAddresses(
   defaultEventForm: ISerializedForm,
-  event: string
+  event: string,
+  addressHierarchy: string[]
 ): ISerializedForm {
   const newForm = cloneDeep(defaultEventForm)
   defaultAddressConfiguration.forEach(
@@ -1150,7 +1158,11 @@ export function decorateFormsWithAddresses(
         let previewGroups: IPreviewGroup[] = []
         configurations.forEach((configuration) => {
           addressFields = addressFields.concat(
-            getAddressFieldsByConfiguration(configuration, sectionId)
+            getAddressFieldsByConfiguration(
+              configuration,
+              sectionId,
+              addressHierarchy
+            )
           )
           previewGroups = previewGroups.concat(getPreviewGroups(configuration))
         })
@@ -1177,33 +1189,38 @@ export function decorateFormsWithAddresses(
 function getAddress(
   section: string,
   addressCase: AddressCases,
-  conditionalCase?: string
+  addressHierarchy: string[],
+  conditionalCase?: string | Conditional[]
 ): SerializedFormField[] {
   const defaultFields: SerializedFormField[] = getAddressFields(
     section,
-    addressCase
+    addressCase,
+    addressHierarchy
   )
   if (conditionalCase) {
-    defaultFields.forEach((field) => {
-      let conditional
-      if (conditionalCase) {
-        conditional = {
-          action: 'hide',
-          expression: `${conditionalCase}`
-        }
-      }
-      if (
-        conditional &&
-        field.conditionals &&
-        field.conditionals.filter(
-          (conditional) => conditional.expression === conditionalCase
-        ).length === 0
-      ) {
-        field.conditionals.push(conditional)
-      } else if (conditional && !field.conditionals) {
-        field.conditionals = [conditional]
-      }
-    })
+    return addConditionalsToFields(defaultFields, conditionalCase)
   }
+
   return defaultFields
+}
+
+/**
+ * Adds provided conditionals to each field. Mutates the given array.
+ */
+function addConditionalsToFields(
+  fields: SerializedFormField[],
+  conditionalCase: string | Conditional[]
+) {
+  fields.forEach((field) => {
+    const conditionals =
+      typeof conditionalCase === 'string'
+        ? [expressionToConditional(conditionalCase)]
+        : conditionalCase
+
+    if (conditionals.length > 0) {
+      field.conditionals = [...(field.conditionals || []), ...conditionals]
+    }
+  })
+
+  return fields
 }
