@@ -160,23 +160,7 @@ export async function createDeathDeclaration(
             address: [
               {
                 type: 'PRIMARY_ADDRESS',
-                line: [
-                  declaration.deceased.address.number,
-                  declaration.deceased.address.street,
-                  declaration.deceased.address.residentialArea,
-                  '',
-                  '',
-                  'URBAN',
-                  '',
-                  '',
-                  '',
-                  '',
-                  '',
-                  '',
-                  '',
-                  '',
-                  ''
-                ],
+                line: formatAddressLine(declaration.deceased.address),
                 country: declaration.deceased.address.country,
                 state: getLocationIdByName(
                   locations,
@@ -214,23 +198,7 @@ export async function createDeathDeclaration(
                   type: 'DECEASED_USUAL_RESIDENCE',
                   address: {
                     type: 'PRIMARY_ADDRESS',
-                    line: [
-                      declaration.deceased.address.number,
-                      declaration.deceased.address.street,
-                      declaration.deceased.address.residentialArea,
-                      '',
-                      '',
-                      'URBAN',
-                      '',
-                      '',
-                      '',
-                      '',
-                      '',
-                      '',
-                      '',
-                      '',
-                      ''
-                    ],
+                    line: formatAddressLine(declaration.deceased.address),
                     country: declaration.deceased.address.country,
                     state: getLocationIdByName(
                       locations,
@@ -292,23 +260,7 @@ export async function createDeathDeclaration(
             address: [
               {
                 type: 'PRIMARY_ADDRESS',
-                line: [
-                  declaration.deceased.address.number,
-                  declaration.deceased.address.street,
-                  declaration.deceased.address.residentialArea,
-                  '',
-                  '',
-                  'URBAN',
-                  '',
-                  '',
-                  '',
-                  '',
-                  '',
-                  '',
-                  '',
-                  '',
-                  ''
-                ],
+                line: formatAddressLine(declaration.deceased.address),
                 country: declaration.deceased.address.country,
                 state: getLocationIdByName(
                   locations,
@@ -364,3 +316,13 @@ type ConvertEnumsToStrings<T> = T extends (infer U)[]
       [K in keyof T]: ConvertEnumsToStrings<T[K]>
     }
   : T
+
+const formatAddressLine = (address: typeof declaration.deceased.address) => [
+  address.number,
+  address.street,
+  address.residentialArea,
+  '',
+  '',
+  'URBAN',
+  ...new Array(9).fill('')
+]

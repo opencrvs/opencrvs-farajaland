@@ -124,15 +124,7 @@ export async function createDeclaration(token: string, details: BirthDetails) {
                       '',
                       '',
                       'URBAN',
-                      '',
-                      '',
-                      '',
-                      '',
-                      '',
-                      '',
-                      '',
-                      '',
-                      ''
+                      ...new Array(9).fill('')
                     ],
                     country: 'FAR',
                     state: getLocationIdByName(
