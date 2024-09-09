@@ -1,7 +1,7 @@
 import { Locator, Page, expect } from '@playwright/test'
 import { AUTH_URL, CLIENT_URL, GATEWAY_HOST } from './constants'
 import { format, parseISO } from 'date-fns'
-import { HumanName } from './gateway'
+import { random } from 'lodash'
 
 export async function login(page: Page, username: string, password: string) {
   const token = await getToken(username, password)
@@ -154,4 +154,34 @@ type PersonOrName = {
 }
 export const formatName = (name: PersonOrName) => {
   return joinValuesWith([name.firstNames, name.familyName])
+}
+
+export const drawSignature = async (page: Page) => {
+  const canvas = page.locator('#informantSignature_modal canvas')
+  const rect = await canvas.boundingBox()
+
+  expect(rect).toBeTruthy()
+  if (rect) {
+    const center = {
+      x: rect.x + rect.width / 2,
+      y: rect.y + rect.height / 2
+    }
+
+    const points = Array(10)
+      .fill(null)
+      .map(() => ({
+        x: random(0.05, 0.95),
+        y: random(0.05, 0.95)
+      }))
+
+    await page.mouse.move(center.x, center.y)
+    await page.mouse.down()
+    for (const point of points) {
+      await page.mouse.move(
+        rect.x + point.x * rect.width,
+        rect.y + point.y * rect.height
+      )
+    }
+    await page.mouse.up()
+  }
 }
