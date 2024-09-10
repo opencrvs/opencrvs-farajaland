@@ -87,7 +87,8 @@ services:
         - 'traefik.enable=false'
 
   metricbeat:
-    image: docker.elastic.co/beats/metricbeat:7.17.13
+    image: docker.elastic.co/beats/metricbeat:7.17.18
+
     user: root
     cap_add:
       - SYS_PTRACE
@@ -125,7 +126,7 @@ services:
         gelf-address: 'udp://127.0.0.1:12201'
         tag: 'metricbeat'
   setup-kibana-config:
-    image: curlimages/curl:7.83.1
+    image: curlimages/curl:7.88.1
     entrypoint:
       [
         'curl',
@@ -158,7 +159,7 @@ services:
         gelf-address: 'udp://127.0.0.1:12201'
         tag: 'setup-kibana-config'
   kibana:
-    image: docker.elastic.co/kibana/kibana:7.17.0
+    image: docker.elastic.co/kibana/kibana:7.17.18
     restart: always
     deploy:
       labels:
@@ -410,7 +411,7 @@ services:
         tag: 'elastalert'
 
   logstash:
-    image: logstash:7.17.0
+    image: logstash:7.17.18
     command: logstash -f /etc/logstash/logstash.conf --verbose
     ports:
       - '12201:12201'
@@ -589,6 +590,9 @@ services:
       - APN_SERVICE_URL=http://apm-server:8200
       - COUNTRY_CONFIG_URL=https://countryconfig.{{hostname}}
       - LOGIN_URL=https://login.{{hostname}}
+      # This needs to be the internal swarm url
+      # as containers cannot connect to the web
+      - GATEWAY_URL=http://gateway:7070
       - CLIENT_APP_URL=https://register.{{hostname}}
       - NOTIFICATION_TRANSPORT=${NOTIFICATION_TRANSPORT}
       - ALERT_EMAIL=${ALERT_EMAIL:-}

@@ -311,7 +311,7 @@ export function getPlaceOfEventConditionals(
           )}${sentenceCase(section)})`
         }
       ]
-    case 'configurableAddressLines':
+    case 'ruralOrUrban':
       return getLocationLevelConditionals(section, useCase, [
         {
           action: 'hide',
@@ -325,6 +325,62 @@ export function getPlaceOfEventConditionals(
             useCase !== EventLocationAddressCases.PLACE_OF_MARRIAGE
               ? `values.${useCase}!="OTHER" && values.${useCase}!="PRIVATE_HOME"`
               : ''
+        },
+        {
+          action: 'hide',
+          expression: `!isDefaultCountry(values.country${sentenceCase(
+            useCase
+          )}${sentenceCase(section)})`
+        }
+      ])
+    case 'urban':
+      return getLocationLevelConditionals(section, useCase, [
+        {
+          action: 'hide',
+          expression: `!values.country${sentenceCase(useCase)}${sentenceCase(
+            section
+          )}`
+        },
+        {
+          action: 'hide',
+          expression:
+            useCase !== EventLocationAddressCases.PLACE_OF_MARRIAGE
+              ? `values.${useCase}!="OTHER" && values.${useCase}!="PRIVATE_HOME"`
+              : ''
+        },
+        {
+          action: 'hide',
+          expression: `values.ruralOrUrban${sentenceCase(
+            useCase
+          )}${sentenceCase(section)} !== "URBAN"`
+        },
+        {
+          action: 'hide',
+          expression: `!isDefaultCountry(values.country${sentenceCase(
+            useCase
+          )}${sentenceCase(section)})`
+        }
+      ])
+    case 'rural':
+      return getLocationLevelConditionals(section, useCase, [
+        {
+          action: 'hide',
+          expression: `!values.country${sentenceCase(useCase)}${sentenceCase(
+            section
+          )}`
+        },
+        {
+          action: 'hide',
+          expression:
+            useCase !== EventLocationAddressCases.PLACE_OF_MARRIAGE
+              ? `values.${useCase}!="OTHER" && values.${useCase}!="PRIVATE_HOME"`
+              : ''
+        },
+        {
+          action: 'hide',
+          expression: `values.ruralOrUrban${sentenceCase(
+            useCase
+          )}${sentenceCase(section)} !== "RURAL"`
         },
         {
           action: 'hide',
@@ -507,13 +563,55 @@ export function getAddressConditionals(
           )}${sentenceCase(section)})`
         }
       ]
-    case 'configurableAddressLines':
+    case 'ruralOrUrban':
       return getLocationLevelConditionals(section, useCase, [
         {
           action: 'hide',
           expression: `!values.country${sentenceCase(useCase)}${sentenceCase(
             section
           )}`
+        },
+        {
+          action: 'hide',
+          expression: `!isDefaultCountry(values.country${sentenceCase(
+            useCase
+          )}${sentenceCase(section)})`
+        }
+      ])
+    case 'urban':
+      return getLocationLevelConditionals(section, useCase, [
+        {
+          action: 'hide',
+          expression: `!values.country${sentenceCase(useCase)}${sentenceCase(
+            section
+          )}`
+        },
+        {
+          action: 'hide',
+          expression: `values.ruralOrUrban${sentenceCase(
+            useCase
+          )}${sentenceCase(section)} !== "URBAN"`
+        },
+        {
+          action: 'hide',
+          expression: `!isDefaultCountry(values.country${sentenceCase(
+            useCase
+          )}${sentenceCase(section)})`
+        }
+      ])
+    case 'rural':
+      return getLocationLevelConditionals(section, useCase, [
+        {
+          action: 'hide',
+          expression: `!values.country${sentenceCase(useCase)}${sentenceCase(
+            section
+          )}`
+        },
+        {
+          action: 'hide',
+          expression: `values.ruralOrUrban${sentenceCase(
+            useCase
+          )}${sentenceCase(section)} !== "RURAL"`
         },
         {
           action: 'hide',
@@ -988,23 +1086,26 @@ export const getAddressSubsection = (
 // You should never need to edit this function.  If there is a bug here raise an issue in [Github](https://github.com/opencrvs/opencrvs-farajaland)
 function getAddressFieldsByConfiguration(
   configuration: AllowedAddressConfigurations,
-  section: string
+  section: string,
+  addressHierarchy: string[]
 ): SerializedFormField[] {
   switch (configuration.config) {
     case EventLocationAddressCases.PLACE_OF_BIRTH:
     case EventLocationAddressCases.PLACE_OF_DEATH:
     case EventLocationAddressCases.PLACE_OF_MARRIAGE:
-      return getAddressFields('', configuration.config)
+      return getAddressFields('', configuration.config, addressHierarchy)
     case AddressCases.PRIMARY_ADDRESS:
       return getAddress(
         section,
         AddressCases.PRIMARY_ADDRESS,
+        addressHierarchy,
         configuration.conditionalCase
       )
     case AddressCases.SECONDARY_ADDRESS:
       return getAddress(
         section,
         AddressCases.SECONDARY_ADDRESS,
+        addressHierarchy,
         configuration.conditionalCase
       )
     case AddressCopyConfigCases.PRIMARY_ADDRESS_SAME_AS_OTHER_PRIMARY:
@@ -1043,7 +1144,8 @@ function getAddressFieldsByConfiguration(
 // You should never need to edit this function.  If there is a bug here raise an issue in [Github](https://github.com/opencrvs/opencrvs-farajaland)
 export function decorateFormsWithAddresses(
   defaultEventForm: ISerializedForm,
-  event: string
+  event: string,
+  addressHierarchy: string[]
 ): ISerializedForm {
   const newForm = cloneDeep(defaultEventForm)
   defaultAddressConfiguration.forEach(
@@ -1056,7 +1158,11 @@ export function decorateFormsWithAddresses(
         let previewGroups: IPreviewGroup[] = []
         configurations.forEach((configuration) => {
           addressFields = addressFields.concat(
-            getAddressFieldsByConfiguration(configuration, sectionId)
+            getAddressFieldsByConfiguration(
+              configuration,
+              sectionId,
+              addressHierarchy
+            )
           )
           previewGroups = previewGroups.concat(getPreviewGroups(configuration))
         })
@@ -1083,11 +1189,13 @@ export function decorateFormsWithAddresses(
 function getAddress(
   section: string,
   addressCase: AddressCases,
+  addressHierarchy: string[],
   conditionalCase?: string | Conditional[]
 ): SerializedFormField[] {
   const defaultFields: SerializedFormField[] = getAddressFields(
     section,
-    addressCase
+    addressCase,
+    addressHierarchy
   )
   if (conditionalCase) {
     return addConditionalsToFields(defaultFields, conditionalCase)
