@@ -16,7 +16,7 @@ import {
 import { BirthDeclaration, BirthInputDetails } from '../birth/types'
 import { format, parseISO, subDays } from 'date-fns'
 
-test.describe.serial(' Correct record - 2', () => {
+test.describe.serial('Correct record - 2', () => {
   let declaration: BirthDeclaration
   let trackingId = ''
 
