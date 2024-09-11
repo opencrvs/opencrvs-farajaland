@@ -2,6 +2,7 @@ import { test, expect, type Page } from '@playwright/test'
 import {
   createPIN,
   drawSignature,
+  formatDateObjectTo_ddMMMMyyyy,
   getRandomDate,
   goToSection,
   login
@@ -406,14 +407,7 @@ test.describe.serial('4. Birth declaration case - 4', () => {
        * - Child's date of birth
        */
       await expect(page.locator('#child-content #Date')).toContainText(
-        format(
-          new Date(
-            Number(declaration.child.birthDate.yyyy),
-            Number(declaration.child.birthDate.mm) - 1,
-            Number(declaration.child.birthDate.dd)
-          ),
-          'dd MMMM yyyy'
-        )
+        formatDateObjectTo_ddMMMMyyyy(declaration.child.birthDate)
       )
 
       /*
@@ -635,14 +629,7 @@ test.describe.serial('4. Birth declaration case - 4', () => {
        * - Father's date of birth
        */
       await expect(page.locator('#father-content #Date')).toContainText(
-        format(
-          new Date(
-            Number(declaration.father.birthDate.yyyy),
-            Number(declaration.father.birthDate.mm) - 1,
-            Number(declaration.father.birthDate.dd)
-          ),
-          'dd MMMM yyyy'
-        )
+        formatDateObjectTo_ddMMMMyyyy(declaration.father.birthDate)
       )
 
       /*
@@ -780,14 +767,7 @@ test.describe.serial('4. Birth declaration case - 4', () => {
        * - Child's date of birth
        */
       await expect(page.locator('#child-content #Date')).toContainText(
-        format(
-          new Date(
-            Number(declaration.child.birthDate.yyyy),
-            Number(declaration.child.birthDate.mm) - 1,
-            Number(declaration.child.birthDate.dd)
-          ),
-          'dd MMMM yyyy'
-        )
+        formatDateObjectTo_ddMMMMyyyy(declaration.child.birthDate)
       )
 
       /*
@@ -1009,14 +989,7 @@ test.describe.serial('4. Birth declaration case - 4', () => {
        * - Father's date of birth
        */
       await expect(page.locator('#father-content #Date')).toContainText(
-        format(
-          new Date(
-            Number(declaration.father.birthDate.yyyy),
-            Number(declaration.father.birthDate.mm) - 1,
-            Number(declaration.father.birthDate.dd)
-          ),
-          'dd MMMM yyyy'
-        )
+        formatDateObjectTo_ddMMMMyyyy(declaration.father.birthDate)
       )
 
       /*

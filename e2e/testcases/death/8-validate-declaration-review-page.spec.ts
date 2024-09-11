@@ -5,10 +5,11 @@ import {
   drawSignature,
   goToSection,
   login,
-  uploadImageToSection
+  uploadImageToSection,
+  expectTextWithChangeLink,
+  formatDateObjectTo_ddMMMMyyyy
 } from '../../helpers'
 import faker from '@faker-js/faker'
-import { format } from 'date-fns'
 
 test.describe.serial('8. Validate declaration review page', () => {
   let page: Page
@@ -189,14 +190,12 @@ test.describe.serial('8. Validate declaration review page', () => {
          * - Deceased's Family Name
          * - Change button
          */
-        await expect(page.locator('#deceased-content #Full')).toContainText(
-          declaration.deceased.name.firstNames
-        )
-        await expect(page.locator('#deceased-content #Full')).toContainText(
-          declaration.deceased.name.familyName
-        )
-        await expect(page.locator('#deceased-content #Full')).toContainText(
-          'Change'
+        await expectTextWithChangeLink(
+          page.locator('#deceased-content #Full'),
+          [
+            declaration.deceased.name.firstNames,
+            declaration.deceased.name.familyName
+          ]
         )
 
         /*
@@ -204,30 +203,18 @@ test.describe.serial('8. Validate declaration review page', () => {
          * - Deceased's Gender
          * - Change button
          */
-        await expect(page.locator('#deceased-content #Sex')).toContainText(
+        await expectTextWithChangeLink(page.locator('#deceased-content #Sex'), [
           declaration.deceased.gender
-        )
-        await expect(page.locator('#deceased-content #Sex')).toContainText(
-          'Change'
-        )
+        ])
 
         /*
          * Expected result: should include
          * - Deceased's date of death
          * - Change button
          */
-        await expect(page.locator('#deceased-content #Date')).toContainText(
-          format(
-            new Date(
-              Number(declaration.deceased.birthDate.yyyy),
-              Number(declaration.deceased.birthDate.mm) - 1,
-              Number(declaration.deceased.birthDate.dd)
-            ),
-            'dd MMMM yyyy'
-          )
-        )
-        await expect(page.locator('#deceased-content #Date')).toContainText(
-          'Change'
+        await expectTextWithChangeLink(
+          page.locator('#deceased-content #Date'),
+          [formatDateObjectTo_ddMMMMyyyy(declaration.deceased.birthDate)]
         )
 
         /*
@@ -235,48 +222,36 @@ test.describe.serial('8. Validate declaration review page', () => {
          * - Deceased's Nationality
          * - Change button
          */
-        await expect(
-          page.locator('#deceased-content #Nationality')
-        ).toContainText(declaration.deceased.nationality)
-        await expect(
-          page.locator('#deceased-content #Nationality')
-        ).toContainText('Change')
-
+        await expectTextWithChangeLink(
+          page.locator('#deceased-content #Nationality'),
+          [declaration.deceased.nationality]
+        )
         /*
          * Expected result: should include
          * - Deceased's Type of Id
          * - Deceased's Id Number
          * - Change button
          */
-        await expect(page.locator('#deceased-content #Type')).toContainText(
-          declaration.deceased.identifier.type
+        await expectTextWithChangeLink(
+          page.locator('#deceased-content #Type'),
+          [declaration.deceased.identifier.type]
         )
-        await expect(page.locator('#deceased-content #Type')).toContainText(
-          'Change'
-        )
-        await expect(page.locator('#deceased-content #ID')).toContainText(
+        await expectTextWithChangeLink(page.locator('#deceased-content #ID'), [
           declaration.deceased.identifier.id
-        )
-        await expect(page.locator('#deceased-content #ID')).toContainText(
-          'Change'
-        )
+        ])
 
         /*
          * Expected result: should include
          * - Deceased's address
          * - Change button
          */
-        await expect(page.locator('#deceased-content #Usual')).toContainText(
-          declaration.deceased.address.Country
-        )
-        await expect(page.locator('#deceased-content #Usual')).toContainText(
-          declaration.deceased.address.District
-        )
-        await expect(page.locator('#deceased-content #Usual')).toContainText(
-          declaration.deceased.address.Province
-        )
-        await expect(page.locator('#deceased-content #Usual')).toContainText(
-          'Change'
+        await expectTextWithChangeLink(
+          page.locator('#deceased-content #Usual'),
+          [
+            declaration.deceased.address.Country,
+            declaration.deceased.address.District,
+            declaration.deceased.address.Province
+          ]
         )
 
         /*
@@ -284,18 +259,9 @@ test.describe.serial('8. Validate declaration review page', () => {
          * - Date of death
          * - Change button
          */
-        await expect(page.locator('#deathEvent-content #Date')).toContainText(
-          format(
-            new Date(
-              Number(declaration.event.date.yyyy),
-              Number(declaration.event.date.mm) - 1,
-              Number(declaration.event.date.dd)
-            ),
-            'dd MMMM yyyy'
-          )
-        )
-        await expect(page.locator('#deathEvent-content #Date')).toContainText(
-          'Change'
+        await expectTextWithChangeLink(
+          page.locator('#deathEvent-content #Date'),
+          [formatDateObjectTo_ddMMMMyyyy(declaration.event.date)]
         )
 
         /*
@@ -315,11 +281,9 @@ test.describe.serial('8. Validate declaration review page', () => {
          * - Place of death
          * - Change button
          */
-        await expect(page.locator('#deathEvent-content #Place')).toContainText(
-          declaration.event.place
-        )
-        await expect(page.locator('#deathEvent-content #Place')).toContainText(
-          'Change'
+        await expectTextWithChangeLink(
+          page.locator('#deathEvent-content #Place'),
+          [declaration.event.place]
         )
 
         /*
@@ -327,23 +291,18 @@ test.describe.serial('8. Validate declaration review page', () => {
          * - Informant type
          * - Change button
          */
-        await expect(
-          page.locator('#informant-content #Informant')
-        ).toContainText(declaration.informantType)
-        await expect(
-          page.locator('#informant-content #Informant')
-        ).toContainText('Change')
-
+        await expectTextWithChangeLink(
+          page.locator('#informant-content #Informant'),
+          [declaration.informantType]
+        )
         /*
          * Expected result: should include
          * - Informant's Email
          * - Change button
          */
-        await expect(page.locator('#informant-content #Email')).toContainText(
-          declaration.informantEmail
-        )
-        await expect(page.locator('#informant-content #Email')).toContainText(
-          'Change'
+        await expectTextWithChangeLink(
+          page.locator('#informant-content #Email'),
+          [declaration.informantEmail]
         )
 
         /*
@@ -352,65 +311,41 @@ test.describe.serial('8. Validate declaration review page', () => {
          * - Spouse's Family Name
          * - Change button
          */
-        await expect(page.locator('#spouse-content #Full')).toContainText(
-          declaration.spouse.name.firstNames
-        )
-        await expect(page.locator('#spouse-content #Full')).toContainText(
+        await expectTextWithChangeLink(page.locator('#spouse-content #Full'), [
+          declaration.spouse.name.firstNames,
           declaration.spouse.name.familyName
-        )
-        await expect(page.locator('#spouse-content #Full')).toContainText(
-          'Change'
-        )
+        ])
 
         /*
          * Expected result: should include
          * - Spouse's date of death
          * - Change button
          */
-        await expect(page.locator('#spouse-content #Date')).toContainText(
-          format(
-            new Date(
-              Number(declaration.spouse.birthDate.yyyy),
-              Number(declaration.spouse.birthDate.mm) - 1,
-              Number(declaration.spouse.birthDate.dd)
-            ),
-            'dd MMMM yyyy'
-          )
-        )
-        await expect(page.locator('#spouse-content #Date')).toContainText(
-          'Change'
-        )
+        await expectTextWithChangeLink(page.locator('#spouse-content #Date'), [
+          formatDateObjectTo_ddMMMMyyyy(declaration.spouse.birthDate)
+        ])
 
         /*
          * Expected result: should include
          * - Spouse's Nationality
          * - Change button
          */
-        await expect(
-          page.locator('#spouse-content #Nationality')
-        ).toContainText(declaration.spouse.nationality)
-        await expect(
-          page.locator('#spouse-content #Nationality')
-        ).toContainText('Change')
-
+        await expectTextWithChangeLink(
+          page.locator('#spouse-content #Nationality'),
+          [declaration.spouse.nationality]
+        )
         /*
          * Expected result: should include
          * - Spouse's Type of Id
          * - Spouse's Id Number
          * - Change button
          */
-        await expect(page.locator('#spouse-content #Type')).toContainText(
+        await expectTextWithChangeLink(page.locator('#spouse-content #Type'), [
           declaration.spouse.identifier.type
-        )
-        await expect(page.locator('#spouse-content #Type')).toContainText(
-          'Change'
-        )
-        await expect(page.locator('#spouse-content #ID')).toContainText(
+        ])
+        await expectTextWithChangeLink(page.locator('#spouse-content #ID'), [
           declaration.spouse.identifier.id
-        )
-        await expect(page.locator('#spouse-content #ID')).toContainText(
-          'Change'
-        )
+        ])
 
         /*
          * Expected result: should include
@@ -484,15 +419,9 @@ test.describe.serial('8. Validate declaration review page', () => {
         /*
          * Expected result: should change deceased's birthday
          */
-        await expect(page.locator('#deceased-content #Date')).toContainText(
-          format(
-            new Date(
-              Number(declaration.deceased.birthDate.yyyy),
-              Number(declaration.deceased.birthDate.mm) - 1,
-              Number(declaration.deceased.birthDate.dd)
-            ),
-            'dd MMMM yyyy'
-          )
+        await expectTextWithChangeLink(
+          page.locator('#deceased-content #Date'),
+          [formatDateObjectTo_ddMMMMyyyy(declaration.deceased.birthDate)]
         )
       })
 
@@ -628,16 +557,10 @@ test.describe.serial('8. Validate declaration review page', () => {
         /*
          * Expected result: should change spouse's birthday
          */
-        await expect(page.locator('#spouse-content #Date')).toContainText(
-          format(
-            new Date(
-              Number(declaration.spouse.birthDate.yyyy),
-              Number(declaration.spouse.birthDate.mm) - 1,
-              Number(declaration.spouse.birthDate.dd)
-            ),
-            'dd MMMM yyyy'
-          )
-        )
+
+        await expectTextWithChangeLink(page.locator('#spouse-content #Date'), [
+          formatDateObjectTo_ddMMMMyyyy(declaration.spouse.birthDate)
+        ])
       })
       test("8.1.2.11 Change spouse's nationality", async () => {
         await page
@@ -828,106 +751,70 @@ test.describe.serial('8. Validate declaration review page', () => {
        * - Deceased's Family Name
        * - Change button
        */
-      await expect(page.locator('#deceased-content #Full')).toContainText(
-        declaration.deceased.name.firstNames
-      )
-      await expect(page.locator('#deceased-content #Full')).toContainText(
+      await expectTextWithChangeLink(page.locator('#deceased-content #Full'), [
+        declaration.deceased.name.firstNames,
         declaration.deceased.name.familyName
-      )
-      await expect(page.locator('#deceased-content #Full')).toContainText(
-        'Change'
-      )
+      ])
 
       /*
        * Expected result: should include
        * - Deceased's Gender
        * - Change button
        */
-      await expect(page.locator('#deceased-content #Sex')).toContainText(
+      await expectTextWithChangeLink(page.locator('#deceased-content #Sex'), [
         declaration.deceased.gender
-      )
-      await expect(page.locator('#deceased-content #Sex')).toContainText(
-        'Change'
-      )
+      ])
 
       /*
        * Expected result: should include
        * - Deceased's date of death
        * - Change button
        */
-      await expect(page.locator('#deceased-content #Date')).toContainText(
-        format(
-          new Date(
-            Number(declaration.deceased.birthDate.yyyy),
-            Number(declaration.deceased.birthDate.mm) - 1,
-            Number(declaration.deceased.birthDate.dd)
-          ),
-          'dd MMMM yyyy'
-        )
-      )
-      await expect(page.locator('#deceased-content #Date')).toContainText(
-        'Change'
-      )
+      await expectTextWithChangeLink(page.locator('#deceased-content #Date'), [
+        formatDateObjectTo_ddMMMMyyyy(declaration.deceased.birthDate)
+      ])
 
       /*
        * Expected result: should include
        * - Deceased's Nationality
        * - Change button
        */
-      await expect(
-        page.locator('#deceased-content #Nationality')
-      ).toContainText(declaration.deceased.nationality)
-      await expect(
-        page.locator('#deceased-content #Nationality')
-      ).toContainText('Change')
-
+      await expectTextWithChangeLink(
+        page.locator('#deceased-content #Nationality'),
+        [declaration.deceased.nationality]
+      )
       /*
        * Expected result: should include
        * - Deceased's Type of Id
        * - Deceased's Id Number
        * - Change button
        */
-      await expect(page.locator('#deceased-content #Type')).toContainText(
+      await expectTextWithChangeLink(page.locator('#deceased-content #Type'), [
         declaration.deceased.identifier.type
-      )
-      await expect(page.locator('#deceased-content #Type')).toContainText(
-        'Change'
-      )
-      await expect(page.locator('#deceased-content #ID')).toContainText(
+      ])
+      await expectTextWithChangeLink(page.locator('#deceased-content #ID'), [
         declaration.deceased.identifier.id
-      )
-      await expect(page.locator('#deceased-content #ID')).toContainText(
-        'Change'
-      )
+      ])
 
       /*
        * Expected result: should include
        * - Deceased's address
        * - Change button
        */
-      await expect(page.locator('#deceased-content #Usual')).toContainText(
-        declaration.deceased.address.Country
-      )
-      await expect(page.locator('#deceased-content #Usual')).toContainText(
-        declaration.deceased.address.District
-      )
-      await expect(page.locator('#deceased-content #Usual')).toContainText(
+      await expectTextWithChangeLink(page.locator('#deceased-content #Usual'), [
+        declaration.deceased.address.Country,
+        declaration.deceased.address.District,
         declaration.deceased.address.Province
-      )
-      await expect(page.locator('#deceased-content #Usual')).toContainText(
-        'Change'
-      )
+      ])
 
       /*
        * Expected result: should include
        * - Informant type
        * - Change button
        */
-      await expect(page.locator('#informant-content #Informant')).toContainText(
-        declaration.informantType
-      )
-      await expect(page.locator('#informant-content #Informant')).toContainText(
-        'Change'
+      await expectTextWithChangeLink(
+        page.locator('#informant-content #Informant'),
+        [declaration.informantType]
       )
 
       /*
@@ -935,11 +822,9 @@ test.describe.serial('8. Validate declaration review page', () => {
        * - Informant's Email
        * - Change button
        */
-      await expect(page.locator('#informant-content #Email')).toContainText(
-        declaration.informantEmail
-      )
-      await expect(page.locator('#informant-content #Email')).toContainText(
-        'Change'
+      await expectTextWithChangeLink(
+        page.locator('#informant-content #Email'),
+        [declaration.informantEmail]
       )
 
       /*
@@ -948,45 +833,28 @@ test.describe.serial('8. Validate declaration review page', () => {
        * - Spouse's Family Name
        * - Change button
        */
-      await expect(page.locator('#spouse-content #Full')).toContainText(
-        declaration.spouse.name.firstNames
-      )
-      await expect(page.locator('#spouse-content #Full')).toContainText(
+      await expectTextWithChangeLink(page.locator('#spouse-content #Full'), [
+        declaration.spouse.name.firstNames,
         declaration.spouse.name.familyName
-      )
-      await expect(page.locator('#spouse-content #Full')).toContainText(
-        'Change'
-      )
+      ])
 
       /*
        * Expected result: should include
        * - Spouse's date of death
        * - Change button
        */
-      await expect(page.locator('#spouse-content #Date')).toContainText(
-        format(
-          new Date(
-            Number(declaration.spouse.birthDate.yyyy),
-            Number(declaration.spouse.birthDate.mm) - 1,
-            Number(declaration.spouse.birthDate.dd)
-          ),
-          'dd MMMM yyyy'
-        )
-      )
-      await expect(page.locator('#spouse-content #Date')).toContainText(
-        'Change'
-      )
+      await expectTextWithChangeLink(page.locator('#spouse-content #Date'), [
+        formatDateObjectTo_ddMMMMyyyy(declaration.spouse.birthDate)
+      ])
 
       /*
        * Expected result: should include
        * - Spouse's Nationality
        * - Change button
        */
-      await expect(page.locator('#spouse-content #Nationality')).toContainText(
-        declaration.spouse.nationality
-      )
-      await expect(page.locator('#spouse-content #Nationality')).toContainText(
-        'Change'
+      await expectTextWithChangeLink(
+        page.locator('#spouse-content #Nationality'),
+        [declaration.spouse.nationality]
       )
 
       /*
@@ -995,16 +863,12 @@ test.describe.serial('8. Validate declaration review page', () => {
        * - Spouse's Id Number
        * - Change button
        */
-      await expect(page.locator('#spouse-content #Type')).toContainText(
+      await expectTextWithChangeLink(page.locator('#spouse-content #Type'), [
         declaration.spouse.identifier.type
-      )
-      await expect(page.locator('#spouse-content #Type')).toContainText(
-        'Change'
-      )
-      await expect(page.locator('#spouse-content #ID')).toContainText(
+      ])
+      await expectTextWithChangeLink(page.locator('#spouse-content #ID'), [
         declaration.spouse.identifier.id
-      )
-      await expect(page.locator('#spouse-content #ID')).toContainText('Change')
+      ])
 
       /*
        * Expected result: should include
@@ -1090,14 +954,7 @@ test.describe.serial('8. Validate declaration review page', () => {
          * Expected result: should change deceased's birthday
          */
         await expect(page.locator('#deceased-content #Date')).toContainText(
-          format(
-            new Date(
-              Number(declaration.deceased.birthDate.yyyy),
-              Number(declaration.deceased.birthDate.mm) - 1,
-              Number(declaration.deceased.birthDate.dd)
-            ),
-            'dd MMMM yyyy'
-          )
+          formatDateObjectTo_ddMMMMyyyy(declaration.deceased.birthDate)
         )
       })
 
@@ -1245,14 +1102,7 @@ test.describe.serial('8. Validate declaration review page', () => {
          * Expected result: should change spouse's birthday
          */
         await expect(page.locator('#spouse-content #Date')).toContainText(
-          format(
-            new Date(
-              Number(declaration.spouse.birthDate.yyyy),
-              Number(declaration.spouse.birthDate.mm) - 1,
-              Number(declaration.spouse.birthDate.dd)
-            ),
-            'dd MMMM yyyy'
-          )
+          formatDateObjectTo_ddMMMMyyyy(declaration.spouse.birthDate)
         )
       })
       test("8.2.2.11 Change spouse's nationality", async () => {
@@ -1375,103 +1225,69 @@ test.describe.serial('8. Validate declaration review page', () => {
       await expect(page.locator('#deceased-content #Full')).toContainText(
         declaration.deceased.name.firstNames
       )
-      await expect(page.locator('#deceased-content #Full')).toContainText(
+      await expectTextWithChangeLink(page.locator('#deceased-content #Full'), [
         declaration.deceased.name.familyName
-      )
-      await expect(page.locator('#deceased-content #Full')).toContainText(
-        'Change'
-      )
+      ])
 
       /*
        * Expected result: should include
        * - Deceased's Gender
        * - Change button
        */
-      await expect(page.locator('#deceased-content #Sex')).toContainText(
+      await expectTextWithChangeLink(page.locator('#deceased-content #Sex'), [
         declaration.deceased.gender
-      )
-      await expect(page.locator('#deceased-content #Sex')).toContainText(
-        'Change'
-      )
+      ])
 
       /*
        * Expected result: should include
        * - Deceased's date of death
        * - Change button
        */
-      await expect(page.locator('#deceased-content #Date')).toContainText(
-        format(
-          new Date(
-            Number(declaration.deceased.birthDate.yyyy),
-            Number(declaration.deceased.birthDate.mm) - 1,
-            Number(declaration.deceased.birthDate.dd)
-          ),
-          'dd MMMM yyyy'
-        )
-      )
-      await expect(page.locator('#deceased-content #Date')).toContainText(
-        'Change'
-      )
+      await expectTextWithChangeLink(page.locator('#deceased-content #Date'), [
+        formatDateObjectTo_ddMMMMyyyy(declaration.deceased.birthDate)
+      ])
 
       /*
        * Expected result: should include
        * - Deceased's Nationality
        * - Change button
        */
-      await expect(
-        page.locator('#deceased-content #Nationality')
-      ).toContainText(declaration.deceased.nationality)
-      await expect(
-        page.locator('#deceased-content #Nationality')
-      ).toContainText('Change')
-
+      await expectTextWithChangeLink(
+        page.locator('#deceased-content #Nationality'),
+        [declaration.deceased.nationality]
+      )
       /*
        * Expected result: should include
        * - Deceased's Type of Id
        * - Deceased's Id Number
        * - Change button
        */
-      await expect(page.locator('#deceased-content #Type')).toContainText(
+      await expectTextWithChangeLink(page.locator('#deceased-content #Type'), [
         declaration.deceased.identifier.type
-      )
-      await expect(page.locator('#deceased-content #Type')).toContainText(
-        'Change'
-      )
-      await expect(page.locator('#deceased-content #ID')).toContainText(
+      ])
+      await expectTextWithChangeLink(page.locator('#deceased-content #ID'), [
         declaration.deceased.identifier.id
-      )
-      await expect(page.locator('#deceased-content #ID')).toContainText(
-        'Change'
-      )
+      ])
 
       /*
        * Expected result: should include
        * - Deceased's address
        * - Change button
        */
-      await expect(page.locator('#deceased-content #Usual')).toContainText(
-        declaration.deceased.address.Country
-      )
-      await expect(page.locator('#deceased-content #Usual')).toContainText(
-        declaration.deceased.address.District
-      )
-      await expect(page.locator('#deceased-content #Usual')).toContainText(
+      await expectTextWithChangeLink(page.locator('#deceased-content #Usual'), [
+        declaration.deceased.address.Country,
+        declaration.deceased.address.District,
         declaration.deceased.address.Province
-      )
-      await expect(page.locator('#deceased-content #Usual')).toContainText(
-        'Change'
-      )
+      ])
 
       /*
        * Expected result: should include
        * - Informant type
        * - Change button
        */
-      await expect(page.locator('#informant-content #Informant')).toContainText(
-        declaration.informantType
-      )
-      await expect(page.locator('#informant-content #Informant')).toContainText(
-        'Change'
+      await expectTextWithChangeLink(
+        page.locator('#informant-content #Informant'),
+        [declaration.informantType]
       )
 
       /*
@@ -1479,11 +1295,9 @@ test.describe.serial('8. Validate declaration review page', () => {
        * - Informant's Email
        * - Change button
        */
-      await expect(page.locator('#informant-content #Email')).toContainText(
-        declaration.informantEmail
-      )
-      await expect(page.locator('#informant-content #Email')).toContainText(
-        'Change'
+      await expectTextWithChangeLink(
+        page.locator('#informant-content #Email'),
+        [declaration.informantEmail]
       )
 
       /*
@@ -1492,45 +1306,28 @@ test.describe.serial('8. Validate declaration review page', () => {
        * - Spouse's Family Name
        * - Change button
        */
-      await expect(page.locator('#spouse-content #Full')).toContainText(
-        declaration.spouse.name.firstNames
-      )
-      await expect(page.locator('#spouse-content #Full')).toContainText(
+      await expectTextWithChangeLink(page.locator('#spouse-content #Full'), [
+        declaration.spouse.name.firstNames,
         declaration.spouse.name.familyName
-      )
-      await expect(page.locator('#spouse-content #Full')).toContainText(
-        'Change'
-      )
+      ])
 
       /*
        * Expected result: should include
        * - Spouse's date of death
        * - Change button
        */
-      await expect(page.locator('#spouse-content #Date')).toContainText(
-        format(
-          new Date(
-            Number(declaration.spouse.birthDate.yyyy),
-            Number(declaration.spouse.birthDate.mm) - 1,
-            Number(declaration.spouse.birthDate.dd)
-          ),
-          'dd MMMM yyyy'
-        )
-      )
-      await expect(page.locator('#spouse-content #Date')).toContainText(
-        'Change'
-      )
+      await expectTextWithChangeLink(page.locator('#spouse-content #Date'), [
+        formatDateObjectTo_ddMMMMyyyy(declaration.spouse.birthDate)
+      ])
 
       /*
        * Expected result: should include
        * - Spouse's Nationality
        * - Change button
        */
-      await expect(page.locator('#spouse-content #Nationality')).toContainText(
-        declaration.spouse.nationality
-      )
-      await expect(page.locator('#spouse-content #Nationality')).toContainText(
-        'Change'
+      await expectTextWithChangeLink(
+        page.locator('#spouse-content #Nationality'),
+        [declaration.spouse.nationality]
       )
 
       /*
@@ -1539,16 +1336,12 @@ test.describe.serial('8. Validate declaration review page', () => {
        * - Spouse's Id Number
        * - Change button
        */
-      await expect(page.locator('#spouse-content #Type')).toContainText(
+      await expectTextWithChangeLink(page.locator('#spouse-content #Type'), [
         declaration.spouse.identifier.type
-      )
-      await expect(page.locator('#spouse-content #Type')).toContainText(
-        'Change'
-      )
-      await expect(page.locator('#spouse-content #ID')).toContainText(
+      ])
+      await expectTextWithChangeLink(page.locator('#spouse-content #ID'), [
         declaration.spouse.identifier.id
-      )
-      await expect(page.locator('#spouse-content #ID')).toContainText('Change')
+      ])
 
       /*
        * Expected result: should include

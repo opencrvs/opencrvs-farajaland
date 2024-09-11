@@ -141,6 +141,16 @@ export const uploadImageToSection = async ({
   await uploadImage(page, buttonLocator)
 }
 
+export const expectTextWithChangeLink = async (
+  locator: Locator,
+  texts: string[]
+) => {
+  for (const text of texts) {
+    await expect(locator).toContainText(text)
+  }
+  await expect(locator).toContainText('Change')
+}
+
 export const getLocationNameFromFhirId = async (fhirId: string) => {
   const res = await fetch(`${GATEWAY_HOST}/location/${fhirId}`)
   const location = (await res.json()) as fhir.Location
@@ -162,6 +172,20 @@ export const formatDateTo_yyyyMMdd = (date: string) =>
 
 export const formatDateTo_ddMMMMyyyy = (date: string) =>
   format(parseISO(date), 'dd MMMM yyyy')
+
+/*
+  Date() object takes 0-indexed month,
+  but month coming to the method is 1-indexed
+*/
+export const formatDateObjectTo_ddMMMMyyyy = ({
+  yyyy,
+  mm,
+  dd
+}: {
+  yyyy: string
+  mm: string
+  dd: string
+}) => format(new Date(Number(yyyy), Number(mm) - 1, Number(dd)), 'dd MMMM yyyy')
 
 export const joinValuesWith = (
   values: (string | null | undefined)[],

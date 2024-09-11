@@ -2,6 +2,8 @@ import { test, expect, type Page } from '@playwright/test'
 import {
   createPIN,
   drawSignature,
+  expectTextWithChangeLink,
+  formatDateObjectTo_ddMMMMyyyy,
   getRandomDate,
   goToSection,
   login,
@@ -9,7 +11,6 @@ import {
   uploadImageToSection
 } from '../../../helpers'
 import faker from '@faker-js/faker'
-import { format } from 'date-fns'
 
 test.describe.serial('3. Birth declaration case - 3', () => {
   let page: Page
@@ -486,14 +487,7 @@ test.describe.serial('3. Birth declaration case - 3', () => {
        * - Child's date of birth
        */
       await expect(page.locator('#child-content #Date')).toContainText(
-        format(
-          new Date(
-            Number(declaration.child.birthDate.yyyy),
-            Number(declaration.child.birthDate.mm) - 1,
-            Number(declaration.child.birthDate.dd)
-          ),
-          'dd MMMM yyyy'
-        )
+        formatDateObjectTo_ddMMMMyyyy(declaration.child.birthDate)
       )
 
       /*
@@ -565,14 +559,7 @@ test.describe.serial('3. Birth declaration case - 3', () => {
        * - Informant's date of birth
        */
       await expect(page.locator('#informant-content #Date')).toContainText(
-        format(
-          new Date(
-            Number(declaration.informant.birthDate.yyyy),
-            Number(declaration.informant.birthDate.mm) - 1,
-            Number(declaration.informant.birthDate.dd)
-          ),
-          'dd MMMM yyyy'
-        )
+        formatDateObjectTo_ddMMMMyyyy(declaration.informant.birthDate)
       )
 
       /*
@@ -629,14 +616,7 @@ test.describe.serial('3. Birth declaration case - 3', () => {
        * - Mother's date of birth
        */
       await expect(page.locator('#mother-content #Date')).toContainText(
-        format(
-          new Date(
-            Number(declaration.mother.birthDate.yyyy),
-            Number(declaration.mother.birthDate.mm) - 1,
-            Number(declaration.mother.birthDate.dd)
-          ),
-          'dd MMMM yyyy'
-        )
+        formatDateObjectTo_ddMMMMyyyy(declaration.mother.birthDate)
       )
 
       /*
@@ -722,14 +702,7 @@ test.describe.serial('3. Birth declaration case - 3', () => {
        * - Father's date of birth
        */
       await expect(page.locator('#father-content #Date')).toContainText(
-        format(
-          new Date(
-            Number(declaration.father.birthDate.yyyy),
-            Number(declaration.father.birthDate.mm) - 1,
-            Number(declaration.father.birthDate.dd)
-          ),
-          'dd MMMM yyyy'
-        )
+        formatDateObjectTo_ddMMMMyyyy(declaration.father.birthDate)
       )
 
       /*
@@ -866,14 +839,7 @@ test.describe.serial('3. Birth declaration case - 3', () => {
        * - Child's date of birth
        */
       await expect(page.locator('#child-content #Date')).toContainText(
-        format(
-          new Date(
-            Number(declaration.child.birthDate.yyyy),
-            Number(declaration.child.birthDate.mm) - 1,
-            Number(declaration.child.birthDate.dd)
-          ),
-          'dd MMMM yyyy'
-        )
+        formatDateObjectTo_ddMMMMyyyy(declaration.child.birthDate)
       )
 
       /*
@@ -945,14 +911,7 @@ test.describe.serial('3. Birth declaration case - 3', () => {
        * - Informant's date of birth
        */
       await expect(page.locator('#informant-content #Date')).toContainText(
-        format(
-          new Date(
-            Number(declaration.informant.birthDate.yyyy),
-            Number(declaration.informant.birthDate.mm) - 1,
-            Number(declaration.informant.birthDate.dd)
-          ),
-          'dd MMMM yyyy'
-        )
+        formatDateObjectTo_ddMMMMyyyy(declaration.informant.birthDate)
       )
 
       /*
@@ -1009,14 +968,7 @@ test.describe.serial('3. Birth declaration case - 3', () => {
        * - Mother's date of birth
        */
       await expect(page.locator('#mother-content #Date')).toContainText(
-        format(
-          new Date(
-            Number(declaration.mother.birthDate.yyyy),
-            Number(declaration.mother.birthDate.mm) - 1,
-            Number(declaration.mother.birthDate.dd)
-          ),
-          'dd MMMM yyyy'
-        )
+        formatDateObjectTo_ddMMMMyyyy(declaration.mother.birthDate)
       )
 
       /*
@@ -1102,14 +1054,7 @@ test.describe.serial('3. Birth declaration case - 3', () => {
        * - Father's date of birth
        */
       await expect(page.locator('#father-content #Date')).toContainText(
-        format(
-          new Date(
-            Number(declaration.father.birthDate.yyyy),
-            Number(declaration.father.birthDate.mm) - 1,
-            Number(declaration.father.birthDate.dd)
-          ),
-          'dd MMMM yyyy'
-        )
+        formatDateObjectTo_ddMMMMyyyy(declaration.father.birthDate)
       )
 
       /*
