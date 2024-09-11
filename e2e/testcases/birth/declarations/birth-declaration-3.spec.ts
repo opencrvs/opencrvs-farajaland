@@ -5,7 +5,8 @@ import {
   getRandomDate,
   goToSection,
   login,
-  uploadImage
+  uploadImage,
+  uploadImageToSection
 } from '../../../helpers'
 import faker from '@faker-js/faker'
 import { format } from 'date-fns'
@@ -381,142 +382,77 @@ test.describe.serial('3. Birth declaration case - 3', () => {
           page.locator('button[name="uploadDocForChildDOB"]')
         )
       })
+
       test("3.1.5.2 Upload proof of mother's id", async () => {
-        const mothersDocumentSection = page.locator('#uploadDocForMother')
-        await mothersDocumentSection.getByText('Select...').click()
-        await mothersDocumentSection
-          .getByText('National ID', { exact: true })
-          .click()
-        await uploadImage(
-          page,
-          page.locator('button[name="uploadDocForMother"]')
-        )
+        const imageUploadSectionTitles = [
+          'National ID',
+          'Passport',
+          'Birth certificate',
+          'Other'
+        ]
 
-        await mothersDocumentSection.getByText('Select...').click()
-        await mothersDocumentSection
-          .getByText('Passport', { exact: true })
-          .click()
-        await uploadImage(
-          page,
-          page.locator('button[name="uploadDocForMother"]')
-        )
-
-        await mothersDocumentSection.getByText('Select...').click()
-        await mothersDocumentSection
-          .getByText('Birth certificate', { exact: true })
-          .click()
-        await uploadImage(
-          page,
-          page.locator('button[name="uploadDocForMother"]')
-        )
-
-        await mothersDocumentSection.getByText('Select...').click()
-        await mothersDocumentSection.getByText('Other', { exact: true }).click()
-        await uploadImage(
-          page,
-          page.locator('button[name="uploadDocForMother"]')
-        )
+        for (const sectionTitle of imageUploadSectionTitles) {
+          await uploadImageToSection({
+            page,
+            sectionLocator: page.locator('#uploadDocForMother'),
+            sectionTitle,
+            buttonLocator: page.locator('button[name="uploadDocForMother"]')
+          })
+        }
       })
+
       test("3.1.5.3 Upload proof of father's id", async () => {
-        const fathersDocumentSection = page.locator('#uploadDocForFather')
-        await fathersDocumentSection.getByText('Select...').click()
-        await fathersDocumentSection
-          .getByText('National ID', { exact: true })
-          .click()
-        await uploadImage(
-          page,
-          page.locator('button[name="uploadDocForFather"]')
-        )
+        const imageUploadSectionTitles = [
+          'National ID',
+          'Passport',
+          'Birth certificate',
+          'Other'
+        ]
 
-        await fathersDocumentSection.getByText('Select...').click()
-        await fathersDocumentSection
-          .getByText('Passport', { exact: true })
-          .click()
-        await uploadImage(
-          page,
-          page.locator('button[name="uploadDocForFather"]'),
-          './e2e/assets/5MB-random.png'
-        )
-
-        await fathersDocumentSection.getByText('Select...').click()
-        await fathersDocumentSection
-          .getByText('Birth certificate', { exact: true })
-          .click()
-        await uploadImage(
-          page,
-          page.locator('button[name="uploadDocForFather"]')
-        )
-
-        await fathersDocumentSection.getByText('Select...').click()
-        await fathersDocumentSection.getByText('Other', { exact: true }).click()
-        await uploadImage(
-          page,
-          page.locator('button[name="uploadDocForFather"]')
-        )
+        for (const sectionTitle of imageUploadSectionTitles) {
+          await uploadImageToSection({
+            page,
+            sectionLocator: page.locator('#uploadDocForFather'),
+            sectionTitle,
+            buttonLocator: page.locator('button[name="uploadDocForFather"]')
+          })
+        }
       })
+
       test("3.1.5.4 Upload proof of informant's id", async () => {
-        const informantsDocumentSection = page.locator('#uploadDocForInformant')
-        await informantsDocumentSection.getByText('Select...').click()
-        await informantsDocumentSection
-          .getByText('National ID', { exact: true })
-          .click()
-        await uploadImage(
-          page,
-          page.locator('button[name="uploadDocForInformant"]')
-        )
+        const imageUploadSectionTitles = [
+          'National ID',
+          'Passport',
+          'Birth certificate',
+          'Other'
+        ]
 
-        await informantsDocumentSection.getByText('Select...').click()
-        await informantsDocumentSection
-          .getByText('Passport', { exact: true })
-          .click()
-        await uploadImage(
-          page,
-          page.locator('button[name="uploadDocForInformant"]')
-        )
-
-        await informantsDocumentSection.getByText('Select...').click()
-        await informantsDocumentSection
-          .getByText('Birth certificate', { exact: true })
-          .click()
-        await uploadImage(
-          page,
-          page.locator('button[name="uploadDocForInformant"]'),
-          './e2e/assets/5MB-random.png'
-        )
-
-        await informantsDocumentSection.getByText('Select...').click()
-        await informantsDocumentSection
-          .getByText('Other', { exact: true })
-          .click()
-        await uploadImage(
-          page,
-          page.locator('button[name="uploadDocForInformant"]')
-        )
+        for (const sectionTitle of imageUploadSectionTitles) {
+          await uploadImageToSection({
+            page,
+            sectionLocator: page.locator('#uploadDocForInformant'),
+            sectionTitle,
+            buttonLocator: page.locator('button[name="uploadDocForInformant"]')
+          })
+        }
       })
-      test('3.1.5.5 Upload other', async () => {
-        await page
-          .locator('#uploadDocForProofOfLegalGuardian')
-          .getByText('Select...')
-          .click()
-        await page
-          .getByText('Proof of legal guardianship', { exact: true })
-          .click()
-        await uploadImage(
-          page,
-          page.locator('button[name="uploadDocForProofOfLegalGuardian"]')
-        )
 
-        await page
-          .locator('#uploadDocForProofOfLegalGuardian')
-          .getByText('Select...')
-          .click()
-        await page
-          .getByText('Proof of assigned responsibility', { exact: true })
-          .click()
-        await uploadImage(
-          page,
-          page.locator('button[name="uploadDocForProofOfLegalGuardian"]')
-        )
+      test('3.1.5.5 Upload other', async () => {
+        const imageUploadSectionTitles = [
+          'Proof of legal guardianship',
+          'Proof of assigned responsibility'
+        ]
+
+        for (const sectionTitle of imageUploadSectionTitles) {
+          await uploadImageToSection({
+            page,
+            sectionLocator: page.locator('#uploadDocForProofOfLegalGuardian'),
+            sectionTitle,
+            buttonLocator: page.locator(
+              'button[name="uploadDocForProofOfLegalGuardian"]'
+            )
+          })
+        }
       })
     })
 
@@ -853,7 +789,7 @@ test.describe.serial('3. Birth declaration case - 3', () => {
     })
 
     test('3.1.8 Fill up informant signature', async () => {
-      await page.getByRole('button', { name: 'Sign' }).click()
+      await page.getByRole('button', { name: 'Sign', exact: true }).click()
       await drawSignature(page)
       await page
         .locator('#informantSignature_modal')

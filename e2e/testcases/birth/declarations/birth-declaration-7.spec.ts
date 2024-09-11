@@ -4,7 +4,8 @@ import {
   drawSignature,
   goToSection,
   login,
-  uploadImage
+  uploadImage,
+  uploadImageToSection
 } from '../../../helpers'
 import faker from '@faker-js/faker'
 
@@ -102,26 +103,21 @@ test.describe.serial('7. Birth declaration case - 7', () => {
       await expect(page.locator('#uploadDocForMother')).toBeHidden()
       await expect(page.locator('#uploadDocForFather')).toBeHidden()
 
-      await page
-        .locator('#uploadDocForInformant')
-        .getByText('Select...')
-        .click()
-      await page.getByText('Birth certificate', { exact: true }).click()
-      await uploadImage(
+      await uploadImageToSection({
         page,
-        page.locator('button[name="uploadDocForInformant"]')
-      )
-      await page
-        .locator('#uploadDocForProofOfLegalGuardian')
-        .getByText('Select...')
-        .click()
-      await page
-        .getByText('Proof of legal guardianship', { exact: true })
-        .click()
-      await uploadImage(
+        sectionLocator: page.locator('#uploadDocForInformant'),
+        sectionTitle: 'Birth certificate',
+        buttonLocator: page.locator('button[name="uploadDocForInformant"]')
+      })
+
+      await uploadImageToSection({
         page,
-        page.locator('button[name="uploadDocForProofOfLegalGuardian"]')
-      )
+        sectionLocator: page.locator('#uploadDocForProofOfLegalGuardian'),
+        sectionTitle: 'Proof of legal guardianship',
+        buttonLocator: page.locator(
+          'button[name="uploadDocForProofOfLegalGuardian"]'
+        )
+      })
     })
 
     test('7.1.6 Go to preview', async () => {

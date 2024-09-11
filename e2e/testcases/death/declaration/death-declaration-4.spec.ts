@@ -5,7 +5,7 @@ import {
   getRandomDate,
   goToSection,
   login,
-  uploadImage
+  uploadImageToSection
 } from '../../../helpers'
 import faker from '@faker-js/faker'
 import { format } from 'date-fns'
@@ -309,44 +309,21 @@ test.describe.serial('4. Death declaration case - 4', () => {
     test('4.1.5 Upload supporting document', async () => {
       goToSection(page, 'documents')
 
-      await page.locator('#uploadDocForDeceased').getByText('Select...').click()
-      await page.getByText('Birth certificate', { exact: true }).click()
-      await uploadImage(
-        page,
-        page.locator('button[name="uploadDocForDeceased"]')
-      )
+      const imageUploadSections = [
+        ['uploadDocForDeceased', 'Birth certificate'],
+        ['uploadDocForInformant', 'Other'],
+        ['uploadDocForDeceasedDeath', 'Police certificate of death'],
+        ['uploadDocForCauseOfDeath', 'Verbal autopsy report']
+      ]
 
-      await page
-        .locator('#uploadDocForInformant')
-        .getByText('Select...')
-        .click()
-      await page.getByText('Other', { exact: true }).click()
-      await uploadImage(
-        page,
-        page.locator('button[name="uploadDocForInformant"]')
-      )
-
-      await page
-        .locator('#uploadDocForDeceasedDeath')
-        .getByText('Select...')
-        .click()
-      await page
-        .getByText('Police certificate of death', { exact: true })
-        .click()
-      await uploadImage(
-        page,
-        page.locator('button[name="uploadDocForDeceasedDeath"]')
-      )
-
-      await page
-        .locator('#uploadDocForCauseOfDeath')
-        .getByText('Select...')
-        .click()
-      await page.getByText('Verbal autopsy report', { exact: true }).click()
-      await uploadImage(
-        page,
-        page.locator('button[name="uploadDocForCauseOfDeath"]')
-      )
+      for (const [locator, sectionTitle] of imageUploadSections) {
+        await uploadImageToSection({
+          page,
+          sectionLocator: page.locator('#' + locator),
+          sectionTitle,
+          buttonLocator: page.locator(`button[name="${locator}"]`)
+        })
+      }
     })
     test('4.1.6 Verify information on preview page', async () => {
       goToSection(page, 'preview')

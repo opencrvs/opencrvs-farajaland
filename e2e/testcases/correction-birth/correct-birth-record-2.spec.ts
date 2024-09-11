@@ -423,9 +423,7 @@ test.describe.serial('Correct record - 2', () => {
 
         await expect(
           page.locator('#informant-content #Type').getByRole('deletion')
-        ).toHaveText('National Id', {
-          ignoreCase: true
-        })
+        ).toHaveText('National ID')
 
         await expect(
           page

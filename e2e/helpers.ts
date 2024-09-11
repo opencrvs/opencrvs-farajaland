@@ -118,6 +118,29 @@ export const uploadImage = async (
   await fileChooser.setFiles(image)
 }
 
+/**
+ * @page - page object
+ * @sectionLocator - locator for the section e.g. mother / father
+ * @sectionTitle - title of the section to  e.g. National ID / Passport
+ * @buttonLocator - locator for the button to upload the image
+ */
+export const uploadImageToSection = async ({
+  page,
+  sectionLocator,
+  sectionTitle,
+  buttonLocator
+}: {
+  page: Page
+  sectionLocator: Locator
+  buttonLocator: Locator
+  sectionTitle: string
+}) => {
+  await sectionLocator.getByText('Select...').click()
+  await sectionLocator.getByText(sectionTitle, { exact: true }).click()
+
+  await uploadImage(page, buttonLocator)
+}
+
 export const getLocationNameFromFhirId = async (fhirId: string) => {
   const res = await fetch(`${GATEWAY_HOST}/location/${fhirId}`)
   const location = (await res.json()) as fhir.Location

@@ -5,7 +5,8 @@ import {
   formatName,
   getToken,
   login,
-  uploadImage
+  uploadImage,
+  uploadImageToSection
 } from '../../helpers'
 import faker from '@faker-js/faker'
 import { format, subDays } from 'date-fns'
@@ -545,21 +546,17 @@ test.describe.serial(' Correct record - 16', () => {
 
     await expect(page.getByRole('button', { name: 'Continue' })).toBeDisabled()
 
-    await page.getByText('Select...').click()
-    await page.getByText('Affidavit', { exact: true }).click()
-    await uploadImage(page, page.getByRole('button', { name: 'Upload' }))
+    const imageUploadSectionTitles = ['Affidavit', 'Court Document', 'Other']
 
-    await page.getByText('Select...').click()
-    await page
-      .getByText('Court Document', {
-        exact: true
+    for (const sectionTitle of imageUploadSectionTitles) {
+      await uploadImageToSection({
+        page,
+        sectionLocator: page.locator('#corrector_form'),
+        sectionTitle,
+        buttonLocator: page.getByRole('button', { name: 'Upload' })
       })
-      .click()
-    await uploadImage(page, page.getByRole('button', { name: 'Upload' }))
+    }
 
-    await page.getByText('Select...').click()
-    await page.getByText('Other', { exact: true }).click()
-    await uploadImage(page, page.getByRole('button', { name: 'Upload' }))
     /*
      * Expected result: should enable the continue button
      */
