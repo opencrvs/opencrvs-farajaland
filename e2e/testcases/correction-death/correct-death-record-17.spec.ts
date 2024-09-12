@@ -1,6 +1,7 @@
 import { expect, test, type Page } from '@playwright/test'
 import {
   createPIN,
+  expectAddress,
   formatDateTo_ddMMMMyyyy,
   formatName,
   getToken,
@@ -393,7 +394,7 @@ test.describe.serial(' Correct record - 17', () => {
       })
       await expect(
         page.locator('#spouse-content #Usual').getByRole('deletion').nth(2)
-      ).toHaveText('Sulaka', { ignoreCase: true })
+      ).toHaveText('Sulaka')
       await expect(
         page.locator('#spouse-content #Usual').getByRole('deletion').nth(3)
       ).toHaveText('Zobwe', {
@@ -401,7 +402,7 @@ test.describe.serial(' Correct record - 17', () => {
       })
       await expect(
         page.locator('#spouse-content #Usual').getByRole('deletion').nth(5)
-      ).toHaveText(declaration.spouse.address[0].city, { ignoreCase: true })
+      ).toHaveText(declaration.spouse.address[0].city)
       await expect(
         page.locator('#spouse-content #Usual').getByRole('deletion').nth(6)
       ).toHaveText(declaration.spouse.address[0].line[2], {
@@ -431,36 +432,10 @@ test.describe.serial(' Correct record - 17', () => {
           .locator('#spouse-content #Usual')
           .getByText(updatedSpouseDetails.address.province)
       ).toBeVisible()
-      await expect(
-        page
-          .locator('#spouse-content #Usual')
-          .getByText(updatedSpouseDetails.address.district)
-      ).toBeVisible()
-      await expect(
-        page
-          .locator('#spouse-content #Usual')
-          .getByText(updatedSpouseDetails.address.town)
-      ).toBeVisible()
-      await expect(
-        page
-          .locator('#spouse-content #Usual')
-          .getByText(updatedSpouseDetails.address.residentialArea)
-      ).toBeVisible()
-      await expect(
-        page
-          .locator('#spouse-content #Usual')
-          .getByText(updatedSpouseDetails.address.street)
-      ).toBeVisible()
-      await expect(
-        page
-          .locator('#spouse-content #Usual')
-          .getByText(updatedSpouseDetails.address.number)
-      ).toBeVisible()
-      await expect(
-        page
-          .locator('#spouse-content #Usual')
-          .getByText(updatedSpouseDetails.address.zipCode)
-      ).toBeVisible()
+      await expectAddress(
+        page.locator('#spouse-content #Usual'),
+        updatedSpouseDetails.address
+      )
     })
   })
 

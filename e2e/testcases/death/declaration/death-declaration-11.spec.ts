@@ -3,6 +3,7 @@ import {
   continueForm,
   createPIN,
   drawSignature,
+  expectAddress,
   expectTextWithChangeLink,
   formatDateObjectTo_ddMMMMyyyy,
   getRandomDate,
@@ -752,29 +753,9 @@ test.describe.serial('11. Death declaration case - 11', () => {
         /*
          * Expected result: should change informant's address
          */
-        await expect(page.locator('#deceased-content #Usual')).toContainText(
-          declaration.deceased.address.country
-        )
-        await expect(page.locator('#deceased-content #Usual')).toContainText(
-          declaration.deceased.address.district
-        )
-        await expect(page.locator('#deceased-content #Usual')).toContainText(
-          declaration.deceased.address.state
-        )
-        await expect(page.locator('#deceased-content #Usual')).toContainText(
-          declaration.deceased.address.town
-        )
-        await expect(page.locator('#deceased-content #Usual')).toContainText(
-          declaration.deceased.address.addressLine1
-        )
-        await expect(page.locator('#deceased-content #Usual')).toContainText(
-          declaration.deceased.address.addressLine2
-        )
-        await expect(page.locator('#deceased-content #Usual')).toContainText(
-          declaration.deceased.address.addressLine3
-        )
-        await expect(page.locator('#deceased-content #Usual')).toContainText(
-          declaration.deceased.address.postcodeOrZip
+        await expectAddress(
+          page.locator('#deceased-content #Usual'),
+          declaration.deceased.address
         )
       })
       test('11.1.7.8 Change registration email', async () => {

@@ -1,6 +1,7 @@
 import { expect, test, type Page } from '@playwright/test'
 import {
   createPIN,
+  expectAddress,
   formatDateTo_ddMMMMyyyy,
   formatName,
   getToken,
@@ -500,7 +501,7 @@ test.describe.serial(' Correct record - 6', () => {
       })
       await expect(
         page.locator('#informant-content #Usual').getByRole('deletion').nth(2)
-      ).toHaveText('Central', { ignoreCase: true })
+      ).toHaveText('Central')
       await expect(
         page.locator('#informant-content #Usual').getByRole('deletion').nth(3)
       ).toHaveText('Ibombo', {
@@ -508,7 +509,7 @@ test.describe.serial(' Correct record - 6', () => {
       })
       await expect(
         page.locator('#informant-content #Usual').getByRole('deletion').nth(5)
-      ).toHaveText(declaration.informant.address[0].city, { ignoreCase: true })
+      ).toHaveText(declaration.informant.address[0].city)
       await expect(
         page.locator('#informant-content #Usual').getByRole('deletion').nth(6)
       ).toHaveText(declaration.informant.address[0].line[2], {
@@ -533,41 +534,10 @@ test.describe.serial(' Correct record - 6', () => {
       await expect(
         page.locator('#informant-content #Usual').getByText('Farajaland')
       ).toBeVisible()
-      await expect(
-        page
-          .locator('#informant-content #Usual')
-          .getByText(updatedInformantDetails.address.province)
-      ).toBeVisible()
-      await expect(
-        page
-          .locator('#informant-content #Usual')
-          .getByText(updatedInformantDetails.address.district)
-      ).toBeVisible()
-      await expect(
-        page
-          .locator('#informant-content #Usual')
-          .getByText(updatedInformantDetails.address.town)
-      ).toBeVisible()
-      await expect(
-        page
-          .locator('#informant-content #Usual')
-          .getByText(updatedInformantDetails.address.residentialArea)
-      ).toBeVisible()
-      await expect(
-        page
-          .locator('#informant-content #Usual')
-          .getByText(updatedInformantDetails.address.street)
-      ).toBeVisible()
-      await expect(
-        page
-          .locator('#informant-content #Usual')
-          .getByText(updatedInformantDetails.address.number)
-      ).toBeVisible()
-      await expect(
-        page
-          .locator('#informant-content #Usual')
-          .getByText(updatedInformantDetails.address.zipCode)
-      ).toBeVisible()
+      await expectAddress(
+        page.locator('#informant-content #Usual'),
+        updatedInformantDetails.address
+      )
     })
 
     test('6.4.8 Change email', async () => {
@@ -606,7 +576,7 @@ test.describe.serial(' Correct record - 6', () => {
 
       await expect(
         page.locator('#informant-content #Email').getByRole('deletion')
-      ).toHaveText(declaration.registration.contactEmail, { ignoreCase: true })
+      ).toHaveText(declaration.registration.contactEmail)
 
       await expect(
         page

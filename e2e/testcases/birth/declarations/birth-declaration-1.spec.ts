@@ -2,6 +2,8 @@ import { test, expect, type Page } from '@playwright/test'
 import {
   createPIN,
   drawSignature,
+  expectAddress,
+  expectTexts,
   formatDateObjectTo_ddMMMMyyyy,
   getRandomDate,
   goToSection,
@@ -403,29 +405,9 @@ test.describe.serial('1. Birth declaration case - 1', () => {
        * Expected result: should include
        * - Mother's address
        */
-      await expect(page.locator('#mother-content #Usual')).toContainText(
-        declaration.mother.address.country
-      )
-      await expect(page.locator('#mother-content #Usual')).toContainText(
-        declaration.mother.address.district
-      )
-      await expect(page.locator('#mother-content #Usual')).toContainText(
-        declaration.mother.address.province
-      )
-      await expect(page.locator('#mother-content #Usual')).toContainText(
-        declaration.mother.address.town
-      )
-      await expect(page.locator('#mother-content #Usual')).toContainText(
-        declaration.mother.address.residentialArea
-      )
-      await expect(page.locator('#mother-content #Usual')).toContainText(
-        declaration.mother.address.street
-      )
-      await expect(page.locator('#mother-content #Usual')).toContainText(
-        declaration.mother.address.number
-      )
-      await expect(page.locator('#mother-content #Usual')).toContainText(
-        declaration.mother.address.postcodeOrZip
+      await expectAddress(
+        page.locator('#mother-content #Usual'),
+        declaration.mother.address
       )
 
       /*
@@ -693,29 +675,9 @@ test.describe.serial('1. Birth declaration case - 1', () => {
        * Expected result: should include
        * - Mother's address
        */
-      await expect(page.locator('#mother-content #Usual')).toContainText(
-        declaration.mother.address.country
-      )
-      await expect(page.locator('#mother-content #Usual')).toContainText(
-        declaration.mother.address.district
-      )
-      await expect(page.locator('#mother-content #Usual')).toContainText(
-        declaration.mother.address.province
-      )
-      await expect(page.locator('#mother-content #Usual')).toContainText(
-        declaration.mother.address.town
-      )
-      await expect(page.locator('#mother-content #Usual')).toContainText(
-        declaration.mother.address.residentialArea
-      )
-      await expect(page.locator('#mother-content #Usual')).toContainText(
-        declaration.mother.address.street
-      )
-      await expect(page.locator('#mother-content #Usual')).toContainText(
-        declaration.mother.address.number
-      )
-      await expect(page.locator('#mother-content #Usual')).toContainText(
-        declaration.mother.address.postcodeOrZip
+      await expectAddress(
+        page.locator('#mother-content #Usual'),
+        declaration.mother.address
       )
 
       /*

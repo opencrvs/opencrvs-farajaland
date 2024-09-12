@@ -1,6 +1,7 @@
 import { expect, test, type Page } from '@playwright/test'
 import {
   createPIN,
+  expectAddress,
   formatDateTo_ddMMMMyyyy,
   formatName,
   getToken,
@@ -497,7 +498,7 @@ test.describe.serial(' Correct record - 3', () => {
         })
         await expect(
           page.locator('#mother-content #Usual').getByRole('deletion').nth(2)
-        ).toHaveText('Central', { ignoreCase: true })
+        ).toHaveText('Central')
         await expect(
           page.locator('#mother-content #Usual').getByRole('deletion').nth(3)
         ).toHaveText('Ibombo', {
@@ -505,7 +506,7 @@ test.describe.serial(' Correct record - 3', () => {
         })
         await expect(
           page.locator('#mother-content #Usual').getByRole('deletion').nth(5)
-        ).toHaveText(declaration.mother.address[0].city, { ignoreCase: true })
+        ).toHaveText(declaration.mother.address[0].city)
         await expect(
           page.locator('#mother-content #Usual').getByRole('deletion').nth(6)
         ).toHaveText(declaration.mother.address[0].line[2], {
@@ -530,41 +531,10 @@ test.describe.serial(' Correct record - 3', () => {
         await expect(
           page.locator('#mother-content #Usual').getByText('Farajaland')
         ).toBeVisible()
-        await expect(
-          page
-            .locator('#mother-content #Usual')
-            .getByText(updatedMotherDetails.address.province)
-        ).toBeVisible()
-        await expect(
-          page
-            .locator('#mother-content #Usual')
-            .getByText(updatedMotherDetails.address.district)
-        ).toBeVisible()
-        await expect(
-          page
-            .locator('#mother-content #Usual')
-            .getByText(updatedMotherDetails.address.town)
-        ).toBeVisible()
-        await expect(
-          page
-            .locator('#mother-content #Usual')
-            .getByText(updatedMotherDetails.address.residentialArea)
-        ).toBeVisible()
-        await expect(
-          page
-            .locator('#mother-content #Usual')
-            .getByText(updatedMotherDetails.address.street)
-        ).toBeVisible()
-        await expect(
-          page
-            .locator('#mother-content #Usual')
-            .getByText(updatedMotherDetails.address.number)
-        ).toBeVisible()
-        await expect(
-          page
-            .locator('#mother-content #Usual')
-            .getByText(updatedMotherDetails.address.zipCode)
-        ).toBeVisible()
+        await expectAddress(
+          page.locator('#mother-content #Usual'),
+          updatedMotherDetails.address
+        )
       })
 
       test('3.4.7 Change marital status', async () => {

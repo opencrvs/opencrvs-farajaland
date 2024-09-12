@@ -2,6 +2,7 @@ import { test, expect, type Page } from '@playwright/test'
 import {
   createPIN,
   drawSignature,
+  expectAddress,
   expectTextWithChangeLink,
   formatDateObjectTo_ddMMMMyyyy,
   getRandomDate,
@@ -597,29 +598,9 @@ test.describe.serial('7. Death declaration case - 7', () => {
        * Expected result: should include
        * - Deceased's address
        */
-      await expect(page.locator('#deceased-content #Usual')).toContainText(
-        declaration.deceased.address.country
-      )
-      await expect(page.locator('#deceased-content #Usual')).toContainText(
-        declaration.deceased.address.district
-      )
-      await expect(page.locator('#deceased-content #Usual')).toContainText(
-        declaration.deceased.address.state
-      )
-      await expect(page.locator('#deceased-content #Usual')).toContainText(
-        declaration.deceased.address.town
-      )
-      await expect(page.locator('#deceased-content #Usual')).toContainText(
-        declaration.deceased.address.addressLine1
-      )
-      await expect(page.locator('#deceased-content #Usual')).toContainText(
-        declaration.deceased.address.addressLine2
-      )
-      await expect(page.locator('#deceased-content #Usual')).toContainText(
-        declaration.deceased.address.addressLine3
-      )
-      await expect(page.locator('#deceased-content #Usual')).toContainText(
-        declaration.deceased.address.postcodeOrZip
+      await expectAddress(
+        page.locator('#deceased-content #Usual'),
+        declaration.deceased.address
       )
 
       /*
@@ -735,30 +716,9 @@ test.describe.serial('7. Death declaration case - 7', () => {
        * Expected result: should include
        * - informant's address
        */
-      await expect(page.locator('#informant-content #Usual')).toContainText(
-        declaration.informant.address.country
-      )
-      await expect(page.locator('#informant-content #Usual')).toContainText(
-        declaration.informant.address.state
-      )
-      await expect(page.locator('#informant-content #Usual')).toContainText(
-        declaration.informant.address.district
-      )
-      await expect(page.locator('#informant-content #Usual')).toContainText(
-        declaration.informant.address.town
-      )
-      await expect(page.locator('#informant-content #Usual')).toContainText(
-        declaration.informant.address.addressLine1
-      )
-      await expect(page.locator('#informant-content #Usual')).toContainText(
-        declaration.informant.address.addressLine2
-      )
-      await expect(page.locator('#informant-content #Usual')).toContainText(
-        declaration.informant.address.addressLine3
-      )
-
-      await expect(page.locator('#informant-content #Usual')).toContainText(
-        declaration.informant.address.postcodeOrZip
+      await expectAddress(
+        page.locator('#informant-content #Usual'),
+        declaration.informant.address
       )
 
       /*

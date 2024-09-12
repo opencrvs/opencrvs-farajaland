@@ -347,7 +347,6 @@ test.describe.serial('8. Death declaration case - 8', () => {
       await expectTextWithChangeLink(page.locator('#deceased-content #Usual'), [
         declaration.deceased.address.country,
         declaration.deceased.address.district,
-
         declaration.deceased.address.province
       ])
 

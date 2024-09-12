@@ -141,13 +141,51 @@ export const uploadImageToSection = async ({
   await uploadImage(page, buttonLocator)
 }
 
+export const expectAddress = async (
+  locator: Locator,
+  address: { [key: string]: any },
+  isDeletion?: boolean
+) => {
+  const addressKeys = [
+    'country',
+    'province',
+    'district',
+    'village',
+    'town',
+    'residentialArea',
+    'street',
+    'number',
+    'addressLine1',
+    'addressLine2',
+    'addressLine3',
+    'postcodeOrZip',
+    'zipCode'
+  ]
+
+  const texts = addressKeys
+    .map((key) => address[key])
+    .filter((value) => Boolean(value))
+
+  if (isDeletion) {
+    for (let i = 0; i < texts.length; i++) {
+      await expect(
+        locator.getByRole('deletion').nth(i + (i < 3 ? 1 : 2))
+      ).toContainText(texts[i])
+    }
+  } else await expectTexts(locator, texts)
+}
+
+export const expectTexts = async (locator: Locator, texts: string[]) => {
+  for (const text of texts) {
+    await expect(locator).toContainText(text)
+  }
+}
+
 export const expectTextWithChangeLink = async (
   locator: Locator,
   texts: string[]
 ) => {
-  for (const text of texts) {
-    await expect(locator).toContainText(text)
-  }
+  expectTexts(locator, texts)
   await expect(locator).toContainText('Change')
 }
 

@@ -1,6 +1,7 @@
 import { expect, test, type Page } from '@playwright/test'
 import {
   createPIN,
+  expectAddress,
   formatDateTo_ddMMMMyyyy,
   formatName,
   getToken,
@@ -305,7 +306,7 @@ test.describe.serial(' Correct record - 8', () => {
       })
       await expect(
         page.locator('#father-content #Usual').getByRole('deletion').nth(2)
-      ).toHaveText('Central', { ignoreCase: true })
+      ).toHaveText('Central')
       await expect(
         page.locator('#father-content #Usual').getByRole('deletion').nth(3)
       ).toHaveText('Ibombo', {
@@ -313,7 +314,7 @@ test.describe.serial(' Correct record - 8', () => {
       })
       await expect(
         page.locator('#father-content #Usual').getByRole('deletion').nth(5)
-      ).toHaveText(declaration.father.address[0].city, { ignoreCase: true })
+      ).toHaveText(declaration.father.address[0].city)
       await expect(
         page.locator('#father-content #Usual').getByRole('deletion').nth(6)
       ).toHaveText(declaration.father.address[0].line[2], {
@@ -338,41 +339,10 @@ test.describe.serial(' Correct record - 8', () => {
       await expect(
         page.locator('#father-content #Usual').getByText('Farajaland')
       ).toBeVisible()
-      await expect(
-        page
-          .locator('#father-content #Usual')
-          .getByText(updatedFatherDetails.address.province)
-      ).toBeVisible()
-      await expect(
-        page
-          .locator('#father-content #Usual')
-          .getByText(updatedFatherDetails.address.district)
-      ).toBeVisible()
-      await expect(
-        page
-          .locator('#father-content #Usual')
-          .getByText(updatedFatherDetails.address.town)
-      ).toBeVisible()
-      await expect(
-        page
-          .locator('#father-content #Usual')
-          .getByText(updatedFatherDetails.address.residentialArea)
-      ).toBeVisible()
-      await expect(
-        page
-          .locator('#father-content #Usual')
-          .getByText(updatedFatherDetails.address.street)
-      ).toBeVisible()
-      await expect(
-        page
-          .locator('#father-content #Usual')
-          .getByText(updatedFatherDetails.address.number)
-      ).toBeVisible()
-      await expect(
-        page
-          .locator('#father-content #Usual')
-          .getByText(updatedFatherDetails.address.zipCode)
-      ).toBeVisible()
+      await expectAddress(
+        page.locator('#father-content #Usual'),
+        updatedFatherDetails.address
+      )
 
       /*
        * Expected result: should

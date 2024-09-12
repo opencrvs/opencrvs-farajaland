@@ -1,6 +1,7 @@
 import { expect, test, type Page } from '@playwright/test'
 import {
   createPIN,
+  expectAddress,
   formatDateTo_ddMMMMyyyy,
   formatName,
   getToken,
@@ -501,7 +502,7 @@ test.describe.serial(' Correct record - 18', () => {
       })
       await expect(
         page.locator('#deceased-content #Usual').getByRole('deletion').nth(2)
-      ).toHaveText('Sulaka', { ignoreCase: true })
+      ).toHaveText('Sulaka')
       await expect(
         page.locator('#deceased-content #Usual').getByRole('deletion').nth(3)
       ).toHaveText('Zobwe', {
@@ -509,7 +510,7 @@ test.describe.serial(' Correct record - 18', () => {
       })
       await expect(
         page.locator('#deceased-content #Usual').getByRole('deletion').nth(5)
-      ).toHaveText(declaration.deceased.address[0].city, { ignoreCase: true })
+      ).toHaveText(declaration.deceased.address[0].city)
       await expect(
         page.locator('#deceased-content #Usual').getByRole('deletion').nth(6)
       ).toHaveText(declaration.deceased.address[0].line[2], {
@@ -534,41 +535,10 @@ test.describe.serial(' Correct record - 18', () => {
       await expect(
         page.locator('#deceased-content #Usual').getByText('Farajaland')
       ).toBeVisible()
-      await expect(
-        page
-          .locator('#deceased-content #Usual')
-          .getByText(updatedDeceasedDetails.address.province)
-      ).toBeVisible()
-      await expect(
-        page
-          .locator('#deceased-content #Usual')
-          .getByText(updatedDeceasedDetails.address.district)
-      ).toBeVisible()
-      await expect(
-        page
-          .locator('#deceased-content #Usual')
-          .getByText(updatedDeceasedDetails.address.town)
-      ).toBeVisible()
-      await expect(
-        page
-          .locator('#deceased-content #Usual')
-          .getByText(updatedDeceasedDetails.address.residentialArea)
-      ).toBeVisible()
-      await expect(
-        page
-          .locator('#deceased-content #Usual')
-          .getByText(updatedDeceasedDetails.address.street)
-      ).toBeVisible()
-      await expect(
-        page
-          .locator('#deceased-content #Usual')
-          .getByText(updatedDeceasedDetails.address.number)
-      ).toBeVisible()
-      await expect(
-        page
-          .locator('#deceased-content #Usual')
-          .getByText(updatedDeceasedDetails.address.zipCode)
-      ).toBeVisible()
+      await expectAddress(
+        page.locator('#deceased-content #Usual'),
+        updatedDeceasedDetails.address
+      )
     })
 
     test('10.2.2.8 Change marital status', async () => {
