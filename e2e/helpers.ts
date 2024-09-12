@@ -1,7 +1,7 @@
 import { Locator, Page, expect } from '@playwright/test'
 import { AUTH_URL, CLIENT_URL, GATEWAY_HOST } from './constants'
 import { format, parseISO } from 'date-fns'
-import { random } from 'lodash'
+import { isArray, random } from 'lodash'
 
 export async function login(page: Page, username: string, password: string) {
   const token = await getToken(username, password)
@@ -148,29 +148,46 @@ export const expectAddress = async (
 ) => {
   const addressKeys = [
     'country',
+
+    'state',
     'province',
+
     'district',
+
     'village',
     'town',
+    'city',
+
     'residentialArea',
-    'street',
-    'number',
     'addressLine1',
+
+    'street',
     'addressLine2',
+
+    'number',
     'addressLine3',
+
     'postcodeOrZip',
+    'postalCode',
     'zipCode'
   ]
+
+  if (isArray(address.line)) {
+    address[addressKeys[8]] = address.line[2]
+    address[addressKeys[9]] = address.line[1]
+    address[addressKeys[10]] = address.line[0]
+  }
 
   const texts = addressKeys
     .map((key) => address[key])
     .filter((value) => Boolean(value))
 
   if (isDeletion) {
+    const deletionLocators = await locator.getByRole('deletion').all()
     for (let i = 0; i < texts.length; i++) {
-      await expect(
-        locator.getByRole('deletion').nth(i + (i < 3 ? 1 : 2))
-      ).toContainText(texts[i])
+      await expect(deletionLocators[i + (i < 3 ? 1 : 2)]).toContainText(
+        texts[i]
+      )
     }
   } else await expectTexts(locator, texts)
 }

@@ -299,42 +299,16 @@ test.describe.serial(' Correct record - 8', () => {
        * - show updated Usual place of resiedence
        */
 
-      await expect(
-        page.locator('#father-content #Usual').getByRole('deletion').nth(1)
-      ).toHaveText('Farajaland', {
-        ignoreCase: true
-      })
-      await expect(
-        page.locator('#father-content #Usual').getByRole('deletion').nth(2)
-      ).toHaveText('Central')
-      await expect(
-        page.locator('#father-content #Usual').getByRole('deletion').nth(3)
-      ).toHaveText('Ibombo', {
-        ignoreCase: true
-      })
-      await expect(
-        page.locator('#father-content #Usual').getByRole('deletion').nth(5)
-      ).toHaveText(declaration.father.address[0].city)
-      await expect(
-        page.locator('#father-content #Usual').getByRole('deletion').nth(6)
-      ).toHaveText(declaration.father.address[0].line[2], {
-        ignoreCase: true
-      })
-      await expect(
-        page.locator('#father-content #Usual').getByRole('deletion').nth(7)
-      ).toHaveText(declaration.father.address[0].line[1], {
-        ignoreCase: true
-      })
-      await expect(
-        page.locator('#father-content #Usual').getByRole('deletion').nth(8)
-      ).toHaveText(declaration.father.address[0].line[0], {
-        ignoreCase: true
-      })
-      await expect(
-        page.locator('#father-content #Usual').getByRole('deletion').nth(9)
-      ).toHaveText(declaration.father.address[0].postalCode, {
-        ignoreCase: true
-      })
+      await expectAddress(
+        page.locator('#father-content #Usual'),
+        {
+          ...declaration.father.address[0],
+          country: 'Farajaland',
+          state: 'Central',
+          district: 'Ibombo'
+        },
+        true
+      )
 
       await expect(
         page.locator('#father-content #Usual').getByText('Farajaland')
