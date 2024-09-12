@@ -660,14 +660,7 @@ test.describe.serial('11. Death declaration case - 11', () => {
          * Expected result: should change informant's birthday
          */
         await expect(page.locator('#informant-content #Date')).toContainText(
-          format(
-            new Date(
-              Number(declaration.informant.birthDate.yyyy),
-              Number(declaration.informant.birthDate.mm) - 1,
-              Number(declaration.informant.birthDate.dd)
-            ),
-            'dd MMMM yyyy'
-          )
+          formatDateObjectTo_ddMMMMyyyy(declaration.informant.birthDate)
         )
       })
       test("11.1.7.3 Change informant's ID type", async () => {

@@ -4,9 +4,8 @@ import faker from '@faker-js/faker'
 
 import { readFileSync } from 'fs'
 import uuid from 'uuid'
-import { format } from 'date-fns'
 import { join } from 'path'
-import { getRandomDate } from '../../helpers'
+import { formatDateObjectTo_yyyyMMdd, getRandomDate } from '../../helpers'
 import {
   CREATE_DEATH_REGISTRATION,
   GET_DEATH_REGISTRATION_FOR_REVIEW
@@ -142,13 +141,8 @@ export async function createDeathDeclaration(
               }
             ],
             gender: declaration.deceased.gender as 'male',
-            birthDate: format(
-              new Date(
-                Number(declaration.deceased.birthDate.yyyy),
-                Number(declaration.deceased.birthDate.mm) - 1,
-                Number(declaration.deceased.birthDate.dd)
-              ),
-              'yyyy-MM-dd'
+            birthDate: formatDateObjectTo_yyyyMMdd(
+              declaration.deceased.birthDate
             ),
             nationality: [declaration.deceased.nationality],
             identifier: [
@@ -179,14 +173,7 @@ export async function createDeathDeclaration(
               }
             ],
             deceased: {
-              deathDate: format(
-                new Date(
-                  Number(declaration.event.date.yyyy),
-                  Number(declaration.event.date.mm) - 1,
-                  Number(declaration.event.date.dd)
-                ),
-                'yyyy-MM-dd'
-              )
+              deathDate: formatDateObjectTo_yyyyMMdd(declaration.event.date)
             }
           },
           eventLocation:
@@ -242,13 +229,8 @@ export async function createDeathDeclaration(
                 familyName: declaration.spouse.name.familyName
               }
             ],
-            birthDate: format(
-              new Date(
-                Number(declaration.spouse.birthDate.yyyy),
-                Number(declaration.spouse.birthDate.mm) - 1,
-                Number(declaration.spouse.birthDate.dd)
-              ),
-              'yyyy-MM-dd'
+            birthDate: formatDateObjectTo_yyyyMMdd(
+              declaration.spouse.birthDate
             ),
             nationality: ['FAR'],
             identifier: [

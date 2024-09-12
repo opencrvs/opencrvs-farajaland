@@ -225,6 +225,20 @@ export const formatDateObjectTo_ddMMMMyyyy = ({
   dd: string
 }) => format(new Date(Number(yyyy), Number(mm) - 1, Number(dd)), 'dd MMMM yyyy')
 
+/*
+  Date() object takes 0-indexed month,
+  but month coming to the method is 1-indexed
+*/
+export const formatDateObjectTo_yyyyMMdd = ({
+  yyyy,
+  mm,
+  dd
+}: {
+  yyyy: string
+  mm: string
+  dd: string
+}) => format(new Date(Number(yyyy), Number(mm) - 1, Number(dd)), 'yyyy-MM-dd')
+
 export const joinValuesWith = (
   values: (string | null | undefined)[],
   separator = ' '

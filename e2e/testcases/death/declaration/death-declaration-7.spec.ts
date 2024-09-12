@@ -608,14 +608,7 @@ test.describe.serial('7. Death declaration case - 7', () => {
        * - Date of death
        */
       await expect(page.locator('#deathEvent-content #Date')).toContainText(
-        format(
-          new Date(
-            Number(declaration.event.date.yyyy),
-            Number(declaration.event.date.mm) - 1,
-            Number(declaration.event.date.dd)
-          ),
-          'dd MMMM yyyy'
-        )
+        formatDateObjectTo_ddMMMMyyyy(declaration.event.date)
       )
 
       /*
