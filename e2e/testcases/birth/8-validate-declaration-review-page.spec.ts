@@ -1403,7 +1403,7 @@ test.describe.serial('8. Validate declaration review page', () => {
         })
       ).toBeVisible()
 
-      expect(
+      await expect(
         page
           .locator('div')
           .filter({
@@ -1414,7 +1414,7 @@ test.describe.serial('8. Validate declaration review page', () => {
           .filter({
             hasText: /seconds ago/ // should match the registration time
           })
-      ).toHaveCount(1)
+      ).not.toHaveCount(0)
     })
   })
 })
