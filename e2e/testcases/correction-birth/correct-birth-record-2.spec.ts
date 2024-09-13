@@ -7,6 +7,7 @@ import {
   formatName,
   getToken,
   goBackToReview,
+  joinValuesWith,
   login
 } from '../../helpers'
 import faker from '@faker-js/faker'
@@ -243,6 +244,7 @@ test.describe.serial('Correct record - 2', () => {
 
         expect(page.url().includes('correction')).toBeTruthy()
         expect(page.url().includes('informant-view-group')).toBeTruthy()
+        // @ToDo assert after it is fixed
         // expect(page.url().includes('#familyNameEng')).toBeTruthy() // fail: does not focus on infirmant's family name
 
         await page
@@ -644,7 +646,7 @@ test.describe.serial('Correct record - 2', () => {
       ).toHaveText('Health Institution')
 
       /*
-        assertion fails
+      @ToDo: assert this after https://github.com/opencrvs/opencrvs-core/issues/7505 is solved
         await expect(
           page.locator('#child-content #Place').getByRole('deletion').nth(1)
         ).toHaveText('Chikobo Rural Health Centre')
@@ -832,8 +834,13 @@ test.describe.serial('Correct record - 2', () => {
 
     await expect(
       page.getByText(
-        'Usual place of residence (Informant)FarajalandCentralIbombo-' +
-          declaration.informant.address[0].city +
+        'Usual place of residence (Informant)' +
+          'Farajaland' +
+          'Central' +
+          joinValuesWith(
+            ['Ibombo', declaration.informant.address[0].city],
+            '-'
+          ) +
           declaration.informant.address[0].line[2] +
           declaration.informant.address[0].line[1] +
           declaration.informant.address[0].line[0] +
@@ -933,7 +940,8 @@ test.describe.serial('Correct record - 2', () => {
         )
       ).toBeVisible()
 
-      /* assertion fails
+      /* 
+      @ToDo: assert this after https://github.com/opencrvs/opencrvs-core/issues/7505 is solved
       await expect(
         page.getByText(
           'Place of delivery (Child)' +

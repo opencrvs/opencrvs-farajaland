@@ -931,7 +931,8 @@ test.describe.serial(' Correct record - 3', () => {
         page.getByText('Comments' + declaration.registration.registrationNumber)
       ).toBeVisible()
 
-      /* assertion fails
+      /* 
+      @ToDo: assert this after https://github.com/opencrvs/opencrvs-core/issues/7505 is solved
       await expect(
         page.getByText(
           'Place of delivery (Child)' +

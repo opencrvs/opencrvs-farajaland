@@ -665,6 +665,7 @@ test.describe.serial(' Correct record - 11', () => {
         )
       ).toBeVisible()
 
+      //@ToDo after feedback from qa, assert properly
       // await expect(
       //   page.getByText(
       //     'Cause of death has been established (Death event details)' +
