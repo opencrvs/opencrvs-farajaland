@@ -355,7 +355,7 @@ test.describe.serial('4. Death declaration case - 4', () => {
        * - Change button
        */
       await expect(page.locator('#deceased-content #Age')).toContainText(
-        declaration.deceased.age + ' years'
+        joinValuesWith([declaration.deceased.age, 'years'])
       )
       await expect(page.locator('#deceased-content #Age')).toContainText(
         'Change'
@@ -482,7 +482,7 @@ test.describe.serial('4. Death declaration case - 4', () => {
        * - Change button
        */
       await expect(page.locator('#informant-content #Age')).toContainText(
-        declaration.informant.age + ' years'
+        joinValuesWith([declaration.informant.age, 'years'])
       )
       await expect(page.locator('#informant-content #Age')).toContainText(
         'Change'
@@ -551,10 +551,9 @@ test.describe.serial('4. Death declaration case - 4', () => {
        * - Spouse's age
        * - Change button
        */
-      await expect(page.locator('#spouse-content #Age')).toContainText(
-        declaration.spouse.age + ' years'
-      )
-      await expect(page.locator('#spouse-content #Age')).toContainText('Change')
+      await expectTextWithChangeLink(page.locator('#spouse-content #Age'), [
+        joinValuesWith([declaration.spouse.age, 'years'])
+      ])
 
       /*
        * Expected result: should include
@@ -671,7 +670,7 @@ test.describe.serial('4. Death declaration case - 4', () => {
        * - Change button
        */
       await expect(page.locator('#deceased-content #Age')).toContainText(
-        declaration.deceased.age + ' years'
+        joinValuesWith([declaration.deceased.age, 'years'])
       )
       await expect(page.locator('#deceased-content #Age')).toContainText(
         'Change'
@@ -801,7 +800,7 @@ test.describe.serial('4. Death declaration case - 4', () => {
        * - Change button
        */
       await expect(page.locator('#informant-content #Age')).toContainText(
-        declaration.informant.age + ' years'
+        joinValuesWith([declaration.informant.age, 'years'])
       )
       await expect(page.locator('#informant-content #Age')).toContainText(
         'Change'
@@ -870,10 +869,9 @@ test.describe.serial('4. Death declaration case - 4', () => {
        * - Spouse's age
        * - Change button
        */
-      await expect(page.locator('#spouse-content #Age')).toContainText(
-        declaration.spouse.age + ' years'
-      )
-      await expect(page.locator('#spouse-content #Age')).toContainText('Change')
+      await expectTextWithChangeLink(page.locator('#spouse-content #Age'), [
+        joinValuesWith([declaration.spouse.age, 'years'])
+      ])
 
       /*
        * Expected result: should include

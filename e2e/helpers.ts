@@ -173,9 +173,9 @@ export const expectAddress = async (
   ]
 
   if (isArray(address.line)) {
-    address[addressKeys[8]] = address.line[2]
-    address[addressKeys[9]] = address.line[1]
-    address[addressKeys[10]] = address.line[0]
+    address.addressLine1 = address.line[2]
+    address.addressLine2 = address.line[1]
+    address.addressLine3 = address.line[0]
   }
 
   const texts = addressKeys
@@ -185,12 +185,27 @@ export const expectAddress = async (
   if (isDeletion) {
     const deletionLocators = await locator.getByRole('deletion').all()
     for (let i = 0; i < texts.length; i++) {
-      await expect(deletionLocators[i + (i < 3 ? 1 : 2)]).toContainText(
+      await expect(deletionLocators[getDeletionPosition(i)]).toContainText(
         texts[i]
       )
     }
   } else await expectTexts(locator, texts)
 }
+
+/*
+  The deletion section is formatted like bellow:
+  	'-'
+    'Farajaland'
+    'Central'
+    'Ibombo'
+    ''
+    'Example Town'
+    'Mitali Residential Area'
+    '4/A'
+    '1324'
+
+*/
+const getDeletionPosition = (i: number) => i + (i < 3 ? 1 : 2)
 
 export const expectTexts = async (locator: Locator, texts: string[]) => {
   for (const text of texts) {
@@ -257,7 +272,7 @@ export const formatDateObjectTo_yyyyMMdd = ({
 }) => format(new Date(Number(yyyy), Number(mm) - 1, Number(dd)), 'yyyy-MM-dd')
 
 export const joinValuesWith = (
-  values: (string | null | undefined)[],
+  values: (string | number | null | undefined)[],
   separator = ' '
 ) => {
   return values.filter(Boolean).join(separator)

@@ -14,7 +14,7 @@ import {
   fetchDeclaration
 } from '../birth/helpers'
 import { BirthDeclaration, BirthInputDetails } from '../birth/types'
-import { format, parseISO, subDays } from 'date-fns'
+import { format, subDays } from 'date-fns'
 
 test.describe.serial(' Correct record - 6', () => {
   let declaration: BirthDeclaration
@@ -297,9 +297,7 @@ test.describe.serial(' Correct record - 6', () => {
 
       await expect(
         page.locator('#informant-content #Date').getByRole('deletion')
-      ).toHaveText(formatDateTo_ddMMMMyyyy(declaration.informant.birthDate), {
-        ignoreCase: true
-      })
+      ).toHaveText(formatDateTo_ddMMMMyyyy(declaration.informant.birthDate))
 
       await expect(
         page

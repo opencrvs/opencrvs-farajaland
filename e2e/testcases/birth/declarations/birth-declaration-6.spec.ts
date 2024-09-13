@@ -424,7 +424,7 @@ test.describe.serial('6. Birth declaration case - 6', () => {
        * - Informant's date of birth
        */
       await expect(page.locator('#informant-content #Age')).toContainText(
-        declaration.informant.age + ' years'
+        joinValuesWith([declaration.informant.age, 'years'])
       )
 
       /*
@@ -482,7 +482,7 @@ test.describe.serial('6. Birth declaration case - 6', () => {
        * - Father's date of birth
        */
       await expect(page.locator('#father-content #Age')).toContainText(
-        declaration.father.age + ' years'
+        joinValuesWith([declaration.father.age, 'years'])
       )
 
       /*

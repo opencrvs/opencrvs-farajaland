@@ -421,7 +421,7 @@ test.describe.serial('2. Birth declaration case - 2', () => {
        * - Mother's age
        */
       await expect(page.locator('#mother-content #Age')).toContainText(
-        declaration.mother.age + ' years'
+        joinValuesWith([declaration.mother.age, 'years'])
       )
 
       /*
@@ -487,7 +487,7 @@ test.describe.serial('2. Birth declaration case - 2', () => {
        * - Father's date of birth
        */
       await expect(page.locator('#father-content #Age')).toContainText(
-        declaration.father.age + ' years'
+        joinValuesWith([declaration.father.age, 'years'])
       )
 
       /*
@@ -700,7 +700,7 @@ test.describe.serial('2. Birth declaration case - 2', () => {
        * - Mother's age
        */
       await expect(page.locator('#mother-content #Age')).toContainText(
-        declaration.mother.age + ' years'
+        joinValuesWith([declaration.mother.age, 'years'])
       )
 
       /*
@@ -767,7 +767,7 @@ test.describe.serial('2. Birth declaration case - 2', () => {
        * - Father's date of birth
        */
       await expect(page.locator('#father-content #Age')).toContainText(
-        declaration.father.age + ' years'
+        joinValuesWith([declaration.father.age, 'years'])
       )
 
       /*

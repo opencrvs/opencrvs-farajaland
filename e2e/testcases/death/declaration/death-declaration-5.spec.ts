@@ -307,7 +307,7 @@ test.describe.serial('5. Death declaration case - 5', () => {
        * - Change button
        */
       await expect(page.locator('#deceased-content #Age')).toContainText(
-        declaration.deceased.age + ' years'
+        joinValuesWith([declaration.deceased.age, 'years'])
       )
       await expect(page.locator('#deceased-content #Age')).toContainText(
         'Change'
@@ -434,7 +434,7 @@ test.describe.serial('5. Death declaration case - 5', () => {
        * - Change button
        */
       await expect(page.locator('#informant-content #Age')).toContainText(
-        declaration.informant.age + ' years'
+        joinValuesWith([declaration.informant.age, 'years'])
       )
       await expect(page.locator('#informant-content #Age')).toContainText(
         'Change'
@@ -582,7 +582,7 @@ test.describe.serial('5. Death declaration case - 5', () => {
        * - Change button
        */
       await expect(page.locator('#deceased-content #Age')).toContainText(
-        declaration.deceased.age + ' years'
+        joinValuesWith([declaration.deceased.age, 'years'])
       )
       await expect(page.locator('#deceased-content #Age')).toContainText(
         'Change'
@@ -709,7 +709,7 @@ test.describe.serial('5. Death declaration case - 5', () => {
        * - Change button
        */
       await expect(page.locator('#informant-content #Age')).toContainText(
-        declaration.informant.age + ' years'
+        joinValuesWith([declaration.informant.age, 'years'])
       )
       await expect(page.locator('#informant-content #Age')).toContainText(
         'Change'

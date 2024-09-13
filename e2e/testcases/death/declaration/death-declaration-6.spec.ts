@@ -7,6 +7,7 @@ import {
   formatDateObjectTo_ddMMMMyyyy,
   getRandomDate,
   goToSection,
+  joinValuesWith,
   login
 } from '../../../helpers'
 import faker from '@faker-js/faker'
@@ -294,7 +295,7 @@ test.describe.serial('6. Death declaration case - 6', () => {
        * - Change button
        */
       await expect(page.locator('#deceased-content #Age')).toContainText(
-        declaration.deceased.age + ' years'
+        joinValuesWith([declaration.deceased.age, 'years'])
       )
       await expect(page.locator('#deceased-content #Age')).toContainText(
         'Change'
@@ -417,7 +418,7 @@ test.describe.serial('6. Death declaration case - 6', () => {
        * - Change button
        */
       await expect(page.locator('#informant-content #Age')).toContainText(
-        declaration.informant.age + ' years'
+        joinValuesWith([declaration.informant.age, 'years'])
       )
       await expect(page.locator('#informant-content #Age')).toContainText(
         'Change'
@@ -562,7 +563,7 @@ test.describe.serial('6. Death declaration case - 6', () => {
        * - Deceased's age
        */
       await expect(page.locator('#deceased-content #Age')).toContainText(
-        declaration.deceased.age + ' years'
+        joinValuesWith([declaration.deceased.age, 'years'])
       )
 
       /*
@@ -666,7 +667,7 @@ test.describe.serial('6. Death declaration case - 6', () => {
        * - informant's age
        */
       await expect(page.locator('#informant-content #Age')).toContainText(
-        declaration.informant.age + ' years'
+        joinValuesWith([declaration.informant.age, 'years'])
       )
 
       /*
