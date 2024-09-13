@@ -629,17 +629,9 @@ test.describe.serial('6. Death declaration case - 6', () => {
       await expect(page.locator('#deathEvent-content #Place')).toContainText(
         declaration.event.place
       )
-      await expect(page.locator('#deathEvent-content #Place')).toContainText(
-        declaration.event.deathLocation.country
-      )
-      await expect(page.locator('#deathEvent-content #Place')).toContainText(
-        declaration.event.deathLocation.province
-      )
-      await expect(page.locator('#deathEvent-content #Place')).toContainText(
-        declaration.event.deathLocation.district
-      )
-      await expect(page.locator('#deathEvent-content #Place')).toContainText(
-        declaration.event.deathLocation.village
+      await expectAddress(
+        page.locator('#deathEvent-content #Place'),
+        declaration.event.deathLocation
       )
 
       /*

@@ -6,6 +6,7 @@ import {
   formatDateObjectTo_ddMMMMyyyy,
   getRandomDate,
   goToSection,
+  joinValuesWith,
   login
 } from '../../../helpers'
 import faker from '@faker-js/faker'

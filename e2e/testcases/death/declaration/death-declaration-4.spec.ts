@@ -6,6 +6,7 @@ import {
   formatDateObjectTo_ddMMMMyyyy,
   getRandomDate,
   goToSection,
+  joinValuesWith,
   login,
   uploadImageToSection
 } from '../../../helpers'

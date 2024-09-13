@@ -679,41 +679,10 @@ test.describe.serial(' Correct record - 3', () => {
       await expect(
         page.locator('#child-content #Place').getByText('Farajaland')
       ).toBeVisible()
-      await expect(
-        page
-          .locator('#child-content #Place')
-          .getByText(updatedChildDetails.birthLocation.province)
-      ).toBeVisible()
-      await expect(
-        page
-          .locator('#child-content #Place')
-          .getByText(updatedChildDetails.birthLocation.district)
-      ).toBeVisible()
-      await expect(
-        page
-          .locator('#child-content #Place')
-          .getByText(updatedChildDetails.birthLocation.town)
-      ).toBeVisible()
-      await expect(
-        page
-          .locator('#child-content #Place')
-          .getByText(updatedChildDetails.birthLocation.residentialArea)
-      ).toBeVisible()
-      await expect(
-        page
-          .locator('#child-content #Place')
-          .getByText(updatedChildDetails.birthLocation.street)
-      ).toBeVisible()
-      await expect(
-        page
-          .locator('#child-content #Place')
-          .getByText(updatedChildDetails.birthLocation.number)
-      ).toBeVisible()
-      await expect(
-        page
-          .locator('#child-content #Place')
-          .getByText(updatedChildDetails.birthLocation.zipCode)
-      ).toBeVisible()
+      await expectAddress(
+        page.locator('#child-content #Place'),
+        updatedChildDetails.birthLocation
+      )
     })
   })
 

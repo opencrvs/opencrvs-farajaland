@@ -641,69 +641,22 @@ test.describe.serial(' Correct record - 12', () => {
       await expect(
         page.locator('#deathEvent-content #Place').getByRole('deletion').nth(0)
       ).toHaveText("Deceased's usual place of residence")
-      await expect(
-        page.locator('#deathEvent-content #Place').getByRole('deletion').nth(1)
-      ).toHaveText('Farajaland')
-      await expect(
-        page.locator('#deathEvent-content #Place').getByRole('deletion').nth(2)
-      ).toHaveText(declarationInput.deceased!.usual!.province)
-      await expect(
-        page.locator('#deathEvent-content #Place').getByRole('deletion').nth(3)
-      ).toHaveText(declarationInput.deceased!.usual!.district)
-      await expect(
-        page.locator('#deathEvent-content #Place').getByRole('deletion').nth(5)
-      ).toHaveText(declaration.deceased.address[0].city)
-      await expect(
-        page.locator('#deathEvent-content #Place').getByRole('deletion').nth(6)
-      ).toHaveText(declaration.deceased.address[0].line[2])
-      await expect(
-        page.locator('#deathEvent-content #Place').getByRole('deletion').nth(7)
-      ).toHaveText(declaration.deceased.address[0].line[1])
-      await expect(
-        page.locator('#deathEvent-content #Place').getByRole('deletion').nth(8)
-      ).toHaveText(declaration.deceased.address[0].line[0])
-      await expect(
-        page.locator('#deathEvent-content #Place').getByRole('deletion').nth(9)
-      ).toHaveText(declaration.deceased.address[0].postalCode)
 
-      await expect(
-        page.locator('#deathEvent-content #Place').getByText('Farajaland')
-      ).toBeVisible()
-      await expect(
-        page
-          .locator('#deathEvent-content #Place')
-          .getByText(updatedEventDetails.deathLocation.province)
-      ).toBeVisible()
-      await expect(
-        page
-          .locator('#deathEvent-content #Place')
-          .getByText(updatedEventDetails.deathLocation.district)
-      ).toBeVisible()
-      await expect(
-        page
-          .locator('#deathEvent-content #Place')
-          .getByText(updatedEventDetails.deathLocation.town)
-      ).toBeVisible()
-      await expect(
-        page
-          .locator('#deathEvent-content #Place')
-          .getByText(updatedEventDetails.deathLocation.residentialArea)
-      ).toBeVisible()
-      await expect(
-        page
-          .locator('#deathEvent-content #Place')
-          .getByText(updatedEventDetails.deathLocation.street)
-      ).toBeVisible()
-      await expect(
-        page
-          .locator('#deathEvent-content #Place')
-          .getByText(updatedEventDetails.deathLocation.number)
-      ).toBeVisible()
-      await expect(
-        page
-          .locator('#deathEvent-content #Place')
-          .getByText(updatedEventDetails.deathLocation.zipCode)
-      ).toBeVisible()
+      await expectAddress(
+        page.locator('#deathEvent-content #Place'),
+        {
+          ...declaration.deceased.address[0],
+          country: 'Farajaland',
+          province: declarationInput.deceased!.usual!.province,
+          district: declarationInput.deceased!.usual!.district
+        },
+        true
+      )
+
+      await expectAddress(page.locator('#deathEvent-content #Place'), {
+        ...updatedEventDetails.deathLocation,
+        country: 'Farajaland'
+      })
     })
   })
 
