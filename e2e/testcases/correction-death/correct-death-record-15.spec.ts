@@ -199,8 +199,6 @@ test.describe.serial(' Correct record - 15', () => {
       await page.getByPlaceholder('mm').fill(date[1])
       await page.getByPlaceholder('yyyy').fill(date[0])
 
-      await page.waitForTimeout(500)
-
       await page.getByRole('button', { name: 'Back to review' }).click()
 
       /*
@@ -249,8 +247,6 @@ test.describe.serial(' Correct record - 15', () => {
       await page.locator('#mannerOfDeath').click()
       await page.getByText(updatedEventDetails.manner, { exact: true }).click()
 
-      await page.waitForTimeout(500)
-
       await page.getByRole('button', { name: 'Back to review' }).click()
 
       /*
@@ -298,8 +294,6 @@ test.describe.serial(' Correct record - 15', () => {
       await page
         .getByText(updatedEventDetails.cause.source, { exact: true })
         .click()
-
-      await page.waitForTimeout(500)
 
       await page.getByRole('button', { name: 'Back to review' }).click()
 
@@ -365,8 +359,6 @@ test.describe.serial(' Correct record - 15', () => {
       await page
         .getByText(updatedEventDetails.placeOfDeath, { exact: true })
         .click()
-
-      await page.waitForTimeout(500)
 
       await page.getByRole('button', { name: 'Back to review' }).click()
 

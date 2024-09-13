@@ -5,6 +5,7 @@ import {
   formatDateTo_ddMMMMyyyy,
   formatName,
   getToken,
+  goBackToReview,
   login,
   uploadImage,
   uploadImageToSection
@@ -213,13 +214,11 @@ test.describe.serial(' Correct record - 7', () => {
 
       await page.locator('#educationalAttainment').click()
       await page.getByText(updatedMotherDetails.educationLevel).click()
+
+      await goBackToReview(page)
     })
 
     test('7.4.2 Verify changes', async () => {
-      await page.waitForTimeout(500)
-
-      await page.getByRole('button', { name: 'Back to review' }).click()
-
       /*
        * Expected result: should
        * - redirect to review page

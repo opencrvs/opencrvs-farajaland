@@ -5,6 +5,7 @@ import {
   formatDateTo_ddMMMMyyyy,
   formatName,
   getToken,
+  goBackToReview,
   login
 } from '../../helpers'
 import faker from '@faker-js/faker'
@@ -14,7 +15,7 @@ import {
   fetchDeclaration
 } from '../birth/helpers'
 import { BirthDeclaration, BirthInputDetails } from '../birth/types'
-import { format, parseISO, subDays } from 'date-fns'
+import { format, subDays } from 'date-fns'
 
 test.describe.serial(' Correct record - 9', () => {
   let declaration: BirthDeclaration
@@ -222,10 +223,7 @@ test.describe.serial(' Correct record - 9', () => {
       await page
         .locator('#familyNameEng')
         .fill(updatedInformantDetails.familyName)
-
-      await page.waitForTimeout(500)
-
-      await page.getByRole('button', { name: 'Back to review' }).click()
+      await goBackToReview(page)
 
       /*
        * Expected result: should
@@ -482,9 +480,7 @@ test.describe.serial(' Correct record - 9', () => {
         .locator('#postalCodePrimaryInformant')
         .fill(updatedInformantDetails.address.zipCode)
 
-      await page.waitForTimeout(500)
-
-      await page.getByRole('button', { name: 'Back to review' }).click()
+      await goBackToReview(page)
 
       /*
        * Expected result: should

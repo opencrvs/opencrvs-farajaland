@@ -6,6 +6,7 @@ import {
   formatDateTo_yyyyMMdd,
   formatName,
   getToken,
+  goBackToReview,
   goToSection,
   login,
   uploadImage,
@@ -270,9 +271,7 @@ test.describe('10. Correct record - 10', () => {
           .locator('#familyNameEng')
           .fill(updatedDeceasedDetails.familyName)
 
-        await page.waitForTimeout(500)
-
-        await page.getByRole('button', { name: 'Back to review' }).click()
+        await goBackToReview(page)
 
         /*
          * Expected result: should
@@ -327,8 +326,6 @@ test.describe('10. Correct record - 10', () => {
         await page.locator('#gender').click()
         await page.getByText(updatedDeceasedDetails.gender).click()
 
-        await page.waitForTimeout(500)
-
         await page.getByRole('button', { name: 'Back to review' }).click()
 
         /*
@@ -372,8 +369,6 @@ test.describe('10. Correct record - 10', () => {
         await page.getByPlaceholder('dd').fill(birthDay[2])
         await page.getByPlaceholder('mm').fill(birthDay[1])
         await page.getByPlaceholder('yyyy').fill(birthDay[0])
-
-        await page.waitForTimeout(500)
 
         await page.getByRole('button', { name: 'Back to review' }).click()
 
@@ -421,8 +416,6 @@ test.describe('10. Correct record - 10', () => {
         await page.locator('#nationality').click()
         await page.getByText(updatedDeceasedDetails.nationality).click()
 
-        await page.waitForTimeout(500)
-
         await page.getByRole('button', { name: 'Back to review' }).click()
 
         /*
@@ -467,8 +460,6 @@ test.describe('10. Correct record - 10', () => {
         await page.locator('#deceasedIdType').click()
         await page.getByText(updatedDeceasedDetails.idType).click()
 
-        await page.waitForTimeout(500)
-
         await page.getByRole('button', { name: 'Back to review' }).click()
 
         /*
@@ -511,8 +502,6 @@ test.describe('10. Correct record - 10', () => {
         expect(page.url().includes('#deceasedPassport')).toBeTruthy()
 
         await page.locator('#deceasedPassport').fill(updatedDeceasedDetails.id)
-
-        await page.waitForTimeout(500)
 
         await page.getByRole('button', { name: 'Back to review' }).click()
 
@@ -575,9 +564,7 @@ test.describe('10. Correct record - 10', () => {
           .locator('#postalCodePrimaryDeceased')
           .fill(updatedDeceasedDetails.address.zipCode)
 
-        await page.waitForTimeout(500)
-
-        await page.getByRole('button', { name: 'Back to review' }).click()
+        await goBackToReview(page)
 
         /*
          * Expected result: should
@@ -627,8 +614,6 @@ test.describe('10. Correct record - 10', () => {
 
         await page.locator('#maritalStatus').click()
         await page.getByText(updatedDeceasedDetails.maritalStatus).click()
-
-        await page.waitForTimeout(500)
 
         await page.getByRole('button', { name: 'Back to review' }).click()
 
@@ -755,8 +740,6 @@ test.describe('10. Correct record - 10', () => {
         await page
           .locator('#numberOfDependants')
           .fill(updatedDeceasedDetails.NOdependants)
-
-        await page.waitForTimeout(500)
 
         await page.getByRole('button', { name: 'Back to review' }).click()
 

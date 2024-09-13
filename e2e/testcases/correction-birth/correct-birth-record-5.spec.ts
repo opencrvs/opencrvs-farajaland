@@ -5,6 +5,7 @@ import {
   formatDateTo_ddMMMMyyyy,
   formatName,
   getToken,
+  goBackToReview,
   login
 } from '../../helpers'
 import faker from '@faker-js/faker'
@@ -151,9 +152,7 @@ test.describe.serial(' Correct record - 5', () => {
       await page.locator('#firstNamesEng').fill(updatedChildDetails.firstNames)
       await page.locator('#familyNameEng').fill(updatedChildDetails.familyName)
 
-      await page.waitForTimeout(500)
-
-      await page.getByRole('button', { name: 'Back to review' }).click()
+      await goBackToReview(page)
 
       /*
        * Expected result: should
@@ -204,8 +203,6 @@ test.describe.serial(' Correct record - 5', () => {
       await page.locator('#gender').click()
       await page.getByText(updatedChildDetails.gender).click()
 
-      await page.waitForTimeout(500)
-
       await page.getByRole('button', { name: 'Back to review' }).click()
 
       /*
@@ -249,8 +246,6 @@ test.describe.serial(' Correct record - 5', () => {
       await page.getByPlaceholder('dd').fill(birthDay[2])
       await page.getByPlaceholder('mm').fill(birthDay[1])
       await page.getByPlaceholder('yyyy').fill(birthDay[0])
-
-      await page.waitForTimeout(500)
 
       await page.getByRole('button', { name: 'Back to review' }).click()
 
@@ -316,9 +311,7 @@ test.describe.serial(' Correct record - 5', () => {
         .locator('#postalCodePlaceofbirth')
         .fill(updatedChildDetails.birthLocation.zipCode)
 
-      await page.waitForTimeout(500)
-
-      await page.getByRole('button', { name: 'Back to review' }).click()
+      await goBackToReview(page)
 
       /*
        * Expected result: should
@@ -375,8 +368,6 @@ test.describe.serial(' Correct record - 5', () => {
       await page.locator('#attendantAtBirth').click()
       await page.getByText(updatedChildDetails.attendantAtBirth).click()
 
-      await page.waitForTimeout(500)
-
       await page.getByRole('button', { name: 'Back to review' }).click()
 
       /*
@@ -420,8 +411,6 @@ test.describe.serial(' Correct record - 5', () => {
 
       await page.locator('#birthType').click()
       await page.getByText(updatedChildDetails.typeOfBirth).click()
-
-      await page.waitForTimeout(500)
 
       await page.getByRole('button', { name: 'Back to review' }).click()
 
@@ -467,8 +456,6 @@ test.describe.serial(' Correct record - 5', () => {
       await page
         .locator('#weightAtBirth')
         .fill(updatedChildDetails.weightAtBirth)
-
-      await page.waitForTimeout(500)
 
       await page.getByRole('button', { name: 'Back to review' }).click()
 

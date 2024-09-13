@@ -5,6 +5,7 @@ import {
   formatDateTo_ddMMMMyyyy,
   formatName,
   getToken,
+  goBackToReview,
   login
 } from '../../helpers'
 import faker from '@faker-js/faker'
@@ -116,9 +117,7 @@ test.describe.serial(' Correct record - 17', () => {
       await page.locator('#firstNamesEng').fill(updatedSpouseDetails.firstNames)
       await page.locator('#familyNameEng').fill(updatedSpouseDetails.familyName)
 
-      await page.waitForTimeout(500)
-
-      await page.getByRole('button', { name: 'Back to review' }).click()
+      await goBackToReview(page)
 
       /*
        * Expected result: should
@@ -171,8 +170,6 @@ test.describe.serial(' Correct record - 17', () => {
       await page.getByPlaceholder('mm').fill(birthDay[1])
       await page.getByPlaceholder('yyyy').fill(birthDay[0])
 
-      await page.waitForTimeout(500)
-
       await page.getByRole('button', { name: 'Back to review' }).click()
 
       /*
@@ -216,8 +213,6 @@ test.describe.serial(' Correct record - 17', () => {
 
       await page.locator('#nationality').click()
       await page.getByText(updatedSpouseDetails.nationality).click()
-
-      await page.waitForTimeout(500)
 
       await page.getByRole('button', { name: 'Back to review' }).click()
 
@@ -263,8 +258,6 @@ test.describe.serial(' Correct record - 17', () => {
       await page.locator('#spouseIdType').click()
       await page.getByText(updatedSpouseDetails.idType).click()
 
-      await page.waitForTimeout(500)
-
       await page.getByRole('button', { name: 'Back to review' }).click()
 
       /*
@@ -307,8 +300,6 @@ test.describe.serial(' Correct record - 17', () => {
       expect(page.url().includes('#spousePassport')).toBeTruthy()
 
       await page.locator('#spousePassport').fill(updatedSpouseDetails.id)
-
-      await page.waitForTimeout(500)
 
       await page.getByRole('button', { name: 'Back to review' }).click()
 
@@ -373,9 +364,7 @@ test.describe.serial(' Correct record - 17', () => {
         .locator('#postalCodePrimarySpouse')
         .fill(updatedSpouseDetails.address.zipCode)
 
-      await page.waitForTimeout(500)
-
-      await page.getByRole('button', { name: 'Back to review' }).click()
+      await goBackToReview(page)
 
       /*
        * Expected result: should

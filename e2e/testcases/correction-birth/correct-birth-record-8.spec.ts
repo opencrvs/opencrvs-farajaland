@@ -5,6 +5,7 @@ import {
   formatDateTo_ddMMMMyyyy,
   formatName,
   getToken,
+  goBackToReview,
   login
 } from '../../helpers'
 import faker from '@faker-js/faker'
@@ -193,13 +194,10 @@ test.describe.serial(' Correct record - 8', () => {
 
       await page.locator('#educationalAttainment').click()
       await page.getByText(updatedFatherDetails.educationLevel).click()
+      await goBackToReview(page)
     })
 
     test('8.4.2 Verify changes', async () => {
-      await page.waitForTimeout(500)
-
-      await page.getByRole('button', { name: 'Back to review' }).click()
-
       /*
        * Expected result: should
        * - redirect to review page

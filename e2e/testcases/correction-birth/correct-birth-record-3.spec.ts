@@ -5,6 +5,7 @@ import {
   formatDateTo_ddMMMMyyyy,
   formatName,
   getToken,
+  goBackToReview,
   login
 } from '../../helpers'
 import faker from '@faker-js/faker'
@@ -221,9 +222,7 @@ test.describe.serial(' Correct record - 3', () => {
           .locator('#familyNameEng')
           .fill(updatedMotherDetails.familyName)
 
-        await page.waitForTimeout(500)
-
-        await page.getByRole('button', { name: 'Back to review' }).click()
+        await goBackToReview(page)
 
         /*
          * Expected result: should
@@ -280,8 +279,6 @@ test.describe.serial(' Correct record - 3', () => {
         await page.getByPlaceholder('mm').fill(birthDay[1])
         await page.getByPlaceholder('yyyy').fill(birthDay[0])
 
-        await page.waitForTimeout(500)
-
         await page.getByRole('button', { name: 'Back to review' }).click()
 
         /*
@@ -325,8 +322,6 @@ test.describe.serial(' Correct record - 3', () => {
 
         await page.locator('#nationality').click()
         await page.getByText(updatedMotherDetails.nationality).click()
-
-        await page.waitForTimeout(500)
 
         await page.getByRole('button', { name: 'Back to review' }).click()
 
@@ -372,8 +367,6 @@ test.describe.serial(' Correct record - 3', () => {
         await page.locator('#motherIdType').click()
         await page.getByText(updatedMotherDetails.idType).click()
 
-        await page.waitForTimeout(500)
-
         await page.getByRole('button', { name: 'Back to review' }).click()
 
         /*
@@ -416,8 +409,6 @@ test.describe.serial(' Correct record - 3', () => {
         expect(page.url().includes('#motherPassport')).toBeTruthy()
 
         await page.locator('#motherPassport').fill(updatedMotherDetails.id)
-
-        await page.waitForTimeout(500)
 
         await page.getByRole('button', { name: 'Back to review' }).click()
 
@@ -478,9 +469,7 @@ test.describe.serial(' Correct record - 3', () => {
           .locator('#postalCodePrimaryMother')
           .fill(updatedMotherDetails.address.zipCode)
 
-        await page.waitForTimeout(500)
-
-        await page.getByRole('button', { name: 'Back to review' }).click()
+        await goBackToReview(page)
 
         /*
          * Expected result: should
@@ -531,8 +520,6 @@ test.describe.serial(' Correct record - 3', () => {
         await page.locator('#maritalStatus').click()
         await page.getByText(updatedMotherDetails.maritalStatus).click()
 
-        await page.waitForTimeout(500)
-
         await page.getByRole('button', { name: 'Back to review' }).click()
 
         /*
@@ -576,8 +563,6 @@ test.describe.serial(' Correct record - 3', () => {
 
         await page.locator('#educationalAttainment').click()
         await page.getByText(updatedMotherDetails.educationLevel).click()
-
-        await page.waitForTimeout(500)
 
         await page.getByRole('button', { name: 'Back to review' }).click()
 
@@ -648,7 +633,6 @@ test.describe.serial(' Correct record - 3', () => {
         .locator('#postalCodePlaceofbirth')
         .fill(updatedChildDetails.birthLocation.zipCode)
 
-      await page.waitForTimeout(500)
       await page.getByRole('button', { name: 'Back to review' }).click()
 
       /*

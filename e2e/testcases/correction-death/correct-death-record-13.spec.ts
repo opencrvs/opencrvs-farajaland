@@ -5,6 +5,7 @@ import {
   formatDateTo_ddMMMMyyyy,
   formatName,
   getToken,
+  goBackToReview,
   login,
   uploadImage,
   uploadImageToSection
@@ -147,9 +148,7 @@ test.describe.serial(' Correct record - 13', () => {
           .locator('#familyNameEng')
           .fill(updatedSpouseDetails.familyName)
 
-        await page.waitForTimeout(500)
-
-        await page.getByRole('button', { name: 'Back to review' }).click()
+        await goBackToReview(page)
 
         /*
          * Expected result: should
@@ -206,8 +205,6 @@ test.describe.serial(' Correct record - 13', () => {
         await page.getByPlaceholder('mm').fill(birthDay[1])
         await page.getByPlaceholder('yyyy').fill(birthDay[0])
 
-        await page.waitForTimeout(500)
-
         await page.getByRole('button', { name: 'Back to review' }).click()
 
         /*
@@ -251,8 +248,6 @@ test.describe.serial(' Correct record - 13', () => {
 
         await page.locator('#nationality').click()
         await page.getByText(updatedSpouseDetails.nationality).click()
-
-        await page.waitForTimeout(500)
 
         await page.getByRole('button', { name: 'Back to review' }).click()
 
@@ -298,8 +293,6 @@ test.describe.serial(' Correct record - 13', () => {
         await page.locator('#spouseIdType').click()
         await page.getByText(updatedSpouseDetails.idType).click()
 
-        await page.waitForTimeout(500)
-
         await page.getByRole('button', { name: 'Back to review' }).click()
 
         /*
@@ -342,8 +335,6 @@ test.describe.serial(' Correct record - 13', () => {
         expect(page.url().includes('#spousePassport')).toBeTruthy()
 
         await page.locator('#spousePassport').fill(updatedSpouseDetails.id)
-
-        await page.waitForTimeout(500)
 
         await page.getByRole('button', { name: 'Back to review' }).click()
 
@@ -408,9 +399,7 @@ test.describe.serial(' Correct record - 13', () => {
           .locator('#postalCodePrimarySpouse')
           .fill(updatedSpouseDetails.address.zipCode)
 
-        await page.waitForTimeout(500)
-
-        await page.getByRole('button', { name: 'Back to review' }).click()
+        await goBackToReview(page)
 
         /*
          * Expected result: should
@@ -463,8 +452,6 @@ test.describe.serial(' Correct record - 13', () => {
       await page
         .getByText(updatedEventDetails.placeOfDeath, { exact: true })
         .click()
-
-      await page.waitForTimeout(500)
 
       await page.getByRole('button', { name: 'Back to review' }).click()
 
