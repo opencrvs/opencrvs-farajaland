@@ -647,7 +647,7 @@ test.describe.serial(' Correct record - 12', () => {
         {
           ...declaration.deceased.address[0],
           country: 'Farajaland',
-          province: declarationInput.deceased!.usual!.province,
+          state: declarationInput.deceased!.usual!.province,
           district: declarationInput.deceased!.usual!.district
         },
         true

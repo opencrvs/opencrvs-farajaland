@@ -6,6 +6,7 @@ import {
   formatName,
   getLocationNameFromFhirId,
   getToken,
+  goBackToReview,
   goToSection,
   login,
   uploadImage,
@@ -265,9 +266,7 @@ test.describe('1. Correct record - 1', () => {
           .locator('#familyNameEng')
           .fill(updatedChildDetails.familyName)
 
-        await page.waitForTimeout(500)
-
-        await page.getByRole('button', { name: 'Back to review' }).click()
+        await goBackToReview(page)
 
         /*
          * Expected result: should
@@ -322,8 +321,6 @@ test.describe('1. Correct record - 1', () => {
         await page.locator('#gender').click()
         await page.getByText(updatedChildDetails.gender).click()
 
-        await page.waitForTimeout(500)
-
         await page.getByRole('button', { name: 'Back to review' }).click()
 
         /*
@@ -367,8 +364,6 @@ test.describe('1. Correct record - 1', () => {
         await page.getByPlaceholder('dd').fill(birthDay[2])
         await page.getByPlaceholder('mm').fill(birthDay[1])
         await page.getByPlaceholder('yyyy').fill(birthDay[0])
-
-        await page.waitForTimeout(500)
 
         await page.getByRole('button', { name: 'Back to review' }).click()
 
@@ -415,8 +410,6 @@ test.describe('1. Correct record - 1', () => {
           .locator('#birthLocation')
           .fill(updatedChildDetails.birthLocation.slice(0, 2))
         await page.getByText(updatedChildDetails.birthLocation).click()
-
-        await page.waitForTimeout(500)
 
         await page.getByRole('button', { name: 'Back to review' }).click()
 
@@ -469,8 +462,6 @@ test.describe('1. Correct record - 1', () => {
         await page.locator('#attendantAtBirth').click()
         await page.getByText(updatedChildDetails.attendantAtBirth).click()
 
-        await page.waitForTimeout(500)
-
         await page.getByRole('button', { name: 'Back to review' }).click()
 
         /*
@@ -514,8 +505,6 @@ test.describe('1. Correct record - 1', () => {
 
         await page.locator('#birthType').click()
         await page.getByText(updatedChildDetails.typeOfBirth).click()
-
-        await page.waitForTimeout(500)
 
         await page.getByRole('button', { name: 'Back to review' }).click()
 
@@ -642,8 +631,6 @@ test.describe('1. Correct record - 1', () => {
         await page
           .locator('#weightAtBirth')
           .fill(updatedChildDetails.weightAtBirth)
-
-        await page.waitForTimeout(500)
 
         await page.getByRole('button', { name: 'Back to review' }).click()
 

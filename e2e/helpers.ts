@@ -237,6 +237,16 @@ export async function continueForm(page: Page, label: string = 'Continue') {
   return page.getByText(label, { exact: true }).click()
 }
 
+export async function goBackToReview(page: Page) {
+  /*
+   * This timeout is to ensure that all previous actions have been completed
+   * including filling inputs and that the changed values have been reflected
+   * also to the Redux state. 500ms is selected as a safe value.
+   */
+  await page.waitForTimeout(500)
+  await page.getByRole('button', { name: 'Back to review' }).click()
+}
+
 export const formatDateTo_yyyyMMdd = (date: string) =>
   format(parseISO(date), 'yyyy-MM-dd')
 

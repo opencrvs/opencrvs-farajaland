@@ -115,8 +115,6 @@ test.describe.serial(' Correct record - 11', () => {
       await page.getByPlaceholder('mm').fill(date[1])
       await page.getByPlaceholder('yyyy').fill(date[0])
 
-      await page.waitForTimeout(500)
-
       await page.getByRole('button', { name: 'Back to review' }).click()
 
       /*
@@ -165,8 +163,6 @@ test.describe.serial(' Correct record - 11', () => {
       await page.locator('#mannerOfDeath').click()
       await page.getByText(updatedEventDetails.manner, { exact: true }).click()
 
-      await page.waitForTimeout(500)
-
       await page.getByRole('button', { name: 'Back to review' }).click()
 
       /*
@@ -214,8 +210,6 @@ test.describe.serial(' Correct record - 11', () => {
       await page
         .getByText(updatedEventDetails.cause.source, { exact: true })
         .click()
-
-      await page.waitForTimeout(500)
 
       await page.getByRole('button', { name: 'Back to review' }).click()
 
@@ -286,8 +280,6 @@ test.describe.serial(' Correct record - 11', () => {
       await page
         .getByText(updatedEventDetails.deathLocation, { exact: true })
         .click()
-
-      await page.waitForTimeout(500)
 
       await page.getByRole('button', { name: 'Back to review' }).click()
 
@@ -556,8 +548,6 @@ test.describe.serial(' Correct record - 11', () => {
         .locator('#rejectionRaisonOfCorrection')
         .fill('Wrong information')
       await page.getByRole('button', { name: 'Confirm', exact: true }).click()
-
-      await page.waitForTimeout(500)
 
       /*
        * Expected result: should
