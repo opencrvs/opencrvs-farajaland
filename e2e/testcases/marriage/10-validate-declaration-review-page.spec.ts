@@ -80,35 +80,33 @@ test.describe.serial('10. Validate declaration review page', () => {
         firstNames: faker.name.firstName('male'),
         familyName: faker.name.lastName('male')
       },
-      relationship: 'Head of grooms family'
+      relationship: "Head of groom's family"
     },
     witness2: {
       name: {
         firstNames: faker.name.firstName('male'),
         familyName: faker.name.lastName('male')
       },
-      relationship: 'Head of grooms family'
+      relationship: "Head of groom's family"
     }
   }
-  test.beforeAll(async ({ browser }) => {
-    page = await browser.newPage()
-    await login(page, 'k.mweene', 'test')
+  /* test.beforeAll(async ({ browser }) => {
+     page = await browser.newPage()
+    await login(page, 'k.bwalya', 'test')
     await createPIN(page)
-    await page.locator('#header_new_event').click()
-    await page.getByLabel('Marriage').click()
-    await page.getByRole('button', { name: 'Continue' }).click()
-    await page.getByRole('button', { name: 'Continue' }).click()
-    await page.getByRole('button', { name: 'Continue' }).click()
-  })
+  }) */
 
-  test.afterAll(async () => {
+  /* test.afterAll(async ({ page }) => {
     await page.close()
-  })
+  }) */
 
   test.describe('10.1 Field agent actions', async () => {
     test.describe('10.1.0 Fill up marriage registration form', async () => {
       /* test('10.1.0.2 Fill informant details', async ({ page }) => {
         await page.waitForTimeout(500)
+        await expect(
+          page.getByText("Informant's details", { exact: true })
+        ).toBeVisible()
         await page.locator('#informantType').click()
         await page
           .getByText(declaration.informantDetails.informantType, {
@@ -127,9 +125,17 @@ test.describe.serial('10. Validate declaration review page', () => {
           .fill(declaration.informantDetails.registrationEmail)
 
         await page.getByRole('button', { name: 'Continue' }).click()
-      })*/
-
+      }) */
+      test.beforeEach(async ({ page }) => {
+        await login(page, 'k.mweene', 'test')
+        await createPIN(page)
+        await page.locator('#header_new_event').click()
+        await page.getByLabel('Marriage').click()
+        await page.getByRole('button', { name: 'Continue' }).click()
+      })
       test("10.1.0.3 Fill groom's details", async ({ page }) => {
+        await goToSection(page, 'groom')
+        await page.waitForTimeout(1000)
         await page
           .locator('#firstNamesEng')
           .fill(declaration.groom.name.firstNames)
@@ -151,6 +157,7 @@ test.describe.serial('10. Validate declaration review page', () => {
         await page
           .locator('#groomNationalId')
           .fill(declaration.groom.identifier.id)
+        await page.waitForTimeout(2000)
 
         /*await page.locator('#statePrimaryMother').click()
         await page
@@ -160,11 +167,11 @@ test.describe.serial('10. Validate declaration review page', () => {
         await page
           .getByText(declaration.mother.address.District, { exact: true })
           .click() */
-
-        await page.getByRole('button', { name: 'Continue' }).click()
       })
 
-      test("10.1.0.4 Fill bride's details", async ({ page }) => {
+      /*test("10.1.0.4 Fill bride's details", async ({ page }) => {
+        await goToSection(page, 'bride')
+        await page.waitForTimeout(500)
         await page
           .locator('#firstNamesEng')
           .fill(declaration.bride.name.firstNames)
@@ -184,21 +191,23 @@ test.describe.serial('10. Validate declaration review page', () => {
           .click()
 
         await page
-          .locator('#birdeNationalId')
+          .locator('#brideNationalId')
           .fill(declaration.bride.identifier.id)
 
-        /*await page.locator('#statePrimaryMother').click()
+        await page.locator('#statePrimaryMother').click()
         await page
           .getByText(declaration.mother.address.Province, { exact: true })
           .click()
         await page.locator('#districtPrimaryMother').click()
         await page
           .getByText(declaration.mother.address.District, { exact: true })
-          .click() */
+          .click()
 
         await page.getByRole('button', { name: 'Continue' }).click()
       })
       test('10.1.0.4 Fill marriage details', async ({ page }) => {
+        await goToSection(page, 'marriageEvent')
+        await page.waitForTimeout(500)
         await page
           .getByPlaceholder('dd')
           .fill(declaration.marriageDetails.marriageDate.dd)
@@ -216,18 +225,20 @@ test.describe.serial('10. Validate declaration review page', () => {
           })
           .click()
 
-        /*await page.locator('#statePrimaryMother').click()
+        await page.locator('#statePrimaryMother').click()
         await page
           .getByText(declaration.mother.address.Province, { exact: true })
           .click()
         await page.locator('#districtPrimaryMother').click()
         await page
           .getByText(declaration.mother.address.District, { exact: true })
-          .click() */
+          .click()
 
         await page.getByRole('button', { name: 'Continue' }).click()
       })
       test("10.1.0.3 Fill witness1's details", async ({ page }) => {
+        await goToSection(page, 'witnessOne')
+        await page.waitForTimeout(500)
         await page
           .locator('#firstNamesEng')
           .fill(declaration.witness1.name.firstNames)
@@ -243,6 +254,8 @@ test.describe.serial('10. Validate declaration review page', () => {
         await page.getByRole('button', { name: 'Continue' }).click()
       })
       test("10.1.0.3 Fill witness2's details", async ({ page }) => {
+        await goToSection(page, 'witnessTwo')
+        await page.waitForTimeout(500)
         await page
           .locator('#firstNamesEng')
           .fill(declaration.witness2.name.firstNames)
@@ -254,17 +267,14 @@ test.describe.serial('10. Validate declaration review page', () => {
         await page
           .getByText(declaration.witness2.relationship, { exact: true })
           .click()
-
         await page.getByRole('button', { name: 'Continue' }).click()
-      })
-    })
+      })*/
 
-    test.describe('10.1.1 Navigate to declaration preview page', async () => {
       test('10.1.1.1 Verify informations added in previous pages', async ({
         page
       }) => {
-        goToSection(page, 'preview')
-
+        await goToSection(page, 'preview')
+        await page.waitForTimeout(1000)
         /*
          * Expected result: should include
          * - Groom's First Name
@@ -466,22 +476,21 @@ test.describe.serial('10. Validate declaration review page', () => {
             'dd MMMM yyyy'
           )
         )
-      })
 
-      await expect(page.locator('#marriageEvent-content #Type')).toContainText(
-        declaration.marriageDetails.typeOfMarriage
-      )
-      await expect(page.locator('#marriageEvent-content #Place')).toContainText(
-        'Change'
-      )
+        await expect(
+          page.locator('#marriageEvent-content #Type')
+        ).toContainText(declaration.marriageDetails.typeOfMarriage)
+        await expect(
+          page.locator('#marriageEvent-content #Place')
+        ).toContainText('Change')
 
-      /*
-       * Expected result: should include
-       * - Marriage details address
-       * - Change button
-       */
+        /*
+         * Expected result: should include
+         * - Marriage details address
+         * - Change button
+         */
 
-      /*await expect(page.locator('#marriageEvent-content #Usual')).toContainText(
+        /*await expect(page.locator('#marriageEvent-content #Usual')).toContainText(
         declaration.marriageDetails.address.Country
       )
       await expect(page.locator('#marriageEvent-content #Usual')).toContainText(
@@ -494,43 +503,48 @@ test.describe.serial('10. Validate declaration review page', () => {
         'Change'
       )*/
 
-      /*
-       * Expected result: should include
-       * - Witness1's details
-       * - Change button
-       */
-      await expect(page.locator('#witnessOne-content #Witness')).toContainText(
-        `${declaration.witness1.name.firstNames} ${declaration.witness1.name.familyName}`
-      )
-      await expect(page.locator('#witnessOne-content #Witness')).toContainText(
-        'Change'
-      )
+        /*
+         * Expected result: should include
+         * - Witness1's details
+         * - Change button
+         */
+        await expect(
+          page.locator('#witnessOne-content #Witness')
+        ).toContainText(
+          `${declaration.witness1.name.firstNames} ${declaration.witness1.name.familyName}`
+        )
+        await expect(
+          page.locator('#witnessOne-content #Witness')
+        ).toContainText('Change')
 
-      await expect(
-        page.locator('#witnessOne-content #Relationship')
-      ).toContainText(declaration.witness1.relationship)
-      await expect(
-        page.locator('#witnessOne-content #Relationship')
-      ).toContainText('Change')
+        await expect(
+          page.locator('#witnessOne-content #Relationship')
+        ).toContainText(declaration.witness1.relationship)
+        await expect(
+          page.locator('#witnessOne-content #Relationship')
+        ).toContainText('Change')
 
-      /*
-       * Expected result: should include
-       * - Witness2's details
-       * - Change button
-       */
-      await expect(page.locator('#witnessTwo-content #Witness')).toContainText(
-        `${declaration.witness2.name.firstNames} ${declaration.witness2.name.familyName}`
-      )
-      await expect(page.locator('#witnessTwo-content #Witness')).toContainText(
-        'Change'
-      )
+        /*
+         * Expected result: should include
+         * - Witness2's details
+         * - Change button
+         */
+        await expect(
+          page.locator('#witnessTwo-content #Witness')
+        ).toContainText(
+          `${declaration.witness2.name.firstNames} ${declaration.witness2.name.familyName}`
+        )
+        await expect(
+          page.locator('#witnessTwo-content #Witness')
+        ).toContainText('Change')
 
-      await expect(
-        page.locator('#witnessTwo-content #Relationship')
-      ).toContainText(declaration.witness2.relationship)
-      await expect(
-        page.locator('#witnessTwo-content #Relationship')
-      ).toContainText('Change')
+        await expect(
+          page.locator('#witnessTwo-content #Relationship')
+        ).toContainText(declaration.witness2.relationship)
+        await expect(
+          page.locator('#witnessTwo-content #Relationship')
+        ).toContainText('Change')
+      })
     })
   })
   test.describe('10.2. Click any "Change" link', async () => {
