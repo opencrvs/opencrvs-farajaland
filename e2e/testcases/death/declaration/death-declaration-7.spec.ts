@@ -635,26 +635,9 @@ test.describe.serial('7. Death declaration case - 7', () => {
       await expect(page.locator('#deathEvent-content #Place')).toContainText(
         declaration.event.place
       )
-      await expect(page.locator('#deathEvent-content #Place')).toContainText(
-        declaration.event.deathLocation.country
-      )
-      await expect(page.locator('#deathEvent-content #Place')).toContainText(
-        declaration.event.deathLocation.state
-      )
-      await expect(page.locator('#deathEvent-content #Place')).toContainText(
-        declaration.event.deathLocation.district
-      )
-      await expect(page.locator('#deathEvent-content #Place')).toContainText(
-        declaration.event.deathLocation.town
-      )
-      await expect(page.locator('#deathEvent-content #Place')).toContainText(
-        declaration.event.deathLocation.addressLine1
-      )
-      await expect(page.locator('#deathEvent-content #Place')).toContainText(
-        declaration.event.deathLocation.addressLine2
-      )
-      await expect(page.locator('#deathEvent-content #Place')).toContainText(
-        declaration.event.deathLocation.addressLine3
+      await expectAddress(
+        page.locator('#deathEvent-content #Place'),
+        declaration.event.deathLocation
       )
 
       // Bug: This should be visible but is not

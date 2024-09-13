@@ -1,6 +1,7 @@
 import { expect, test, type Page } from '@playwright/test'
 import {
   createPIN,
+  expectAddress,
   formatDateTo_ddMMMMyyyy,
   formatName,
   getToken,
@@ -332,74 +333,27 @@ test.describe.serial(' Correct record - 5', () => {
       await expect(
         page.locator('#child-content #Place').getByRole('deletion').nth(0)
       ).toHaveText(declarationInput.child.placeOfBirth!)
-      await expect(
-        page.locator('#child-content #Place').getByRole('deletion').nth(1)
-      ).toHaveText('Farajaland')
-      await expect(
-        page.locator('#child-content #Place').getByRole('deletion').nth(2)
-      ).toHaveText(declarationInput.child.birthLocation!.state)
-      await expect(
-        page.locator('#child-content #Place').getByRole('deletion').nth(3)
-      ).toHaveText(declarationInput.child.birthLocation!.district)
-      await expect(
-        page.locator('#child-content #Place').getByRole('deletion').nth(5)
-      ).toHaveText(declaration.eventLocation.address.city)
-      await expect(
-        page.locator('#child-content #Place').getByRole('deletion').nth(6)
-      ).toHaveText(declaration.eventLocation.address.line[2])
-      await expect(
-        page.locator('#child-content #Place').getByRole('deletion').nth(7)
-      ).toHaveText(declaration.eventLocation.address.line[1])
-      await expect(
-        page.locator('#child-content #Place').getByRole('deletion').nth(8)
-      ).toHaveText(declaration.eventLocation.address.line[0])
-      await expect(
-        page.locator('#child-content #Place').getByRole('deletion').nth(9)
-      ).toHaveText(declaration.eventLocation.address.postalCode)
+
+      await expectAddress(
+        page.locator('#child-content #Place'),
+        {
+          ...declaration.eventLocation.address,
+          ...declarationInput.child.birthLocation!,
+          country: 'Farajaland'
+        },
+        true
+      )
 
       await expect(
         page
           .locator('#child-content #Place')
           .getByText(updatedChildDetails.placeOfBirth)
       ).toBeVisible()
-      await expect(
-        page.locator('#child-content #Place').getByText('Farajaland')
-      ).toBeVisible()
-      await expect(
-        page
-          .locator('#child-content #Place')
-          .getByText(updatedChildDetails.birthLocation.state)
-      ).toBeVisible()
-      await expect(
-        page
-          .locator('#child-content #Place')
-          .getByText(updatedChildDetails.birthLocation.district)
-      ).toBeVisible()
-      await expect(
-        page
-          .locator('#child-content #Place')
-          .getByText(updatedChildDetails.birthLocation.town)
-      ).toBeVisible()
-      await expect(
-        page
-          .locator('#child-content #Place')
-          .getByText(updatedChildDetails.birthLocation.residentialArea)
-      ).toBeVisible()
-      await expect(
-        page
-          .locator('#child-content #Place')
-          .getByText(updatedChildDetails.birthLocation.street)
-      ).toBeVisible()
-      await expect(
-        page
-          .locator('#child-content #Place')
-          .getByText(updatedChildDetails.birthLocation.number)
-      ).toBeVisible()
-      await expect(
-        page
-          .locator('#child-content #Place')
-          .getByText(updatedChildDetails.birthLocation.zipCode)
-      ).toBeVisible()
+
+      await expectAddress(page.locator('#child-content #Place'), {
+        ...updatedChildDetails.birthLocation,
+        country: 'Farajaland'
+      })
     })
 
     test('5.4.2.5 Change attendant at birth', async () => {

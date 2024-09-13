@@ -6,6 +6,7 @@ import {
   formatDateObjectTo_ddMMMMyyyy,
   getRandomDate,
   goToSection,
+  joinValuesWith,
   login
 } from '../../../helpers'
 import faker from '@faker-js/faker'
@@ -351,29 +352,9 @@ test.describe.serial('6. Birth declaration case - 6', () => {
        * - Child's Place of birth type
        * - Child's Place of birth details
        */
-      await expect(page.locator('#child-content #Place')).toContainText(
-        declaration.placeOfBirth
-      )
-      await expect(page.locator('#child-content #Place')).toContainText(
-        declaration.birthLocation.country
-      )
-      await expect(page.locator('#child-content #Place')).toContainText(
-        declaration.birthLocation.state
-      )
-      await expect(page.locator('#child-content #Place')).toContainText(
-        declaration.birthLocation.district
-      )
-      await expect(page.locator('#child-content #Place')).toContainText(
-        declaration.birthLocation.addressLine1
-      )
-      await expect(page.locator('#child-content #Place')).toContainText(
-        declaration.birthLocation.addressLine2
-      )
-      await expect(page.locator('#child-content #Place')).toContainText(
-        declaration.birthLocation.addressLine3
-      )
-      await expect(page.locator('#child-content #Place')).toContainText(
-        declaration.birthLocation.postcodeOrZip
+      await expectAddress(
+        page.locator('#child-content #Place'),
+        declaration.birthLocation
       )
 
       /*
