@@ -289,11 +289,11 @@ docker_stack_deploy() {
   done
   cat docker_images.txt
   echo "The current working directory is $PWD"
-  ls | grep deploy 
+  ls 
   #find / -name "multiple-images-pull.py"
   python3 --version
   ls -la /opt
-  mkdir /opt/opencrvs
+  #mkdir /opt/opencrvs
   mv infrastructure/deployment/multiple-images-pull.py /opt/opencrvs/
   mv docker_images.txt /opt/opencrvs/
 
