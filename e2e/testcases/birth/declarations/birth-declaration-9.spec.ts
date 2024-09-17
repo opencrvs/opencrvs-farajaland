@@ -1,5 +1,11 @@
 import { test, expect, type Page } from '@playwright/test'
-import { createPIN, drawSignature, goToSection, login } from '../../../helpers'
+import {
+  continueForm,
+  createPIN,
+  drawSignature,
+  goToSection,
+  login
+} from '../../../helpers'
 import faker from '@faker-js/faker'
 
 test.describe.serial('9. Birth declaration case - 9', () => {
@@ -42,11 +48,10 @@ test.describe.serial('9. Birth declaration case - 9', () => {
         .locator('#familyNameEng')
         .fill(declaration.child.name.familyName)
 
-      await page.getByRole('button', { name: 'Continue' }).click()
+      await continueForm(page)
     })
 
     test('9.1.2 Fill informant details', async () => {
-      await page.waitForTimeout(500)
       await page.locator('#informantType').click()
       await page
         .getByText(declaration.informantType, {

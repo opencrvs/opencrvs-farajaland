@@ -176,7 +176,6 @@ test.describe.serial(' Correct record - 9', () => {
 
       await page.locator('#informantType').click()
       await page.getByText(updatedInformantDetails.relationship).click()
-      await page.waitForTimeout(500)
 
       await page.getByRole('button', { name: 'Back to review' }).click()
 
@@ -280,8 +279,6 @@ test.describe.serial(' Correct record - 9', () => {
       await page.getByPlaceholder('mm').fill(birthDay[1])
       await page.getByPlaceholder('yyyy').fill(birthDay[0])
 
-      await page.waitForTimeout(500)
-
       await page.getByRole('button', { name: 'Back to review' }).click()
 
       /*
@@ -325,8 +322,6 @@ test.describe.serial(' Correct record - 9', () => {
 
       await page.locator('#nationality').click()
       await page.getByText(updatedInformantDetails.nationality).click()
-
-      await page.waitForTimeout(500)
 
       await page.getByRole('button', { name: 'Back to review' }).click()
 
@@ -372,8 +367,6 @@ test.describe.serial(' Correct record - 9', () => {
       await page.locator('#informantIdType').click()
       await page.getByText(updatedInformantDetails.idType).click()
 
-      await page.waitForTimeout(500)
-
       await page.getByRole('button', { name: 'Back to review' }).click()
 
       /*
@@ -416,8 +409,6 @@ test.describe.serial(' Correct record - 9', () => {
       expect(page.url().includes('#informantPassport')).toBeTruthy()
 
       await page.locator('#informantPassport').fill(updatedInformantDetails.id)
-
-      await page.waitForTimeout(500)
 
       await page.getByRole('button', { name: 'Back to review' }).click()
 
@@ -531,8 +522,6 @@ test.describe.serial(' Correct record - 9', () => {
       await page
         .locator('#registrationEmail')
         .fill(updatedInformantDetails.email)
-
-      await page.waitForTimeout(500)
 
       await page.getByRole('button', { name: 'Back to review' }).click()
 

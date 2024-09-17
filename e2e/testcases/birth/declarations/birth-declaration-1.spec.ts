@@ -1,16 +1,15 @@
 import { test, expect, type Page } from '@playwright/test'
 import {
+  continueForm,
   createPIN,
   drawSignature,
   expectAddress,
-  expectTexts,
   formatDateObjectTo_ddMMMMyyyy,
   getRandomDate,
   goToSection,
   login
 } from '../../../helpers'
 import faker from '@faker-js/faker'
-import { format } from 'date-fns'
 
 test.describe.serial('1. Birth declaration case - 1', () => {
   let page: Page
@@ -134,11 +133,10 @@ test.describe.serial('1. Birth declaration case - 1', () => {
         .locator('#weightAtBirth')
         .fill(declaration.weightAtBirth.toString())
 
-      await page.getByRole('button', { name: 'Continue' }).click()
+      await continueForm(page)
     })
 
     test('1.1.2 Fill informant details', async () => {
-      await page.waitForTimeout(500)
       await page.locator('#informantType').click()
       await page
         .getByText(declaration.informantType, {
@@ -150,9 +148,7 @@ test.describe.serial('1. Birth declaration case - 1', () => {
 
       await page.locator('#registrationEmail').fill(declaration.informantEmail)
 
-      await page.waitForTimeout(500)
-
-      await page.getByRole('button', { name: 'Continue' }).click()
+      await continueForm(page)
     })
 
     test("1.1.3 Fill mother's details", async () => {
@@ -213,9 +209,7 @@ test.describe.serial('1. Birth declaration case - 1', () => {
         .getByText(declaration.mother.levelOfEducation, { exact: true })
         .click()
 
-      await page.waitForTimeout(500)
-
-      await page.getByRole('button', { name: 'Continue' }).click()
+      await continueForm(page)
     })
 
     test("1.1.4 Fill father's details", async () => {

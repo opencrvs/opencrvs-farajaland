@@ -1,5 +1,6 @@
 import { test, expect, type Page } from '@playwright/test'
 import {
+  continueForm,
   createPIN,
   drawSignature,
   goToSection,
@@ -60,12 +61,10 @@ test.describe.serial('7. Birth declaration case - 7', () => {
           exact: true
         })
         .click()
-
-      await page.getByRole('button', { name: 'Continue' }).click()
+      await continueForm(page)
     })
 
     test('7.1.2 Fill informant details', async () => {
-      await page.waitForTimeout(500)
       await page.locator('#informantType').click()
       await page
         .getByText(declaration.informantType, {
@@ -79,14 +78,12 @@ test.describe.serial('7. Birth declaration case - 7', () => {
 
     test("7.1.3 Fill mother's details", async () => {
       await page.getByLabel("Mother's details are not available").check()
-      await page.waitForTimeout(500)
-      await page.getByRole('button', { name: 'Continue' }).click()
+      await continueForm(page)
     })
 
     test("7.1.4 Fill father's details", async () => {
       await page.getByLabel("Father's details are not available").check()
-
-      await page.getByRole('button', { name: 'Continue' }).click()
+      await continueForm(page)
     })
 
     test('7.1.5 Add supporting documents', async () => {

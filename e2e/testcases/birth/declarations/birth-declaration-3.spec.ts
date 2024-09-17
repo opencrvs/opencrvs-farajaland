@@ -1,9 +1,9 @@
 import { test, expect, type Page } from '@playwright/test'
 import {
+  continueForm,
   createPIN,
   drawSignature,
   expectAddress,
-  expectTextWithChangeLink,
   formatDateObjectTo_ddMMMMyyyy,
   getRandomDate,
   goToSection,
@@ -176,11 +176,10 @@ test.describe.serial('3. Birth declaration case - 3', () => {
         })
         .click()
 
-      await page.getByRole('button', { name: 'Continue' }).click()
+      await continueForm(page)
     })
 
     test('3.1.2 Fill informant details', async () => {
-      await page.waitForTimeout(500)
       await page.locator('#informantType').click()
       await page
         .getByText(declaration.informantType, {
@@ -248,10 +247,7 @@ test.describe.serial('3. Birth declaration case - 3', () => {
       await page
         .locator('#postalCodePrimaryInformant')
         .fill(declaration.informant.address.postcodeOrZip)
-
-      await page.waitForTimeout(500)
-
-      await page.getByRole('button', { name: 'Continue' }).click()
+      await continueForm(page)
     })
 
     test("3.1.3 Fill mother's details", async () => {
@@ -312,10 +308,7 @@ test.describe.serial('3. Birth declaration case - 3', () => {
       await page
         .getByText(declaration.mother.levelOfEducation, { exact: true })
         .click()
-
-      await page.waitForTimeout(500)
-
-      await page.getByRole('button', { name: 'Continue' }).click()
+      await continueForm(page)
     })
 
     test("3.1.4 Fill father's details", async () => {

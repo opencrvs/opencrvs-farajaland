@@ -125,7 +125,6 @@ test.describe.serial('8. Validate declaration review page', () => {
       })
 
       test('8.1.0.2 Fill informant details', async () => {
-        await page.waitForTimeout(500)
         await page.locator('#informantType').click()
         await page
           .getByText(declaration.informantType, {
@@ -559,8 +558,8 @@ test.describe.serial('8. Validate declaration review page', () => {
           .getByText('Change')
           .click()
 
+        await page.waitForTimeout(500) // Temporary measurement untill the bug is fixed. BUG: rerenders after selecting relation with child
         declaration.informantType = 'Father'
-        await page.waitForTimeout(500)
         await page.locator('#informantType').click()
         await page
           .getByText(declaration.informantType, {

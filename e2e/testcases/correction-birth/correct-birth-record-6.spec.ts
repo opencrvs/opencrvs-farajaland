@@ -176,8 +176,7 @@ test.describe.serial(' Correct record - 6', () => {
       await page.locator('#informantType').click()
       await page.getByText(updatedInformantDetails.relationship).click()
 
-      await page.getByRole('button', { name: 'Back to review' }).click()
-
+      await goBackToReview(page)
       /*
        * Expected result: should
        * - redirect to review page
@@ -221,8 +220,8 @@ test.describe.serial(' Correct record - 6', () => {
       await page
         .locator('#familyNameEng')
         .fill(updatedInformantDetails.familyName)
-      goBackToReview(page)
 
+      await goBackToReview(page)
       /*
        * Expected result: should
        * - redirect to review page

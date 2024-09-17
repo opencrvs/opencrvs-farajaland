@@ -199,7 +199,7 @@ export const expectAddress = async (
     'Central'
     'Ibombo'
     ''
-    'Example Town'
+    'Example Town' / 'Example village'
     'Mitali Residential Area'
     '4/A'
     '1324'
@@ -217,7 +217,7 @@ export const expectTextWithChangeLink = async (
   locator: Locator,
   texts: string[]
 ) => {
-  expectTexts(locator, texts)
+  await expectTexts(locator, texts)
   await expect(locator).toContainText('Change')
 }
 

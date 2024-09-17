@@ -1,5 +1,11 @@
 import { test, expect, type Page } from '@playwright/test'
-import { createPIN, drawSignature, goToSection, login } from '../../../helpers'
+import {
+  continueForm,
+  createPIN,
+  drawSignature,
+  goToSection,
+  login
+} from '../../../helpers'
 
 test.describe.serial('8. Birth declaration case - 8', () => {
   let page: Page
@@ -39,7 +45,6 @@ test.describe.serial('8. Birth declaration case - 8', () => {
     })
 
     test('8.1.2 Fill informant details', async () => {
-      await page.waitForTimeout(500)
       await page.locator('#informantType').click()
       await page
         .getByText(declaration.informantType, {
@@ -57,9 +62,7 @@ test.describe.serial('8. Birth declaration case - 8', () => {
         .locator('#otherInformantType')
         .fill(declaration.informant.relation)
 
-      await page.waitForTimeout(500)
-
-      await page.getByRole('button', { name: 'Continue' }).click()
+      await continueForm(page)
     })
 
     test("8.1.3 Fill mother's details", async () => {
@@ -68,9 +71,7 @@ test.describe.serial('8. Birth declaration case - 8', () => {
         .getByText(declaration.mother.maritalStatus, { exact: true })
         .click()
 
-      await page.waitForTimeout(500)
-
-      await page.getByRole('button', { name: 'Continue' }).click()
+      await continueForm(page)
     })
 
     test("8.1.4 Fill father's details", async () => {

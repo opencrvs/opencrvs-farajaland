@@ -1,5 +1,6 @@
 import { test, expect, type Page } from '@playwright/test'
 import {
+  continueForm,
   createPIN,
   drawSignature,
   expectAddress,
@@ -10,7 +11,6 @@ import {
   login
 } from '../../../helpers'
 import faker from '@faker-js/faker'
-import { format } from 'date-fns'
 
 test.describe.serial('4. Birth declaration case - 4', () => {
   let page: Page
@@ -188,11 +188,10 @@ test.describe.serial('4. Birth declaration case - 4', () => {
         })
         .click()
 
-      await page.getByRole('button', { name: 'Continue' }).click()
+      await continueForm(page)
     })
 
     test('4.1.2 Fill informant details', async () => {
-      await page.waitForTimeout(500)
       await page.locator('#informantType').click()
       await page
         .getByText(declaration.informantType, {
@@ -203,8 +202,6 @@ test.describe.serial('4. Birth declaration case - 4', () => {
       await page.waitForTimeout(500) // Temporary measurement untill the bug is fixed. BUG: rerenders after selecting relation with child
 
       await page.locator('#registrationEmail').fill(declaration.informantEmail)
-
-      await page.waitForTimeout(500)
 
       /*
        * Expected result: should show additional fields:
@@ -254,10 +251,7 @@ test.describe.serial('4. Birth declaration case - 4', () => {
       await page
         .locator('#addressLine1RuralOptionPrimaryInformant')
         .fill(declaration.informant.address.village)
-
-      await page.waitForTimeout(500)
-
-      await page.getByRole('button', { name: 'Continue' }).click()
+      await continueForm(page)
     })
 
     test("4.1.3 Fill mother's details", async () => {
@@ -314,10 +308,7 @@ test.describe.serial('4. Birth declaration case - 4', () => {
       await page
         .getByText(declaration.mother.levelOfEducation, { exact: true })
         .click()
-
-      await page.waitForTimeout(500)
-
-      await page.getByRole('button', { name: 'Continue' }).click()
+      await continueForm(page)
     })
 
     test("4.1.4 Fill father's details", async () => {

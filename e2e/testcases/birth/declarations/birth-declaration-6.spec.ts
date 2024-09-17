@@ -1,5 +1,6 @@
 import { test, expect, type Page } from '@playwright/test'
 import {
+  continueForm,
   createPIN,
   drawSignature,
   expectAddress,
@@ -10,7 +11,6 @@ import {
   login
 } from '../../../helpers'
 import faker from '@faker-js/faker'
-import { format } from 'date-fns'
 
 test.describe.serial('6. Birth declaration case - 6', () => {
   let page: Page
@@ -169,11 +169,10 @@ test.describe.serial('6. Birth declaration case - 6', () => {
         })
         .click()
 
-      await page.getByRole('button', { name: 'Continue' }).click()
+      await continueForm(page)
     })
 
     test('6.1.2 Fill informant details', async () => {
-      await page.waitForTimeout(500)
       await page.locator('#informantType').click()
       await page
         .getByText(declaration.informantType, {
@@ -242,18 +241,14 @@ test.describe.serial('6. Birth declaration case - 6', () => {
         .locator('#internationalPostalCodePrimaryInformant')
         .fill(declaration.informant.address.postcodeOrZip)
 
-      await page.waitForTimeout(500)
-
-      await page.getByRole('button', { name: 'Continue' }).click()
+      await continueForm(page)
     })
 
     test("6.1.3 Fill mother's details", async () => {
       await page.getByLabel("Mother's details are not available").check()
       await page.locator('#reasonNotApplying').fill(declaration.mother.reason)
 
-      await page.waitForTimeout(500)
-
-      await page.getByRole('button', { name: 'Continue' }).click()
+      await continueForm(page)
     })
 
     test("6.1.4 Fill father's details", async () => {

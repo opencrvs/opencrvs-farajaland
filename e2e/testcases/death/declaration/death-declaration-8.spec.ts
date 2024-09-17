@@ -1,5 +1,6 @@
 import { test, expect, type Page } from '@playwright/test'
 import {
+  continueForm,
   createPIN,
   drawSignature,
   expectTextWithChangeLink,
@@ -51,17 +52,14 @@ test.describe.serial('8. Death declaration case - 8', () => {
       await page
         .locator('#familyNameEng')
         .fill(declaration.deceased.name.familyName)
-      await page.waitForTimeout(500)
-      await page.getByRole('button', { name: 'Continue' }).click()
+      await continueForm(page)
     })
 
     test('8.1.2 Fill event details', async () => {
-      await page.waitForTimeout(500)
       await page.getByRole('button', { name: 'Continue' }).click()
     })
 
     test('8.1.3 Fill informant details', async () => {
-      await page.waitForTimeout(500)
       await page.locator('#informantType').click()
       await page
         .getByText(declaration.informantType, {

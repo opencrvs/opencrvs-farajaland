@@ -1,5 +1,6 @@
 import { test, expect, type Page } from '@playwright/test'
 import {
+  continueForm,
   createPIN,
   drawSignature,
   expectTextWithChangeLink,
@@ -164,8 +165,7 @@ test.describe.serial('4. Death declaration case - 4', () => {
         .locator('#internationalPostalCodePrimaryDeceased')
         .fill(declaration.deceased.address.postcodeOrZip)
 
-      await page.waitForTimeout(500)
-      await page.getByRole('button', { name: 'Continue' }).click()
+      await continueForm(page)
     })
 
     test('4.1.2 Fill event details', async () => {
@@ -194,12 +194,10 @@ test.describe.serial('4. Death declaration case - 4', () => {
         .getByText(declaration.event.deathLocation, { exact: true })
         .click()
 
-      await page.waitForTimeout(500)
-      await page.getByRole('button', { name: 'Continue' }).click()
+      await continueForm(page)
     })
 
     test('4.1.3 Fill informant details', async () => {
-      await page.waitForTimeout(500)
       await page.locator('#informantType').click()
       await page
         .getByText(declaration.informantType, {
@@ -254,8 +252,7 @@ test.describe.serial('4. Death declaration case - 4', () => {
         .locator('#addressLine1RuralOptionPrimaryInformant')
         .fill(declaration.informant.address.village)
 
-      await page.waitForTimeout(500)
-      await page.getByRole('button', { name: 'Continue' }).click()
+      await continueForm(page)
     })
 
     test('4.1.4 Fill spouse details', async () => {
@@ -305,8 +302,7 @@ test.describe.serial('4. Death declaration case - 4', () => {
         .locator('#internationalPostalCodePrimarySpouse')
         .fill(declaration.spouse.address.postcodeOrZip)
 
-      await page.waitForTimeout(500)
-      await page.getByRole('button', { name: 'Continue' }).click()
+      await continueForm(page)
     })
 
     test('4.1.5 Upload supporting document', async () => {

@@ -7,7 +7,8 @@ import {
   login,
   uploadImageToSection,
   expectTextWithChangeLink,
-  formatDateObjectTo_ddMMMMyyyy
+  formatDateObjectTo_ddMMMMyyyy,
+  continueForm
 } from '../../helpers'
 import faker from '@faker-js/faker'
 
@@ -114,11 +115,7 @@ test.describe.serial('8. Validate declaration review page', () => {
         await page
           .getByText(declaration.deceased.address.District, { exact: true })
           .click()
-
-        // waiting for 500ms before continuing,
-        // otherwise some data entered in the page are lost
-        await page.waitForTimeout(500)
-        await page.getByRole('button', { name: 'Continue' }).click()
+        await continueForm(page)
       })
 
       test('8.1.0.2 Fill event details', async () => {
@@ -129,12 +126,10 @@ test.describe.serial('8. Validate declaration review page', () => {
         await page.locator('#placeOfDeath').click()
         await page.getByText(declaration.event.place).click()
 
-        await page.waitForTimeout(500)
-        await page.getByRole('button', { name: 'Continue' }).click()
+        await continueForm(page)
       })
 
       test('8.1.0.3 Fill informant details', async () => {
-        await page.waitForTimeout(500)
         await page.locator('#informantType').click()
         await page
           .getByText(declaration.informantType, {
@@ -148,8 +143,7 @@ test.describe.serial('8. Validate declaration review page', () => {
           .locator('#registrationEmail')
           .fill(declaration.informantEmail)
 
-        await page.waitForTimeout(500)
-        await page.getByRole('button', { name: 'Continue' }).click()
+        await continueForm(page)
       })
 
       test('8.1.0.4 Fill spouse details', async () => {
@@ -175,8 +169,7 @@ test.describe.serial('8. Validate declaration review page', () => {
           .locator('#spouseNationalId')
           .fill(declaration.spouse.identifier.id)
 
-        await page.waitForTimeout(500)
-        await page.getByRole('button', { name: 'Continue' }).click()
+        await continueForm(page)
       })
     })
 
