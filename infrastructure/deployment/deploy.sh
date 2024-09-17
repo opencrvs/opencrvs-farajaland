@@ -286,11 +286,12 @@ docker_stack_deploy() {
     echo "Downloading $tag"
     pwd
     echo -e "$tag \n" >> docker_images.txt
-
+    ls
   done
   echo "The current working directory is $PWD"
-  mv "$pwd/infrastructure/deployment/multiple-images-pull.py" /opt/opencrvs/
-  mv "$pwd/docker_images.txt" /opt/opencrvs/
+  ls /tmp | grep infras
+  mv /tmp/infrastructure/deployment/multiple-images-pull.py /opt/opencrvs/
+  mv /tmp/docker_images.txt /opt/opencrvs/
   configured_ssh "cd /opt/opencrvs && python3 multiple-images-pull.py"
   
   echo "Updating docker swarm stack with new compose files"
