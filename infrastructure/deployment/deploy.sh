@@ -279,6 +279,7 @@ pull_images_from_file() {
     # Read each line (image name) from the file
     while IFS= read -r image; do
         {
+            image=$(echo "$image" | xargs)
             # Skip empty lines and comments (lines starting with #)
             [[ -z "$image" || "$image" =~ ^# ]] && continue
             echo "Pulling $image..."
@@ -305,12 +306,13 @@ docker_stack_deploy() {
     fi
 
     echo "Downloading $tag"
-    pwd
     echo -e "$tag \n" >> docker_images.txt
   done
+  echo "-----"
   cat docker_images.txt
+  echo "-----"
   echo "The current working directory is $PWD"
-  ls infrastructure/deployment/
+
   echo "------"
   #cd infrastructure/deployment/
   pull_images_from_file "docker_images.txt"
