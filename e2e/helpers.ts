@@ -323,7 +323,14 @@ export const drawSignature = async (page: Page) => {
   }
 }
 
-export const expectOutboxToBeEmpty = async (page: Page) =>
+export const expectOutboxToBeEmpty = async (page: Page) => {
+  /*
+   * This is to ensure the following condition is asserted
+   * after the outbox has the declaration
+   */
+  await page.waitForTimeout(500)
+
   await expect(page.locator('#navigation_outbox')).not.toContainText('1', {
     timeout: SAFE_OUTBOX_TIMEOUT_MS
   })
+}
