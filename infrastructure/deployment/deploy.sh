@@ -292,9 +292,11 @@ docker_stack_deploy() {
   #ls /tmp 
   #find / -name "multiple-images-pull.py"
   python3 --version
+  ls -la /opt
+  mkdir /opt/opencrvs
   mv infrastructure/deployment/multiple-images-pull.py /opt/opencrvs/
   mv docker_images.txt /opt/opencrvs/
-  
+
   configured_ssh "cd /opt/opencrvs && python3 multiple-images-pull.py"
   
   echo "Updating docker swarm stack with new compose files"
