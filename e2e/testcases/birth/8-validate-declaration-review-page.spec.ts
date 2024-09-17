@@ -7,7 +7,8 @@ import {
   goToSection,
   login,
   expectTextWithChangeLink,
-  formatDateObjectTo_ddMMMMyyyy
+  formatDateObjectTo_ddMMMMyyyy,
+  expectOutboxToBeEmpty
 } from '../../helpers'
 import faker from '@faker-js/faker'
 import { CREDENTIALS } from '../../constants'
@@ -867,9 +868,7 @@ test.describe.serial('8. Validate declaration review page', () => {
       expect(page.url().includes('registration-home')).toBeTruthy()
 
       await page.getByRole('button', { name: 'Sent for review' }).click()
-      await expect(page.locator('#navigation_outbox')).not.toContainText('1', {
-        timeout: 1000 * 30
-      })
+      await expectOutboxToBeEmpty(page)
       /*
        * Expected result: The declaration should be in sent for review
        */
@@ -1122,9 +1121,7 @@ test.describe.serial('8. Validate declaration review page', () => {
       expect(page.url().includes('registration-home')).toBeTruthy()
 
       await page.getByRole('button', { name: 'Sent for approval' }).click()
-      await expect(page.locator('#navigation_outbox')).not.toContainText('1', {
-        timeout: 1000 * 30
-      })
+      await expectOutboxToBeEmpty(page)
 
       /*
        * Expected result: The declaration should be in sent for approval
@@ -1402,9 +1399,7 @@ test.describe.serial('8. Validate declaration review page', () => {
       expect(page.url().includes('registration-home')).toBeTruthy()
 
       await page.getByRole('button', { name: 'Ready to print' }).click()
-      await expect(page.locator('#navigation_outbox')).not.toContainText('1', {
-        timeout: 1000 * 30
-      })
+      await expectOutboxToBeEmpty(page)
 
       /*
        * Expected result: The declaration should be in Ready to print

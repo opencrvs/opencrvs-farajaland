@@ -2,6 +2,7 @@ import { expect, test, type Page } from '@playwright/test'
 import {
   createPIN,
   expectAddress,
+  expectOutboxToBeEmpty,
   formatDateTo_ddMMMMyyyy,
   formatDateTo_yyyyMMdd,
   formatName,
@@ -887,9 +888,7 @@ test.describe.serial('Correct record - 2', () => {
      * - include the declaration in this tab
      */
     expect(page.url().includes('registration-home/approvals')).toBeTruthy()
-    await expect(page.locator('#navigation_outbox')).not.toContainText('1', {
-      timeout: 1000 * 30
-    })
+    await expectOutboxToBeEmpty(page)
 
     await expect(
       page.getByText(formatName(declaration.child.name[0]))
@@ -1051,9 +1050,7 @@ test.describe.serial('Correct record - 2', () => {
        * - include the updated declaration in this tab
        */
       expect(page.url().includes('registration-home/print')).toBeTruthy()
-      await expect(page.locator('#navigation_outbox')).not.toContainText('1', {
-        timeout: 1000 * 30
-      })
+      await expectOutboxToBeEmpty(page)
 
       await expect(
         page.getByText(formatName(declaration.child.name[0]))

@@ -3,6 +3,7 @@ import {
   continueForm,
   createPIN,
   drawSignature,
+  expectOutboxToBeEmpty,
   goToSection,
   login
 } from '../../../helpers'
@@ -263,9 +264,7 @@ test.describe.serial('8. Birth declaration case - 8', () => {
        */
       expect(page.url().includes('registration-home')).toBeTruthy()
 
-      await expect(page.locator('#navigation_outbox')).not.toContainText('1', {
-        timeout: 1000 * 30
-      })
+      await expectOutboxToBeEmpty(page)
     })
   })
 

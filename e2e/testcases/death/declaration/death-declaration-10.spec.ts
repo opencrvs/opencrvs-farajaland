@@ -2,6 +2,7 @@ import { test, expect, type Page } from '@playwright/test'
 import {
   createPIN,
   drawSignature,
+  expectOutboxToBeEmpty,
   expectTextWithChangeLink,
   goToSection,
   login
@@ -247,9 +248,7 @@ test.describe.serial('10. Death declaration case - 10', () => {
        */
       expect(page.url().includes('registration-home')).toBeTruthy()
 
-      await expect(page.locator('#navigation_outbox')).not.toContainText('1', {
-        timeout: 1000 * 30
-      })
+      await expectOutboxToBeEmpty(page)
     })
   })
 

@@ -2,6 +2,7 @@ import { expect, test, type Page } from '@playwright/test'
 import {
   createPIN,
   expectAddress,
+  expectOutboxToBeEmpty,
   formatDateTo_ddMMMMyyyy,
   formatName,
   getToken,
@@ -669,9 +670,7 @@ test.describe.serial(' Correct record - 16', () => {
      * - be navigated to ready to print tab
      * - include the declaration in this tab
      */
-    await expect(page.locator('#navigation_outbox')).not.toContainText('1', {
-      timeout: 1000 * 30
-    })
+    await expectOutboxToBeEmpty(page)
 
     await expect(
       page.getByText(formatName(declaration.deceased.name[0]))

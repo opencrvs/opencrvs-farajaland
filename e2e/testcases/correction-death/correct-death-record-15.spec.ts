@@ -1,6 +1,7 @@
 import { expect, test, type Page } from '@playwright/test'
 import {
   createPIN,
+  expectOutboxToBeEmpty,
   formatDateTo_ddMMMMyyyy,
   formatDateTo_yyyyMMdd,
   formatName,
@@ -96,9 +97,7 @@ test.describe.serial(' Correct record - 15', () => {
        * - include the declaration in this tab
        */
       expect(page.url().includes('registration-home/readyToIssue')).toBeTruthy()
-      await expect(page.locator('#navigation_outbox')).not.toContainText('1', {
-        timeout: 1000 * 30
-      })
+      await expectOutboxToBeEmpty(page)
 
       await page.getByText(formatName(declaration.deceased.name[0])).click()
     })
@@ -514,9 +513,7 @@ test.describe.serial(' Correct record - 15', () => {
      * - be navigated to ready to print tab
      * - include the declaration in this tab
      */
-    await expect(page.locator('#navigation_outbox')).not.toContainText('1', {
-      timeout: 1000 * 30
-    })
+    await expectOutboxToBeEmpty(page)
 
     await expect(
       page.getByText(formatName(declaration.deceased.name[0]))

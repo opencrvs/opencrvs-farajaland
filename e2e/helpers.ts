@@ -3,7 +3,8 @@ import {
   AUTH_URL,
   CLIENT_URL,
   GATEWAY_HOST,
-  SAFE_INPUT_CHANGE_TIMEOUT_MS
+  SAFE_INPUT_CHANGE_TIMEOUT_MS,
+  SAFE_OUTBOX_TIMEOUT_MS
 } from './constants'
 import { format, parseISO } from 'date-fns'
 import { isArray, random } from 'lodash'
@@ -321,3 +322,8 @@ export const drawSignature = async (page: Page) => {
     await page.mouse.up()
   }
 }
+
+export const expectOutboxToBeEmpty = async (page: Page) =>
+  await expect(page.locator('#navigation_outbox')).not.toContainText('1', {
+    timeout: SAFE_OUTBOX_TIMEOUT_MS
+  })

@@ -3,6 +3,7 @@ import {
   continueForm,
   createPIN,
   drawSignature,
+  expectOutboxToBeEmpty,
   expectTextWithChangeLink,
   formatDateObjectTo_ddMMMMyyyy,
   getRandomDate,
@@ -446,9 +447,7 @@ test.describe.serial('1. Death declaration case - 1', () => {
        */
       expect(page.url().includes('registration-home')).toBeTruthy()
 
-      await expect(page.locator('#navigation_outbox')).not.toContainText('1', {
-        timeout: 1000 * 30
-      })
+      await expectOutboxToBeEmpty(page)
 
       await page.getByRole('button', { name: 'Sent for review' }).click()
 
