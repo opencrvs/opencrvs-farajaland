@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test'
 import { continueForm, createPIN, goToSection, login } from '../../helpers'
+import { CREDENTIALS } from '../../constants'
 
 test.describe('6. Validate Marriage details page', () => {
   test.beforeEach(async ({ page }) => {

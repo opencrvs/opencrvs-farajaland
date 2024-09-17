@@ -767,6 +767,17 @@ test.describe.serial('Correct record - 2', () => {
      * - Comments
      */
 
+    await expectAddress(
+      page.locator('#listTable-diff'),
+      {
+        ...declaration.informant.address[0],
+        country: 'Farajaland',
+        state: 'Central',
+        district: 'Ibombo'
+      },
+      true
+    )
+
     await expect(
       page.getByText(
         'Place of delivery (Child)' +

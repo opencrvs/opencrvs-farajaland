@@ -4,6 +4,7 @@ import { createDeclaration } from './helpers'
 
 import TEST_DATA_1 from './data/1-both-mother-and-father.json'
 import faker from '@faker-js/faker'
+import { CREDENTIALS } from '../../constants'
 
 test.describe('1. Birth event declaration', () => {
   test.describe.serial('Fill all form sections. Save & Exit', () => {

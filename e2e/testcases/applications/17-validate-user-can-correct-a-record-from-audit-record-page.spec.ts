@@ -3,6 +3,7 @@ import { createPIN, getToken, login } from '../../helpers'
 import faker from '@faker-js/faker'
 import { createDeclaration } from '../birth/helpers'
 import TEST_DATA_1 from '../birth/data/1-both-mother-and-father.json'
+import { CREDENTIALS } from '../../constants'
 
 test.describe
   .serial('17. Validate user can correct a record from audit record page', () => {

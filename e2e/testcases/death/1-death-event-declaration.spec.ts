@@ -1,6 +1,7 @@
 import { expect, test, type Page } from '@playwright/test'
 import { createPIN, getToken, login } from '../../helpers'
 import { createDeathDeclaration } from './helpers'
+import { CREDENTIALS } from '../../constants'
 
 test.describe('1. Death event declaration', () => {
   test.describe.serial('Fill all form sections. Save & Exit', () => {
