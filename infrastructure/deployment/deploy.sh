@@ -285,7 +285,7 @@ docker_stack_deploy() {
 
     echo "Downloading $tag"
     pwd
-    echo -e "$tag \n" > docker_images.txt
+    echo -e "$tag \n" >> docker_images.txt
 
   done
   #cp infrastructure/deployment/multiple-images-pull.py /opt/opencrvs/
