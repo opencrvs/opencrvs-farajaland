@@ -219,9 +219,7 @@ test.describe.serial(' Correct record - 13', () => {
 
         await expect(
           page.locator('#spouse-content #Date').getByRole('deletion')
-        ).toHaveText(formatDateTo_ddMMMMyyyy(declaration.spouse.birthDate), {
-          ignoreCase: true
-        })
+        ).toHaveText(formatDateTo_ddMMMMyyyy(declaration.spouse.birthDate))
 
         await expect(
           page
@@ -263,9 +261,7 @@ test.describe.serial(' Correct record - 13', () => {
 
         await expect(
           page.locator('#spouse-content #Nationality').getByRole('deletion')
-        ).toHaveText('Farajaland', {
-          ignoreCase: true
-        })
+        ).toHaveText('Farajaland')
 
         await expect(
           page
@@ -307,9 +303,7 @@ test.describe.serial(' Correct record - 13', () => {
 
         await expect(
           page.locator('#spouse-content #Type').getByRole('deletion')
-        ).toHaveText('National Id', {
-          ignoreCase: true
-        })
+        ).toHaveText('National ID')
 
         await expect(
           page

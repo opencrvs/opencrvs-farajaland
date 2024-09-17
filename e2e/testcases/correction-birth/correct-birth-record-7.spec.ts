@@ -256,9 +256,7 @@ test.describe.serial(' Correct record - 7', () => {
 
       await expect(
         page.locator('#mother-content #Date').getByRole('deletion')
-      ).toHaveText(formatDateTo_ddMMMMyyyy(declaration.mother.birthDate), {
-        ignoreCase: true
-      })
+      ).toHaveText(formatDateTo_ddMMMMyyyy(declaration.mother.birthDate))
 
       await expect(
         page
@@ -274,9 +272,7 @@ test.describe.serial(' Correct record - 7', () => {
 
       await expect(
         page.locator('#mother-content #Nationality').getByRole('deletion')
-      ).toHaveText('Farajaland', {
-        ignoreCase: true
-      })
+      ).toHaveText('Farajaland')
 
       await expect(
         page
@@ -292,9 +288,7 @@ test.describe.serial(' Correct record - 7', () => {
 
       await expect(
         page.locator('#mother-content #Type').getByRole('deletion')
-      ).toHaveText('National Id', {
-        ignoreCase: true
-      })
+      ).toHaveText('National ID')
 
       await expect(
         page
@@ -362,9 +356,7 @@ test.describe.serial(' Correct record - 7', () => {
 
       await expect(
         page.locator('#mother-content #Level').getByRole('deletion')
-      ).toHaveText('No Schooling', {
-        ignoreCase: true
-      })
+      ).toHaveText('No schooling')
 
       await expect(
         page

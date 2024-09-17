@@ -214,11 +214,7 @@ test.describe.serial(' Correct record - 15', () => {
       await expect(
         page.locator('#deathEvent-content #Date').getByRole('deletion')
       ).toHaveText(
-        format(
-          parseISO(declaration.deceased.deceased.deathDate),
-          'dd MMMM yyyy'
-        ),
-        { ignoreCase: true }
+        formatDateTo_ddMMMMyyyy(declaration.deceased.deceased.deathDate)
       )
 
       await expect(
@@ -261,9 +257,7 @@ test.describe.serial(' Correct record - 15', () => {
 
       await expect(
         page.locator('#deathEvent-content #Manner').getByRole('deletion')
-      ).toHaveText('-', {
-        ignoreCase: true
-      })
+      ).toHaveText('-')
 
       await expect(
         page
@@ -311,12 +305,7 @@ test.describe.serial(' Correct record - 15', () => {
 
       await expect(
         page.locator('#deathEvent-content #Cause').getByRole('deletion')
-      ).toHaveText(
-        declaration.causeOfDeathEstablished == 'true' ? 'Yes' : 'No',
-        {
-          ignoreCase: true
-        }
-      )
+      ).toHaveText(declaration.causeOfDeathEstablished == 'true' ? 'Yes' : 'No')
 
       await expect(
         page
@@ -326,9 +315,7 @@ test.describe.serial(' Correct record - 15', () => {
 
       await expect(
         page.locator('#deathEvent-content #Source').getByRole('deletion')
-      ).toHaveText('-', {
-        ignoreCase: true
-      })
+      ).toHaveText('-')
 
       await expect(
         page

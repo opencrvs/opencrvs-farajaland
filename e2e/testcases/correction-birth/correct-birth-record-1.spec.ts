@@ -379,9 +379,7 @@ test.describe('1. Correct record - 1', () => {
 
         await expect(
           page.locator('#child-content #Date').getByRole('deletion')
-        ).toHaveText(formatDateTo_ddMMMMyyyy(declaration.child.birthDate), {
-          ignoreCase: true
-        })
+        ).toHaveText(formatDateTo_ddMMMMyyyy(declaration.child.birthDate))
 
         await expect(
           page

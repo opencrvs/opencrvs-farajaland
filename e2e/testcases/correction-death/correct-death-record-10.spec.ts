@@ -384,9 +384,7 @@ test.describe('10. Correct record - 10', () => {
 
         await expect(
           page.locator('#deceased-content #Date').getByRole('deletion')
-        ).toHaveText(formatDateTo_ddMMMMyyyy(declaration.deceased.birthDate), {
-          ignoreCase: true
-        })
+        ).toHaveText(formatDateTo_ddMMMMyyyy(declaration.deceased.birthDate))
 
         await expect(
           page
@@ -430,9 +428,7 @@ test.describe('10. Correct record - 10', () => {
 
         await expect(
           page.locator('#deceased-content #Nationality').getByRole('deletion')
-        ).toHaveText('Farajaland', {
-          ignoreCase: true
-        })
+        ).toHaveText('Farajaland')
 
         await expect(
           page
@@ -474,9 +470,7 @@ test.describe('10. Correct record - 10', () => {
 
         await expect(
           page.locator('#deceased-content #Type').getByRole('deletion')
-        ).toHaveText('National Id', {
-          ignoreCase: true
-        })
+        ).toHaveText('National ID')
 
         await expect(
           page
