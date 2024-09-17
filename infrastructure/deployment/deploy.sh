@@ -289,7 +289,7 @@ docker_stack_deploy() {
   done
   cat docker_images.txt
   echo "The current working directory is $PWD"
-  #ls /tmp 
+  ls | grep deploy 
   #find / -name "multiple-images-pull.py"
   python3 --version
   ls -la /opt
