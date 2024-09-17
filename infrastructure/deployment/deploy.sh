@@ -269,6 +269,27 @@ split_and_join() {
    echo $SPLIT
 }
 
+pull_images_from_file() {
+    local file="$1"  # The file containing the Docker images
+    # Check if the file exists
+    if [[ ! -f "$file" ]]; then
+        echo "File not found: $file"
+        exit 1
+    fi
+    # Read each line (image name) from the file
+    while IFS= read -r image; do
+        {
+            # Skip empty lines and comments (lines starting with #)
+            [[ -z "$image" || "$image" =~ ^# ]] && continue
+            echo "Pulling $image..."
+            docker pull "$image" && echo "Successfully pulled $image" || echo "Failed to pull $image"
+        } &
+    done < "$file"
+    # Wait for all background jobs to complete
+    wait
+    echo "All images have been pulled."
+}
+
 docker_stack_deploy() {
   echo "Deploying this environment: $ENVIRONMENT_COMPOSE"
 
@@ -292,7 +313,7 @@ docker_stack_deploy() {
   ls infrastructure/deployment/
   echo "------"
   #cd infrastructure/deployment/
-  configured_ssh 'cd infrastructure/deployment && python3 multiple-images-pull.py'
+  pull_images_from_file "docker_images.txt"
   ls -la /opt
   #mkdir /opt/opencrvs
   #cp infrastructure/deployment/multiple-images-pull.py /opt/opencrvs/multiple-images-pull.py
