@@ -291,12 +291,14 @@ docker_stack_deploy() {
   echo "The current working directory is $PWD"
   ls infrastructure/deployment/
   echo "------"
+  #cd infrastructure/deployment/
+  configured_ssh 'cd infrastructure/deployment && python3 multiple-images-pull.py'
   ls -la /opt
   #mkdir /opt/opencrvs
-  cp infrastructure/deployment/multiple-images-pull.py /opt/opencrvs/multiple-images-pull.py
+  #cp infrastructure/deployment/multiple-images-pull.py /opt/opencrvs/multiple-images-pull.py
   #cp docker_images.txt /opt/opencrvs/docker_images.txt
   current_dir=$(pwd)
-  configured_ssh "cd /opt/opencrvs && python3 $current_dir/infrastructure/deployment/multiple-images-pull.py"
+  #configured_ssh "cd /opt/opencrvs && python3 $current_dir/infrastructure/deployment/multiple-images-pull.py"
   
   echo "Updating docker swarm stack with new compose files"
 

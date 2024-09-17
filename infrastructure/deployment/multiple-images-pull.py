@@ -23,4 +23,4 @@ def pull_images_concurrently(file_path, max_workers=5):
         executor.map(pull_docker_image, images)
 if __name__ == "__main__":
     input_file = '$current_dir/docker_images.txt'  # Replace with the path to your input file
-    pull_images_concurrently(input_file, max_workers=5)  # You can adjust the number of workers
+    pull_images_concurrently(input_file, max_workers=7)  # You can adjust the number of workers
