@@ -16,6 +16,7 @@ import {
 } from '../birth/helpers'
 import { BirthDeclaration, BirthInputDetails } from '../birth/types'
 import { format, subDays } from 'date-fns'
+import { CREDENTIALS } from '../../constants'
 
 test.describe.serial(' Correct record - 3', () => {
   let declaration: BirthDeclaration
@@ -109,7 +110,11 @@ test.describe.serial(' Correct record - 3', () => {
 
   test.describe('3.1 Print > Ready to issue', async () => {
     test('3.1.1 Print', async () => {
-      await login(page, 'f.katongo', 'test')
+      await login(
+        page,
+        CREDENTIALS.REGISTRATION_AGENT.USERNAME,
+        CREDENTIALS.REGISTRATION_AGENT.PASSWORD
+      )
       await createPIN(page)
 
       await page.getByPlaceholder('Search for a tracking ID').fill(trackingId)
@@ -866,7 +871,11 @@ test.describe.serial(' Correct record - 3', () => {
 
       page = await browser.newPage()
 
-      await login(page, 'k.mweene', 'test')
+      await login(
+        page,
+        CREDENTIALS.LOCAL_REGISTRAR.USERNAME,
+        CREDENTIALS.LOCAL_REGISTRAR.PASSWORD
+      )
       await createPIN(page)
     })
 

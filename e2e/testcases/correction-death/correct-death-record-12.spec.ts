@@ -16,6 +16,7 @@ import {
   DeathDeclarationInput,
   fetchDeclaration
 } from '../death/helpers'
+import { CREDENTIALS } from '../../constants'
 
 test.describe.serial(' Correct record - 12', () => {
   let declaration: DeathDeclaration
@@ -102,7 +103,11 @@ test.describe.serial(' Correct record - 12', () => {
 
   test.describe('12.1 Print > Ready to issue', async () => {
     test('12.1.1 Print', async () => {
-      await login(page, 'f.katongo', 'test')
+      await login(
+        page,
+        CREDENTIALS.REGISTRATION_AGENT.USERNAME,
+        CREDENTIALS.REGISTRATION_AGENT.PASSWORD
+      )
       await createPIN(page)
 
       await page.getByPlaceholder('Search for a tracking ID').fill(trackingId)
@@ -846,7 +851,11 @@ test.describe.serial(' Correct record - 12', () => {
 
       page = await browser.newPage()
 
-      await login(page, 'k.mweene', 'test')
+      await login(
+        page,
+        CREDENTIALS.LOCAL_REGISTRAR.USERNAME,
+        CREDENTIALS.LOCAL_REGISTRAR.PASSWORD
+      )
       await createPIN(page)
     })
 

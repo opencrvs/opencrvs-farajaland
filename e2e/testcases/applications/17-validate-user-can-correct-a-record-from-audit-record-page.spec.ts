@@ -50,7 +50,11 @@ test.describe
   })
 
   test('17.1 Go to ready to print tab > search for a certified record > click any application not downloaded', async () => {
-    await login(page, 'f.katongo', 'test')
+    await login(
+      page,
+      CREDENTIALS.REGISTRATION_AGENT.USERNAME,
+      CREDENTIALS.REGISTRATION_AGENT.PASSWORD
+    )
     await createPIN(page)
 
     await page.getByRole('button', { name: 'Ready to print' }).click()

@@ -18,6 +18,7 @@ import {
   DeathDeclarationInput,
   fetchDeclaration
 } from '../death/helpers'
+import { CREDENTIALS } from '../../constants'
 
 test.describe.serial(' Correct record - 13', () => {
   const CHANGING_LOCATION_FROM_HEALT_FACILITY_TO_USUAL_ADDRESS_BUG_SOLVED =
@@ -89,7 +90,11 @@ test.describe.serial(' Correct record - 13', () => {
   })
 
   test('13.1 Ready to print > record audit', async () => {
-    await login(page, 'k.mweene', 'test')
+    await login(
+      page,
+      CREDENTIALS.LOCAL_REGISTRAR.USERNAME,
+      CREDENTIALS.LOCAL_REGISTRAR.PASSWORD
+    )
     await createPIN(page)
 
     await page.getByPlaceholder('Search for a tracking ID').fill(trackingId)

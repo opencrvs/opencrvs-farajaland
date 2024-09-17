@@ -12,6 +12,7 @@ import faker from '@faker-js/faker'
 import { format, subDays } from 'date-fns'
 import { DeathDeclaration } from '../death/types'
 import { createDeathDeclaration, fetchDeclaration } from '../death/helpers'
+import { CREDENTIALS } from '../../constants'
 
 test.describe.serial(' Correct record - 14', () => {
   let declaration: DeathDeclaration
@@ -69,7 +70,11 @@ test.describe.serial(' Correct record - 14', () => {
   })
 
   test('14.1 Certificate preview', async () => {
-    await login(page, 'k.mweene', 'test')
+    await login(
+      page,
+      CREDENTIALS.LOCAL_REGISTRAR.USERNAME,
+      CREDENTIALS.LOCAL_REGISTRAR.PASSWORD
+    )
     await createPIN(page)
 
     await page.getByPlaceholder('Search for a tracking ID').fill(trackingId)

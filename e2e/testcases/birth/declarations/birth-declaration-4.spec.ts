@@ -11,6 +11,7 @@ import {
   login
 } from '../../../helpers'
 import faker from '@faker-js/faker'
+import { CREDENTIALS } from '../../../constants'
 
 test.describe.serial('4. Birth declaration case - 4', () => {
   let page: Page
@@ -116,7 +117,11 @@ test.describe.serial('4. Birth declaration case - 4', () => {
 
   test.describe('4.1 Declaration started by RA', async () => {
     test.beforeAll(async () => {
-      await login(page, 'f.katongo', 'test')
+      await login(
+        page,
+        CREDENTIALS.REGISTRATION_AGENT.USERNAME,
+        CREDENTIALS.REGISTRATION_AGENT.PASSWORD
+      )
       await createPIN(page)
       await page.click('#header_new_event')
       await page.getByLabel('Birth').click()
@@ -657,7 +662,11 @@ test.describe.serial('4. Birth declaration case - 4', () => {
 
   test.describe('4.2 Declaration Review by Local Registrar', async () => {
     test('4.2.1 Navigate to the declaration review page', async () => {
-      await login(page, 'k.mweene', 'test')
+      await login(
+        page,
+        CREDENTIALS.LOCAL_REGISTRAR.USERNAME,
+        CREDENTIALS.LOCAL_REGISTRAR.PASSWORD
+      )
       await createPIN(page)
       await page.getByRole('button', { name: 'Ready for review' }).click()
       await page

@@ -12,7 +12,7 @@ import {
   login
 } from '../../../helpers'
 import faker from '@faker-js/faker'
-import { format } from 'date-fns'
+import { CREDENTIALS } from '../../../constants'
 
 test.describe.serial('7. Death declaration case - 7', () => {
   let page: Page
@@ -97,7 +97,11 @@ test.describe.serial('7. Death declaration case - 7', () => {
 
   test.describe('7.1 Declaration started by National Registrar', async () => {
     test.beforeAll(async () => {
-      await login(page, 'j.musonda', 'test')
+      await login(
+        page,
+        CREDENTIALS.NATIONAL_REGISTRAR.USERNAME,
+        CREDENTIALS.NATIONAL_REGISTRAR.PASSWORD
+      )
       await createPIN(page)
       await page.click('#header_new_event')
       await page.getByLabel('Death').click()

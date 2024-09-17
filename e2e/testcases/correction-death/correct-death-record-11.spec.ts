@@ -10,6 +10,7 @@ import {
 import { format, parseISO, subDays } from 'date-fns'
 import { DeathDeclaration } from '../death/types'
 import { createDeathDeclaration, fetchDeclaration } from '../death/helpers'
+import { CREDENTIALS } from '../../constants'
 
 test.describe.serial(' Correct record - 11', () => {
   let declaration: DeathDeclaration
@@ -63,7 +64,11 @@ test.describe.serial(' Correct record - 11', () => {
   })
 
   test('11.1 Certificate preview', async () => {
-    await login(page, 'f.katongo', 'test')
+    await login(
+      page,
+      CREDENTIALS.REGISTRATION_AGENT.USERNAME,
+      CREDENTIALS.REGISTRATION_AGENT.PASSWORD
+    )
     await createPIN(page)
 
     await page.getByPlaceholder('Search for a tracking ID').fill(trackingId)
@@ -443,7 +448,11 @@ test.describe.serial(' Correct record - 11', () => {
 
       page = await browser.newPage()
 
-      await login(page, 'k.mweene', 'test')
+      await login(
+        page,
+        CREDENTIALS.LOCAL_REGISTRAR.USERNAME,
+        CREDENTIALS.LOCAL_REGISTRAR.PASSWORD
+      )
       await createPIN(page)
     })
 

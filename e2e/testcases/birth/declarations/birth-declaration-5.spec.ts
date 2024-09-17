@@ -11,6 +11,7 @@ import {
   login
 } from '../../../helpers'
 import faker from '@faker-js/faker'
+import { CREDENTIALS } from '../../../constants'
 
 test.describe.serial('5. Birth declaration case - 5', () => {
   let page: Page
@@ -95,7 +96,11 @@ test.describe.serial('5. Birth declaration case - 5', () => {
 
   test.describe('5.1 Declaration started by Local Registrar', async () => {
     test.beforeAll(async () => {
-      await login(page, 'k.mweene', 'test')
+      await login(
+        page,
+        CREDENTIALS.LOCAL_REGISTRAR.USERNAME,
+        CREDENTIALS.LOCAL_REGISTRAR.PASSWORD
+      )
       await createPIN(page)
       await page.click('#header_new_event')
       await page.getByLabel('Birth').click()

@@ -3,7 +3,11 @@ import { createPIN, goToSection, login } from '../../helpers'
 
 test.describe("2. Validate the child's details page", () => {
   test.beforeEach(async ({ page }) => {
-    await login(page, 'k.mweene', 'test')
+    await login(
+      page,
+      CREDENTIALS.LOCAL_REGISTRAR.USERNAME,
+      CREDENTIALS.LOCAL_REGISTRAR.PASSWORD
+    )
     await createPIN(page)
 
     await page.click('#header_new_event')

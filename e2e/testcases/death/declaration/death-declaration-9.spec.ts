@@ -8,6 +8,7 @@ import {
   login
 } from '../../../helpers'
 import faker from '@faker-js/faker'
+import { CREDENTIALS } from '../../../constants'
 
 test.describe.serial('9. Death declaration case - 9', () => {
   let page: Page
@@ -36,7 +37,11 @@ test.describe.serial('9. Death declaration case - 9', () => {
 
   test.describe('9.1 Declaration started by FA', async () => {
     test.beforeAll(async () => {
-      await login(page, 'k.bwalya', 'test')
+      await login(
+        page,
+        CREDENTIALS.FIELD_AGENT.USERNAME,
+        CREDENTIALS.FIELD_AGENT.PASSWORD
+      )
       await createPIN(page)
       await page.click('#header_new_event')
       await page.getByLabel('Death').click()
@@ -272,7 +277,11 @@ test.describe.serial('9. Death declaration case - 9', () => {
 
   test.describe('9.2 Declaration Review by RA', async () => {
     test('9.2.1 Navigate to the declaration review page', async () => {
-      await login(page, 'f.katongo', 'test')
+      await login(
+        page,
+        CREDENTIALS.REGISTRATION_AGENT.USERNAME,
+        CREDENTIALS.REGISTRATION_AGENT.PASSWORD
+      )
       await createPIN(page)
       await page.getByRole('button', { name: 'In Progress' }).click()
       await page.getByRole('button', { name: 'Field Agents' }).click()

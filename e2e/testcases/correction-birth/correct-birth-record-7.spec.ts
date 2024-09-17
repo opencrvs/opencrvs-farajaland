@@ -17,7 +17,8 @@ import {
   fetchDeclaration
 } from '../birth/helpers'
 import { BirthDeclaration, BirthInputDetails } from '../birth/types'
-import { format, parseISO, subDays } from 'date-fns'
+import { format, subDays } from 'date-fns'
+import { CREDENTIALS } from '../../constants'
 
 test.describe.serial(' Correct record - 7', () => {
   let declaration: BirthDeclaration
@@ -98,7 +99,11 @@ test.describe.serial(' Correct record - 7', () => {
   })
 
   test('7.1 Ready to print > record audit', async () => {
-    await login(page, 'j.musonda', 'test')
+    await login(
+      page,
+      CREDENTIALS.NATIONAL_REGISTRAR.USERNAME,
+      CREDENTIALS.NATIONAL_REGISTRAR.PASSWORD
+    )
     await createPIN(page)
 
     await page.getByPlaceholder('Search for a tracking ID').fill(trackingId)

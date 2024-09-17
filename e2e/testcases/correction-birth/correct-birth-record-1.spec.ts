@@ -20,6 +20,7 @@ import {
 } from '../birth/helpers'
 import { BirthDeclaration, BirthInputDetails } from '../birth/types'
 import { format, parseISO, subDays } from 'date-fns'
+import { CREDENTIALS } from '../../constants'
 
 test.describe('1. Correct record - 1', () => {
   let declaration: BirthDeclaration
@@ -81,7 +82,11 @@ test.describe('1. Correct record - 1', () => {
 
   test.describe('1.1 Validate verbiage', async () => {
     test.beforeEach(async ({ page }) => {
-      await login(page, 'f.katongo', 'test')
+      await login(
+        page,
+        CREDENTIALS.REGISTRATION_AGENT.USERNAME,
+        CREDENTIALS.REGISTRATION_AGENT.PASSWORD
+      )
       await createPIN(page)
 
       await page.getByPlaceholder('Search for a tracking ID').fill(trackingId)
@@ -215,7 +220,11 @@ test.describe('1. Correct record - 1', () => {
     test.beforeAll(async ({ browser }) => {
       page = await browser.newPage()
 
-      await login(page, 'f.katongo', 'test')
+      await login(
+        page,
+        CREDENTIALS.REGISTRATION_AGENT.USERNAME,
+        CREDENTIALS.REGISTRATION_AGENT.PASSWORD
+      )
       await createPIN(page)
 
       await page.getByPlaceholder('Search for a tracking ID').fill(trackingId)
@@ -784,7 +793,11 @@ test.describe('1. Correct record - 1', () => {
         await page.close()
         page = await browser.newPage()
 
-        await login(page, 'k.mweene', 'test')
+        await login(
+          page,
+          CREDENTIALS.LOCAL_REGISTRAR.USERNAME,
+          CREDENTIALS.LOCAL_REGISTRAR.PASSWORD
+        )
         await createPIN(page)
       })
 

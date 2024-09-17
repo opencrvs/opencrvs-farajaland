@@ -11,6 +11,7 @@ import {
 import { format, parseISO, subDays } from 'date-fns'
 import { DeathDeclaration } from '../death/types'
 import { createDeathDeclaration, fetchDeclaration } from '../death/helpers'
+import { CREDENTIALS } from '../../constants'
 
 test.describe.serial(' Correct record - 15', () => {
   let declaration: DeathDeclaration
@@ -67,7 +68,11 @@ test.describe.serial(' Correct record - 15', () => {
 
   test.describe('15.1 Print > Ready to issue', async () => {
     test('15.1.1 print', async () => {
-      await login(page, 'k.mweene', 'test')
+      await login(
+        page,
+        CREDENTIALS.LOCAL_REGISTRAR.USERNAME,
+        CREDENTIALS.LOCAL_REGISTRAR.PASSWORD
+      )
       await createPIN(page)
 
       await page.getByPlaceholder('Search for a tracking ID').fill(trackingId)
