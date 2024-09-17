@@ -285,9 +285,9 @@ docker_stack_deploy() {
 
     echo "Downloading $tag"
     pwd
-    echo -e "$tag \n" >> /opt/opencrvs/docker_images.txt
+    echo -e "$tag \n" >> docker_images.txt
   done
-  cat /opt/opencrvs/docker_images.txt
+  cat docker_images.txt
   echo "The current working directory is $PWD"
   ls infrastructure
   #find / -name "multiple-images-pull.py"
