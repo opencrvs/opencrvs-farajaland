@@ -288,7 +288,7 @@ docker_stack_deploy() {
     echo -e "$tag \n" >> docker_images.txt
 
   done
-  echo "The current working directory is $PWD
+  echo "The current working directory is $PWD"
   mv "$pwd/infrastructure/deployment/multiple-images-pull.py" /opt/opencrvs/
   mv "$pwd/docker_images.txt" /opt/opencrvs/
   configured_ssh "cd /opt/opencrvs && python3 multiple-images-pull.py"
