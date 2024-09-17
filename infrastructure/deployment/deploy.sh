@@ -283,15 +283,16 @@ docker_stack_deploy() {
       continue
     fi
 
-    echo "Downloading $tag" 
-    echo -e "$tag \n" >> /opt/opencrvs/docker_images.txt
+    echo "Downloading $tag"
+    pwd
+    echo -e "$tag \n" > docker_images.txt
 
   done
   #cp infrastructure/deployment/multiple-images-pull.py /opt/opencrvs/
-  configured_ssh "cd /opt/opencrvs && python3 multiple-images-pull.py"
+  configured_ssh "cd /opt/opencrvs && python3 ~/infrastructure/multiple-images-pull.py"
   
   echo "Updating docker swarm stack with new compose files"
-  
+
   configured_ssh 'cd /opt/opencrvs && \
     docker stack deploy --prune -c '$(split_and_join " " " -c " "$(to_remote_paths $COMPOSE_FILES_USED)")' --with-registry-auth opencrvs'
 }
