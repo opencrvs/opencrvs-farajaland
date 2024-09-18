@@ -142,7 +142,7 @@ export async function createDeathDeclaration(
               }
             ],
             gender: declaration.deceased.gender as 'male',
-            age: declaration.deceased.age,
+            ageOfIndividualInYears: declaration.deceased.age,
             nationality: [declaration.deceased.nationality],
             identifier: [
               {
