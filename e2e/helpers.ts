@@ -334,3 +334,16 @@ export const expectOutboxToBeEmpty = async (page: Page) => {
     timeout: SAFE_OUTBOX_TIMEOUT_MS
   })
 }
+
+// This suffix increases randomness of a name
+export const generateRandomSuffix = () => {
+  const vowels = 'aeiou'
+  const consonants = 'bcdfghjklmnpqrstvwxyz'
+
+  const randomVowel = vowels.charAt(Math.floor(Math.random() * vowels.length))
+  const randomConsonant = consonants.charAt(
+    Math.floor(Math.random() * consonants.length)
+  )
+
+  return randomConsonant + randomVowel
+}

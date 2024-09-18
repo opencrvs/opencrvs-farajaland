@@ -5,7 +5,11 @@ import faker from '@faker-js/faker'
 import { readFileSync } from 'fs'
 import uuid from 'uuid'
 import { join } from 'path'
-import { formatDateObjectTo_yyyyMMdd, getRandomDate } from '../../helpers'
+import {
+  formatDateObjectTo_yyyyMMdd,
+  generateRandomSuffix,
+  getRandomDate
+} from '../../helpers'
 import {
   CREATE_DEATH_REGISTRATION,
   GET_DEATH_REGISTRATION_FOR_REVIEW
@@ -31,8 +35,8 @@ export type DeathDeclarationInput = {
 const declaration = {
   deceased: {
     name: {
-      firstNames: faker.name.firstName('male'),
-      familyName: faker.name.lastName('male')
+      firstNames: faker.name.firstName('male') + generateRandomSuffix(),
+      familyName: faker.name.lastName('male') + generateRandomSuffix()
     },
     gender: 'male',
     age: random(20, 100),

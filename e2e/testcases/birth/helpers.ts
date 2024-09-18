@@ -12,6 +12,7 @@ import {
   REGISTER_BIRTH_DECLARATION
 } from './queries'
 import { random } from 'lodash'
+import { generateRandomSuffix } from '../../helpers'
 
 export type BirthDetails = {
   informant: {
@@ -99,8 +100,8 @@ export async function createDeclaration(token: string, details: BirthDetails) {
             name: [
               {
                 use: 'en',
-                firstNames: details.child.firstNames,
-                familyName: details.child.familyName
+                firstNames: details.child.firstNames + generateRandomSuffix(),
+                familyName: details.child.familyName + generateRandomSuffix()
               }
             ],
             gender: details.child.gender,
