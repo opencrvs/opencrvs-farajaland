@@ -10,6 +10,7 @@ import {
   CREATE_DEATH_REGISTRATION,
   GET_DEATH_REGISTRATION_FOR_REVIEW
 } from './queries'
+import { random } from 'lodash'
 
 export type DeathDeclarationInput = {
   deceased?: {
@@ -34,7 +35,7 @@ const declaration = {
       familyName: faker.name.lastName('male')
     },
     gender: 'male',
-    birthDate: getRandomDate(75, 200),
+    age: random(20, 100),
     nationality: 'FAR',
     identifier: {
       type: 'NATIONAL_ID',
@@ -141,9 +142,7 @@ export async function createDeathDeclaration(
               }
             ],
             gender: declaration.deceased.gender as 'male',
-            birthDate: formatDateObjectTo_yyyyMMdd(
-              declaration.deceased.birthDate
-            ),
+            age: declaration.deceased.age,
             nationality: [declaration.deceased.nationality],
             identifier: [
               {
