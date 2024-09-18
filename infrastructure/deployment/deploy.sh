@@ -268,7 +268,7 @@ split_and_join() {
    SPLIT=$(echo $text | sed -e "s/$separator_for_splitting/$separator_for_joining/g")
    echo $SPLIT
 }
-s
+
 docker_stack_deploy() {
   echo "Deploying this environment: $ENVIRONMENT_COMPOSE"
 
@@ -283,18 +283,17 @@ docker_stack_deploy() {
       continue
     fi
     echo "Downloading $tag"
- #   tag=$(echo "$tag" | xargs)
-    echo "Pulling $tag..."
-    if docker pull "$tag"; then
-        echo "Successfully pulled $image"
-    else
-        echo "Failed to pull $image"
-    fi
-    wait
+    {
+      until configured_ssh "cd /opt/opencrvs && docker pull $tag"
+      do
+        echo "Server failed to download $tag. Retrying..."
+        sleep 5
+      done 
+    } &
   done
-  
-  echo "Updating docker swarm stack with new compose files"
+  wait
 
+  echo "Updating docker swarm stack with new compose files"
   configured_ssh 'cd /opt/opencrvs && \
     docker stack deploy --prune -c '$(split_and_join " " " -c " "$(to_remote_paths $COMPOSE_FILES_USED)")' --with-registry-auth opencrvs'
 }
