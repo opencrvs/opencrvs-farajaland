@@ -11,6 +11,7 @@ import {
   GET_BIRTH_REGISTRATION_FOR_REVIEW,
   REGISTER_BIRTH_DECLARATION
 } from './queries'
+import { random } from 'lodash'
 
 export type BirthDetails = {
   informant: {
@@ -33,7 +34,7 @@ export type BirthDetails = {
   mother: {
     firstNames: string
     familyName: string
-    birthDate?: string
+    age?: number
     maritalStatus?: 'SINGLE' | 'MARRIED' | 'DIVORCED' | 'WIDOWED'
   }
   father: {
@@ -160,12 +161,7 @@ export async function createDeclaration(token: string, details: BirthDetails) {
                 familyName: details.mother.familyName
               }
             ],
-            birthDate:
-              details.mother.birthDate ||
-              format(
-                subYears(new Date(), 16 + Math.ceil(10 * Math.random())),
-                'yyyy-MM-dd'
-              ),
+            ageOfIndividualInYears: details.mother.age || random(20, 100),
             nationality: ['FAR'],
             identifier: [
               {
