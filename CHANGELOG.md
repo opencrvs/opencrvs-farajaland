@@ -7,14 +7,15 @@
 - Protect individual certificate endpoint with token
 - Kibana disk space alerts now work regardless of your disk device names. Alerts listen devices mounted both to `/` and `/data` (encrypted data partition)
 - "Publish release" pipeline now correctly uses the "Branch to build from" value as the branch to be tagged. Previously it tried tagging "master". "Release tag" is also now used as the release version as is instead of it being read from `package.json`.
-- Facilitating the simultaneous download of multiple Docker images to minimize the image download time during the deployment process in GitHub Actions.
+
 ### Breaking changes
 
 - **Title** Description
 
 ### Improvements
 
-- Auth token, ip address, remote address, mobile number, email redacted/masked from server log
+- Auth token, ip address, remote address, mobile number, email redacted/masked from server log.
+- Improved deployment time by images download faster.
 
 ### Infrastructure breaking changes
 
