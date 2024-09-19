@@ -291,8 +291,9 @@ docker_stack_deploy() {
       sleep 5
     done &
   done
+  echo "Images download is in process"
   wait
-  echo "Images are getting downloaded"
+  echo "Images are successfully downloaded"
   echo "Updating docker swarm stack with new compose files"
 
   configured_ssh 'cd /opt/opencrvs && \
