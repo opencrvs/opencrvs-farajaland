@@ -195,6 +195,99 @@ export const birthForm: ISerializedForm = {
               isValidChildBirthDate,
               certificateHandlebars.eventDate
             ), // Required field.
+            {
+              name: 'fetchNUI',
+              type: 'HTTP',
+              hideInPreview: true,
+              custom: true,
+              label: { id: 'form.label.empty', defaultMessage: ' ' },
+              validator: [],
+              options: {
+                url: '/api/countryconfig/v1/nui',
+                method: 'GET'
+              }
+            },
+            // {
+            //   name: 'redirect',
+            //   type: 'REDIRECT',
+            //   custom: true,
+            //   label: { id: 'form.label.empty', defaultMessage: ' ' },
+            //   validator: [],
+            //   initialValue: '',
+            //   conditionals: [
+            //     { action: 'hide', expression: '!$form.fetchNUI?.data' }
+            //   ],
+            //   options: {
+            //     url: '/some-route?data=${$form.fetchNUI?.data}'
+            //   }
+            // },
+            {
+              name: 'iD',
+              type: 'TEXT',
+              label: formMessageDescriptors.iDTypeNationalID,
+              required: true,
+              custom: true,
+              initialValue: {
+                expression: '$form.fetchNUI?.data',
+                dependsOn: ['fetchNUI']
+              },
+              maxLength: 10,
+              conditionals: [
+                {
+                  action: 'hide',
+                  expression: '!$form.fetchNUI?.data'
+                }
+              ],
+              validator: [],
+              mapping: {
+                template: {
+                  fieldName: 'childNID',
+                  operation: 'identityToFieldTransformer',
+                  parameters: ['id', 'NATIONAL_ID']
+                },
+                mutation: {
+                  operation: 'fieldToIdentityTransformer',
+                  parameters: ['id', 'NATIONAL_ID']
+                },
+                query: {
+                  operation: 'identityToFieldTransformer',
+                  parameters: ['id', 'NATIONAL_ID']
+                }
+              }
+            },
+            {
+              name: 'dummyButton',
+              type: 'BUTTON',
+              custom: true,
+              hideInPreview: true,
+              validator: [],
+              options: {
+                trigger: 'fetchNUI',
+                shouldHandleLoadingState: true
+              },
+              conditionals: [
+                {
+                  action: 'hide',
+                  expression: '$form.fetchNUI?.data'
+                },
+                {
+                  action: 'disable',
+                  expression: '$form.fetchNUI?.error'
+                }
+              ],
+              label: formMessageDescriptors.iDTypeNationalID,
+              buttonLabel: {
+                defaultMessage: 'Generate NUI',
+                description: 'Label for form field: Generate NUI',
+                id: 'form.field.label.nui'
+              },
+              icon: 'UserCircle',
+              loadingLabel: {
+                defaultMessage: 'Generateing...',
+                description: 'Label for form field: Generate NUI',
+                id: 'form.field.label.generatingNUI'
+              }
+            },
             getReasonForLateRegistration('birth'),
             // PLACE OF BIRTH FIELDS WILL RENDER HERE
             divider('place-of-birth-seperator'),

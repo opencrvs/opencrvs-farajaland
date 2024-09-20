@@ -72,6 +72,40 @@ export interface ITokenPayload {
   scope: string[]
 }
 
+function generateLuhnNumber() {
+  // Generate the first 9 digits randomly
+  const digits: number[] = []
+  for (let i = 0; i < 9; i++) {
+    digits.push(Math.floor(Math.random() * 10))
+  }
+
+  // Function to calculate Luhn check digit
+  function calculateLuhnCheckDigit(digits: number[]) {
+    let sum = 0
+    for (let i = 0; i < digits.length; i++) {
+      let digit = digits[digits.length - 1 - i] // Start from the rightmost digit
+      if (i % 2 === 0) {
+        // Double every second digit from the right
+        digit *= 2
+        if (digit > 9) digit -= 9 // Subtract 9 if the result is greater than 9
+      }
+      sum += digit
+    }
+
+    // Calculate the check digit
+    return (10 - (sum % 10)) % 10
+  }
+
+  // Calculate the check digit for the first 9 digits
+  const checkDigit = calculateLuhnCheckDigit(digits)
+
+  // Append the check digit to the list of digits
+  digits.push(checkDigit)
+
+  // Convert the array of digits to a single number
+  return digits.join('')
+}
+
 export default function getPlugins() {
   const plugins: any[] = [inert, JWT, H2o2]
 
@@ -559,6 +593,17 @@ export async function createServer() {
         path: 'public',
         index: ['index.html', 'default.html']
       }
+    }
+  })
+
+  server.route({
+    method: 'GET',
+    path: '/api/v1/nui',
+    handler: generateLuhnNumber,
+    options: {
+      auth: false,
+      tags: ['api'],
+      description: 'Serves a unique id'
     }
   })
 
