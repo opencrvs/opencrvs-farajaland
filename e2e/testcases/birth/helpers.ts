@@ -70,6 +70,7 @@ function getLocationIdByName(locations: fhir.Location[], name: string) {
 const FETCH_RECORD_STATUS = gql`
   query fetchRecordStatus($draftId: ID!) {
     fetchRecordStatus(draftId: $draftId) {
+      __typename
       ... on RecordProcessing {
         processed
       }
