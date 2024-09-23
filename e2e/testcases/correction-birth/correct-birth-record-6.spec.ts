@@ -83,8 +83,7 @@ test.describe.serial(' Correct record - 6', () => {
     expect(res).toStrictEqual({
       trackingId: expect.any(String),
       recordId: expect.any(String),
-      isPotentiallyDuplicate: false,
-      __typename: 'CreatedIds'
+      isPotentiallyDuplicate: false
     })
 
     trackingId = res.trackingId
