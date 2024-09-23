@@ -26,6 +26,7 @@
     "test": "jest  --silent --noStackTrace --coverage",
     "test:compilation": "tsc --noEmit",
     "lint": "eslint -c .eslintrc.js",
+    "lint:shell": "shellcheck **/*.sh",
     "start": "cross-env NODE_ENV=development NODE_OPTIONS=--dns-result-order=ipv4first nodemon --exec ts-node -r tsconfig-paths/register src/index.ts",
     "start:prod": "ts-node --transpile-only -r tsconfig-paths/register src/index.ts",
     "data-generator": "ts-node -r tsconfig-paths/register -T src/data-generator/index.ts",
@@ -38,6 +39,7 @@
     "environment:init": "ts-node infrastructure/environments/setup-environment.ts"
   },
   "devDependencies": {
+    "shellcheck": "^0.8.0",
     "@graphql-codegen/add": "^3.1.1",
     "@graphql-codegen/cli": "^3.3.1",
     "@graphql-codegen/introspection": "^3.0.1",

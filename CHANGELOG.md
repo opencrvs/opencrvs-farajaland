@@ -15,7 +15,7 @@
 ### Improvements
 
 - Auth token, ip address, remote address, mobile number, email redacted/masked from server log
-
+- Adding shell lint for better work details
 ### Infrastructure breaking changes
 
 - **Title** Description
