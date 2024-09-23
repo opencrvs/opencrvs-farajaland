@@ -63,52 +63,52 @@ jobs:
           echo "PR Head Commit Hash: ${{ env.HEAD_COMMIT_HASH }}"
           echo "Core Commit Hash: ${{ env.CORE_COMMIT_HASH }}"
 
-      - name: Trigger E2E Workflow
-        id: dispatch_e2e
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.GH_TOKEN }}
-          script: |
-            function slugify(str) {
-              return str
-                .toLowerCase()
-                .replace(/[^\w\s-]/g, '')
-                .trim()
-                .replace(/\s+/g, '-')
-                .replace(/-+/g, '-')
-                .substr(0, 35);
-            }
-            const result = await github.rest.repos.createDispatchEvent({
-              owner: 'opencrvs',
-              repo: 'e2e',
-              event_type: 'run_e2e',
-              client_payload: {
-                actor: '${{ github.actor }}',
-                'core-image-tag': '${{ env.CORE_COMMIT_HASH }}',
-                'countryconfig-image-tag': '${{ env.HEAD_COMMIT_HASH }}',
-                stack: slugify('${{ env.BRANCH_NAME }}')
+          - name: Trigger E2E Workflow
+          id: dispatch_e2e
+          uses: actions/github-script@v7
+          with:
+            github-token: ${{ secrets.GH_TOKEN }}
+            script: |
+              function slugify(str) {
+                return str
+                  .toLowerCase()
+                  .replace(/[^\w\s-]/g, '')
+                  .trim()
+                  .replace(/\s+/g, '-')
+                  .replace(/-+/g, '-')
+                  .substr(0, 35);
               }
-            });
+              const result = await github.rest.repos.createDispatchEvent({
+                owner: 'opencrvs',
+                repo: 'e2e',
+                event_type: 'run_e2e',
+                client_payload: {
+                  actor: '${{ github.actor }}',
+                  'core-image-tag': '${{ env.CORE_COMMIT_HASH }}',
+                  'countryconfig-image-tag': '${{ env.HEAD_COMMIT_HASH }}',
+                  stack: slugify('${{ env.BRANCH_NAME }}')
+                }
+              });
 
-            console.log(result);
-            await new Promise(resolve => setTimeout(resolve, 10000));
+              console.log(result);
+              await new Promise(resolve => setTimeout(resolve, 10000));
 
-            const runs = await github.rest.actions.listWorkflowRunsForRepo({
-              owner: 'opencrvs',
-              repo: 'e2e',
-              event: 'repository_dispatch',
-              per_page: 1
-            });
+              const runs = await github.rest.actions.listWorkflowRunsForRepo({
+                owner: 'opencrvs',
+                repo: 'e2e',
+                event: 'repository_dispatch',
+                per_page: 1
+              });
 
-            if (runs.data.workflow_runs.length > 0) {
-              const runId = runs.data.workflow_runs[0].id;
-              console.log(`Captured runId: ${runId}`);
+              if (runs.data.workflow_runs.length > 0) {
+                const runId = runs.data.workflow_runs[0].id;
+                console.log(`Captured runId: ${runId}`);
 
-              // Set the runId as an output
-              core.setOutput('runId', runId);
-            } else {
-              throw new Error('No workflow run found.');
-            }
+                // Set the runId as an output
+                core.setOutput('runId', runId);
+              } else {
+                throw new Error('No workflow run found.');
+              }
 
       - name: Wait for Environment Deployment (Deploy Job)
         uses: actions/github-script@v7
@@ -136,6 +136,11 @@ jobs:
 
             // Check if deploy job has completed
             while (!deployJobCompleted) {
+              const workflowRun = await github.rest.actions.getWorkflowRun({
+                owner,
+                repo,
+                run_id: runId
+              });
               const jobs = await github.rest.actions.listJobsForWorkflowRun({
                 owner,
                 repo,
@@ -143,6 +148,12 @@ jobs:
               });
 
               const deployJob = jobs.data.jobs.find(job => job.name === 'deploy / seed-data / seed-data');
+              const cancelled = jobs.data.jobs.find(job => job.conclusion === 'cancelled');
+
+              if (cancelled) {
+                throw new Error('E2E workflow was cancelled');
+              }
+
               if (deployJob && deployJob.status === 'completed') {
                 deployJobCompleted = true;
 
@@ -151,6 +162,14 @@ jobs:
                 }
 
                 console.log('Deploy job completed successfully');
+              }
+
+              if(workflowRun.data.status === 'completed') {
+                deployJobCompleted = true;
+
+                if (workflowRun.data.conclusion !== 'success') {
+                  throw new Error('E2E workflow failed');
+                }
               }
 
               if (!deployJobCompleted) {
