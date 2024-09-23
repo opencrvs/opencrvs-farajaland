@@ -14,6 +14,7 @@ import {
 import { random } from 'lodash'
 import { generateRandomSuffix } from '../../helpers'
 import gql from 'graphql-tag'
+import { print } from 'graphql/language/printer'
 
 export type BirthDetails = {
   informant: {
@@ -98,7 +99,7 @@ export async function waitUntilRecordDetails(
         Authorization: `Bearer ${token}`
       },
       body: JSON.stringify({
-        query: FETCH_RECORD_STATUS,
+        query: print(FETCH_RECORD_STATUS),
         variables: {
           draftId: draftId
         }
