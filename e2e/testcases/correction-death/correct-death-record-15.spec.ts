@@ -52,7 +52,7 @@ test.describe.serial(' Correct record - 15', () => {
     })
     expect(res).toStrictEqual({
       trackingId: expect.any(String),
-      compositionId: expect.any(String),
+      recordId: expect.any(String),
       isPotentiallyDuplicate: false,
       __typename: 'CreatedIds'
     })
@@ -60,7 +60,7 @@ test.describe.serial(' Correct record - 15', () => {
     trackingId = res.trackingId
 
     token = await getToken('k.mweene', 'test')
-    declaration = (await fetchDeclaration(token, res.compositionId)).data
+    declaration = (await fetchDeclaration(token, res.recordId)).data
       .fetchDeathRegistration as DeathDeclaration
 
     deathLocation =

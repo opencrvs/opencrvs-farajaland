@@ -51,7 +51,7 @@ test.describe('10. Correct record - 10', () => {
     const res = await createDeathDeclaration(token)
     expect(res).toStrictEqual({
       trackingId: expect.any(String),
-      compositionId: expect.any(String),
+      recordId: expect.any(String),
       isPotentiallyDuplicate: false,
       __typename: 'CreatedIds'
     })
@@ -60,7 +60,7 @@ test.describe('10. Correct record - 10', () => {
 
     token = await getToken('f.katongo', 'test')
 
-    declaration = (await fetchDeclaration(token, res.compositionId)).data
+    declaration = (await fetchDeclaration(token, res.recordId)).data
       .fetchDeathRegistration as DeathDeclaration
   })
 

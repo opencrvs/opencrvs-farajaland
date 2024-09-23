@@ -574,7 +574,7 @@ test.describe('1. Birth event declaration', () => {
       })
       expect(res).toStrictEqual({
         trackingId: expect.any(String),
-        compositionId: expect.any(String),
+        recordId: expect.any(String),
         isPotentiallyDuplicate: false,
         __typename: 'CreatedIds'
       })
