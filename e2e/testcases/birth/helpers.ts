@@ -91,7 +91,7 @@ export async function waitUntilRecordDetails(
 
   // eslint-disable-next-line no-constant-condition
   while (true) {
-    const result = await await fetch(`${GATEWAY_HOST}/graphql`, {
+    const result = await fetch(`${GATEWAY_HOST}/graphql`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -105,12 +105,11 @@ export async function waitUntilRecordDetails(
       })
     }).then((res) => res.json())
 
-    if (result.data.fetchRecordStatus.__typename === 'RecordProcessed') {
+    if (result.fetchRecordStatus.__typename === 'RecordProcessed') {
       return {
-        recordId: result.data.fetchRecordStatus.recordId,
-        trackingId: result.data.fetchRecordStatus.trackingId,
-        isPotentiallyDuplicate:
-          result.data.fetchRecordStatus.hasPotentialDuplicates
+        recordId: result.fetchRecordStatus.recordId,
+        trackingId: result.fetchRecordStatus.trackingId,
+        isPotentiallyDuplicate: result.fetchRecordStatus.hasPotentialDuplicates
       }
     }
 
