@@ -13,6 +13,7 @@ import {
 } from './queries'
 import { random } from 'lodash'
 import { generateRandomSuffix } from '../../helpers'
+import gql from 'graphql-tag'
 
 export type BirthDetails = {
   informant: {
@@ -64,9 +65,67 @@ function getLocationIdByName(locations: fhir.Location[], name: string) {
   }
   return location.id
 }
+
+const FETCH_RECORD_STATUS = gql`
+  query fetchRecordStatus($draftId: ID!) {
+    fetchRecordStatus(draftId: $draftId) {
+      ... on RecordProcessing {
+        processed
+      }
+      ... on RecordProcessed {
+        processed
+        trackingId
+        hasPotentialDuplicates
+        recordId
+      }
+    }
+  }
+`
+
+export async function waitUntilRecordDetails(
+  token: string,
+  draftId: string,
+  maxTries = 10
+) {
+  let nthTry = 0
+
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    const result = await await fetch(`${GATEWAY_HOST}/graphql`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        query: FETCH_RECORD_STATUS,
+        variables: {
+          draftId: draftId
+        }
+      })
+    }).then((res) => res.json())
+
+    if (result.data.fetchRecordStatus.__typename === 'RecordProcessed') {
+      return {
+        recordId: result.data.fetchRecordStatus.recordId,
+        trackingId: result.data.fetchRecordStatus.trackingId,
+        isPotentiallyDuplicate:
+          result.data.fetchRecordStatus.hasPotentialDuplicates
+      }
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, 1000 + nthTry * 1000))
+    if (nthTry >= maxTries) {
+      throw new Error('Max tries exceeded')
+    }
+    nthTry++
+  }
+}
+
 export async function createDeclaration(token: string, details: BirthDetails) {
   const locations = await getAllLocations('ADMIN_STRUCTURE')
   const facilities = await getAllLocations('HEALTH_FACILITY')
+  const draftId = uuid.v4()
 
   const res = await fetch(`${GATEWAY_HOST}/graphql`, {
     method: 'POST',
@@ -94,7 +153,7 @@ export async function createDeclaration(token: string, details: BirthDetails) {
             informantType: details.informant.type,
             contactPhoneNumber: '0' + faker.random.numeric(9),
             contactEmail: faker.internet.email(),
-            draftId: uuid.v4()
+            draftId
           },
           child: {
             name: [
@@ -320,7 +379,7 @@ export async function createDeclaration(token: string, details: BirthDetails) {
       }
     })
   })
-  return res.json().then((r) => r.data.createBirthRegistration)
+  return res.json().then(() => waitUntilRecordDetails(token, draftId))
 }
 
 export const fetchDeclaration = async (
