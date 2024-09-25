@@ -235,7 +235,12 @@ export const birthForm: ISerializedForm = {
               conditionals: [
                 {
                   action: 'hide',
-                  expression: '!$form.fetchNUI?.data'
+                  expression:
+                    '!$form.fetchNUI?.data || !window.navigator.onLine'
+                },
+                {
+                  action: 'disable',
+                  expression: '$form.fetchNUI?.data'
                 }
               ],
               validator: [],
@@ -273,19 +278,57 @@ export const birthForm: ISerializedForm = {
                 {
                   action: 'disable',
                   expression: '$form.fetchNUI?.error'
+                },
+                {
+                  action: 'disable',
+                  expression: '!window.navigator.onLine'
                 }
               ],
               label: formMessageDescriptors.iDTypeNationalID,
               buttonLabel: {
                 defaultMessage: 'Generate NUI',
                 description: 'Label for form field: Generate NUI',
-                id: 'form.field.label.nui'
+                id: 'form.field.label.generateNUI'
               },
               icon: 'UserCircle',
               loadingLabel: {
-                defaultMessage: 'Generateing...',
+                defaultMessage: 'Generating...',
                 description: 'Label for form field: Generate NUI',
                 id: 'form.field.label.generatingNUI'
+              }
+            },
+            {
+              name: 'iDManual',
+              type: 'TEXT',
+              label: {
+                id: 'form.field.label.idManual',
+                defaultMessage: 'Enter national ID manually'
+              },
+              required: true,
+              custom: true,
+              initialValue: '',
+              maxLength: 10,
+              conditionals: [
+                {
+                  action: 'hide',
+                  expression: 'window.navigator.onLine'
+                }
+              ],
+              validator: [],
+              mapping: {
+                template: {
+                  fieldName: 'childNIDManual',
+                  operation: 'identityToFieldTransformer',
+                  parameters: ['id', 'NATIONAL_ID']
+                },
+                mutation: {
+                  operation: 'fieldToIdentityTransformer',
+                  parameters: ['id', 'NATIONAL_ID']
+                },
+                query: {
+                  operation: 'identityToFieldTransformer',
+                  parameters: ['id', 'NATIONAL_ID']
+                }
               }
             },
             getReasonForLateRegistration('birth'),
