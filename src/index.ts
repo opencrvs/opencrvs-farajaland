@@ -598,7 +598,7 @@ export async function createServer() {
 
   server.route({
     method: 'GET',
-    path: '/api/v1/nui',
+    path: '/nui-demo',
     handler: generateLuhnNumber,
     options: {
       auth: false,

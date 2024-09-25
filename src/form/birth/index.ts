@@ -203,7 +203,7 @@ export const birthForm: ISerializedForm = {
               label: { id: 'form.label.empty', defaultMessage: ' ' },
               validator: [],
               options: {
-                url: '/api/countryconfig/v1/nui',
+                url: '/api/countryconfig/nui-demo',
                 method: 'GET'
               }
             },
