@@ -1388,8 +1388,8 @@ test.describe.serial('8. Validate declaration review page', () => {
        */
       expect(page.url().includes('registration-home')).toBeTruthy()
 
-      await page.getByRole('button', { name: 'Ready to print' }).click()
       await expectOutboxToBeEmpty(page)
+      await page.getByRole('button', { name: 'Ready to print' }).click()
 
       /*
        * Expected result: The declaration should be in Ready to print
