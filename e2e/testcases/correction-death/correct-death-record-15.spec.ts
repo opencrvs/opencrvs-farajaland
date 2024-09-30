@@ -82,8 +82,14 @@ test.describe.serial(' Correct record - 15', () => {
       await page.locator('#ListItemAction-0-icon').click()
       await page.locator('#name_0').click()
 
-      await page.getByRole('button', { name: 'Print', exact: true }).click()
-
+      await page.getByRole('button', { name: 'Action' }).click()
+      await page
+        .locator('#action-dropdownMenu')
+        .getByRole('listitem')
+        .filter({
+          hasText: /Print certified copy/
+        })
+        .click()
       await page.getByLabel('Print in advance').check()
       await page.getByRole('button', { name: 'Continue' }).click()
       await page.getByRole('button', { name: 'Yes, print certificate' }).click()
@@ -109,9 +115,13 @@ test.describe.serial(' Correct record - 15', () => {
       /*
        * Expected result: should show correct record button
        */
-
+      await page.getByRole('button', { name: 'Action' }).click()
       await page
-        .getByRole('button', { name: 'Correct record', exact: true })
+        .locator('#action-dropdownMenu')
+        .getByRole('listitem')
+        .filter({
+          hasText: /Correct Record/
+        })
         .click()
     })
   })
