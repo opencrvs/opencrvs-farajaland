@@ -123,7 +123,14 @@ test.describe.serial('Correct record - 2', () => {
     await page.locator('#ListItemAction-0-icon').click()
     await page.locator('#name_0').click()
 
-    await page.getByRole('button', { name: 'Print', exact: true }).click()
+    await page.getByRole('button', { name: 'Action' }).click()
+    await page
+      .locator('#action-dropdownMenu')
+      .getByRole('listitem')
+      .filter({
+        hasText: /Print certified copy/
+      })
+      .click()
 
     await page.getByLabel('Print in advance').check()
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -918,8 +925,14 @@ test.describe.serial('Correct record - 2', () => {
     })
 
     test('2.8.2 Correction review', async () => {
-      await page.getByRole('button', { name: 'Review', exact: true }).click()
-
+      await page.getByRole('button', { name: 'Action' }).click()
+      await page
+        .locator('#action-dropdownMenu')
+        .getByRole('listitem')
+        .filter({
+          hasText: /Review correction request/
+        })
+        .click()
       /*
        * Expected result: should show
        * - Submitter

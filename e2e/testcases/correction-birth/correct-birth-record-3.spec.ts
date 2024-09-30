@@ -121,7 +121,14 @@ test.describe.serial(' Correct record - 3', () => {
       await page.locator('#ListItemAction-0-icon').click()
       await page.locator('#name_0').click()
 
-      await page.getByRole('button', { name: 'Print', exact: true }).click()
+      await page.getByRole('button', { name: 'Action' }).click()
+      await page
+        .locator('#action-dropdownMenu')
+        .getByRole('listitem')
+        .filter({
+          hasText: /Print certified copy/
+        })
+        .click()
 
       await page.getByLabel('Print in advance').check()
       await page.getByRole('button', { name: 'Continue' }).click()
@@ -151,15 +158,26 @@ test.describe.serial(' Correct record - 3', () => {
       await page.getByLabel('Assign record').click()
       await page.getByRole('button', { name: 'Assign', exact: true }).click()
 
+      await page.getByRole('button', { name: 'Action', exact: true }).click()
+
       /*
-       * Expected result: should show correct record button
+       * Expected result: should show correct record button in action menu
        */
       await expect(
-        page.getByRole('button', { name: 'Correct record', exact: true })
+        page
+          .locator('#action-dropdownMenu')
+          .getByRole('listitem')
+          .filter({
+            hasText: /Correct Record/
+          })
       ).toBeVisible()
 
       await page
-        .getByRole('button', { name: 'Correct record', exact: true })
+        .locator('#action-dropdownMenu')
+        .getByRole('listitem')
+        .filter({
+          hasText: /Correct Record/
+        })
         .click()
     })
   })
@@ -892,8 +910,14 @@ test.describe.serial(' Correct record - 3', () => {
     })
 
     test('3.8.2 Correction review', async () => {
-      await page.getByRole('button', { name: 'Review', exact: true }).click()
-
+      await page.getByRole('button', { name: 'Action' }).click()
+      await page
+        .locator('#action-dropdownMenu')
+        .getByRole('listitem')
+        .filter({
+          hasText: /Review correction request/
+        })
+        .click()
       /*
        * Expected result: should show
        * - Submitter
