@@ -99,16 +99,14 @@ test.describe('1. Correct record - 1', () => {
     test('1.1.1 Validate record audit page', async ({ page }) => {
       /*
        * Expected result: should
-       * - See in header child's name and correct record option
+       * - See in header child's name and action button
        * - Navigate to record audit page
        * - See status, event, trackingId, BRN, DOB, Place of birth, Informant contact
        */
       await expect(
         page.getByText(formatName(declaration.child.name[0]))
       ).toBeVisible()
-      await expect(
-        page.getByRole('button', { name: 'Correct record' })
-      ).toBeVisible()
+      await expect(page.getByRole('button', { name: 'Action' })).toBeVisible()
 
       expect(page.url().includes('record-audit')).toBeTruthy()
 
@@ -131,14 +129,44 @@ test.describe('1. Correct record - 1', () => {
         )}
     `)
       ).toBeVisible()
-      // await expect(page.getByText(`Place of birth${}`)).toBeVisible()
+      const childBirthLocationName = await getLocationNameFromFhirId(
+        declaration.eventLocation!.id
+      )
+      await expect(
+        page.getByText(`Place of birth${childBirthLocationName}`)
+      ).toBeVisible()
       await expect(
         page.getByText(declaration.registration.contactEmail)
+      ).toBeVisible()
+
+      /*
+       * Expected result: Clicking action button should
+       * open up action menu with options including:
+       * - Correct record
+       */
+      await page.getByRole('button', { name: 'Action' }).click()
+      await expect(
+        page.locator('#action-dropdownMenu').getByRole('list')
+      ).toBeVisible()
+      await expect(
+        page
+          .locator('#action-dropdownMenu')
+          .getByRole('listitem')
+          .filter({
+            hasText: /Correct Record/
+          })
       ).toBeVisible()
     })
 
     test('1.1.2 Validate correction requester page', async ({ page }) => {
-      await page.getByRole('button', { name: 'Correct record' }).click()
+      await page.getByRole('button', { name: 'Action' }).click()
+      await page
+        .locator('#action-dropdownMenu')
+        .getByRole('listitem')
+        .filter({
+          hasText: /Correct Record/
+        })
+        .click()
 
       /*
        * Expected result: should
@@ -162,7 +190,14 @@ test.describe('1. Correct record - 1', () => {
     test('1.1.3 Validate identity verification page for Mother', async ({
       page
     }) => {
-      await page.getByRole('button', { name: 'Correct record' }).click()
+      await page.getByRole('button', { name: 'Action' }).click()
+      await page
+        .locator('#action-dropdownMenu')
+        .getByRole('listitem')
+        .filter({
+          hasText: /Correct Record/
+        })
+        .click()
 
       await page.getByLabel('Mother').check()
       await page.getByRole('button', { name: 'Continue' }).click()
@@ -233,7 +268,14 @@ test.describe('1. Correct record - 1', () => {
       await page.locator('#ListItemAction-0-icon').click()
       await page.locator('#name_0').click()
 
-      await page.getByRole('button', { name: 'Correct record' }).click()
+      await page.getByRole('button', { name: 'Action' }).click()
+      await page
+        .locator('#action-dropdownMenu')
+        .getByRole('listitem')
+        .filter({
+          hasText: /Correct Record/
+        })
+        .click()
 
       await page.getByLabel('Mother').check()
       await page.getByRole('button', { name: 'Continue' }).click()
@@ -807,8 +849,14 @@ test.describe('1. Correct record - 1', () => {
       })
 
       test('1.2.6.2 Correction review', async () => {
-        await page.getByRole('button', { name: 'Review', exact: true }).click()
-
+        await page.getByRole('button', { name: 'Action' }).click()
+        await page
+          .locator('#action-dropdownMenu')
+          .getByRole('listitem')
+          .filter({
+            hasText: /Review correction request/
+          })
+          .click()
         /*
          * Expected result: should show
          * - Submitter
