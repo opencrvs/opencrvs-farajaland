@@ -60,7 +60,8 @@ import {
   informantNotMotherOrFather,
   detailsExistConditional,
   ageOfIndividualValidators,
-  ageOfParentsConditionals
+  ageOfParentsConditionals,
+  hideIfMotherAddressNotAvailable
 } from '../common/default-validation-conditionals'
 import {
   informantFirstNameConditionals,
@@ -69,7 +70,12 @@ import {
   exactDateOfBirthUnknownConditional,
   hideIfNidIntegrationEnabled
 } from '../common/default-validation-conditionals'
-import { documentsSection, registrationSection } from './required-sections'
+import {
+  documentsSection,
+  registrationSection,
+  previewSection,
+  reviewSection
+} from './required-sections'
 import { certificateHandlebars } from './certificate-handlebars'
 import { getSectionMapping } from '@countryconfig/utils/mapping/section/birth/mapping-utils'
 import { getCommonSectionMapping } from '@countryconfig/utils/mapping/field-mapping-utils'
@@ -138,7 +144,7 @@ export const birthForm: ISerializedForm = {
                 },
                 {
                   defaultMessage:
-                    'Once the declaration is processed you will receive you will receive an SMS to tell you when to visit the office to collect the certificate - Take your ID with you.',
+                    'Once the declaration is processed you will receive an SMS to tell you when to visit the office to collect the certificate - Take your ID with you.',
                   description: 'Form information for birth',
                   id: 'form.section.information.birth.bullet3'
                 },
@@ -269,13 +275,6 @@ export const birthForm: ISerializedForm = {
               hideIfNidIntegrationEnabled.concat(hideIfInformantMotherOrFather),
               true
             ),
-            // preceding field of address fields
-            divider('informant-nid-seperator', [
-              {
-                action: 'hide',
-                expression: informantNotMotherOrFather
-              }
-            ]),
             // ADDRESS FIELDS WILL RENDER HERE
             divider('informant-address-seperator', [
               {
@@ -348,8 +347,6 @@ export const birthForm: ISerializedForm = {
               hideIfNidIntegrationEnabled.concat(detailsExist),
               true
             ),
-            // preceding field of address fields
-            divider('mother-nid-seperator', detailsExist),
             // ADDRESS FIELDS WILL RENDER HERE
             divider('mother-address-seperator', detailsExist),
             getMaritalStatus(certificateHandlebars.motherMaritalStatus, [
@@ -437,10 +434,11 @@ export const birthForm: ISerializedForm = {
               hideIfNidIntegrationEnabled.concat(detailsExist),
               true
             ),
-            // preceding field of address fields
-            divider('father-nid-seperator', detailsExist),
             // ADDRESS FIELDS WILL RENDER HERE
-            divider('father-address-seperator', detailsExist),
+            divider('father-address-seperator', [
+              ...detailsExist,
+              ...hideIfMotherAddressNotAvailable
+            ]),
             getMaritalStatus(certificateHandlebars.fatherMaritalStatus, [
               {
                 action: 'hide',
@@ -460,6 +458,8 @@ export const birthForm: ISerializedForm = {
       ],
       mapping: getSectionMapping('father')
     },
-    documentsSection // REQUIRED SECTION FOR DOCUMENT ATTACHMENTS
+    documentsSection, // REQUIRED SECTION FOR DOCUMENT ATTACHMENTS
+    previewSection, // REQUIRED SECTION TO PREVIEW DECLARATION BEFORE SUBMIT
+    reviewSection // REQUIRED SECTION TO REVIEW SUBMITTED DECLARATION
   ]
 }

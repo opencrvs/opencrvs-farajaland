@@ -61,12 +61,8 @@ export const weightAtBirth: SerializedFormField = {
       parameters: [0, 6]
     }
   ],
-  postfix: 'Kg',
-  mapping: getFieldMapping(
-    'weightAtBirth',
-    certificateHandlebars.weightAtBirth
-  ),
-  inputFieldWidth: '78px'
+  postfix: 'kilograms (kg)',
+  mapping: getFieldMapping('weightAtBirth', certificateHandlebars.weightAtBirth)
 }
 
 export const multipleBirth: SerializedFormField = {
@@ -83,20 +79,9 @@ export const multipleBirth: SerializedFormField = {
       expression: '!values.detailsExist'
     }
   ],
+  maxLength: 2,
   required: false,
   initialValue: '',
-  validator: [
-    {
-      operation: 'greaterThanZero'
-    },
-    {
-      operation: 'maxLength',
-      parameters: [2]
-    }
-  ],
-  mapping: getFieldMapping(
-    'multipleBirth',
-    certificateHandlebars.multipleBirth
-  ),
-  inputFieldWidth: '64px'
+  validator: [],
+  mapping: getFieldMapping('multipleBirth', certificateHandlebars.multipleBirth)
 }
