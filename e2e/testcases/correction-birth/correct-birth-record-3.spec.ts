@@ -94,16 +94,15 @@ test.describe.serial(' Correct record - 3', () => {
     const res = await createDeclaration(token, declarationInput)
     expect(res).toStrictEqual({
       trackingId: expect.any(String),
-      compositionId: expect.any(String),
-      isPotentiallyDuplicate: false,
-      __typename: 'CreatedIds'
+      recordId: expect.any(String),
+      isPotentiallyDuplicate: false
     })
 
     trackingId = res.trackingId
 
     token = await getToken('f.katongo', 'test')
 
-    declaration = (await fetchDeclaration(token, res.compositionId)).data
+    declaration = (await fetchDeclaration(token, res.recordId)).data
       .fetchBirthRegistration as BirthDeclaration
   })
 
@@ -919,7 +918,7 @@ test.describe.serial(' Correct record - 3', () => {
         page.getByText('Comments' + declaration.registration.registrationNumber)
       ).toBeVisible()
 
-      /* 
+      /*
       @ToDo: assert this after https://github.com/opencrvs/opencrvs-core/issues/7505 is solved
       await expect(
         page.getByText(

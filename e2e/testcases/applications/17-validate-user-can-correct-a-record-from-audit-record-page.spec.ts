@@ -44,9 +44,8 @@ test.describe
     })
     expect(res).toStrictEqual({
       trackingId: expect.any(String),
-      compositionId: expect.any(String),
-      isPotentiallyDuplicate: false,
-      __typename: 'CreatedIds'
+      recordId: expect.any(String),
+      isPotentiallyDuplicate: false
     })
   })
 

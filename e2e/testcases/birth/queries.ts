@@ -3,12 +3,7 @@ import { print } from 'graphql/language/printer'
 
 export const CREATE_BIRTH_REGISTRATION = print(gql`
   mutation createBirthRegistration($details: BirthRegistrationInput!) {
-    createBirthRegistration(details: $details) {
-      trackingId
-      compositionId
-      isPotentiallyDuplicate
-      __typename
-    }
+    createBirthRegistration(details: $details)
   }
 `)
 

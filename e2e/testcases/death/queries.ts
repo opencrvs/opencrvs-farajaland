@@ -3,12 +3,7 @@ import { print } from 'graphql/language/printer'
 
 export const CREATE_DEATH_REGISTRATION = print(gql`
   mutation createDeathRegistration($details: DeathRegistrationInput!) {
-    createDeathRegistration(details: $details) {
-      trackingId
-      compositionId
-      isPotentiallyDuplicate
-      __typename
-    }
+    createDeathRegistration(details: $details)
   }
 `)
 
