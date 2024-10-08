@@ -144,7 +144,8 @@
       "search.marriage",
       "record.read",
       "record.read-audit",
-      "record.read-comments"
+      "record.read-comments",
+      "profile.electronic-signature"
     ]
   },
   {

@@ -279,7 +279,6 @@ config.printTemplate,Print action in certificate config action menu,Print,Imprim
 config.uploadTemplate,Upload action in certificate config action menu,Upload,Télécharger
 config.userRoles.language,Language name,"{language, select, en {English} fr {French} other {{language}}}","{language, select, en {Anglais} fr {Français} other {{language}}}"
 config.userRoles.role,ListViewSimplified header for role,ROLE,RÔLE
-config.userRoles.roleUpdateInstruction,Instruction for adding/updating role in role management modal,Add the roles to be assigned the system role of {systemRole},Ajoutez les rôles auxquels attribuer le rôle système de {systemRole}
 config.userRoles.subtitle,Subtile for informant sms notification,Map user roles to each system role so that specific permissions and privileges are correctly assigned. To learn more about the different system roles see ... {link},"Associez les rôles d'utilisateur à chaque rôle système afin que les autorisations et les privilèges spécifiques soient correctement attribués. Pour en savoir plus sur les différents rôles système, voir ... {link}"
 config.userRoles.systemRoleSuccessMsg,Label for System role updated success message,System role updated successfully,Rôle système mis à jour avec succès
 config.userRoles.systemRoles,ListViewSimplified header for system roles,SYSTEM ROLES,RÔLES SYSTÈME
