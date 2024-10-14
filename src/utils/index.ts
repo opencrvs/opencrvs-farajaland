@@ -11,11 +11,9 @@
 
 import fetch from 'node-fetch'
 import { APPLICATION_CONFIG_URL, FHIR_URL } from '@countryconfig/constants'
-import { callingCountries } from 'country-data'
 import csv2json from 'csv2json'
 import { createReadStream } from 'fs'
 import fs from 'fs'
-import { PhoneNumberFormat, PhoneNumberUtil } from 'google-libphonenumber'
 import { URL } from 'url'
 import { build } from 'esbuild'
 import { memoize } from 'lodash'
@@ -26,6 +24,8 @@ export const OPENCRVS_SPECIFICATION_URL = 'http://opencrvs.org/specs/'
 import { join } from 'path'
 import { promisify } from 'util'
 import { stringify, Options } from 'csv-stringify'
+import { PhoneNumberFormat, PhoneNumberUtil } from 'google-libphonenumber'
+import { callingCountries } from 'country-data'
 
 export interface ILocation {
   id?: string
@@ -64,9 +64,15 @@ export interface IApplicationConfigResponse {
 }
 
 export function getCompositionId(resBody: fhir.Bundle) {
-  return resBody.entry
+  const id = resBody.entry
     ?.map((e) => e.resource)
     .find((res) => res?.resourceType === 'Composition')?.id
+
+  if (!id) {
+    throw new Error('Could not find composition id in FHIR Bundle')
+  }
+
+  return id
 }
 
 export function getTaskResource(

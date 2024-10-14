@@ -530,9 +530,8 @@ test.describe('1. Death event declaration', () => {
       const res = await createDeathDeclaration(token)
       expect(res).toStrictEqual({
         trackingId: expect.any(String),
-        compositionId: expect.any(String),
-        isPotentiallyDuplicate: false,
-        __typename: 'CreatedIds'
+        recordId: expect.any(String),
+        isPotentiallyDuplicate: false
       })
     })
   })
