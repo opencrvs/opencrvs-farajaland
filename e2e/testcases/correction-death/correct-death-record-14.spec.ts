@@ -713,13 +713,13 @@ test.describe.serial(' Correct record - 14', () => {
     await page.getByRole('button', { name: 'Make correction' }).click()
     await page.getByRole('button', { name: 'Confirm' }).click()
 
+    await expectOutboxToBeEmpty(page)
     await page.getByRole('button', { name: 'Ready to print' }).click()
     /*
      * Expected result: should
      * - be navigated to ready to print tab
      * - include the declaration in this tab
      */
-    await expectOutboxToBeEmpty(page)
 
     await expect(
       page.getByText(formatName(updatedDeceasedDetails))

@@ -920,10 +920,11 @@ test.describe('10. Correct record - 10', () => {
          * - include the declaration in this tab
          */
         expect(page.url().includes('registration-home/approvals')).toBeTruthy()
+        await page.getByRole('button', { name: 'Outbox' }).click()
         await expectOutboxToBeEmpty(page)
-
+        await page.getByRole('button', { name: 'Sent for approval' }).click()
         await expect(
-          page.getByText(formatName(declaration.deceased.name[0]))
+          page.getByText(formatName(declaration.deceased.name[0])).first()
         ).toBeVisible()
       })
     })
@@ -1078,7 +1079,9 @@ test.describe('10. Correct record - 10', () => {
          * - include the updated declaration in this tab
          */
         expect(page.url().includes('registration-home/print')).toBeTruthy()
+        await page.getByRole('button', { name: 'Outbox' }).click()
         await expectOutboxToBeEmpty(page)
+        await page.getByRole('button', { name: 'Ready to print' }).click()
         await expect(
           page.getByText(formatName(updatedDeceasedDetails))
         ).toBeVisible()

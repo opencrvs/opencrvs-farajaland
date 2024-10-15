@@ -104,9 +104,13 @@ test.describe.serial(' Correct record - 15', () => {
        * - include the declaration in this tab
        */
       expect(page.url().includes('registration-home/readyToIssue')).toBeTruthy()
+      await page.getByRole('button', { name: 'Outbox' }).click()
       await expectOutboxToBeEmpty(page)
-
-      await page.getByText(formatName(declaration.deceased.name[0])).click()
+      await page.getByRole('button', { name: 'Ready to issue' }).click()
+      await page
+        .getByText(formatName(declaration.deceased.name[0]))
+        .first()
+        .click()
     })
     test('15.1.3 Record audit', async () => {
       await page.getByLabel('Assign record').click()
@@ -516,6 +520,7 @@ test.describe.serial(' Correct record - 15', () => {
     await page.getByRole('button', { name: 'Make correction' }).click()
     await page.getByRole('button', { name: 'Confirm' }).click()
 
+    await expectOutboxToBeEmpty(page)
     await page.getByRole('button', { name: 'Ready to print' }).click()
 
     /*
@@ -523,14 +528,16 @@ test.describe.serial(' Correct record - 15', () => {
      * - be navigated to ready to print tab
      * - include the declaration in this tab
      */
-    await expectOutboxToBeEmpty(page)
 
     await expect(
-      page.getByText(formatName(declaration.deceased.name[0]))
+      page.getByText(formatName(declaration.deceased.name[0])).first()
     ).toBeVisible()
   })
   test('15.8 Validate history in record audit', async () => {
-    await page.getByText(formatName(declaration.deceased.name[0])).click()
+    await page
+      .getByText(formatName(declaration.deceased.name[0]))
+      .first()
+      .click()
 
     await page.getByLabel('Assign record').click()
     if (

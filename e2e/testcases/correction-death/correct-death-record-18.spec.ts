@@ -104,13 +104,17 @@ test.describe.serial(' Correct record - 18', () => {
        * - include the declaration in this tab
        */
       expect(page.url().includes('registration-home/readyToIssue')).toBeTruthy()
+      await page.getByRole('button', { name: 'Outbox' }).click()
       await expectOutboxToBeEmpty(page)
-
+      await page.getByRole('button', { name: 'Ready to issue' }).click()
       await expect(
-        page.getByText(formatName(declaration.deceased.name[0]))
+        page.getByText(formatName(declaration.deceased.name[0])).first()
       ).toBeVisible()
 
-      await page.getByText(formatName(declaration.deceased.name[0])).click()
+      await page
+        .getByText(formatName(declaration.deceased.name[0]))
+        .first()
+        .click()
     })
     test('18.1.3 Record audit', async () => {
       await page.getByLabel('Assign record').click()
@@ -752,6 +756,7 @@ test.describe.serial(' Correct record - 18', () => {
     await page.getByRole('button', { name: 'Make correction' }).click()
     await page.getByRole('button', { name: 'Confirm' }).click()
 
+    await expectOutboxToBeEmpty(page)
     await page.getByRole('button', { name: 'Ready to print' }).click()
 
     /*
@@ -759,7 +764,6 @@ test.describe.serial(' Correct record - 18', () => {
      * - be navigated to ready to print tab
      * - include the declaration in this tab
      */
-    await expectOutboxToBeEmpty(page)
 
     await expect(
       page.getByText(formatName(updatedDeceasedDetails))

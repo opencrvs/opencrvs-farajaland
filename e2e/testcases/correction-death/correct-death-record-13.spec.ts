@@ -679,11 +679,14 @@ test.describe.serial(' Correct record - 13', () => {
     await page.getByRole('button', { name: 'Ready to print' }).click()
 
     await expect(
-      page.getByText(formatName(declaration.deceased.name[0]))
+      page.getByText(formatName(declaration.deceased.name[0])).first()
     ).toBeVisible()
   })
   test('13.8 Validate history in record audit', async () => {
-    await page.getByText(formatName(declaration.deceased.name[0])).click()
+    await page
+      .getByText(formatName(declaration.deceased.name[0]))
+      .first()
+      .click()
 
     await page.getByLabel('Assign record').click()
     if (

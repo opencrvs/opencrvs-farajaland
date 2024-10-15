@@ -547,6 +547,7 @@ test.describe.serial(' Correct record - 7', () => {
     await page.getByRole('button', { name: 'Make correction' }).click()
     await page.getByRole('button', { name: 'Confirm' }).click()
 
+    await expectOutboxToBeEmpty(page)
     await page.getByRole('button', { name: 'Ready to print' }).click()
 
     /*
@@ -554,14 +555,13 @@ test.describe.serial(' Correct record - 7', () => {
      * - be navigated to ready to print tab
      * - include the declaration in this tab
      */
-    await expectOutboxToBeEmpty(page)
 
     await expect(
-      page.getByText(formatName(declaration.child.name[0]))
+      page.getByText(formatName(declaration.child.name[0])).first()
     ).toBeVisible()
   })
   test('7.8 Validate history in record audit', async () => {
-    await page.getByText(formatName(declaration.child.name[0])).click()
+    await page.getByText(formatName(declaration.child.name[0])).first().click()
 
     await page.getByLabel('Assign record').click()
     if (

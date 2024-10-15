@@ -134,10 +134,13 @@ test.describe.serial(' Correct record - 6', () => {
       await expectOutboxToBeEmpty(page)
 
       await expect(
-        page.getByText(formatName(declaration.child.name[0]))
+        page.getByText(formatName(declaration.child.name[0])).first()
       ).toBeVisible()
 
-      await page.getByText(formatName(declaration.child.name[0])).click()
+      await page
+        .getByText(formatName(declaration.child.name[0]))
+        .first()
+        .click()
     })
     test('6.1.3 Record audit', async () => {
       await page.getByLabel('Assign record').click()
@@ -703,6 +706,7 @@ test.describe.serial(' Correct record - 6', () => {
     await page.getByRole('button', { name: 'Make correction' }).click()
     await page.getByRole('button', { name: 'Confirm' }).click()
 
+    await expectOutboxToBeEmpty(page)
     await page.getByRole('button', { name: 'Ready to print' }).click()
 
     /*
@@ -710,7 +714,6 @@ test.describe.serial(' Correct record - 6', () => {
      * - be navigated to ready to print tab
      * - include the declaration in this tab
      */
-    await expectOutboxToBeEmpty(page)
 
     await expect(
       page.getByText(formatName(declaration.child.name[0]))

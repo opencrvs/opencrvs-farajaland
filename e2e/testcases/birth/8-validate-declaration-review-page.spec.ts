@@ -867,8 +867,8 @@ test.describe.serial('8. Validate declaration review page', () => {
        */
       expect(page.url().includes('registration-home')).toBeTruthy()
 
-      await page.getByRole('button', { name: 'Sent for review' }).click()
       await expectOutboxToBeEmpty(page)
+      await page.getByRole('button', { name: 'Sent for review' }).click()
       /*
        * Expected result: The declaration should be in sent for review
        */
@@ -1128,8 +1128,8 @@ test.describe.serial('8. Validate declaration review page', () => {
        */
       expect(page.url().includes('registration-home')).toBeTruthy()
 
-      await page.getByRole('button', { name: 'Sent for approval' }).click()
       await expectOutboxToBeEmpty(page)
+      await page.getByRole('button', { name: 'Sent for approval' }).click()
 
       /*
        * Expected result: The declaration should be in sent for approval
@@ -1414,8 +1414,8 @@ test.describe.serial('8. Validate declaration review page', () => {
        */
       expect(page.url().includes('registration-home')).toBeTruthy()
 
-      await page.getByRole('button', { name: 'Ready to print' }).click()
       await expectOutboxToBeEmpty(page)
+      await page.getByRole('button', { name: 'Ready to print' }).click()
 
       /*
        * Expected result: The declaration should be in Ready to print

@@ -139,8 +139,9 @@ test.describe.serial(' Correct record - 12', () => {
        * - include the declaration in this tab
        */
       expect(page.url().includes('registration-home/readyToIssue')).toBeTruthy()
+      await page.getByRole('button', { name: 'Outbox' }).click()
       await expectOutboxToBeEmpty(page)
-
+      await page.getByRole('button', { name: 'Ready to issue' }).click()
       await expect(
         page.getByText(formatName(declaration.deceased.name[0]))
       ).toBeVisible()
@@ -854,10 +855,11 @@ test.describe.serial(' Correct record - 12', () => {
      * - include the declaration in this tab
      */
     expect(page.url().includes('registration-home/approvals')).toBeTruthy()
+    await page.getByRole('button', { name: 'Outbox' }).click()
     await expectOutboxToBeEmpty(page)
-
+    await page.getByRole('button', { name: 'Sent for approval' }).click()
     await expect(
-      page.getByText(formatName(declaration.deceased.name[0]))
+      page.getByText(formatName(declaration.deceased.name[0])).first()
     ).toBeVisible()
   })
 
@@ -1027,15 +1029,19 @@ test.describe.serial(' Correct record - 12', () => {
        * - include the updated declaration in this tab
        */
       expect(page.url().includes('registration-home/print')).toBeTruthy()
+      await page.getByRole('button', { name: 'Outbox' }).click()
       await expectOutboxToBeEmpty(page)
-
+      await page.getByRole('button', { name: 'Ready to print' }).click()
       await expect(
-        page.getByText(formatName(declaration.deceased.name[0]))
+        page.getByText(formatName(declaration.deceased.name[0])).first()
       ).toBeVisible()
     })
 
     test('12.8.4 Validate history in record audit', async () => {
-      await page.getByText(formatName(declaration.deceased.name[0])).click()
+      await page
+        .getByText(formatName(declaration.deceased.name[0]))
+        .first()
+        .click()
 
       await page.getByLabel('Assign record').click()
       if (

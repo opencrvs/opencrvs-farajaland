@@ -145,15 +145,19 @@ test.describe.serial(' Correct record - 3', () => {
        * - include the declaration in this tab
        */
       expect(page.url().includes('registration-home/readyToIssue')).toBeTruthy()
+      await page.getByRole('button', { name: 'Outbox' }).click()
       await expectOutboxToBeEmpty(page)
-
+      await page.getByRole('button', { name: 'Ready to issue' }).click()
       await expect(
-        page.getByText(formatName(declaration.child.name[0]))
+        page.getByText(formatName(declaration.child.name[0])).first()
       ).toBeVisible()
     })
 
     test('3.1.3 Record audit', async () => {
-      await page.getByText(formatName(declaration.child.name[0])).click()
+      await page
+        .getByText(formatName(declaration.child.name[0]))
+        .first()
+        .click()
 
       await page.getByLabel('Assign record').click()
       await page.getByRole('button', { name: 'Assign', exact: true }).click()
@@ -882,10 +886,11 @@ test.describe.serial(' Correct record - 3', () => {
      * - include the declaration in this tab
      */
     expect(page.url().includes('registration-home/approvals')).toBeTruthy()
+    await page.getByRole('button', { name: 'Outbox' }).click()
     await expectOutboxToBeEmpty(page)
-
+    await page.getByRole('button', { name: 'Sent for approval' }).click()
     await expect(
-      page.getByText(formatName(declaration.child.name[0]))
+      page.getByText(formatName(declaration.child.name[0])).first()
     ).toBeVisible()
   })
 
@@ -1055,15 +1060,20 @@ test.describe.serial(' Correct record - 3', () => {
        * - include the updated declaration in this tab
        */
       expect(page.url().includes('registration-home/print')).toBeTruthy()
+      await page.getByRole('button', { name: 'Outbox' }).click()
       await expectOutboxToBeEmpty(page)
+      await page.getByRole('button', { name: 'Ready to print' }).click()
 
       await expect(
-        page.getByText(formatName(declaration.child.name[0]))
+        page.getByText(formatName(declaration.child.name[0])).first()
       ).toBeVisible()
     })
 
     test.skip('3.8.4 Validate history in record audit', async () => {
-      await page.getByText(formatName(declaration.child.name[0])).click()
+      await page
+        .getByText(formatName(declaration.child.name[0]))
+        .first()
+        .click()
 
       await page.getByLabel('Assign record').click()
       if (
