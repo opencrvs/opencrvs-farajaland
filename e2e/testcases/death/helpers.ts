@@ -306,8 +306,8 @@ const formatAddressLine = (address: typeof declaration.deceased.address) => [
   address.number,
   address.street,
   address.residentialArea,
-  '',
-  '',
+  'line 3',
+  'line 4',
   'URBAN',
   ...new Array(9).fill('')
 ]
