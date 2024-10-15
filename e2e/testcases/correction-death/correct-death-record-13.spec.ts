@@ -103,7 +103,7 @@ test.describe.serial(' Correct record - 13', () => {
     await page.locator('#ListItemAction-0-icon').click()
     await page.locator('#name_0').click()
 
-    await page.getByRole('button', { name: 'Action' }).click()
+    await page.getByRole('button', { name: 'Action' }).first().click()
     await page
       .locator('#action-dropdownMenu')
       .getByRole('listitem')
@@ -669,14 +669,14 @@ test.describe.serial(' Correct record - 13', () => {
 
     await page.getByRole('button', { name: 'Confirm' }).click()
 
-    await page.getByRole('button', { name: 'Ready to print' }).click()
-
     /*
      * Expected result: should
      * - be navigated to ready to print tab
      * - include the declaration in this tab
      */
     await expectOutboxToBeEmpty(page)
+
+    await page.getByRole('button', { name: 'Ready to print' }).click()
 
     await expect(
       page.getByText(formatName(declaration.deceased.name[0]))

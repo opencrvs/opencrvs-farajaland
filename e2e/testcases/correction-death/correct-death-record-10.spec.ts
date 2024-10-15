@@ -89,7 +89,9 @@ test.describe('10. Correct record - 10', () => {
       await expect(
         page.getByText(formatName(declaration.deceased.name[0]))
       ).toBeVisible()
-      await expect(page.getByRole('button', { name: 'Action' })).toBeVisible()
+      await expect(
+        page.getByRole('button', { name: 'Action' }).first()
+      ).toBeVisible()
 
       expect(page.url().includes('record-audit')).toBeTruthy()
 
@@ -123,7 +125,7 @@ test.describe('10. Correct record - 10', () => {
     })
 
     test('10.1.2 Validate correction requester page', async ({ page }) => {
-      await page.getByRole('button', { name: 'Action' }).click()
+      await page.getByRole('button', { name: 'Action' }).first().click()
       await page
         .locator('#action-dropdownMenu')
         .getByRole('listitem')
@@ -144,7 +146,7 @@ test.describe('10. Correct record - 10', () => {
     test('10.1.3 Validate identity verification page for Informant (SPOUSE)', async ({
       page
     }) => {
-      await page.getByRole('button', { name: 'Action' }).click()
+      await page.getByRole('button', { name: 'Action' }).first().click()
       await page
         .locator('#action-dropdownMenu')
         .getByRole('listitem')
@@ -220,7 +222,7 @@ test.describe('10. Correct record - 10', () => {
       await page.locator('#ListItemAction-0-icon').click()
       await page.locator('#name_0').click()
 
-      await page.getByRole('button', { name: 'Action' }).click()
+      await page.getByRole('button', { name: 'Action' }).first().click()
       await page
         .locator('#action-dropdownMenu')
         .getByRole('listitem')
@@ -949,7 +951,7 @@ test.describe('10. Correct record - 10', () => {
       })
 
       test('10.2.6.2 Correction review', async () => {
-        await page.getByRole('button', { name: 'Action' }).click()
+        await page.getByRole('button', { name: 'Action' }).first().click()
         await page
           .locator('#action-dropdownMenu')
           .getByRole('listitem')

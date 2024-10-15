@@ -121,7 +121,7 @@ test.describe.serial(' Correct record - 3', () => {
       await page.locator('#ListItemAction-0-icon').click()
       await page.locator('#name_0').click()
 
-      await page.getByRole('button', { name: 'Action' }).click()
+      await page.getByRole('button', { name: 'Action' }).first().click()
       await page
         .locator('#action-dropdownMenu')
         .getByRole('listitem')
@@ -158,7 +158,10 @@ test.describe.serial(' Correct record - 3', () => {
       await page.getByLabel('Assign record').click()
       await page.getByRole('button', { name: 'Assign', exact: true }).click()
 
-      await page.getByRole('button', { name: 'Action', exact: true }).click()
+      await page
+        .getByRole('button', { name: 'Action', exact: true })
+        .first()
+        .click()
 
       /*
        * Expected result: should show correct record button in action menu
@@ -910,7 +913,7 @@ test.describe.serial(' Correct record - 3', () => {
     })
 
     test('3.8.2 Correction review', async () => {
-      await page.getByRole('button', { name: 'Action' }).click()
+      await page.getByRole('button', { name: 'Action' }).first().click()
       await page
         .locator('#action-dropdownMenu')
         .getByRole('listitem')

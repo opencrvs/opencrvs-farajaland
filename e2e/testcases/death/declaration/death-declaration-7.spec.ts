@@ -540,7 +540,7 @@ test.describe.serial('7. Death declaration case - 7', () => {
         })
         .click()
 
-      await page.getByRole('button', { name: 'Action' }).click()
+      await page.getByRole('button', { name: 'Action' }).first().click()
       await page
         .locator('#action-dropdownMenu')
         .getByRole('listitem')

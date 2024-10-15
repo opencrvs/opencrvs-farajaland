@@ -123,7 +123,7 @@ test.describe.serial(' Correct record - 4', () => {
     await page.locator('#ListItemAction-0-icon').click()
     await page.locator('#name_0').click()
 
-    await page.getByRole('button', { name: 'Action' }).click()
+    await page.getByRole('button', { name: 'Action' }).first().click()
     await page
       .locator('#action-dropdownMenu')
       .getByRole('listitem')

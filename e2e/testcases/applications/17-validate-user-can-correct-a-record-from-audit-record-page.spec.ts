@@ -67,7 +67,7 @@ test.describe
      * - Correct record option should be disabled
      * - Print option should be disabled
      */
-    await page.getByRole('button', { name: 'Action' }).click()
+    await page.getByRole('button', { name: 'Action' }).first().click()
 
     await expect(
       page
@@ -94,7 +94,7 @@ test.describe
     await page.getByLabel('Assign record').click()
     await page.getByRole('button', { name: 'Assign', exact: true }).click()
 
-    await page.getByRole('button', { name: 'Action' }).click()
+    await page.getByRole('button', { name: 'Action' }).first().click()
 
     /*
      * Expected result: should
