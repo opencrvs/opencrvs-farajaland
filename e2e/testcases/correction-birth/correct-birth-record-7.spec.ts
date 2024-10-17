@@ -83,16 +83,15 @@ test.describe.serial(' Correct record - 7', () => {
     const res = await createDeclaration(token, declarationInput)
     expect(res).toStrictEqual({
       trackingId: expect.any(String),
-      compositionId: expect.any(String),
-      isPotentiallyDuplicate: false,
-      __typename: 'CreatedIds'
+      recordId: expect.any(String),
+      isPotentiallyDuplicate: false
     })
 
     trackingId = res.trackingId
 
     token = await getToken('j.musonda', 'test')
 
-    declaration = (await fetchDeclaration(token, res.compositionId)).data
+    declaration = (await fetchDeclaration(token, res.recordId)).data
       .fetchBirthRegistration as BirthDeclaration
   })
 

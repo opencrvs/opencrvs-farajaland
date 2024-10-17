@@ -15,6 +15,7 @@ import {
   GET_DEATH_REGISTRATION_FOR_REVIEW
 } from './queries'
 import { random } from 'lodash'
+import { waitUntilRecordDetails } from '../birth/helpers'
 
 export type DeathDeclarationInput = {
   deceased?: {
@@ -108,6 +109,7 @@ export async function createDeathDeclaration(
 ) {
   const locations = await getAllLocations('ADMIN_STRUCTURE')
   const facilities = await getAllLocations('HEALTH_FACILITY')
+  const draftId = uuid.v4()
 
   const res = await fetch(`${GATEWAY_HOST}/graphql`, {
     method: 'POST',
@@ -134,7 +136,7 @@ export async function createDeathDeclaration(
               ).toString('base64'),
             informantType: declaration.informantType,
             contactEmail: declaration.informantEmail,
-            draftId: uuid.v4()
+            draftId
           },
           causeOfDeath: 'NATURAL',
           deceased: {
@@ -268,7 +270,7 @@ export async function createDeathDeclaration(
       }
     })
   })
-  return res.json().then((r) => r.data.createDeathRegistration)
+  return res.json().then(() => waitUntilRecordDetails(token, draftId))
 }
 
 export const fetchDeclaration = async (
