@@ -187,7 +187,8 @@
       "organisation.read-locations",
       "performance.read",
       "performance.read-dashboards",
-      "performance.export-vital-statistics"
+      "performance.export-vital-statistics",
+      "config.update-all"
     ]
   },
   {
