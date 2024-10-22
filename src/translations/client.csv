@@ -965,6 +965,8 @@ form.field.label.fileUploadError,,{type} supported image only,{type} format d'im
 form.field.label.firstName,,First name(s),Prénom(s)
 form.field.label.firstNameEN,,First name(s),Prénom(s)
 form.field.label.firstNames,,First name(s),Prénom(s)
+form.field.label.generateNUI,,Generate NUI,Générer NUI
+form.field.label.generatingNUI,,Generating...,Génératrice...
 form.field.label.healthInstitution,,Health Institution,Institution de santé
 form.field.label.hospital,,Hospital,Hôpital
 form.field.label.iD,,ID Number,Numéro d'identification
@@ -979,6 +981,7 @@ form.field.label.iDTypeOther,,Other,Autre
 form.field.label.iDTypeOtherLabel,,Other type of ID,Autre type de carte d'identité
 form.field.label.iDTypePassport,,Passport,Passeport
 form.field.label.iDTypeRefugeeNumber,,Refugee Number,Numéro de réfugié
+form.field.label.idManual,,Enter NUI manually,Saisir le NUI manuellement
 form.field.label.imageUpload.uploadedList,,Uploaded:,Téléchargé :
 form.field.label.informant,Informant Label,Informant,Informateur
 form.field.label.informantAthorityToApplyProof,,Proof of informant's authority to apply,Preuve de l'autorité de l'informateur pour faire la demande

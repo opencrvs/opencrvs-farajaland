@@ -142,6 +142,9 @@ export const NID_VERIFICATION_BUTTON = 'NID_VERIFICATION_BUTTON'
 export const DIVIDER = 'DIVIDER'
 export const HEADING3 = 'HEADING3'
 export const SIGNATURE = 'SIGNATURE'
+export const HTTP = 'HTTP'
+export const BUTTON = 'BUTTON'
+export const REDIRECT = 'REDIRECT'
 
 export enum RadioSize {
   LARGE = 'large',
@@ -345,7 +348,6 @@ export interface INumberFormField extends IFormFieldBase {
   step?: number
   max?: number
   inputWidth?: number
-  maxLength?: number
 }
 export interface IBigNumberFormField extends IFormFieldBase {
   type: typeof BIG_NUMBER
@@ -410,7 +412,6 @@ export interface IImageUploaderWithOptionsFormField extends IFormFieldBase {
 export interface IDocumentUploaderWithOptionsFormField extends IFormFieldBase {
   type: typeof DOCUMENT_UPLOADER_WITH_OPTION
   options: ISelectOption[]
-  optionCondition?: string
   hideOnEmptyOption?: boolean
   compressImagesToSizeMB?: number
   maxSizeMB?: number
@@ -492,6 +493,28 @@ export interface ISignatureFormField extends IFormFieldBase {
   )[]
 }
 
+export interface IHttpFormField extends IFormFieldBase {
+  type: typeof HTTP
+  options: any
+}
+export interface IButtonFormField extends IFormFieldBase {
+  type: typeof BUTTON
+  icon?: string
+  buttonLabel: MessageDescriptor
+  loadingLabel?: MessageDescriptor
+  options: {
+    trigger: string
+    shouldHandleLoadingState?: boolean
+  }
+}
+
+export interface IRedirectButtonFormField extends IFormFieldBase {
+  type: typeof REDIRECT
+  options: {
+    url: string
+  }
+}
+
 export type IFormField =
   | ITextFormField
   | ITelFormField
@@ -525,6 +548,9 @@ export type IFormField =
   | IDividerField
   | IHeading3Field
   | ISignatureFormField
+  | IHttpFormField
+  | IButtonFormField
+  | IRedirectButtonFormField
 
 export interface SelectComponentOption {
   value: string
