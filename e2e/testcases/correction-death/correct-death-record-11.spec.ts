@@ -52,16 +52,15 @@ test.describe.serial(' Correct record - 11', () => {
     })
     expect(res).toStrictEqual({
       trackingId: expect.any(String),
-      compositionId: expect.any(String),
-      isPotentiallyDuplicate: false,
-      __typename: 'CreatedIds'
+      recordId: expect.any(String),
+      isPotentiallyDuplicate: false
     })
 
     trackingId = res.trackingId
 
     token = await getToken('f.katongo', 'test')
 
-    declaration = (await fetchDeclaration(token, res.compositionId)).data
+    declaration = (await fetchDeclaration(token, res.recordId)).data
       .fetchDeathRegistration as DeathDeclaration
   })
 
