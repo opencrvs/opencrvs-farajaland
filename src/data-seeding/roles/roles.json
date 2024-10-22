@@ -1,0 +1,206 @@
+[
+  {
+    "id": "FIELD_AGENT",
+    "label": {
+      "defaultMessage": "Field Agent",
+      "description": "Name for user role Field Agent",
+      "id": "userRole.fieldAgent"
+    },
+    "scopes": [
+      "declare",
+
+      "record.declare-birth",
+      "record.declare-death",
+      "record.declare-marriage",
+      "record.submit-incomplete",
+      "record.submit-for-review",
+      "search.birth",
+      "search.death",
+      "search.marriage",
+      "record.read",
+      "record.read-audit",
+      "record.read-comments"
+    ]
+  },
+  {
+    "id": "LOCAL_LEADER",
+    "label": {
+      "defaultMessage": "Local Leader",
+      "description": "Name for user role Local Leader",
+      "id": "userRole.localLeader"
+    },
+    "scopes": [
+      "declare",
+
+      "record.declare-birth",
+      "record.declare-death",
+      "record.declare-marriage",
+      "record.submit-incomplete",
+      "record.submit-for-review",
+      "search.birth",
+      "search.death",
+      "search.marriage",
+      "record.read",
+      "record.read-audit",
+      "record.read-comments"
+    ]
+  },
+  {
+    "id": "SOCIAL_WORKER",
+    "label": {
+      "defaultMessage": "Social Worker",
+      "description": "Name for user role Social worker",
+      "id": "userRole.socialWorker"
+    },
+    "scopes": [
+      "declare",
+
+      "record.declare-birth",
+      "record.declare-death",
+      "record.declare-marriage",
+      "record.submit-incomplete",
+      "record.submit-for-review",
+      "search.birth",
+      "search.death",
+      "search.marriage",
+      "record.read",
+      "record.read-audit",
+      "record.read-comments"
+    ]
+  },
+  {
+    "id": "REGISTRATION_AGENT",
+    "label": {
+      "defaultMessage": "Registration Agent",
+      "description": "Name for user role Registration Agent",
+      "id": "userRole.registrationAgent"
+    },
+    "scopes": [
+      "validate",
+      "performance",
+      "certify",
+
+      "record.declare-birth",
+      "record.declare-death",
+      "record.declare-marriage",
+      "record.declaration-review",
+      "record.submit-for-approval",
+      "record.submit-for-updates",
+      "record.declaration-archive",
+      "record.declaration-reinstate",
+      "record.registration-request-correction",
+      "record.print-records",
+      "record.print-records-supporting-documents",
+      "record.export-records",
+      "record.print-issue-certified-copies",
+      "record.registration-verify-certified-copies",
+      "record.create-comments",
+      "performance.read",
+      "performance.read-dashboards",
+      "organisation.read",
+      "organisation.read-locations:my-office",
+      "search.birth",
+      "search.death",
+      "search.marriage",
+      "record.read",
+      "record.read-audit",
+      "record.read-comments"
+    ]
+  },
+  {
+    "id": "LOCAL_REGISTRAR",
+    "label": {
+      "defaultMessage": "Local Registrar",
+      "description": "Name for user role Local Registrar",
+      "id": "userRole.localRegistrar"
+    },
+    "scopes": [
+      "register",
+      "performance",
+      "certify",
+
+      "record.declare-birth",
+      "record.declare-death",
+      "record.declare-marriage",
+      "record.declaration-review",
+      "record.submit-for-updates",
+      "record.review-duplicates",
+      "record.declaration-archive",
+      "record.declaration-reinstate",
+      "record.register",
+      "record.registration-correct",
+      "record.print-records",
+      "record.print-records-supporting-documents",
+      "record.export-records",
+      "record.print-issue-certified-copies",
+      "record.registration-verify-certified-copies",
+      "record.create-comments",
+      "performance.read",
+      "performance.read-dashboards",
+      "organisation.read",
+      "organisation.read-locations:my-office",
+      "search.birth",
+      "search.death",
+      "search.marriage",
+      "record.read",
+      "record.read-audit",
+      "record.read-comments"
+    ]
+  },
+  {
+    "id": "LOCAL_SYSTEM_ADMIN",
+    "label": {
+      "defaultMessage": "Local System Admin",
+      "description": "Name for user role Local System Admin",
+      "id": "userRole.localSystemAdmin"
+    },
+    "scopes": [
+      "sysadmin",
+
+      "user.read:my-office",
+      "user.create:my-jurisdiction",
+      "user.update:my-office",
+      "organisation.read",
+      "organisation.read-locations",
+      "performance.read",
+      "performance.read-dashboards",
+      "performance.export-vital-statistics"
+    ]
+  },
+  {
+    "id": "NATIONAL_SYSTEM_ADMIN",
+    "label": {
+      "defaultMessage": "National System Admin",
+      "description": "Name for user role National System Admin",
+      "id": "userRole.nationalSystemAdmin"
+    },
+    "scopes": [
+      "sysadmin",
+      "natlsysadmin",
+
+      "user.create",
+      "user.read",
+      "user.update",
+      "organisation.read",
+      "organisation.read-locations",
+      "performance.read",
+      "performance.read-dashboards",
+      "performance.export-vital-statistics"
+    ]
+  },
+  {
+    "id": "PERFORMANCE_MANAGER",
+    "label": {
+      "defaultMessage": "Performance Manager",
+      "description": "Name for user role Performance Manager",
+      "id": "userRole.performanceManager"
+    },
+    "scopes": [
+      "performance",
+
+      "performance.read",
+      "performance.read-dashboards",
+      "performance.export-vital-statistics"
+    ]
+  }
+]
