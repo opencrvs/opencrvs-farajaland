@@ -7,8 +7,6 @@
       "id": "userRole.fieldAgent"
     },
     "scopes": [
-      "declare",
-
       "record.declare-birth",
       "record.declare-death",
       "record.declare-marriage",
@@ -30,8 +28,6 @@
       "id": "userRole.localLeader"
     },
     "scopes": [
-      "declare",
-
       "record.declare-birth",
       "record.declare-death",
       "record.declare-marriage",
@@ -53,8 +49,6 @@
       "id": "userRole.socialWorker"
     },
     "scopes": [
-      "declare",
-
       "record.declare-birth",
       "record.declare-death",
       "record.declare-marriage",
@@ -76,10 +70,6 @@
       "id": "userRole.registrationAgent"
     },
     "scopes": [
-      "validate",
-      "performance",
-      "certify",
-
       "record.declare-birth",
       "record.declare-death",
       "record.declare-marriage",
@@ -116,10 +106,6 @@
       "id": "userRole.localRegistrar"
     },
     "scopes": [
-      "register",
-      "performance",
-      "certify",
-
       "record.declare-birth",
       "record.declare-death",
       "record.declare-marriage",
@@ -157,8 +143,6 @@
       "id": "userRole.localSystemAdmin"
     },
     "scopes": [
-      "sysadmin",
-
       "user.read:my-office",
       "user.create:my-jurisdiction",
       "user.update:my-office",
@@ -177,9 +161,6 @@
       "id": "userRole.nationalSystemAdmin"
     },
     "scopes": [
-      "sysadmin",
-      "natlsysadmin",
-
       "user.create",
       "user.read",
       "user.update",
@@ -199,8 +180,6 @@
       "id": "userRole.performanceManager"
     },
     "scopes": [
-      "performance",
-
       "performance.read",
       "performance.read-dashboards",
       "performance.export-vital-statistics"
