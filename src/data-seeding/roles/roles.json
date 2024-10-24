@@ -188,7 +188,7 @@
       "performance.read",
       "performance.read-dashboards",
       "performance.export-vital-statistics",
-      "config.update-all"
+      "config.update:all"
     ]
   },
   {
