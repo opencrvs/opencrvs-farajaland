@@ -1,13 +1,19 @@
 import { test, expect, type Page } from '@playwright/test'
 import {
+  continueForm,
   createPIN,
+  drawSignature,
+  expectAddress,
+  expectOutboxToBeEmpty,
+  formatDateObjectTo_ddMMMMyyyy,
   getRandomDate,
   goToSection,
   login,
-  uploadImage
+  uploadImage,
+  uploadImageToSection
 } from '../../../helpers'
 import faker from '@faker-js/faker'
-import { format } from 'date-fns'
+import { CREDENTIALS } from '../../../constants'
 
 test.describe.serial('3. Birth declaration case - 3', () => {
   let page: Page
@@ -110,9 +116,13 @@ test.describe.serial('3. Birth declaration case - 3', () => {
     await page.close()
   })
 
-  test.describe('3.1 Declaratin started by RA', async () => {
+  test.describe('3.1 Declaration started by RA', async () => {
     test.beforeAll(async () => {
-      await login(page, 'f.katongo', 'test')
+      await login(
+        page,
+        CREDENTIALS.REGISTRATION_AGENT.USERNAME,
+        CREDENTIALS.REGISTRATION_AGENT.PASSWORD
+      )
       await createPIN(page)
       await page.click('#header_new_event')
       await page.getByLabel('Birth').click()
@@ -172,11 +182,10 @@ test.describe.serial('3. Birth declaration case - 3', () => {
         })
         .click()
 
-      await page.getByRole('button', { name: 'Continue' }).click()
+      await continueForm(page)
     })
 
     test('3.1.2 Fill informant details', async () => {
-      await page.waitForTimeout(500)
       await page.locator('#informantType').click()
       await page
         .getByText(declaration.informantType, {
@@ -244,10 +253,7 @@ test.describe.serial('3. Birth declaration case - 3', () => {
       await page
         .locator('#postalCodePrimaryInformant')
         .fill(declaration.informant.address.postcodeOrZip)
-
-      await page.waitForTimeout(500)
-
-      await page.getByRole('button', { name: 'Continue' }).click()
+      await continueForm(page)
     })
 
     test("3.1.3 Fill mother's details", async () => {
@@ -308,10 +314,7 @@ test.describe.serial('3. Birth declaration case - 3', () => {
       await page
         .getByText(declaration.mother.levelOfEducation, { exact: true })
         .click()
-
-      await page.waitForTimeout(500)
-
-      await page.getByRole('button', { name: 'Continue' }).click()
+      await continueForm(page)
     })
 
     test("3.1.4 Fill father's details", async () => {
@@ -369,45 +372,96 @@ test.describe.serial('3. Birth declaration case - 3', () => {
       await page.getByRole('button', { name: 'Continue' }).click()
     })
 
-    test('3.1.5 Add documents', async () => {
-      goToSection(page, 'documents')
-      await uploadImage(
-        page,
-        page.locator('button[name="uploadDocForChildDOB"]')
-      )
-      await page.locator('#uploadDocForMother').getByText('Select...').click()
-      await page.getByText('National ID', { exact: true }).click()
-      await uploadImage(page, page.locator('button[name="uploadDocForMother"]'))
-      await page.locator('#uploadDocForFather').getByText('Select...').click()
-      await page.getByText('Passport', { exact: true }).click()
-      await uploadImage(page, page.locator('button[name="uploadDocForFather"]'))
-      await page
-        .locator('#uploadDocForInformant')
-        .getByText('Select...')
-        .click()
-      await page.getByText('Birth certificate', { exact: true }).click()
-      await uploadImage(
-        page,
-        page.locator('button[name="uploadDocForInformant"]')
-      )
-      await page
-        .locator('#uploadDocForProofOfLegalGuardian')
-        .getByText('Select...')
-        .click()
-      await page
-        .getByText('Proof of legal guardianship', { exact: true })
-        .click()
-      await uploadImage(
-        page,
-        page.locator('button[name="uploadDocForProofOfLegalGuardian"]')
-      )
+    test.describe('3.1.5 Add supporting documents', async () => {
+      test('3.1.5.0 Go to supporting documents page', async () => {
+        await goToSection(page, 'documents')
+      })
+
+      test('3.1.5.1 Upload proof of birth', async () => {
+        await uploadImage(
+          page,
+          page.locator('button[name="uploadDocForChildDOB"]')
+        )
+      })
+
+      test("3.1.5.2 Upload proof of mother's id", async () => {
+        const imageUploadSectionTitles = [
+          'National ID',
+          'Passport',
+          'Birth certificate',
+          'Other'
+        ]
+
+        for (const sectionTitle of imageUploadSectionTitles) {
+          await uploadImageToSection({
+            page,
+            sectionLocator: page.locator('#uploadDocForMother'),
+            sectionTitle,
+            buttonLocator: page.locator('button[name="uploadDocForMother"]')
+          })
+        }
+      })
+
+      test("3.1.5.3 Upload proof of father's id", async () => {
+        const imageUploadSectionTitles = [
+          'National ID',
+          'Passport',
+          'Birth certificate',
+          'Other'
+        ]
+
+        for (const sectionTitle of imageUploadSectionTitles) {
+          await uploadImageToSection({
+            page,
+            sectionLocator: page.locator('#uploadDocForFather'),
+            sectionTitle,
+            buttonLocator: page.locator('button[name="uploadDocForFather"]')
+          })
+        }
+      })
+
+      test("3.1.5.4 Upload proof of informant's id", async () => {
+        const imageUploadSectionTitles = [
+          'National ID',
+          'Passport',
+          'Birth certificate',
+          'Other'
+        ]
+
+        for (const sectionTitle of imageUploadSectionTitles) {
+          await uploadImageToSection({
+            page,
+            sectionLocator: page.locator('#uploadDocForInformant'),
+            sectionTitle,
+            buttonLocator: page.locator('button[name="uploadDocForInformant"]')
+          })
+        }
+      })
+
+      test('3.1.5.5 Upload other', async () => {
+        const imageUploadSectionTitles = [
+          'Proof of legal guardianship',
+          'Proof of assigned responsibility'
+        ]
+
+        for (const sectionTitle of imageUploadSectionTitles) {
+          await uploadImageToSection({
+            page,
+            sectionLocator: page.locator('#uploadDocForProofOfLegalGuardian'),
+            sectionTitle,
+            buttonLocator: page.locator(
+              'button[name="uploadDocForProofOfLegalGuardian"]'
+            )
+          })
+        }
+      })
     })
 
     test('3.1.6 Go to preview', async () => {
-      goToSection(page, 'preview')
+      await goToSection(page, 'preview')
     })
 
-    test('3.1.7 Verify informations in preview page', async () => {
+    test('3.1.7 Verify information on preview page', async () => {
       /*
        * Expected result: should include
        * - Child's First Name
@@ -433,14 +487,7 @@ test.describe.serial('3. Birth declaration case - 3', () => {
        * - Child's date of birth
        */
       await expect(page.locator('#child-content #Date')).toContainText(
-        format(
-          new Date(
-            Number(declaration.child.birthDate.yyyy),
-            Number(declaration.child.birthDate.mm) - 1,
-            Number(declaration.child.birthDate.dd)
-          ),
-          'dd MMMM yyyy'
-        )
+        formatDateObjectTo_ddMMMMyyyy(declaration.child.birthDate)
       )
 
       /*
@@ -451,17 +498,9 @@ test.describe.serial('3. Birth declaration case - 3', () => {
       await expect(page.locator('#child-content #Place')).toContainText(
         declaration.placeOfBirth
       )
-      await expect(page.locator('#child-content #Place')).toContainText(
-        declaration.birthLocation.country
-      )
-      await expect(page.locator('#child-content #Place')).toContainText(
-        declaration.birthLocation.province
-      )
-      await expect(page.locator('#child-content #Place')).toContainText(
-        declaration.birthLocation.district
-      )
-      await expect(page.locator('#child-content #Place')).toContainText(
-        declaration.birthLocation.village
+      await expectAddress(
+        page.locator('#child-content #Place'),
+        declaration.birthLocation
       )
 
       /*
@@ -512,14 +551,7 @@ test.describe.serial('3. Birth declaration case - 3', () => {
        * - Informant's date of birth
        */
       await expect(page.locator('#informant-content #Date')).toContainText(
-        format(
-          new Date(
-            Number(declaration.informant.birthDate.yyyy),
-            Number(declaration.informant.birthDate.mm) - 1,
-            Number(declaration.informant.birthDate.dd)
-          ),
-          'dd MMMM yyyy'
-        )
+        formatDateObjectTo_ddMMMMyyyy(declaration.informant.birthDate)
       )
 
       /*
@@ -534,29 +566,9 @@ test.describe.serial('3. Birth declaration case - 3', () => {
        * Expected result: should include
        * - Informant's address
        */
-      await expect(page.locator('#informant-content #Usual')).toContainText(
-        declaration.informant.address.country
-      )
-      await expect(page.locator('#informant-content #Usual')).toContainText(
-        declaration.informant.address.district
-      )
-      await expect(page.locator('#informant-content #Usual')).toContainText(
-        declaration.informant.address.province
-      )
-      await expect(page.locator('#informant-content #Usual')).toContainText(
-        declaration.informant.address.town
-      )
-      await expect(page.locator('#informant-content #Usual')).toContainText(
-        declaration.informant.address.residentialArea
-      )
-      await expect(page.locator('#informant-content #Usual')).toContainText(
-        declaration.informant.address.street
-      )
-      await expect(page.locator('#informant-content #Usual')).toContainText(
-        declaration.informant.address.number
-      )
-      await expect(page.locator('#informant-content #Usual')).toContainText(
-        declaration.informant.address.postcodeOrZip
+      await expectAddress(
+        page.locator('#informant-content #Usual'),
+        declaration.informant.address
       )
 
       /*
@@ -576,14 +588,7 @@ test.describe.serial('3. Birth declaration case - 3', () => {
        * - Mother's date of birth
        */
       await expect(page.locator('#mother-content #Date')).toContainText(
-        format(
-          new Date(
-            Number(declaration.mother.birthDate.yyyy),
-            Number(declaration.mother.birthDate.mm) - 1,
-            Number(declaration.mother.birthDate.dd)
-          ),
-          'dd MMMM yyyy'
-        )
+        formatDateObjectTo_ddMMMMyyyy(declaration.mother.birthDate)
       )
 
       /*
@@ -627,29 +632,10 @@ test.describe.serial('3. Birth declaration case - 3', () => {
        * Expected result: should include
        * - Mother's address
        */
-      await expect(page.locator('#mother-content #Usual')).toContainText(
-        declaration.mother.address.country
-      )
-      await expect(page.locator('#mother-content #Usual')).toContainText(
-        declaration.mother.address.district
-      )
-      await expect(page.locator('#mother-content #Usual')).toContainText(
-        declaration.mother.address.state
-      )
-      await expect(page.locator('#mother-content #Usual')).toContainText(
-        declaration.mother.address.town
-      )
-      await expect(page.locator('#mother-content #Usual')).toContainText(
-        declaration.mother.address.addressLine1
-      )
-      await expect(page.locator('#mother-content #Usual')).toContainText(
-        declaration.mother.address.addressLine2
-      )
-      await expect(page.locator('#mother-content #Usual')).toContainText(
-        declaration.mother.address.addressLine3
-      )
-      await expect(page.locator('#mother-content #Usual')).toContainText(
-        declaration.mother.address.postcodeOrZip
+
+      await expectAddress(
+        page.locator('#mother-content #Usual'),
+        declaration.mother.address
       )
 
       /*
@@ -669,14 +655,7 @@ test.describe.serial('3. Birth declaration case - 3', () => {
        * - Father's date of birth
        */
       await expect(page.locator('#father-content #Date')).toContainText(
-        format(
-          new Date(
-            Number(declaration.father.birthDate.yyyy),
-            Number(declaration.father.birthDate.mm) - 1,
-            Number(declaration.father.birthDate.dd)
-          ),
-          'dd MMMM yyyy'
-        )
+        formatDateObjectTo_ddMMMMyyyy(declaration.father.birthDate)
       )
 
       /*
@@ -720,22 +699,22 @@ test.describe.serial('3. Birth declaration case - 3', () => {
        * Expected result: should include
        * - Father's address
        */
-
-      await expect(page.locator('#father-content #Usual')).toContainText(
-        declaration.father.address.country
-      )
-      await expect(page.locator('#father-content #Usual')).toContainText(
-        declaration.father.address.district
-      )
-      await expect(page.locator('#father-content #Usual')).toContainText(
-        declaration.father.address.province
-      )
-      await expect(page.locator('#father-content #Usual')).toContainText(
-        declaration.father.address.village
+      await expectAddress(
+        page.locator('#father-content #Usual'),
+        declaration.father.address
       )
     })
 
-    test('3.1.8 Send for approval', async () => {
+    test('3.1.8 Fill up informant signature', async () => {
+      await page.getByRole('button', { name: 'Sign', exact: true }).click()
+      await drawSignature(page)
+      await page
+        .locator('#informantSignature_modal')
+        .getByRole('button', { name: 'Apply' })
+        .click()
+    })
+
+    test('3.1.9 Send for approval', async () => {
       await page.getByRole('button', { name: 'Send for approval' }).click()
       await expect(page.getByText('Send for approval?')).toBeVisible()
       await page.getByRole('button', { name: 'Confirm' }).click()
@@ -746,9 +725,7 @@ test.describe.serial('3. Birth declaration case - 3', () => {
        */
       expect(page.url().includes('registration-home')).toBeTruthy()
 
-      await expect(page.locator('#navigation_outbox')).not.toContainText('1', {
-        timeout: 1000 * 30
-      })
+      await expectOutboxToBeEmpty(page)
 
       await page.getByRole('button', { name: 'Sent for approval' }).click()
 
@@ -765,7 +742,11 @@ test.describe.serial('3. Birth declaration case - 3', () => {
 
   test.describe('3.2 Declaration Review by Local Registrar', async () => {
     test('3.2.1 Navigate to the declaration review page', async () => {
-      await login(page, 'k.mweene', 'test')
+      await login(
+        page,
+        CREDENTIALS.LOCAL_REGISTRAR.USERNAME,
+        CREDENTIALS.LOCAL_REGISTRAR.PASSWORD
+      )
       await createPIN(page)
       await page.getByRole('button', { name: 'Ready for review' }).click()
       await page
@@ -778,7 +759,7 @@ test.describe.serial('3. Birth declaration case - 3', () => {
       await page.getByRole('button', { name: 'Review', exact: true }).click()
     })
 
-    test('3.2.2 Verify informations in review page', async () => {
+    test('3.2.2 Verify information on review page', async () => {
       /*
        * Expected result: should include
        * - Child's First Name
@@ -804,14 +785,7 @@ test.describe.serial('3. Birth declaration case - 3', () => {
        * - Child's date of birth
        */
       await expect(page.locator('#child-content #Date')).toContainText(
-        format(
-          new Date(
-            Number(declaration.child.birthDate.yyyy),
-            Number(declaration.child.birthDate.mm) - 1,
-            Number(declaration.child.birthDate.dd)
-          ),
-          'dd MMMM yyyy'
-        )
+        formatDateObjectTo_ddMMMMyyyy(declaration.child.birthDate)
       )
 
       /*
@@ -822,17 +796,9 @@ test.describe.serial('3. Birth declaration case - 3', () => {
       await expect(page.locator('#child-content #Place')).toContainText(
         declaration.placeOfBirth
       )
-      await expect(page.locator('#child-content #Place')).toContainText(
-        declaration.birthLocation.country
-      )
-      await expect(page.locator('#child-content #Place')).toContainText(
-        declaration.birthLocation.province
-      )
-      await expect(page.locator('#child-content #Place')).toContainText(
-        declaration.birthLocation.district
-      )
-      await expect(page.locator('#child-content #Place')).toContainText(
-        declaration.birthLocation.village
+      await expectAddress(
+        page.locator('#child-content #Place'),
+        declaration.birthLocation
       )
 
       /*
@@ -883,14 +849,7 @@ test.describe.serial('3. Birth declaration case - 3', () => {
        * - Informant's date of birth
        */
       await expect(page.locator('#informant-content #Date')).toContainText(
-        format(
-          new Date(
-            Number(declaration.informant.birthDate.yyyy),
-            Number(declaration.informant.birthDate.mm) - 1,
-            Number(declaration.informant.birthDate.dd)
-          ),
-          'dd MMMM yyyy'
-        )
+        formatDateObjectTo_ddMMMMyyyy(declaration.informant.birthDate)
       )
 
       /*
@@ -905,29 +864,9 @@ test.describe.serial('3. Birth declaration case - 3', () => {
        * Expected result: should include
        * - Informant's address
        */
-      await expect(page.locator('#informant-content #Usual')).toContainText(
-        declaration.informant.address.country
-      )
-      await expect(page.locator('#informant-content #Usual')).toContainText(
-        declaration.informant.address.district
-      )
-      await expect(page.locator('#informant-content #Usual')).toContainText(
-        declaration.informant.address.province
-      )
-      await expect(page.locator('#informant-content #Usual')).toContainText(
-        declaration.informant.address.town
-      )
-      await expect(page.locator('#informant-content #Usual')).toContainText(
-        declaration.informant.address.residentialArea
-      )
-      await expect(page.locator('#informant-content #Usual')).toContainText(
-        declaration.informant.address.street
-      )
-      await expect(page.locator('#informant-content #Usual')).toContainText(
-        declaration.informant.address.number
-      )
-      await expect(page.locator('#informant-content #Usual')).toContainText(
-        declaration.informant.address.postcodeOrZip
+      await expectAddress(
+        page.locator('#informant-content #Usual'),
+        declaration.informant.address
       )
 
       /*
@@ -947,14 +886,7 @@ test.describe.serial('3. Birth declaration case - 3', () => {
        * - Mother's date of birth
        */
       await expect(page.locator('#mother-content #Date')).toContainText(
-        format(
-          new Date(
-            Number(declaration.mother.birthDate.yyyy),
-            Number(declaration.mother.birthDate.mm) - 1,
-            Number(declaration.mother.birthDate.dd)
-          ),
-          'dd MMMM yyyy'
-        )
+        formatDateObjectTo_ddMMMMyyyy(declaration.mother.birthDate)
       )
 
       /*
@@ -998,29 +930,9 @@ test.describe.serial('3. Birth declaration case - 3', () => {
        * Expected result: should include
        * - Mother's address
        */
-      await expect(page.locator('#mother-content #Usual')).toContainText(
-        declaration.mother.address.country
-      )
-      await expect(page.locator('#mother-content #Usual')).toContainText(
-        declaration.mother.address.district
-      )
-      await expect(page.locator('#mother-content #Usual')).toContainText(
-        declaration.mother.address.state
-      )
-      await expect(page.locator('#mother-content #Usual')).toContainText(
-        declaration.mother.address.town
-      )
-      await expect(page.locator('#mother-content #Usual')).toContainText(
-        declaration.mother.address.addressLine1
-      )
-      await expect(page.locator('#mother-content #Usual')).toContainText(
-        declaration.mother.address.addressLine2
-      )
-      await expect(page.locator('#mother-content #Usual')).toContainText(
-        declaration.mother.address.addressLine3
-      )
-      await expect(page.locator('#mother-content #Usual')).toContainText(
-        declaration.mother.address.postcodeOrZip
+      await expectAddress(
+        page.locator('#mother-content #Usual'),
+        declaration.mother.address
       )
 
       /*
@@ -1040,14 +952,7 @@ test.describe.serial('3. Birth declaration case - 3', () => {
        * - Father's date of birth
        */
       await expect(page.locator('#father-content #Date')).toContainText(
-        format(
-          new Date(
-            Number(declaration.father.birthDate.yyyy),
-            Number(declaration.father.birthDate.mm) - 1,
-            Number(declaration.father.birthDate.dd)
-          ),
-          'dd MMMM yyyy'
-        )
+        formatDateObjectTo_ddMMMMyyyy(declaration.father.birthDate)
       )
 
       /*
@@ -1090,19 +995,9 @@ test.describe.serial('3. Birth declaration case - 3', () => {
       /*
        * Expected result: should include
        * - Father's address
-       */
-
-      await expect(page.locator('#father-content #Usual')).toContainText(
-        declaration.father.address.country
-      )
-      await expect(page.locator('#father-content #Usual')).toContainText(
-        declaration.father.address.district
-      )
-      await expect(page.locator('#father-content #Usual')).toContainText(
-        declaration.father.address.province
-      )
-      await expect(page.locator('#father-content #Usual')).toContainText(
-        declaration.father.address.village
+       */ await expectAddress(
+        page.locator('#father-content #Usual'),
+        declaration.father.address
       )
     })
   })
