@@ -302,7 +302,7 @@ docker_stack_deploy() {
 reset_metabase() {
   echo "Reseting metabase"
   configured_ssh 'docker service scale opencrvs_dashboards=0 && \
-    rm /data/metabase/metabase.mv.db && \
+    sudo rm /data/metabase/metabase.mv.db && \
     docker service scale opencrvs_dashboards=1'
 }
 
