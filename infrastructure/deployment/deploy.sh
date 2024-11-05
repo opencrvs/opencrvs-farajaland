@@ -301,7 +301,9 @@ docker_stack_deploy() {
 
 reset_metabase() {
   echo "Reseting metabase"
-  configured_ssh "docker exec \$(docker ps | grep opencrvs_dashboards | awk '{print \$1}' | head -n 1) /bin/sh -c \"rm -rf /data/metabase/metabase.mv.db*\""
+  configured_ssh "docker exec \$(docker ps | grep opencrvs_dashboards | awk '{print \$1}' | head -n 1) /bin/sh -c \"rm -rf /data/metabase/metabase.mv.db*\" && \
+    docker service scale opencrvs_dashboards=0 && \
+    docker service scale opencrvs_dashboards=1"
 }
 
 validate_options
