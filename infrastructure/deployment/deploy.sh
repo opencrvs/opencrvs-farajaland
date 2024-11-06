@@ -302,8 +302,8 @@ docker_stack_deploy() {
 
 get_docker_version() {
   echo "Getting previous docker version"
-  configured_ssh "docker service ls | grep opencrvs_base |  awk -F ':' '{print $NF}'"
-  PREVIOUS_VERSION=$(configured_ssh "docker service ls | grep opencrvs_base |  awk -F ':' '{print $NF}'")
+  configured_ssh "docker service ls | grep opencrvs_base | cut -d ':' -f 2"
+  PREVIOUS_VERSION=$(configured_ssh "docker service ls | grep opencrvs_base | cut -d ':' -f 2")
   echo "Previous version:  $PREVIOUS_VERSION" 
   echo "Current version: $VERSION" 
 }
