@@ -11,6 +11,7 @@ set -e
 BASEDIR=$(dirname $(realpath $0))
 INFRASTRUCTURE_DIRECTORY=$(dirname $BASEDIR)
 PROJECT_ROOT=$(pwd)
+PREVIOUS_VERSION='v1.5.0'
 
 while [ "$PROJECT_ROOT" != "/" ]; do
   if [ -f "$PROJECT_ROOT/package.json" ]; then
@@ -299,6 +300,11 @@ docker_stack_deploy() {
     docker stack deploy --prune -c '$(split_and_join " " " -c " "$(to_remote_paths $COMPOSE_FILES_USED)")' --with-registry-auth opencrvs'
 }
 
+get_docker_version() {
+  echo "Getting previous docker version"
+  PREVIOUS_VERSION=$(configured_ssh "docker service ls | grep opencrvs_base |  awk -F ':' '{print $NF}'")
+}
+
 reset_metabase() {
   echo "Reseting metabase"
   configured_ssh "ls /data/metabase/ && \
@@ -422,7 +428,13 @@ EMAIL_PAYLOAD='{
   "to": "{{ALERT_EMAIL}}"
 }'
 
-reset_metabase
+get_docker_version
+
+if [[ "$VERSION" == "$PREVIOUS_VERSION" ]]; then
+  echo "No reset needed for Metabase."
+else
+  reset_metabase
+fi
 
 configured_ssh "docker run --rm --network=opencrvs_overlay_net appropriate/curl \
   -X POST 'http://countryconfig:3040/email' \
