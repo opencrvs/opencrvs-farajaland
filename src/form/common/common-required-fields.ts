@@ -182,6 +182,10 @@ export const getReasonNotExisting = (certificateHandlebar: string) =>
       {
         action: 'hide',
         expression: 'values.detailsExist'
+      },
+      {
+        action: 'hide',
+        expression: `$draft?.informant?.informantType === 'MYSELF'`
       }
     ],
     type: 'TEXT',

@@ -113,7 +113,7 @@ export const detailsExist = [
 
 // if informant is not mother or father
 export const informantNotMotherOrFather =
-  '((values.informantType==="MOTHER") || (values.informantType==="FATHER") || (!values.informantType))'
+  '((values.informantType==="MOTHER") || (values.informantType==="MYSELF") || (values.informantType==="FATHER") || (!values.informantType))'
 
 export const hideIfInformantMotherOrFather = [
   {
@@ -196,7 +196,8 @@ export const fathersBirthDateConditionals = [
 export const motherFirstNameConditionals = [
   {
     action: 'hide',
-    expression: '!values.detailsExist'
+    expression:
+      '!values.detailsExist && $draft?.informant?.informantType !== "MYSELF"'
   },
   {
     action: 'disable',
@@ -207,7 +208,8 @@ export const motherFirstNameConditionals = [
 export const motherFamilyNameConditionals = [
   {
     action: 'hide',
-    expression: '!values.detailsExist'
+    expression:
+      '!values.detailsExist && $draft?.informant?.informantType !== "MYSELF"'
   },
   {
     action: 'disable',

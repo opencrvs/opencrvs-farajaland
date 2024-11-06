@@ -23,6 +23,7 @@ import {
 // THIS FILE ALLOWS YOU TO CUSTOMISE EVERY DEFAULT SELECT OPTION IN OPENCRVS WHETHER OR NOT THE FIELD IS REQUIRED OR CUSTOM
 
 export const informantTypes = {
+  MYSELF: 'MYSELF',
   SPOUSE: 'SPOUSE',
   SON: 'SON',
   DAUGHTER: 'DAUGHTER',
@@ -165,6 +166,14 @@ export const birthInformantTypeOptions: ISelectOption[] = [
   {
     value: informantTypes.GRANDMOTHER,
     label: informantMessageDescriptors.GRANDMOTHER
+  },
+  {
+    value: informantTypes.MYSELF,
+    label: {
+      defaultMessage: 'Self',
+      description: 'Label for option Spouse',
+      id: 'form.field.label.informantRelation.myself'
+    }
   },
   {
     value: informantTypes.BROTHER,

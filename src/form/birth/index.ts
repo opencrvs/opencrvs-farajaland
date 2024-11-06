@@ -78,7 +78,10 @@ import {
 } from './required-sections'
 import { certificateHandlebars } from './certificate-handlebars'
 import { getSectionMapping } from '@countryconfig/utils/mapping/section/birth/mapping-utils'
-import { getCommonSectionMapping } from '@countryconfig/utils/mapping/field-mapping-utils'
+import {
+  getCommonSectionMapping,
+  getCustomFieldMapping
+} from '@countryconfig/utils/mapping/field-mapping-utils'
 import { getReasonForLateRegistration } from '../custom-fields'
 import { getIDNumberFields, getIDType } from '../custom-fields'
 // import { createCustomFieldExample } from '../custom-fields'
@@ -308,6 +311,45 @@ export const birthForm: ISerializedForm = {
               mothersDetailsExistConditionals
             ),
             getReasonNotExisting(certificateHandlebars.motherReasonNotApplying), // Strongly recommend is required if you want to register abandoned / orphaned children!
+            {
+              name: 'reasonNotAvailable',
+              type: 'SELECT_WITH_OPTIONS',
+              customQuestionMappingId: `birth.mother.mother-view-group.reasonNotAvailable`,
+              label: {
+                defaultMessage: 'Reason why details are unavailable ',
+                description: 'Label for Relationship to child',
+                id: 'form.field.label.asdf'
+              },
+              required: true,
+              custom: true,
+              hideInPreview: false,
+              initialValue: '',
+              validator: [],
+              conditionals: [
+                {
+                  action: 'hide',
+                  expression: `$draft?.informant?.informantType !== 'MYSELF'`
+                },
+                {
+                  action: 'hide',
+                  expression: 'values.detailsExist'
+                }
+              ],
+              placeholder: formMessageDescriptors.formSelectPlaceholder,
+              mapping: getCustomFieldMapping(
+                `birth.mother.mother-view-group.reasonNotAvailable`
+              ),
+              options: [
+                {
+                  value: 'DECEASED',
+                  label: {
+                    defaultMessage: 'Deceased',
+                    description: 'Label for option Spouse',
+                    id: 'form.field.label.informantRelation.dfgdgfgfd'
+                  }
+                }
+              ]
+            },
             getFirstNameField(
               'motherNameInEnglish',
               motherFirstNameConditionals,
