@@ -319,6 +319,8 @@ reset_metabase() {
 
 validate_options
 
+get_docker_version
+
 # Create new passwords for all MongoDB users created in
 # infrastructure/mongodb/docker-entrypoint-initdb.d/create-mongo-users.sh
 #
@@ -430,8 +432,6 @@ EMAIL_PAYLOAD='{
   "from": "{{SENDER_EMAIL_ADDRESS}}",
   "to": "{{ALERT_EMAIL}}"
 }'
-
-get_docker_version
 
 VERSION=$(echo "$VERSION" | xargs)
 PREVIOUS_VERSION=$(echo "$PREVIOUS_VERSION" | xargs)
