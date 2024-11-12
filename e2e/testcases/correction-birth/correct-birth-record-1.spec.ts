@@ -1084,7 +1084,7 @@ test.describe('1. Correct record - 1', () => {
 
         test('1.2.6.4.3 Validate correction approved modal', async () => {
           const correctionApprovedRow = page.locator(
-            '#listTable-task-history #row_6'
+            '#listTable-task-history div[id^="row_"]:has-text("Correction approved")'
           )
           await correctionApprovedRow.getByText('Correction approved').click()
 
