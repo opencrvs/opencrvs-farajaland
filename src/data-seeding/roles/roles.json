@@ -101,6 +101,7 @@
       "record.declaration-print-supporting-documents",
       "record.export-records",
       "record.registration-print&issue-certified-copies",
+      "record.confirm-registration",
       "performance.read",
       "performance.read-dashboards",
       "organisation.read",
