@@ -14,10 +14,7 @@
       "record.declaration-submit-for-review",
       "search.birth",
       "search.death",
-      "search.marriage",
-      "record.read",
-      "record.read-audit",
-      "record.read-comments"
+      "search.marriage"
     ]
   },
   {
@@ -35,10 +32,7 @@
       "record.declaration-submit-for-review",
       "search.birth",
       "search.death",
-      "search.marriage",
-      "record.read",
-      "record.read-audit",
-      "record.read-comments"
+      "search.marriage"
     ]
   },
   {
@@ -56,10 +50,7 @@
       "record.declaration-submit-for-review",
       "search.birth",
       "search.death",
-      "search.marriage",
-      "record.read",
-      "record.read-audit",
-      "record.read-comments"
+      "search.marriage"
     ]
   },
   {
@@ -81,18 +72,13 @@
       "record.declaration-print-supporting-documents",
       "record.export-records",
       "record.registration-print&issue-certified-copies",
-      "record.registration-verify-certified-copies",
-      "record.create-comments",
       "performance.read",
       "performance.read-dashboards",
       "organisation.read",
       "organisation.read-locations:my-office",
       "search.birth",
       "search.death",
-      "search.marriage",
-      "record.read",
-      "record.read-audit",
-      "record.read-comments"
+      "search.marriage"
     ]
   },
   {
@@ -115,18 +101,13 @@
       "record.declaration-print-supporting-documents",
       "record.export-records",
       "record.registration-print&issue-certified-copies",
-      "record.registration-verify-certified-copies",
-      "record.create-comments",
       "performance.read",
       "performance.read-dashboards",
       "organisation.read",
       "organisation.read-locations:my-office",
       "search.birth",
       "search.death",
-      "search.marriage",
-      "record.read",
-      "record.read-audit",
-      "record.read-comments"
+      "search.marriage"
     ]
   },
   {
