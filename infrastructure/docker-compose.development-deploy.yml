@@ -122,7 +122,17 @@ services:
       - --ping=true
 
   mosip-api:
-    image: ghcr.io/opencrvs/mosip
+    image: ghcr.io/opencrvs/mosip:main
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+    deploy:
+      replicas: 1
+    networks:
+      - overlay_net
+
+  mosip-mock:
+    image: ghcr.io/opencrvs/mosip-mock:main
     restart: unless-stopped
     environment:
       - NODE_ENV=production
