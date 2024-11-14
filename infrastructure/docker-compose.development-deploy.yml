@@ -120,3 +120,13 @@ services:
       - --accesslog=true
       - --accesslog.format=json
       - --ping=true
+
+  mosip-api:
+    image: ghcr.io/opencrvs/mosip
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+    deploy:
+      replicas: 1
+    networks:
+      - overlay_net

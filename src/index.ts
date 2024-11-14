@@ -65,6 +65,7 @@ import { dashboardQueriesHandler } from './api/dashboards/handler'
 import { fontsHandler } from './api/fonts/handler'
 import { certificateConfigurationHandler } from './api/certificate-configuration/handler'
 import { recordNotificationHandler } from './api/record-notification/handler'
+import { mosipRegistrationHandler } from '@opencrvs/mosip'
 
 export interface ITokenPayload {
   sub: string
@@ -416,7 +417,7 @@ export async function createServer() {
   server.route({
     method: 'POST',
     path: '/event-registration',
-    handler: eventRegistrationHandler,
+    handler: mosipRegistrationHandler({ url: 'http://mosip-api:2024' }),
     options: {
       tags: ['api'],
       description:
