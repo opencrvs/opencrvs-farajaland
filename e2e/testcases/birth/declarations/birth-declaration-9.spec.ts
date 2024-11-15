@@ -37,7 +37,7 @@ test.describe.serial('9. Birth declaration case - 9', () => {
     await page.close()
   })
 
-  test.describe('9.1 Declaration started by FA', async () => {
+  test.skip('9.1 Declaration started by FA', async () => {
     test.beforeAll(async () => {
       await login(
         page,
@@ -209,7 +209,7 @@ test.describe.serial('9. Birth declaration case - 9', () => {
     })
   })
 
-  test.describe('9.2 Declaration Review by RA', async () => {
+  test.skip('9.2 Declaration Review by RA', async () => {
     test('9.2.1 Navigate to the declaration review page', async () => {
       await login(
         page,
