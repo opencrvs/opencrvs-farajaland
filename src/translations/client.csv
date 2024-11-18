@@ -120,7 +120,7 @@ buttons.send,Submit button on submit modal,Confirm,Soumettre
 buttons.sendForApproval,Title for complete submit button,Send for approval,Envoyer pour approbation
 buttons.sendForReview,Submit Button Text,Send for review,Envoyer pour révision
 buttons.sendForUpdates,,Send for updates,Envoyer pour les mises à jour
-buttons.sendIncomplete,Title for Incomplete submit button,Send incomplete,Envoyer pour révision
+buttons.sendIncomplete,Title for Incomplete submit button,Send for review,Envoyer pour révision
 buttons.settings,Menu item settings,Settings,Paramètres
 buttons.start,Label of start button,Start,Démarrer
 buttons.status,Label of status button,Status,Statut
