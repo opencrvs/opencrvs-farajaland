@@ -250,13 +250,13 @@ export const GET_BIRTH_REGISTRATION_FOR_REVIEW = print(gql`
         user {
           id
           role {
-            _id
-            labels {
-              lang
-              label
+            id
+            label {
+              id
+              defaultMessage
+              description
             }
           }
-          systemRole
           name {
             firstNames
             familyName
