@@ -41,7 +41,6 @@ test.describe.serial('7. Birth declaration case - 7', () => {
     await page.close()
   })
 
-  // TODO fix after workqueue query is fixed
   test.describe('7.1 Declaration started by FA', async () => {
     test.beforeAll(async () => {
       await login(
@@ -235,6 +234,7 @@ test.describe.serial('7. Birth declaration case - 7', () => {
         .click()
     })
 
+    // TODO fix after workqueue query is fixed
     test.skip('7.1.9 Send for review', async () => {
       await page.getByRole('button', { name: 'Send for review' }).click()
       await expect(page.getByText('Send for review?')).toBeVisible()
@@ -261,6 +261,7 @@ test.describe.serial('7. Birth declaration case - 7', () => {
     })
   })
 
+  // TODO fix after workqueue query is fixed
   test.skip('7.2 Declaration Review by RA', async () => {
     test('7.2.1 Navigate to the declaration review page', async () => {
       await login(

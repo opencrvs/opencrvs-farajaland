@@ -183,6 +183,7 @@ test.describe.serial('10. Birth declaration case - 10', () => {
         .click()
     })
 
+    // TODO fix after workqueue query is fixed
     test.skip('10.1.8 Send for review', async () => {
       await page.getByRole('button', { name: 'Send for review' }).click()
       await expect(page.getByText('Send for review?')).toBeVisible()
