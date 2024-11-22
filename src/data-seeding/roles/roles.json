@@ -108,7 +108,8 @@
       "organisation.read-locations:my-office",
       "search.birth",
       "search.death",
-      "search.marriage"
+      "search.marriage",
+      "profile.electronic-signature"
     ]
   },
   {
