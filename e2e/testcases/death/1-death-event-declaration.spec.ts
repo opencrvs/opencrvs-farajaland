@@ -1,6 +1,7 @@
 import { expect, test, type Page } from '@playwright/test'
 import { createPIN, getToken, login } from '../../helpers'
 import { createDeathDeclaration } from './helpers'
+import { CREDENTIALS } from '../../constants'
 
 test.describe('1. Death event declaration', () => {
   test.describe.serial('Fill all form sections. Save & Exit', () => {
@@ -14,7 +15,11 @@ test.describe('1. Death event declaration', () => {
     })
 
     test('1.1. Navigate to the death event declaration page', async () => {
-      await login(page, 'k.mweene', 'test')
+      await login(
+        page,
+        CREDENTIALS.LOCAL_REGISTRAR.USERNAME,
+        CREDENTIALS.LOCAL_REGISTRAR.PASSWORD
+      )
       await createPIN(page)
       await page.click('#header_new_event')
       await expect(page.getByText('New Declaration')).toBeVisible()
@@ -85,9 +90,12 @@ test.describe('1. Death event declaration', () => {
           page.getByRole('button', { name: 'Save & Exit' })
         ).toBeVisible()
 
-        await page.locator('#eventToggleMenuToggleButton').click()
+        await page.locator('#eventToggleMenu-dropdownMenu').click()
         await expect(
-          page.getByRole('button', { name: 'Delete declaration' })
+          page
+            .locator('#eventToggleMenu-dropdownMenu')
+            .getByRole('listitem')
+            .filter({ hasText: 'Delete declaration' })
         ).toBeVisible()
       })
 
@@ -150,9 +158,12 @@ test.describe('1. Death event declaration', () => {
           page.getByRole('button', { name: 'Save & Exit' })
         ).toBeVisible()
 
-        await page.locator('#eventToggleMenuToggleButton').click()
+        await page.locator('#eventToggleMenu-dropdownMenu').click()
         await expect(
-          page.getByRole('button', { name: 'Delete declaration' })
+          page
+            .locator('#eventToggleMenu-dropdownMenu')
+            .getByRole('listitem')
+            .filter({ hasText: 'Delete declaration' })
         ).toBeVisible()
       })
 
@@ -188,9 +199,12 @@ test.describe('1. Death event declaration', () => {
           page.getByRole('button', { name: 'Save & Exit' })
         ).toBeVisible()
 
-        await page.locator('#eventToggleMenuToggleButton').click()
+        await page.locator('#eventToggleMenu-dropdownMenu').click()
         await expect(
-          page.getByRole('button', { name: 'Delete declaration' })
+          page
+            .locator('#eventToggleMenu-dropdownMenu')
+            .getByRole('listitem')
+            .filter({ hasText: 'Delete declaration' })
         ).toBeVisible()
       })
 
@@ -230,9 +244,12 @@ test.describe('1. Death event declaration', () => {
         await expect(
           page.getByRole('button', { name: 'Save & Exit' })
         ).toBeVisible()
-        await page.locator('#eventToggleMenuToggleButton').click()
+        await page.locator('#eventToggleMenu-dropdownMenu').click()
         await expect(
-          page.getByRole('button', { name: 'Delete declaration' })
+          page
+            .locator('#eventToggleMenu-dropdownMenu')
+            .getByRole('listitem')
+            .filter({ hasText: 'Delete declaration' })
         ).toBeVisible()
       })
 
@@ -275,9 +292,12 @@ test.describe('1. Death event declaration', () => {
         await expect(
           page.getByRole('button', { name: 'Save & Exit' })
         ).toBeVisible()
-        await page.locator('#eventToggleMenuToggleButton').click()
+        await page.locator('#eventToggleMenu-dropdownMenu').click()
         await expect(
-          page.getByRole('button', { name: 'Delete declaration' })
+          page
+            .locator('#eventToggleMenu-dropdownMenu')
+            .getByRole('listitem')
+            .filter({ hasText: 'Delete declaration' })
         ).toBeVisible()
       })
 
@@ -318,9 +338,12 @@ test.describe('1. Death event declaration', () => {
         await expect(
           page.getByRole('button', { name: 'Save & Exit' })
         ).toBeVisible()
-        await page.locator('#eventToggleMenuToggleButton').click()
+        await page.locator('#eventToggleMenu-dropdownMenu').click()
         await expect(
-          page.getByRole('button', { name: 'Delete declaration' })
+          page
+            .locator('#eventToggleMenu-dropdownMenu')
+            .getByRole('listitem')
+            .filter({ hasText: 'Delete declaration' })
         ).toBeVisible()
       })
 
@@ -393,7 +416,11 @@ test.describe('1. Death event declaration', () => {
   })
   test.describe('1.10 Validate "Exit" Button', async () => {
     test.beforeEach(async ({ page }) => {
-      await login(page, 'k.mweene', 'test')
+      await login(
+        page,
+        CREDENTIALS.LOCAL_REGISTRAR.USERNAME,
+        CREDENTIALS.LOCAL_REGISTRAR.PASSWORD
+      )
       await createPIN(page)
       await page.click('#header_new_event')
       await page.getByLabel('Death').click()
@@ -438,22 +465,33 @@ test.describe('1. Death event declaration', () => {
       /*
        * Expected result: should be navigated to "in-progress" tab but no draft will be saved
        */
-      expect(page.locator('#content-name', { hasText: 'In progress' }))
+
+      await page.waitForTimeout(500) // This page renders twice at first
+
+      await expect(
+        page.locator('#content-name', { hasText: 'In progress' })
+      ).toBeVisible()
       await expect(page.getByText('0 seconds ago')).toBeHidden()
     })
   })
 
   test.describe('1.11 Validate "Delete Declaration" Button  ', async () => {
     test.beforeEach(async ({ page }) => {
-      await login(page, 'k.mweene', 'test')
+      await login(
+        page,
+        CREDENTIALS.LOCAL_REGISTRAR.USERNAME,
+        CREDENTIALS.LOCAL_REGISTRAR.PASSWORD
+      )
       await createPIN(page)
       await page.click('#header_new_event')
       await page.getByLabel('Death').click()
       await page.getByRole('button', { name: 'Continue' }).click()
 
-      await page.locator('#eventToggleMenuToggleButton').click()
+      await page.locator('#eventToggleMenu-dropdownMenu').click()
       await page
-        .getByRole('button', { name: 'Delete declaration', exact: true })
+        .locator('#eventToggleMenu-dropdownMenu')
+        .getByRole('listitem')
+        .filter({ hasText: 'Delete declaration' })
         .click()
     })
 
@@ -496,7 +534,12 @@ test.describe('1. Death event declaration', () => {
       /*
        * Expected result: should be navigated to "in-progress" tab but no draft will be saved
        */
-      expect(page.locator('#content-name', { hasText: 'In progress' }))
+
+      await page.waitForTimeout(500) // This page renders twice at first
+
+      await expect(
+        page.locator('#content-name', { hasText: 'In progress' })
+      ).toBeVisible()
       await expect(page.getByText('0 seconds ago')).toBeHidden()
     })
   })

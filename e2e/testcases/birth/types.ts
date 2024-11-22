@@ -184,7 +184,6 @@ export type BirthDeclaration = {
     type: string
     trackingId: string
     registrationNumber: string
-    mosipAid: string | null
   }
   attendantAtBirth: string
   weightAtBirth: number
@@ -192,7 +191,15 @@ export type BirthDeclaration = {
   eventLocation: {
     id: string
     type: string
-    address: string | null
+    address: {
+      type: string
+      line: string[]
+      district: string
+      state: string
+      city: string
+      postalCode: string
+      country: string
+    }
   }
   questionnaire: {
     fieldId: string
