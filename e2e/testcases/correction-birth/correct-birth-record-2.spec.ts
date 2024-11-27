@@ -1,11 +1,13 @@
 import { expect, test, type Page } from '@playwright/test'
 import {
+  assignRecord,
   createPIN,
   expectAddress,
   expectOutboxToBeEmpty,
   formatDateTo_ddMMMMyyyy,
   formatDateTo_yyyyMMdd,
   formatName,
+  getAction,
   getToken,
   goBackToReview,
   joinValuesWith,
@@ -123,7 +125,8 @@ test.describe.serial('Correct record - 2', () => {
     await page.locator('#ListItemAction-0-icon').click()
     await page.locator('#name_0').click()
 
-    await page.getByRole('button', { name: 'Print', exact: true }).click()
+    await page.getByRole('button', { name: 'Action' }).first().click()
+    await getAction(page, 'Print certified copy').click()
 
     await page.getByLabel('Print in advance').check()
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -888,10 +891,12 @@ test.describe.serial('Correct record - 2', () => {
      * - include the declaration in this tab
      */
     expect(page.url().includes('registration-home/approvals')).toBeTruthy()
+    await page.getByRole('button', { name: 'Outbox' }).click()
     await expectOutboxToBeEmpty(page)
+    await page.getByRole('button', { name: 'Sent for approval' }).click()
 
     await expect(
-      page.getByText(formatName(declaration.child.name[0]))
+      page.getByText(formatName(declaration.child.name[0])).first()
     ).toBeVisible()
   })
   test.describe('2.8 Correction Approval', async () => {
@@ -918,8 +923,8 @@ test.describe.serial('Correct record - 2', () => {
     })
 
     test('2.8.2 Correction review', async () => {
-      await page.getByRole('button', { name: 'Review', exact: true }).click()
-
+      await page.getByRole('button', { name: 'Action' }).first().click()
+      await getAction(page, 'Review correction request').click()
       /*
        * Expected result: should show
        * - Submitter
@@ -1050,26 +1055,23 @@ test.describe.serial('Correct record - 2', () => {
        * - include the updated declaration in this tab
        */
       expect(page.url().includes('registration-home/print')).toBeTruthy()
+      await page.getByRole('button', { name: 'Outbox' }).click()
       await expectOutboxToBeEmpty(page)
+      await page.getByRole('button', { name: 'Ready to print' }).click()
 
       await expect(
-        page.getByText(formatName(declaration.child.name[0]))
+        page.getByText(formatName(declaration.child.name[0])).first()
       ).toBeVisible()
     })
 
     test.describe('2.8.4 Validate history in record audit', async () => {
       test('2.8.4.1 Validate entries in record audit', async () => {
-        await page.getByText(formatName(declaration.child.name[0])).click()
+        await page
+          .getByText(formatName(declaration.child.name[0]))
+          .first()
+          .click()
 
-        await page.getByLabel('Assign record').click()
-        if (
-          await page
-            .getByRole('button', { name: 'Assign', exact: true })
-            .isVisible()
-        )
-          await page
-            .getByRole('button', { name: 'Assign', exact: true })
-            .click()
+        await assignRecord(page)
 
         /*
          * Expected result: should show in task history

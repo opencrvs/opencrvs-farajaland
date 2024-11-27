@@ -9,7 +9,9 @@ import {
   expectTextWithChangeLink,
   formatDateObjectTo_ddMMMMyyyy,
   continueForm,
-  expectOutboxToBeEmpty
+  expectOutboxToBeEmpty,
+  getAction,
+  assignRecord
 } from '../../helpers'
 import faker from '@faker-js/faker'
 import { CREDENTIALS } from '../../constants'
@@ -714,8 +716,8 @@ test.describe.serial('8. Validate declaration review page', () => {
        */
       expect(page.url().includes('registration-home')).toBeTruthy()
 
-      await page.getByRole('button', { name: 'Sent for review' }).click()
       await expectOutboxToBeEmpty(page)
+      await page.getByRole('button', { name: 'Sent for review' }).click()
       /*
        * Expected result: The declaration should be in sent for review
        */
@@ -741,9 +743,9 @@ test.describe.serial('8. Validate declaration review page', () => {
           name: `${declaration.deceased.name.firstNames} ${declaration.deceased.name.familyName}`
         })
         .click()
-      await page.getByLabel('Assign record').click()
-      await page.getByRole('button', { name: 'Assign', exact: true }).click()
-      await page.getByRole('button', { name: 'Review', exact: true }).click()
+      await assignRecord(page)
+      await page.getByRole('button', { name: 'Action' }).first().click()
+      await getAction(page, 'Review declaration').click()
     })
     test('8.2.1.1 Verify information added on previous pages', async () => {
       /*
@@ -1186,8 +1188,8 @@ test.describe.serial('8. Validate declaration review page', () => {
        */
       expect(page.url().includes('registration-home')).toBeTruthy()
 
-      await page.getByRole('button', { name: 'Sent for approval' }).click()
       await expectOutboxToBeEmpty(page)
+      await page.getByRole('button', { name: 'Sent for approval' }).click()
 
       /*
        * Expected result: The declaration should be in sent for approval
@@ -1214,9 +1216,9 @@ test.describe.serial('8. Validate declaration review page', () => {
           name: `${declaration.deceased.name.firstNames} ${declaration.deceased.name.familyName}`
         })
         .click()
-      await page.getByLabel('Assign record').click()
-      await page.getByRole('button', { name: 'Assign', exact: true }).click()
-      await page.getByRole('button', { name: 'Review', exact: true }).click()
+      await assignRecord(page)
+      await page.getByRole('button', { name: 'Action' }).first().click()
+      await getAction(page, 'Review declaration').click()
     })
     test('8.3.1.1 Verify information added on previous pages', async () => {
       /*
@@ -1388,8 +1390,8 @@ test.describe.serial('8. Validate declaration review page', () => {
        */
       expect(page.url().includes('registration-home')).toBeTruthy()
 
-      await page.getByRole('button', { name: 'Ready to print' }).click()
       await expectOutboxToBeEmpty(page)
+      await page.getByRole('button', { name: 'Ready to print' }).click()
 
       /*
        * Expected result: The declaration should be in Ready to print

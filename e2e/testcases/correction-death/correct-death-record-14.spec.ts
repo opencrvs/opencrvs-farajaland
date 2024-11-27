@@ -1,10 +1,12 @@
 import { expect, test, type Page } from '@playwright/test'
 import {
+  assignRecord,
   createPIN,
   expectAddress,
   expectOutboxToBeEmpty,
   formatDateTo_ddMMMMyyyy,
   formatName,
+  getAction,
   getToken,
   goBackToReview,
   joinValuesWith,
@@ -81,7 +83,8 @@ test.describe.serial(' Correct record - 14', () => {
     await page.locator('#ListItemAction-0-icon').click()
     await page.locator('#name_0').click()
 
-    await page.getByRole('button', { name: 'Print', exact: true }).click()
+    await page.getByRole('button', { name: 'Action' }).first().click()
+    await getAction(page, 'Print certified copy').click()
 
     await page.getByLabel('Print in advance').check()
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -706,13 +709,13 @@ test.describe.serial(' Correct record - 14', () => {
     await page.getByRole('button', { name: 'Make correction' }).click()
     await page.getByRole('button', { name: 'Confirm' }).click()
 
+    await expectOutboxToBeEmpty(page)
     await page.getByRole('button', { name: 'Ready to print' }).click()
     /*
      * Expected result: should
      * - be navigated to ready to print tab
      * - include the declaration in this tab
      */
-    await expectOutboxToBeEmpty(page)
 
     await expect(
       page.getByText(formatName(updatedDeceasedDetails))
@@ -721,16 +724,7 @@ test.describe.serial(' Correct record - 14', () => {
   test('14.8 Validate history in record audit', async () => {
     await page.getByText(formatName(updatedDeceasedDetails)).click()
 
-    await page.getByLabel('Assign record').click()
-
-    if (await page.getByText('Unassign record?', { exact: true }).isVisible())
-      await page.getByRole('button', { name: 'Cancel', exact: true }).click()
-    else if (
-      await page
-        .getByRole('button', { name: 'Assign', exact: true })
-        .isVisible()
-    )
-      await page.getByRole('button', { name: 'Assign', exact: true }).click()
+    await assignRecord(page)
 
     /*
      * Expected result: should show in task history

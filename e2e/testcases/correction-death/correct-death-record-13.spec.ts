@@ -1,10 +1,12 @@
 import { expect, test, type Page } from '@playwright/test'
 import {
+  assignRecord,
   createPIN,
   expectAddress,
   expectOutboxToBeEmpty,
   formatDateTo_ddMMMMyyyy,
   formatName,
+  getAction,
   getToken,
   goBackToReview,
   login,
@@ -103,9 +105,8 @@ test.describe.serial(' Correct record - 13', () => {
     await page.locator('#ListItemAction-0-icon').click()
     await page.locator('#name_0').click()
 
-    await page
-      .getByRole('button', { name: 'Correct record', exact: true })
-      .click()
+    await page.getByRole('button', { name: 'Action' }).first().click()
+    await getAction(page, 'Correct record').click()
   })
 
   test('13.2 Correction requester: Someone Else (Cousin)', async () => {
@@ -664,8 +665,6 @@ test.describe.serial(' Correct record - 13', () => {
 
     await page.getByRole('button', { name: 'Confirm' }).click()
 
-    await page.getByRole('button', { name: 'Ready to print' }).click()
-
     /*
      * Expected result: should
      * - be navigated to ready to print tab
@@ -673,20 +672,19 @@ test.describe.serial(' Correct record - 13', () => {
      */
     await expectOutboxToBeEmpty(page)
 
+    await page.getByRole('button', { name: 'Ready to print' }).click()
+
     await expect(
-      page.getByText(formatName(declaration.deceased.name[0]))
+      page.getByText(formatName(declaration.deceased.name[0])).first()
     ).toBeVisible()
   })
   test('13.8 Validate history in record audit', async () => {
-    await page.getByText(formatName(declaration.deceased.name[0])).click()
+    await page
+      .getByText(formatName(declaration.deceased.name[0]))
+      .first()
+      .click()
 
-    await page.getByLabel('Assign record').click()
-    if (
-      await page
-        .getByRole('button', { name: 'Assign', exact: true })
-        .isVisible()
-    )
-      await page.getByRole('button', { name: 'Assign', exact: true }).click()
+    await assignRecord(page)
 
     /*
      * Expected result: should show in task history

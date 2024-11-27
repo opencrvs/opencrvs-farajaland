@@ -1,9 +1,11 @@
 import { test, expect, type Page } from '@playwright/test'
 import {
+  assignRecord,
   continueForm,
   createPIN,
   drawSignature,
   expectOutboxToBeEmpty,
+  getAction,
   goToSection,
   login
 } from '../../../helpers'
@@ -201,7 +203,8 @@ test.describe.serial('10. Birth declaration case - 10', () => {
        */
       await expect(
         page.getByRole('button', {
-          name: `${declaration.child.name.firstNames}`
+          name: `${declaration.child.name.firstNames}`,
+          exact: true
         })
       ).toBeVisible()
     })
@@ -219,12 +222,13 @@ test.describe.serial('10. Birth declaration case - 10', () => {
       await page.getByRole('button', { name: 'Field Agents' }).click()
       await page
         .getByRole('button', {
-          name: `${declaration.child.name.firstNames}`
+          name: `${declaration.child.name.firstNames}`,
+          exact: true
         })
         .click()
-      await page.getByLabel('Assign record').click()
-      await page.getByRole('button', { name: 'Assign', exact: true }).click()
-      await page.getByRole('button', { name: 'Update', exact: true }).click()
+      await assignRecord(page)
+      await page.getByRole('button', { name: 'Action' }).first().click()
+      await getAction(page, 'Update declaration').click()
     })
 
     test('10.2.2 Verify information on preview page', async () => {
