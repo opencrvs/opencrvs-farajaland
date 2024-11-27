@@ -24,6 +24,8 @@ import {
   DOMAIN,
   GATEWAY_URL,
   LOGIN_URL,
+  PRODUCTION,
+  QA_ENV,
   SENTRY_DSN
 } from '@countryconfig/constants'
 import {
@@ -52,8 +54,13 @@ import { ErrorContext } from 'hapi-auth-jwt2'
 import { mapGeojsonHandler } from '@countryconfig/api/dashboards/handler'
 import { formHandler } from '@countryconfig/form'
 import { locationsHandler } from './data-seeding/locations/handler'
+
 import { certificateHandler } from './api/certificates/handler'
-import { rolesHandler } from './data-seeding/roles/handler'
+import {
+  modifyRoles,
+  renderRolesUI,
+  rolesHandler
+} from './data-seeding/roles/handler'
 import { usersHandler } from './data-seeding/employees/handler'
 import { applicationConfigHandler } from './api/application/handler'
 import { validatorsHandler } from './form/common/custom-validation-conditionals/validators-handler'
@@ -512,6 +519,31 @@ export async function createServer() {
       description: 'Returns user roles metadata'
     }
   })
+
+  if (!PRODUCTION || QA_ENV) {
+    server.route({
+      method: 'PUT',
+      path: '/__qa/roles',
+      handler: modifyRoles,
+      options: {
+        auth: false,
+        tags: ['api', 'user-roles'],
+        description: 'OpenCRVS QA specific endpoint: modify roles in real-time'
+      }
+    })
+
+    server.route({
+      method: 'GET',
+      path: '/__qa/roles',
+      handler: renderRolesUI,
+      options: {
+        auth: false,
+        tags: ['api', 'user-roles'],
+        description:
+          'OpenCRVS QA specific endpoint: render roles as a HTML table'
+      }
+    })
+  }
 
   server.route({
     method: 'GET',

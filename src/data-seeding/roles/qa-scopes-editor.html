@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Role Permissions</title>
+    <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.min.js"></script>
+  </head>
+  <body>
+    <!-- Table Template -->
+    <script id="roles-template" type="text/x-handlebars-template">
+      <table border="1">
+        <thead>
+          <tr>
+            <th>Scope</th>
+            {{#each roles}}
+              <th>{{label.defaultMessage}}</th>
+            {{/each}}
+          </tr>
+        </thead>
+        <tbody>
+          {{#each scopes as |scope|}}
+            <tr>
+              <td>{{scope}}</td>
+              {{#each ../roles as |role|}}
+                <td>
+                  <input type="checkbox" data-role-id="{{role.id}}" data-scope="{{scope}}" {{#if (includes role.scopes scope)}}checked{{/if}}>
+                </td>
+              {{/each}}
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </script>
+
+    <div id="roles-container"></div>
+
+    <script>
+      let roles
+
+      async function fetchRoles() {
+        const response = await fetch('/roles')
+        roles = await response.json()
+        const allScopes = Array.from(
+          new Set(roles.flatMap((role) => role.scopes))
+        ).sort()
+
+        const templateSource =
+          document.getElementById('roles-template').innerHTML
+        const template = Handlebars.compile(templateSource)
+        const html = template({ roles, scopes: allScopes })
+        document.getElementById('roles-container').innerHTML = html
+
+        document
+          .querySelectorAll('input[type="checkbox"]')
+          .forEach((checkbox) => {
+            checkbox.addEventListener('change', handleCheckboxChange)
+          })
+      }
+
+      function handleCheckboxChange(event) {
+        const roleId = event.target.dataset.roleId
+        const scope = event.target.dataset.scope
+        const isChecked = event.target.checked
+
+        roles.forEach((role) => {
+          if (role.id === roleId) {
+            if (isChecked) {
+              role.scopes.push(scope)
+            } else {
+              role.scopes = role.scopes.filter((s) => s !== scope)
+            }
+          }
+        })
+
+        fetch('/__qa/roles', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(roles)
+        })
+      }
+
+      Handlebars.registerHelper('includes', function (scopes, scope) {
+        return scopes.includes(scope)
+      })
+
+      document.addEventListener('DOMContentLoaded', fetchRoles)
+    </script>
+  </body>
+</html>

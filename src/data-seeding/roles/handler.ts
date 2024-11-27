@@ -10,10 +10,17 @@
  */
 import { PRODUCTION, QA_ENV } from '@countryconfig/constants'
 import roles from './roles.json'
+import { readFile, writeFile } from 'fs/promises'
+import { Request, ResponseToolkit } from '@hapi/hapi'
+import { join } from 'path'
 
 export async function rolesHandler() {
   if (!PRODUCTION || QA_ENV) {
-    return roles.map((role) => {
+    const modifiableRoles: typeof roles = JSON.parse(
+      (await readFile(join(__dirname, 'roles.json'))).toString()
+    )
+
+    return modifiableRoles.map((role) => {
       return {
         ...role,
         scopes: role.scopes.concat('demo')
@@ -21,4 +28,13 @@ export async function rolesHandler() {
     })
   }
   return roles
+}
+
+export async function modifyRoles(req: Request) {
+  await writeFile(join(__dirname, 'roles.json'), JSON.stringify(req.payload))
+  return req.payload
+}
+
+export async function renderRolesUI(req: Request, h: ResponseToolkit) {
+  return h.file(join(__dirname, './qa-scopes-editor.html'))
 }
