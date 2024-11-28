@@ -104,6 +104,7 @@
       "record.unassign-others",
       "record.registration-print&issue-certified-copies",
       "record.confirm-registration",
+      "record.reject-registration",
       "performance.read",
       "performance.read-dashboards",
       "profile.electronic-signature",
