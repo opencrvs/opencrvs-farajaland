@@ -89,7 +89,7 @@ jobs:
           echo "test_matrix=$test_dirs"
 
   test:
-    needs: [deploy, discover-tests]
+    needs: [deploy, discover-tests, get-core-commit, get-country-config-commit]
     runs-on: ubuntu-22.04
     environment: ${{ github.event.inputs.environment || 'development' }}
     strategy:
@@ -134,12 +134,11 @@ jobs:
         run: npx playwright test ./e2e/testcases/${{ matrix.test_dir }}
         env:
           DOMAIN: '${{ vars.DOMAIN }}'
-        continue-on-error: true
 
       - uses: actions/upload-artifact@v4
-        if: steps.check-specs.outputs.has_spec_files == 'true'
+        if: always() && steps.check-specs.outputs.has_spec_files == 'true'
         with:
-          name: playwright-report-${{ matrix.test_dir }}
+          name: playwright-report-${{github.event.inputs.core-image-tag || needs.get-core-commit.outputs.latest_commit_sha}}-${{github.event.inputs.countryconfig-image-tag || needs.get-country-config-commit.outputs.short_sha}}-${{matrix.test_dir}}
           path: playwright-report/
           retention-days: 30
 

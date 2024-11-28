@@ -34,7 +34,7 @@ test.describe('1. Correct record - 1', () => {
     familyName: faker.name.firstName('female'),
     gender: 'Female',
     birthDate: format(
-      subDays(new Date(), Math.ceil(50 * Math.random())),
+      subDays(new Date(), Math.ceil(10 * Math.random())),
       'yyyy-MM-dd'
     ),
     birthLocation: 'Tembwe Rural Health Centre',
@@ -966,7 +966,7 @@ test.describe('1. Correct record - 1', () => {
 
         test('1.2.6.4.2 Validate correction requested modal', async () => {
           const correctionRequestedRow = page.locator(
-            '#listTable-task-history #row_4'
+            '#listTable-task-history div[id^="row_"]:has-text("Correction requested")'
           )
           await correctionRequestedRow.getByText('Correction requested').click()
 
@@ -1084,7 +1084,7 @@ test.describe('1. Correct record - 1', () => {
 
         test('1.2.6.4.3 Validate correction approved modal', async () => {
           const correctionApprovedRow = page.locator(
-            '#listTable-task-history #row_6'
+            '#listTable-task-history div[id^="row_"]:has-text("Correction approved")'
           )
           await correctionApprovedRow.getByText('Correction approved').click()
 

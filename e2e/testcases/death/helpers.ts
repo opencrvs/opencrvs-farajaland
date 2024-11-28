@@ -39,7 +39,7 @@ const declaration = {
       familyName: faker.name.lastName('male') + generateRandomSuffix()
     },
     gender: 'male',
-    age: random(20, 100),
+    age: random(50, 100),
     nationality: 'FAR',
     identifier: {
       type: 'NATIONAL_ID',
@@ -59,7 +59,7 @@ const declaration = {
   },
   event: {
     manner: 'Natural causes',
-    date: getRandomDate(0, 20),
+    date: getRandomDate(0, 20, 20),
     cause: {
       established: true,
       source: 'Physician'
@@ -73,7 +73,7 @@ const declaration = {
       firstNames: faker.name.firstName('female'),
       familyName: faker.name.lastName('female')
     },
-    birthDate: getRandomDate(50, 200),
+    birthDate: getRandomDate(50, 200, 200),
     nationality: 'Farajaland',
     identifier: {
       id: faker.random.numeric(10),
