@@ -78,7 +78,7 @@ docker-workers: {}
 backups:
   hosts:
     farajaland-qa:
-      ansible_host: '188.245.61.69'
+      ansible_host: '5.223.46.129'
       # Written by provision pipeline. Assumes "backup" environment
       # exists in Github environments
       ansible_ssh_private_key_file: /tmp/backup_ssh_private_key
