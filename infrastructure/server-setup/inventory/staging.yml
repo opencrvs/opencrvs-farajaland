@@ -14,7 +14,7 @@ all:
     # then this should always be set when configuring a production server if there is no other firewall in front of the server.
     # BE CAREFUL! This will block all SSH traffic except from the IP addresses listed here.
     # Enable backups but write them to a different location from where production writes them
-    enable_backups: false
+    enable_backups: true
     backup_server_remote_target_directory: /home/backup/staging-backups
     backup_server_remote_source_directory: /home/backup/backups
     periodic_restore_from_backup: true
@@ -78,7 +78,7 @@ docker-workers: {}
 backups:
   hosts:
     farajaland-qa:
-      ansible_host: '5.223.46.129'
+      ansible_host: '188.245.61.69'
       # Written by provision pipeline. Assumes "backup" environment
       # exists in Github environments
       ansible_ssh_private_key_file: /tmp/backup_ssh_private_key
