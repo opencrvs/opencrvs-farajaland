@@ -556,6 +556,22 @@ export async function createServer() {
     }
   })
 
+  server.route({
+    method: 'GET',
+    path: '/mock-mosip-server',
+    options: {
+      auth: false
+    },
+    handler: function (request, h) {
+      return {
+        firstName: 'Jone',
+        familyName: 'Doe',
+        gender: 'male',
+        dateOfBirth: '2024-12-01'
+      }
+    }
+  })
+
   server.ext({
     type: 'onRequest',
     method(request: Hapi.Request & { sentryScope?: any }, h) {

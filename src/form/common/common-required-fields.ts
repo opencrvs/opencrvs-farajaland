@@ -20,26 +20,36 @@ export const getBirthDate = (
   fieldName: string,
   conditionals: Conditional[],
   validator: any[],
-  certificateHandlebar: string
+  certificateHandlebar: string,
+  initialValue: any = ''
 ): SerializedFormField => ({
   name: fieldName, // A field with this name MUST exist
   type: 'DATE',
   label: formMessageDescriptors.dateOfBirth,
   required: true,
   conditionals,
-  initialValue: '',
+  initialValue,
   validator,
   mapping: getFieldMapping('birthDate', certificateHandlebar)
 })
 
-export const getGender = (certificateHandlebar: string) =>
+export const getGender = (
+  certificateHandlebar: string,
+  initialValue: any = ''
+) =>
   ({
     name: 'gender', // A field with this name MUST exist
     type: 'SELECT_WITH_OPTIONS',
     label: formMessageDescriptors.sex,
     required: true,
-    initialValue: '',
+    initialValue,
     validator: [],
+    conditionals: [
+      {
+        action: 'disable',
+        expression: '!!$form.gender'
+      }
+    ],
     placeholder: formMessageDescriptors.formSelectPlaceholder,
     mapping: getFieldMapping('gender', certificateHandlebar),
     options: genderOptions
@@ -48,7 +58,8 @@ export const getGender = (certificateHandlebar: string) =>
 export const getFamilyNameField = (
   previewGroup: string,
   conditionals: Conditional[],
-  certificateHandlebar: string
+  certificateHandlebar: string,
+  initialValue: any = ''
 ) =>
   ({
     name: 'familyNameEng', // A field with this name MUST exist
@@ -58,7 +69,7 @@ export const getFamilyNameField = (
     label: formMessageDescriptors.familyName,
     maxLength: 32,
     required: true,
-    initialValue: '',
+    initialValue,
     validator: [
       {
         operation: 'englishOnlyNameFormat'
@@ -70,7 +81,8 @@ export const getFamilyNameField = (
 export const getFirstNameField = (
   previewGroup: string,
   conditionals: Conditional[],
-  certificateHandlebar: string
+  certificateHandlebar: string,
+  initialValue: any = ''
 ) =>
   ({
     name: 'firstNamesEng', // A field with this name MUST exist
@@ -84,7 +96,7 @@ export const getFirstNameField = (
     conditionals,
     maxLength: 32,
     required: true,
-    initialValue: '',
+    initialValue,
     validator: [
       {
         operation: 'englishOnlyNameFormat'

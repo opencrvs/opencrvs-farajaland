@@ -185,11 +185,17 @@ export const birthForm: ISerializedForm = {
                 defaultMessage: 'Click here to authorize'
               },
               hideInPreview: true,
+              conditionals: [
+                {
+                  action: 'hide',
+                  expression: '!!$form.redirectCallbackFetch'
+                }
+              ],
               options: {
                 url: '/api/countryconfig/mock-authorizer-flow?opencrvsDraft=${window.location.pathname.split("/")[2]}',
                 callback: {
                   params: {
-                    authorized: true
+                    authorized: 'true'
                   },
                   trigger: 'redirectCallbackFetch'
                 }
@@ -212,20 +218,50 @@ export const birthForm: ISerializedForm = {
             },
             getFirstNameField(
               'childNameInEnglish',
-              [],
-              certificateHandlebars.childFirstName
+              [
+                {
+                  action: 'disable',
+                  expression: '!!$form.firstNamesEng'
+                }
+              ],
+              certificateHandlebars.childFirstName,
+              {
+                dependsOn: ['redirectCallbackFetch'],
+                expression: '$form.redirectCallbackFetch?.data?.firstName'
+              }
             ), // Required field.  Names in Latin characters must be provided for international passport
             getFamilyNameField(
               'childNameInEnglish',
-              [],
-              certificateHandlebars.childFamilyName
+              [
+                {
+                  action: 'disable',
+                  expression: '!!$form.familyNameEng'
+                }
+              ],
+              certificateHandlebars.childFamilyName,
+              {
+                dependsOn: ['redirectCallbackFetch'],
+                expression: '$form.redirectCallbackFetch?.data?.familyName'
+              }
             ), // Required field.  Names in Latin characters must be provided for international passport
-            getGender(certificateHandlebars.childGender), // Required field.
+            getGender(certificateHandlebars.childGender, {
+              dependsOn: ['redirectCallbackFetch'],
+              expression: '$form.redirectCallbackFetch?.data?.gender'
+            }), // Required field.
             getBirthDate(
               'childBirthDate',
-              [],
+              [
+                {
+                  action: 'disable',
+                  expression: '!!$form.childBirthDate'
+                }
+              ],
               isValidChildBirthDate,
-              certificateHandlebars.eventDate
+              certificateHandlebars.eventDate,
+              {
+                dependsOn: ['redirectCallbackFetch'],
+                expression: '$form.redirectCallbackFetch?.data?.dateOfBirth'
+              }
             ), // Required field.
             getReasonForLateRegistration('birth'),
             // PLACE OF BIRTH FIELDS WILL RENDER HERE
