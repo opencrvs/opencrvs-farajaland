@@ -51,7 +51,7 @@ docker-manager-first:
 # If you are only using one production worker for very small countries or small pilot projects, replace with an empty block like so: docker-workers: {}
 docker-workers:
   hosts:
-    farajaland-prod-02:
+    farajaland-prod-2:
       ansible_host: '49.13.124.87'
       data_label: data2
 
