@@ -187,7 +187,7 @@ export const birthForm: ISerializedForm = {
               hideInPreview: true,
               conditionals: [
                 {
-                  action: 'hide',
+                  action: 'disable',
                   expression: '!!$form.redirectCallbackFetch'
                 }
               ],

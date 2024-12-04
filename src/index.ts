@@ -564,7 +564,7 @@ export async function createServer() {
     },
     handler: function (request, h) {
       return {
-        firstName: 'Jone',
+        firstName: 'John',
         familyName: 'Doe',
         gender: 'male',
         dateOfBirth: '2024-12-01'
