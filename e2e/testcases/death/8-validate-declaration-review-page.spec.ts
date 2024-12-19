@@ -13,7 +13,7 @@ import {
   getAction,
   assignRecord
 } from '../../helpers'
-import faker from '@faker-js/faker'
+import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../constants'
 
 test.describe.serial('8. Validate declaration review page', () => {

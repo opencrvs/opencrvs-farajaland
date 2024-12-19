@@ -1,6 +1,6 @@
 import { GATEWAY_HOST } from '../../constants'
 import { BirthRegistrationInput } from '../../gateway'
-import faker from '@faker-js/faker'
+import { faker } from '@faker-js/faker'
 
 import { readFileSync } from 'fs'
 import uuid from 'uuid'

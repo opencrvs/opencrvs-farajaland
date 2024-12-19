@@ -14,7 +14,7 @@ import {
   login,
   uploadImageToSection
 } from '../../../helpers'
-import faker from '@faker-js/faker'
+import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../../constants'
 
 test.describe.serial('2. Death declaration case - 2', () => {

@@ -12,7 +12,7 @@ import {
   joinValuesWith,
   login
 } from '../../helpers'
-import faker from '@faker-js/faker'
+import { faker } from '@faker-js/faker'
 import { DeathDeclaration } from '../death/types'
 import { createDeathDeclaration, fetchDeclaration } from '../death/helpers'
 import { CREDENTIALS } from '../../constants'

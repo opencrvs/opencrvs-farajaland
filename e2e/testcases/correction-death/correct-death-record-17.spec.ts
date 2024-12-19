@@ -11,7 +11,7 @@ import {
   goBackToReview,
   login
 } from '../../helpers'
-import faker from '@faker-js/faker'
+import { faker } from '@faker-js/faker'
 import { format, subDays } from 'date-fns'
 import { DeathDeclaration } from '../death/types'
 import { createDeathDeclaration, fetchDeclaration } from '../death/helpers'

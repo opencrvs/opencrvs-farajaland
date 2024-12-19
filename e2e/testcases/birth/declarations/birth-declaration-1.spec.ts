@@ -12,7 +12,7 @@ import {
   goToSection,
   login
 } from '../../../helpers'
-import faker from '@faker-js/faker'
+import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../../constants'
 
 test.describe.serial('1. Birth declaration case - 1', () => {

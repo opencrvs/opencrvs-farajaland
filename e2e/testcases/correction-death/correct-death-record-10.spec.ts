@@ -15,7 +15,7 @@ import {
   uploadImage,
   uploadImageToSection
 } from '../../helpers'
-import faker from '@faker-js/faker'
+import { faker } from '@faker-js/faker'
 import { format, parseISO } from 'date-fns'
 import { createDeathDeclaration, fetchDeclaration } from '../death/helpers'
 import { DeathDeclaration } from '../death/types'
