@@ -32,7 +32,7 @@ test.describe('10. Correct record - 10', () => {
     gender: 'Female',
     age: random(20, 45),
     nationality: 'Canada',
-    id: faker.random.numeric(10),
+    id: faker.string.numeric(10),
     idType: 'Passport',
     address: {
       province: 'Pualula',

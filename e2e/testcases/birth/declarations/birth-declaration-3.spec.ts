@@ -48,7 +48,7 @@ test.describe.serial('3. Birth declaration case - 3', () => {
       birthDate: getRandomDate(40, 200),
       nationality: 'Farajaland',
       identifier: {
-        id: faker.random.numeric(10),
+        id: faker.string.numeric(10),
         type: 'National ID'
       },
       address: {
@@ -71,7 +71,7 @@ test.describe.serial('3. Birth declaration case - 3', () => {
       birthDate: getRandomDate(20, 200),
       nationality: 'Farajaland',
       identifier: {
-        id: faker.random.numeric(9),
+        id: faker.string.numeric(9),
         type: 'Birth Registration Number'
       },
       address: {
@@ -95,7 +95,7 @@ test.describe.serial('3. Birth declaration case - 3', () => {
       birthDate: getRandomDate(22, 200),
       nationality: 'Gabon',
       identifier: {
-        id: faker.random.numeric(11),
+        id: faker.string.numeric(11),
         type: 'Birth Registration Number'
       },
       maritalStatus: 'Widowed',

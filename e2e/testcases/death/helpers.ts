@@ -43,7 +43,7 @@ const declaration = {
     nationality: 'FAR',
     identifier: {
       type: 'NATIONAL_ID',
-      id: faker.random.numeric(10)
+      id: faker.string.numeric(10)
     },
     address: {
       country: 'FAR',
@@ -76,7 +76,7 @@ const declaration = {
     birthDate: getRandomDate(50, 200, 200),
     nationality: 'Farajaland',
     identifier: {
-      id: faker.random.numeric(10),
+      id: faker.string.numeric(10),
       type: 'NATIONAL_ID'
     },
     address: {

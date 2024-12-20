@@ -29,7 +29,7 @@ test.describe.serial('11. Death declaration case - 11', () => {
       age: 45,
       nationality: 'Farajaland',
       identifier: {
-        id: faker.random.numeric(10),
+        id: faker.string.numeric(10),
         type: 'Birth Registration Number'
       },
       maritalStatus: 'Widowed',
@@ -65,7 +65,7 @@ test.describe.serial('11. Death declaration case - 11', () => {
       birthDate: getRandomDate(5, 200),
       nationality: 'Malawi',
       identifier: {
-        id: faker.random.numeric(10),
+        id: faker.string.numeric(10),
         type: 'Passport'
       },
       address: {
@@ -89,7 +89,7 @@ test.describe.serial('11. Death declaration case - 11', () => {
       age: 42,
       nationality: 'Farajaland',
       identifier: {
-        id: faker.random.numeric(10),
+        id: faker.string.numeric(10),
         type: 'Birth Registration Number'
       },
       address: {
@@ -689,7 +689,7 @@ test.describe.serial('11. Death declaration case - 11', () => {
       test("11.1.7.4 Change informant's ID", async () => {
         await page.locator('#informant-content #ID').getByText('Change').click()
         expect(page.url().includes('informant')).toBeTruthy()
-        declaration.informant.identifier.id = faker.random.numeric(10)
+        declaration.informant.identifier.id = faker.string.numeric(10)
         await page
           .locator('#informantBirthRegistrationNumber')
           .fill(declaration.informant.identifier.id)

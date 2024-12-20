@@ -63,7 +63,7 @@ test.describe.serial('4. Death declaration case - 4', () => {
       age: 17,
       nationality: 'Malawi',
       identifier: {
-        id: faker.random.numeric(10),
+        id: faker.string.numeric(10),
         type: 'Birth Registration Number'
       },
       address: {

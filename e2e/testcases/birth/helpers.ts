@@ -92,7 +92,7 @@ export async function createDeclaration(token: string, details: BirthDetails) {
                 join(__dirname, './data/assets/528KB-random.png')
               ).toString('base64'),
             informantType: details.informant.type,
-            contactPhoneNumber: '0' + faker.random.numeric(9),
+            contactPhoneNumber: '0' + faker.string.numeric(9),
             contactEmail: faker.internet.email(),
             draftId: uuid.v4()
           },
@@ -166,7 +166,7 @@ export async function createDeclaration(token: string, details: BirthDetails) {
             nationality: ['FAR'],
             identifier: [
               {
-                id: faker.random.numeric(10),
+                id: faker.string.numeric(10),
                 type: 'NATIONAL_ID'
               }
             ],
@@ -233,7 +233,7 @@ export async function createDeclaration(token: string, details: BirthDetails) {
             nationality: ['FAR'],
             identifier: [
               {
-                id: faker.random.numeric(10),
+                id: faker.string.numeric(10),
                 type: 'NATIONAL_ID'
               }
             ],
@@ -283,7 +283,7 @@ export async function createDeclaration(token: string, details: BirthDetails) {
             nationality: ['FAR'],
             identifier: [
               {
-                id: faker.random.numeric(10),
+                id: faker.string.numeric(10),
                 type: 'NATIONAL_ID'
               }
             ],

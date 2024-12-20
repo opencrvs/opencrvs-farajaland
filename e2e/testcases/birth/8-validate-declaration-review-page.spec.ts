@@ -41,7 +41,7 @@ test.describe.serial('8. Validate declaration review page', () => {
       birthDate: getRandomDate(20, 200),
       nationality: 'Farajaland',
       identifier: {
-        id: faker.random.numeric(10),
+        id: faker.string.numeric(10),
         type: 'National ID'
       },
       address: {
@@ -58,7 +58,7 @@ test.describe.serial('8. Validate declaration review page', () => {
       birthDate: getRandomDate(22, 200),
       nationality: 'Farajaland',
       identifier: {
-        id: faker.random.numeric(10),
+        id: faker.string.numeric(10),
         type: 'National ID'
       },
       address: 'Same as mother'
@@ -695,7 +695,7 @@ test.describe.serial('8. Validate declaration review page', () => {
 
       test("8.1.2.14 Change mother's ID", async () => {
         await page.locator('#mother-content #ID').getByText('Change').click()
-        declaration.mother.identifier.id = faker.random.numeric(10)
+        declaration.mother.identifier.id = faker.string.numeric(10)
         await page
           .locator('#motherPassport')
           .fill(declaration.mother.identifier.id)
@@ -821,7 +821,7 @@ test.describe.serial('8. Validate declaration review page', () => {
 
       test("8.1.2.20 Change father's ID", async () => {
         await page.locator('#father-content #ID').getByText('Change').click()
-        declaration.father.identifier.id = faker.random.numeric(10)
+        declaration.father.identifier.id = faker.string.numeric(10)
         await page
           .locator('#fatherPassport')
           .fill(declaration.father.identifier.id)

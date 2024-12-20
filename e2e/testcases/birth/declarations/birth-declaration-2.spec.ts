@@ -51,7 +51,7 @@ test.describe.serial('2. Birth declaration case - 2', () => {
       age: 21,
       nationality: 'Fiji',
       identifier: {
-        id: faker.random.numeric(12),
+        id: faker.string.numeric(12),
         type: 'Passport'
       },
       address: {
@@ -72,7 +72,7 @@ test.describe.serial('2. Birth declaration case - 2', () => {
       age: 25,
       nationality: 'Farajaland',
       identifier: {
-        id: faker.random.numeric(8),
+        id: faker.string.numeric(8),
         type: 'Passport'
       },
       maritalStatus: 'Married',

@@ -28,7 +28,7 @@ test.describe.serial('8. Validate declaration review page', () => {
       birthDate: getRandomDate(75, 200),
       nationality: 'Farajaland',
       identifier: {
-        id: faker.random.numeric(10),
+        id: faker.string.numeric(10),
         type: 'National ID'
       },
       address: {
@@ -55,7 +55,7 @@ test.describe.serial('8. Validate declaration review page', () => {
       birthDate: getRandomDate(50, 200),
       nationality: 'Farajaland',
       identifier: {
-        id: faker.random.numeric(10),
+        id: faker.string.numeric(10),
         type: 'National ID'
       },
       address: {
@@ -448,7 +448,7 @@ test.describe.serial('8. Validate declaration review page', () => {
       })
       test("8.1.2.5 Change deceased's ID", async () => {
         await page.locator('#deceased-content #ID').getByText('Change').click()
-        declaration.deceased.identifier.id = faker.random.numeric(10)
+        declaration.deceased.identifier.id = faker.string.numeric(10)
         await page
           .locator('#deceasedPassport')
           .fill(declaration.deceased.identifier.id)
@@ -602,7 +602,7 @@ test.describe.serial('8. Validate declaration review page', () => {
       })
       test("8.1.2.13 Change spouse's ID", async () => {
         await page.locator('#spouse-content #ID').getByText('Change').click()
-        declaration.spouse.identifier.id = faker.random.numeric(10)
+        declaration.spouse.identifier.id = faker.string.numeric(10)
         await page
           .locator('#spousePassport')
           .fill(declaration.spouse.identifier.id)
@@ -986,7 +986,7 @@ test.describe.serial('8. Validate declaration review page', () => {
       test("8.2.2.5 Change deceased's ID", async () => {
         await page.locator('#deceased-content #ID').getByText('Change').click()
         await page.getByRole('button', { name: 'Continue' }).click()
-        declaration.deceased.identifier.id = faker.random.numeric(10)
+        declaration.deceased.identifier.id = faker.string.numeric(10)
         await page
           .locator('#deceasedBirthRegistrationNumber')
           .fill(declaration.deceased.identifier.id)
@@ -1151,7 +1151,7 @@ test.describe.serial('8. Validate declaration review page', () => {
       test("8.2.2.13 Change spouse's ID", async () => {
         await page.locator('#spouse-content #ID').getByText('Change').click()
         await page.getByRole('button', { name: 'Continue' }).click()
-        declaration.spouse.identifier.id = faker.random.numeric(10)
+        declaration.spouse.identifier.id = faker.string.numeric(10)
         await page
           .locator('#spouseBirthRegistrationNumber')
           .fill(declaration.spouse.identifier.id)

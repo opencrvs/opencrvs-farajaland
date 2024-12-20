@@ -29,7 +29,7 @@ test.describe.serial('2. Death declaration case - 2', () => {
       age: 65,
       nationality: 'Guernsey',
       identifier: {
-        id: faker.random.numeric(10),
+        id: faker.string.numeric(10),
         type: 'Passport'
       },
       maritalStatus: 'Married',
@@ -61,7 +61,7 @@ test.describe.serial('2. Death declaration case - 2', () => {
       birthDate: getRandomDate(50, 200),
       nationality: 'Farajaland',
       identifier: {
-        id: faker.random.numeric(10),
+        id: faker.string.numeric(10),
         type: 'National ID'
       },
       address: {
@@ -76,7 +76,7 @@ test.describe.serial('2. Death declaration case - 2', () => {
       age: 68,
       nationality: 'Canada',
       identifier: {
-        id: faker.random.numeric(10),
+        id: faker.string.numeric(10),
         type: 'Passport'
       },
       address: {

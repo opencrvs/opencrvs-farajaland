@@ -27,7 +27,7 @@ test.describe.serial('1. Death declaration case - 1', () => {
       birthDate: getRandomDate(75, 200),
       nationality: 'Farajaland',
       identifier: {
-        id: faker.random.numeric(10),
+        id: faker.string.numeric(10),
         type: 'National ID'
       },
       maritalStatus: 'Single',
@@ -63,7 +63,7 @@ test.describe.serial('1. Death declaration case - 1', () => {
       birthDate: getRandomDate(50, 200),
       nationality: 'Farajaland',
       identifier: {
-        id: faker.random.numeric(10),
+        id: faker.string.numeric(10),
         type: 'National ID'
       },
       address: {

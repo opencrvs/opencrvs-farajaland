@@ -51,7 +51,7 @@ test.describe.serial('4. Birth declaration case - 4', () => {
       age: 60,
       nationality: 'Guernsey',
       identifier: {
-        id: faker.random.numeric(10),
+        id: faker.string.numeric(10),
         type: 'Passport'
       },
       address: {

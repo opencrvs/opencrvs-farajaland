@@ -36,7 +36,7 @@ test.describe.serial(' Correct record - 6', () => {
     ),
     email: faker.internet.email(),
     nationality: 'Nauru',
-    id: faker.random.numeric(10),
+    id: faker.string.numeric(10),
     idType: 'Passport',
     address: {
       province: 'Sulaka',
