@@ -22,8 +22,8 @@ test.describe.serial('11. Death declaration case - 11', () => {
   const declaration = {
     deceased: {
       name: {
-        firstNames: faker.name.firstName('male'),
-        familyName: faker.name.lastName('male')
+        firstNames: faker.person.firstName('male'),
+        familyName: faker.person.lastName('male')
       },
       gender: 'Unknown',
       age: 45,
@@ -58,8 +58,8 @@ test.describe.serial('11. Death declaration case - 11', () => {
     informantEmail: faker.internet.email(),
     informant: {
       name: {
-        firstNames: faker.name.firstName('female'),
-        familyName: faker.name.lastName('female')
+        firstNames: faker.person.firstName('female'),
+        familyName: faker.person.lastName('female')
       },
       age: 17,
       birthDate: getRandomDate(5, 200),
@@ -83,8 +83,8 @@ test.describe.serial('11. Death declaration case - 11', () => {
     },
     spouse: {
       name: {
-        firstNames: faker.name.firstName('female'),
-        familyName: faker.name.lastName('female')
+        firstNames: faker.person.firstName('female'),
+        familyName: faker.person.lastName('female')
       },
       age: 42,
       nationality: 'Farajaland',
@@ -619,8 +619,8 @@ test.describe.serial('11. Death declaration case - 11', () => {
           .getByText('Change')
           .click()
         declaration.informant.name = {
-          firstNames: faker.name.firstName('female'),
-          familyName: faker.name.lastName('female')
+          firstNames: faker.person.firstName('female'),
+          familyName: faker.person.lastName('female')
         }
         expect(page.url().includes('informant')).toBeTruthy()
         await page

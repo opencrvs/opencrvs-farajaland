@@ -122,7 +122,7 @@ export async function createDeclaration(token: string, details: BirthDetails) {
                     line: [
                       faker.location.buildingNumber(),
                       faker.location.street(),
-                      faker.location.cityName(),
+                      faker.location.city(),
                       '',
                       '',
                       'URBAN',
@@ -141,7 +141,7 @@ export async function createDeclaration(token: string, details: BirthDetails) {
                       locations,
                       details.child.birthLocation?.district || 'Ibombo'
                     ),
-                    city: faker.location.cityName(),
+                    city: faker.location.city(),
                     postalCode: faker.location.zipCode()
                   }
                 }
@@ -176,7 +176,7 @@ export async function createDeclaration(token: string, details: BirthDetails) {
                 line: [
                   faker.location.buildingNumber(),
                   faker.location.street(),
-                  faker.location.cityName(),
+                  faker.location.city(),
                   '',
                   '',
                   'URBAN',
@@ -220,8 +220,8 @@ export async function createDeclaration(token: string, details: BirthDetails) {
             name: [
               {
                 use: 'en',
-                firstNames: faker.name.findName(),
-                familyName: faker.name.lastName()
+                firstNames: faker.person.firstName(),
+                familyName: faker.person.lastName()
               }
             ],
             birthDate:
@@ -272,8 +272,8 @@ export async function createDeclaration(token: string, details: BirthDetails) {
             name: [
               {
                 use: 'en',
-                firstNames: faker.name.findName(),
-                familyName: faker.name.lastName()
+                firstNames: faker.person.firstName(),
+                familyName: faker.person.lastName()
               }
             ],
             birthDate: format(

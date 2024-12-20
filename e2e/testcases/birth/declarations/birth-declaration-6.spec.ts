@@ -19,8 +19,8 @@ test.describe.serial('6. Birth declaration case - 6', () => {
   const declaration = {
     child: {
       name: {
-        firstNames: faker.name.firstName() + " O'Neil",
-        familyName: faker.name.lastName()
+        firstNames: faker.person.firstName() + " O'Neil",
+        familyName: faker.person.lastName()
       },
       gender: 'Unknown',
       birthDate: getRandomDate(0, 200)
@@ -42,8 +42,8 @@ test.describe.serial('6. Birth declaration case - 6', () => {
     informantEmail: faker.internet.email(),
     informant: {
       name: {
-        firstNames: faker.name.firstName('female'),
-        familyName: faker.name.lastName('female')
+        firstNames: faker.person.firstName('female'),
+        familyName: faker.person.lastName('female')
       },
       age: 17,
       nationality: 'Guernsey',
@@ -63,8 +63,8 @@ test.describe.serial('6. Birth declaration case - 6', () => {
     },
     father: {
       name: {
-        firstNames: faker.name.firstName('male'),
-        familyName: faker.name.lastName('male')
+        firstNames: faker.person.firstName('male'),
+        familyName: faker.person.lastName('male')
       },
       age: 25,
       nationality: 'Farajaland',

@@ -21,8 +21,8 @@ test.describe.serial('8. Validate declaration review page', () => {
   const declaration = {
     deceased: {
       name: {
-        firstNames: faker.name.firstName('male'),
-        familyName: faker.name.lastName('male')
+        firstNames: faker.person.firstName('male'),
+        familyName: faker.person.lastName('male')
       },
       gender: 'Male',
       birthDate: getRandomDate(75, 200),
@@ -49,8 +49,8 @@ test.describe.serial('8. Validate declaration review page', () => {
     informantEmail: faker.internet.email(),
     spouse: {
       name: {
-        firstNames: faker.name.firstName('female'),
-        familyName: faker.name.lastName('female')
+        firstNames: faker.person.firstName('female'),
+        familyName: faker.person.lastName('female')
       },
       birthDate: getRandomDate(50, 200),
       nationality: 'Farajaland',
@@ -364,8 +364,8 @@ test.describe.serial('8. Validate declaration review page', () => {
           .getByText('Change')
           .click()
         declaration.deceased.name = {
-          firstNames: faker.name.firstName('male'),
-          familyName: faker.name.lastName('male')
+          firstNames: faker.person.firstName('male'),
+          familyName: faker.person.lastName('male')
         }
         await page
           .locator('#firstNamesEng')
@@ -530,8 +530,8 @@ test.describe.serial('8. Validate declaration review page', () => {
 
       test("8.1.2.9 Change spouse's name", async () => {
         await page.locator('#spouse-content #Full').getByText('Change').click()
-        declaration.spouse.name.firstNames = faker.name.firstName('female')
-        declaration.spouse.name.familyName = faker.name.lastName('female')
+        declaration.spouse.name.firstNames = faker.person.firstName('female')
+        declaration.spouse.name.familyName = faker.person.lastName('female')
         await page
           .locator('#firstNamesEng')
           .fill(declaration.spouse.name.firstNames)
@@ -897,8 +897,8 @@ test.describe.serial('8. Validate declaration review page', () => {
         await page.getByRole('button', { name: 'Continue' }).click()
 
         declaration.deceased.name = {
-          firstNames: faker.name.firstName('male'),
-          familyName: faker.name.lastName('male')
+          firstNames: faker.person.firstName('male'),
+          familyName: faker.person.lastName('male')
         }
         await page
           .locator('#firstNamesEng')
@@ -1075,8 +1075,8 @@ test.describe.serial('8. Validate declaration review page', () => {
       test("8.2.2.9 Change spouse's name", async () => {
         await page.locator('#spouse-content #Full').getByText('Change').click()
         await page.getByRole('button', { name: 'Continue' }).click()
-        declaration.spouse.name.firstNames = faker.name.firstName('female')
-        declaration.spouse.name.familyName = faker.name.lastName('female')
+        declaration.spouse.name.firstNames = faker.person.firstName('female')
+        declaration.spouse.name.familyName = faker.person.lastName('female')
         await page
           .locator('#firstNamesEng')
           .fill(declaration.spouse.name.firstNames)

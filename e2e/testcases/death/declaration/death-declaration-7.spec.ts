@@ -21,8 +21,8 @@ test.describe.serial('7. Death declaration case - 7', () => {
   const declaration = {
     deceased: {
       name: {
-        firstNames: faker.name.firstName('female'),
-        familyName: faker.name.lastName('female')
+        firstNames: faker.person.firstName('female'),
+        familyName: faker.person.lastName('female')
       },
       gender: 'Female',
       age: 45,
@@ -64,8 +64,8 @@ test.describe.serial('7. Death declaration case - 7', () => {
     informantEmail: faker.internet.email(),
     informant: {
       name: {
-        firstNames: faker.name.firstName('male'),
-        familyName: faker.name.lastName('male')
+        firstNames: faker.person.firstName('male'),
+        familyName: faker.person.lastName('male')
       },
       age: 17,
       nationality: 'Malawi',

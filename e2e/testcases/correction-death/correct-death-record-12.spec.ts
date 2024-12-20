@@ -31,8 +31,8 @@ test.describe.serial(' Correct record - 12', () => {
 
   const updatedInformantDetails = {
     type: 'Son',
-    firstNames: faker.name.firstName('female'),
-    familyName: faker.name.firstName('female'),
+    firstNames: faker.person.firstName('female'),
+    familyName: faker.person.firstName('female'),
     birthDate: format(
       subDays(new Date(), Math.ceil(50 * Math.random() + 365 * 25)),
       'yyyy-MM-dd'

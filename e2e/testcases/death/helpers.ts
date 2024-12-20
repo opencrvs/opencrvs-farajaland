@@ -35,8 +35,8 @@ export type DeathDeclarationInput = {
 const declaration = {
   deceased: {
     name: {
-      firstNames: faker.name.firstName('male') + generateRandomSuffix(),
-      familyName: faker.name.lastName('male') + generateRandomSuffix()
+      firstNames: faker.person.firstName('male') + generateRandomSuffix(),
+      familyName: faker.person.lastName('male') + generateRandomSuffix()
     },
     gender: 'male',
     age: random(50, 100),
@@ -70,8 +70,8 @@ const declaration = {
   informantEmail: faker.internet.email(),
   spouse: {
     name: {
-      firstNames: faker.name.firstName('female'),
-      familyName: faker.name.lastName('female')
+      firstNames: faker.person.firstName('female'),
+      familyName: faker.person.lastName('female')
     },
     birthDate: getRandomDate(50, 200, 200),
     nationality: 'Farajaland',

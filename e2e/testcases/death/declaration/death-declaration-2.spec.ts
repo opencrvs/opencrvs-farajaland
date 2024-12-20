@@ -22,8 +22,8 @@ test.describe.serial('2. Death declaration case - 2', () => {
   const declaration = {
     deceased: {
       name: {
-        firstNames: faker.name.firstName('female'),
-        familyName: faker.name.lastName('female')
+        firstNames: faker.person.firstName('female'),
+        familyName: faker.person.lastName('female')
       },
       gender: 'Female',
       age: 65,
@@ -55,8 +55,8 @@ test.describe.serial('2. Death declaration case - 2', () => {
     informantEmail: faker.internet.email(),
     informant: {
       name: {
-        firstNames: faker.name.firstName('male'),
-        familyName: faker.name.lastName('male')
+        firstNames: faker.person.firstName('male'),
+        familyName: faker.person.lastName('male')
       },
       birthDate: getRandomDate(50, 200),
       nationality: 'Farajaland',
@@ -70,8 +70,8 @@ test.describe.serial('2. Death declaration case - 2', () => {
     },
     spouse: {
       name: {
-        firstNames: faker.name.firstName('male'),
-        familyName: faker.name.lastName('male')
+        firstNames: faker.person.firstName('male'),
+        familyName: faker.person.lastName('male')
       },
       age: 68,
       nationality: 'Canada',

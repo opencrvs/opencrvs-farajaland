@@ -21,8 +21,8 @@ test.describe.serial('2. Birth declaration case - 2', () => {
   const declaration = {
     child: {
       name: {
-        firstNames: faker.name.firstName('female'),
-        familyName: faker.name.lastName('female')
+        firstNames: faker.person.firstName('female'),
+        familyName: faker.person.lastName('female')
       },
       gender: 'Female',
       birthDate: getRandomDate(0, 200)
@@ -45,8 +45,8 @@ test.describe.serial('2. Birth declaration case - 2', () => {
     informantEmail: faker.internet.email(),
     mother: {
       name: {
-        firstNames: faker.name.firstName('female'),
-        familyName: faker.name.lastName('female')
+        firstNames: faker.person.firstName('female'),
+        familyName: faker.person.lastName('female')
       },
       age: 21,
       nationality: 'Fiji',
@@ -66,8 +66,8 @@ test.describe.serial('2. Birth declaration case - 2', () => {
     },
     father: {
       name: {
-        firstNames: faker.name.firstName('male'),
-        familyName: faker.name.lastName('male')
+        firstNames: faker.person.firstName('male'),
+        familyName: faker.person.lastName('male')
       },
       age: 25,
       nationality: 'Farajaland',

@@ -20,8 +20,8 @@ test.describe.serial('1. Death declaration case - 1', () => {
   const declaration = {
     deceased: {
       name: {
-        firstNames: faker.name.firstName('male'),
-        familyName: faker.name.lastName('male')
+        firstNames: faker.person.firstName('male'),
+        familyName: faker.person.lastName('male')
       },
       gender: 'Male',
       birthDate: getRandomDate(75, 200),
@@ -57,8 +57,8 @@ test.describe.serial('1. Death declaration case - 1', () => {
     informantEmail: faker.internet.email(),
     spouse: {
       name: {
-        firstNames: faker.name.firstName('female'),
-        familyName: faker.name.lastName('female')
+        firstNames: faker.person.firstName('female'),
+        familyName: faker.person.lastName('female')
       },
       birthDate: getRandomDate(50, 200),
       nationality: 'Farajaland',

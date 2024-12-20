@@ -28,8 +28,8 @@ test.describe.serial(' Correct record - 8', () => {
   let page: Page
 
   const updatedFatherDetails = {
-    firstNames: faker.name.firstName('male'),
-    familyName: faker.name.firstName('male'),
+    firstNames: faker.person.firstName('male'),
+    familyName: faker.person.firstName('male'),
     birthDate: format(
       subYears(new Date(), 25 + Math.ceil(10 * Math.random())),
       'yyyy-MM-dd'
@@ -63,8 +63,8 @@ test.describe.serial(' Correct record - 8', () => {
     let token = await getToken('j.musonda', 'test')
     const declarationInput = {
       child: {
-        firstNames: faker.name.firstName(),
-        familyName: faker.name.firstName(),
+        firstNames: faker.person.firstName(),
+        familyName: faker.person.firstName(),
         gender: 'male'
       },
       informant: {
@@ -74,12 +74,12 @@ test.describe.serial(' Correct record - 8', () => {
         type: 'PHYSICIAN'
       },
       mother: {
-        firstNames: faker.name.firstName(),
-        familyName: faker.name.firstName()
+        firstNames: faker.person.firstName(),
+        familyName: faker.person.firstName()
       },
       father: {
-        firstNames: faker.name.firstName(),
-        familyName: faker.name.firstName()
+        firstNames: faker.person.firstName(),
+        familyName: faker.person.firstName()
       }
     } as ConvertEnumsToStrings<BirthInputDetails>
 

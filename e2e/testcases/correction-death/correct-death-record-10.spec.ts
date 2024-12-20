@@ -27,8 +27,8 @@ test.describe('10. Correct record - 10', () => {
   let trackingId = ''
 
   const updatedDeceasedDetails = {
-    firstNames: faker.name.firstName('female'),
-    familyName: faker.name.firstName('female'),
+    firstNames: faker.person.firstName('female'),
+    familyName: faker.person.firstName('female'),
     gender: 'Female',
     age: random(20, 45),
     nationality: 'Canada',

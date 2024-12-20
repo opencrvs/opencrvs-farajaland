@@ -24,8 +24,8 @@ test.describe.serial(' Correct record - 14', () => {
 
   let page: Page
   const updatedDeceasedDetails = {
-    firstNames: faker.name.firstName('female'),
-    familyName: faker.name.firstName('female'),
+    firstNames: faker.person.firstName('female'),
+    familyName: faker.person.firstName('female'),
     gender: 'Female',
     age: random(20, 45),
     nationality: 'Canada',

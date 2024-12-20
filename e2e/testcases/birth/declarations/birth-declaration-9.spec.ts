@@ -18,7 +18,7 @@ test.describe.serial('9. Birth declaration case - 9', () => {
   const declaration = {
     child: {
       name: {
-        familyName: faker.name.lastName()
+        familyName: faker.person.lastName()
       }
     },
     informantType: 'Mother',
