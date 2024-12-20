@@ -13,6 +13,7 @@ import {
 } from './queries'
 import { random } from 'lodash'
 import { generateRandomSuffix } from '../../helpers'
+import fetch from 'node-fetch'
 
 export type BirthDetails = {
   informant: {

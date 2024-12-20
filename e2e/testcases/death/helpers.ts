@@ -15,6 +15,7 @@ import {
   GET_DEATH_REGISTRATION_FOR_REVIEW
 } from './queries'
 import { random } from 'lodash'
+import fetch from 'node-fetch'
 
 export type DeathDeclarationInput = {
   deceased?: {
