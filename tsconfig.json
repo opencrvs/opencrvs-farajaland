@@ -20,7 +20,12 @@
     "strictNullChecks": true,
     "types": ["jest", "fhir", "geojson"]
   },
-  "include": ["src/**/*.ts", "infrastructure/environments/**/*.ts", "typings"],
+  "include": [
+    "src/**/*.ts",
+    "infrastructure/environments/**/*.ts",
+    "typings",
+    "e2e/**/*.ts"
+  ],
   "exclude": [
     "node_modules",
     "build",
