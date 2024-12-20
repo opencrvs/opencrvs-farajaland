@@ -33,7 +33,7 @@ test.describe.serial('5. Birth declaration case - 5', () => {
       province: 'Pualula',
       district: 'Funabuli',
       urbanOrRural: 'Rural',
-      village: faker.address.county()
+      village: faker.location.county()
     },
     informantType: 'Brother',
     informantEmail: faker.internet.email(),
@@ -50,13 +50,13 @@ test.describe.serial('5. Birth declaration case - 5', () => {
       },
       address: {
         country: 'Haiti',
-        state: faker.address.state(),
-        district: faker.address.county(),
-        town: faker.address.city(),
-        addressLine1: faker.address.county(),
-        addressLine2: faker.address.streetName(),
-        addressLine3: faker.address.buildingNumber(),
-        postcodeOrZip: faker.address.zipCode()
+        state: faker.location.state(),
+        district: faker.location.county(),
+        town: faker.location.city(),
+        addressLine1: faker.location.county(),
+        addressLine2: faker.location.street(),
+        addressLine3: faker.location.buildingNumber(),
+        postcodeOrZip: faker.location.zipCode()
       }
     },
     mother: {
@@ -71,13 +71,13 @@ test.describe.serial('5. Birth declaration case - 5', () => {
       },
       address: {
         country: 'Guam',
-        state: faker.address.state(),
-        district: faker.address.county(),
-        town: faker.address.city(),
-        addressLine1: faker.address.county(),
-        addressLine2: faker.address.streetName(),
-        addressLine3: faker.address.buildingNumber(),
-        postcodeOrZip: faker.address.zipCode()
+        state: faker.location.state(),
+        district: faker.location.county(),
+        town: faker.location.city(),
+        addressLine1: faker.location.county(),
+        addressLine2: faker.location.street(),
+        addressLine3: faker.location.buildingNumber(),
+        postcodeOrZip: faker.location.zipCode()
       },
       maritalStatus: 'Separated',
       levelOfEducation: 'Tertiary'

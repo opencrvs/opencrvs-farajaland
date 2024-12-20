@@ -109,10 +109,10 @@ export async function sendBirthNotification(
       {
         type: 'PRIMARY_ADDRESS',
         line: ['12', 'Usual Street', 'Usual Residental Area', '', '', 'URBAN'],
-        city: faker.address.city(),
+        city: faker.location.city(),
         district: district.id,
         state: district.partOf.split('/')[1],
-        postalCode: faker.address.zipCode(),
+        postalCode: faker.location.zipCode(),
         country: 'FAR'
       }
     ],
@@ -268,11 +268,11 @@ export function createBirthDeclarationData(
               country: 'FAR',
               state: location.partOf.replace('Location/', ''),
               district: location.id,
-              city: faker.address.city(),
-              postalCode: faker.address.zipCode(),
+              city: faker.location.city(),
+              postalCode: faker.location.zipCode(),
               line: [
-                faker.address.streetAddress(),
-                faker.address.zipCode(),
+                faker.location.streetAddress(),
+                faker.location.zipCode(),
                 'URBAN'
               ]
             },

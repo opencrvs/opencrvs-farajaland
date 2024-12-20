@@ -38,7 +38,7 @@ test.describe.serial('2. Death declaration case - 2', () => {
         province: 'Sulaka',
         district: 'Zobwe',
         urbanOrRural: 'Rural',
-        village: faker.address.county()
+        village: faker.location.county()
       }
     },
     event: {
@@ -85,11 +85,11 @@ test.describe.serial('2. Death declaration case - 2', () => {
         province: 'Chuminga',
         district: 'Nsali',
         urbanOrRural: 'Urban',
-        town: faker.address.city(),
-        residentialArea: faker.address.county(),
-        street: faker.address.streetName(),
-        number: faker.address.buildingNumber(),
-        postcodeOrZip: faker.address.zipCode()
+        town: faker.location.city(),
+        residentialArea: faker.location.county(),
+        street: faker.location.street(),
+        number: faker.location.buildingNumber(),
+        postcodeOrZip: faker.location.zipCode()
       }
     }
   }

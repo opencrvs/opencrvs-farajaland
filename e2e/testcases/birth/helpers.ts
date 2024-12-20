@@ -120,9 +120,9 @@ export async function createDeclaration(token: string, details: BirthDetails) {
                   type: 'PRIVATE_HOME',
                   address: {
                     line: [
-                      faker.address.buildingNumber(),
-                      faker.address.streetName(),
-                      faker.address.cityName(),
+                      faker.location.buildingNumber(),
+                      faker.location.street(),
+                      faker.location.cityName(),
                       '',
                       '',
                       'URBAN',
@@ -141,8 +141,8 @@ export async function createDeclaration(token: string, details: BirthDetails) {
                       locations,
                       details.child.birthLocation?.district || 'Ibombo'
                     ),
-                    city: faker.address.cityName(),
-                    postalCode: faker.address.zipCode()
+                    city: faker.location.cityName(),
+                    postalCode: faker.location.zipCode()
                   }
                 }
               : {
@@ -174,9 +174,9 @@ export async function createDeclaration(token: string, details: BirthDetails) {
               {
                 type: 'PRIMARY_ADDRESS',
                 line: [
-                  faker.address.buildingNumber(),
-                  faker.address.streetName(),
-                  faker.address.cityName(),
+                  faker.location.buildingNumber(),
+                  faker.location.street(),
+                  faker.location.cityName(),
                   '',
                   '',
                   'URBAN',

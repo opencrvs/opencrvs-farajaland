@@ -35,11 +35,11 @@ test.describe.serial('4. Birth declaration case - 4', () => {
       province: 'Pualula',
       district: 'Funabuli',
       urbanOrRural: 'Urban',
-      town: faker.address.city(),
-      residentialArea: faker.address.county(),
-      street: faker.address.streetName(),
-      number: faker.address.buildingNumber(),
-      postcodeOrZip: faker.address.zipCode()
+      town: faker.location.city(),
+      residentialArea: faker.location.county(),
+      street: faker.location.street(),
+      number: faker.location.buildingNumber(),
+      postcodeOrZip: faker.location.zipCode()
     },
     informantType: 'Grandmother',
     informantEmail: faker.internet.email(),
@@ -59,7 +59,7 @@ test.describe.serial('4. Birth declaration case - 4', () => {
         province: 'Chuminga',
         district: 'Ama',
         urbanOrRural: 'Rural',
-        village: faker.address.county()
+        village: faker.location.county()
       }
     },
     mother: {
@@ -74,13 +74,13 @@ test.describe.serial('4. Birth declaration case - 4', () => {
       },
       address: {
         country: 'Guam',
-        state: faker.address.state(),
-        district: faker.address.county(),
-        town: faker.address.city(),
-        addressLine1: faker.address.county(),
-        addressLine2: faker.address.streetName(),
-        addressLine3: faker.address.buildingNumber(),
-        postcodeOrZip: faker.address.zipCode()
+        state: faker.location.state(),
+        district: faker.location.county(),
+        town: faker.location.city(),
+        addressLine1: faker.location.county(),
+        addressLine2: faker.location.street(),
+        addressLine3: faker.location.buildingNumber(),
+        postcodeOrZip: faker.location.zipCode()
       },
       maritalStatus: 'Divorced',
       levelOfEducation: 'Tertiary'
@@ -100,13 +100,13 @@ test.describe.serial('4. Birth declaration case - 4', () => {
       address: {
         sameAsMother: false,
         country: 'Grenada',
-        state: faker.address.state(),
-        district: faker.address.county(),
-        town: faker.address.city(),
-        addressLine1: faker.address.county(),
-        addressLine2: faker.address.streetName(),
-        addressLine3: faker.address.buildingNumber(),
-        postcodeOrZip: faker.address.zipCode()
+        state: faker.location.state(),
+        district: faker.location.county(),
+        town: faker.location.city(),
+        addressLine1: faker.location.county(),
+        addressLine2: faker.location.street(),
+        addressLine3: faker.location.buildingNumber(),
+        postcodeOrZip: faker.location.zipCode()
       }
     }
   }

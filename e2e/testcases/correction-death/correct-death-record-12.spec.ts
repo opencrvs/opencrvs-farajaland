@@ -46,11 +46,11 @@ test.describe.serial(' Correct record - 12', () => {
       country: 'Farajaland',
       province: 'Sulaka',
       district: 'Irundu',
-      town: faker.address.city(),
-      residentialArea: faker.address.county(),
-      street: faker.address.streetName(),
-      number: faker.address.buildingNumber(),
-      zipCode: faker.address.zipCode()
+      town: faker.location.city(),
+      residentialArea: faker.location.county(),
+      street: faker.location.street(),
+      number: faker.location.buildingNumber(),
+      zipCode: faker.location.zipCode()
     }
   }
 
@@ -59,11 +59,11 @@ test.describe.serial(' Correct record - 12', () => {
     deathLocation: {
       province: 'Chuminga',
       district: 'Soka',
-      town: faker.address.city(),
-      residentialArea: faker.address.county(),
-      street: faker.address.streetName(),
-      number: faker.address.buildingNumber(),
-      zipCode: faker.address.zipCode()
+      town: faker.location.city(),
+      residentialArea: faker.location.county(),
+      street: faker.location.street(),
+      number: faker.location.buildingNumber(),
+      zipCode: faker.location.zipCode()
     }
   }
 

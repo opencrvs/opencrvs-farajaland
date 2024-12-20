@@ -50,11 +50,11 @@ const declaration = {
       province: 'Sulaka',
       district: 'Zobwe',
       urbanOrRural: 'Urban',
-      town: faker.address.city(),
-      residentialArea: faker.address.county() + generateRandomSuffix(),
-      street: faker.address.streetName(),
-      number: faker.address.buildingNumber(),
-      postcodeOrZip: faker.address.zipCode()
+      town: faker.location.city(),
+      residentialArea: faker.location.county() + generateRandomSuffix(),
+      street: faker.location.street(),
+      number: faker.location.buildingNumber(),
+      postcodeOrZip: faker.location.zipCode()
     }
   },
   event: {

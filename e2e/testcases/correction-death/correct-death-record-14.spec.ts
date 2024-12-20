@@ -34,11 +34,11 @@ test.describe.serial(' Correct record - 14', () => {
     address: {
       province: 'Pualula',
       district: 'Pili',
-      town: faker.address.city(),
-      residentialArea: faker.address.county(),
-      street: faker.address.streetName(),
-      number: faker.address.buildingNumber(),
-      zipCode: faker.address.zipCode()
+      town: faker.location.city(),
+      residentialArea: faker.location.county(),
+      street: faker.location.street(),
+      number: faker.location.buildingNumber(),
+      zipCode: faker.location.zipCode()
     },
     maritalStatus: 'Married',
     NOdependants: '3',
