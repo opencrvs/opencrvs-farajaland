@@ -226,8 +226,11 @@ services:
       labels:
         - traefik.enable=false
       replicas: 1
+      # If this doesn't get run successfully, both the replica set in mongo and
+      # the user schema remains uninitialized.
       restart_policy:
-        condition: none
+        condition: on-failure
+        delay: 10s
     environment:
       - REPLICAS=1
       - MONGODB_ADMIN_USER=${MONGODB_ADMIN_USER}
@@ -240,6 +243,7 @@ services:
       - OPENHIM_MONGODB_PASSWORD=${OPENHIM_MONGODB_PASSWORD}
       - WEBHOOKS_MONGODB_PASSWORD=${WEBHOOKS_MONGODB_PASSWORD}
       - NOTIFICATION_MONGODB_PASSWORD=${NOTIFICATION_MONGODB_PASSWORD}
+      - EVENTS_MONGODB_PASSWORD=${EVENTS_MONGODB_PASSWORD}
     networks:
       - overlay_net
     logging:
@@ -671,6 +675,23 @@ services:
       options:
         gelf-address: 'udp://127.0.0.1:12201'
         tag: 'user-mgnt'
+  events:
+    secrets:
+      - jwt-public-key.{{ts}}
+    environment:
+      - NODE_ENV=production
+      - MONGO_URL=mongodb://events:${EVENTS_MONGODB_PASSWORD}@mongo1/events?replicaSet=rs0
+    deploy:
+      labels:
+        - 'traefik.enable=false'
+      replicas: 1
+    networks:
+      - overlay_net
+    logging:
+      driver: gelf
+      options:
+        gelf-address: 'udp://127.0.0.1:12201'
+        tag: 'events'
   notification:
     secrets:
       - jwt-public-key.{{ts}}
