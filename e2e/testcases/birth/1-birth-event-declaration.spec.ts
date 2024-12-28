@@ -3,7 +3,8 @@ import { createPIN, getToken, login } from '../../helpers'
 import { createDeclaration } from './helpers'
 
 import TEST_DATA_1 from './data/1-both-mother-and-father.json'
-import faker from '@faker-js/faker'
+import { faker } from '@faker-js/faker'
+import { CREDENTIALS } from '../../constants'
 
 test.describe('1. Birth event declaration', () => {
   test.describe.serial('Fill all form sections. Save & Exit', () => {
@@ -17,7 +18,11 @@ test.describe('1. Birth event declaration', () => {
     })
 
     test('1.1. Navigate to the birth event declaration page', async () => {
-      await login(page, 'k.mweene', 'test')
+      await login(
+        page,
+        CREDENTIALS.LOCAL_REGISTRAR.USERNAME,
+        CREDENTIALS.LOCAL_REGISTRAR.PASSWORD
+      )
       await createPIN(page)
       await page.click('#header_new_event')
       await expect(page.getByText('New Declaration')).toBeVisible()
@@ -88,9 +93,12 @@ test.describe('1. Birth event declaration', () => {
           page.getByRole('button', { name: 'Save & Exit' })
         ).toBeVisible()
 
-        await page.locator('#eventToggleMenuToggleButton').click()
+        await page.locator('#eventToggleMenu-dropdownMenu').click()
         await expect(
-          page.getByRole('button', { name: 'Delete declaration' })
+          page
+            .locator('#eventToggleMenu-dropdownMenu')
+            .getByRole('listitem')
+            .filter({ hasText: 'Delete declaration' })
         ).toBeVisible()
       })
 
@@ -152,9 +160,12 @@ test.describe('1. Birth event declaration', () => {
             page.getByRole('button', { name: 'Save & Exit' })
           ).toBeVisible()
 
-          await page.locator('#eventToggleMenuToggleButton').click()
+          await page.locator('#eventToggleMenu-dropdownMenu').click()
           await expect(
-            page.getByRole('button', { name: 'Delete declaration' })
+            page
+              .locator('#eventToggleMenu-dropdownMenu')
+              .getByRole('listitem')
+              .filter({ hasText: 'Delete declaration' })
           ).toBeVisible()
         })
 
@@ -194,9 +205,12 @@ test.describe('1. Birth event declaration', () => {
           await expect(
             page.getByRole('button', { name: 'Save & Exit' })
           ).toBeVisible()
-          await page.locator('#eventToggleMenuToggleButton').click()
+          await page.locator('#eventToggleMenu-dropdownMenu').click()
           await expect(
-            page.getByRole('button', { name: 'Delete declaration' })
+            page
+              .locator('#eventToggleMenu-dropdownMenu')
+              .getByRole('listitem')
+              .filter({ hasText: 'Delete declaration' })
           ).toBeVisible()
         })
 
@@ -252,9 +266,12 @@ test.describe('1. Birth event declaration', () => {
         await expect(
           page.getByRole('button', { name: 'Save & Exit' })
         ).toBeVisible()
-        await page.locator('#eventToggleMenuToggleButton').click()
+        await page.locator('#eventToggleMenu-dropdownMenu').click()
         await expect(
-          page.getByRole('button', { name: 'Delete declaration' })
+          page
+            .locator('#eventToggleMenu-dropdownMenu')
+            .getByRole('listitem')
+            .filter({ hasText: 'Delete declaration' })
         ).toBeVisible()
       })
 
@@ -295,9 +312,12 @@ test.describe('1. Birth event declaration', () => {
         await expect(
           page.getByRole('button', { name: 'Save & Exit' })
         ).toBeVisible()
-        await page.locator('#eventToggleMenuToggleButton').click()
+        await page.locator('#eventToggleMenu-dropdownMenu').click()
         await expect(
-          page.getByRole('button', { name: 'Delete declaration' })
+          page
+            .locator('#eventToggleMenu-dropdownMenu')
+            .getByRole('listitem')
+            .filter({ hasText: 'Delete declaration' })
         ).toBeVisible()
       })
 
@@ -338,9 +358,12 @@ test.describe('1. Birth event declaration', () => {
         await expect(
           page.getByRole('button', { name: 'Save & Exit' })
         ).toBeVisible()
-        await page.locator('#eventToggleMenuToggleButton').click()
+        await page.locator('#eventToggleMenu-dropdownMenu').click()
         await expect(
-          page.getByRole('button', { name: 'Delete declaration' })
+          page
+            .locator('#eventToggleMenu-dropdownMenu')
+            .getByRole('listitem')
+            .filter({ hasText: 'Delete declaration' })
         ).toBeVisible()
       })
 
@@ -407,13 +430,17 @@ test.describe('1. Birth event declaration', () => {
          * - find the declared birth event record on this page list with saved data
          */
         await expect(page.locator('#content-name')).toHaveText('In progress')
-        await expect(page.getByText('0 seconds ago')).toBeVisible()
+        await expect(page.getByText(/seconds ago/)).toBeVisible()
       })
     })
   })
   test.describe('1.10 Validate "Exit" Button', async () => {
     test.beforeEach(async ({ page }) => {
-      await login(page, 'k.mweene', 'test')
+      await login(
+        page,
+        CREDENTIALS.LOCAL_REGISTRAR.USERNAME,
+        CREDENTIALS.LOCAL_REGISTRAR.PASSWORD
+      )
       await createPIN(page)
       await page.click('#header_new_event')
       await page.getByLabel('Birth').click()
@@ -458,22 +485,33 @@ test.describe('1. Birth event declaration', () => {
       /*
        * Expected result: should be navigated to "in-progress" tab but no draft will be saved
        */
-      expect(page.locator('#content-name', { hasText: 'In progress' }))
-      await expect(page.getByText('0 seconds ago')).toBeHidden()
+
+      await page.waitForTimeout(500) // This page renders twice at first
+
+      await expect(
+        page.locator('#content-name', { hasText: 'In progress' })
+      ).toBeVisible()
+      await expect(page.getByText(/seconds ago/)).toBeHidden()
     })
   })
 
   test.describe('1.11 Validate "Delete Declaration" Button  ', async () => {
     test.beforeEach(async ({ page }) => {
-      await login(page, 'k.mweene', 'test')
+      await login(
+        page,
+        CREDENTIALS.LOCAL_REGISTRAR.USERNAME,
+        CREDENTIALS.LOCAL_REGISTRAR.PASSWORD
+      )
       await createPIN(page)
       await page.click('#header_new_event')
       await page.getByLabel('Birth').click()
       await page.getByRole('button', { name: 'Continue' }).click()
 
-      await page.locator('#eventToggleMenuToggleButton').click()
+      await page.locator('#eventToggleMenu-dropdownMenu').click()
       await page
-        .getByRole('button', { name: 'Delete declaration', exact: true })
+        .locator('#eventToggleMenu-dropdownMenu')
+        .getByRole('listitem')
+        .filter({ hasText: 'Delete declaration' })
         .click()
     })
 
@@ -516,8 +554,13 @@ test.describe('1. Birth event declaration', () => {
       /*
        * Expected result: should be navigated to "in-progress" tab but no draft will be saved
        */
-      expect(page.locator('#content-name', { hasText: 'In progress' }))
-      await expect(page.getByText('0 seconds ago')).toBeHidden()
+
+      await page.waitForTimeout(500) // This page renders twice at first
+
+      await expect(
+        page.locator('#content-name', { hasText: 'In progress' })
+      ).toBeVisible()
+      await expect(page.getByText(/seconds ago/)).toBeHidden()
     })
   })
 
@@ -526,8 +569,8 @@ test.describe('1. Birth event declaration', () => {
       const token = await getToken('k.mweene', 'test')
       const res = await createDeclaration(token, {
         child: {
-          firstNames: faker.name.firstName(),
-          familyName: faker.name.firstName(),
+          firstNames: faker.person.firstName(),
+          familyName: faker.person.firstName(),
           gender: TEST_DATA_1['Child details'].Sex.toLowerCase() as 'male'
         },
         informant: {
@@ -541,12 +584,12 @@ test.describe('1. Birth event declaration', () => {
           ].toUpperCase() as 'PHYSICIAN'
         },
         mother: {
-          firstNames: faker.name.firstName(),
-          familyName: faker.name.firstName()
+          firstNames: faker.person.firstName(),
+          familyName: faker.person.firstName()
         },
         father: {
-          firstNames: faker.name.firstName(),
-          familyName: faker.name.firstName()
+          firstNames: faker.person.firstName(),
+          familyName: faker.person.firstName()
         }
       })
       expect(res).toStrictEqual({
