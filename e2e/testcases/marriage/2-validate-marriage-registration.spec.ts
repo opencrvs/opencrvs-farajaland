@@ -1,7 +1,8 @@
-import { expect, test } from '@playwright/test'
+import { expect, test, type Page } from '@playwright/test'
 import { createPIN, getRandomDate, login } from '../../helpers'
 import { validateSectionButtons } from '../../helpers'
-import faker from '@faker-js/faker'
+import { faker } from '@faker-js/faker'
+import { CREDENTIALS } from '../../constants'
 
 const declaration = {
   type: 'marriage',
@@ -13,13 +14,13 @@ const declaration = {
   },
   bride: {
     name: {
-      firstNames: faker.name.firstName('female'),
-      familyName: faker.name.lastName('female')
+      firstNames: faker.person.firstName('female'),
+      familyName: faker.person.lastName('female')
     },
     birthDate: getRandomDate(20, 200),
     nationality: 'Farajaland',
     identifier: {
-      id: faker.random.numeric(10),
+      id: faker.string.numeric(10),
       type: 'National ID'
     },
     address: {
@@ -35,13 +36,13 @@ const declaration = {
   },
   groom: {
     name: {
-      firstNames: faker.name.firstName('male'),
-      familyName: faker.name.lastName('male')
+      firstNames: faker.person.firstName('male'),
+      familyName: faker.person.lastName('male')
     },
     birthDate: getRandomDate(22, 200),
     nationality: 'Farajaland',
     identifier: {
-      id: faker.random.numeric(10),
+      id: faker.string.numeric(10),
       type: 'National ID'
     },
     address: 'Same as mother',
@@ -56,7 +57,7 @@ const declaration = {
     typeOfMarriage: 'Monogamous',
     nationality: 'Farajaland',
     identifier: {
-      id: faker.random.numeric(10),
+      id: faker.string.numeric(10),
       type: 'National ID'
     },
     address: {
@@ -73,211 +74,263 @@ const declaration = {
   },
   witness1: {
     name: {
-      firstNames: faker.name.firstName('male'),
-      familyName: faker.name.lastName('male')
+      firstNames: faker.person.firstName('male'),
+      familyName: faker.person.lastName('male')
     },
     relationship: 'Head of grooms family'
   },
   witness2: {
     name: {
-      firstNames: faker.name.firstName('male'),
-      familyName: faker.name.lastName('male')
+      firstNames: faker.person.firstName('male'),
+      familyName: faker.person.lastName('male')
     },
     relationship: 'Head of grooms family'
   }
 }
 
-test.describe('1. Marriage event validation', () => {
-  test.beforeEach(async ({ page }) => {
-    await login(page, 'k.mweene', 'test')
+const PHONE_ERROR_MESSAGE =
+  'Must be a valid 10 digit number that starts with 0(7|9)'
+const EMAIL_ERROR_MESSAGE = 'Must be a valid email address'
+
+test.describe.configure({ mode: 'serial' })
+
+let page: Page
+
+test.beforeAll(async ({ browser }) => {
+  page = await browser.newPage()
+})
+
+test.afterAll(async () => {
+  await page.close()
+})
+
+test.describe('2. Validate the marriage registration flow when informant is Groom/ Bride', () => {
+  test('1. Navigate to the marriage event declaration page', async () => {
+    await login(
+      page,
+      CREDENTIALS.LOCAL_REGISTRAR.USERNAME,
+      CREDENTIALS.LOCAL_REGISTRAR.PASSWORD
+    )
     await createPIN(page)
-  })
-
-  test('1. Navigate to the event declaration page', async ({ page }) => {
     await page.click('#header_new_event')
-    await page.waitForSelector('#continue')
+    await expect(page.getByText('New Declaration')).toBeVisible()
+    await expect(page.getByText('Event type')).toBeVisible()
   })
 
-  test('2. Validate event selection page', async ({ page }) => {
-    await page.click('#header_new_event')
-
-    await test.step('2.1.1. Validate the contents of the event type page', async () => {
-      await expect(page.getByText('Birth', { exact: true })).toBeVisible()
-      await expect(page.getByText('Death', { exact: true })).toBeVisible()
-      await expect(page.getByText('Marriage', { exact: true })).toBeVisible()
-      await expect(page.getByText('Exit', { exact: true })).toBeVisible()
-      await expect(page.getByText('Continue', { exact: true })).toBeVisible()
-    })
-
-    await test.step('2.1.2 Click the "Continue" button without selecting any event', async () => {
-      await page.getByText('Continue', { exact: true }).click()
-      await expect(
-        page.getByText('Please select the type of event', { exact: true })
-      ).toBeVisible()
-    })
-
-    await test.step('2.1.3 Select the "Marriage" event and click "Continue" button', async () => {
-      await page.getByText('Marriage', { exact: true }).click()
-      await page.getByText('Continue', { exact: true }).click()
-      await expect(
-        page.getByText("Informant's details", { exact: true })
-      ).toBeVisible()
-    })
+  test('2.1. Validate the contents of the event type page', async () => {
+    /*
+     * Expected result: should show
+     * - Radio buttons of the events
+     * - Continue button
+     * - Exit button
+     */
+    await expect(page.getByLabel('Birth')).toBeVisible()
+    await expect(page.getByLabel('Death')).toBeVisible()
+    await expect(page.getByLabel('Marriage')).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Continue' })).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Exit' })).toBeVisible()
   })
-  test('3. Validate Informant details page', async ({ page }) => {
-    await test.step('3.1. Validate the contents of Informant type page', async () => {
+
+  test('2.2. Click the "Continue" button without selecting any event', async () => {
+    await page.getByRole('button', { name: 'Continue' }).click()
+    /*
+     * Expected result: should throw an error as below:
+     * "Please select the type of event"
+     */
+    await expect(
+      page.getByText('Please select the type of event')
+    ).toBeVisible()
+  })
+
+  test('2.3. Select the "Marriage" event and click "Continue" button', async () => {
+    await page.getByLabel('Marriage').click()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await validateSectionButtons(page)
+
+    /*
+     * Expected result: User should navigate to the "Introduction" page
+     */
+    await expect(
+      page.getByText("Informant's details", { exact: true })
+    ).toBeVisible()
+  })
+
+  // There is no "Introduction" step in marriage declaration flow.
+  test.skip('3. Validate "Introduction" page', async () => {})
+
+  test('4. Validate Informant details page', async () => {
+    await test.step('4.1. Validate the contents of Informant type page', async () => {
       await validateSectionButtons(page)
-      await expect(
-        page.locator('label', { hasText: 'Informant type' })
-      ).toBeVisible()
-      await expect(
-        page.locator('label', { hasText: 'Phone number' })
-      ).toBeVisible()
-      await expect(page.locator('label', { hasText: 'Email' })).toBeVisible()
+      await expect(page.getByText('Informant type')).toBeVisible()
+      await expect(page.getByText('Phone number')).toBeVisible()
+      await expect(page.getByText('Email')).toBeVisible()
     })
 
-    await test.step('3.2. Click the "Continue" button without selecting any Informant type', async () => {})
-    await test.step('3.3. Select Bride/ Groom in informant type', async () => {
+    await test.step('4.2. Click the "Continue" button without selecting any Informant type', async () => {
+      /*
+       * Expected result: Should throw an error as below: "Required for registration"
+       */
+      await page.getByRole('button', { name: 'Continue' }).click()
+      await page.getByRole('button', { name: 'Back' }).click()
+      await expect(page.locator('#informantType_error')).toBeVisible()
+    })
+    await test.step('4.3. Select Bride/ Groom in informant type', async () => {
+      /*
+       * Expected result: Should not add any other field
+       */
       await page.locator('#informantType').click()
       await page
         .getByText(declaration.informantDetails.informantType, {
           exact: true
         })
         .click()
+      await expect(page.getByLabel('Last name')).toBeHidden()
+    })
+  })
+
+  test('5. Validate Informant details phone field', async () => {
+    // Phone number field is not a required field in marriage Informant's details page
+    /* await test.step('5.1. Validate Informant phone number field', async () => {
+    // 1. Set the Phone number field as null
+    // Expected result: Should show "Required for registration"
+      page.locator('label', { hasText: 'Phone number' }).click()
+      page.getByText("Informant's details", { exact: true }).click()
       await expect(
-        page.getByText(declaration.informantDetails.informantType, {
+        page.getByText('Required for registration', { exact: true })
+      ).toBeVisible()
+    }) */
+    await test.step('5.2. Validate Informant phone number field', async () => {
+      // 2. Input any contact number starting with any number except "07/09"
+      // await page.locator('label', { hasText: 'Phone number' }).fill('123456789')
+      await page.locator('#registrationPhone').fill('123456789')
+      await expect(
+        page.getByText(PHONE_ERROR_MESSAGE, {
           exact: true
         })
       ).toBeVisible()
     })
 
-    test('4. Validate Informant details phone field', async ({ page }) => {
-      await test.step('4.1. Validate Informant phone number field', async () => {
-        // 1. Set the Phone number field as null
-        page.locator('label', { hasText: 'Phone number' }).click()
-        page.getByText("Informant's details", { exact: true }).click()
-        await expect(
-          page.getByText('Required for registration', { exact: true })
-        ).toBeVisible()
-      })
-      await test.step('4.2. Validate Informant phone number field', async () => {
-        // 2. Input any contact number starting with any number except "07/09"
-        page.locator('label', { hasText: 'Phone number' }).fill('123456789')
-        await expect(
-          page.getByText('Must be a valid 10 digit number that starts with 0', {
-            exact: true
-          })
-        ).toBeVisible()
-      })
+    await test.step('5.3. Validate Informant phone number field', async () => {
+      // 3. Input any number which is less or greater than 10 digits
+      await page.locator('#registrationPhone').fill('092345')
+      await expect(
+        page.getByText(PHONE_ERROR_MESSAGE, {
+          exact: true
+        })
+      ).toBeVisible()
+    })
 
-      await test.step('4.3. Validate Informant phone number field', async () => {
-        // 3. Input any number which is less or greater than 10 digits
-        page.locator('label', { hasText: 'Phone number' }).fill('092345')
-        await expect(
-          page.getByText('Must be a valid 10 digit number that starts with 0', {
-            exact: true
-          })
-        ).toBeVisible()
-      })
-
-      await test.step('4.4. Validate Informant phone number field', async () => {
-        // 4. Input a valid 10 digit number that starts with "0"
-        page.locator('label', { hasText: 'Phone number' }).fill('0923456789')
-        await expect(
-          page.getByText('Must be a valid 10 digit number that starts with 0', {
-            exact: true
-          })
-        ).toBeHidden()
-        await expect(
-          page.getByText('Required for registration', { exact: true })
-        ).toBeHidden()
-      })
-      test('5. Validate Informant details email field', async ({ page }) => {
-        await test.step('5.1. Enter valid Email address', async () => {
-          page.locator('label', { hasText: 'Email' }).fill('test@hotmail.com')
-          await expect(
-            page.getByText('Invalid email', {
-              exact: true
-            })
-          ).toBeHidden()
-          await expect(
-            page.getByText('Required for registration', { exact: true })
-          ).toBeHidden()
+    await test.step('5.4. Validate Informant phone number field', async () => {
+      // 4. Input a valid 10 digit number that starts with "0"
+      await page.locator('#registrationPhone').fill('0923456789')
+      await expect(
+        page.getByText(PHONE_ERROR_MESSAGE, {
+          exact: true
         })
-        await test.step('5.2. Enter Invalid Email address', async () => {
-          page.locator('label', { hasText: 'Email' }).fill('testhotmail.com')
-          await expect(
-            page.getByText('Invalid email', {
-              exact: true
-            })
-          ).toBeVisible()
+      ).toBeHidden()
+      await expect(
+        page.locator('#registrationPhone-form-input', {
+          hasText: 'Required for registration'
         })
-        await test.step('5.3. Keep Email address empty > Click on the "Continue" button', async () => {
-          page.locator('label', { hasText: 'Email' }).click()
-          page.getByText("Informant's details", { exact: true }).click()
-          await expect(
-            page.getByText('Required for registration', { exact: true })
-          ).toBeVisible()
-        })
-        await test.step('5.4. Click Continue ', async () => {
-          await page.getByText('Continue', { exact: true }).click()
-          await expect(
-            page.getByText("Groom's details", { exact: true })
-          ).toBeVisible()
-        })
-      })
-    })
-    test('6. Validate Groom Details page', async ({ page }) => {
-      await test.step('6.2. Validate Groom Details page', async () => {
-        await validateSectionButtons(page)
-        await page.getByText('Continue', { exact: true }).click()
-        await expect(
-          page.getByText("Bride's details", { exact: true })
-        ).toBeVisible()
-      })
-    })
-    test('7. Validate Bridge Details page', async ({ page }) => {
-      await test.step('7.2. Validate Bridge Details page', async () => {
-        await validateSectionButtons(page)
-        await page.getByText('Continue', { exact: true }).click()
-        await expect(
-          page.getByText('Marriage details', { exact: true })
-        ).toBeVisible()
-      })
-    })
-    test('8. Validate Marriage Details page', async ({ page }) => {
-      await test.step('8.2. Validate Marriage Details page', async () => {
-        await validateSectionButtons(page)
-        await page.getByText('Continue', { exact: true }).click()
-        await expect(
-          page.getByText('Witness 1 details', { exact: true })
-        ).toBeVisible()
-      })
-    })
-    test('9. Validate witness 1 Details page', async ({ page }) => {
-      await test.step('9.2. Validate witness 1 Details page', async () => {
-        await validateSectionButtons(page)
-        await page.getByText('Continue', { exact: true }).click()
-        await expect(
-          page.getByText('Witness 2 details', { exact: true })
-        ).toBeVisible()
-      })
-    })
-    test('10. Validate witness 1 Details page', async ({ page }) => {
-      await test.step('10.2. Validate witness 2 Details page', async () => {
-        await validateSectionButtons(page)
-        await page.getByText('Continue', { exact: true }).click()
-        await expect(
-          page.getByText('Upload supporting documents', { exact: true })
-        ).toBeVisible()
-      })
-    })
-    test('11. Validate Supporting document page', async ({ page }) => {
-      await test.step('11.2. Validate Supporting document page', async () => {
-        await validateSectionButtons(page)
-        await page.getByText('Continue', { exact: true }).click()
-        page.getByText('Register event', { exact: true })
-      })
+      ).toBeHidden()
     })
   })
+  test('6. Validate Informant details email field', async () => {
+    await test.step('6.1. Enter valid Email address', async () => {
+      await page.locator('#registrationEmail').fill('test@hotmail.com')
+      await expect(
+        page.getByText(EMAIL_ERROR_MESSAGE, {
+          exact: true
+        })
+      ).toBeHidden()
+      await expect(
+        page.locator('#registrationEmail-form-input', {
+          hasText: 'Required for registration'
+        })
+      ).toBeHidden()
+    })
+    await test.step('6.2. Enter Invalid Email address', async () => {
+      await page.locator('#registrationEmail').fill('testhotmail.com')
+      await expect(
+        page.getByText(EMAIL_ERROR_MESSAGE, {
+          exact: true
+        })
+      ).toBeVisible()
+    })
+    await test.step('6.3. Keep Email address empty > Click on the "Continue" button', async () => {
+      await page.locator('#registrationEmail').fill('')
+      await page.locator('#registrationEmail').click()
+      await page.getByText("Informant's details", { exact: true }).click()
+      await expect(
+        page.locator('#registrationEmail-form-input', {
+          hasText: 'Required for registration'
+        })
+      ).toBeVisible()
+    })
+    await test.step('6.4. Click Continue ', async () => {
+      await page.getByText('Continue', { exact: true }).click()
+      await expect(
+        page.getByText("Groom's details", { exact: true })
+      ).toBeVisible()
+    })
+  })
+  test('7. Validate Groom Details page', async () => {
+    await test.step('7.2. Validate Groom Details page', async () => {
+      /* This should run testcase 4 "Validate Groom details page" */
+      await validateSectionButtons(page)
+      await page.getByText('Continue', { exact: true }).click()
+      await expect(
+        page.getByText("Bride's details", { exact: true })
+      ).toBeVisible()
+    })
+  })
+  test('8. Validate Bride Details page', async () => {
+    await test.step('8.2. Validate Bride Details page', async () => {
+      /* This should run testcase 5 "Validate Bride details page" */
+      await validateSectionButtons(page)
+      await page.getByText('Continue', { exact: true }).click()
+      await expect(
+        page.getByText('Marriage details', { exact: true })
+      ).toBeVisible()
+    })
+  })
+  test('9. Validate Marriage Details page', async () => {
+    await test.step('9.2. Validate Marriage Details page', async () => {
+      /* This should run testcase 6 "Validate marriage details page" */
+      await validateSectionButtons(page)
+      await page.getByText('Continue', { exact: true }).click()
+      await expect(
+        page.getByText('Witness 1 details', { exact: true })
+      ).toBeVisible()
+    })
+  })
+  test('10. Validate witness 1 Details page', async () => {
+    await test.step('10.2. Validate witness 1 Details page', async () => {
+      /* This should run testcase 7 "Validate witness 1 details page" */
+      await validateSectionButtons(page)
+      await page.getByText('Continue', { exact: true }).click()
+      await expect(
+        page.getByText('Witness 2 details', { exact: true })
+      ).toBeVisible()
+    })
+  })
+  test('11. Validate witness 1 Details page', async () => {
+    await test.step('11.2. Validate witness 2 Details page', async () => {
+      /* This should run testcase 8 "Validate witness 2 details page" */
+      await validateSectionButtons(page)
+      await page.getByText('Continue', { exact: true }).click()
+      await expect(
+        page.getByText('Upload supporting documents', { exact: true })
+      ).toBeVisible()
+    })
+  })
+  test('12. Validate Supporting document page', async () => {
+    await test.step('12.2. Validate Supporting document page', async () => {
+      /* This should run testcase 9 "Validate Attaching supporting documents page" */
+      await validateSectionButtons(page)
+      await page.getByText('Continue', { exact: true }).click()
+      page.getByText('Register event', { exact: true })
+    })
+  })
+  test.skip('13. Validate "Declaration review" page', async () => {})
 })
