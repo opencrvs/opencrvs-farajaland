@@ -135,7 +135,8 @@ export const marriageForm: ISerializedForm = {
               exactDateOfBirthUnknownConditional.concat(
                 hideIfInformantBrideOrGroom
               ),
-              ageOfIndividualValidators
+              ageOfIndividualValidators,
+              certificateHandlebars.ageOfInformantInYears
             ),
             getNationality(
               certificateHandlebars.informantNationality,
@@ -196,7 +197,8 @@ export const marriageForm: ISerializedForm = {
             getAgeOfIndividualInYears(
               formMessageDescriptors.ageOfGroom,
               exactDateOfBirthUnknownConditional,
-              brideOrGroomAgeValidators
+              brideOrGroomAgeValidators,
+              certificateHandlebars.ageOfGroomInYears
             ),
             getNationality(certificateHandlebars.groomNationality, []), // Required field
             getIDType('marriage', 'groom', [], true),
@@ -242,7 +244,8 @@ export const marriageForm: ISerializedForm = {
             getAgeOfIndividualInYears(
               formMessageDescriptors.ageOfBride,
               exactDateOfBirthUnknownConditional,
-              brideOrGroomAgeValidators
+              brideOrGroomAgeValidators,
+              certificateHandlebars.ageOfBrideInYears
             ),
             getNationality(certificateHandlebars.brideNationality, []), // Required field
             getIDType('marriage', 'bride', [], true),
@@ -264,8 +267,7 @@ export const marriageForm: ISerializedForm = {
           fields: [
             getMarriageDate, // Required field
             getTypeOfMarriage,
-            placeOfMarriageSubsection,
-            divider('place-of-marriage-seperator')
+            placeOfMarriageSubsection
             // PLACE OF MARRIAGE FIELDS WILL RENDER HERE
           ]
         }
@@ -290,8 +292,8 @@ export const marriageForm: ISerializedForm = {
               [],
               certificateHandlebars.witnessOneFamilyName
             ), // Required field
-            getRelationshipToSpousesForWitness, // Required field
-            witnessRelationshipForOthers // Required field
+            getRelationshipToSpousesForWitness('witnessOneRelationship'), // Required field
+            witnessRelationshipForOthers('witnessOneRelationshipForOther') // Required field
           ],
           previewGroups: [witnessOneNameInEnglish]
         }
@@ -317,8 +319,8 @@ export const marriageForm: ISerializedForm = {
               [],
               certificateHandlebars.witnessTwoFamilyName
             ), // Required field
-            getRelationshipToSpousesForWitness, // Required field
-            witnessRelationshipForOthers // Required field
+            getRelationshipToSpousesForWitness('witnessTwoRelationship'), // Required field
+            witnessRelationshipForOthers('witnessTwoRelationshipForOther') // Required field
           ],
           previewGroups: [witnessTwoNameInEnglish]
         }

@@ -62,7 +62,6 @@ import {
   spouseFamilyNameConditionals,
   spouseFirstNameConditionals,
   hideIfInformantSpouse,
-  hideIfNidIntegrationEnabled,
   hideIfDeceasedAddressNotAvailable
 } from '../common/default-validation-conditionals'
 import {
@@ -286,23 +285,15 @@ export const deathForm = {
             getAgeOfIndividualInYears(
               formMessageDescriptors.ageOfInformant,
               exactDateOfBirthUnknownConditional.concat(hideIfInformantSpouse),
-              ageOfIndividualValidators
+              ageOfIndividualValidators,
+              certificateHandlebars.ageOfInformantInYears
             ),
             getNationality(
               certificateHandlebars.informantNationality,
               hideIfInformantSpouse
             ),
-            getIDType(
-              'death',
-              'informant',
-              hideIfNidIntegrationEnabled.concat(hideIfInformantSpouse),
-              true
-            ),
-            ...getIDNumberFields(
-              'informant',
-              hideIfNidIntegrationEnabled.concat(hideIfInformantSpouse),
-              true
-            ),
+            getIDType('death', 'informant', hideIfInformantSpouse, true),
+            ...getIDNumberFields('informant', hideIfInformantSpouse, true),
             // ADDRESS FIELDS WILL RENDER HERE
             divider('informant-address-separator', hideIfInformantSpouse),
             registrationPhone,
@@ -357,7 +348,8 @@ export const deathForm = {
             getAgeOfIndividualInYears(
               formMessageDescriptors.ageOfSpouse,
               exactDateOfBirthUnknownConditional.concat(detailsExist),
-              ageOfIndividualValidators
+              ageOfIndividualValidators,
+              certificateHandlebars.ageOfSpouseInYears
             ),
             getNationality(
               certificateHandlebars.spouseNationality,
@@ -365,11 +357,6 @@ export const deathForm = {
             ),
             getIDType('death', 'spouse', detailsExist, true),
             ...getIDNumberFields('spouse', detailsExist, true),
-            // preceding field of address fields
-            divider('spouse-nid-seperator', [
-              ...detailsExist,
-              ...hideIfDeceasedAddressNotAvailable
-            ]),
             // ADDRESS FIELDS WILL RENDER HERE
             divider(
               'spouse-address-separator',
@@ -428,7 +415,7 @@ export const deathForm = {
             ), // Required field.
             getNationalID(
               'iD',
-              hideIfNidIntegrationEnabled.concat(detailsExist),
+              detailsExist,
               getNationalIDValidators('mother'),
               certificateHandlebars.motherNID
             ),
@@ -501,7 +488,7 @@ export const deathForm = {
             ), // Required field.
             getNationalID(
               'iD',
-              hideIfNidIntegrationEnabled.concat(detailsExist),
+              detailsExist,
               getNationalIDValidators('father'),
               certificateHandlebars.fatherNID
             ),

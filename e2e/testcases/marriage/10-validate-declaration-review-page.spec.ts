@@ -1,108 +1,118 @@
 import { test, expect, type Page } from '@playwright/test'
 import { createPIN, getRandomDate, goToSection, login } from '../../helpers'
-import faker from '@faker-js/faker'
+import { faker } from '@faker-js/faker'
 import { format } from 'date-fns'
+import { CREDENTIALS } from '../../constants'
+
+const declaration = {
+  type: 'marriage',
+  informantDetails: {
+    informantType: 'Groom',
+    registrationPhone: '091234567',
+    registrationEmail: faker.internet.email()
+  },
+  bride: {
+    name: {
+      firstNames: faker.person.firstName('female'),
+      familyName: faker.person.lastName('female')
+    },
+    birthDate: getRandomDate(20, 200),
+    nationality: 'Farajaland',
+    identifier: {
+      id: faker.string.numeric(10),
+      type: 'National ID'
+    },
+    address: {
+      Country: 'Farajaland',
+      Province: 'Pualula',
+      District: 'Pili'
+    },
+    cityPrimaryGroom: 'city',
+    ruralOrUrbanPrimaryBride: 'URBAN',
+    addressLine1UrbanOptionPrimaryBride: 'test',
+    addressLine3UrbanOptionPrimaryBride: 'test',
+    postalCodePrimaryBride: '00560'
+  },
+  groom: {
+    name: {
+      firstNames: faker.person.firstName('male'),
+      familyName: faker.person.lastName('male')
+    },
+    birthDate: getRandomDate(22, 200),
+    nationality: 'Farajaland',
+    identifier: {
+      id: faker.string.numeric(10),
+      type: 'National ID'
+    },
+    address: {
+      Country: 'Farajaland',
+      Province: 'Pualula',
+      District: 'Pili'
+    },
+    cityPrimaryGroom: 'city',
+    ruralOrUrbanPrimaryGroom: 'URBAN',
+    addressLine1UrbanOptionPrimaryGroom: 'test',
+    addressLine3UrbanOptionPrimaryGroom: 'test',
+    postalCodePrimaryGroom: '00560'
+  },
+  marriageDetails: {
+    marriageDate: getRandomDate(1, 200),
+    typeOfMarriage: 'Monogamous',
+    nationality: 'Farajaland',
+    identifier: {
+      id: faker.string.numeric(10),
+      type: 'National ID'
+    },
+    address: {
+      Country: 'Albania',
+      Province: 'Pualula',
+      District: 'Pili'
+    },
+
+    cityPlaceofmarriage: 'city',
+    addressLine1UrbanOptionPlaceofmarriage: 'URBAN',
+    addressLine2UrbanOptionPlaceofmarriage: 'test',
+    addressLine3UrbanOptionPlaceofmarriage: 'test',
+    postalCodePlaceofmarriage: '00560'
+  },
+  witness1: {
+    name: {
+      firstNames: faker.person.firstName('male'),
+      familyName: faker.person.lastName('male')
+    },
+    relationship: "Head of groom's family"
+  },
+  witness2: {
+    name: {
+      firstNames: faker.person.firstName('male'),
+      familyName: faker.person.lastName('male')
+    },
+    relationship: "Head of groom's family"
+  }
+}
 
 test.describe.serial('10. Validate declaration review page', () => {
   let page: Page
-  const fileName = '528KB-random.png'
-  const fileUploadPath = `./e2e/testcases/marriage/assets/${fileName}`
-  const declaration = {
-    type: 'marriage',
-    informantEmail: faker.internet.email(),
-    informantDetails: {
-      informantType: 'Groom',
-      registrationPhone: '091234567',
-      registrationEmail: faker.internet.email()
-    },
-    bride: {
-      name: {
-        firstNames: faker.name.firstName('female'),
-        familyName: faker.name.lastName('female')
-      },
-      birthDate: getRandomDate(20, 200),
-      nationality: 'Farajaland',
-      identifier: {
-        id: faker.random.numeric(10),
-        type: 'National ID'
-      },
-      address: {
-        Country: 'Farajaland',
-        Province: 'Pualula',
-        District: 'Pili'
-      },
-      cityPrimaryGroom: 'city',
-      ruralOrUrbanPrimaryBride: 'URBAN',
-      addressLine1UrbanOptionPrimaryBride: 'test',
-      addressLine3UrbanOptionPrimaryBride: 'test',
-      postalCodePrimaryBride: '00560'
-    },
-    groom: {
-      name: {
-        firstNames: faker.name.firstName('male'),
-        familyName: faker.name.lastName('male')
-      },
-      birthDate: getRandomDate(22, 200),
-      nationality: 'Farajaland',
-      identifier: {
-        id: faker.random.numeric(10),
-        type: 'National ID'
-      },
-      address: 'Same as mother',
-      cityPrimaryGroom: 'city',
-      ruralOrUrbanPrimaryGroom: 'URBAN',
-      addressLine1UrbanOptionPrimaryGroom: 'test',
-      addressLine3UrbanOptionPrimaryGroom: 'test',
-      postalCodePrimaryGroom: '00560'
-    },
-    marriageDetails: {
-      marriageDate: getRandomDate(22, 200),
-      typeOfMarriage: 'Monogamous',
-      nationality: 'Farajaland',
-      identifier: {
-        id: faker.random.numeric(10),
-        type: 'National ID'
-      },
-      address: {
-        Country: 'Farajaland',
-        Province: 'Pualula',
-        District: 'Pili'
-      },
-
-      cityPlaceofmarriage: 'city',
-      addressLine1UrbanOptionPlaceofmarriage: 'URBAN',
-      addressLine2UrbanOptionPlaceofmarriage: 'test',
-      addressLine3UrbanOptionPlaceofmarriage: 'test',
-      postalCodePlaceofmarriage: '00560'
-    },
-    witness1: {
-      name: {
-        firstNames: faker.name.firstName('male'),
-        familyName: faker.name.lastName('male')
-      },
-      relationship: "Head of groom's family"
-    },
-    witness2: {
-      name: {
-        firstNames: faker.name.firstName('male'),
-        familyName: faker.name.lastName('male')
-      },
-      relationship: "Head of groom's family"
-    }
-  }
-  /* test.beforeAll(async ({ browser }) => {
-     page = await browser.newPage()
-    await login(page, 'k.bwalya', 'test')
+  test.beforeAll(async ({ browser }) => {
+    page = await browser.newPage()
+    await login(
+      page,
+      CREDENTIALS.FIELD_AGENT.USERNAME,
+      CREDENTIALS.FIELD_AGENT.PASSWORD
+    )
     await createPIN(page)
-  }) */
+    await page.click('#header_new_event')
+    await page.getByLabel('Marriage').click()
+    await page.getByRole('button', { name: 'Continue' }).click()
+  })
 
-  /* test.afterAll(async ({ page }) => {
+  test.afterAll(async () => {
     await page.close()
-  }) */
+  })
 
   test.describe('10.1 Field agent actions', async () => {
     test.describe('10.1.0 Fill up marriage registration form', async () => {
-      /* test('10.1.0.2 Fill informant details', async ({ page }) => {
+      test('10.1.0.2 Fill informant details', async () => {
         await page.waitForTimeout(500)
         await expect(
           page.getByText("Informant's details", { exact: true })
@@ -123,17 +133,8 @@ test.describe.serial('10. Validate declaration review page', () => {
         await page
           .locator('#registrationEmail')
           .fill(declaration.informantDetails.registrationEmail)
-
-        await page.getByRole('button', { name: 'Continue' }).click()
-      }) */
-      test.beforeEach(async ({ page }) => {
-        await login(page, 'k.mweene', 'test')
-        await createPIN(page)
-        await page.locator('#header_new_event').click()
-        await page.getByLabel('Marriage').click()
-        await page.getByRole('button', { name: 'Continue' }).click()
       })
-      test("10.1.0.3 Fill groom's details", async ({ page }) => {
+      test("10.1.0.3 Fill groom's details", async () => {
         await goToSection(page, 'groom')
         await page.waitForTimeout(1000)
         await page
@@ -159,17 +160,17 @@ test.describe.serial('10. Validate declaration review page', () => {
           .fill(declaration.groom.identifier.id)
         await page.waitForTimeout(2000)
 
-        /*await page.locator('#statePrimaryMother').click()
+        await page.locator('#statePrimaryGroom').click()
         await page
-          .getByText(declaration.mother.address.Province, { exact: true })
+          .getByText(declaration.groom.address.Province, { exact: true })
           .click()
-        await page.locator('#districtPrimaryMother').click()
+        await page.locator('#districtPrimaryGroom').click()
         await page
-          .getByText(declaration.mother.address.District, { exact: true })
-          .click() */
+          .getByText(declaration.groom.address.District, { exact: true })
+          .click()
       })
 
-      /*test("10.1.0.4 Fill bride's details", async ({ page }) => {
+      test("10.1.0.4 Fill bride's details", async () => {
         await goToSection(page, 'bride')
         await page.waitForTimeout(500)
         await page
@@ -194,18 +195,17 @@ test.describe.serial('10. Validate declaration review page', () => {
           .locator('#brideNationalId')
           .fill(declaration.bride.identifier.id)
 
-        await page.locator('#statePrimaryMother').click()
+        await page.locator('#statePrimaryBride').click()
         await page
-          .getByText(declaration.mother.address.Province, { exact: true })
+          .getByText(declaration.bride.address.Province, { exact: true })
           .click()
-        await page.locator('#districtPrimaryMother').click()
+        await page.locator('#districtPrimaryBride').click()
         await page
-          .getByText(declaration.mother.address.District, { exact: true })
+          .getByText(declaration.bride.address.District, { exact: true })
           .click()
-
-        await page.getByRole('button', { name: 'Continue' }).click()
       })
-      test('10.1.0.4 Fill marriage details', async ({ page }) => {
+
+      test('10.1.0.4 Fill marriage details', async () => {
         await goToSection(page, 'marriageEvent')
         await page.waitForTimeout(500)
         await page
@@ -225,18 +225,20 @@ test.describe.serial('10. Validate declaration review page', () => {
           })
           .click()
 
-        await page.locator('#statePrimaryMother').click()
+        await page.locator('#countryPlaceofmarriage').click()
         await page
-          .getByText(declaration.mother.address.Province, { exact: true })
+          .getByText(declaration.marriageDetails.address.Country, {
+            exact: true
+          })
           .click()
-        await page.locator('#districtPrimaryMother').click()
         await page
-          .getByText(declaration.mother.address.District, { exact: true })
-          .click()
-
-        await page.getByRole('button', { name: 'Continue' }).click()
+          .locator('#internationalStatePlaceofmarriage')
+          .fill(declaration.marriageDetails.address.Province)
+        await page
+          .locator('#internationalDistrictPlaceofmarriage')
+          .fill(declaration.marriageDetails.address.District)
       })
-      test("10.1.0.3 Fill witness1's details", async ({ page }) => {
+      test("10.1.0.3 Fill witness1's details", async () => {
         await goToSection(page, 'witnessOne')
         await page.waitForTimeout(500)
         await page
@@ -250,10 +252,8 @@ test.describe.serial('10. Validate declaration review page', () => {
         await page
           .getByText(declaration.witness1.relationship, { exact: true })
           .click()
-
-        await page.getByRole('button', { name: 'Continue' }).click()
       })
-      test("10.1.0.3 Fill witness2's details", async ({ page }) => {
+      test("10.1.0.3 Fill witness2's details", async () => {
         await goToSection(page, 'witnessTwo')
         await page.waitForTimeout(500)
         await page
@@ -267,12 +267,9 @@ test.describe.serial('10. Validate declaration review page', () => {
         await page
           .getByText(declaration.witness2.relationship, { exact: true })
           .click()
-        await page.getByRole('button', { name: 'Continue' }).click()
-      })*/
+      })
 
-      test('10.1.1.1 Verify informations added in previous pages', async ({
-        page
-      }) => {
+      test('10.1.1.1 Verify informations added in previous pages', async () => {
         await goToSection(page, 'preview')
         await page.waitForTimeout(1000)
         /*
@@ -342,7 +339,7 @@ test.describe.serial('10. Validate declaration review page', () => {
          * - Change button
          */
 
-        /*await expect(page.locator('#groom-content #Usual')).toContainText(
+        await expect(page.locator('#groom-content #Usual')).toContainText(
           declaration.groom.address.Country
         )
         await expect(page.locator('#groom-content #Usual')).toContainText(
@@ -353,7 +350,7 @@ test.describe.serial('10. Validate declaration review page', () => {
         )
         await expect(page.locator('#groom-content #Usual')).toContainText(
           'Change'
-        )*/
+        )
 
         /*
          * Expected result: should include
@@ -422,7 +419,7 @@ test.describe.serial('10. Validate declaration review page', () => {
          * - Change button
          */
 
-        /*await expect(page.locator('#bride-content #Usual')).toContainText(
+        await expect(page.locator('#bride-content #Usual')).toContainText(
           declaration.bride.address.Country
         )
         await expect(page.locator('#bride-content #Usual')).toContainText(
@@ -433,7 +430,7 @@ test.describe.serial('10. Validate declaration review page', () => {
         )
         await expect(page.locator('#bride-content #Usual')).toContainText(
           'Change'
-        )*/
+        )
 
         /*
          * Expected result: should include
@@ -441,10 +438,10 @@ test.describe.serial('10. Validate declaration review page', () => {
          * - Change button
          */
         await expect(
-          page.locator('#informant-content #Relationship')
+          page.locator('#informant-content #Informant')
         ).toContainText(declaration.informantDetails.informantType)
         await expect(
-          page.locator('#informant-content #Relationship')
+          page.locator('#informant-content #Informant')
         ).toContainText('Change')
 
         /*
@@ -453,7 +450,7 @@ test.describe.serial('10. Validate declaration review page', () => {
          * - Change button
          */
         await expect(page.locator('#informant-content #Email')).toContainText(
-          declaration.informantEmail
+          declaration.informantDetails.registrationEmail
         )
         await expect(page.locator('#informant-content #Email')).toContainText(
           'Change'
@@ -490,18 +487,18 @@ test.describe.serial('10. Validate declaration review page', () => {
          * - Change button
          */
 
-        /*await expect(page.locator('#marriageEvent-content #Usual')).toContainText(
-        declaration.marriageDetails.address.Country
-      )
-      await expect(page.locator('#marriageEvent-content #Usual')).toContainText(
-        declaration.marriageDetails.address.District
-      )
-      await expect(page.locator('#marriageEvent-content #Usual')).toContainText(
-        declaration.marriageDetails.address.Province
-      )
-      await expect(page.locator('#marriageEvent-content #Usual')).toContainText(
-        'Change'
-      )*/
+        await expect(page.locator('#marriageEvent-content')).toContainText(
+          declaration.marriageDetails.address.Country
+        )
+        await expect(page.locator('#marriageEvent-content')).toContainText(
+          declaration.marriageDetails.address.District
+        )
+        await expect(page.locator('#marriageEvent-content')).toContainText(
+          declaration.marriageDetails.address.Province
+        )
+        await expect(page.locator('#marriageEvent-content')).toContainText(
+          'Change'
+        )
 
         /*
          * Expected result: should include
@@ -548,11 +545,11 @@ test.describe.serial('10. Validate declaration review page', () => {
     })
   })
   test.describe('10.2. Click any "Change" link', async () => {
-    test("10.2. Change groom's name", async ({ page }) => {
+    test("10.2. Change groom's name", async () => {
       await page.locator('#groom-content #Full').getByText('Change').click()
       declaration.groom.name = {
-        firstNames: faker.name.firstName('male'),
-        familyName: faker.name.lastName('male')
+        firstNames: faker.person.firstName('male'),
+        familyName: faker.person.lastName('male')
       }
       await page
         .locator('#firstNamesEng')
@@ -572,29 +569,8 @@ test.describe.serial('10. Validate declaration review page', () => {
       )
     })
   })
-  test.describe('10.3. Validate supporting document', async () => {
-    test('10.2. Validate supporting docs', async ({ page }) => {
-      await page.waitForTimeout(500)
-      // test.skip('Skipped for now', async () => {
-      // await goToSection(page, 'documents')
-      // id="uploadDocForGroom" Proof of groom's identity - Options: National ID, Passport, Birth Certificte & Other
-      // id="uploadDocForBride" Proof of bride's identity
-      // id="uploadDocForInformant" Proof of informant's ID
-      // Upload Button id="upload_document"
-      // Form seection: id="uploadDocForBride-form-input" id="uploadDocForGroom-form-input" id="uploadDocForInformant-form-input"
-      // Click input[name="file-upload"]
-      await page
-        .locator('#uploadDocForGroom-form-input')
-        .getByText('Upload')
-        .click()
-
-      await page
-        .locator('#uploadDocForGroom-form-input #upload_document')
-        .setInputFiles(fileUploadPath)
-
-      await page.locator(`text=${fileName}`).click()
-      await expect(page.getByText(fileName)).toBeVisible()
-    })
+  test.describe('8.3.3 Validate supporting document', async () => {
+    test.skip('Skipped for now', async () => {})
   })
   test.describe('10.4. Validate capturing a digital signature from the Groom', async () => {
     test.skip('Skipped for now', async () => {})
