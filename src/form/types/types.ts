@@ -159,10 +159,6 @@ export enum IntegratingSystemType {
   Other = 'OTHER'
 }
 
-export declare enum THEME_MODE {
-  DARK = 'dark'
-}
-
 export interface IPreviewGroup {
   id: string
   label: MessageDescriptor
@@ -414,6 +410,7 @@ export interface IImageUploaderWithOptionsFormField extends IFormFieldBase {
 export interface IDocumentUploaderWithOptionsFormField extends IFormFieldBase {
   type: typeof DOCUMENT_UPLOADER_WITH_OPTION
   options: ISelectOption[]
+  optionCondition?: string
   hideOnEmptyOption?: boolean
   compressImagesToSizeMB?: number
   maxSizeMB?: number
@@ -487,7 +484,12 @@ export interface IHeading3Field extends IFormFieldBase {
 export interface ISignatureFormField extends IFormFieldBase {
   type: typeof SIGNATURE
   maxSizeMb?: number
-  allowedFileFormats?: ('png' | 'jpg' | 'jpeg' | 'svg')[]
+  allowedFileFormats?: (
+    | 'image/png'
+    | 'image/jpg'
+    | 'image/jpeg'
+    | 'image/svg'
+  )[]
 }
 
 export type IFormField =
@@ -561,7 +563,7 @@ export interface IFormFieldBase {
   disabled?: boolean
   enabled?: string
   custom?: boolean
-  initialValue?: IFormFieldValue
+  initialValue?: InitialValue
   initialValueKey?: string
   extraValue?: IFormFieldValue
   conditionals?: Conditional[]
@@ -570,7 +572,6 @@ export interface IFormFieldBase {
   mapping?: IFormFieldMapping
   hideAsterisk?: boolean
   hideHeader?: boolean
-  mode?: THEME_MODE
   hidden?: boolean
   previewGroup?: string
   nestedFields?: { [key: string]: IFormField[] }
@@ -594,7 +595,6 @@ export interface IFormFieldBase {
   ignoreFieldLabelOnErrorMessage?: boolean
   ignoreBottomMargin?: boolean
   customQuestionMappingId?: string
-  ignoreMediaQuery?: boolean
 }
 
 export interface Conditional {
@@ -791,7 +791,7 @@ export type IDeclarationCertificate = {
   corrector?: Partial<{ type: RelationForCertificateCorrection }>
   hasShowedVerifiedDocument?: boolean
   payments?: Payment
-  data?: string
+  certificateTemplateId?: string
 }
 
 export interface IFileValue {
@@ -838,6 +838,13 @@ export interface IDateRangePickerValue {
   rangeEnd: string | undefined
   isDateRangeActive: boolean | undefined
 }
+
+export type DependencyInfo = {
+  expression: string
+  dependsOn: string[]
+}
+
+export type InitialValue = IFormFieldValue | DependencyInfo
 
 export type IFormFieldValue =
   | string
