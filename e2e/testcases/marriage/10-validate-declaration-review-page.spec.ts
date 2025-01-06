@@ -88,7 +88,8 @@ const declaration = {
       familyName: faker.person.lastName('male')
     },
     relationship: "Head of groom's family"
-  }
+  },
+  comment: 'More information about the marriage.'
 }
 
 test.describe.serial('10. Validate declaration review page', () => {
@@ -565,7 +566,7 @@ test.describe.serial('10. Validate declaration review page', () => {
         .fill(declaration.groom.name.familyName)
       await page.getByRole('button', { name: 'Back to review' }).click()
       /*
-       * Expected result: should change deceased's name
+       * Expected result: should change groom's name
        */
       await expect(page.locator('#groom-content #Full')).toContainText(
         declaration.groom.name.firstNames
@@ -575,7 +576,7 @@ test.describe.serial('10. Validate declaration review page', () => {
       )
     })
   })
-  test.describe('8.3.3 Validate supporting document', async () => {
+  test.describe('10.3. Validate supporting document', async () => {
     test.skip('Skipped for now', async () => {})
   })
   test.describe('10.4. Validate capturing a digital signature from the Groom', async () => {
@@ -594,7 +595,12 @@ test.describe.serial('10. Validate declaration review page', () => {
     test.skip('Skipped for now', async () => {})
   })
   test.describe('10.9. Validate the additional comments box', async () => {
-    test.skip('Skipped for now', async () => {})
+    test('Validate the additional comments box', async () => {
+      await page.locator('#additional_comments').fill(declaration.comment)
+      await expect(page.locator('#additional_comments-content')).toContainText(
+        declaration.comment
+      )
+    })
   })
   test.describe('10.10. Validate the declaration send button', async () => {
     test.skip('Skipped for now', async () => {})
