@@ -8,7 +8,7 @@ const declaration = {
   type: 'marriage',
   informantDetails: {
     informantType: 'Groom',
-    registrationPhone: '091234567',
+    registrationPhone: '0912345678',
     registrationEmail: faker.internet.email()
   },
   bride: {
@@ -443,6 +443,12 @@ test.describe.serial('10. Validate declaration review page', () => {
         await expect(
           page.locator('#informant-content #Informant')
         ).toContainText('Change')
+        await expect(page.locator('#informant-content #Phone')).toContainText(
+          declaration.informantDetails.registrationPhone
+        )
+        await expect(page.locator('#informant-content #Phone')).toContainText(
+          'Change'
+        )
 
         /*
          * Expected result: should include
