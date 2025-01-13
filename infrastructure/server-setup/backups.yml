@@ -174,29 +174,26 @@
       when: "'backups' in groups and groups['backups'] | length > 0 and ssh_test.rc != 0"
       tags:
         - backups
+    
+    - name: Create a file to transfer to the backup server
+      shell: touch /tmp/test_file.txt
+      tags:
+        - backups
 
-    #if the file doesn't transfer properly we will get an error alert, since we are using /var/log/opencrvs-backup.error.log file for hold the log
-    - name: Set a cron for transfarreing the file to the backup server
-      cron:
-        user: '{{ crontab_user }}'
-        name: 'Transfer a file to {{ backup_server_remote_target_directory }}'
-        minute: '55'
-        hour: '23'
-        job: 'touch test.txt && rsync -a --prgress ./test.txt {{ backup_server_user }}@{{ destination_server }}:{{ backup_server_remote_target_directory }}/ 2>> /var/log/opencrvs-backup.error.log'
-        state: present
+    - name: Check ability to transfer a file to the backup server
+      shell: rsync -avz -e "ssh -o StrictHostKeyChecking=no -o ConnectTimeout=5" /tmp/test_file.txt {{ backup_server_user }}@{{ destination_server }}:{{ backup_server_remote_target_directory }}/test_file.txt
+      remote_user: '{{ crontab_user }}'
+      register: rsync_test
+      when: "'backups' in groups and groups['backups'] | length > 0"
+      ignore_errors: yes
+      tags:
+        - backups
 
-- hosts: backups
-  become: yes 
-  tasks:
-    - name: 'Set a cron to delete the test file'
-      cron: 
-        user: '{{ crontab_user }}'
-        name: 'Delete the test file from {{ backup_server_remote_target_directory }}'
-        minute: '58'
-        hour: '23'
-         job: |
-           if [ -f {{ backup_server_remote_target_directory }}/test.txt ]; then
-             rm -f {{ backup_server_remote_target_directory }}/test.txt
-           fi
-        state: present
+    - name: Fail if rsync test failed
+      fail:
+        msg: 'rsync to the backup server failed'
+      when: "'backups' in groups and groups['backups'] | length > 0 and rsync_test.rc != 0"
+      tags:
+        - backups
+  
   
