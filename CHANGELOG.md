@@ -35,6 +35,7 @@
 - **Major new feature** Description
 - Misc new feature
 - Add constant.humanName to allow coutries to have custom ordering on thier full name e.g start with `lastName` or `firstName` [#6830](https://github.com/opencrvs/opencrvs-core/issues/6830)
+- Allow countries to customise the format of the full name in the sytem for `sytem users` and `citizens` e.g `{LastName} {MiddleName} {Firstname}`, in any case where one of the name is not provided e.g no `MiddleName`, we'll simply render e.g `{LastName} {FirstName}` without any extra spaces if that's the order set in `country-config`. [#6830](https://github.com/opencrvs/opencrvs-core/issues/6830)
 
 ### New content keys requiring translation
 
