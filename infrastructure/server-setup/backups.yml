@@ -185,15 +185,14 @@
       remote_user: '{{ crontab_user }}'
       register: rsync_test
       when: "'backups' in groups and groups['backups'] | length > 0"
-      ignore_errors: yes
       tags:
         - backups
-
-    - name: Fail if rsync test failed
-      fail:
-        msg: 'rsync to the backup server failed'
-      when: "'backups' in groups and groups['backups'] | length > 0 and rsync_test.rc != 0"
+         
+    - name: Check if file can be transferred to the staging server from backup server
+      shell: ssh -o StrictHostKeyChecking=no -o ConnectTimeout=5 {{ backup_server_user }}@{{ destination_server }} 'rsync -avz -e "ssh -o StrictHostKeyChecking=no -o ConnectTimeout=5" {{ backup_server_remote_target_directory }}/test_file.txt {{ crontab_user }}@{{ inventory_hostname }}:/tmp/test_file.txt'
+      remote_user: '{{ crontab_user }}'
+      register: rsync_test_from_backup
+      when: "'backups' in groups and groups['backups'] | length > 0 and backup_restore_encryption_passphrase and periodic_restore_from_backup"
       tags:
         - backups
-  
-  
+        
