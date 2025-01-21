@@ -9,28 +9,47 @@
   <body>
     <!-- Table Template -->
     <script id="roles-template" type="text/x-handlebars-template">
-      <table border="1">
-        <thead>
-          <tr>
-            <th>Scope</th>
-            {{#each roles}}
-              <th>{{label.defaultMessage}}</th>
-            {{/each}}
-          </tr>
-        </thead>
-        <tbody>
-          {{#each scopes as |scope|}}
+        <table border="1">
+          <thead>
             <tr>
-              <td>{{scope}}</td>
-              {{#each ../roles as |role|}}
-                <td>
-                  <input type="checkbox" data-role-id="{{role.id}}" data-scope="{{scope}}" {{#if (includes role.scopes scope)}}checked{{/if}}>
-                </td>
+              <th>Scope</th>
+              {{#each roles}}
+                <th>{{label.defaultMessage}}</th>
               {{/each}}
             </tr>
-          {{/each}}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {{#each scopes as |scope|}}
+              <tr>
+                <td>{{scope}}</td>
+                {{#each ../roles as |role|}}
+                  <td>
+                    <input type="checkbox" data-role-id="{{role.id}}" data-scope="{{scope}}" {{#if (includes role.scopes scope)}}checked{{/if}}>
+                  </td>
+                {{/each}}
+              </tr>
+            {{/each}}
+          </tbody>
+        </table>
+        <button
+        id="save-changes"
+        style=
+        "background-color: #4CAF50;
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 10px 0;
+        cursor: pointer;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+      "
+      >
+        Save Changes
+      </button>
     </script>
 
     <div id="roles-container"></div>
@@ -102,6 +121,10 @@
           .forEach((checkbox) => {
             checkbox.addEventListener('change', handleCheckboxChange)
           })
+
+        document
+          .getElementById('save-changes')
+          .addEventListener('click', saveChanges)
       }
 
       function handleCheckboxChange(event) {
@@ -110,20 +133,35 @@
         const isChecked = event.target.checked
 
         roles.forEach((role) => {
+          role.scopes = role.scopes.filter((scope) => scope !== 'demo')
           if (role.id === roleId) {
             if (isChecked) {
-              role.scopes.push(scope)
+              if (!role.scopes.includes(scope)) {
+                role.scopes.push(scope)
+              }
             } else {
               role.scopes = role.scopes.filter((s) => s !== scope)
             }
           }
         })
+      }
 
-        fetch('/__qa/roles', {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(roles)
-        })
+      async function saveChanges() {
+        try {
+          const response = await fetch('/__qa/roles', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(roles)
+          })
+          if (response.ok) {
+            alert('Changes saved successfully!')
+          } else {
+            alert('Failed to save changes.')
+          }
+        } catch (error) {
+          console.error('Error saving changes:', error)
+          alert('An error occurred while saving changes.')
+        }
       }
 
       Handlebars.registerHelper('includes', function (scopes, scope) {
