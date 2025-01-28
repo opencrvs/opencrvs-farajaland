@@ -51,7 +51,7 @@ In order to make the upgrade easier, there are a couple of steps that need to be
 ```
 INSERT CSV ROWS IN ENGLISH ONLY
 ```
-## 1.6.1 Release candidate
+## 1.6.1
 
 ### Bug fixes
 
