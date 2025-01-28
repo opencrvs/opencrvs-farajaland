@@ -131,6 +131,7 @@ export const getAddressFields = (person: AddressType): FieldConfig[] => {
         id: `event.action.declare.form.section.person.field.address.town.label`
       }
     },
+
     {
       id: `${prefix}.residentialArea`,
       type: 'TEXT',
@@ -205,7 +206,8 @@ export const getAddressFields = (person: AddressType): FieldConfig[] => {
     {
       id: `${prefix}.urbanOrRural`,
       type: 'RADIO_GROUP',
-      options: urbanRuralRadioOptions,
+      optionValues: urbanRuralRadioOptions,
+      options: {},
       flexDirection: 'row',
       required: false,
       label: {
@@ -219,9 +221,9 @@ export const getAddressFields = (person: AddressType): FieldConfig[] => {
       newConditionals: [
         {
           type: 'HIDE',
-          conditional: field(`${prefix}.urbanOrRural`).isUndefinedOrInArray([
-            'RURAL'
-          ])
+          conditional: field(`${prefix}.urbanOrRural`)
+            .or((field) => field.isUndefined().not.inArray(['RURAL']))
+            .apply()
         }
       ]
     }),
@@ -237,9 +239,9 @@ export const getAddressFields = (person: AddressType): FieldConfig[] => {
       conditionals: [
         {
           type: 'HIDE',
-          conditional: field(`${prefix}.urbanOrRural`).isUndefinedOrInArray([
-            'URBAN'
-          ])
+          conditional: field(`${prefix}.urbanOrRural`)
+            .or((field) => field.isUndefined().inArray(['RURAL']))
+            .apply()
         }
       ]
     }
@@ -261,9 +263,9 @@ export const getAddressFields = (person: AddressType): FieldConfig[] => {
       newConditionals: [
         {
           type: 'HIDE',
-          conditional: field(`${person}.address.country`).isUndefinedOrInArray([
-            'FAR'
-          ])
+          conditional: field(`${person}.address.country`)
+            .or((field) => field.isUndefined().inArray(['FAR']))
+            .apply()
         }
       ]
     }),
@@ -272,9 +274,9 @@ export const getAddressFields = (person: AddressType): FieldConfig[] => {
       newConditionals: [
         {
           type: 'HIDE',
-          conditional: field(
-            `${person}.address.country`
-          ).isUndefinedOrNotInArray(['FAR'])
+          conditional: field(`${person}.address.country`)
+            .or((field) => field.isUndefined().not.inArray(['FAR']))
+            .apply()
         }
       ]
     })

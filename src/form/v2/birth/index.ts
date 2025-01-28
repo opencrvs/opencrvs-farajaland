@@ -26,26 +26,26 @@ export const birthEvent = defineConfig({
   },
   summary: {
     title: {
-      defaultMessage: '{applicant.firstname} {applicant.surname}',
-      description: 'This is the title of the summary',
-      id: 'event.birth.summary.title'
+      id: 'event.birth.summary.title',
+      label: {
+        defaultMessage: '{child.firstname} {child.surname}',
+        description: 'This is the title of the summary',
+        id: 'event.birth.summary.title'
+      }
     },
     fields: []
   },
   workqueues: [
     {
       id: 'all',
-      title: {
-        defaultMessage: 'All birth events',
-        description: 'Label for all birth events workqueue',
-        id: 'event.birth.workqueue.all.label'
-      },
       fields: [
         {
-          id: 'child.firstname'
-        },
-        {
-          id: 'child.surname'
+          column: 'title',
+          label: {
+            defaultMessage: '{child.surname} {child.firstname}',
+            description: 'Label for name in all workqueue',
+            id: 'event.birth.workqueue.all.name.label'
+          }
         }
       ],
       filters: []
