@@ -345,6 +345,7 @@ export interface INumberFormField extends IFormFieldBase {
   step?: number
   max?: number
   inputWidth?: number
+  maxLength?: number
 }
 export interface IBigNumberFormField extends IFormFieldBase {
   type: typeof BIG_NUMBER
@@ -562,7 +563,7 @@ export interface IFormFieldBase {
   disabled?: boolean
   enabled?: string
   custom?: boolean
-  initialValue?: IFormFieldValue
+  initialValue?: InitialValue
   initialValueKey?: string
   extraValue?: IFormFieldValue
   conditionals?: Conditional[]
@@ -643,8 +644,8 @@ type FunctionParamsToDescriptor<T, Descriptor> =
   T extends Array<any>
     ? { [K in keyof T]: FunctionParamsToDescriptor<T[K], Descriptor> }
     : T extends IFormFieldQueryMapFunction | IFormFieldMutationMapFunction // It's a query transformation function - return a query transformation descriptor
-    ? Descriptor
-    : T // It's a none of the above - return self
+      ? Descriptor
+      : T // It's a none of the above - return self
 
 export interface IStaticFieldType {
   kind: 'static'
@@ -790,7 +791,7 @@ export type IDeclarationCertificate = {
   corrector?: Partial<{ type: RelationForCertificateCorrection }>
   hasShowedVerifiedDocument?: boolean
   payments?: Payment
-  data?: string
+  certificateTemplateId?: string
 }
 
 export interface IFileValue {
@@ -837,6 +838,13 @@ export interface IDateRangePickerValue {
   rangeEnd: string | undefined
   isDateRangeActive: boolean | undefined
 }
+
+export type DependencyInfo = {
+  expression: string
+  dependsOn: string[]
+}
+
+export type InitialValue = IFormFieldValue | DependencyInfo
 
 export type IFormFieldValue =
   | string

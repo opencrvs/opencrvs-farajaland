@@ -9,7 +9,6 @@
  * Copyright (C) The OpenCRVS Authors located at https://github.com/opencrvs/opencrvs-core/blob/master/AUTHORS.
  */
 import { Conditional } from '../types/types'
-import { IntegratingSystemType } from '../types/types'
 import { Validator } from '../types/validators'
 
 /**
@@ -110,6 +109,20 @@ export const hideIfInformantMotherOrFather = [
 
 export const isInformantSpouse =
   '!values.informantType || values.informantType==="SPOUSE"'
+
+export const hideIfDeceasedAddressNotAvailable = [
+  {
+    action: 'hide',
+    expression: '!(draftData && draftData.deceased?.countryPrimaryDeceased)'
+  }
+]
+
+export const hideIfMotherAddressNotAvailable = [
+  {
+    action: 'hide',
+    expression: '!(draftData && draftData.mother?.countryPrimaryMother)'
+  }
+]
 
 export const hideIfInformantSpouse = [
   {
@@ -302,7 +315,7 @@ export function getNationalIDValidators(configCase: string): Validator[] {
       },
       {
         operation: 'duplicateIDNumber',
-        parameters: ['mother.iD']
+        parameters: ['mother.motherNationalId']
       }
     ]
   } else if (configCase === 'mother') {
@@ -313,7 +326,7 @@ export function getNationalIDValidators(configCase: string): Validator[] {
       },
       {
         operation: 'duplicateIDNumber',
-        parameters: ['father.iD']
+        parameters: ['father.fatherNationalId']
       }
     ]
   } else if (configCase === 'deceased') {
@@ -324,7 +337,7 @@ export function getNationalIDValidators(configCase: string): Validator[] {
       },
       {
         operation: 'duplicateIDNumber',
-        parameters: ['informant.informantID']
+        parameters: ['informant.informantNationalId']
       }
     ]
   } else if (configCase === 'groom') {
@@ -335,7 +348,7 @@ export function getNationalIDValidators(configCase: string): Validator[] {
       },
       {
         operation: 'duplicateIDNumber',
-        parameters: ['bride.iD']
+        parameters: ['bride.brideNationalId']
       }
     ]
   } else if (configCase === 'bride') {
@@ -346,7 +359,7 @@ export function getNationalIDValidators(configCase: string): Validator[] {
       },
       {
         operation: 'duplicateIDNumber',
-        parameters: ['groom.iD']
+        parameters: ['groom.groomNationalId']
       }
     ]
   } else {
@@ -358,23 +371,23 @@ export function getNationalIDValidators(configCase: string): Validator[] {
       },
       {
         operation: 'duplicateIDNumber',
-        parameters: ['deceased.deceasedID']
+        parameters: ['deceased.deceasedNationalId']
       },
       {
         operation: 'duplicateIDNumber',
-        parameters: ['mother.iD']
+        parameters: ['mother.motherNationalId']
       },
       {
         operation: 'duplicateIDNumber',
-        parameters: ['father.iD']
+        parameters: ['father.fatherNationalId']
       },
       {
         operation: 'duplicateIDNumber',
-        parameters: ['groom.iD']
+        parameters: ['groom.groomNationalId']
       },
       {
         operation: 'duplicateIDNumber',
-        parameters: ['bride.iD']
+        parameters: ['bride.brideNationalId']
       }
     ]
   }
@@ -442,18 +455,11 @@ export const spouseFamilyNameConditionals = [
   }
 ]
 
-export const FATHER_DETAILS_DONT_EXIST =
-  '(draftData?.father && !draftData?.father.detailsExist) || !values.detailsExist'
-export const MOTHER_DETAILS_DONT_EXIST =
-  '(draftData?.mother && !draftData?.mother.detailsExist) || !values.detailsExist'
-export const SPOUSE_DETAILS_DONT_EXIST =
-  '(draftData?.spouse && !draftData?.spouse.detailsExist) || !values.detailsExist'
-
 // if mothers details do not exist on other page
 export const mothersDetailsDontExistOnOtherPage =
   'draftData && draftData.mother && !draftData.mother.detailsExist'
 
-// if fathers details do not exist
+// if details don't exist for the current section
 export const detailsDontExist = '!values.detailsExist'
 
 // primary address same as other primary

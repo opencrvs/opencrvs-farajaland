@@ -18,9 +18,11 @@ import * as Pino from 'hapi-pino'
 import * as JWT from 'hapi-auth-jwt2'
 import * as inert from '@hapi/inert'
 import * as Sentry from 'hapi-sentry'
+import * as H2o2 from '@hapi/h2o2'
 import {
   CLIENT_APP_URL,
   DOMAIN,
+  GATEWAY_URL,
   LOGIN_URL,
   SENTRY_DSN
 } from '@countryconfig/constants'
@@ -31,6 +33,7 @@ import {
   AUTH_URL,
   DEFAULT_TIMEOUT
 } from '@countryconfig/constants'
+import { statisticsHandler } from '@countryconfig/api/data-generator/handler'
 import {
   contentHandler,
   countryLogoHandler
@@ -60,8 +63,12 @@ import { handlebarsHandler } from './form/common/certificate/handlebars/handler'
 import { trackingIDHandler } from './api/tracking-id/handler'
 import { dashboardQueriesHandler } from './api/dashboards/handler'
 import { fontsHandler } from './api/fonts/handler'
-import { certificateConfigurationHandler } from './api/certificate-configuration/handler'
 import { recordNotificationHandler } from './api/record-notification/handler'
+import {
+  getCustomEventsHandler,
+  onAnyActionHandler,
+  onRegisterHandler
+} from '@countryconfig/api/custom-event/handler'
 
 export interface ITokenPayload {
   sub: string
@@ -71,7 +78,7 @@ export interface ITokenPayload {
 }
 
 export default function getPlugins() {
-  const plugins: any[] = [inert, JWT]
+  const plugins: any[] = [inert, JWT, H2o2]
 
   if (process.env.NODE_ENV === 'production') {
     plugins.push({
@@ -241,13 +248,24 @@ export async function createServer() {
 
   server.route({
     method: 'GET',
-    path: '/certificates/{event}.svg',
+    path: '/certificates/{id}',
     handler: certificateHandler,
     options: {
       tags: ['api', 'certificates'],
       description: 'Returns only one certificate metadata'
     }
   })
+
+  server.route({
+    method: 'GET',
+    path: '/certificates',
+    handler: certificateHandler,
+    options: {
+      tags: ['api', 'certificates'],
+      description: 'Returns certificate metadata'
+    }
+  })
+
   // add ping route by default for health check
   server.route({
     method: 'GET',
@@ -273,17 +291,6 @@ export async function createServer() {
       auth: false,
       tags: ['api'],
       description: 'Serves available fonts'
-    }
-  })
-
-  server.route({
-    method: 'GET',
-    path: '/certificate-configuration',
-    handler: certificateConfigurationHandler,
-    options: {
-      auth: false,
-      tags: ['api'],
-      description: 'Serves certificate configurations'
     }
   })
 
@@ -434,6 +441,17 @@ export async function createServer() {
   })
 
   server.route({
+    method: 'GET',
+    path: '/statistics',
+    handler: statisticsHandler,
+    options: {
+      tags: ['api'],
+      description:
+        'Returns population and crude birth rate statistics for each location'
+    }
+  })
+
+  server.route({
     method: 'POST',
     path: '/notification',
     handler: notificationHandler,
@@ -493,6 +511,7 @@ export async function createServer() {
     path: '/roles',
     handler: rolesHandler,
     options: {
+      auth: false,
       tags: ['api', 'user-roles'],
       description: 'Returns user roles metadata'
     }
@@ -515,6 +534,37 @@ export async function createServer() {
     options: {
       tags: ['api'],
       description: 'Provides a tracking id'
+    }
+  })
+
+  server.route({
+    method: '*',
+    path: '/graphql',
+    handler: (_, h) =>
+      h.proxy({
+        uri: `${GATEWAY_URL}/graphql`,
+        passThrough: true
+      }),
+    options: {
+      auth: false,
+      payload: {
+        output: 'data',
+        parse: false
+      }
+    }
+  })
+
+  server.route({
+    method: 'GET',
+    path: '/{param*}',
+    options: {
+      auth: false
+    },
+    handler: {
+      directory: {
+        path: 'public',
+        index: ['index.html', 'default.html']
+      }
     }
   })
 
@@ -542,6 +592,36 @@ export async function createServer() {
     options: {
       tags: ['api'],
       description: 'Checks for enabled notification for record'
+    }
+  })
+
+  server.route({
+    method: 'GET',
+    path: '/events',
+    handler: getCustomEventsHandler,
+    options: {
+      tags: ['api', 'custom-event'],
+      description: 'Serves custom events'
+    }
+  })
+
+  server.route({
+    method: 'POST',
+    path: '/events/TENNIS_CLUB_MEMBERSHIP/actions/register',
+    handler: onRegisterHandler,
+    options: {
+      tags: ['api', 'custom-event'],
+      description: 'Receives notifications on event actions'
+    }
+  })
+
+  server.route({
+    method: 'POST',
+    path: '/events/{event}/actions/{action}',
+    handler: onAnyActionHandler,
+    options: {
+      tags: ['api', 'custom-event'],
+      description: 'Receives notifications on event actions'
     }
   })
 
