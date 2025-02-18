@@ -51,8 +51,8 @@ on:
         default: false
 jobs:
   deploy:
-    environment: ${{ inputs.environment }}
-    runs-on: ubuntu-22.04
+    environment: ${{ github.event.inputs.environment }}
+    runs-on: ubuntu-24.04
     outputs:
       outcome: ${{ steps.deploy.outcome }}
     timeout-minutes: 60
