@@ -3,7 +3,7 @@ import { BirthRegistrationInput } from '../../gateway'
 import { faker } from '@faker-js/faker'
 
 import { readFileSync } from 'fs'
-import uuid from 'uuid'
+import { v4 } from 'uuid'
 import { format, subDays, subYears } from 'date-fns'
 import { join } from 'path'
 import {
@@ -95,7 +95,7 @@ export async function createDeclaration(token: string, details: BirthDetails) {
             informantType: details.informant.type,
             contactPhoneNumber: '+26007' + faker.string.numeric(8),
             contactEmail: faker.internet.email(),
-            draftId: uuid.v4()
+            draftId: v4()
           },
           child: {
             name: [
@@ -373,9 +373,9 @@ export const registerDeclaration = async (
 export type ConvertEnumsToStrings<T> = T extends (infer U)[]
   ? ConvertEnumsToStrings<U>[]
   : T extends string
-  ? `${T}`
-  : T extends object
-  ? {
-      [K in keyof T]: ConvertEnumsToStrings<T[K]>
-    }
-  : T
+    ? `${T}`
+    : T extends object
+      ? {
+          [K in keyof T]: ConvertEnumsToStrings<T[K]>
+        }
+      : T
