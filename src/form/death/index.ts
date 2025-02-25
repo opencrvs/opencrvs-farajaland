@@ -277,6 +277,10 @@ export const deathForm = {
                 {
                   operation: 'dateInPast',
                   parameters: []
+                },
+                {
+                  operation: 'dateIsBetween',
+                  parameters: [20, 25]
                 }
               ],
               certificateHandlebars.informantBirthDate

@@ -191,7 +191,13 @@ export const birthForm: ISerializedForm = {
             getBirthDate(
               'childBirthDate',
               [],
-              isValidChildBirthDate,
+              [
+                ...isValidChildBirthDate,
+                {
+                  operation: 'isAgeInYearsBetween',
+                  parameters: [16, 150]
+                }
+              ],
               certificateHandlebars.eventDate
             ), // Required field.
             getReasonForLateRegistration('birth'),
@@ -247,6 +253,10 @@ export const birthForm: ISerializedForm = {
                 {
                   operation: 'dateInPast',
                   parameters: []
+                },
+                {
+                  operation: 'dateIsBetween',
+                  parameters: [20, 25]
                 }
               ],
               certificateHandlebars.informantBirthDate
