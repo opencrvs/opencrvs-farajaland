@@ -78,7 +78,10 @@ import {
 import { certificateHandlebars } from './certificate-handlebars'
 import { getSectionMapping } from '@countryconfig/utils/mapping/section/birth/mapping-utils'
 import { getCommonSectionMapping } from '@countryconfig/utils/mapping/field-mapping-utils'
-import { getReasonForLateRegistration } from '../custom-fields'
+import {
+  getCustomTimeOfBirth,
+  getReasonForLateRegistration
+} from '../custom-fields'
 import { getIDNumberFields, getIDType } from '../custom-fields'
 // import { createCustomFieldExample } from '../custom-fields'
 
@@ -194,6 +197,7 @@ export const birthForm: ISerializedForm = {
               isValidChildBirthDate,
               certificateHandlebars.eventDate
             ), // Required field.
+            getCustomTimeOfBirth('birth', 'child', 'timeOfBirth', []),
             getReasonForLateRegistration('birth'),
             // PLACE OF BIRTH FIELDS WILL RENDER HERE
             divider('place-of-birth-seperator'),

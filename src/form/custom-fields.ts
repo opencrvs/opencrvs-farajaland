@@ -230,3 +230,31 @@ export function getIDNumberFields(
     .filter((opt) => opt.value !== 'NONE')
     .map((opt) => getIDNumber(section, opt.value, conditionals, required))
 }
+
+export const getCustomTimeOfBirth = (
+  event: string,
+  sectionId: string,
+  fieldName: string,
+  conditionals: Conditional[],
+  required = false
+): SerializedFormField => {
+  const fieldId = `${event}.${sectionId}.${sectionId}-view-group.${fieldName}`
+
+  return {
+    name: fieldName,
+    custom: true,
+    type: 'TIME',
+    label: {
+      id: 'form.field.label.time',
+      defaultMessage: 'Time of Birth',
+      description: 'Label for Time of Birth field'
+    },
+    required,
+    conditionals,
+    initialValue: '',
+    validator: [],
+    customQuestionMappingId: fieldId,
+    mapping: getCustomFieldMapping(fieldId),
+    use12HourFormat: true
+  }
+}
