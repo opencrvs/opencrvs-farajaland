@@ -30,10 +30,15 @@ on:
 
 jobs:
   sync_farajaland:
+<<<<<<< HEAD
     if: ${{ github.event.pull_request.merged == true }} && ${{ github.event.pull_request.base.repo.full_name == 'opencrvs-countryconfig/countryconfig' }}
+=======
+    if: ${{ github.event.pull_request.merged == true }} && ${{github.event.pull_request.base.repo.full_name == 'opencrvs/opencrvs-countryconfig' }}
+>>>>>>> upstream/ocrvs-8716-fixes
     runs-on: ubuntu-latest
     env:
       BASE_BRANCH: ${{ github.event.pull_request.base.ref }}
+      UPSTREAM_REPOSITORY: ${{ github.repository }}
       # Check token under Olli's account
       GH_TOKEN: ${{ secrets.FORK_ORGANISATION_TOKEN }}
       FORK_REPOSITORY_PATH: "${{ vars.FORK_REPOSITORY_ORGANISATION }}/${{ vars.FORK_REPOSITORY_NAME }}"
@@ -61,7 +66,6 @@ jobs:
         if: env.branch_exists == 'true'
         continue-on-error: true
         run: |
-          echo "REPOSITORY: ${{github.event.pull_request.base.repo.full_name}}"
           gh repo sync ${FORK_REPOSITORY_PATH} --branch ${BASE_BRANCH}
           echo STATUS="Synced" >> $GITHUB_ENV
 
@@ -101,8 +105,7 @@ jobs:
           git commit -m "Merge upstream/${BASE_BRANCH} into sync-with-${BASE_BRANCH} with conflicts"
           echo "Push to sync-with-${BASE_BRANCH}"
           git remote -v
-          git pull origin sync-with-${BASE_BRANCH}
-          git push origin sync-with-${BASE_BRANCH}
+          git push --force origin sync-with-${BASE_BRANCH}
 
       - name: Create PR in ${{ env.FORK_REPOSITORY_ORGANISATION }}/${{ env.FORK_REPOSITORY_NAME }}
         if: steps.sync_fork.outcome == 'failure'
@@ -153,6 +156,6 @@ jobs:
           -H "Authorization: Bearer ${{ secrets.SLACK_BOT_TOKEN }}" \
           -H 'Content-type: application/json' \
           --data "{
-            'channel': 'C08FCLKER8X',
+            'channel': '${{ vars.SLACK_BOT_CHANNEL }}',
             'text': '$BODY'
           }"
