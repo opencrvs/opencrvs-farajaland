@@ -30,7 +30,7 @@ on:
 
 jobs:
   sync_farajaland:
-    if: ${{ github.event.pull_request.merged == true }}
+    if: ${{ github.event.pull_request.merged == true }} && ${{ github.event.pull_request.base.repo.full_name == 'opencrvs-countryconfig/countryconfig' }}
     runs-on: ubuntu-latest
     env:
       BASE_BRANCH: ${{ github.event.pull_request.base.ref }}
