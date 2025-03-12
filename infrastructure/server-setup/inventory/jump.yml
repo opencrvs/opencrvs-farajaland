@@ -16,9 +16,11 @@
 all:
   vars:
     users:
+      # @todo this is where you define which development team members have access to the server.
       # If you need to remove access from someone, do not remove them from this list, but instead set their state: absent
-      - name: pyry
+      - name: my-user
         ssh_keys:
+<<<<<<< HEAD
           - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJBcrSLLdrkLrhqNQi7Uo/ZIWXb1y4kc0vGb16e2s0Jq pyry@opencrvs.org
         state: present
         sudoer: true
@@ -75,7 +77,13 @@ all:
           - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEEtz5M5hYKcUehDiCm84BplV+3t1ex8DPjIsMtQEWGv cihan.m.bebek@gmail.com
         state: present
         sudoer: true
+=======
+          - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABg...Z/rhU= user@example.com
+        state: present
+        sudoer: true
+
+>>>>>>> upstream/develop
 jump-host:
   hosts:
-    backup:
-      ansible_host: '159.89.14.13'
+    your-jumpserver-hostname-here: # @todo set this to be the hostname of your jump server
+      ansible_host: '55.55.55.55'
