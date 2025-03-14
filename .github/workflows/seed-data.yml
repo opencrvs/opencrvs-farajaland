@@ -51,6 +51,7 @@ jobs:
         run: yarn install
 
       - name: Seed data on given environment
+<<<<<<< HEAD
         uses: nick-fields/retry@v2
         id: seed
         with:
@@ -58,6 +59,9 @@ jobs:
           max_attempts: 5
           command: |
             yarn seed:prod
+=======
+        run: yarn seed:prod
+>>>>>>> upstream/develop
         env:
           ACTIVATE_USERS: ${{ vars.ACTIVATE_USERS }}
           GATEWAY_HOST: ${{ vars.GATEWAY_HOST }}
