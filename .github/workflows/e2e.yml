@@ -81,8 +81,13 @@ jobs:
           DOMAIN: '${{ vars.DOMAIN }}'
         continue-on-error: true
 
+      - name: Take basename from test_file
+        id: basename
+        run: echo "basename=$(basename ${{ matrix.test_file }})" >> $GITHUB_OUTPUT
+
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
-          name: playwright-report-${{ matrix.test_file }}
+          name: playwright-report-${{github.event.inputs.core-image-tag || needs.get-core-commit.outputs.latest_commit_sha}}-${{github.event.inputs.countryconfig-image-tag || needs.get-country-config-commit.outputs.short_sha}}-${{ steps.basename.outputs.basename }}
           path: playwright-report/
           retention-days: 30

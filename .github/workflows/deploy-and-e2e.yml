@@ -96,6 +96,7 @@ jobs:
       fail-fast: false
       matrix:
         test_file: ${{ fromJson(needs.discover-tests.outputs.test_matrix) }}
+    name: ${{ matrix.test_file }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -123,10 +124,14 @@ jobs:
         env:
           DOMAIN: '${{ vars.DOMAIN }}'
 
+      - name: Take basename from test_file
+        id: basename
+        run: echo "basename=$(basename ${{ matrix.test_file }})" >> $GITHUB_OUTPUT
+
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: playwright-report-${{github.event.inputs.core-image-tag || needs.get-core-commit.outputs.latest_commit_sha}}-${{github.event.inputs.countryconfig-image-tag || needs.get-country-config-commit.outputs.short_sha}}-${{matrix.test_file}}
+          name: playwright-report-${{github.event.inputs.core-image-tag || needs.get-core-commit.outputs.latest_commit_sha}}-${{github.event.inputs.countryconfig-image-tag || needs.get-country-config-commit.outputs.short_sha}}-${{ steps.basename.outputs.basename }}
           path: playwright-report/
           retention-days: 30
 
