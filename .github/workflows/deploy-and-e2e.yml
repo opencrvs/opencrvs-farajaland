@@ -83,10 +83,10 @@ jobs:
       - name: List Test Directories
         id: list-tests
         run: |
-          test_dirs=$(find ./e2e/testcases -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | jq -R -s -c 'split("\n")[:-1]')
-          echo "Test directories: $test_dirs"
-          echo "test_matrix=$test_dirs" >> $GITHUB_OUTPUT
-          echo "test_matrix=$test_dirs"
+          tests_suites=$(find e2e/testcases -type f -name "*.spec.ts" | jq -R -s -c 'split("\n")[:-1]')
+          echo "Test suites: $tests_suites"
+          echo "test_matrix=$tests_suites" >> $GITHUB_OUTPUT
+          echo "test_matrix=$tests_suites"
 
   test:
     needs: [deploy, discover-tests, get-core-commit, get-country-config-commit]
@@ -102,15 +102,6 @@ jobs:
         with:
           node-version: 18
 
-      - name: Check for Spec Files
-        id: check-specs
-        run: |
-          if ls ./e2e/testcases/${{ matrix.test_dir }}/*.spec.ts > /dev/null 2>&1; then
-            echo "has_spec_files=true" >> $GITHUB_OUTPUT
-          else
-            echo "has_spec_files=false" >> $GITHUB_OUTPUT
-          fi
-
       - name: Cache Node.js dependencies
         uses: actions/cache@v4
         with:
@@ -122,21 +113,18 @@ jobs:
             ${{ runner.os }}-node-
 
       - name: Install Dependencies
-        if: steps.check-specs.outputs.has_spec_files == 'true'
         run: yarn
 
       - name: Install Playwright Browsers
-        if: steps.check-specs.outputs.has_spec_files == 'true'
         run: npx playwright install --with-deps
 
       - name: Run Playwright Tests
-        if: steps.check-specs.outputs.has_spec_files == 'true'
-        run: npx playwright test ./e2e/testcases/${{ matrix.test_dir }}
+        run: npx playwright test ./${{ matrix.test_dir }}
         env:
           DOMAIN: '${{ vars.DOMAIN }}'
 
       - uses: actions/upload-artifact@v4
-        if: always() && steps.check-specs.outputs.has_spec_files == 'true'
+        if: always()
         with:
           name: playwright-report-${{github.event.inputs.core-image-tag || needs.get-core-commit.outputs.latest_commit_sha}}-${{github.event.inputs.countryconfig-image-tag || needs.get-country-config-commit.outputs.short_sha}}-${{matrix.test_dir}}
           path: playwright-report/

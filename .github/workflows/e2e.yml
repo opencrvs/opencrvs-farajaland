@@ -52,7 +52,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        test_dir: ${{ fromJson(needs.discover-tests.outputs.test_matrix) }}
+        test_file: ${{ fromJson(needs.discover-tests.outputs.test_matrix) }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -70,23 +70,19 @@ jobs:
             ${{ runner.os }}-node-
 
       - name: Install Dependencies
-        if: steps.check-specs.outputs.has_spec_files == 'true'
         run: yarn
 
       - name: Install Playwright Browsers
-        if: steps.check-specs.outputs.has_spec_files == 'true'
         run: npx playwright install --with-deps
 
       - name: Run Playwright Tests
-        if: steps.check-specs.outputs.has_spec_files == 'true'
-        run: npx playwright test ./${{ matrix.test_dir }}
+        run: npx playwright test ./${{ matrix.test_file }}
         env:
           DOMAIN: '${{ vars.DOMAIN }}'
         continue-on-error: true
 
       - uses: actions/upload-artifact@v4
-        if: steps.check-specs.outputs.has_spec_files == 'true'
         with:
-          name: playwright-report-${{ matrix.test_dir }}
+          name: playwright-report-${{ matrix.test_file }}
           path: playwright-report/
           retention-days: 30
