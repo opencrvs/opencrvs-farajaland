@@ -74,6 +74,7 @@ jobs:
   discover-tests:
     name: Discover test directories
     runs-on: ubuntu-22.04
+    needs: [get-core-commit, get-country-config-commit]
     outputs:
       test_matrix: ${{ steps.list-tests.outputs.test_matrix }}
     steps:
@@ -87,7 +88,18 @@ jobs:
           echo "Test suites: $tests_suites"
           echo "test_matrix=$tests_suites" >> $GITHUB_OUTPUT
           echo "test_matrix=$tests_suites"
+      - name: Cache Node.js dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules
+            ~/.cache/yarn/v6
+          key: ${{github.event.inputs.countryconfig-image-tag || needs.get-country-config-commit.outputs.short_sha}}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
+      - name: Install Dependencies
+        run: yarn
   test:
     needs: [deploy, discover-tests, get-core-commit, get-country-config-commit]
     runs-on: ubuntu-22.04
@@ -109,7 +121,7 @@ jobs:
           path: |
             node_modules
             ~/.cache/yarn/v6
-          key: node-${{ hashFiles('**/yarn.lock', format('{0}/{1}',matrix.package,'package.json')) }}
+          key: ${{github.event.inputs.countryconfig-image-tag || needs.get-country-config-commit.outputs.short_sha}}
           restore-keys: |
             ${{ runner.os }}-node-
 
