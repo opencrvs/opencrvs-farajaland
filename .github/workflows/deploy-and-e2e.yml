@@ -126,7 +126,7 @@ jobs:
 
       - name: Form the artifact name from test_file
         id: artifact
-        run: echo "artifact=$(dirname ${{ matrix.test_file }})_$(basename ${{ matrix.test_file }})" >> $GITHUB_OUTPUT
+        run: echo "artifact=$(basename $(dirname ${{ matrix.test_file }}))_$(basename ${{ matrix.test_file }})" >> $GITHUB_OUTPUT
 
       - uses: actions/upload-artifact@v4
         if: always()
