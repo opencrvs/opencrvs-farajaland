@@ -84,7 +84,7 @@ jobs:
       - name: List Test Directories
         id: list-tests
         run: |
-          tests_suites=$(find e2e/testcases -type f -name "*.spec.ts" | jq -R -s -c 'split("\n")[:-1]')
+          tests_suites=$(cd e2e/testcases; find * -type f -name "*.spec.ts" | jq -R -s -c 'split("\n")[:-1]')
           echo "Test suites: $tests_suites"
           echo "test_matrix=$tests_suites" >> $GITHUB_OUTPUT
           echo "test_matrix=$tests_suites"
@@ -132,7 +132,7 @@ jobs:
         run: npx playwright install --with-deps
 
       - name: Run Playwright Tests
-        run: npx playwright test ./${{ matrix.test_file }}
+        run: npx playwright test ./e2e/testcases/${{ matrix.test_file }}
         env:
           DOMAIN: '${{ vars.DOMAIN }}'
 
