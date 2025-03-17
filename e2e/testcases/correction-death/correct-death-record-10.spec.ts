@@ -1075,6 +1075,13 @@ test.describe('10. Correct record - 10', () => {
           name: formatName(updatedDeceasedDetails),
           trackingId
         })
+        /*
+         * Verify we're on the right record page
+         */
+        await expect(
+          page.getByText(formatName(updatedDeceasedDetails))
+        ).toBeVisible()
+
         await assignRecord(page)
         /*
          * Expected result: should show in task history

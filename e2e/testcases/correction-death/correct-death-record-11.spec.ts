@@ -576,6 +576,14 @@ test.describe.serial(' Correct record - 11', () => {
         name: formatName(declaration.deceased.name[0]),
         trackingId
       })
+
+      /*
+       * Verify we're on the right record page
+       */
+      await expect(
+        page.getByText(formatName(declaration.deceased.name[0]))
+      ).toBeVisible()
+
       await assignRecord(page)
       /*
        * Expected result: should show in task history
