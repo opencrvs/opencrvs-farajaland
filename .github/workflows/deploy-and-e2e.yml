@@ -148,7 +148,7 @@ jobs:
 
       - name: Form the artifact name from test_file
         id: artifact
-        run: echo "artifact=$(basename $(dirname ${{ matrix.test_file }}))_$(basename ${{ matrix.test_file }})" >> $GITHUB_OUTPUT
+        run: echo "artifact=$(echo '${{ matrix.test_file }}' | sed 's/\//__/g')" >> $GITHUB_OUTPUT
 
       - uses: actions/upload-artifact@v4
         if: always()
