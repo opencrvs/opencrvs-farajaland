@@ -7,6 +7,7 @@ import {
   drawSignature,
   expectOutboxToBeEmpty,
   expectTextWithChangeLink,
+  formatName,
   getAction,
   goToSection,
   login
@@ -273,7 +274,7 @@ test.describe.serial('8. Death declaration case - 8', () => {
        */
       await expect(
         page.getByRole('button', {
-          name: `${declaration.deceased.name.firstNames} ${declaration.deceased.name.familyName}`
+          name: formatName(declaration.deceased.name)
         })
       ).toBeVisible()
     })
@@ -292,13 +293,13 @@ test.describe.serial('8. Death declaration case - 8', () => {
 
       await expect(
         page.getByRole('button', {
-          name: `${declaration.deceased.name.firstNames} ${declaration.deceased.name.familyName}`
+          name: formatName(declaration.deceased.name)
         })
       ).toBeVisible()
 
       await auditRecord({
         page,
-        name: `${declaration.deceased.name.firstNames} ${declaration.deceased.name.familyName}`
+        name: formatName(declaration.deceased.name)
       })
 
       await assignRecord(page)

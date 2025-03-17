@@ -12,7 +12,8 @@ import {
   expectOutboxToBeEmpty,
   getAction,
   assignRecord,
-  auditRecord
+  auditRecord,
+  formatName
 } from '../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../constants'
@@ -724,7 +725,7 @@ test.describe.serial('8. Validate declaration review page', () => {
        */
       await expect(
         page.getByRole('button', {
-          name: `${declaration.deceased.name.firstNames} ${declaration.deceased.name.familyName}`
+          name: formatName(declaration.deceased.name)
         })
       ).toBeVisible()
     })
@@ -742,13 +743,13 @@ test.describe.serial('8. Validate declaration review page', () => {
 
       await expect(
         page.getByRole('button', {
-          name: `${declaration.deceased.name.firstNames} ${declaration.deceased.name.familyName}`
+          name: formatName(declaration.deceased.name)
         })
       ).toBeVisible()
 
       await auditRecord({
         page,
-        name: `${declaration.deceased.name.firstNames} ${declaration.deceased.name.familyName}`
+        name: formatName(declaration.deceased.name)
       })
 
       await assignRecord(page)
@@ -1204,7 +1205,7 @@ test.describe.serial('8. Validate declaration review page', () => {
        */
       await expect(
         page.getByRole('button', {
-          name: `${declaration.deceased.name.firstNames} ${declaration.deceased.name.familyName}`
+          name: formatName(declaration.deceased.name)
         })
       ).toBeVisible()
     })
@@ -1222,13 +1223,13 @@ test.describe.serial('8. Validate declaration review page', () => {
 
       await expect(
         page.getByRole('button', {
-          name: `${declaration.deceased.name.firstNames} ${declaration.deceased.name.familyName}`
+          name: formatName(declaration.deceased.name)
         })
       ).toBeVisible()
 
       await auditRecord({
         page,
-        name: `${declaration.deceased.name.firstNames} ${declaration.deceased.name.familyName}`
+        name: formatName(declaration.deceased.name)
       })
 
       await assignRecord(page)
@@ -1413,7 +1414,7 @@ test.describe.serial('8. Validate declaration review page', () => {
        */
       await expect(
         page.getByRole('button', {
-          name: `${declaration.deceased.name.firstNames} ${declaration.deceased.name.familyName}`
+          name: formatName(declaration.deceased.name)
         })
       ).toBeVisible()
     })
