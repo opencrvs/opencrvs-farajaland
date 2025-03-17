@@ -136,6 +136,16 @@ jobs:
         env:
           DOMAIN: '${{ vars.DOMAIN }}'
 
+      - id: ctrf_check
+        if: always()
+        run: |
+          [ -d ctrf ] && \
+            echo "ctrf=true" >> $GITHUB_OUTPUT || \
+            echo "ctrf=false" >> $GITHUB_OUTPUT
+      - name: Publish Test Summary Results
+        run: npx github-actions-ctrf ctrf/ctrf-report.json
+        if: always() && steps.ctrf_check.outputs.ctrf == 'true'
+
       - name: Form the artifact name from test_file
         id: artifact
         run: echo "artifact=$(basename $(dirname ${{ matrix.test_file }}))_$(basename ${{ matrix.test_file }})" >> $GITHUB_OUTPUT
