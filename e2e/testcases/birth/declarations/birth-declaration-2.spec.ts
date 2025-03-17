@@ -8,6 +8,7 @@ import {
   expectAddress,
   expectOutboxToBeEmpty,
   formatDateObjectTo_ddMMMMyyyy,
+  formatName,
   getAction,
   getRandomDate,
   goToSection,
@@ -551,7 +552,7 @@ test.describe.serial('2. Birth declaration case - 2', () => {
        */
       await expect(
         page.getByRole('button', {
-          name: `${declaration.child.name.firstNames} ${declaration.child.name.familyName}`
+          name: formatName(declaration.child.name)
         })
       ).toBeVisible()
     })
@@ -569,13 +570,13 @@ test.describe.serial('2. Birth declaration case - 2', () => {
 
       await expect(
         page.getByRole('button', {
-          name: `${declaration.child.name.firstNames} ${declaration.child.name.familyName}`
+          name: formatName(declaration.child.name)
         })
       ).toBeVisible()
 
       await auditRecord({
         page,
-        name: `${declaration.child.name.firstNames} ${declaration.child.name.familyName}`
+        name: formatName(declaration.child.name)
       })
 
       await assignRecord(page)

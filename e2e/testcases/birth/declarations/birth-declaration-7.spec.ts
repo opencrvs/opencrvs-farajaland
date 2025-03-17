@@ -6,6 +6,7 @@ import {
   createPIN,
   drawSignature,
   expectOutboxToBeEmpty,
+  formatName,
   getAction,
   goToSection,
   login,
@@ -255,7 +256,7 @@ test.describe.serial('7. Birth declaration case - 7', () => {
        */
       await expect(
         page.getByRole('button', {
-          name: `${declaration.child.name.firstNames} ${declaration.child.name.familyName}`
+          name: formatName(declaration.child.name)
         })
       ).toBeVisible()
     })
@@ -274,13 +275,13 @@ test.describe.serial('7. Birth declaration case - 7', () => {
 
       await expect(
         page.getByRole('button', {
-          name: `${declaration.child.name.firstNames} ${declaration.child.name.familyName}`
+          name: formatName(declaration.child.name)
         })
       ).toBeVisible()
 
       await auditRecord({
         page,
-        name: `${declaration.child.name.firstNames} ${declaration.child.name.familyName}`
+        name: formatName(declaration.child.name)
       })
 
       await assignRecord(page)

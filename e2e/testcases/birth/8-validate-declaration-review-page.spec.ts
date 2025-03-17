@@ -11,7 +11,8 @@ import {
   expectOutboxToBeEmpty,
   getAction,
   assignRecord,
-  auditRecord
+  auditRecord,
+  formatName
 } from '../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../constants'
@@ -877,7 +878,7 @@ test.describe.serial('8. Validate declaration review page', () => {
        */
       await expect(
         page.getByRole('button', {
-          name: `${declaration.child.name.firstNames} ${declaration.child.name.familyName}`
+          name: formatName(declaration.child.name)
         })
       ).toBeVisible()
     })
@@ -895,13 +896,13 @@ test.describe.serial('8. Validate declaration review page', () => {
 
       await expect(
         page.getByRole('button', {
-          name: `${declaration.child.name.firstNames} ${declaration.child.name.familyName}`
+          name: formatName(declaration.child.name)
         })
       ).toBeVisible()
 
       await auditRecord({
         page,
-        name: `${declaration.child.name.firstNames} ${declaration.child.name.familyName}`
+        name: formatName(declaration.child.name)
       })
 
       await assignRecord(page)
@@ -1138,7 +1139,7 @@ test.describe.serial('8. Validate declaration review page', () => {
        */
       await expect(
         page.getByRole('button', {
-          name: `${declaration.child.name.firstNames} ${declaration.child.name.familyName}`
+          name: formatName(declaration.child.name)
         })
       ).toBeVisible()
     })
@@ -1156,13 +1157,13 @@ test.describe.serial('8. Validate declaration review page', () => {
 
       await expect(
         page.getByRole('button', {
-          name: `${declaration.child.name.firstNames} ${declaration.child.name.familyName}`
+          name: formatName(declaration.child.name)
         })
       ).toBeVisible()
 
       await auditRecord({
         page,
-        name: `${declaration.child.name.firstNames} ${declaration.child.name.familyName}`
+        name: formatName(declaration.child.name)
       })
 
       await assignRecord(page)
@@ -1383,7 +1384,7 @@ test.describe.serial('8. Validate declaration review page', () => {
       await expect(
         page.locator('#child-content #Full [data-test-id="row-value-Full"]')
       ).toContainText(
-        `${declaration.child.name.firstNames} ${declaration.child.name.familyName}
+        `formatName(declaration.child.name)
             ${declaration.child.name.firstNames} ${newFamilyNameForChild}`,
         {
           useInnerText: true // makes line break intentional
