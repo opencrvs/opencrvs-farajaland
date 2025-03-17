@@ -11,7 +11,8 @@ import {
   continueForm,
   expectOutboxToBeEmpty,
   getAction,
-  assignRecord
+  assignRecord,
+  auditRecord
 } from '../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../constants'
@@ -738,11 +739,18 @@ test.describe.serial('8. Validate declaration review page', () => {
       )
       await createPIN(page)
       await page.getByRole('button', { name: 'Ready for review' }).click()
-      await page
-        .getByRole('button', {
+
+      await expect(
+        page.getByRole('button', {
           name: `${declaration.deceased.name.firstNames} ${declaration.deceased.name.familyName}`
         })
-        .click()
+      ).toBeVisible()
+
+      await auditRecord({
+        page,
+        name: `${declaration.deceased.name.firstNames} ${declaration.deceased.name.familyName}`
+      })
+
       await assignRecord(page)
       await page.getByRole('button', { name: 'Action' }).first().click()
       await getAction(page, 'Review declaration').click()
@@ -1211,11 +1219,18 @@ test.describe.serial('8. Validate declaration review page', () => {
       )
       await createPIN(page)
       await page.getByRole('button', { name: 'Ready for review' }).click()
-      await page
-        .getByRole('button', {
+
+      await expect(
+        page.getByRole('button', {
           name: `${declaration.deceased.name.firstNames} ${declaration.deceased.name.familyName}`
         })
-        .click()
+      ).toBeVisible()
+
+      await auditRecord({
+        page,
+        name: `${declaration.deceased.name.firstNames} ${declaration.deceased.name.familyName}`
+      })
+
       await assignRecord(page)
       await page.getByRole('button', { name: 'Action' }).first().click()
       await getAction(page, 'Review declaration').click()

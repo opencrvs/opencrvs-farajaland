@@ -1,6 +1,7 @@
 import { test, expect, type Page } from '@playwright/test'
 import {
   assignRecord,
+  auditRecord,
   continueForm,
   createPIN,
   drawSignature,
@@ -806,11 +807,18 @@ test.describe.serial('11. Death declaration case - 11', () => {
       )
       await createPIN(page)
       await page.getByRole('button', { name: 'Ready for review' }).click()
-      await page
-        .getByRole('button', {
+
+      await expect(
+        page.getByRole('button', {
           name: `${declaration.deceased.name.firstNames} ${declaration.deceased.name.familyName}`
         })
-        .click()
+      ).toBeVisible()
+
+      await auditRecord({
+        page,
+        name: `${declaration.deceased.name.firstNames} ${declaration.deceased.name.familyName}`
+      })
+
       await assignRecord(page)
       await page.getByRole('button', { name: 'Action' }).first().click()
       await getAction(page, 'Review declaration').click()
