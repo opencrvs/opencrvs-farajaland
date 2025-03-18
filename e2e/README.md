@@ -10,8 +10,8 @@
 8. Detailed view of the case is opened
 9. Further down, you see screenshots taken during the failure and trace.
 10. Download `trace`
-11. Open browser, and go to https://trace.playwright.dev
-12. Select the trace you download and open it
-13. You are now able to debug the failed test case as it would have happened on your local enviornmnet
+11. Open browser, go to https://trace.playwright.dev
+12. Open the previously downloaded trace .zip
+13. You are now able to debug the failed test case as it would have happened on your local environment
 
-![alt text](e2e-debug-steps.png 'Title')
+![alt text](e2e-debug-steps.png 'E2E debug steps')
