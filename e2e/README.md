@@ -1,0 +1,17 @@
+# How to debug E2E tests on CI
+
+1. Go to E2E repository https://github.com/opencrvs/e2e
+2. Find the `Deploy & run E2E` action run that failed
+3. Locate the failing test(s)
+4. Under `upload-artifact` step, download the artifact
+5. Unzip the downloaded artifact
+6. Open the `index.html` file in browser
+7. Select the failing test
+8. Detailed view of the case is opened
+9. Further down, you see screenshots taken during the failure and trace.
+10. Download `trace`
+11. Open browser, and go to https://trace.playwright.dev
+12. Select the trace you download and open it
+13. You are now able to debug the failed test case as it would have happened on your local enviornmnet
+
+![alt text](e2e-debug-steps.png 'Title')
