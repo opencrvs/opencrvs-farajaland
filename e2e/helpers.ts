@@ -411,6 +411,9 @@ export const assignRecord = async (page: Page) => {
     await page.getByRole('button', { name: 'Assign', exact: true }).click()
 }
 
+/**
+  Opens the record audit view of a record with given trackingId or name
+ */
 export const auditRecord = async ({
   page,
   trackingId,
