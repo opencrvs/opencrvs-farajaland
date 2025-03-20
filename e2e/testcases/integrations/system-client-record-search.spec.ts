@@ -1,6 +1,10 @@
+import { faker } from '@faker-js/faker'
 import { test, type Page, expect } from '@playwright/test'
 import { CREDENTIALS } from '../../constants'
-import { createPIN, login } from '../../helpers'
+import { createPIN, getToken, login } from '../../helpers'
+import { ConvertEnumsToStrings, createDeclaration } from '../birth/helpers'
+import { BirthInputDetails } from '../birth/types'
+import { fetchEvents, getTokenForSystemClient } from './utils'
 
 test.describe.serial('1. Birth declaration case - 1', () => {
   let page: Page
@@ -14,6 +18,11 @@ test.describe.serial('1. Birth declaration case - 1', () => {
   })
 
   test.describe('Searching records as a system client', async () => {
+    let token: {
+      clientId: string
+      secret: string
+      sha: string
+    }
     test.beforeAll(async () => {
       await login(
         page,
@@ -56,11 +65,60 @@ test.describe.serial('1. Birth declaration case - 1', () => {
         .locator(':nth-child(2) :first-child')
         .first()
         .textContent()
-      console.log({
+
+      if (!clientId || !secret || !sha) {
+        throw new Error('Client ID, secret or SHA secret not found')
+      }
+
+      token = {
         clientId,
         secret,
         sha
-      })
+      }
+    })
+
+    test('Search for a record', async () => {
+      const declarationInput = {
+        child: {
+          firstNames: faker.person.firstName(),
+          familyName: faker.person.firstName(),
+          gender: 'male'
+        },
+        informant: {
+          type: 'BROTHER'
+        },
+        attendant: {
+          type: 'PHYSICIAN'
+        },
+        mother: {
+          firstNames: faker.person.firstName(),
+          familyName: faker.person.firstName()
+        },
+        father: {
+          firstNames: faker.person.firstName(),
+          familyName: faker.person.firstName()
+        }
+      } as ConvertEnumsToStrings<BirthInputDetails>
+
+      const registrarToken = await getToken(
+        CREDENTIALS.LOCAL_REGISTRAR.USERNAME,
+        CREDENTIALS.LOCAL_REGISTRAR.PASSWORD
+      )
+      const createdDeclaration = await createDeclaration(
+        registrarToken,
+        declarationInput
+      )
+
+      const systemToken = await getTokenForSystemClient(
+        token.clientId,
+        token.secret
+      )
+
+      const events = await fetchEvents(
+        createdDeclaration.trackingId,
+        systemToken.access_token
+      )
+      expect(events.data.searchEvents.totalItems).toBe(1)
     })
   })
 })
