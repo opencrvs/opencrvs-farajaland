@@ -13,7 +13,7 @@ import {
   AddressType,
   and,
   ConditionalType,
-  definePage,
+  defineFormPage,
   FieldType
 } from '@opencrvs/toolkit/events'
 import { field, or, not } from '@opencrvs/toolkit/conditionals'
@@ -34,7 +34,7 @@ export const requireFatherDetails = or(
   field('informant.relation').isEqualTo(InformantType.FATHER)
 )
 
-export const father = definePage({
+export const father = defineFormPage({
   id: PersonType.father,
   title: {
     defaultMessage: "Father's details",
