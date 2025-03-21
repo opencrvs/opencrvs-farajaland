@@ -1384,7 +1384,7 @@ test.describe.serial('8. Validate declaration review page', () => {
       await expect(
         page.locator('#child-content #Full [data-test-id="row-value-Full"]')
       ).toContainText(
-        `formatName(declaration.child.name)
+        `${formatName(declaration.child.name)}
             ${declaration.child.name.firstNames} ${newFamilyNameForChild}`,
         {
           useInnerText: true // makes line break intentional
