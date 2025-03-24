@@ -35,5 +35,7 @@ jobs:
     timeout-minutes: 60
     steps:
       - name: Print the present directory
-        run: pwd
+        run: |
+          pwd
+          ls -l
      
