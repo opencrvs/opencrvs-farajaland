@@ -34,8 +34,18 @@ jobs:
       outcome: ${{ steps.seed.outcome }}
     timeout-minutes: 60
     steps:
-      - name: Print the present directory
-        run: |
-          pwd
-          ls -l
+      - name: Seed data on given environment
+        uses: nick-fields/retry@v3
+        id: seed
+        with:
+          timeout_minutes: 10
+          max_attempts: 5
+          command: |
+            yarn seed:prod
+        env:
+          ACTIVATE_USERS: ${{ vars.ACTIVATE_USERS }}
+          GATEWAY_HOST: ${{ vars.GATEWAY_HOST }}
+          AUTH_HOST: ${{ vars.AUTH_HOST }}
+          COUNTRY_CONFIG_HOST: ${{ vars.COUNTRY_CONFIG_HOST }}
+          SUPER_USER_PASSWORD: ${{ secrets.SUPER_USER_PASSWORD }}
      
