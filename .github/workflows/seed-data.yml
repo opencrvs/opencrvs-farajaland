@@ -34,6 +34,9 @@ jobs:
       outcome: ${{ steps.seed.outcome }}
     timeout-minutes: 60
     steps:
+      - name: Ensure proper permission for present directory
+        run: chmod -R 777 .
+      
       - name: Seed data on given environment
         uses: nick-fields/retry@v3
         id: seed
