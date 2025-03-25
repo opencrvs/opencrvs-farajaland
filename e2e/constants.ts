@@ -1,4 +1,4 @@
-export const DOMAIN = process.env.DOMAIN || 'farajaland-dev.opencrvs.org'
+export const DOMAIN = process.env.DOMAIN || 'farajaland-dev.opencrvs.dev'
 
 export const LOGIN_URL =
   process.env.NODE_ENV === 'development'
@@ -19,6 +19,11 @@ export const GATEWAY_HOST =
   process.env.NODE_ENV === 'development'
     ? 'http://localhost:7070'
     : 'https://gateway.' + DOMAIN
+
+export const CLIENT_V2_URL =
+  process.env.NODE_ENV === 'development'
+    ? 'http://localhost:3000/v2'
+    : 'https://register.' + DOMAIN + '/v2'
 
 /*
  * This timeout is to ensure that all previous actions have been completed
