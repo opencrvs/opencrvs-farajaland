@@ -68,15 +68,3 @@ test.describe.serial('Print certificate', () => {
     })
   })
 })
-
-/*
-
-
-    test('2.1 Show collect payment page', async () => {
-      await expect(page.locator('#content-name')).toContainText(
-        'Collect Payment'
-      )
-      await page.getByRole('button', { name: 'Continue' }).click()
-    })
-      
-    */
