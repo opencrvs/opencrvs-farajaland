@@ -60,12 +60,11 @@ docker-manager-first:
 # We recommend you add 2-4 workers for a scaled production deployment
 # This should depend on the size of your country and the number of end users.
 # If you are only using one production worker for very small countries or small pilot projects, replace with an empty block like so: docker-workers: {}
-docker-workers: {}
-# docker-workers:
-#   hosts:
-#     farajaland-prod-2:
-#       ansible_host: '49.13.124.87'
-#       data_label: data2
+docker-workers:
+  hosts:
+    farajaland-prod-2:
+      ansible_host: '49.13.124.87'
+      data_label: data2
 
 backups:
   hosts:
