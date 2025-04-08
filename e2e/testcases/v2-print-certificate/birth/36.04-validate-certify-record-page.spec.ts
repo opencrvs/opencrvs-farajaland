@@ -5,6 +5,7 @@ import {
   createDeclaration,
   CreateDeclarationResponse
 } from './data/birth-declaration'
+import { selectAction } from '../../../v2-utils'
 
 test.describe.serial('4.0 Validate "Certify record" page', () => {
   let declaration: CreateDeclarationResponse
@@ -27,8 +28,7 @@ test.describe.serial('4.0 Validate "Certify record" page', () => {
   test('4.1 continue with print in advance skips identity verification', async () => {
     const childName = `${declaration.declaration['child.firstname']} ${declaration.declaration['child.surname']}`
     await page.getByRole('button', { name: childName }).click()
-    await page.getByRole('button', { name: 'Action' }).click()
-    await page.getByRole('listitem').click()
+    await selectAction(page, 'Print Certificate')
 
     await page.locator('#certificateTemplateId svg').click()
     await page.getByText('Birth Certificate').nth(1).click()
