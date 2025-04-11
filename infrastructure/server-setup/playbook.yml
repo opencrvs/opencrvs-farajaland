@@ -67,8 +67,10 @@
         apply:
           tags:
             - docker
+            - swarm
       tags:
         - docker
+        - swarm 
 
     - include_tasks:
         file: tasks/deployment-user.yml
