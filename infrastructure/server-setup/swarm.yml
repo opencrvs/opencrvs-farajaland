@@ -18,28 +18,24 @@
         proto: tcp
       tags:
         - swarm
-        - docker
 
     - name: 'Create primary swarm manager'
       shell: docker swarm init --advertise-addr {{ ansible_default_ipv4.address }}
       when: "docker_info.stdout.find('Swarm: inactive') != -1"
       tags:
         - swarm
-        - docker
 
     - name: 'Get docker swarm manager token'
       shell: docker swarm join-token -q manager
       register: manager_token
       tags:
         - swarm
-        - docker
 
     - name: 'Get docker swarm worker token'
       shell: docker swarm join-token -q worker
       register: worker_token
       tags:
         - swarm
-        - docker
 
   
 - hosts: docker-workers
@@ -54,7 +50,6 @@
       changed_when: false
       tags:
         - swarm
-        - docker
 
     - name: 'Join as a worker'
       shell: "docker swarm join --token {{ hostvars[manager_hostname]['worker_token']['stdout'] }} {{ hostvars[manager_hostname]['ansible_default_ipv4']['address'] }}:2377"
@@ -63,7 +58,6 @@
       delay: 20
       tags:
         - swarm
-        - docker
 
 - hosts: docker-manager-first
   become: yes
@@ -77,4 +71,3 @@
       when: hostvars[hostname]['data_label'] is defined
       tags:
         - swarm
-        - docker
