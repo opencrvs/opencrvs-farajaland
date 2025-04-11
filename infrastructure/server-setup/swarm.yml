@@ -16,18 +16,30 @@
         rule: allow
         port: 2377
         proto: tcp
+      tags:
+        - swarm
+        - docker
 
     - name: 'Create primary swarm manager'
       shell: docker swarm init --advertise-addr {{ ansible_default_ipv4.address }}
       when: "docker_info.stdout.find('Swarm: inactive') != -1"
+      tags:
+        - swarm
+        - docker
 
     - name: 'Get docker swarm manager token'
       shell: docker swarm join-token -q manager
       register: manager_token
+      tags:
+        - swarm
+        - docker
 
     - name: 'Get docker swarm worker token'
       shell: docker swarm join-token -q worker
       register: worker_token
+      tags:
+        - swarm
+        - docker
 
   
 - hosts: docker-workers
@@ -40,17 +52,18 @@
       shell: docker info --format "{% raw %}{{.Swarm.LocalNodeState}}{% endraw %}"
       register: worker_swarm_status
       changed_when: false
-
-    - name: Fail if the node is already part of a swarm
-      fail:
-        msg: "You are trying to attach a worker to a Swarm that is already part of another Swarm. Please make the node leave the current Swarm first, then run the playbook again."
-      when: "worker_swarm_status.stdout.find('active') != -1"
+      tags:
+        - swarm
+        - docker
 
     - name: 'Join as a worker'
       shell: "docker swarm join --token {{ hostvars[manager_hostname]['worker_token']['stdout'] }} {{ hostvars[manager_hostname]['ansible_default_ipv4']['address'] }}:2377"
       when: "docker_info.stdout.find('Swarm: inactive') != -1"
       retries: 3
       delay: 20
+      tags:
+        - swarm
+        - docker
 
 - hosts: docker-manager-first
   become: yes
@@ -62,3 +75,6 @@
       loop_control:
         loop_var: hostname
       when: hostvars[hostname]['data_label'] is defined
+      tags:
+        - swarm
+        - docker
