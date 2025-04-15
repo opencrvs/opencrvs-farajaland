@@ -2,6 +2,7 @@ import { expect, test, type Page } from '@playwright/test'
 import { loginToV2 } from '../../helpers'
 import path from 'path'
 import { faker } from '@faker-js/faker'
+import { selectAction } from '../../v2-utils'
 
 const child = {
   firstNames: faker.person.firstName('female')
@@ -450,7 +451,7 @@ test.describe.serial('1. Birth event declaration', () => {
          * - find the declared birth event record on this page list with saved data
          */
         await expect(page.locator('#content-name')).toHaveText('All events')
-        await expect(page.getByText('seconds ago').first()).toBeVisible()
+        await expect(page.getByText(child.firstNames)).toBeVisible()
       })
 
       test('1.9.4 Reopen draft and navigate to review page', async () => {
@@ -460,8 +461,9 @@ test.describe.serial('1. Birth event declaration', () => {
           })
           .click()
 
-        await page.getByRole('button', { name: 'Action' }).click()
-        await page.getByText('Declare').click()
+        await selectAction(page, 'Assign')
+        await selectAction(page, 'Declare')
+
         await page.getByRole('button', { name: 'Continue' }).click()
         await page.getByRole('button', { name: 'Continue' }).click()
         await page.getByRole('button', { name: 'Continue' }).click()

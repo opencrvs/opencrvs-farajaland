@@ -29,6 +29,7 @@ test.describe.serial('Print certificate', () => {
   test('1.0 Click on "Print certificate" from action menu', async () => {
     const childName = `${birthDeclaration.declaration['child.firstname']} ${birthDeclaration.declaration['child.surname']}`
     await page.getByRole('button', { name: childName }).click()
+    await selectAction(page, 'Assign')
     await selectAction(page, 'Print Certificate')
   })
 

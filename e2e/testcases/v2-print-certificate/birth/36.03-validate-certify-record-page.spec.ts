@@ -28,6 +28,7 @@ test.describe.serial('3.0 Validate "Certify record" page', () => {
   test('3.1 should navigate to Verify their identity page', async () => {
     const childName = `${declaration.declaration['child.firstname']} ${declaration.declaration['child.surname']}`
     await page.getByRole('button', { name: childName }).click()
+    await selectAction(page, 'Assign')
     await selectAction(page, 'Print Certificate')
 
     await expect(
