@@ -3,6 +3,7 @@ import { loginToV2 } from '../../helpers'
 import path from 'path'
 import { faker } from '@faker-js/faker'
 import { selectAction } from '../../v2-utils'
+import { REQUIRED_VALIDATION_ERROR } from './helpers'
 
 const child = {
   firstNames: faker.person.firstName('female')
@@ -227,7 +228,7 @@ test.describe.serial('1. Birth event declaration', () => {
          * - Required for registration
          */
         await expect(page.getByText("Informant's details")).toBeVisible()
-        await expect(page.getByText('Required for registration')).toBeVisible()
+        await expect(page.getByText(REQUIRED_VALIDATION_ERROR)).toBeVisible()
       })
 
       test('1.5.3 Select any option in relationship to child and click the "continue" button', async () => {
