@@ -13,6 +13,6 @@ export async function selectAction(
   await page.getByRole('button', { name: 'Action' }).click()
   await page
     .locator('#action-Dropdown-Content li')
-    .filter({ hasText: action })
+    .filter({ hasText: new RegExp(`^${action}$`, 'i') })
     .click()
 }
