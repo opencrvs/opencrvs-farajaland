@@ -462,7 +462,6 @@ test.describe.serial('1. Birth event declaration', () => {
           })
           .click()
 
-        await selectAction(page, 'Assign')
         await selectAction(page, 'Declare')
 
         await page.getByRole('button', { name: 'Continue' }).click()
