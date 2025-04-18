@@ -10,8 +10,6 @@ export async function selectAction(
     | 'Assign'
     | 'Unassign'
 ) {
-  await ensureAssigned(page)
-
   await page.getByRole('button', { name: 'Action' }).click()
   await page
     .locator('#action-Dropdown-Content li')
