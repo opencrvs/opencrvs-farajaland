@@ -38,6 +38,7 @@ on:
           - qa
           - development
           - e2e
+          - v16
       core-image-tag:
         description: Core DockerHub image tag
         required: true
