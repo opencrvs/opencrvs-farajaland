@@ -12,20 +12,20 @@ type InformantRelation = 'MOTHER' | 'BROTHER'
 function getInformantDetails(informantRelation: InformantRelation) {
   if (informantRelation === 'MOTHER') {
     return {
-      'informant.relation': informantRelation,
-      'informant.email': 'mothers@email.com'
+      [`informant.${informantRelation}.relation`]: informantRelation,
+      [`informant.${informantRelation}.email`]: 'mothers@email.com'
     }
   }
 
   return {
-    'informant.relation': informantRelation,
-    'informant.email': 'brothers@email.com',
-    'informant.firstname': faker.person.firstName(),
-    'informant.surname': faker.person.lastName(),
-    'informant.dob': '2008-09-12',
-    'informant.nationality': 'FAR',
-    'informant.idType': 'NATIONAL_ID',
-    'informant.nid': faker.string.numeric(10)
+    [`informant.${informantRelation}.relation`]: informantRelation,
+    [`informant.${informantRelation}.email`]: 'brothers@email.com',
+    [`informant.${informantRelation}.firstname`]: faker.person.firstName(),
+    [`informant.${informantRelation}.surname`]: faker.person.lastName(),
+    [`informant.${informantRelation}.dob`]: '2008-09-12',
+    [`informant.${informantRelation}.nationality`]: 'FAR',
+    [`informant.${informantRelation}.idType`]: 'NATIONAL_ID',
+    [`informant.${informantRelation}.nid`]: faker.string.numeric(10)
   }
 }
 
