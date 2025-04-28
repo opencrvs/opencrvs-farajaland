@@ -107,7 +107,7 @@ const getInformantCommonFields = (
 ): InferredInput[] => {
   return [
     {
-      id: `${PersonType.informant}.${informantType}.firstname`,
+      id: `${PersonType.informant}.firstname`,
       configuration: { maxLength: MAX_NAME_LENGTH },
       type: FieldType.TEXT,
       required: true,
@@ -127,7 +127,7 @@ const getInformantCommonFields = (
       ]
     },
     {
-      id: `${PersonType.informant}.${informantType}.surname`,
+      id: `${PersonType.informant}.surname`,
       configuration: { maxLength: MAX_NAME_LENGTH },
       type: FieldType.TEXT,
       required: true,
@@ -147,7 +147,7 @@ const getInformantCommonFields = (
       ]
     },
     {
-      id: `${PersonType.informant}.${informantType}.dob`,
+      id: `${PersonType.informant}.dob`,
       type: FieldType.DATE,
       required: true,
       validation: [
@@ -157,9 +157,7 @@ const getInformantCommonFields = (
             description: 'This is the error message for invalid date',
             id: `v2.event.birth.action.declare.form.section.person.field.dob.error`
           },
-          validator: field(`${PersonType.informant}.${informantType}.dob`)
-            .isBefore()
-            .now()
+          validator: field(`${PersonType.informant}.dob`).isBefore().now()
         },
         {
           message: {
@@ -168,7 +166,7 @@ const getInformantCommonFields = (
               'This is the error message for a birth date after child`s birth date',
             id: `v2.event.birth.action.declare.form.section.person.dob.afterChild`
           },
-          validator: field(`${PersonType.informant}.${informantType}.dob`)
+          validator: field(`${PersonType.informant}.dob`)
             .isBefore()
             .date(field('child.dob'))
         }
@@ -182,11 +180,7 @@ const getInformantCommonFields = (
         {
           type: ConditionalType.SHOW,
           conditional: and(
-            not(
-              field(
-                `${PersonType.informant}.${informantType}.dobUnknown`
-              ).isEqualTo(true)
-            ),
+            not(field(`${PersonType.informant}.dobUnknown`).isEqualTo(true)),
             informantOtherThanParent,
             field('informant.relation').isEqualTo(informantType)
           )
@@ -194,7 +188,7 @@ const getInformantCommonFields = (
       ]
     },
     {
-      id: `${PersonType.informant}.${informantType}.dobUnknown`,
+      id: `${PersonType.informant}.dobUnknown`,
       type: FieldType.CHECKBOX,
       label: {
         defaultMessage: 'Exact date of birth unknown',
@@ -216,7 +210,7 @@ const getInformantCommonFields = (
       ]
     },
     {
-      id: `${PersonType.informant}.${informantType}.age`,
+      id: `${PersonType.informant}.age`,
       type: FieldType.TEXT,
       required: true,
       label: {
@@ -235,9 +229,7 @@ const getInformantCommonFields = (
         {
           type: ConditionalType.SHOW,
           conditional: and(
-            field(
-              `${PersonType.informant}.${informantType}.dobUnknown`
-            ).isEqualTo(true),
+            field(`${PersonType.informant}.dobUnknown`).isEqualTo(true),
             informantOtherThanParent,
             field('informant.relation').isEqualTo(informantType)
           )
@@ -245,7 +237,7 @@ const getInformantCommonFields = (
       ]
     },
     {
-      id: `${PersonType.informant}.${informantType}.nationality`,
+      id: `${PersonType.informant}.nationality`,
       type: FieldType.COUNTRY,
       required: true,
       label: {
@@ -265,7 +257,7 @@ const getInformantCommonFields = (
       defaultValue: 'FAR'
     },
     {
-      id: `${PersonType.informant}.${informantType}.idType`,
+      id: `${PersonType.informant}.idType`,
       type: FieldType.SELECT,
       required: true,
       label: {
@@ -285,7 +277,7 @@ const getInformantCommonFields = (
       ]
     },
     {
-      id: `${PersonType.informant}.${informantType}.nid`,
+      id: `${PersonType.informant}.nid`,
       type: FieldType.TEXT,
       required: true,
       label: {
@@ -297,7 +289,7 @@ const getInformantCommonFields = (
         {
           type: ConditionalType.SHOW,
           conditional: and(
-            field(`${PersonType.informant}.${informantType}.idType`).isEqualTo(
+            field(`${PersonType.informant}.idType`).isEqualTo(
               IdType.NATIONAL_ID
             ),
             informantOtherThanParent,
@@ -306,7 +298,7 @@ const getInformantCommonFields = (
         }
       ],
       validation: [
-        nationalIdValidator(`${PersonType.informant}.${informantType}.nid`),
+        nationalIdValidator(`${PersonType.informant}.nid`),
         {
           message: {
             defaultMessage: 'National id must be unique',
@@ -315,12 +307,12 @@ const getInformantCommonFields = (
           },
           validator: and(
             not(
-              field(`${PersonType.informant}.${informantType}.nid`).isEqualTo(
+              field(`${PersonType.informant}.nid`).isEqualTo(
                 field('mother.nid')
               )
             ),
             not(
-              field(`${PersonType.informant}.${informantType}.nid`).isEqualTo(
+              field(`${PersonType.informant}.nid`).isEqualTo(
                 field('father.nid')
               )
             )
@@ -329,7 +321,7 @@ const getInformantCommonFields = (
       ]
     },
     {
-      id: `${PersonType.informant}.${informantType}.passport`,
+      id: `${PersonType.informant}.passport`,
       type: FieldType.TEXT,
       required: true,
       label: {
@@ -341,9 +333,7 @@ const getInformantCommonFields = (
         {
           type: ConditionalType.SHOW,
           conditional: and(
-            field(`${PersonType.informant}.${informantType}.idType`).isEqualTo(
-              IdType.PASSPORT
-            ),
+            field(`${PersonType.informant}.idType`).isEqualTo(IdType.PASSPORT),
             informantOtherThanParent,
             field('informant.relation').isEqualTo(informantType)
           )
@@ -351,7 +341,7 @@ const getInformantCommonFields = (
       ]
     },
     {
-      id: `${PersonType.informant}.${informantType}.brn`,
+      id: `${PersonType.informant}.brn`,
       type: FieldType.TEXT,
       required: true,
       label: {
@@ -363,7 +353,7 @@ const getInformantCommonFields = (
         {
           type: ConditionalType.SHOW,
           conditional: and(
-            field(`${PersonType.informant}.${informantType}.idType`).isEqualTo(
+            field(`${PersonType.informant}.idType`).isEqualTo(
               IdType.BIRTH_REGISTRATION_NUMBER
             ),
             informantOtherThanParent
@@ -405,7 +395,7 @@ const getInformantCommonFields = (
       ]
     },
     {
-      id: `${PersonType.informant}.${informantType}.address`,
+      id: `${PersonType.informant}.address`,
       type: FieldType.ADDRESS,
       hideLabel: true,
       label: {
@@ -445,7 +435,7 @@ const getInformantCommonFields = (
       ]
     },
     {
-      id: `${PersonType.informant}.${informantType}.phoneNo`,
+      id: `${PersonType.informant}.phoneNo`,
       type: FieldType.TEXT,
       required: false,
       label: {
@@ -463,10 +453,10 @@ const getInformantCommonFields = (
             id: 'v2.event.birth.action.declare.form.section.informant.field.phoneNo.error'
           },
           validator: or(
-            field(`${PersonType.informant}.${informantType}.phoneNo`).matches(
+            field(`${PersonType.informant}.phoneNo`).matches(
               PHONE_NUMBER_REGEX
             ),
-            field(`${PersonType.informant}.${informantType}.phoneNo`).isFalsy()
+            field(`${PersonType.informant}.phoneNo`).isFalsy()
           )
         }
       ],
@@ -478,7 +468,7 @@ const getInformantCommonFields = (
       ]
     },
     {
-      id: `${PersonType.informant}.${informantType}.email`,
+      id: `${PersonType.informant}.email`,
       type: FieldType.EMAIL,
       required: true,
       label: {
