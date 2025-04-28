@@ -152,7 +152,9 @@ test.describe.serial('1. Birth declaration case - 1', () => {
         })
         .click()
 
-      await page.locator('#informant____email').fill(declaration.informantEmail)
+      await page
+        .locator('#informant____MOTHER____email')
+        .fill(declaration.informantEmail)
 
       await continueForm(page)
     })

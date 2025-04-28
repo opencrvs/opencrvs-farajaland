@@ -177,30 +177,30 @@ test.describe.serial('5. Birth declaration case - 5', () => {
        * - Usual place of residence
        */
       await page
-        .locator('#informant____firstname')
+        .locator('#informant____BROTHER____firstname')
         .fill(declaration.informant.name.firstNames)
       await page
-        .locator('#informant____surname')
+        .locator('#informant____BROTHER____surname')
         .fill(declaration.informant.name.familyName)
 
       await page.getByLabel('Exact date of birth unknown').check()
 
       await page
-        .locator('#informant____age')
+        .locator('#informant____BROTHER____age')
         .fill(declaration.informant.age.toString())
 
-      await page.locator('#informant____nationality').click()
+      await page.locator('#informant____BROTHER____nationality').click()
       await page
         .getByText(declaration.informant.nationality, { exact: true })
         .click()
 
-      await page.locator('#informant____idType').click()
+      await page.locator('#informant____BROTHER____idType').click()
       await page
         .getByText(declaration.informant.identifier.type, { exact: true })
         .click()
 
       await page
-        .locator('#informant____brn')
+        .locator('#informant____BROTHER____brn')
         .fill(declaration.informant.identifier.id)
 
       await page.locator('#country').click()

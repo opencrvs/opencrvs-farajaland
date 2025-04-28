@@ -21,11 +21,19 @@ test.describe('4. Validate the informants details pages', () => {
 
   test.describe.serial('4.1 Validate "Phone number" text field', async () => {
     test('4.1.1 Enter Non-valid phone number', async () => {
-      await page.locator('#informant____phoneNo').fill('1234567890')
+      await page.locator('#informant____relation').click()
+      //
+      await page
+        .getByText('Mother', {
+          exact: true
+        })
+        .click()
+
+      await page.locator('#informant____MOTHER___phoneNo').fill('1234567890')
       await page.getByRole('heading', { name: 'Birth', exact: true }).click()
-      await expect(page.locator('#informant____phoneNo_error')).toHaveText(
-        'Must be a valid 10 digit number that starts with 0(7|9)'
-      )
+      await expect(
+        page.locator('#informant____MOTHER____phoneNo_error')
+      ).toHaveText('Must be a valid 10 digit number that starts with 0(7|9)')
     })
 
     test('4.1.2 Navigate to review page and check for error', async () => {
@@ -38,10 +46,12 @@ test.describe('4. Validate the informants details pages', () => {
     test('4.1.3 Change phone number to empty', async () => {
       await page.getByTestId('change-button-informant.phoneNo').click()
       await page.getByText('Continue').click()
-      await page.locator('#informant____phoneNo').fill('')
+      await page.locator('#informant____MOTHER____phoneNo').fill('')
       await page.getByRole('heading', { name: 'Birth', exact: true }).click()
 
-      await expect(page.locator('#informant____phoneNo_error')).toBeHidden()
+      await expect(
+        page.locator('#informant____MOTHER____phoneNo_error')
+      ).toBeHidden()
     })
 
     test('4.1.4 Navigate to review page and check that error does not appear', async () => {

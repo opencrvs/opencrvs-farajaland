@@ -202,10 +202,10 @@ test.describe.serial('3. Birth declaration case - 3', () => {
        * - Usual place of residence
        */
       await page
-        .locator('#informant____firstname')
+        .locator('#informant____GRANDFATHER____firstname')
         .fill(declaration.informant.name.firstNames)
       await page
-        .locator('#informant____surname')
+        .locator('#informant____GRANDFATHER____surname')
         .fill(declaration.informant.name.familyName)
 
       await page.getByPlaceholder('dd').fill(declaration.informant.birthDate.dd)
@@ -214,13 +214,13 @@ test.describe.serial('3. Birth declaration case - 3', () => {
         .getByPlaceholder('yyyy')
         .fill(declaration.informant.birthDate.yyyy)
 
-      await page.locator('#informant____idType').click()
+      await page.locator('#informant____GRANDFATHER____idType').click()
       await page
         .getByText(declaration.informant.identifier.type, { exact: true })
         .click()
 
       await page
-        .locator('#informant____nid')
+        .locator('#informant____GRANDFATHER____nid')
         .fill(declaration.informant.identifier.id)
 
       await page.locator('#province').click()

@@ -191,16 +191,13 @@ test.describe.serial('1. Birth event declaration', () => {
         /*
          * Expected result: should see
          * - Relationship to child dropdown
-         * - Phone number field
-         * - Email address field
          * - Continue button
          * - Exit button
          * - Save &exit button
          * - 3dot menu (delete option)
          */
         await expect(page.getByText('Relationship to child')).toBeVisible()
-        await expect(page.getByText('Phone number')).toBeVisible()
-        await expect(page.getByText('Email')).toBeVisible()
+
         await expect(
           page.getByRole('button', { name: 'Continue' })
         ).toBeVisible()

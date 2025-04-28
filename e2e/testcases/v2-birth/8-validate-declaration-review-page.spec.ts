@@ -146,7 +146,7 @@ test.describe.serial('8. Validate declaration review page', () => {
           .click()
 
         await page
-          .locator('#informant____email')
+          .locator('#informant____MOTHER____email')
           .fill(declaration.informantEmail)
 
         await continueForm(page)
@@ -618,7 +618,7 @@ test.describe.serial('8. Validate declaration review page', () => {
           (Math.random() * 1000).toFixed(0) +
           '@opencrvs.dev'
         await page
-          .locator('#informant____email')
+          .locator('#informant____MOTHER____email')
           .fill(declaration.informantEmail)
         await page.getByRole('button', { name: 'Back to review' }).click()
 

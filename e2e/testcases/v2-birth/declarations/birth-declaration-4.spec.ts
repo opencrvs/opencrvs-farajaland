@@ -194,7 +194,9 @@ test.describe.serial('4. Birth declaration case - 4', () => {
         })
         .click()
 
-      await page.locator('#informant____email').fill(declaration.informantEmail)
+      await page
+        .locator('#informant____GRANDMOTHER____email')
+        .fill(declaration.informantEmail)
 
       /*
        * Expected result: should show additional fields:
@@ -205,30 +207,30 @@ test.describe.serial('4. Birth declaration case - 4', () => {
        * - Usual place of residence
        */
       await page
-        .locator('#informant____firstname')
+        .locator('#informant____GRANDMOTHER____firstname')
         .fill(declaration.informant.name.firstNames)
       await page
-        .locator('#informant____surname')
+        .locator('#informant____GRANDMOTHER____surname')
         .fill(declaration.informant.name.familyName)
 
       await page.getByLabel('Exact date of birth unknown').check()
 
       await page
-        .locator('#informant____age')
+        .locator('#informant____GRANDMOTHER____age')
         .fill(declaration.informant.age.toString())
 
-      await page.locator('#informant____nationality').click()
+      await page.locator('#informant____GRANDMOTHER____nationality').click()
       await page
         .getByText(declaration.informant.nationality, { exact: true })
         .click()
 
-      await page.locator('#informant____idType').click()
+      await page.locator('#informant____GRANDMOTHER____idType').click()
       await page
         .getByText(declaration.informant.identifier.type, { exact: true })
         .click()
 
       await page
-        .locator('#informant____passport')
+        .locator('#informant____GRANDMOTHER____passport')
         .fill(declaration.informant.identifier.id)
 
       await page.locator('#province').click()
