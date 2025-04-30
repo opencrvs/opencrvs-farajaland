@@ -1,3 +1,4 @@
+#!/bin/bash -x
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -297,7 +298,7 @@ docker_stack_deploy() {
     done
   done
 
-  echo "Updating docker swarm stack with new compose files"
+  echo "Updating docker swarm stack with new compose files: $COMPOSE_FILES_USED"
 
   configured_ssh 'cd /opt/opencrvs && \
     docker stack deploy --prune -c '$(split_and_join " " " -c " "$(to_remote_paths $COMPOSE_FILES_USED)")' --with-registry-auth opencrvs'
