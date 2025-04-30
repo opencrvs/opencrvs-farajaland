@@ -15,11 +15,11 @@ import {
   defineActionForm,
   defineConfig,
   defineDeclarationForm,
-  eventField,
+  event,
+  field,
   FieldType,
   PageTypes
 } from '@opencrvs/toolkit/events'
-import { field } from '@opencrvs/toolkit/conditionals'
 
 import { Event } from './types/types'
 import { MAX_NAME_LENGTH } from './v2/birth/validators'
@@ -1085,8 +1085,8 @@ export const tennisClubMembershipEvent = defineConfig({
       fields: [
         field('applicant.firstname').exact(),
         field('applicant.surname').fuzzy(),
-        eventField('event.trackingId'),
-        eventField('event.status', statusOptions)
+        event('event.trackingId'),
+        event('event.status', statusOptions)
       ]
     }
   ]
