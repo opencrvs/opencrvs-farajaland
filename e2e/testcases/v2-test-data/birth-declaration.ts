@@ -1,9 +1,9 @@
 import { v4 as uuidv4 } from 'uuid'
-import { GATEWAY_HOST } from '../../../../constants'
+import { GATEWAY_HOST } from '../../constants'
 import { faker } from '@faker-js/faker'
 import fs from 'fs'
 import path from 'path'
-import { getAllLocations, getLocationIdByName } from '../../../birth/helpers'
+import { getAllLocations, getLocationIdByName } from '../birth/helpers'
 import { createClient } from '@opencrvs/toolkit/api'
 import { ActionDocument, AddressType } from '@opencrvs/toolkit/events'
 
@@ -122,7 +122,8 @@ export async function createDeclaration(
     eventId: eventId,
     transactionId: uuidv4(),
     declaration,
-    annotation
+    annotation,
+    keepAssignment: true
   })
 
   await client.event.actions.validate.request.mutate({
@@ -130,7 +131,8 @@ export async function createDeclaration(
     transactionId: uuidv4(),
     declaration,
     annotation,
-    duplicates: []
+    duplicates: [],
+    keepAssignment: true
   })
 
   const response = await client.event.actions.register.request.mutate({
