@@ -1738,10 +1738,10 @@
   dependencies:
     "@octokit/openapi-types" "^18.0.0"
 
-"@opencrvs/toolkit@1.8.0-rc.99ff84e":
-  version "1.8.0-rc.99ff84e"
-  resolved "https://registry.yarnpkg.com/@opencrvs/toolkit/-/toolkit-1.8.0-rc.99ff84e.tgz#251ae771b885a7126ce2c1e560474ac57412b699"
-  integrity sha512-SU/rQGZffnDOERgiiX/yb+Ay70F7LXsL6lPeHUshkxerqvI+qy4uwEIDMVZKi2ajN+CwQFiCW+PsRett0ZeMZQ==
+"@opencrvs/toolkit@1.8.0-rc.994797e":
+  version "1.8.0-rc.994797e"
+  resolved "https://registry.yarnpkg.com/@opencrvs/toolkit/-/toolkit-1.8.0-rc.994797e.tgz#d74eef9bab3241453e8843f51366d110c3015f61"
+  integrity sha512-L33ABJSK8GxgDz7DRneLyotkSRDkQwq/v+2gjOVuf2AFS+3BC1JIf6eKbJ31S4sD4CXLTCZDZWOh2+GtbS0Vjw==
   dependencies:
     "@trpc/client" "^11.0.0-rc.648"
     "@trpc/server" "^11.0.0-rc.532"
@@ -1749,6 +1749,7 @@
     ajv-formats "^3.0.1"
     superjson "1.9.0-0"
     uuid "^9.0.0"
+    zod-openapi "^4.2.4"
 
 "@parcel/watcher-android-arm64@2.5.0":
   version "2.5.0"
@@ -8289,6 +8290,11 @@ yocto-queue@^0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/yocto-queue/-/yocto-queue-0.1.0.tgz#0294eb3dee05028d31ee1a5fa2c556a6aaf10a1b"
   integrity sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==
+
+zod-openapi@^4.2.4:
+  version "4.2.4"
+  resolved "https://registry.yarnpkg.com/zod-openapi/-/zod-openapi-4.2.4.tgz#44a0ec81ace6d64d705c8e4232095fac313359cf"
+  integrity sha512-tsrQpbpqFCXqVXUzi3TPwFhuMtLN3oNZobOtYnK6/5VkXsNdnIgyNr4r8no4wmYluaxzN3F7iS+8xCW8BmMQ8g==
 
 zod@^3.24.1:
   version "3.24.1"
