@@ -5,7 +5,11 @@ import fs from 'fs'
 import path from 'path'
 import { getAllLocations, getLocationIdByName } from '../birth/helpers'
 import { createClient } from '@opencrvs/toolkit/api'
-import { ActionDocument, AddressType } from '@opencrvs/toolkit/events'
+import {
+  ActionDocument,
+  ActionUpdate,
+  AddressType
+} from '@opencrvs/toolkit/events'
 
 type InformantRelation = 'MOTHER' | 'BROTHER'
 
@@ -29,14 +33,13 @@ function getInformantDetails(informantRelation: InformantRelation) {
   }
 }
 
-type DeclarationInput = {
-  [key: string]: any
-}
-
-export async function getDeclaration(
-  informantRelation: InformantRelation = 'MOTHER',
-  partialDeclaration: DeclarationInput = {}
-) {
+export async function getDeclaration({
+  informantRelation = 'MOTHER',
+  partialDeclaration = {}
+}: {
+  informantRelation?: InformantRelation
+  partialDeclaration?: Record<string, any>
+}) {
   const locations = await getAllLocations('ADMIN_STRUCTURE')
   const province = getLocationIdByName(locations, 'Central')
   const district = getLocationIdByName(locations, 'Ibombo')
@@ -107,9 +110,9 @@ export interface CreateDeclarationResponse {
 
 export async function createDeclaration(
   token: string,
-  dec?: Partial<Declaration>
+  dec?: Partial<ActionUpdate>
 ): Promise<CreateDeclarationResponse> {
-  const declaration = await getDeclaration(undefined, dec)
+  const declaration = await getDeclaration({ partialDeclaration: dec })
 
   const client = createClient(GATEWAY_HOST + '/events', `Bearer ${token}`)
 
