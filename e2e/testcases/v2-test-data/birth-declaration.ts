@@ -29,8 +29,13 @@ function getInformantDetails(informantRelation: InformantRelation) {
   }
 }
 
+type DeclarationInput = {
+  [key: string]: any
+}
+
 export async function getDeclaration(
-  informantRelation: InformantRelation = 'MOTHER'
+  informantRelation: InformantRelation = 'MOTHER',
+  partialDeclaration: DeclarationInput = {}
 ) {
   const locations = await getAllLocations('ADMIN_STRUCTURE')
   const province = getLocationIdByName(locations, 'Central')
@@ -40,7 +45,7 @@ export async function getDeclaration(
     throw new Error('Province or district not found')
   }
 
-  return {
+  const mockDeclaration = {
     'father.detailsNotAvailable': true,
     'father.reason': 'Father is missing.',
     'mother.firstname': faker.person.firstName(),
@@ -85,6 +90,12 @@ export async function getDeclaration(
     },
     ...getInformantDetails(informantRelation)
   }
+
+  // 💡 Merge overriden fields
+  return {
+    ...mockDeclaration,
+    ...partialDeclaration
+  }
 }
 
 export type Declaration = Awaited<ReturnType<typeof getDeclaration>>
@@ -96,9 +107,9 @@ export interface CreateDeclarationResponse {
 
 export async function createDeclaration(
   token: string,
-  dec?: Declaration
+  dec?: Partial<Declaration>
 ): Promise<CreateDeclarationResponse> {
-  const declaration = dec || (await getDeclaration())
+  const declaration = await getDeclaration(undefined, dec)
 
   const client = createClient(GATEWAY_HOST + '/events', `Bearer ${token}`)
 
