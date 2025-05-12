@@ -586,6 +586,11 @@ services:
       - INFOBIP_API_KEY=${INFOBIP_API_KEY:-}
       - INFOBIP_SENDER_ID=${INFOBIP_SENDER_ID:-}
       - DOMAIN={{hostname}}
+      # Identity mock
+      - ESIGNET_REDIRECT_URL=${ESIGNET_REDIRECT_URL}
+      - MOSIP_API_USERINFO_URL=${MOSIP_API_USERINFO_URL}
+      - OPENID_PROVIDER_CLAIMS=name,family_name,given_name,middle_name,birthdate,address
+      - OPENID_PROVIDER_CLIENT_ID=mock-client_id
     networks:
       - overlay_net
     logging:
