@@ -74,6 +74,11 @@ import { ActionType } from '@opencrvs/toolkit/events'
 import { Event } from './form/types/types'
 import { onRegisterHandler } from './api/registration'
 import { workqueueconfigHandler } from './api/workqueue/handler'
+import { env } from './environment'
+import {
+  mosipRegistrationForApprovalHandler,
+  mosipRegistrationForReviewHandler
+} from '@opencrvs/mosip'
 
 export interface ITokenPayload {
   sub: string
@@ -636,6 +641,43 @@ export async function createServer() {
     options: {
       tags: ['api', 'events'],
       description: 'Receives notifications on event actions'
+    }
+  })
+
+  server.route({
+    method: 'POST',
+    path: '/events/{event}/actions/sent-notification',
+    handler: mosipRegistrationForReviewHandler({
+      url: env.isProd ? 'http://mosip-api:2024' : 'http://localhost:2024'
+    }),
+    options: {
+      tags: ['api', 'custom-event'],
+      description: 'Receives notifications on sent-notification action'
+    }
+  })
+
+  server.route({
+    method: 'POST',
+    path: '/events/{event}/actions/sent-notification-for-review',
+    handler: mosipRegistrationForReviewHandler({
+      url: env.isProd ? 'http://mosip-api:2024' : 'http://localhost:2024'
+    }),
+    options: {
+      tags: ['api', 'custom-event'],
+      description:
+        'Receives notifications on sent-notification-for-review action'
+    }
+  })
+
+  server.route({
+    method: 'POST',
+    path: '/events/{event}/actions/sent-for-approval',
+    handler: mosipRegistrationForApprovalHandler({
+      url: env.isProd ? 'http://mosip-api:2024' : 'http://localhost:2024'
+    }),
+    options: {
+      tags: ['api', 'custom-event'],
+      description: 'Receives notifications on sent-for-approval action'
     }
   })
 
