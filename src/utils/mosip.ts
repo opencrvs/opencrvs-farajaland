@@ -128,6 +128,12 @@ export const fhirBirthToMosip = (bundle: fhir.Bundle) => {
       gender: (bundle) => getChildGender(bundle) ?? '',
       birthCertificateNumber: (bundle) =>
         createUniqueRegistrationNumberFromBundle(bundle).registrationNumber
+    },
+    audit: {
+      id: (bundle) => {
+        const composition = getComposition(bundle)
+        return composition.id
+      }
     }
   })
 }
@@ -168,6 +174,12 @@ export const fhirDeathToMosip = (bundle: fhir.Bundle) => {
           return ''
         }
         return (deceased && getPatientNationalId(deceased)) || ''
+      }
+    },
+    audit: {
+      id: (bundle) => {
+        const composition = getComposition(bundle)
+        return composition.id
       }
     }
   })
