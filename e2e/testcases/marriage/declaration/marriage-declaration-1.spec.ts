@@ -223,11 +223,6 @@ test.describe.serial('1. Marriage declaration case - 1', () => {
       await page.getByPlaceholder('mm').fill(declaration.bride.birthDate.mm)
       await page.getByPlaceholder('yyyy').fill(declaration.bride.birthDate.yyyy)
 
-      /*   await page.locator('#nationality').click()
-     await page
-          .getByText(declaration.bride.nationality,{  exact: true })
-          .click() */
-
       await page.locator('#brideIdType').click()
       await page
         .getByText(declaration.bride.identifier.type, { exact: true })
@@ -240,21 +235,6 @@ test.describe.serial('1. Marriage declaration case - 1', () => {
       await page
         .locator('#marriedLastNameEng')
         .fill(declaration.bride.lastNameAtBirth)
-
-      /*  await page.locator('#countryPrimaryBride').click()
-     await page
-          .getByText(declaration.bride.address.country, { exact: true})
-          .click() 
-    
-     await page.locator('#statePrimaryBride').click()
-     await page
-          .getByText(declaration.bride.address.province, { exact: true })
-          .click()
-    
-     await page.locator('#districtPrimaryBride').click()
-     await page
-          .getByText(declaration.bride.address.district,{ exact: true })
-          .click() */
 
       await page.getByLabel(declaration.bride.address.urbanOrRural).check()
 
@@ -290,21 +270,6 @@ test.describe.serial('1. Marriage declaration case - 1', () => {
       await page
         .getByText(declaration.event.typeOfMarriage, { exact: true })
         .click()
-
-      /*   await page.locator('#countryPlaceofmarriage').click()
-        await page
-             .getByText(declaration.event.address.country, { exact: true})
-             .click()
-       
-        await page.locator('#statePlaceofmarriage').click()
-        await page
-             .getByText(declaration.event.address.province, { exact: true })
-             .click()
-       
-        await page.locator('#districtPlaceofmarriage').click()
-        await page
-             .getByText(declaration.event.address.district,{ exact: true })
-             .click() */
 
       await page.getByLabel(declaration.event.address.urbanOrRural).check()
 
