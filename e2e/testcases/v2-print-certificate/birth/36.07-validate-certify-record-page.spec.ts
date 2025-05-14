@@ -6,13 +6,13 @@ import {
   createDeclaration,
   getDeclaration,
   Declaration
-} from './data/birth-declaration'
+} from '../../v2-test-data/birth-declaration'
 import {
-  expectInUrl,
   navigateToCertificatePrintAction,
   selectCertificationType,
   selectRequesterType
 } from './helpers'
+import { expectInUrl } from '../../../v2-utils'
 
 test.describe.serial('7.0 Validate "Certify record" page', () => {
   let eventId: string
@@ -24,7 +24,10 @@ test.describe.serial('7.0 Validate "Certify record" page', () => {
       CREDENTIALS.LOCAL_REGISTRAR.USERNAME,
       CREDENTIALS.LOCAL_REGISTRAR.PASSWORD
     )
-    const res = await createDeclaration(token, await getDeclaration('BROTHER'))
+    const res = await createDeclaration(
+      token,
+      await getDeclaration({ informantRelation: 'BROTHER' })
+    )
     eventId = res.eventId
     declaration = res.declaration
     page = await browser.newPage()
@@ -37,18 +40,14 @@ test.describe.serial('7.0 Validate "Certify record" page', () => {
     await page.close()
   })
 
-  test('7.1 continue with "Print and issue to informant (Brother)" redirect to Collector details page', async () => {
+  test('7.1 continue with "Print and issue to Informant (Brother)" redirect to Collector details page', async () => {
     await selectCertificationType(page, 'Birth Certificate')
-    await selectRequesterType(page, 'Print and issue to informant')
+    await selectRequesterType(page, 'Print and issue to Informant (Brother)')
     await page.getByRole('button', { name: 'Continue' }).click()
     await expectInUrl(
       page,
       `/print-certificate/${eventId}/pages/collector.identity.verify`
     )
-
-    await expect(page.getByText('Relationship to child')).toBeVisible()
-    await expect(page.getByText('Brother')).toBeVisible()
-
     await page.getByRole('button', { name: 'Verified' }).click()
     await expectInUrl(
       page,

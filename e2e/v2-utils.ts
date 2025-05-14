@@ -1,4 +1,4 @@
-import { Page } from '@playwright/test'
+import { Page, expect } from '@playwright/test'
 
 export async function selectAction(
   page: Page,
@@ -9,6 +9,7 @@ export async function selectAction(
     | 'Register'
     | 'Assign'
     | 'Unassign'
+    | 'Delete'
 ) {
   await page.getByRole('button', { name: 'Action' }).click()
   await page
@@ -37,4 +38,8 @@ export async function ensureAssigned(page: Page) {
   if (await assignAction.isVisible()) {
     await assignAction.click()
   }
+}
+
+export async function expectInUrl(page: Page, assertionString: string) {
+  await expect(page.url().includes(assertionString)).toBeTruthy()
 }

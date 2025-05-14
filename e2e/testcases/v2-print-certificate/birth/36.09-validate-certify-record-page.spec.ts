@@ -1,8 +1,8 @@
 import { expect, test, type Page } from '@playwright/test'
 
-import { Declaration } from './data/birth-declaration'
+import { Declaration } from '../../v2-test-data/birth-declaration'
 import { getToken } from '../../../helpers'
-import { createDeclaration } from './data/birth-declaration'
+import { createDeclaration } from '../../v2-test-data/birth-declaration'
 import { CREDENTIALS } from '../../../constants'
 import { loginToV2 } from '../../../helpers'
 import {
@@ -34,7 +34,7 @@ test.describe.serial('9.0 Validate "Certify record" page', () => {
 
   test('9.1 Review page validations', async () => {
     await selectCertificationType(page, 'Birth Certificate Certified Copy')
-    await selectRequesterType(page, 'Print and issue to informant')
+    await selectRequesterType(page, 'Print and issue to Informant (Mother)')
 
     await page.getByRole('button', { name: 'Continue' }).click()
     await page.getByRole('button', { name: 'Verified' }).click()

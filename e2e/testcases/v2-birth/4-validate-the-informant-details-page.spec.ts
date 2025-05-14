@@ -1,6 +1,7 @@
 import { test, expect, Page } from '@playwright/test'
 import { goToSection, loginToV2 } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
+import { trackAndDeleteCreatedEvents } from '../v2-test-data/eventDeletion'
 
 test.describe('4. Validate the informants details pages', () => {
   let page: Page
@@ -15,9 +16,7 @@ test.describe('4. Validate the informants details pages', () => {
     await page.getByRole('button', { name: 'Continue' }).click()
   })
 
-  test.afterAll(async () => {
-    await page.close()
-  })
+  trackAndDeleteCreatedEvents()
 
   test.describe.serial('4.1 Validate "Phone number" text field', async () => {
     test('4.1.1 Enter Non-valid phone number', async () => {

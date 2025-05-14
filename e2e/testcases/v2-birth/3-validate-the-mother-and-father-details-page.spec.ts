@@ -1,8 +1,11 @@
 import { test, expect } from '@playwright/test'
 import { goToSection, loginToV2 } from '../../helpers'
 import { REQUIRED_VALIDATION_ERROR } from './helpers'
+import { trackAndDeleteCreatedEvents } from '../v2-test-data/eventDeletion'
 
 test.describe('3. Validate the mothers and fathers details pages', () => {
+  trackAndDeleteCreatedEvents()
+
   test.beforeEach(async ({ page }) => {
     await loginToV2(page)
 

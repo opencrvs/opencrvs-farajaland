@@ -1,14 +1,16 @@
 import { expect, test, type Page } from '@playwright/test'
 import { CREDENTIALS } from '../../../constants'
 import { getToken, loginToV2 } from '../../../helpers'
-import { createDeclaration, Declaration } from './data/birth-declaration'
-import { selectAction } from '../../../v2-utils'
 import {
-  expectInUrl,
+  createDeclaration,
+  Declaration
+} from '../../v2-test-data/birth-declaration'
+import {
   navigateToCertificatePrintAction,
   selectCertificationType,
   selectRequesterType
 } from './helpers'
+import { expectInUrl } from '../../../v2-utils'
 
 test.describe.serial('3.0 Validate "Certify record" page', () => {
   let eventId: string
@@ -37,7 +39,7 @@ test.describe.serial('3.0 Validate "Certify record" page', () => {
     await expectInUrl(page, `/print-certificate/${eventId}/pages/collector`)
 
     await selectCertificationType(page, 'Birth Certificate')
-    await selectRequesterType(page, 'Print and issue to informant')
+    await selectRequesterType(page, 'Print and issue to Informant (Mother)')
 
     await page.getByRole('button', { name: 'Continue' }).click()
     await expectInUrl(

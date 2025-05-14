@@ -17,9 +17,10 @@ import {
   FieldType,
   never,
   or,
+  field,
   TranslationConfig
 } from '@opencrvs/toolkit/events'
-import { field, not } from '@opencrvs/toolkit/conditionals'
+import { not } from '@opencrvs/toolkit/conditionals'
 import { createSelectOptions, emptyMessage } from '../../../utils'
 import {
   MAX_NAME_LENGTH,
@@ -37,6 +38,7 @@ export const InformantType = {
   SISTER: 'SISTER',
   LEGAL_GUARDIAN: 'LEGAL_GUARDIAN'
 } as const
+export type InformantTypeKey = keyof typeof InformantType
 
 const PHONE_NUMBER_REGEX = '^0(7|9)[0-9]{8}$'
 const informantMessageDescriptors = {
@@ -98,7 +100,7 @@ export const informantOtherThanParent = and(
 )
 
 export const informant = defineFormPage({
-  id: `${PersonType.informant}`,
+  id: PersonType.informant,
   title: {
     defaultMessage: "Informant's details",
     description: 'Form section title for informants details',
@@ -132,7 +134,8 @@ export const informant = defineFormPage({
             InformantType.OTHER
           )
         }
-      ]
+      ],
+      parent: field('informant.relation')
     },
     {
       id: `${PersonType.informant}.firstname`,
@@ -149,7 +152,8 @@ export const informant = defineFormPage({
           type: ConditionalType.SHOW,
           conditional: informantOtherThanParent
         }
-      ]
+      ],
+      parent: field('informant.relation')
     },
     {
       id: `${PersonType.informant}.surname`,
@@ -166,7 +170,8 @@ export const informant = defineFormPage({
           type: ConditionalType.SHOW,
           conditional: informantOtherThanParent
         }
-      ]
+      ],
+      parent: field('informant.relation')
     },
     {
       id: 'informant.dob',
@@ -204,7 +209,8 @@ export const informant = defineFormPage({
             informantOtherThanParent
           )
         }
-      ]
+      ],
+      parent: field('informant.relation')
     },
     {
       id: `${PersonType.informant}.dobUnknown`,
@@ -223,7 +229,8 @@ export const informant = defineFormPage({
           type: ConditionalType.DISPLAY_ON_REVIEW,
           conditional: never()
         }
-      ]
+      ],
+      parent: field('informant.relation')
     },
     {
       id: `${PersonType.informant}.age`,
@@ -249,7 +256,8 @@ export const informant = defineFormPage({
             informantOtherThanParent
           )
         }
-      ]
+      ],
+      parent: field('informant.relation')
     },
     {
       id: `${PersonType.informant}.nationality`,
@@ -266,7 +274,8 @@ export const informant = defineFormPage({
           conditional: informantOtherThanParent
         }
       ],
-      defaultValue: 'FAR'
+      defaultValue: 'FAR',
+      parent: field('informant.relation')
     },
     {
       id: `${PersonType.informant}.idType`,
@@ -283,7 +292,8 @@ export const informant = defineFormPage({
           type: ConditionalType.SHOW,
           conditional: informantOtherThanParent
         }
-      ]
+      ],
+      parent: field('informant.relation')
     },
     {
       id: 'informant.nid',
@@ -316,7 +326,8 @@ export const informant = defineFormPage({
             not(field('informant.nid').isEqualTo(field('father.nid')))
           )
         }
-      ]
+      ],
+      parent: field('informant.relation')
     },
     {
       id: `${PersonType.informant}.passport`,
@@ -335,7 +346,8 @@ export const informant = defineFormPage({
             informantOtherThanParent
           )
         }
-      ]
+      ],
+      parent: field('informant.relation')
     },
     {
       id: `${PersonType.informant}.brn`,
@@ -356,7 +368,8 @@ export const informant = defineFormPage({
             informantOtherThanParent
           )
         }
-      ]
+      ],
+      parent: field('informant.relation')
     },
     {
       id: `${PersonType.informant}.addressDivider_1`,
@@ -367,7 +380,8 @@ export const informant = defineFormPage({
           type: ConditionalType.SHOW,
           conditional: informantOtherThanParent
         }
-      ]
+      ],
+      parent: field('informant.relation')
     },
     {
       id: `${PersonType.informant}.addressHelper`,
@@ -383,7 +397,8 @@ export const informant = defineFormPage({
           type: ConditionalType.SHOW,
           conditional: informantOtherThanParent
         }
-      ]
+      ],
+      parent: field('informant.relation')
     },
     {
       id: 'informant.address',
@@ -406,7 +421,8 @@ export const informant = defineFormPage({
         province: '$user.province',
         district: '$user.district',
         urbanOrRural: 'URBAN'
-      }
+      },
+      parent: field('informant.relation')
     },
     {
       id: 'v2.informant.address.divider.end',
@@ -417,7 +433,8 @@ export const informant = defineFormPage({
           type: ConditionalType.SHOW,
           conditional: informantOtherThanParent
         }
-      ]
+      ],
+      parent: field('informant.relation')
     },
     {
       id: 'informant.phoneNo',
@@ -442,7 +459,8 @@ export const informant = defineFormPage({
             field('informant.phoneNo').isFalsy()
           )
         }
-      ]
+      ],
+      parent: field('informant.relation')
     },
     {
       id: 'informant.email',
@@ -455,7 +473,8 @@ export const informant = defineFormPage({
       },
       configuration: {
         maxLength: 255
-      }
+      },
+      parent: field('informant.relation')
     }
   ]
 })

@@ -2,13 +2,16 @@ import { expect, test, type Page } from '@playwright/test'
 import { CREDENTIALS } from '../../../constants'
 import { loginToV2 } from '../../../helpers'
 import { getToken } from '../../../helpers'
-import { createDeclaration, Declaration } from './data/birth-declaration'
+import {
+  createDeclaration,
+  Declaration
+} from '../../v2-test-data/birth-declaration'
 import {
   selectRequesterType,
   selectCertificationType,
-  expectInUrl,
   navigateToCertificatePrintAction
 } from './helpers'
+import { expectInUrl } from '../../../v2-utils'
 
 async function selectIdType(page: Page, idType: string) {
   await page.locator('#collector____OTHER____idType').click()
@@ -88,13 +91,18 @@ test.describe.serial('Validate collect payment page', () => {
   })
 
   test('5.5 keep relationship null and continue', async () => {
-    await expect(page.getByRole('button', { name: 'Continue' })).toBeDisabled()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await expect(
+      page
+        .locator('#collector____OTHER____relationshipToChild_error')
+        .getByText('Required for registration')
+    ).toBeVisible()
   })
 
   test('5.6 should be able to enter relationship', async () => {
-    await page.fill('#collector____OTHER____relationshipToMember', 'Uncle')
+    await page.fill('#collector____OTHER____relationshipToChild', 'Uncle')
     await expect(
-      page.locator('#collector____OTHER____relationshipToMember')
+      page.locator('#collector____OTHER____relationshipToChild')
     ).toHaveValue('Uncle')
     await page.getByRole('heading', { name: 'Birth', exact: true }).click()
   })
@@ -107,7 +115,9 @@ test.describe.serial('Validate collect payment page', () => {
         'input[name="collector____OTHER____signedAffidavit"][type="file"]'
       )
       await inputFile.setInputFiles(attachmentPath)
-      await expect(page.getByText('528KB-random.png')).toBeVisible()
+      await expect(
+        page.getByRole('button', { name: 'Signed Affidavit' })
+      ).toBeVisible()
       await expect(page.locator('#preview_delete')).toBeVisible()
       await page.getByRole('button', { name: 'Continue' }).click()
       await expectInUrl(

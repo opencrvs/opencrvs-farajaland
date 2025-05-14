@@ -1,11 +1,15 @@
 import { v4 as uuidv4 } from 'uuid'
-import { GATEWAY_HOST } from '../../../../constants'
+import { GATEWAY_HOST } from '../../constants'
 import { faker } from '@faker-js/faker'
 import fs from 'fs'
 import path from 'path'
-import { getAllLocations, getLocationIdByName } from '../../../birth/helpers'
+import { getAllLocations, getLocationIdByName } from '../birth/helpers'
 import { createClient } from '@opencrvs/toolkit/api'
-import { ActionDocument, AddressType } from '@opencrvs/toolkit/events'
+import {
+  ActionDocument,
+  ActionUpdate,
+  AddressType
+} from '@opencrvs/toolkit/events'
 
 type InformantRelation = 'MOTHER' | 'BROTHER'
 
@@ -29,9 +33,13 @@ function getInformantDetails(informantRelation: InformantRelation) {
   }
 }
 
-export async function getDeclaration(
-  informantRelation: InformantRelation = 'MOTHER'
-) {
+export async function getDeclaration({
+  informantRelation = 'MOTHER',
+  partialDeclaration = {}
+}: {
+  informantRelation?: InformantRelation
+  partialDeclaration?: Record<string, any>
+}) {
   const locations = await getAllLocations('ADMIN_STRUCTURE')
   const province = getLocationIdByName(locations, 'Central')
   const district = getLocationIdByName(locations, 'Ibombo')
@@ -40,7 +48,7 @@ export async function getDeclaration(
     throw new Error('Province or district not found')
   }
 
-  return {
+  const mockDeclaration = {
     'father.detailsNotAvailable': true,
     'father.reason': 'Father is missing.',
     'mother.firstname': faker.person.firstName(),
@@ -72,7 +80,9 @@ export async function getDeclaration(
     'child.firstname': faker.person.firstName(),
     'child.surname': faker.person.lastName(),
     'child.gender': 'female',
-    'child.dob': '2025-03-18',
+    'child.dob': new Date(Date.now() - 60 * 60 * 24 * 1000)
+      .toISOString()
+      .split('T')[0], // yesterday
     'child.placeOfBirth': 'PRIVATE_HOME',
     'child.address.privateHome': {
       country: 'FAR',
@@ -82,6 +92,12 @@ export async function getDeclaration(
       urbanOrRural: 'URBAN' as const
     },
     ...getInformantDetails(informantRelation)
+  }
+
+  // 💡 Merge overriden fields
+  return {
+    ...mockDeclaration,
+    ...partialDeclaration
   }
 }
 
@@ -94,9 +110,9 @@ export interface CreateDeclarationResponse {
 
 export async function createDeclaration(
   token: string,
-  dec?: Declaration
+  dec?: Partial<ActionUpdate>
 ): Promise<CreateDeclarationResponse> {
-  const declaration = dec || (await getDeclaration())
+  const declaration = await getDeclaration({ partialDeclaration: dec })
 
   const client = createClient(GATEWAY_HOST + '/events', `Bearer ${token}`)
 
@@ -120,7 +136,8 @@ export async function createDeclaration(
     eventId: eventId,
     transactionId: uuidv4(),
     declaration,
-    annotation
+    annotation,
+    keepAssignment: true
   })
 
   await client.event.actions.validate.request.mutate({
@@ -128,7 +145,8 @@ export async function createDeclaration(
     transactionId: uuidv4(),
     declaration,
     annotation,
-    duplicates: []
+    duplicates: [],
+    keepAssignment: true
   })
 
   const response = await client.event.actions.register.request.mutate({
