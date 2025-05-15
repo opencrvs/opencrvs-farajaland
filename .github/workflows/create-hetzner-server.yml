@@ -24,6 +24,7 @@ on:
           description: Select group tag you want to execute
           required: true
 env:
+  GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
   TF_PATH: infrastructure/provision-server/hetzner-cloud-empty-server
   TF_VAR_hcloud_token: ${{ secrets.HCLOUD_TOKEN }}
   TF_VAR_country_name: ${{ vars.COUNTRY_NAME }}
