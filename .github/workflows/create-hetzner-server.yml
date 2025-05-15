@@ -136,8 +136,9 @@ jobs:
             for workflow in ${workflows[@]}
             do
               yq e "$path += [\"${{ github.event.inputs.env_name }}\"]" -i "$workflow"
+            done
           else
-            echo "Option '$new_option' already exists"
+            echo "Option '${{ github.event.inputs.env_name }}' already exists"
           fi
           echo "End"
 
