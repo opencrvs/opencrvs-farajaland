@@ -61,10 +61,7 @@ jobs:
           ref: main
           token: ${{ secrets.GH_TOKEN }}
           path: terraform-state
-      # - name: Setup Git
-      #   run: |
-      #     git config --local user.name "OpenCRVS Bot"
-      #     git config --local user.email "bot@opencrvs.org"
+
       - name: Restore terraform state
         run: |
           mkdir -p terraform-state/${{ vars.COUNTRY_NAME }}
@@ -72,12 +69,7 @@ jobs:
           cp terraform-state/${{ vars.COUNTRY_NAME }}/${{ inputs.env_name }}-${{ inputs.env_type }}.tfstate ${{ env.TF_PATH }}/terraform.tfstate || \
           echo "Terraform state file not found. Creating a new one."
           cd terraform-state
-          git config --local user.name "OpenCRVS Bot"
-          git config --local user.email "bot@opencrvs.org"
-          touch me
-          git add me
-          git commit -m testing
-          git push
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
