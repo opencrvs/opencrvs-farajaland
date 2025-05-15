@@ -112,6 +112,8 @@ jobs:
           # TODO: Fix hardcoded domain
           DOMAIN: ${{ github.event.inputs.env_name }}.opencrvs.dev
         run: |
+          git config --local user.name "OpenCRVS Bot"
+          git config --local user.email "bot@opencrvs.org"
           mkdir -p infrastructure/server-setup/inventory
           cat infrastructure/provision-server/templates/staging-env.yml | \
           sed -e "s#HOSTNAME#$HOSTNAME#" \
@@ -127,6 +129,7 @@ jobs:
           # TODO: Fix hardcoded domain
           DOMAIN: ${{ github.event.inputs.env_name }}.opencrvs.dev
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        name: Create infrastructure files
         run: |
           cat infrastructure/provision-server/templates/environment.variables.tpl | \
           sed -e "s/#SSH_HOST#/$SSH_HOST/" \
