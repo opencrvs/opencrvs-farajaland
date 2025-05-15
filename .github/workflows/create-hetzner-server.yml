@@ -120,13 +120,12 @@ jobs:
               -e "s#SSH_HOST#$SSH_HOST#" \
               > infrastructure/server-setup/inventory/${{ github.event.inputs.env_name }}.yml
           echo "Environment file created: infrastructure/server-setup/inventory/${{ github.event.inputs.env_name }}.yml"
-          grep -v "$SSH_HOST" > infrastructure/known-hosts.tmp || echo "Failed grep?"
+          grep -v "$SSH_HOST" > infrastructure/known-hosts.tmp || echo "Failed grep?: $?"
           ssh-keyscan -H "$SSH_HOST" >> infrastructure/known-hosts.tmp || echo "Failed to add $SSH_HOST to known_hosts"
-          echo "failed ssh scan?"
+          echo "failed ssh scan?: $?"
           mv infrastructure/known-hosts.tmp infrastructure/known-hosts || echo "Last step?"
 
           echo "End"
-          exit 1
 
       - env:
           SSH_HOST: ${{ steps.output.outputs.ssh_host }}
@@ -149,10 +148,17 @@ jobs:
               gh variable set --env ${{ github.event.inputs.env_name }} $key --body "$value"
             fi
           done < infrastructure/environment.variables
-          while read key; do
-            password=`openssl rand -base64 25 | tr -cd '[:alnum:]._-' ; echo ''`
-            echo "Adding secret: $key"
-            gh secret set $key --env ${{ github.event.inputs.env_name }} --body "$password"
+          while read line; do
+            if [[ $line == *"="* ]]; then
+              key=$(echo "$line" | cut -d '=' -f 1)
+              value=$(echo "$line" | cut -d '=' -f 2-)
+              echo "Adding secret with value: $key"
+              gh secret set $key --env ${{ github.event.inputs.env_name }} --body "$value"
+            else
+              password=`openssl rand -base64 25 | tr -cd '[:alnum:]._-' ; echo ''`
+              echo "Adding secret: $key"
+              gh secret set $key --env ${{ github.event.inputs.env_name }} --body "$password"
+            fi
           done < infrastructure/provision-server/templates/environment.secrets.tpl
           gh secret set SSH_KEY --env ${{ github.event.inputs.env_name }} < $TF_PATH/.ssh/id_rsa || echo "Failed"
 
