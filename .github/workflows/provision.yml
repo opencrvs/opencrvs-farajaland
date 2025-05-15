@@ -166,7 +166,7 @@ jobs:
             echo "After that you can proceed with (re)provisioning your staging and production servers."
             exit 1
           fi
-
+          cat $FILE
       - name: Run playbook
         uses: dawidd6/action-ansible-playbook@v2.8.0
         env:
