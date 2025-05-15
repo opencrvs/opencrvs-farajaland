@@ -68,6 +68,7 @@ all:
         state: present
         sudoer: true
     enable_backups: false
+single_node: true
 docker-manager-first:
   hosts:
     farajaland-v17:
