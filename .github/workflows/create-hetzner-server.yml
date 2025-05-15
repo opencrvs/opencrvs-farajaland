@@ -73,7 +73,7 @@ jobs:
           cd terraform-state
           git config --local user.name "OpenCRVS Bot"
           git config --local user.email "bot@opencrvs.org"
-          git touch me
+          touch me
           git add me
           git commit -m testing
           git push
