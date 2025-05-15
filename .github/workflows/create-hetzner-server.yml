@@ -147,13 +147,11 @@ jobs:
             gh secret set $key --env ${{ github.event.inputs.env_name }} --body "$password"
           done < infrastructure/provision-server/templates/environment.secrets.tpl
           ls -l $TF_PATH/.ssh/id_rsa
-          gh secret set SSH_KEY < $TF_PATH/.ssh/id_rsa || echo "Failed"
+          gh secret set SSH_KEY --env ${{ github.event.inputs.env_name }} < $TF_PATH/.ssh/id_rsa || echo "Failed"
 
-      # - name: Commit and push changes
-      #   run: |
-      #     mkdir -p infrastructure/server-setup/tfstate
-      #     cp ${{ env.TF_PATH }}/terraform.tfstate infrastructure/server-setup/tfstate/${{ github.event.inputs.env_name }}.tfstate
-      #     git add infrastructure/server-setup/inventory/${{ github.event.inputs.env_name }}.yml \
-      #             infrastructure/known-hosts
-      #     git commit -m "Add environment file for ${{ github.event.inputs.env_name }}"
-      #     git push
+      - name: Commit and push changes
+        run: |
+          git add infrastructure/server-setup/inventory/${{ github.event.inputs.env_name }}.yml \
+                  infrastructure/known-hosts
+          git commit -m "Add environment file for ${{ github.event.inputs.env_name }}"
+          git push
