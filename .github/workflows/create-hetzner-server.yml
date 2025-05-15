@@ -60,7 +60,10 @@ jobs:
           repository: opencrvs/terraform-state
           ref: main
           path: terraform-state
-        
+      - name: Setup Git
+        run: |
+          git config --local user.name "OpenCRVS Bot"
+          git config --local user.email "bot@opencrvs.org"
       - name: Restore terraform state
         run: |
           mkdir -p terraform-state/${{ vars.COUNTRY_NAME }}
@@ -102,10 +105,7 @@ jobs:
       #   with:
       #     name: terraform-state
       #     path: ${{ env.TF_PATH }}/terraform.tfstate
-      # - name: Setup Git
-      #   run: |
-      #     git config --local user.name "OpenCRVS Bot"
-      #     git config --local user.email "bot@opencrvs.org"
+
       # - name: Create environment file
       #   env:
       #     SSH_HOST: ${{ steps.output.outputs.ssh_host }}
