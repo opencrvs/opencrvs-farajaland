@@ -85,7 +85,8 @@ jobs:
         run: |
           terraform apply -auto-approve -input=false
 
-      - run: |
+      - name: Update state file
+        run: |
           cp ${{ env.TF_PATH }}/terraform.tfstate terraform-state/${{ vars.COUNTRY_NAME }}/${{ inputs.env_name }}-${{ inputs.env_type }}.tfstate
           cd terraform-state/
           git config --local user.name "OpenCRVS Bot"
@@ -145,7 +146,8 @@ jobs:
             echo "Adding secret: $key"
             gh secret set $key --env ${{ github.event.inputs.env_name }} --body "$password"
           done < infrastructure/provision-server/templates/environment.secrets.tpl
-          gh secret set PRIVATE_KEY < $TF_PATH/.ssh/id_rsa
+          ls -l $TF_PATH/.ssh/id_rsa
+          gh secret set SSH_KEY < $TF_PATH/.ssh/id_rsa || echo "Failed"
 
       # - name: Commit and push changes
       #   run: |
