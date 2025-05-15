@@ -127,6 +127,8 @@ jobs:
 
           workflows=(
             ".github/workflows/provision.yml"
+            ".github/workflows/deploy.yml"
+            ".github/workflows/seed-data.yml"
           )
           path=".on.workflow_dispatch.inputs.environment.options"
 
