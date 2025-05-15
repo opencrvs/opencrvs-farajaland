@@ -122,10 +122,7 @@ jobs:
               -e "s#SSH_HOST#$SSH_HOST#" \
               > infrastructure/server-setup/inventory/${{ github.event.inputs.env_name }}.yml
           echo "Environment file created: infrastructure/server-setup/inventory/${{ github.event.inputs.env_name }}.yml"
-          grep -v "$SSH_HOST" infrastructure/known-hosts > infrastructure/known-hosts.tmp || echo "Failed grep?: $?"
-          ssh-keyscan -H "$SSH_HOST" >> infrastructure/known-hosts.tmp || echo "Failed to add $SSH_HOST to known_hosts"
-          echo "failed ssh scan?: $?"
-          mv infrastructure/known-hosts.tmp infrastructure/known-hosts || echo "Last step?"
+          bash ./infrastructure/environments/update-known-hosts.sh $SSH_HOST 22
 
           workflows=(
             ".github/workflows/provision.yml"
