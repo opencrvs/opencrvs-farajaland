@@ -88,8 +88,6 @@ jobs:
       - run: |
           cp ${{ env.TF_PATH }}/terraform.tfstate terraform-state/${{ vars.COUNTRY_NAME }}/${{ inputs.env_name }}-${{ inputs.env_type }}.tfstate
           cd terraform-state/
-          git config --local user.name "OpenCRVS Bot"
-          git config --local user.email "bot@opencrvs.org"
           git add ${{ vars.COUNTRY_NAME }}/${{ inputs.env_name }}-${{ inputs.env_type }}.tfstate
           git commit -m "Add environment file for ${{ github.event.inputs.env_name }} env with type ${{ inputs.env_type }}"
           git push
