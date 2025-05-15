@@ -59,6 +59,7 @@ jobs:
         with:
           repository: opencrvs/terraform-state
           ref: main
+          token: ${{ secrets.GH_TOKEN }}
           path: terraform-state
       - name: Setup Git
         run: |
