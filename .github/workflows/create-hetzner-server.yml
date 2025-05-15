@@ -120,31 +120,33 @@ jobs:
 
           ssh-keyscan -H "$SSH_HOST" >> infrastructure/known-hosts || echo "Failed to add $SSH_HOST to known_hosts"
 
-      # - env:
-      #     SSH_HOST: ${{ steps.output.outputs.ssh_host }}
-      #     HOSTNAME: ${{ steps.output.outputs.hostname }}
-      #     # TODO: Fix hardcoded domain
-      #     DOMAIN: ${{ github.event.inputs.env_name }}.opencrvs.dev
-      #     GH_TOKEN: ${{ secrets.GH_TOKEN }}
-      #   run: |
-      #     cat infrastructure/provision-server/templates/environment.variables.tpl | \
-      #     sed -e "s/#SSH_HOST#/$SSH_HOST/" \
-      #         -e "s/#DOMAIN#/$DOMAIN/" \
-      #         > infrastructure/environment.variables
-      #     echo "Environment variables file created: infrastructure/environment.variables"
-      #     while read line; do
-      #       if [[ $line == *"="* ]]; then
-      #         key=$(echo "$line" | cut -d '=' -f 1)
-      #         value=$(echo "$line" | cut -d '=' -f 2-)
-      #         echo "Adding variable: $key"
-      #         gh variable set --env ${{ github.event.inputs.env_name }} $key --body "$value"
-      #       fi
-      #     done < infrastructure/environment.variables
-      #     while read key; do
-      #       password=`openssl rand -base64 25 | tr -cd '[:alnum:]._-' ; echo ''`
-      #       echo "Adding secret: $key"
-      #       gh secret set $key --env ${{ github.event.inputs.env_name }} --body "$password"
-      #     done < infrastructure/provision-server/templates/environment.secrets.tpl
+      - env:
+          SSH_HOST: ${{ steps.output.outputs.ssh_host }}
+          HOSTNAME: ${{ steps.output.outputs.hostname }}
+          # TODO: Fix hardcoded domain
+          DOMAIN: ${{ github.event.inputs.env_name }}.opencrvs.dev
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        run: |
+          cat infrastructure/provision-server/templates/environment.variables.tpl | \
+          sed -e "s/#SSH_HOST#/$SSH_HOST/" \
+              -e "s/#DOMAIN#/$DOMAIN/" \
+              > infrastructure/environment.variables
+          echo "Environment variables file created: infrastructure/environment.variables"
+          while read line; do
+            if [[ $line == *"="* ]]; then
+              key=$(echo "$line" | cut -d '=' -f 1)
+              value=$(echo "$line" | cut -d '=' -f 2-)
+              echo "Adding variable: $key"
+              gh variable set --env ${{ github.event.inputs.env_name }} $key --body "$value"
+            fi
+          done < infrastructure/environment.variables
+          while read key; do
+            password=`openssl rand -base64 25 | tr -cd '[:alnum:]._-' ; echo ''`
+            echo "Adding secret: $key"
+            gh secret set $key --env ${{ github.event.inputs.env_name }} --body "$password"
+          done < infrastructure/provision-server/templates/environment.secrets.tpl
+          gh secret set PRIVATE_KEY < $TF_PATH/.ssh/id_rsa
+
       # - name: Commit and push changes
       #   run: |
       #     mkdir -p infrastructure/server-setup/tfstate
