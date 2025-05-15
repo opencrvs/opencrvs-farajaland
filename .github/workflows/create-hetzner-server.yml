@@ -182,6 +182,7 @@ jobs:
       - name: Commit and push changes
         run: |
           git add infrastructure/server-setup/inventory/${{ github.event.inputs.env_name }}.yml \
-                  infrastructure/known-hosts
+                  infrastructure/known-hosts \
+                  .github
           git commit -m "Add environment file for ${{ github.event.inputs.env_name }}"
           git push
