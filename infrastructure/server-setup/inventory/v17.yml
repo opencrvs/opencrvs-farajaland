@@ -73,5 +73,3 @@ docker-manager-first:
     farajaland-v17:
       ansible_host: '65.21.176.128'
       data_label: data1
-
-docker-workers: {}
