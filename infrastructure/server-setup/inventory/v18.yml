@@ -8,6 +8,7 @@
 # Copyright (C) The OpenCRVS Authors located at https://github.com/opencrvs/opencrvs-core/blob/master/AUTHORS.
 all:
   vars:
+    single_node: true
     users:
       # If you need to remove access from someone, do not remove them from this list, but instead set their state: absent
       - name: pyry
@@ -69,8 +70,8 @@ all:
     enable_backups: false
 docker-manager-first:
   hosts:
-    HOSTNAME:
-      ansible_host: 'SSH_HOST'
+    farajaland-v18:
+      ansible_host: '37.27.213.235'
       data_label: data1
 
 docker-workers: {}
