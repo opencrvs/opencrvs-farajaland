@@ -134,16 +134,11 @@ jobs:
           cp infrastructure/provision-server/templates/docker-compose.single-node.yml infrastructure/docker-compose.${{ github.event.inputs.env_name }}-deploy.yml && \
           echo "Docker-compose created" || \
           echo "Docker-compose already exists"
-      - name: Update known-hosts and workflows
-        env:
-          SSH_HOST: ${{ steps.output.outputs.ssh_host }}
-          HOSTNAME: ${{ steps.output.outputs.hostname }}
-          # TODO: Fix hardcoded domain
-          DOMAIN: ${{ github.event.inputs.env_name }}.opencrvs.dev
-        run: |
-          bash ./infrastructure/environments/update-known-hosts.sh $SSH_HOST 22
-          echo "Known hosts updated: infrastructure/known-hosts"
+      - name: Update known-hosts
+        run: bash ./infrastructure/environments/update-known-hosts.sh ${{ steps.output.outputs.ssh_host }} 22
 
+      - name: Update workflows
+        run: |
           workflows=(
             ".github/workflows/provision.yml"
             ".github/workflows/deploy.yml"
