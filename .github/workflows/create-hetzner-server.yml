@@ -128,8 +128,13 @@ jobs:
               > infrastructure/server-setup/inventory/${{ github.event.inputs.env_name }}.yml && \
           echo "Environment file created: infrastructure/server-setup/inventory/${{ github.event.inputs.env_name }}.yml") || \
           echo "infrastructure/server-setup/inventory/${{ github.event.inputs.env_name }}.yml already exists"
-
-      - name: Update known-hosts, docker-compose and workflows
+      - name: Create docker compose
+        run: |
+          [ ! -f infrastructure/docker-compose.${{ github.event.inputs.env_name }}-deploy.yml ] && \
+          cp infrastructure/provision-server/templates/docker-compose.single-node.yml infrastructure/docker-compose.${{ github.event.inputs.env_name }}-deploy.yml && \
+          echo "Docker-compose created" || \
+          echo "Docker-compose already exists"
+      - name: Update known-hosts and workflows
         env:
           SSH_HOST: ${{ steps.output.outputs.ssh_host }}
           HOSTNAME: ${{ steps.output.outputs.hostname }}
@@ -138,8 +143,6 @@ jobs:
         run: |
           bash ./infrastructure/environments/update-known-hosts.sh $SSH_HOST 22
           echo "Known hosts updated: infrastructure/known-hosts"
-          cp infrastructure/provision-server/templates/docker-compose.single-node.yml infrastructure/docker-compose.${{ github.event.inputs.env_name }}-deploy.yml
-          echo "Docker-compose updated"
 
           workflows=(
             ".github/workflows/provision.yml"
@@ -199,7 +202,8 @@ jobs:
         run: |
           git add infrastructure/server-setup/inventory/${{ github.event.inputs.env_name }}.yml \
                   infrastructure/known-hosts \
-                  .github
+                  .github \
+                  infrastructure/docker-compose.${{ github.event.inputs.env_name }}-deploy.yml
           git status
           git commit -m "Add environment file for ${{ github.event.inputs.env_name }}"
           git push
