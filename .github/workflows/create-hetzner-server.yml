@@ -115,19 +115,27 @@ jobs:
             echo "No changes to commit"
           fi
 
-      - name: Create environment files
+      - name: Create environment file for ansible
+        env:
+          SSH_HOST: ${{ steps.output.outputs.ssh_host }}
+          HOSTNAME: ${{ steps.output.outputs.hostname }}
+          # TODO: Fix hardcoded domain
+        run: |
+          [ ! -f infrastructure/server-setup/inventory/${{ github.event.inputs.env_name }}.yml ] && \
+          (cat infrastructure/provision-server/templates/single-node-ansible-env.yml | \
+          sed -e "s#HOSTNAME#$HOSTNAME#" \
+              -e "s#SSH_HOST#$SSH_HOST#" \
+              > infrastructure/server-setup/inventory/${{ github.event.inputs.env_name }}.yml && \
+          echo "Environment file created: infrastructure/server-setup/inventory/${{ github.event.inputs.env_name }}.yml") || \
+          echo "infrastructure/server-setup/inventory/${{ github.event.inputs.env_name }}.yml already exists"
+
+      - name: Update known-hosts, docker-compose and workflows
         env:
           SSH_HOST: ${{ steps.output.outputs.ssh_host }}
           HOSTNAME: ${{ steps.output.outputs.hostname }}
           # TODO: Fix hardcoded domain
           DOMAIN: ${{ github.event.inputs.env_name }}.opencrvs.dev
         run: |
-          mkdir -p infrastructure/server-setup/inventory
-          cat infrastructure/provision-server/templates/single-node-ansible-env.yml | \
-          sed -e "s#HOSTNAME#$HOSTNAME#" \
-              -e "s#SSH_HOST#$SSH_HOST#" \
-              > infrastructure/server-setup/inventory/${{ github.event.inputs.env_name }}.yml
-          echo "Environment file created: infrastructure/server-setup/inventory/${{ github.event.inputs.env_name }}.yml"
           bash ./infrastructure/environments/update-known-hosts.sh $SSH_HOST 22
           echo "Known hosts updated: infrastructure/known-hosts"
           cp infrastructure/provision-server/templates/docker-compose.single-node.yml infrastructure/docker-compose.${{ github.event.inputs.env_name }}-deploy.yml
@@ -157,7 +165,7 @@ jobs:
           HOSTNAME: ${{ steps.output.outputs.hostname }}
           DOMAIN: ${{ github.event.inputs.env_name }}.opencrvs.dev
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
-        name: Create infrastructure files
+        name: Create environment variables and secrets on GitHub
         run: |
           cat infrastructure/provision-server/templates/environment.variables.tpl | \
           sed -e "s/#SSH_HOST#/$SSH_HOST/" \
@@ -187,7 +195,7 @@ jobs:
           done < infrastructure/provision-server/templates/environment.secrets.tpl
           gh secret set SSH_KEY --env ${{ github.event.inputs.env_name }} < $TF_PATH/.ssh/id_rsa || echo "Failed"
 
-      - name: Commit and push changes
+      - name: Commit and push changes to ${{ github.repository }}
         run: |
           git add infrastructure/server-setup/inventory/${{ github.event.inputs.env_name }}.yml \
                   infrastructure/known-hosts \
