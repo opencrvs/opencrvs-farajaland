@@ -128,9 +128,10 @@ jobs:
               -e "s#SSH_HOST#$SSH_HOST#" \
               > infrastructure/server-setup/inventory/${{ github.event.inputs.env_name }}.yml
           echo "Environment file created: infrastructure/server-setup/inventory/${{ github.event.inputs.env_name }}.yml"
-          pwd
-          ls -l
           bash ./infrastructure/environments/update-known-hosts.sh $SSH_HOST 22
+          echo "Known hosts updated: infrastructure/known-hosts"
+          cp infrastructure/provision-server/templates/docker-compose.single-node.yml infrastructure/docker-compose.${{ github.event.inputs.env_name }}-deploy.yml
+          echo "Docker-compose updated"
 
           workflows=(
             ".github/workflows/provision.yml"
@@ -150,6 +151,7 @@ jobs:
           else
             echo "Option '${{ github.event.inputs.env_name }}' already exists in workflow $workflow"
           fi
+
 
       - env:
           SSH_HOST: ${{ steps.output.outputs.ssh_host }}
