@@ -45,7 +45,39 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
         with:
+          # Token permissions:  read:org, read:public_key, repo, workflow
           token: ${{ secrets.GH_TOKEN }}
+      - name: Configure repository for countryconfig
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+      - name: Checkout terraform state repo
+        uses: actions/checkout@v4
+        with:
+          repository: opencrvs/terraform-state
+          ref: main
+          token: ${{ secrets.GH_TOKEN }}
+          path: terraform-state
+      - name: Configure repository for terraform state file
+        working-directory: terraform-state/
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+      - run: |
+          cd terraform-state
+          pwd
+          ls -l
+          touch file
+          git add file
+          git commit -m file
+          git push
+      - run: |
+          pwd
+          ls -l
+          touch file
+          git add file
+          git commit -m file
+          git push
       - name: Pull SSH key pair files from github
         run: |
           ssh_key_path=$TF_PATH/.ssh
@@ -55,25 +87,7 @@ jobs:
           echo "${{ secrets.SSH_PUBLIC_KEY }}" > $ssh_key_path/id_rsa.pub
           chmod 600 $ssh_key_path/id_rsa
           chmod 644 $ssh_key_path/id_rsa.pub
-      - name: Checkout terraform state repo
-        uses: actions/checkout@v4
-        with:
-          repository: opencrvs/terraform-state
-          ref: main
-          token: ${{ secrets.GH_TOKEN }}
-          path: terraform-state
-      - name: Configure git for state file
-        working-directory: terraform-state/
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-      - run: |
-          touch one-more-file
-          git add one-more-file
-          git commit -m test
-          git push
-          exit 1
-        working-directory: terraform-state/
+
       - name: Restore terraform state
         run: |
           mkdir -p terraform-state/${{ vars.COUNTRY_NAME }}
@@ -121,8 +135,6 @@ jobs:
           # TODO: Fix hardcoded domain
           DOMAIN: ${{ github.event.inputs.env_name }}.opencrvs.dev
         run: |
-          git config --local user.name "OpenCRVS Bot"
-          git config --local user.email "bot@opencrvs.org"
           mkdir -p infrastructure/server-setup/inventory
           cat infrastructure/provision-server/templates/single-node-ansible-env.yml | \
           sed -e "s#HOSTNAME#$HOSTNAME#" \
