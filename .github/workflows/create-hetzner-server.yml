@@ -92,8 +92,18 @@ jobs:
         working-directory: ${{ env.TF_PATH }}
         run: |
           terraform apply -auto-approve -input=false
-
-      - name: Update state file 
+      - name: Store variables from terraform state file
+        id: output
+        working-directory: ${{ env.TF_PATH }}
+        run: |
+          # TODO: Add configuration for multi-node
+          if [ ${{ inputs.env_type }} == 'single-node' ]
+          then
+            echo "ssh_host=$(terraform output -raw public_ip)" >> $GITHUB_OUTPUT
+            echo "hostname=$TF_VAR_country_name-$TF_VAR_env_name" >> $GITHUB_OUTPUT
+          fi
+  
+      - name: Update terraform state file in ${{ env.TERRAFORM_REPO }}
         run: |
           cp ${{ env.TF_PATH }}/terraform.tfstate terraform-state/${{ vars.COUNTRY_NAME }}/${{ inputs.env_name }}-${{ inputs.env_type }}.tfstate
           cd terraform-state/
@@ -103,17 +113,6 @@ jobs:
             git push
           else
             echo "No changes to commit"
-          fi
-          
-      - run: exit 1
-      - name: Store variables
-        id: output
-        working-directory: ${{ env.TF_PATH }}
-        run: |
-          if [ ${{ inputs.env_type }} == 'single-node' ]
-          then
-          echo "ssh_host=$(terraform output -raw public_ip)" >> $GITHUB_OUTPUT
-          echo "hostname=$TF_VAR_country_name-$TF_VAR_env_name" >> $GITHUB_OUTPUT
           fi
 
       - name: Create environment files
