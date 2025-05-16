@@ -152,7 +152,6 @@ jobs:
             echo "Option '${{ github.event.inputs.env_name }}' already exists in workflow $workflow"
           fi
 
-
       - env:
           SSH_HOST: ${{ steps.output.outputs.ssh_host }}
           HOSTNAME: ${{ steps.output.outputs.hostname }}
@@ -193,5 +192,6 @@ jobs:
           git add infrastructure/server-setup/inventory/${{ github.event.inputs.env_name }}.yml \
                   infrastructure/known-hosts \
                   .github
+          git status
           git commit -m "Add environment file for ${{ github.event.inputs.env_name }}"
           git push
