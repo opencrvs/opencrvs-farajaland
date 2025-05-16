@@ -78,6 +78,7 @@ jobs:
           git add file
           git commit -m file
           git push
+      - run: exit 1
       - name: Pull SSH key pair files from github
         run: |
           ssh_key_path=$TF_PATH/.ssh
