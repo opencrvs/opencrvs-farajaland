@@ -37,7 +37,6 @@ jobs:
   create-environment:
     name: Create New HCloud Environment
     runs-on: ubuntu-24.04
-    continue-on-error: true
     outputs:
       ssh_host: ${{ steps.output.outputs.ssh_host }}
       hostname: ${{ steps.output.outputs.hostname }}
@@ -63,14 +62,23 @@ jobs:
           ref: main
           token: ${{ secrets.GH_TOKEN }}
           path: terraform-state
-
+      - name: Configure git for state file
+        working-directory: terraform-state/
+        run: |
+          git config --local user.name "OpenCRVS Bot"
+          git config --local user.email "bot@opencrvs.org"
+      - run: |
+          touch one-more-file
+          git add one-more-file
+          git commit -m test
+          git push
+          exit 1
       - name: Restore terraform state
         run: |
           mkdir -p terraform-state/${{ vars.COUNTRY_NAME }}
           [ -f terraform-state/${{ vars.COUNTRY_NAME }}/${{ inputs.env_name }}-${{ inputs.env_type }}.tfstate ] && \
           cp terraform-state/${{ vars.COUNTRY_NAME }}/${{ inputs.env_name }}-${{ inputs.env_type }}.tfstate ${{ env.TF_PATH }}/terraform.tfstate || \
           echo "Terraform state file not found. Creating a new one."
-          cd terraform-state
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -91,8 +99,6 @@ jobs:
         run: |
           cp ${{ env.TF_PATH }}/terraform.tfstate terraform-state/${{ vars.COUNTRY_NAME }}/${{ inputs.env_name }}-${{ inputs.env_type }}.tfstate
           cd terraform-state/
-          git config --local user.name "OpenCRVS Bot"
-          git config --local user.email "bot@opencrvs.org"
           git add ${{ vars.COUNTRY_NAME }}/${{ inputs.env_name }}-${{ inputs.env_type }}.tfstate
           git commit -m "Add environment file for ${{ github.event.inputs.env_name }} env with type ${{ inputs.env_type }}"
           git push
@@ -117,7 +123,7 @@ jobs:
           git config --local user.name "OpenCRVS Bot"
           git config --local user.email "bot@opencrvs.org"
           mkdir -p infrastructure/server-setup/inventory
-          cat infrastructure/provision-server/templates/staging-env.yml | \
+          cat infrastructure/provision-server/templates/single-node-ansible-env.yml | \
           sed -e "s#HOSTNAME#$HOSTNAME#" \
               -e "s#SSH_HOST#$SSH_HOST#" \
               > infrastructure/server-setup/inventory/${{ github.event.inputs.env_name }}.yml
@@ -137,16 +143,15 @@ jobs:
             for workflow in ${workflows[@]}
             do
               yq e "$path += [\"${{ github.event.inputs.env_name }}\"]" -i "$workflow"
+              echo "Updated workflow $workflow"
             done
           else
-            echo "Option '${{ github.event.inputs.env_name }}' already exists"
+            echo "Option '${{ github.event.inputs.env_name }}' already exists in workflow $workflow"
           fi
-          echo "End"
 
       - env:
           SSH_HOST: ${{ steps.output.outputs.ssh_host }}
           HOSTNAME: ${{ steps.output.outputs.hostname }}
-          # TODO: Fix hardcoded domain
           DOMAIN: ${{ github.event.inputs.env_name }}.opencrvs.dev
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         name: Create infrastructure files
