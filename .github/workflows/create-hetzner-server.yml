@@ -139,8 +139,8 @@ jobs:
           )
           path=".on.workflow_dispatch.inputs.environment.options"
 
-          # Check if option already exists
-          if ! yq e "$path" "$file" | grep -qc "${{ github.event.inputs.env_name }}"; then
+          # Check if option already exists in first workflows file
+          if ! yq e "$path" "$workflows" | grep -qc "${{ github.event.inputs.env_name }}"; then
             echo "Adding new option '${{ github.event.inputs.env_name }}' to workflows: ${workflows[@]}"
             for workflow in ${workflows[@]}
             do
