@@ -65,14 +65,15 @@ jobs:
       - name: Configure git for state file
         working-directory: terraform-state/
         run: |
-          git config --local user.name "OpenCRVS Bot"
-          git config --local user.email "bot@opencrvs.org"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
       - run: |
           touch one-more-file
           git add one-more-file
           git commit -m test
           git push
           exit 1
+        working-directory: terraform-state/
       - name: Restore terraform state
         run: |
           mkdir -p terraform-state/${{ vars.COUNTRY_NAME }}
