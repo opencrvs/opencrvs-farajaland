@@ -128,6 +128,8 @@ jobs:
               -e "s#SSH_HOST#$SSH_HOST#" \
               > infrastructure/server-setup/inventory/${{ github.event.inputs.env_name }}.yml
           echo "Environment file created: infrastructure/server-setup/inventory/${{ github.event.inputs.env_name }}.yml"
+          pwd
+          ls -l
           bash ./infrastructure/environments/update-known-hosts.sh $SSH_HOST 22
 
           workflows=(
@@ -138,8 +140,8 @@ jobs:
           path=".on.workflow_dispatch.inputs.environment.options"
 
           # Check if option already exists
-          if ! yq e "$path" "$file" | grep -qx "${{ github.event.inputs.env_name }}"; then
-            echo "Adding new option: ${{ github.event.inputs.env_name }}"
+          if ! yq e "$path" "$file" | grep -qc "${{ github.event.inputs.env_name }}"; then
+            echo "Adding new option '${{ github.event.inputs.env_name }}' to workflows: ${workflows[@]}"
             for workflow in ${workflows[@]}
             do
               yq e "$path += [\"${{ github.event.inputs.env_name }}\"]" -i "$workflow"
@@ -176,6 +178,7 @@ jobs:
               echo "Adding secret with value: $key"
               gh secret set $key --env ${{ github.event.inputs.env_name }} --body "$value"
             else
+              key=$line
               password=`openssl rand -base64 25 | tr -cd '[:alnum:]._-' ; echo ''`
               echo "Adding secret: $key"
               gh secret set $key --env ${{ github.event.inputs.env_name }} --body "$password"
