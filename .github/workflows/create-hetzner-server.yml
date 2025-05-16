@@ -51,14 +51,14 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-      - name: Checkout repo opencrvs/terraform-state
+      - name: Checkout repo ${{ env.TERRAFORM_REPO }}
         uses: actions/checkout@v4
         with:
-          repository: opencrvs/terraform-state
+          repository: ${{ env.TERRAFORM_REPO }}
           ref: main
           token: ${{ secrets.GH_TOKEN }}
           path: terraform-state
-      - name: Configure git client for opencrvs/terraform-state ${{ env.TERRAFORM_REPO }}
+      - name: Configure git client for ${{ env.TERRAFORM_REPO }}
         working-directory: terraform-state/
         run: |
           git config user.name "github-actions[bot]"
