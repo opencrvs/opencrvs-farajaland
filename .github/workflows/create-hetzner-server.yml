@@ -155,7 +155,7 @@ jobs:
               echo "Updated workflow $workflow"
             done
           else
-            echo "Option '${{ github.event.inputs.env_name }}' already exists in workflow $workflow"
+            echo "Option '${{ github.event.inputs.env_name }}' already exists in workflows ${workflows[@]}"
           fi
 
       - env:
