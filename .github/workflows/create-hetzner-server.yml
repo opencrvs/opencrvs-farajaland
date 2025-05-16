@@ -97,9 +97,14 @@ jobs:
         run: |
           cp ${{ env.TF_PATH }}/terraform.tfstate terraform-state/${{ vars.COUNTRY_NAME }}/${{ inputs.env_name }}-${{ inputs.env_type }}.tfstate
           cd terraform-state/
-          git add ${{ vars.COUNTRY_NAME }}/${{ inputs.env_name }}-${{ inputs.env_type }}.tfstate
-          git commit -m "Add environment file for ${{ github.event.inputs.env_name }} env with type ${{ inputs.env_type }}"
-          git push
+          if [[ -n "$(git status --porcelain)" ]]; then
+            git add ${{ vars.COUNTRY_NAME }}/${{ inputs.env_name }}-${{ inputs.env_type }}.tfstate
+            git commit -m "Add environment file for ${{ github.event.inputs.env_name }} env with type ${{ inputs.env_type }}"
+            git push
+          else
+            echo "No changes to commit"
+          fi
+          
       - run: exit 1
       - name: Store variables
         id: output
