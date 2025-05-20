@@ -1,4 +1,4 @@
-name: Deploy (development)
+name: X - Deploy (development)
 run-name: Deploy to ${{ inputs.environment }} with reset=${{ inputs.reset }} core=${{ inputs.core-image-tag }} country config=${{ inputs.countryconfig-image-tag }}
 on:
   workflow_call:
@@ -53,10 +53,10 @@ on:
 jobs:
   test:
     runs-on: ubuntu-24.04
+    environment: ${{ inputs.environment }}
     steps:
         - name: Test variables
           run: |
-            echo "environment: ${{ github.event.inputs.environment }}"
-            echo "tag: ${{ github.event.inputs.tag }}"
-            echo "core tag: ${{ github.event.inputs.core-image-tag }}"
-            echo "country tag: ${{ github.event.inputs.countryconfig-image-tag }}"
+            echo "environment: ${{ inputs.environment }}"
+            echo "core tag: ${{ inputs.core-image-tag }}"
+            echo "country tag: ${{ inputs.countryconfig-image-tag }}"

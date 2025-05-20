@@ -1,5 +1,5 @@
 name: Provision Release Environment
-run-name: Provision ${{ inputs.env_name }} release environment
+run-name: Provision ${{ inputs.release_version }} release environment
 on:
     workflow_dispatch:
         inputs:
@@ -16,7 +16,7 @@ on:
                 type: string
     workflow_call:
         inputs:
-            env_name:
+            release_version:
                 type: string
                 description: Environment to deploy to
                 required: true
@@ -28,34 +28,83 @@ on:
                 description: Country config image tag (if empty it will be set to release_version)
                 required: false
                 type: string
-
 jobs:
-  create-server:
-    uses: ./.github/workflows/dummy-create-server.yml
-    with:
-      env_name: ${{ inputs.env_name }}
-    secrets: inherit
+    setup:
+        runs-on: ubuntu-latest
+        environment: ${{ inputs.release_version }}
+        outputs:
+            core_tag: ${{ steps.setvars.outputs.core_tag }}
+            config_tag: ${{ steps.setvars.outputs.config_tag }}
+        steps:
+            - name: Set defaults
+              id: setvars
+              run: |
+                core="${{ inputs.core_image_tag }}"
+                config="${{ inputs.countryconfig_image_tag }}"
+                release="${{ inputs.release_version }}"
+                echo "core_tag=${core:-$release}" >> $GITHUB_OUTPUT
+                echo "config_tag=${config:-$release}" >> $GITHUB_OUTPUT
 
-  provision-server:
-    needs: create-server
-    uses: ./.github/workflows/dummy-provision.yml
-    with:
-      environment: ${{ inputs.env_name }}
-    secrets: inherit
-
-  deploy:
-    needs: provision-server
-    uses: ./.github/workflows/dummy-deploy.yml
-    with:
-      environment: ${{ inputs.env_name }}
-      core-image-tag: ${{ inputs.core_image_tag }}
-      countryconfig-image-tag: ${{ inputs.countryconfig_image_tag }}
-    secrets: inherit
-
-  seed-data:
-    needs: deploy
-    uses: ./.github/workflows/dummy-seed.yml
-    with:
-      environment: ${{ inputs.env_name }}
-      core-image-tag: ${{ inputs.core_image_tag }}
-    secrets: inherit
+    create-server:
+        needs: setup
+        runs-on: ubuntu-latest
+        environment: ${{ inputs.release_version }}
+        steps:
+            - name: Checkout repo
+              uses: actions/checkout@v4
+            - name: Create server ${{ vars.COUNTRY_NAME }}-${{ inputs.release_version }} on Hetzner
+              uses: ./.github/actions/run-workflow
+              with:
+                workflow: dummy-create-server.yml
+                args: -f environment=${{ inputs.release_version }}
+                token: ${{ secrets.GH_TOKEN }}
+    provision-server:
+        needs:
+            - create-server
+            - setup
+        runs-on: ubuntu-latest
+        environment: ${{ inputs.release_version }}
+        steps:
+          - name: Checkout repo
+            uses: actions/checkout@v4
+          - name: Run provision server 
+            uses: ./.github/actions/run-workflow
+            with:
+              workflow: dummy-provision.yml
+              args: -f environment=${{ inputs.release_version }}
+              token: ${{ secrets.GH_TOKEN }}
+    deploy:
+        needs: 
+            - provision-server
+            - setup
+        runs-on: ubuntu-latest
+        environment: ${{ inputs.release_version }}
+        steps:
+            - name: Checkout repo
+              uses: actions/checkout@v4
+            - name: Run deployment on ${{ inputs.release_version }}
+              uses: ./.github/actions/run-workflow
+              with:
+                workflow: dummy-deploy.yml
+                args: |
+                  -f environment=${{ inputs.release_version }} \
+                  -f core-image-tag=${{ needs.setup.outputs.core_tag }} \
+                  -f countryconfig-image-tag=${{ needs.setup.outputs.config_tag }}
+                token: ${{ secrets.GH_TOKEN }}
+    seed-data:
+        needs:
+            - deploy
+            - setup
+        runs-on: ubuntu-latest
+        environment: ${{ inputs.release_version }}
+        steps:
+            - name: Checkout repo
+              uses: actions/checkout@v4
+            - name: Seeding data to ${{ inputs.release_version }}
+              uses: ./.github/actions/run-workflow
+              with:
+                workflow: dummy-seed.yml
+                args: |
+                  -f environment=${{ inputs.release_version }} \
+                  -f core-image-tag=${{ needs.setup.outputs.core_tag }}
+                token: ${{ secrets.GH_TOKEN }}

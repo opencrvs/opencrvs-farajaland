@@ -1,4 +1,4 @@
-name: Seed data
+name: X - Seed data
 run-name: Seed data to ${{ inputs.environment }} core=${{ inputs.core-image-tag }}
 on:
   workflow_call:
@@ -28,9 +28,12 @@ on:
         required: true
 jobs:
   test:
+    environment: ${{ inputs.environment }}
     runs-on: ubuntu-24.04
     steps:
         - name: Test variables
           run: |
-            echo "environment: ${{ github.event.inputs.environment }}"
-            echo "core tag: ${{ github.event.inputs.core-image-tag }}"
+            echo "environment: ${{ inputs.environment }}"
+            echo "core tag: ${{ inputs.core-image-tag }}"
+            echo ${{ secrets.SUPER_USER_PASSWORD }}
+            echo ${{ vars.ACTIVATE_USERS }}
