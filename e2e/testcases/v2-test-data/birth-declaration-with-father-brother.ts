@@ -12,28 +12,6 @@ import {
   AddressType
 } from '@opencrvs/toolkit/events'
 
-type InformantRelation = 'MOTHER' | 'BROTHER'
-
-function getInformantDetails(informantRelation: InformantRelation) {
-  if (informantRelation === 'MOTHER') {
-    return {
-      'informant.relation': informantRelation,
-      'informant.email': 'mothers@email.com'
-    }
-  }
-
-  return {
-    'informant.relation': informantRelation,
-    'informant.email': 'brothers@email.com',
-    'informant.firstname': faker.person.firstName(),
-    'informant.surname': faker.person.lastName(),
-    'informant.dob': '2008-09-12',
-    'informant.nationality': 'FAR',
-    'informant.idType': 'NATIONAL_ID',
-    'informant.nid': faker.string.numeric(10)
-  }
-}
-
 async function getPlaceOfBirth(type: 'PRIVATE_HOME' | 'HEALTH_FACILITY') {
   if (type === 'HEALTH_FACILITY') {
     const locations = await getAllLocations('HEALTH_FACILITY')
@@ -73,11 +51,9 @@ async function getPlaceOfBirth(type: 'PRIVATE_HOME' | 'HEALTH_FACILITY') {
 }
 
 export async function getDeclaration({
-  informantRelation = 'MOTHER',
   partialDeclaration = {},
   placeOfBirthType = 'PRIVATE_HOME'
 }: {
-  informantRelation?: InformantRelation
   partialDeclaration?: Record<string, any>
   placeOfBirthType?: 'PRIVATE_HOME' | 'HEALTH_FACILITY'
 }) {
@@ -90,8 +66,6 @@ export async function getDeclaration({
   }
 
   const mockDeclaration = {
-    'father.detailsNotAvailable': true,
-    'father.reason': 'Father is missing.',
     'mother.firstname': faker.person.firstName(),
     'mother.surname': faker.person.lastName(),
     'mother.dob': '1995-09-12',
@@ -103,19 +77,20 @@ export async function getDeclaration({
       province,
       district,
       urbanOrRural: 'URBAN' as const,
-      town: null,
-      residentialArea: null,
-      street: null,
-      number: null,
-      zipCode: null,
-      village: null,
-      state: null,
-      district2: null,
-      cityOrTown: null,
-      addressLine1: null,
-      addressLine2: null,
-      addressLine3: null,
-      postcodeOrZip: null,
+      addressType: AddressType.DOMESTIC
+    },
+    'father.firstname': faker.person.firstName(),
+    'father.surname': faker.person.lastName(),
+    'father.dob': '1995-09-12',
+    'father.nationality': 'FAR',
+    'father.idType': 'NATIONAL_ID',
+    'father.nid': faker.string.numeric(10),
+    'father.addressSameAs': 'NO',
+    'father.address': {
+      country: 'FAR',
+      province,
+      district,
+      urbanOrRural: 'URBAN' as const,
       addressType: AddressType.DOMESTIC
     },
     'child.firstname': faker.person.firstName(),
@@ -125,9 +100,15 @@ export async function getDeclaration({
       .toISOString()
       .split('T')[0], // yesterday
     ...(await getPlaceOfBirth(placeOfBirthType)),
-    ...getInformantDetails(informantRelation)
+    'informant.relation': 'BROTHER',
+    'informant.email': 'brothers@email.com',
+    'informant.firstname': faker.person.firstName(),
+    'informant.surname': faker.person.lastName(),
+    'informant.dob': '2008-09-12',
+    'informant.nationality': 'FAR',
+    'informant.idType': 'NATIONAL_ID',
+    'informant.nid': faker.string.numeric(10)
   }
-
   // 💡 Merge overriden fields
   return {
     ...mockDeclaration,

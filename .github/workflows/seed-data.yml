@@ -23,17 +23,27 @@ on:
           - production
           - e2e
           - v19
+          - release-v16
+          - tmpdev
+          - tmpqa
+          - tmpstg
+          - tmp-prod
+          - tmp1
+          - tmp2
       core-image-tag:
         description: Core DockerHub image tag
         required: true
 jobs:
   seed-data:
-    environment: ${{ inputs.environment }}
+    environment: ${{ github.event.inputs.environment }}
     runs-on: ubuntu-24.04
-    outputs:
-      outcome: ${{ steps.seed.outcome }}
     timeout-minutes: 60
     steps:
+      - run: |
+          echo "Seeding data to ${{ inputs.environment }} environment with core image tag: ${{ inputs.core-image-tag }}"
+          echo "ACTIVATE_USERS: ${{ vars.ACTIVATE_USERS }} COUNTRY_CONFIG_HOST=${{ vars.COUNTRY_CONFIG_HOST }}"
+          echo "AUTH_HOST=${{ vars.AUTH_HOST }} GATEWAY_HOST=${{ vars.GATEWAY_HOST }}"
+          echo "SUPER_USER_PASSWORD=${{ secrets.SUPER_USER_PASSWORD }}"
       - name: Pull the seed-data image
         run: docker pull ghcr.io/opencrvs/ocrvs-data-seeder:${{ inputs.core-image-tag }}
       - name: Run docker container

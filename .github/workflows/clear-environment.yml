@@ -20,6 +20,13 @@ on:
           - staging
           - qa
           - development
+          - tmpdev
+          - tmpqa
+          - tmpstg
+          - tmp-prod
+          - tmp1
+          - tmp2
+          - v19
 jobs:
   reset-data:
     name: 'Reset data'
@@ -34,7 +41,6 @@ jobs:
         with:
           fetch-depth: 1
           path: './${{ github.event.repository.name }}'
-
       - name: Read known hosts
         run: |
           cd ${{ github.event.repository.name }}
@@ -42,13 +48,11 @@ jobs:
           sed -i -e '$a\' ./infrastructure/known-hosts
           cat ./infrastructure/known-hosts >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
-
       - name: Install SSH Key
         uses: shimataro/ssh-key-action@v2
         with:
           key: ${{ secrets.SSH_KEY }}
           known_hosts: ${{ env.KNOWN_HOSTS }}
-
       - name: Reset data
         id: reset-data
         env:

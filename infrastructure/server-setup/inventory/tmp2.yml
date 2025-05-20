@@ -70,8 +70,8 @@ all:
     enable_backups: false
 docker-manager-first:
   hosts:
-    farajaland-v19:
-      ansible_host: '49.12.218.32'
+    farajaland-tmp2:
+      ansible_host: '188.245.88.47'
       data_label: data1
 
 docker-workers: {}
