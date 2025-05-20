@@ -1,4 +1,4 @@
-name: Provision environment
+name: X - Provision environment
 run-name: Provision ${{ github.event.inputs.environment }}
 on:
   workflow_dispatch:
@@ -55,8 +55,9 @@ on:
 jobs:
   test:
     runs-on: ubuntu-24.04
+    environment: ${{ inputs.environment }}
     steps:
         - name: Test variables
           run: |
-            echo "environment: ${{ github.event.inputs.environment }}"
-            echo "tag: ${{ github.event.inputs.tag }}"
+            echo "environment: ${{ inputs.environment }}"
+            echo "tag: ${{ inputs.tag }}"
