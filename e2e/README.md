@@ -27,3 +27,21 @@
 You are now able to debug the failed test case as it would have happened on your local environment
 
 ![alt text](e2e-debug-steps.png 'E2E debug steps')
+
+# Run e2e tests locally
+
+First ensure you have your local dev environment running.
+
+Some V1 tests require running the country configuration server from `opencrvs-farajaland` instead of `opencrvs-countryconfig`. For V2, either should work 👍 Unfortunately some V1 tests are currently failing in local environment (with any configuration).
+
+Then, in `opencrvs-farajaland` root directory, run:
+
+```
+yarn
+
+# to run against localhost
+yarn e2e-dev
+
+# to run against chosen deployment
+export DOMAIN=my-deployment.opencrvs.dev; yarn e2e
+```
