@@ -13,6 +13,7 @@ runs:
   using: "composite"
   steps:
     - name: Trigger workflow
+      shell: bash
       env:
         GH_TOKEN: ${{ inputs.token }}
         WORKFLOW: ${{ inputs.workflow }}
