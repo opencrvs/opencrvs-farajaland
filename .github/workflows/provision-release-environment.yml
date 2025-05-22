@@ -38,13 +38,13 @@ jobs:
                 echo "config_tag=${config:-$release}" >> $GITHUB_OUTPUT
             - name: Fail if not on release branch
               # TODO: Before MERGE DON'T FORGET
-
+              # Delete condition: [[ "${{ github.ref }}" != refs/heads/ocrvs-9393-uber-pipeline ]]
               run: |
-                echo "Current ref name: ${{ github.ref_name }}"
-                echo "Current ref: ${{ github.ref }}"
-                if [[ "${{ github.ref }}" != refs/heads/release/* ]]; then
-                echo "❌ This workflow must be run from a release/* branch."
-                exit 1
+                echo "Current ref name: ${{ github.ref_name }} and ref: ${{ github.ref }}"
+                if [[ "${{ github.ref }}" != refs/heads/release/* ]] || [[ "${{ github.ref }}" != refs/heads/ocrvs-9393-uber-pipeline ]]
+                then
+                    echo "❌ This workflow must be run from a release/* branch."
+                    exit 1
                 fi
             - name: Create server ${{ vars.COUNTRY_NAME }}-${{ inputs.environment }} on Hetzner
               uses: ./.github/actions/run-workflow
