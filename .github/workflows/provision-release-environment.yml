@@ -29,12 +29,9 @@ on:
                 required: false
                 type: string
 jobs:
-    setup:
+    release-provision-environment:
         runs-on: ubuntu-latest
         environment: ${{ inputs.release_version }}
-        outputs:
-            core_tag: ${{ steps.setvars.outputs.core_tag }}
-            config_tag: ${{ steps.setvars.outputs.config_tag }}
         steps:
             - name: Set defaults
               id: setvars
@@ -44,69 +41,35 @@ jobs:
                 release="${{ inputs.release_version }}"
                 echo "core_tag=${core:-$release}" >> $GITHUB_OUTPUT
                 echo "config_tag=${config:-$release}" >> $GITHUB_OUTPUT
-
-    create-server:
-        needs: setup
-        runs-on: ubuntu-latest
-        environment: ${{ inputs.release_version }}
-        steps:
-            - name: Checkout repo
-              uses: actions/checkout@v4
             - name: Create server ${{ vars.COUNTRY_NAME }}-${{ inputs.release_version }} on Hetzner
               uses: ./.github/actions/run-workflow
               with:
-                workflow: dummy-create-server.yml
-                # workflow: create-hetzner-server.yml
+                # workflow: dummy-create-server.yml
+                workflow: create-hetzner-server.yml
                 args: -f environment=${{ inputs.release_version }}
                 token: ${{ secrets.GH_TOKEN }}
-    provision-server:
-        needs:
-            - create-server
-            - setup
-        runs-on: ubuntu-latest
-        environment: ${{ inputs.release_version }}
-        steps:
-          - name: Checkout repo
-            uses: actions/checkout@v4
-          - name: Run provision server 
-            uses: ./.github/actions/run-workflow
-            with:
-            #   workflow: provision.yml
-              workflow: dummy-provision.yml
-              args: -f environment=${{ inputs.release_version }}
-              token: ${{ secrets.GH_TOKEN }}
-    deploy:
-        needs: 
-            - provision-server
-            - setup
-        runs-on: ubuntu-latest
-        environment: ${{ inputs.release_version }}
-        steps:
-            - name: Checkout repo
-              uses: actions/checkout@v4
+            - name: Run provision server 
+              uses: ./.github/actions/run-workflow
+              with:
+                workflow: provision.yml
+                # workflow: dummy-provision.yml
+                args: -f environment=${{ inputs.release_version }}
+                token: ${{ secrets.GH_TOKEN }}
+
             - name: Run deployment on ${{ inputs.release_version }}
               uses: ./.github/actions/run-workflow
               with:
                 workflow: dummy-deploy.yml
                 args: |
                   -f environment=${{ inputs.release_version }} \
-                  -f core-image-tag=${{ needs.setup.outputs.core_tag }} \
-                  -f countryconfig-image-tag=${{ needs.setup.outputs.config_tag }}
+                  -f core-image-tag=${{ steps.setvars.outputs.core_tag }} \
+                  -f countryconfig-image-tag=${{ steps.setvars.outputs.config_tag }}
                 token: ${{ secrets.GH_TOKEN }}
-    seed-data:
-        needs:
-            - deploy
-            - setup
-        runs-on: ubuntu-latest
-        environment: ${{ inputs.release_version }}
-        steps:
-            - name: Checkout repo
-              uses: actions/checkout@v4
             - name: Seeding data to ${{ inputs.release_version }}
               uses: ./.github/actions/run-workflow
               with:
                 workflow: dummy-seed.yml
                 args: |
                   -f environment=${{ inputs.release_version }} \
-                  -f core-image-tag=${{ needs.setup.outputs.core_tag }}
+                  -f core-image-tag=${{ steps.setvars.outputs.core_tag }}
                 token: ${{ secrets.GH_TOKEN }}

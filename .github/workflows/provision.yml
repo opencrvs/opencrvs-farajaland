@@ -42,6 +42,16 @@ on:
           - ufw
           - updates
           - users
+  workflow_call:
+    inputs:
+      environment:
+        type: string
+        description: Environment to deploy to
+        required: true
+      tag:
+        type: string
+        description: Environment to deploy to
+        default: all
 jobs:
   get-backup-ssh-key:
     name: Get backup SSH key
