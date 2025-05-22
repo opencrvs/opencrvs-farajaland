@@ -1,0 +1,61 @@
+set -euo pipefail
+
+REPO="opencrvs/opencrvs-farajaland"       # Replace with your repo
+# WORKFLOW="dummy-seed.yml" # Workflow filename or ID
+REF="ocrvs-9393-uber-pipeline"      # Branch or tag
+# REF="ocrvs-9393-final-test"
+POLL_INTERVAL=10                    # seconds
+MAX_ATTEMPTS=60                     # 10 minutes max
+
+echo "🚀 Triggering workflow $WORKFLOW on ref $REF with $WORKFLOW_ARGS..."
+
+# Trigger the workflow
+gh workflow run "$WORKFLOW" \
+--repo "$REPO" \
+--ref "$REF" \
+$WORKFLOW_ARGS
+
+# Wait for the workflow run to appear
+echo "⏳ Waiting for workflow run to be listed..."
+sleep 5
+
+# Find the latest workflow run ID for the specified workflow
+attempt=0
+run_id=""
+while [[ -z "$run_id" && $attempt -lt $MAX_ATTEMPTS ]]; do
+run_id=$(gh run list \
+    --repo "$REPO" \
+    --workflow "$WORKFLOW" \
+    --branch "$REF" \
+    --json databaseId,status,headBranch \
+    --jq 'map(select(.headBranch == "'"$REF"'")) | .[0].databaseId')
+
+if [[ -n "$run_id" ]]; then
+    echo "✅ Found run ID: $run_id"
+    break
+fi
+
+((attempt++))
+sleep $POLL_INTERVAL
+done
+
+if [[ -z "$run_id" ]]; then
+echo "❌ Failed to find the workflow run after $((POLL_INTERVAL * MAX_ATTEMPTS)) seconds"
+exit 1
+fi
+
+# Wait for the workflow to complete
+echo "⏳ Waiting for run $run_id to complete..."
+echo "https://github.com/opencrvs/opencrvs-farajaland/actions/runs/$run_id"
+gh run watch --interval 30 "$run_id" --repo "$REPO"
+
+# Get the result
+conclusion=$(gh run view "$run_id" --repo "$REPO" --json conclusion -q '.conclusion')
+echo "🎯 Workflow finished with conclusion: $conclusion"
+
+if [[ "$conclusion" != "success" ]]; then
+echo "❌ Workflow failed or was cancelled"
+exit 1
+fi
+
+echo "✅ Workflow succeeded!"
