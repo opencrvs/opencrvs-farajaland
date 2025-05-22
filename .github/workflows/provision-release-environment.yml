@@ -1,13 +1,7 @@
 # How to use this workflow:
 ##################################################################
+# Workflow should be triggered manually from release branch
 # environment: Name of the environment to create
-# release_branch: Use all sub-workflows from custom branch
-# Usually it's fine to run workflow from develop branch, but sometimes it's crucial to define custom branch for triggering dependencies:
-#    - Provision
-#    - Deploy
-#    - Seed
-#    # TODO:
-#    - Run tests
 # core_image_tag: OpenCRVS core image tag
 # countryconfig_image_tag: OpenCRVS country config image tag
 name: Release - Provision Environment
@@ -45,6 +39,13 @@ jobs:
                 release="${{ inputs.environment }}"
                 echo "core_tag=${core:-$release}" >> $GITHUB_OUTPUT
                 echo "config_tag=${config:-$release}" >> $GITHUB_OUTPUT
+            - name: Fail if not on release branch
+              run: |
+                echo "Current ref: ${{ github.ref }}"
+                if [[ "$GITHUB_REF" != refs/heads/release/* ]]; then
+                echo "❌ This workflow must be run from a release/* branch."
+                exit 1
+                fi
             - name: Create server ${{ vars.COUNTRY_NAME }}-${{ inputs.environment }} on Hetzner
               uses: ./.github/actions/run-workflow
               with:
@@ -52,6 +53,7 @@ jobs:
                 # workflow: create-hetzner-server.yml
                 args: -f environment=${{ inputs.environment }}
                 token: ${{ secrets.GH_TOKEN }}
+                ref: ${{ inputs.release_branch }}
             - name: Run provision server 
               uses: ./.github/actions/run-workflow
               with:
@@ -59,7 +61,7 @@ jobs:
                 workflow: dummy-provision.yml
                 args: -f environment=${{ inputs.environment }}
                 token: ${{ secrets.GH_TOKEN }}
-
+                ref: ${{ inputs.release_branch }}
             - name: Run deployment on ${{ inputs.environment }}
               uses: ./.github/actions/run-workflow
               with:
@@ -69,6 +71,7 @@ jobs:
                   -f core-image-tag=${{ steps.setvars.outputs.core_tag }} \
                   -f countryconfig-image-tag=${{ steps.setvars.outputs.config_tag }}
                 token: ${{ secrets.GH_TOKEN }}
+                ref: ${{ inputs.release_branch }}
             - name: Seeding data to ${{ inputs.environment }}
               uses: ./.github/actions/run-workflow
               with:
@@ -77,3 +80,4 @@ jobs:
                   -f environment=${{ inputs.environment }} \
                   -f core-image-tag=${{ steps.setvars.outputs.core_tag }}
                 token: ${{ secrets.GH_TOKEN }}
+                ref: ${{ inputs.release_branch }}
