@@ -51,7 +51,6 @@ jobs:
                 # workflow: create-hetzner-server.yml
                 args: -f environment=${{ inputs.environment }}
                 token: ${{ secrets.GH_TOKEN }}
-                ref: ${{ inputs.release_branch }}
             - name: Run provision server 
               uses: ./.github/actions/run-workflow
               with:
@@ -59,7 +58,6 @@ jobs:
                 workflow: dummy-provision.yml
                 args: -f environment=${{ inputs.environment }}
                 token: ${{ secrets.GH_TOKEN }}
-                ref: ${{ inputs.release_branch }}
             - name: Run deployment on ${{ inputs.environment }}
               uses: ./.github/actions/run-workflow
               with:
@@ -69,7 +67,6 @@ jobs:
                   -f core-image-tag=${{ steps.setvars.outputs.core_tag }} \
                   -f countryconfig-image-tag=${{ steps.setvars.outputs.config_tag }}
                 token: ${{ secrets.GH_TOKEN }}
-                ref: ${{ inputs.release_branch }}
             - name: Seeding data to ${{ inputs.environment }}
               uses: ./.github/actions/run-workflow
               with:
@@ -78,4 +75,3 @@ jobs:
                   -f environment=${{ inputs.environment }} \
                   -f core-image-tag=${{ steps.setvars.outputs.core_tag }}
                 token: ${{ secrets.GH_TOKEN }}
-                ref: ${{ inputs.release_branch }}
