@@ -16,5 +16,5 @@ runs:
         GH_TOKEN: ${{ inputs.token }}
         WORKFLOW: ${{ inputs.workflow }}
         WORKFLOW_ARGS: ${{ inputs.args }}
-      run: ./run.sh
+      run: ./.github/actions/run-workflow/run.sh
 
