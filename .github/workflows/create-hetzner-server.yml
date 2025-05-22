@@ -8,8 +8,9 @@ on:
           required: true
         env_type:
           description: "Environment type (single or multi node)"
-          required: true
+          required: false
           type: choice
+          default: 'single-node'
           options:
             - single-node
             - multi-node
