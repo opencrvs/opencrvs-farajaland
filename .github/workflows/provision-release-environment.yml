@@ -41,7 +41,7 @@ jobs:
               # Delete condition: [[ "${{ github.ref }}" != refs/heads/ocrvs-9393-uber-pipeline ]]
               run: |
                 echo "Current ref name: ${{ github.ref_name }} and ref: ${{ github.ref }}"
-                if [[ "${{ github.ref }}" != refs/heads/release/* ]] || [[ "${{ github.ref }}" != refs/heads/ocrvs-9393-uber-pipeline ]]
+                if [[ "${{ github.ref }}" != refs/heads/release/* ]] && [[ "${{ github.ref }}" != refs/heads/ocrvs-9393-uber-pipeline ]]
                 then
                     echo "❌ This workflow must be run from a release/* branch."
                     exit 1
