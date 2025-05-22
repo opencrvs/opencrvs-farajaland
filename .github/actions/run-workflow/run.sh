@@ -1,9 +1,6 @@
 set -euo pipefail
 
 REPO="opencrvs/opencrvs-farajaland"       # Replace with your repo
-# WORKFLOW="dummy-seed.yml" # Workflow filename or ID
-REF="ocrvs-9393-uber-pipeline"      # Branch or tag
-# REF="ocrvs-9393-final-test"
 POLL_INTERVAL=10                    # seconds
 MAX_ATTEMPTS=60                     # 10 minutes max
 
