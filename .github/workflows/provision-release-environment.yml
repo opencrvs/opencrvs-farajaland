@@ -41,8 +41,9 @@ jobs:
                 echo "config_tag=${config:-$release}" >> $GITHUB_OUTPUT
             - name: Fail if not on release branch
               run: |
+                echo "Current ref name: ${{ github.ref_name }}"
                 echo "Current ref: ${{ github.ref }}"
-                if [[ "$GITHUB_REF" != refs/heads/release/* ]]; then
+                if [[ "${{ github.ref }}" != refs/heads/release/* ]]; then
                 echo "❌ This workflow must be run from a release/* branch."
                 exit 1
                 fi
