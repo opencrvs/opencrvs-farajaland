@@ -17,6 +17,7 @@ on:
           - jump
           - e2e
           - v19
+          - release-v16
       tag:
         type: choice
         description: Select group tag you want to execute
@@ -42,7 +43,6 @@ on:
           - ufw
           - updates
           - users
-
 jobs:
   get-backup-ssh-key:
     name: Get backup SSH key
