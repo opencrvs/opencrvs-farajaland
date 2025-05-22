@@ -43,6 +43,7 @@ jobs:
                 if [[ "${{ github.ref }}" != refs/heads/release/* ]] && [[ "${{ github.ref }}" != refs/heads/ocrvs-9393-uber-pipeline ]]
                 then
                     echo "❌ This workflow must be run from a release/* branch."
+                    echo "Please check release documentation for more information: TODO: Add link to documentation"
                     exit 1
                 fi
             - name: Create server ${{ vars.COUNTRY_NAME }}-${{ inputs.environment }} on Hetzner
