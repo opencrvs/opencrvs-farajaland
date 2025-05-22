@@ -61,3 +61,6 @@ jobs:
           run: |
             echo "environment: ${{ inputs.environment }}"
             echo "tag: ${{ inputs.tag }}"
+            echo "repository: ${{ github.event.repository.name }}"
+            echo "repository: ${{ github.event.repository.full_name }}"
+            echo "github.repository: ${{ github.repository }}"
