@@ -16,6 +16,5 @@ runs:
         GH_TOKEN: ${{ inputs.token }}
         WORKFLOW: ${{ inputs.workflow }}
         WORKFLOW_ARGS: ${{ inputs.args }}
-        REF: ${{ github.ref }}
+        REF: ${{ github.ref_name }}
       run: bash ./.github/actions/run-workflow/run.sh
-
