@@ -5,14 +5,7 @@ POLL_INTERVAL=10                    # seconds
 MAX_ATTEMPTS=60                     # 10 minutes max
 
 echo "🚀 Triggering workflow $WORKFLOW on ref $REF with $WORKFLOW_ARGS..."
-
-# Trigger the workflow
-gh workflow run "$WORKFLOW" \
---repo "$REPO" \
---ref "$REF" \
-$WORKFLOW_ARGS
-
-# Wait for the workflow run to appear
+gh workflow run "$WORKFLOW" --repo "$REPO" --ref "$REF" $WORKFLOW_ARGS
 echo "⏳ Waiting for workflow run to be listed..."
 sleep 5
 
@@ -41,6 +34,7 @@ echo "❌ Failed to find the workflow run after $((POLL_INTERVAL * MAX_ATTEMPTS)
 exit 1
 fi
 
+# TODO: Replace watch with neat output
 # Wait for the workflow to complete
 echo "⏳ Waiting for run $run_id to complete..."
 echo "https://github.com/opencrvs/opencrvs-farajaland/actions/runs/$run_id"
