@@ -1,4 +1,4 @@
-name: Provision Release Environment
+name: Release - Provision Environment
 run-name: Provision ${{ inputs.release_version }} release environment
 on:
     workflow_dispatch:
