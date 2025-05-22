@@ -37,16 +37,36 @@ fi
 # TODO: Replace watch with neat output
 # Wait for the workflow to complete
 echo "⏳ Waiting for run $run_id to complete..."
-echo "https://github.com/opencrvs/opencrvs-farajaland/actions/runs/$run_id"
-gh run watch --interval 30 "$run_id" --repo "$REPO"
-
-# Get the result
+echo "🔗 https://github.com/$REPO/actions/runs/$run_id"
+# Poll until workflow is completed
+status=""
+MAX_ATTEMPTS=120
+message_counter=0
+while [[ "$status" != "completed" && $attempt -lt $MAX_ATTEMPTS ]]; do
+    status=$(gh run view "$run_id" --repo "$REPO" --json status -q '.status')
+    [[ "$status" == "completed" ]] && break
+    sleep $POLL_INTERVAL
+    ((attempt++))
+    if (( attempt % 6 == 0 )); then
+        message_counter=$((message_counter + 1))
+        if (( message_counter % 2 == 0 )); then
+            echo "⏳ Still waiting for the workflow to complete..."
+        else
+            echo "⏳ Still waiting for the workflow to complete... (2)"
+        fi
+    fi
+done
+# Get the result and output relevant summary
 conclusion=$(gh run view "$run_id" --repo "$REPO" --json conclusion -q '.conclusion')
 echo "🎯 Workflow finished with conclusion: $conclusion"
 
+# Optional: print steps that failed or were skipped
+echo "📋 Step summary:"
+gh run view "$run_id" --repo "$REPO" --json jobs -q '.jobs[].steps[] | select(.conclusion != "success") | "\(.name): \(.conclusion)"'
+
 if [[ "$conclusion" != "success" ]]; then
-echo "❌ Workflow failed or was cancelled"
-exit 1
+    echo "❌ Workflow failed or was cancelled"
+    exit 1
 fi
 
 echo "✅ Workflow succeeded!"
