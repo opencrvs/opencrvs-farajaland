@@ -12,9 +12,6 @@ on:
             environment:
                 description: "Environment, e/g v19 will create v19.opencrvs.dev"
                 required: true
-            release_branch:
-                description: "Branch for workflows"
-                required: false
             core_image_tag:
                 description: "Core tag (default: release_branch)"
                 required: false

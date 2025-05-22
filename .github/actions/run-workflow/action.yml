@@ -13,11 +13,10 @@ runs:
   using: "composite"
   steps:
     - name: Trigger workflow
-      shell: bash
       env:
         GH_TOKEN: ${{ inputs.token }}
         WORKFLOW: ${{ inputs.workflow }}
         WORKFLOW_ARGS: ${{ inputs.args }}
         REF: ${{ inputs.ref }}
-      run: ./.github/actions/run-workflow/run.sh
+      run: bash ./.github/actions/run-workflow/run.sh
 
