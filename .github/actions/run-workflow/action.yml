@@ -7,8 +7,6 @@ inputs:
     required: true
   token:
     required: true
-  ref:
-    required: false
 runs:
   using: "composite"
   steps:
@@ -18,6 +16,5 @@ runs:
         GH_TOKEN: ${{ inputs.token }}
         WORKFLOW: ${{ inputs.workflow }}
         WORKFLOW_ARGS: ${{ inputs.args }}
-        REF: ${{ inputs.ref }}
-      run: ./.github/actions/run-workflow/run.sh
-
+        REF: ${{ github.ref_name }}
+      run: bash ./.github/actions/run-workflow/run.sh
