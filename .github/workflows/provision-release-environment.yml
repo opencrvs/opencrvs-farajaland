@@ -13,11 +13,11 @@ on:
                 description: "Environment, e/g v19 will create v19.opencrvs.dev"
                 required: true
             core_image_tag:
-                description: "Core tag (default: release_branch)"
-                required: false
+                description: "Core image tag"
+                required: true
                 type: string
             countryconfig_image_tag:
-                description: "Country config tag (default: release_branch)"
+                description: "Countryconfig image tag (default: core_image_tag)"
                 required: false
                 type: string
 
@@ -33,9 +33,8 @@ jobs:
               run: |
                 core="${{ inputs.core_image_tag }}"
                 config="${{ inputs.countryconfig_image_tag }}"
-                release="${{ inputs.environment }}"
-                echo "core_tag=${core:-$release}" >> $GITHUB_OUTPUT
-                echo "config_tag=${config:-$release}" >> $GITHUB_OUTPUT
+                echo "core_tag=${core}" >> $GITHUB_OUTPUT
+                echo "config_tag=${config:-$core}" >> $GITHUB_OUTPUT
             - name: Fail if not on release branch
               # TODO: Before MERGE DON'T FORGET
               # Delete condition: [[ "${{ github.ref }}" != refs/heads/ocrvs-9393-uber-pipeline ]]
