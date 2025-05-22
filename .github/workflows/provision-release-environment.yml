@@ -1,37 +1,39 @@
+# How to use this workflow:
+##################################################################
+# environment: Name of the environment to create
+# release_branch: Use all sub-workflows from custom branch
+# Usually it's fine to run workflow from develop branch, but sometimes it's crucial to define custom branch for triggering dependencies:
+#    - Provision
+#    - Deploy
+#    - Seed
+#    # TODO:
+#    - Run tests
+# core_image_tag: OpenCRVS core image tag
+# countryconfig_image_tag: OpenCRVS country config image tag
 name: Release - Provision Environment
-run-name: Provision ${{ inputs.release_version }} release environment
+run-name: Provision ${{ inputs.environment }} release environment
 on:
     workflow_dispatch:
         inputs:
-            release_version:
-                description: "Release version to deploy in format vX.Y.Z"
+            environment:
+                description: "Environment, e/g v19 will create v19.opencrvs.dev"
                 required: true
+            release_branch:
+                description: "Branch for workflows"
+                required: false
             core_image_tag:
-                description: Core image tag (if empty it will be set to release_version)
+                description: "Core tag (default: release_branch)"
                 required: false
                 type: string
             countryconfig_image_tag:
-                description: Country config image tag (if empty it will be set to release_version)
+                description: "Country config tag (default: release_branch)"
                 required: false
                 type: string
-    workflow_call:
-        inputs:
-            release_version:
-                type: string
-                description: Environment to deploy to
-                required: true
-            core_image_tag:
-                description: Core image tag (if empty it will be set to release_version)
-                required: false
-                type: string
-            country_config_version:
-                description: Country config image tag (if empty it will be set to release_version)
-                required: false
-                type: string
+
 jobs:
     release-provision-environment:
         runs-on: ubuntu-latest
-        environment: ${{ inputs.release_version }}
+        environment: ${{ inputs.environment }}
         steps:
             - name: Checkout repository
               uses: actions/checkout@v4
@@ -40,38 +42,38 @@ jobs:
               run: |
                 core="${{ inputs.core_image_tag }}"
                 config="${{ inputs.countryconfig_image_tag }}"
-                release="${{ inputs.release_version }}"
+                release="${{ inputs.environment }}"
                 echo "core_tag=${core:-$release}" >> $GITHUB_OUTPUT
                 echo "config_tag=${config:-$release}" >> $GITHUB_OUTPUT
-            - name: Create server ${{ vars.COUNTRY_NAME }}-${{ inputs.release_version }} on Hetzner
+            - name: Create server ${{ vars.COUNTRY_NAME }}-${{ inputs.environment }} on Hetzner
               uses: ./.github/actions/run-workflow
               with:
                 workflow: dummy-create-server.yml
                 # workflow: create-hetzner-server.yml
-                args: -f environment=${{ inputs.release_version }}
+                args: -f environment=${{ inputs.environment }}
                 token: ${{ secrets.GH_TOKEN }}
             - name: Run provision server 
               uses: ./.github/actions/run-workflow
               with:
                 # workflow: provision.yml
                 workflow: dummy-provision.yml
-                args: -f environment=${{ inputs.release_version }}
+                args: -f environment=${{ inputs.environment }}
                 token: ${{ secrets.GH_TOKEN }}
 
-            - name: Run deployment on ${{ inputs.release_version }}
+            - name: Run deployment on ${{ inputs.environment }}
               uses: ./.github/actions/run-workflow
               with:
                 workflow: dummy-deploy.yml
                 args: |
-                  -f environment=${{ inputs.release_version }} \
+                  -f environment=${{ inputs.environment }} \
                   -f core-image-tag=${{ steps.setvars.outputs.core_tag }} \
                   -f countryconfig-image-tag=${{ steps.setvars.outputs.config_tag }}
                 token: ${{ secrets.GH_TOKEN }}
-            - name: Seeding data to ${{ inputs.release_version }}
+            - name: Seeding data to ${{ inputs.environment }}
               uses: ./.github/actions/run-workflow
               with:
                 workflow: dummy-seed.yml
                 args: |
-                  -f environment=${{ inputs.release_version }} \
+                  -f environment=${{ inputs.environment }} \
                   -f core-image-tag=${{ steps.setvars.outputs.core_tag }}
                 token: ${{ secrets.GH_TOKEN }}
