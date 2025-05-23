@@ -67,7 +67,7 @@ jobs:
       with:
         environment: ${{ inputs.environment }}
         core-image-tag: ${{ inputs.core_image_tag }}
-        countryconfig-image-tag: "flabla"
+        countryconfig-image-tag: ${{ needs.check-countryconfig.outputs.image_tag }}
       secrets: inherit
     seed-data:
       needs: [deploy]
