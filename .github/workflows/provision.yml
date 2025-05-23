@@ -32,6 +32,7 @@ on:
           - tmpqa
           - tmpstg
           - tmp-prod
+          - tmp1
       tag:
         type: choice
         description: Select group tag you want to execute
