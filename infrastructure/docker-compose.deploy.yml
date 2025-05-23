@@ -962,9 +962,8 @@ services:
         - 'traefik.enable=false'
       replicas: 1
     depends_on:
-      # - mongo1
-      mongo-on-update:
-          condition: service_completed_successfully
+      - mongo1
+      - mongo-on-update
     secrets:
       - jwt-public-key.{{ts}}
     configs:
