@@ -45,20 +45,20 @@ message_counter=0
 attempt=0
 while [[ "$status" != "completed" && $attempt -lt $MAX_ATTEMPTS ]]; do
     status=$(gh run view "$run_id" --repo "$REPO" --json status -q '.status')
-    echo "status: $status"
-    [[ "$status" == "completed" ]] && break || echo "running: $status"
+    [[ "$status" == "completed" ]] && break
     sleep $POLL_INTERVAL
-    echo "looop $attempt"
     ((attempt++))
+    echo "incrementing attempt: $attempt"
     if (( attempt % 6 == 0 )); then
-        message_counter=$((message_counter + 1))
+        ((message_counter++))
+        echo "incrementing message_counter: $message_counter"
         if (( message_counter % 2 == 0 )); then
             echo "⏳ Still waiting for the workflow to complete..."
         else
             echo "⏳ Still waiting for the workflow to complete... (2)"
         fi
     fi
-    echo "attempt $attempt"
+    echo "after loop attempt: $attempt"
 done
 # Get the result and output relevant summary
 conclusion=$(gh run view "$run_id" --repo "$REPO" --json conclusion -q '.conclusion')
