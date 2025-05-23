@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -euo pipefail
+# set -euo pipefail
 
 REPO="opencrvs/opencrvs-farajaland"       # Replace with your repo
 POLL_INTERVAL=10                    # seconds
