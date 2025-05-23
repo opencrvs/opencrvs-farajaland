@@ -99,6 +99,7 @@ jobs:
         working-directory: ${{ env.TF_PATH }}
         run: |
           # TODO: Add configuration for multi-node
+          echo "type=${{ env.type }}"
           if [ ${{ env.type }} == 'single-node' ]
           then
             echo "ssh_host=$(terraform output -raw public_ip)" >> $GITHUB_OUTPUT
@@ -194,9 +195,12 @@ jobs:
           done < infrastructure/provision-server/templates/environment.secrets.tpl
           gh secret set SSH_KEY --env ${{ inputs.environment }} < $TF_PATH/.ssh/id_rsa || echo "Failed"
       - name: Update known-hosts
+        env:
+          SSH_HOST: ${{ steps.output.outputs.ssh_host }}
+          SSH_PORT: 22
         run: |
           echo "Wait few seconds for server to be available" && sleep 10
-          bash ./infrastructure/environments/update-known-hosts.sh ${{ steps.output.outputs.ssh_host }} 22
+          bash ./infrastructure/environments/update-known-hosts.sh ${{ env.SSH_HOST }} ${{ env.SSH_PORT }}
   
       - name: Commit and push changes to ${{ github.repository }}
         run: |
