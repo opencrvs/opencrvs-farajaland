@@ -918,8 +918,9 @@ services:
   migration:
     depends_on:
       - mongo1
-      - mongo-on-update:
-          condition: service_completed_successfully
+      - mongo-on-update
+      # :
+      #     condition: service_completed_successfully
       - elasticsearch
       - minio
       - influxdb
