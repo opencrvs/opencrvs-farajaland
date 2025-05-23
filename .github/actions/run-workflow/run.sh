@@ -46,7 +46,7 @@ attempt=0
 while [[ "$status" != "completed" && $attempt -lt $MAX_ATTEMPTS ]]; do
     status=$(gh run view "$run_id" --repo "$REPO" --json status -q '.status')
     echo "status: $status"
-    [[ "$status" == "completed" ]] && break
+    [[ "$status" == "completed" ]] && break || echo "running: $status"
     sleep $POLL_INTERVAL
     echo "looop $attempt"
     ((attempt++))
