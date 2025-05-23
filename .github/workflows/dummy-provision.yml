@@ -64,3 +64,4 @@ jobs:
             echo "repository: ${{ github.event.repository.name }}"
             echo "repository: ${{ github.event.repository.full_name }}"
             echo "github.repository: ${{ github.repository }}"
+            echo "CUSTOM BRANCH: ${{ github.ref_name }}"
