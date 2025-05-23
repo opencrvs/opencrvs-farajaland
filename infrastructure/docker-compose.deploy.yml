@@ -219,6 +219,8 @@ services:
   mongo-on-update:
     image: mongo:4.4
     command: bash /on-deploy.sh
+    depends_on:
+      - mongo1
     configs:
       - source: mongo-on-deploy.{{ts}}
         target: /on-deploy.sh
