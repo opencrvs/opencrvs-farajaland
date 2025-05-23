@@ -30,6 +30,7 @@ on:
           - release-v16
           - tmpdev
           - tmpqa
+          - tmpstg
       tag:
         type: choice
         description: Select group tag you want to execute

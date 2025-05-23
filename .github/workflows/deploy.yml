@@ -42,6 +42,7 @@ on:
           - release-v16
           - tmpdev
           - tmpqa
+          - tmpstg
       core-image-tag:
         description: Core image tag
         required: true
