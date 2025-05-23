@@ -23,6 +23,12 @@ on:
           - production
           - e2e
           - v19
+          - release-v16
+          - tmpdev
+          - tmpqa
+          - tmpstg
+          - tmp-prod
+          - tmp1
       core-image-tag:
         description: Core DockerHub image tag
         required: true

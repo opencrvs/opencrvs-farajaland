@@ -39,6 +39,12 @@ on:
           - e2e
           - staging
           - v19
+          - release-v16
+          - tmpdev
+          - tmpqa
+          - tmpstg
+          - tmp-prod
+          - tmp1
       core-image-tag:
         description: Core image tag
         required: true
