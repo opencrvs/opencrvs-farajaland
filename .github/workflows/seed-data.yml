@@ -27,6 +27,7 @@ on:
           - tmpdev
           - tmpqa
           - tmpstg
+          - tmp-prod
       core-image-tag:
         description: Core DockerHub image tag
         required: true

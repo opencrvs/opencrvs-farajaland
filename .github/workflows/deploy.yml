@@ -43,6 +43,7 @@ on:
           - tmpdev
           - tmpqa
           - tmpstg
+          - tmp-prod
       core-image-tag:
         description: Core image tag
         required: true

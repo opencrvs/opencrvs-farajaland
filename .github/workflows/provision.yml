@@ -21,6 +21,7 @@ on:
           - tmpdev
           - tmpqa
           - tmpstg
+          - tmp-prod
       tag:
         type: choice
         description: Select group tag you want to execute
