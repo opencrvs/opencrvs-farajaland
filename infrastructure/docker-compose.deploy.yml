@@ -962,7 +962,7 @@ services:
       replicas: 1
     depends_on:
       # - mongo1
-      - mongo-on-update:
+      mongo-on-update:
           condition: service_completed_successfully
     secrets:
       - jwt-public-key.{{ts}}
