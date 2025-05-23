@@ -3,7 +3,7 @@
 # Workflow should be triggered manually from release branch
 # environment: Name of the environment to create
 # core_image_tag: OpenCRVS core image tag
-# countryconfig_image_tag: OpenCRVS country config image tag
+# Country config will be provisioned from latest commit to release branch
 name: Release - Provision Environment
 run-name: Provision ${{ inputs.environment }} release environment
 on:
@@ -16,10 +16,6 @@ on:
                 description: "Core image tag"
                 required: true
                 type: string
-            countryconfig_image_tag:
-                description: "Countryconfig image tag (default: core_image_tag)"
-                required: false
-                type: string
 
 jobs:
     release-provision-environment:
@@ -28,13 +24,6 @@ jobs:
         steps:
             - name: Checkout repository
               uses: actions/checkout@v4
-            - name: Set defaults
-              id: setvars
-              run: |
-                core="${{ inputs.core_image_tag }}"
-                config="${{ inputs.countryconfig_image_tag }}"
-                echo "core_tag=${core}" >> $GITHUB_OUTPUT
-                echo "config_tag=${config:-$core}" >> $GITHUB_OUTPUT
             - name: Fail if not on release branch
               # TODO: Before MERGE DON'T FORGET
               # Delete condition: [[ "${{ github.ref }}" != refs/heads/ocrvs-9393-uber-pipeline ]]
@@ -53,6 +42,12 @@ jobs:
                 workflow: create-hetzner-server.yml
                 args: -f environment=${{ inputs.environment }}
                 token: ${{ secrets.GH_TOKEN }}
+
+            - name: Get latest commit SHA
+              id: get_latest_commit
+              run: |
+                git pull
+                echo "config_tag=$(git rev-parse HEAD | cut -c 1-7)" >> $GITHUB_OUTPUT
             - name: Run provision server 
               uses: ./.github/actions/run-workflow
               with:
@@ -67,8 +62,8 @@ jobs:
                 workflow: deploy.yml
                 args: |
                   -f environment=${{ inputs.environment }} \
-                  -f core-image-tag=${{ steps.setvars.outputs.core_tag }} \
-                  -f countryconfig-image-tag=${{ steps.setvars.outputs.config_tag }}
+                  -f core-image-tag=${{ inputs.core_image_tag }} \
+                  -f countryconfig-image-tag=${{ steps.get_latest_commit.outputs.config_tag }}
                 token: ${{ secrets.GH_TOKEN }}
             - name: Seeding data to ${{ inputs.environment }}
               uses: ./.github/actions/run-workflow
@@ -77,5 +72,5 @@ jobs:
                 workflow: seed-data.yml
                 args: |
                   -f environment=${{ inputs.environment }} \
-                  -f core-image-tag=${{ steps.setvars.outputs.core_tag }}
+                  -f core-image-tag=${{ inputs.core_image_tag }}
                 token: ${{ secrets.GH_TOKEN }}
