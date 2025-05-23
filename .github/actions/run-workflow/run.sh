@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 set -euo pipefail
 
 REPO="opencrvs/opencrvs-farajaland"       # Replace with your repo
