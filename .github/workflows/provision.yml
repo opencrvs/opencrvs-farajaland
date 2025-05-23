@@ -29,6 +29,7 @@ on:
           - v19
           - release-v16
           - tmpdev
+          - tmpqa
       tag:
         type: choice
         description: Select group tag you want to execute

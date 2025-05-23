@@ -21,6 +21,7 @@ on:
           - qa
           - development
           - tmpdev
+          - tmpqa
 jobs:
   reset-data:
     name: 'Reset data'
