@@ -961,7 +961,7 @@ services:
         - 'traefik.enable=false'
       replicas: 1
     depends_on:
-      - mongo1
+      # - mongo1
       - mongo-on-update:
           condition: service_completed_successfully
     secrets:
