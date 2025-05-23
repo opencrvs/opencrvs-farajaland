@@ -24,6 +24,7 @@ on:
           - e2e
           - v19
           - release-v16
+          - tmpdev
       core-image-tag:
         description: Core DockerHub image tag
         required: true
