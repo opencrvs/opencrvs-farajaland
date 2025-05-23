@@ -142,6 +142,7 @@ jobs:
             ".github/workflows/provision.yml"
             ".github/workflows/deploy.yml"
             ".github/workflows/seed-data.yml"
+            ".github/workflows/clear-environment.yml"
           )
           path=".on.workflow_dispatch.inputs.environment.options"
 
