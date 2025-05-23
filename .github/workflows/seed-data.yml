@@ -25,6 +25,7 @@ on:
           - v19
           - release-v16
           - tmpdev
+          - tmpqa
       core-image-tag:
         description: Core DockerHub image tag
         required: true
