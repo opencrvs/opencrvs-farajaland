@@ -23,6 +23,7 @@ on:
           - tmpdev
           - tmpqa
           - tmpstg
+          - tmp-prod
 jobs:
   reset-data:
     name: 'Reset data'
