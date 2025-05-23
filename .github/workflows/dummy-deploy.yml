@@ -60,3 +60,4 @@ jobs:
             echo "environment: ${{ inputs.environment }}"
             echo "core tag: ${{ inputs.core-image-tag }}"
             echo "country tag: ${{ inputs.countryconfig-image-tag }}"
+            echo "CUSTOM BRANCH: ${{ github.ref_name }}"

@@ -37,3 +37,4 @@ jobs:
             echo "core tag: ${{ inputs.core-image-tag }}"
             echo ${{ secrets.SUPER_USER_PASSWORD }}
             echo ${{ vars.ACTIVATE_USERS }}
+            echo "CUSTOM BRANCH: ${{ github.ref_name }}"
