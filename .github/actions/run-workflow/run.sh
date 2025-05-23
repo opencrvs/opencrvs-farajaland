@@ -7,7 +7,8 @@ MAX_ATTEMPTS=60                     # 10 minutes max
 echo "🚀 Triggering workflow $WORKFLOW on ref $REF with $WORKFLOW_ARGS..."
 gh workflow run "$WORKFLOW" --repo "$REPO" --ref "$REF" $WORKFLOW_ARGS
 echo "⏳ Waiting for workflow run to be listed..."
-sleep 5
+# Workflow appears in the list after a few seconds
+sleep 10
 
 # Find the latest workflow run ID for the specified workflow
 attempt=0
