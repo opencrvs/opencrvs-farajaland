@@ -30,10 +30,11 @@ env:
   TF_VAR_hcloud_token: ${{ secrets.HCLOUD_TOKEN }}
   TF_VAR_country_name: ${{ vars.COUNTRY_NAME }}
   TF_VAR_env_name: ${{ inputs.environment }}
-  TF_VAR_env_type: ${{ github.event.inputs.env_type }}
+  TF_VAR_env_type: ${{ github.event.env.type }}
   TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
   TF_VAR_cloudflare_zone_id: ${{ secrets.CLOUDFLARE_ZONE_ID }}
   TERRAFORM_REPO: opencrvs/terraform-state
+  type: "singe-node"
 jobs:
   create-environment:
     name: Create New HCloud Environment
@@ -76,8 +77,8 @@ jobs:
       - name: Restore terraform state
         run: |
           mkdir -p terraform-state/${{ vars.COUNTRY_NAME }}
-          [ -f terraform-state/${{ vars.COUNTRY_NAME }}/${{ inputs.environment }}-${{ inputs.env_type }}.tfstate ] && \
-          cp terraform-state/${{ vars.COUNTRY_NAME }}/${{ inputs.environment }}-${{ inputs.env_type }}.tfstate ${{ env.TF_PATH }}/terraform.tfstate || \
+          [ -f terraform-state/${{ vars.COUNTRY_NAME }}/${{ inputs.environment }}-${{ env.type }}.tfstate ] && \
+          cp terraform-state/${{ vars.COUNTRY_NAME }}/${{ inputs.environment }}-${{ env.type }}.tfstate ${{ env.TF_PATH }}/terraform.tfstate || \
           echo "Terraform state file not found. Creating a new one."
 
       - name: Setup Terraform
@@ -98,7 +99,7 @@ jobs:
         working-directory: ${{ env.TF_PATH }}
         run: |
           # TODO: Add configuration for multi-node
-          if [ ${{ inputs.env_type }} == 'single-node' ]
+          if [ ${{ env.env_type }} == 'single-node' ]
           then
             echo "ssh_host=$(terraform output -raw public_ip)" >> $GITHUB_OUTPUT
             echo "hostname=$TF_VAR_country_name-$TF_VAR_env_name" >> $GITHUB_OUTPUT
@@ -106,11 +107,11 @@ jobs:
   
       - name: Update terraform state file in ${{ env.TERRAFORM_REPO }}
         run: |
-          cp ${{ env.TF_PATH }}/terraform.tfstate terraform-state/${{ vars.COUNTRY_NAME }}/${{ inputs.environment }}-${{ inputs.env_type }}.tfstate
+          cp ${{ env.TF_PATH }}/terraform.tfstate terraform-state/${{ vars.COUNTRY_NAME }}/${{ inputs.environment }}-${{ env.type }}.tfstate
           cd terraform-state/
           if [[ -n "$(git status --porcelain)" ]]; then
-            git add ${{ vars.COUNTRY_NAME }}/${{ inputs.environment }}-${{ inputs.env_type }}.tfstate
-            git commit -m "Add environment file for ${{ inputs.environment }} env with type ${{ inputs.env_type }}"
+            git add ${{ vars.COUNTRY_NAME }}/${{ inputs.environment }}-${{ env.type }}.tfstate
+            git commit -m "Add environment file for ${{ inputs.environment }} env with type ${{ env.type }}"
             git push
           else
             echo "No changes to commit"
