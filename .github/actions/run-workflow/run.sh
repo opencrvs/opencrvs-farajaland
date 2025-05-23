@@ -42,8 +42,10 @@ echo "🔗 https://github.com/$REPO/actions/runs/$run_id"
 status=""
 MAX_ATTEMPTS=120
 message_counter=0
+attempt=0
 while [[ "$status" != "completed" && $attempt -lt $MAX_ATTEMPTS ]]; do
     status=$(gh run view "$run_id" --repo "$REPO" --json status -q '.status')
+    echo "status: $status"
     [[ "$status" == "completed" ]] && break
     sleep $POLL_INTERVAL
     echo "looop $attempt"
@@ -56,6 +58,7 @@ while [[ "$status" != "completed" && $attempt -lt $MAX_ATTEMPTS ]]; do
             echo "⏳ Still waiting for the workflow to complete... (2)"
         fi
     fi
+    echo "attempt $attempt"
 done
 # Get the result and output relevant summary
 conclusion=$(gh run view "$run_id" --repo "$REPO" --json conclusion -q '.conclusion')
