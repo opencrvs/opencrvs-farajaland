@@ -15,8 +15,10 @@ import {
   defineFormPage,
   field,
   FieldType,
+  ImageMimeType,
   not,
   or,
+  PageTypes,
   TranslationConfig
 } from '@opencrvs/toolkit/events'
 import { requireMotherDetails } from './mother'
@@ -53,6 +55,15 @@ const idTypeMessageDescriptors = {
   }
 } satisfies Record<keyof typeof IdType, TranslationConfig>
 
+const DEFAULT_FILE_CONFIGURATION = {
+  maxFileSize: 5 * 1024 * 1024,
+  acceptedFileTypes: [
+    ImageMimeType.enum['image/jpeg'],
+    ImageMimeType.enum['image/png'],
+    ImageMimeType.enum['image/jpg']
+  ]
+}
+
 const idTypeOptions = createSelectOptions(IdType, idTypeMessageDescriptors)
 
 const Other = {
@@ -77,6 +88,7 @@ const otherOptions = createSelectOptions(Other, otherMessageDescriptors)
 
 export const documents = defineFormPage({
   id: 'documents',
+  type: PageTypes.enum.FORM,
   title: {
     defaultMessage: 'Upload supporting documents',
     description: 'Form section title for documents',
@@ -87,9 +99,15 @@ export const documents = defineFormPage({
       id: 'documents.proofOfBirth',
       type: FieldType.FILE,
       required: false,
-      options: {
+      configuration: {
+        ...DEFAULT_FILE_CONFIGURATION,
         style: {
-          fullWidth: true
+          width: 'full'
+        },
+        fileName: {
+          defaultMessage: 'Notification of birth',
+          description: 'This is the label for the file name',
+          id: 'v2.form.field.label.proofOfBirth.fileName'
         }
       },
       label: {
@@ -107,6 +125,7 @@ export const documents = defineFormPage({
         description: 'This is the label for the field',
         id: 'v2.event.birth.action.declare.form.section.documents.field.proofOfMother.label'
       },
+      configuration: DEFAULT_FILE_CONFIGURATION,
       options: idTypeOptions,
       conditionals: [
         {
@@ -125,6 +144,7 @@ export const documents = defineFormPage({
         description: 'This is the label for the field',
         id: 'v2.event.birth.action.declare.form.section.documents.field.proofOfFather.label'
       },
+      configuration: DEFAULT_FILE_CONFIGURATION,
       options: idTypeOptions,
       conditionals: [
         {
@@ -142,6 +162,7 @@ export const documents = defineFormPage({
         description: 'This is the label for the field',
         id: 'v2.event.birth.action.declare.form.section.documents.field.proofOfInformant.label'
       },
+      configuration: DEFAULT_FILE_CONFIGURATION,
       options: idTypeOptions,
       conditionals: [
         {
@@ -165,6 +186,7 @@ export const documents = defineFormPage({
         description: 'This is the label for the field',
         id: 'v2.event.birth.action.declare.form.section.documents.field.proofOther.label'
       },
+      configuration: DEFAULT_FILE_CONFIGURATION,
       options: otherOptions,
       conditionals: [
         {

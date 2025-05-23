@@ -1,7 +1,18 @@
 import { expect, test, type Page } from '@playwright/test'
 import { loginToV2 } from '../../helpers'
+import path from 'path'
+import { faker } from '@faker-js/faker'
+import { selectAction } from '../../v2-utils'
+import { REQUIRED_VALIDATION_ERROR } from './helpers'
+import { trackAndDeleteCreatedEvents } from '../v2-test-data/eventDeletion'
+
+const child = {
+  firstNames: faker.person.firstName('female')
+}
 
 test.describe.serial('1. Birth event declaration', () => {
+  trackAndDeleteCreatedEvents()
+
   test.describe.serial('Fill all form sections. Save & Exit', () => {
     let page: Page
     test.beforeAll(async ({ browser }) => {
@@ -164,7 +175,9 @@ test.describe.serial('1. Birth event declaration', () => {
         ).toBeVisible()
       })
 
-      test.skip('1.4.2 Validate Child details block', async () => {})
+      test('1.4.2 Validate Child details block', async () => {
+        await page.locator('#child____firstname').fill(child.firstNames)
+      })
 
       test('1.4.3 Click "continue"', async () => {
         await page.getByRole('button', { name: 'Continue' }).click()
@@ -218,7 +231,7 @@ test.describe.serial('1. Birth event declaration', () => {
          * - Required for registration
          */
         await expect(page.getByText("Informant's details")).toBeVisible()
-        await expect(page.getByText('Required for registration')).toBeVisible()
+        await expect(page.getByText(REQUIRED_VALIDATION_ERROR)).toBeVisible()
       })
 
       test('1.5.3 Select any option in relationship to child and click the "continue" button', async () => {
@@ -360,7 +373,24 @@ test.describe.serial('1. Birth event declaration', () => {
         ).toBeVisible()
       })
 
-      test.skip('1.8.2 Validate Supporting Document block', async () => {})
+      test('1.8.2 Validate Supporting Document block', async () => {
+        await page
+          .locator('#documents____proofOfMother-form-input div')
+          .filter({ hasText: /^Select\.\.\.$/ })
+          .nth(2)
+          .click()
+        await page.getByText('Birth Certificate', { exact: true }).click()
+        await page.locator('button[name="documents____proofOfMother"]').click()
+
+        await page
+          .getByTestId('documents____proofOfMother')
+          .setInputFiles(path.join(__dirname, 'test_img.png'))
+
+        await expect(
+          page.locator('#document_BIRTH_CERTIFICATE_link')
+        ).toContainText('Birth Certificate')
+        await expect(page.getByLabel('Delete attachment')).toBeVisible()
+      })
 
       test('1.8.3 click continue', async () => {
         await page.getByRole('button', { name: 'Continue' }).click()
@@ -376,7 +406,6 @@ test.describe.serial('1. Birth event declaration', () => {
       })
     })
 
-    // @TODO: The Save & exit modal is not implemented in V2 events yet
     test.describe('1.9 Validate "Save & Exit" Button  ', async () => {
       test('1.9.1 Click the "Save & Exit" button from any page', async () => {
         await page.getByRole('button', { name: 'Save & Exit' }).click()
@@ -426,7 +455,24 @@ test.describe.serial('1. Birth event declaration', () => {
          * - find the declared birth event record on this page list with saved data
          */
         await expect(page.locator('#content-name')).toHaveText('All events')
-        await expect(page.getByText('seconds ago').first()).toBeVisible()
+        await expect(page.getByText(child.firstNames)).toBeVisible()
+      })
+
+      test('1.9.4 Reopen draft and navigate to review page', async () => {
+        await page
+          .getByRole('button', {
+            name: child.firstNames
+          })
+          .click()
+
+        await selectAction(page, 'Declare')
+
+        await expect(page.locator('#select_document')).toContainText(
+          "Proof of mother's ID (Birth Certificate)"
+        )
+        await expect(
+          page.getByRole('img', { name: 'Supporting Document' })
+        ).toBeVisible()
       })
     })
   })

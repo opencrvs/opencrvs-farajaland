@@ -1,7 +1,11 @@
 import { test, expect } from '@playwright/test'
 import { goToSection, loginToV2 } from '../../helpers'
+import { REQUIRED_VALIDATION_ERROR } from './helpers'
+import { trackAndDeleteCreatedEvents } from '../v2-test-data/eventDeletion'
 
 test.describe.serial("2. Validate the child's details page", () => {
+  trackAndDeleteCreatedEvents()
+
   test.beforeEach(async ({ page }) => {
     await loginToV2(page)
 
@@ -107,7 +111,7 @@ test.describe.serial("2. Validate the child's details page", () => {
       await expect(
         page
           .locator('[data-test-id="row-value-child.firstname"]')
-          .getByText('Required for registration')
+          .getByText(REQUIRED_VALIDATION_ERROR)
       ).toBeVisible()
     })
 
@@ -148,7 +152,7 @@ test.describe.serial("2. Validate the child's details page", () => {
       await expect(
         page
           .locator('[data-test-id="row-value-child.gender"]')
-          .getByText('Required for registration')
+          .getByText(REQUIRED_VALIDATION_ERROR)
       ).toBeVisible()
     })
   })
@@ -179,10 +183,10 @@ test.describe.serial("2. Validate the child's details page", () => {
 
       /*
        * Expected result: should not accept the invalid date and show error:
-       * - Please enter a valid date
+       * - Must be a valid birth date
        */
       await expect(page.locator('#child____dob_error')).toHaveText(
-        'Please enter a valid date'
+        'Must be a valid birth date'
       )
     })
 
@@ -199,11 +203,11 @@ test.describe.serial("2. Validate the child's details page", () => {
 
       /*
        * Expected result: should not accept the future date and show error:
-       * - Please enter a valid date
+       * - Must be a valid birth date
 
        */
       await expect(page.locator('#child____dob_error')).toHaveText(
-        'Please enter a valid date'
+        'Must be a valid birth date'
       )
     })
 
@@ -217,7 +221,7 @@ test.describe.serial("2. Validate the child's details page", () => {
       await expect(
         page
           .locator('[data-test-id="row-value-child.dob"]')
-          .getByText('Required for registration')
+          .getByText(REQUIRED_VALIDATION_ERROR)
       ).toBeVisible()
     })
   })
@@ -287,7 +291,7 @@ test.describe.serial("2. Validate the child's details page", () => {
         page
           .getByRole('row', { name: 'Reason for delayed' })
           .locator('[data-test-id="row-value-child.reason"]')
-      ).toHaveText('Required for registration')
+      ).toHaveText(REQUIRED_VALIDATION_ERROR)
     })
   })
 
@@ -339,7 +343,9 @@ test.describe.serial("2. Validate the child's details page", () => {
         'Residential address'
       )
 
-      await expect(page.locator('#child____address-form-input')).toBeVisible()
+      await expect(
+        page.locator('#child____address____privateHome-form-input')
+      ).toBeVisible()
     })
 
     test('2.6.2.c Select Other', async ({ page }) => {
@@ -355,7 +361,9 @@ test.describe.serial("2. Validate the child's details page", () => {
         'Other'
       )
 
-      await expect(page.locator('#child____address-form-input')).toBeVisible()
+      await expect(
+        page.locator('#child____address____other-form-input')
+      ).toBeVisible()
     })
   })
 })

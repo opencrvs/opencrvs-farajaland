@@ -10,18 +10,22 @@
  */
 
 import {
+  AddressType,
   and,
   ConditionalType,
   defineFormPage,
   FieldType,
+  never,
+  or,
+  field,
   TranslationConfig
 } from '@opencrvs/toolkit/events'
-import { field, not } from '@opencrvs/toolkit/conditionals'
+import { not } from '@opencrvs/toolkit/conditionals'
+import { createSelectOptions, emptyMessage } from '../../../utils'
 import {
-  createSelectOptions,
-  emptyMessage,
-  MAX_NAME_LENGTH
-} from '../../../utils'
+  MAX_NAME_LENGTH,
+  nationalIdValidator
+} from '@countryconfig/form/v2/birth/validators'
 import { IdType, idTypeOptions, PersonType } from '../../../person'
 
 export const InformantType = {
@@ -34,7 +38,9 @@ export const InformantType = {
   SISTER: 'SISTER',
   LEGAL_GUARDIAN: 'LEGAL_GUARDIAN'
 } as const
+export type InformantTypeKey = keyof typeof InformantType
 
+const PHONE_NUMBER_REGEX = '^0(7|9)[0-9]{8}$'
 const informantMessageDescriptors = {
   MOTHER: {
     defaultMessage: 'Mother',
@@ -83,7 +89,7 @@ const birthInformantTypeOptions = createSelectOptions(
   informantMessageDescriptors
 )
 
-const informantOtherThanParent = and(
+export const informantOtherThanParent = and(
   not(
     field('informant.relation').inArray([
       InformantType.MOTHER,
@@ -94,7 +100,7 @@ const informantOtherThanParent = and(
 )
 
 export const informant = defineFormPage({
-  id: `${PersonType.informant}`,
+  id: PersonType.informant,
   title: {
     defaultMessage: "Informant's details",
     description: 'Form section title for informants details',
@@ -128,7 +134,8 @@ export const informant = defineFormPage({
             InformantType.OTHER
           )
         }
-      ]
+      ],
+      parent: field('informant.relation')
     },
     {
       id: `${PersonType.informant}.firstname`,
@@ -145,7 +152,8 @@ export const informant = defineFormPage({
           type: ConditionalType.SHOW,
           conditional: informantOtherThanParent
         }
-      ]
+      ],
+      parent: field('informant.relation')
     },
     {
       id: `${PersonType.informant}.surname`,
@@ -162,10 +170,11 @@ export const informant = defineFormPage({
           type: ConditionalType.SHOW,
           conditional: informantOtherThanParent
         }
-      ]
+      ],
+      parent: field('informant.relation')
     },
     {
-      id: `${PersonType.informant}.dob`,
+      id: 'informant.dob',
       type: 'DATE',
       required: true,
       validation: [
@@ -175,7 +184,16 @@ export const informant = defineFormPage({
             description: 'This is the error message for invalid date',
             id: `v2.event.birth.action.declare.form.section.person.field.dob.error`
           },
-          validator: field(`${PersonType.informant}.dob`).isBefore().now()
+          validator: field('informant.dob').isBefore().now()
+        },
+        {
+          message: {
+            defaultMessage: "Birth date must be before child's birth date",
+            description:
+              'This is the error message for a birth date after child`s birth date',
+            id: `v2.event.birth.action.declare.form.section.person.dob.afterChild`
+          },
+          validator: field('informant.dob').isBefore().date(field('child.dob'))
         }
       ],
       label: {
@@ -191,7 +209,8 @@ export const informant = defineFormPage({
             informantOtherThanParent
           )
         }
-      ]
+      ],
+      parent: field('informant.relation')
     },
     {
       id: `${PersonType.informant}.dobUnknown`,
@@ -205,17 +224,22 @@ export const informant = defineFormPage({
         {
           type: ConditionalType.SHOW,
           conditional: informantOtherThanParent
+        },
+        {
+          type: ConditionalType.DISPLAY_ON_REVIEW,
+          conditional: never()
         }
-      ]
+      ],
+      parent: field('informant.relation')
     },
     {
       id: `${PersonType.informant}.age`,
       type: FieldType.TEXT,
       required: true,
       label: {
-        defaultMessage: `Age of ${PersonType.informant}`,
+        defaultMessage: 'Age of informant',
         description: 'This is the label for the field',
-        id: `v2.event.birth.action.declare.form.section.person.field.age.text.label`
+        id: 'v2.event.birth.action.declare.form.section.informant.field.age.label'
       },
       configuration: {
         postfix: {
@@ -232,7 +256,8 @@ export const informant = defineFormPage({
             informantOtherThanParent
           )
         }
-      ]
+      ],
+      parent: field('informant.relation')
     },
     {
       id: `${PersonType.informant}.nationality`,
@@ -248,7 +273,9 @@ export const informant = defineFormPage({
           type: ConditionalType.SHOW,
           conditional: informantOtherThanParent
         }
-      ]
+      ],
+      defaultValue: 'FAR',
+      parent: field('informant.relation')
     },
     {
       id: `${PersonType.informant}.idType`,
@@ -265,28 +292,42 @@ export const informant = defineFormPage({
           type: ConditionalType.SHOW,
           conditional: informantOtherThanParent
         }
-      ]
+      ],
+      parent: field('informant.relation')
     },
     {
-      id: `${PersonType.informant}.nid`,
+      id: 'informant.nid',
       type: FieldType.TEXT,
       required: true,
       label: {
         defaultMessage: 'ID Number',
         description: 'This is the label for the field',
-        id: `v2.event.birth.action.declare.form.section.person.field.nid.label`
+        id: 'v2.event.birth.action.declare.form.section.person.field.nid.label'
       },
       conditionals: [
         {
           type: ConditionalType.SHOW,
           conditional: and(
-            field(`${PersonType.informant}.idType`).isEqualTo(
-              IdType.NATIONAL_ID
-            ),
+            field('informant.idType').isEqualTo(IdType.NATIONAL_ID),
             informantOtherThanParent
           )
         }
-      ]
+      ],
+      validation: [
+        nationalIdValidator('informant.nid'),
+        {
+          message: {
+            defaultMessage: 'National id must be unique',
+            description: 'This is the error message for non-unique ID Number',
+            id: 'v2.event.birth.action.declare.form.nid.unique'
+          },
+          validator: and(
+            not(field('informant.nid').isEqualTo(field('mother.nid'))),
+            not(field('informant.nid').isEqualTo(field('father.nid')))
+          )
+        }
+      ],
+      parent: field('informant.relation')
     },
     {
       id: `${PersonType.informant}.passport`,
@@ -305,7 +346,8 @@ export const informant = defineFormPage({
             informantOtherThanParent
           )
         }
-      ]
+      ],
+      parent: field('informant.relation')
     },
     {
       id: `${PersonType.informant}.brn`,
@@ -326,7 +368,8 @@ export const informant = defineFormPage({
             informantOtherThanParent
           )
         }
-      ]
+      ],
+      parent: field('informant.relation')
     },
     {
       id: `${PersonType.informant}.addressDivider_1`,
@@ -337,7 +380,8 @@ export const informant = defineFormPage({
           type: ConditionalType.SHOW,
           conditional: informantOtherThanParent
         }
-      ]
+      ],
+      parent: field('informant.relation')
     },
     {
       id: `${PersonType.informant}.addressHelper`,
@@ -353,23 +397,32 @@ export const informant = defineFormPage({
           type: ConditionalType.SHOW,
           conditional: informantOtherThanParent
         }
-      ]
+      ],
+      parent: field('informant.relation')
     },
     {
       id: 'informant.address',
       type: FieldType.ADDRESS,
       hideLabel: true,
       label: {
-        defaultMessage: 'Child`s address',
+        defaultMessage: 'Usual place of residence',
         description: 'This is the label for the field',
-        id: 'v2.event.tennis-club-membership.action.declare.form.section.who.field.address.label'
+        id: 'v2.event.birth.action.declare.form.section.person.field.address.label'
       },
       conditionals: [
         {
           type: ConditionalType.SHOW,
           conditional: informantOtherThanParent
         }
-      ]
+      ],
+      defaultValue: {
+        country: 'FAR',
+        addressType: AddressType.DOMESTIC,
+        province: '$user.province',
+        district: '$user.district',
+        urbanOrRural: 'URBAN'
+      },
+      parent: field('informant.relation')
     },
     {
       id: 'v2.informant.address.divider.end',
@@ -380,7 +433,8 @@ export const informant = defineFormPage({
           type: ConditionalType.SHOW,
           conditional: informantOtherThanParent
         }
-      ]
+      ],
+      parent: field('informant.relation')
     },
     {
       id: 'informant.phoneNo',
@@ -390,7 +444,23 @@ export const informant = defineFormPage({
         defaultMessage: 'Phone number',
         description: 'This is the label for the field',
         id: 'v2.event.birth.action.declare.form.section.informant.field.phoneNo.label'
-      }
+      },
+      validation: [
+        {
+          message: {
+            defaultMessage:
+              'Must be a valid 10 digit number that starts with 0(7|9)',
+            description:
+              'The error message that appears on phone numbers where the first two characters must be 07 or 09, and length must be 10',
+            id: 'v2.event.birth.action.declare.form.section.informant.field.phoneNo.error'
+          },
+          validator: or(
+            field('informant.phoneNo').matches(PHONE_NUMBER_REGEX),
+            field('informant.phoneNo').isFalsy()
+          )
+        }
+      ],
+      parent: field('informant.relation')
     },
     {
       id: 'informant.email',
@@ -403,7 +473,8 @@ export const informant = defineFormPage({
       },
       configuration: {
         maxLength: 255
-      }
+      },
+      parent: field('informant.relation')
     }
   ]
 })

@@ -67,6 +67,11 @@
     state: present
     update_cache: yes
 
+- name: Ensure /etc/pam.d/sshd file exists
+  file:
+    path: /etc/pam.d/sshd
+    state: touch
+
 - name: Ensure pam_google_authenticator.so is present in /etc/pam.d/sshd
   lineinfile:
     path: /etc/pam.d/sshd
@@ -87,6 +92,12 @@
     line: '#@include common-auth'
     state: present
 
+- name: Ensure SSH server is installed
+  ansible.builtin.package:
+    name: openssh-server
+    state: present
+  become: yes
+
 - name: Check short Diffie-Hellman keys
   ansible.builtin.shell: |
     awk '$5 < 3071' /etc/ssh/moduli | grep -q .
@@ -100,7 +111,7 @@
   when: short_dh_keys.rc == 0
   become: yes
 
-# Cleanup weak server keys 
+# Cleanup weak server keys
 - name: Remove existing SSH host keys except for RSA and ED25519
   ansible.builtin.command:
     cmd: "find /etc/ssh -type f -name 'ssh_host_*' ! -name 'ssh_host_rsa_key' ! -name 'ssh_host_ed25519_key' -exec rm -f {} +"
@@ -224,7 +235,7 @@
     - ansible_facts['distribution_version'] == '24.04'
 
 - name: Check SSH config syntax
-  command: sshd -T
+  command: sudo sshd -T
   register: check_result
 
 - name: Enable logging in to the provisioning user with specified SSH keys

@@ -4,8 +4,6 @@ import {
   continueForm,
   drawSignature,
   expectAddress,
-  expectOutboxToBeEmpty,
-  formatDateObjectTo_ddMMMMyyyy,
   formatDateObjectTo_dMMMMyyyy,
   formatName,
   getAction,
@@ -15,6 +13,7 @@ import {
 } from '../../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../../constants'
+import { fillDate, validateAddress } from '../helpers'
 
 test.describe.serial('1. Birth declaration case - 1', () => {
   let page: Page
@@ -31,7 +30,12 @@ test.describe.serial('1. Birth declaration case - 1', () => {
     birthType: 'Single',
     weightAtBirth: 2.4,
     placeOfBirth: 'Health Institution',
-    birthLocation: 'Golden Valley Rural Health Centre',
+    birthLocation: {
+      facility: 'Golden Valley Rural Health Centre',
+      district: 'Ibombo',
+      province: 'Central',
+      country: 'Farajaland'
+    },
     informantType: 'Mother',
     informantEmail: faker.internet.email(),
     mother: {
@@ -116,8 +120,8 @@ test.describe.serial('1. Birth declaration case - 1', () => {
         .click()
       await page
         .locator('#child____birthLocation')
-        .fill(declaration.birthLocation.slice(0, 3))
-      await page.getByText(declaration.birthLocation).click()
+        .fill(declaration.birthLocation.facility.slice(0, 3))
+      await page.getByText(declaration.birthLocation.facility).click()
 
       await page.locator('#child____attendantAtBirth').click()
       await page
@@ -147,8 +151,6 @@ test.describe.serial('1. Birth declaration case - 1', () => {
           exact: true
         })
         .click()
-
-      await page.waitForTimeout(500) // Temporary measurement untill the bug is fixed. BUG: rerenders after selecting relation with child
 
       await page.locator('#informant____email').fill(declaration.informantEmail)
 
@@ -227,11 +229,7 @@ test.describe.serial('1. Birth declaration case - 1', () => {
         .locator('#father____surname')
         .fill(declaration.father.name.familyName)
 
-      await page.getByPlaceholder('dd').fill(declaration.father.birthDate.dd)
-      await page.getByPlaceholder('mm').fill(declaration.father.birthDate.mm)
-      await page
-        .getByPlaceholder('yyyy')
-        .fill(declaration.father.birthDate.yyyy)
+      await fillDate(page, declaration.father.birthDate)
 
       await page.locator('#father____idType').click()
       await page
@@ -306,7 +304,7 @@ test.describe.serial('1. Birth declaration case - 1', () => {
       )
       await expect(
         page.getByTestId('row-value-child.birthLocation')
-      ).toHaveText(declaration.birthLocation)
+      ).toHaveText(Object.values(declaration.birthLocation).join(', '))
 
       /*
        * Expected result: should include
@@ -411,13 +409,10 @@ test.describe.serial('1. Birth declaration case - 1', () => {
        * Expected result: should include
        * - Mother's address
        */
-      // @TODO: There is a bug on V2, where it shows an empty 'Usual place of residence' field on the review page
-      await Promise.all(
-        Object.values(declaration.mother.address).map((val) =>
-          expect(
-            page.getByTestId('row-value-mother.address').getByText(val)
-          ).toBeVisible()
-        )
+      await validateAddress(
+        page,
+        declaration.mother.address,
+        'row-value-mother.address'
       )
 
       /*
@@ -554,7 +549,7 @@ test.describe.serial('1. Birth declaration case - 1', () => {
        * - Child's date of birth
        */
       await expect(page.locator('#child-content #Date')).toContainText(
-        formatDateObjectTo_ddMMMMyyyy(declaration.child.birthDate)
+        formatDateObjectTo_dMMMMyyyy(declaration.child.birthDate)
       )
 
       /*
@@ -566,7 +561,7 @@ test.describe.serial('1. Birth declaration case - 1', () => {
         declaration.placeOfBirth
       )
       await expect(page.locator('#child-content #Place')).toContainText(
-        declaration.birthLocation
+        Object.values(declaration.birthLocation).join(', ')
       )
 
       /*
@@ -626,7 +621,7 @@ test.describe.serial('1. Birth declaration case - 1', () => {
        * - Mother's date of birth
        */
       await expect(page.locator('#mother-content #Date')).toContainText(
-        formatDateObjectTo_ddMMMMyyyy(declaration.mother.birthDate)
+        formatDateObjectTo_dMMMMyyyy(declaration.mother.birthDate)
       )
 
       /*
@@ -692,7 +687,7 @@ test.describe.serial('1. Birth declaration case - 1', () => {
        * - Father's date of birth
        */
       await expect(page.locator('#father-content #Date')).toContainText(
-        formatDateObjectTo_ddMMMMyyyy(declaration.father.birthDate)
+        formatDateObjectTo_dMMMMyyyy(declaration.father.birthDate)
       )
 
       /*

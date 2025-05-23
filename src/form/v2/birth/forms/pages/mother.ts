@@ -10,13 +10,21 @@
  */
 
 import {
+  AddressType,
   and,
   ConditionalType,
   defineFormPage,
-  FieldType
+  FieldType,
+  field,
+  PageTypes
 } from '@opencrvs/toolkit/events'
-import { field, or, not } from '@opencrvs/toolkit/conditionals'
-import { emptyMessage, MAX_NAME_LENGTH } from '../../../utils'
+import { or, not, never } from '@opencrvs/toolkit/conditionals'
+import { emptyMessage } from '@countryconfig/form/v2/utils'
+import {
+  invalidNameValidator,
+  nationalIdValidator,
+  MAX_NAME_LENGTH
+} from '@countryconfig/form/v2/birth/validators'
 import { InformantType } from './informant'
 import { IdType, idTypeOptions, PersonType } from '../../../person'
 import {
@@ -31,6 +39,7 @@ export const requireMotherDetails = or(
 
 export const mother = defineFormPage({
   id: 'mother',
+  type: PageTypes.enum.FORM,
   title: {
     defaultMessage: "Mother's details",
     description: 'Form section title for mothers details',
@@ -101,7 +110,8 @@ export const mother = defineFormPage({
           type: ConditionalType.SHOW,
           conditional: requireMotherDetails
         }
-      ]
+      ],
+      validation: [invalidNameValidator(`${PersonType.mother}.firstname`)]
     },
     {
       id: `${PersonType.mother}.surname`,
@@ -118,7 +128,8 @@ export const mother = defineFormPage({
           type: ConditionalType.SHOW,
           conditional: requireMotherDetails
         }
-      ]
+      ],
+      validation: [invalidNameValidator(`${PersonType.mother}.surname`)]
     },
     {
       id: `${PersonType.mother}.dob`,
@@ -127,11 +138,20 @@ export const mother = defineFormPage({
       validation: [
         {
           message: {
-            defaultMessage: 'Must be a valid Birthdate',
+            defaultMessage: 'Must be a valid birth date',
             description: 'This is the error message for invalid date',
             id: `v2.event.birth.action.declare.form.section.person.field.dob.error`
           },
-          validator: field(`${PersonType.mother}.dob`).isBefore().now()
+          validator: field('mother.dob').isBefore().now()
+        },
+        {
+          message: {
+            defaultMessage: "Birth date must be before child's birth date",
+            description:
+              'This is the error message for a birth date after child`s birth date',
+            id: `v2.event.birth.action.declare.form.section.person.dob.afterChild`
+          },
+          validator: field('mother.dob').isBefore().date(field('child.dob'))
         }
       ],
       label: {
@@ -161,6 +181,10 @@ export const mother = defineFormPage({
         {
           type: ConditionalType.SHOW,
           conditional: requireMotherDetails
+        },
+        {
+          type: ConditionalType.DISPLAY_ON_REVIEW,
+          conditional: never()
         }
       ]
     },
@@ -169,9 +193,9 @@ export const mother = defineFormPage({
       type: FieldType.TEXT,
       required: true,
       label: {
-        defaultMessage: `Age of ${PersonType.mother}`,
+        defaultMessage: `Age of mother`,
         description: 'This is the label for the field',
-        id: `v2.event.birth.action.declare.form.section.person.field.age.text.label`
+        id: 'v2.event.birth.action.declare.form.section.mother.field.age.label'
       },
       configuration: {
         postfix: {
@@ -225,7 +249,7 @@ export const mother = defineFormPage({
       ]
     },
     {
-      id: `${PersonType.mother}.nid`,
+      id: 'mother.nid',
       type: FieldType.TEXT,
       required: true,
       label: {
@@ -237,8 +261,22 @@ export const mother = defineFormPage({
         {
           type: ConditionalType.SHOW,
           conditional: and(
-            field(`${PersonType.mother}.idType`).isEqualTo(IdType.NATIONAL_ID),
+            field('mother.idType').isEqualTo(IdType.NATIONAL_ID),
             requireMotherDetails
+          )
+        }
+      ],
+      validation: [
+        nationalIdValidator('mother.nid'),
+        {
+          message: {
+            defaultMessage: 'National id must be unique',
+            description: 'This is the error message for non-unique ID Number',
+            id: 'v2.event.birth.action.declare.form.nid.unique'
+          },
+          validator: and(
+            not(field('mother.nid').isEqualTo(field('father.nid'))),
+            not(field('mother.nid').isEqualTo(field('informant.nid')))
           )
         }
       ]
@@ -315,9 +353,9 @@ export const mother = defineFormPage({
       type: FieldType.ADDRESS,
       hideLabel: true,
       label: {
-        defaultMessage: 'Child`s address',
+        defaultMessage: 'Usual place of residence',
         description: 'This is the label for the field',
-        id: 'v2.event.tennis-club-membership.action.declare.form.section.who.field.address.label'
+        id: 'v2.event.birth.action.declare.form.section.person.field.address.label'
       },
       conditionals: [
         {
@@ -327,10 +365,22 @@ export const mother = defineFormPage({
       ],
       defaultValue: {
         country: 'FAR',
+        addressType: AddressType.DOMESTIC,
         province: '$user.province',
         district: '$user.district',
         urbanOrRural: 'URBAN'
       }
+    },
+    {
+      id: `${PersonType.mother}.addressDivider_2`,
+      type: FieldType.DIVIDER,
+      label: emptyMessage,
+      conditionals: [
+        {
+          type: ConditionalType.SHOW,
+          conditional: requireMotherDetails
+        }
+      ]
     },
     {
       id: `${PersonType.mother}.maritalStatus`,
@@ -384,7 +434,7 @@ export const mother = defineFormPage({
     },
     {
       id: `${PersonType.mother}.previousBirths`,
-      type: FieldType.TEXT,
+      type: FieldType.NUMBER,
       required: false,
       label: {
         defaultMessage: 'No. of previous births',
@@ -396,7 +446,10 @@ export const mother = defineFormPage({
           type: ConditionalType.SHOW,
           conditional: requireMotherDetails
         }
-      ]
+      ],
+      configuration: {
+        min: 0
+      }
     }
   ]
 })

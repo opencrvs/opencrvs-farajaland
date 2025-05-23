@@ -4,8 +4,6 @@ import {
   continueForm,
   drawSignature,
   expectAddress,
-  expectOutboxToBeEmpty,
-  formatDateObjectTo_ddMMMMyyyy,
   formatDateObjectTo_dMMMMyyyy,
   formatName,
   getAction,
@@ -16,6 +14,7 @@ import {
 } from '../../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../../constants'
+import { validateAddress } from '../helpers'
 
 test.describe.serial('2. Birth declaration case - 2', () => {
   let page: Page
@@ -130,21 +129,29 @@ test.describe.serial('2. Birth declaration case - 2', () => {
         .click()
 
       await page
-        .locator('#child____address-form-input #country-form-input input')
+        .locator(
+          '#child____address____privateHome-form-input #country-form-input input'
+        )
         .fill(declaration.birthLocation.country.slice(0, 3))
       await page
-        .locator('#child____address-form-input #country-form-input')
+        .locator(
+          '#child____address____privateHome-form-input #country-form-input'
+        )
         .getByText(declaration.birthLocation.country, { exact: true })
         .click()
 
-      await page.locator('#child____address-form-input #province').click()
+      await page
+        .locator('#child____address____privateHome-form-input #province')
+        .click()
       await page
         .getByText(declaration.birthLocation.province, {
           exact: true
         })
         .click()
 
-      await page.locator('#child____address-form-input #district').click()
+      await page
+        .locator('#child____address____privateHome-form-input #district')
+        .click()
       await page
         .getByText(declaration.birthLocation.district, {
           exact: true
@@ -185,8 +192,6 @@ test.describe.serial('2. Birth declaration case - 2', () => {
           exact: true
         })
         .click()
-
-      await page.waitForTimeout(500) // Temporary measurement untill the bug is fixed. BUG: rerenders after selecting relation with child
 
       await page.locator('#informant____email').fill(declaration.informantEmail)
 
@@ -318,6 +323,7 @@ test.describe.serial('2. Birth declaration case - 2', () => {
 
       await page.getByRole('button', { name: 'Continue' }).click()
     })
+
     test('2.1.5 Go To Review', async () => {
       await goToSection(page, 'review')
     })
@@ -361,12 +367,10 @@ test.describe.serial('2. Birth declaration case - 2', () => {
         declaration.placeOfBirth
       )
 
-      await Promise.all(
-        Object.values(declaration.birthLocation).map((val) =>
-          expect(
-            page.getByTestId('row-value-child.address').getByText(val)
-          ).toBeVisible()
-        )
+      await validateAddress(
+        page,
+        declaration.birthLocation,
+        'row-value-child.address.privateHome'
       )
 
       /*
@@ -465,12 +469,10 @@ test.describe.serial('2. Birth declaration case - 2', () => {
        * Expected result: should include
        * - Mother's address
        */
-      await Promise.all(
-        Object.values(declaration.mother.address).map((val) =>
-          expect(
-            page.getByTestId('row-value-mother.address').getByText(val)
-          ).toBeVisible()
-        )
+      await validateAddress(
+        page,
+        declaration.mother.address,
+        'row-value-mother.address'
       )
 
       /*
@@ -538,12 +540,10 @@ test.describe.serial('2. Birth declaration case - 2', () => {
        * Expected result: should include
        * - Father's address
        */
-      await Promise.all(
-        Object.values(declaration.father.address).map((val) =>
-          expect(
-            page.getByTestId('row-value-father.address').getByText(val)
-          ).toBeVisible()
-        )
+      await validateAddress(
+        page,
+        declaration.father.address,
+        'row-value-father.address'
       )
     })
 
@@ -615,7 +615,7 @@ test.describe.serial('2. Birth declaration case - 2', () => {
        * - Child's date of birth
        */
       await expect(page.locator('#child-content #Date')).toContainText(
-        formatDateObjectTo_ddMMMMyyyy(declaration.child.birthDate)
+        formatDateObjectTo_dMMMMyyyy(declaration.child.birthDate)
       )
 
       /*
