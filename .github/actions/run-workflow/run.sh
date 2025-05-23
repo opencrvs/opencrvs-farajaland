@@ -2,7 +2,7 @@
 # set -euo pipefail
 
 REPO="opencrvs/opencrvs-farajaland"       # Replace with your repo
-POLL_INTERVAL=10                    # seconds
+POLL_INTERVAL=20                    # seconds
 MAX_ATTEMPTS=60                     # 10 minutes max
 
 echo "🚀 Triggering workflow $WORKFLOW on ref $REF with $WORKFLOW_ARGS..."
@@ -51,12 +51,7 @@ while [[ "$status" != "completed" && $attempt -lt $MAX_ATTEMPTS ]]; do
     ((attempt++))
     if (( attempt % 6 == 0 )); then
         ((message_counter++))
-        echo "incrementing message_counter: $message_counter"
-        if (( message_counter % 2 == 0 )); then
-            echo "⏳ Still waiting for the workflow to complete..."
-        else
-            echo "⏳ Still waiting for the workflow to complete... (2)"
-        fi
+        echo "⏳ Still waiting for the workflow to complete..."
     fi
 done
 # Get the result and output relevant summary
