@@ -352,10 +352,19 @@ export const formatName = (name: PersonOrName) => {
   return joinValuesWith([name.firstNames, name.familyName])
 }
 
-export const drawSignature = async (page: Page, v2Events = false) => {
+export const drawSignature = async (
+  page: Page,
+  v2Events = false,
+  modalLocator:
+    | 'brideSignature_modal'
+    | 'groomSignature_modal'
+    | 'witnessOneSignature_modal'
+    | 'witnessTwoSignature_modal'
+    | 'informantSignature_modal' = 'informantSignature_modal'
+) => {
   const canvasLocator = v2Events
     ? '#review____signature-form-input canvas'
-    : '#informantSignature_modal canvas'
+    : `#${modalLocator} canvas`
 
   const canvas = page.locator(canvasLocator)
   const rect = await canvas.boundingBox()
