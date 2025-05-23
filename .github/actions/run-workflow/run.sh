@@ -7,7 +7,7 @@ MAX_ATTEMPTS=60                     # 10 minutes max
 echo "🚀 Triggering workflow $WORKFLOW on ref $REF with $WORKFLOW_ARGS..."
 gh workflow run "$WORKFLOW" --repo "$REPO" --ref "$REF" $WORKFLOW_ARGS
 echo "⏳ Waiting for workflow run to be listed..."
-sleep 5
+sleep 10
 
 # Find the latest workflow run ID for the specified workflow
 attempt=0
@@ -46,6 +46,7 @@ while [[ "$status" != "completed" && $attempt -lt $MAX_ATTEMPTS ]]; do
     status=$(gh run view "$run_id" --repo "$REPO" --json status -q '.status')
     [[ "$status" == "completed" ]] && break
     sleep $POLL_INTERVAL
+    echo "looop $attempt"
     ((attempt++))
     if (( attempt % 6 == 0 )); then
         message_counter=$((message_counter + 1))
@@ -61,7 +62,7 @@ conclusion=$(gh run view "$run_id" --repo "$REPO" --json conclusion -q '.conclus
 echo "🎯 Workflow finished with conclusion: $conclusion"
 
 # Optional: print steps that failed or were skipped
-echo "📋 Step summary:"
+echo "📋 Step summary (empty of all jobs were successful):"
 gh run view "$run_id" --repo "$REPO" --json jobs -q '.jobs[].steps[] | select(.conclusion != "success") | "\(.name): \(.conclusion)"'
 
 if [[ "$conclusion" != "success" ]]; then
