@@ -49,22 +49,22 @@ jobs:
             - name: Create server ${{ vars.COUNTRY_NAME }}-${{ inputs.environment }} on Hetzner
               uses: ./.github/actions/run-workflow
               with:
-                workflow: dummy-create-server.yml
-                # workflow: create-hetzner-server.yml
+                # workflow: dummy-create-server.yml
+                workflow: create-hetzner-server.yml
                 args: -f environment=${{ inputs.environment }}
                 token: ${{ secrets.GH_TOKEN }}
             - name: Run provision server 
               uses: ./.github/actions/run-workflow
               with:
-                # workflow: provision.yml
-                workflow: dummy-provision.yml
+                workflow: provision.yml
+                # workflow: dummy-provision.yml
                 args: -f environment=${{ inputs.environment }}
                 token: ${{ secrets.GH_TOKEN }}
             - name: Run deployment on ${{ inputs.environment }}
               uses: ./.github/actions/run-workflow
               with:
-                workflow: dummy-deploy.yml
-                # workflow: deploy.yml
+                # workflow: dummy-deploy.yml
+                workflow: deploy.yml
                 args: |
                   -f environment=${{ inputs.environment }} \
                   -f core-image-tag=${{ steps.setvars.outputs.core_tag }} \
@@ -73,8 +73,8 @@ jobs:
             - name: Seeding data to ${{ inputs.environment }}
               uses: ./.github/actions/run-workflow
               with:
-                workflow: dummy-seed.yml
-                # workflow: seed-data.yml
+                # workflow: dummy-seed.yml
+                workflow: seed-data.yml
                 args: |
                   -f environment=${{ inputs.environment }} \
                   -f core-image-tag=${{ steps.setvars.outputs.core_tag }}
