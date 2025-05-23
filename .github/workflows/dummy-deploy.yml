@@ -57,6 +57,8 @@ jobs:
     steps:
         - name: Test variables
           run: |
+            echo "sleeping for 2 minutes"
+            sleep 120
             echo "environment: ${{ inputs.environment }}"
             echo "core tag: ${{ inputs.core-image-tag }}"
             echo "country tag: ${{ inputs.countryconfig-image-tag }}"
