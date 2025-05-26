@@ -25,6 +25,7 @@ on:
           - tmpstg
           - tmp-prod
           - tmp1
+          - tmp2
 jobs:
   reset-data:
     name: 'Reset data'

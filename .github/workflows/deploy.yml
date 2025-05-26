@@ -45,6 +45,7 @@ on:
           - tmpstg
           - tmp-prod
           - tmp1
+          - tmp2
       core-image-tag:
         description: Core image tag
         required: true
