@@ -5,7 +5,7 @@
 # core_image_tag: OpenCRVS core image tag
 # Country config will be provisioned from latest commit to release branch
 name: Release - Provision Environment
-run-name: Provision ${{ inputs.environment }} release environment
+run-name: "Provision ${{ inputs.environment }} release environment (core: ${{ inputs.core_image_tag }})"
 on:
     workflow_dispatch:
         inputs:
