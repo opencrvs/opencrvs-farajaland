@@ -48,26 +48,26 @@ jobs:
       with:
         environment: ${{ inputs.environment }}
       secrets: inherit
-    check-countryconfig:
-      runs-on: ubuntu-24.04
-      needs: [verify-branch, create-server]
-      environment: ${{ inputs.environment }}
-      outputs:
-        image_tag: ${{ steps.get_latest_commit.outputs.config_tag }}
-      steps:
-          - name: Checkout repo ${{ github.repository }}
-            uses: actions/checkout@v4
-          - name: Get latest commit SHA
-            id: get_latest_commit
-            run: echo "config_tag=$(git rev-parse HEAD | cut -c 1-7)" >> $GITHUB_OUTPUT
+    # check-countryconfig:
+    #   runs-on: ubuntu-24.04
+    #   needs: [verify-branch, create-server]
+    #   environment: ${{ inputs.environment }}
+    #   outputs:
+    #     image_tag: ${{ steps.get_latest_commit.outputs.config_tag }}
+    #   steps:
+    #       - name: Checkout repo ${{ github.repository }}
+    #         uses: actions/checkout@v4
+    #       - name: Get latest commit SHA
+    #         id: get_latest_commit
+    #         run: echo "config_tag=$(git rev-parse HEAD | cut -c 1-7)" >> $GITHUB_OUTPUT
     deploy:
-      needs: [verify-branch, provision-server, check-countryconfig]
+      needs: [verify-branch, provision-server, create-server]
       # uses: ./.github/workflows/dummy-deploy.yml
       uses: ./.github/workflows/deploy.yml
       with:
         environment: ${{ inputs.environment }}
         core-image-tag: ${{ inputs.core_image_tag }}
-        countryconfig-image-tag: ${{ needs.check-countryconfig.outputs.image_tag }}
+        countryconfig-image-tag: ${{ needs.create-server.outputs.config_tag }}
       secrets: inherit
     seed-data:
       needs: [deploy]
