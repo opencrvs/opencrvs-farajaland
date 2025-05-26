@@ -120,15 +120,12 @@ jobs:
         env:
           SSH_HOST: ${{ steps.output.outputs.ssh_host }}
           HOSTNAME: ${{ steps.output.outputs.hostname }}
-          # TODO: Fix hardcoded domain
         run: |
-          [ ! -f infrastructure/server-setup/inventory/${{ inputs.environment }}.yml ] && \
-          (cat infrastructure/provision-server/templates/single-node-ansible-env.yml | \
+          cat infrastructure/provision-server/templates/single-node-ansible-env.yml | \
           sed -e "s#HOSTNAME#$HOSTNAME#" \
               -e "s#SSH_HOST#$SSH_HOST#" \
               > infrastructure/server-setup/inventory/${{ inputs.environment }}.yml && \
-          echo "Environment file created: infrastructure/server-setup/inventory/${{ inputs.environment }}.yml") || \
-          echo "infrastructure/server-setup/inventory/${{ inputs.environment }}.yml already exists"
+          echo "Environment file created: infrastructure/server-setup/inventory/${{ inputs.environment }}.yml"
       - name: Create docker compose
         run: |
           [ ! -f infrastructure/docker-compose.${{ inputs.environment }}-deploy.yml ] && \
