@@ -62,7 +62,9 @@ jobs:
             run: |
               git pull
               git status
-              echo "config_tag=$(git rev-parse HEAD | cut -c 1-7)" >> $GITHUB_OUTPUT
+              config_tag=$(git rev-parse HEAD | cut -c 1-7)
+              echo "Latest commit SHA: $config_tag"
+              echo "config_tag=$config_tag" >> $GITHUB_OUTPUT
     deploy:
       needs: [verify-branch, provision-server, check-countryconfig, create-server]
       # uses: ./.github/workflows/dummy-deploy.yml
@@ -70,7 +72,7 @@ jobs:
       with:
         environment: ${{ inputs.environment }}
         core-image-tag: ${{ inputs.core_image_tag }}
-        countryconfig-image-tag: ${{ needs.check-countryconfig.outputs.config_tag }}
+        countryconfig-image-tag: ${{ needs.check-countryconfig.outputs.image_tag }}
       secrets: inherit
     seed-data:
       needs: [deploy]
