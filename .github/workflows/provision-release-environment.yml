@@ -67,8 +67,8 @@ jobs:
               echo "config_tag=$config_tag" >> $GITHUB_OUTPUT
     deploy:
       needs: [verify-branch, provision-server, check-countryconfig, create-server]
-      # uses: ./.github/workflows/dummy-deploy.yml
-      uses: ./.github/workflows/deploy.yml
+      uses: ./.github/workflows/dummy-deploy.yml
+      # uses: ./.github/workflows/deploy.yml
       with:
         environment: ${{ inputs.environment }}
         core-image-tag: ${{ inputs.core_image_tag }}
