@@ -43,8 +43,8 @@ jobs:
       # steps.get_latest_commit.outputs.config_tag
     provision-server:
       needs: [verify-branch, create-server]
-      uses: ./.github/workflows/dummy-provision.yml
-      # uses: ./.github/workflows/provision.yml
+      # uses: ./.github/workflows/dummy-provision.yml
+      uses: ./.github/workflows/provision.yml
       with:
         environment: ${{ inputs.environment }}
       secrets: inherit
