@@ -76,8 +76,8 @@ jobs:
       secrets: inherit
     seed-data:
       needs: [deploy, check-countryconfig]
-      uses: ./.github/workflows/dummy-seed.yml
-      # uses: ./.github/workflows/seed-data.yml
+      # uses: ./.github/workflows/dummy-seed.yml
+      uses: ./.github/workflows/seed-data.yml
       with:
         environment: ${{ inputs.environment }}
         core-image-tag: ${{ inputs.core_image_tag }}
