@@ -219,8 +219,6 @@ services:
   mongo-on-update:
     image: mongo:4.4
     command: bash /on-deploy.sh
-    depends_on:
-      - mongo1
     configs:
       - source: mongo-on-deploy.{{ts}}
         target: /on-deploy.sh
@@ -499,8 +497,6 @@ services:
         tag: 'influxdb'
   # Configure webapps and add traefik config
   client:
-    depends_on:
-      - migration
     environment:
       - DECLARED_DECLARATION_SEARCH_QUERY_COUNT=100
       - COUNTRY_CONFIG_URL=https://countryconfig.{{hostname}}
@@ -538,8 +534,6 @@ services:
         tag: 'client'
 
   countryconfig:
-    depends_on:
-      - migration
     deploy:
       labels:
         - 'traefik.enable=true'
@@ -605,8 +599,6 @@ services:
         gelf-address: 'udp://127.0.0.1:12201'
         tag: 'countryconfig'
   login:
-    depends_on:
-      - migration
     environment:
       - COUNTRY_CONFIG_URL=https://countryconfig.{{hostname}}
       - CONTENT_SECURITY_POLICY_WILDCARD=${CONTENT_SECURITY_POLICY_WILDCARD}
@@ -636,8 +628,6 @@ services:
         tag: 'login'
   # Configure other service with deployment specifc details
   auth:
-    depends_on:
-      - migration
     secrets:
       - jwt-public-key.{{ts}}
       - jwt-private-key.{{ts}}
@@ -677,8 +667,6 @@ services:
         gelf-address: 'udp://127.0.0.1:12201'
         tag: 'auth'
   user-mgnt:
-    depends_on:
-      - migration
     secrets:
       - jwt-public-key.{{ts}}
     environment:
@@ -700,8 +688,6 @@ services:
         gelf-address: 'udp://127.0.0.1:12201'
         tag: 'user-mgnt'
   events:
-    depends_on:
-      - migration
     secrets:
       - jwt-public-key.{{ts}}
     environment:
@@ -743,8 +729,6 @@ services:
         gelf-address: 'udp://127.0.0.1:12201'
         tag: 'notification'
   gateway:
-    depends_on:
-      - migration
     secrets:
       - jwt-public-key.{{ts}}
     environment:
@@ -784,8 +768,6 @@ services:
         gelf-address: 'udp://127.0.0.1:12201'
         tag: 'gateway'
   workflow:
-    depends_on:
-      - migration
     secrets:
       - jwt-public-key.{{ts}}
     environment:
@@ -829,8 +811,6 @@ services:
         gelf-address: 'udp://127.0.0.1:12201'
         tag: 'search'
   metrics:
-    depends_on:
-      - migration
     secrets:
       - jwt-public-key.{{ts}}
     volumes:
@@ -858,8 +838,6 @@ services:
         gelf-address: 'udp://127.0.0.1:12201'
         tag: 'metrics'
   scheduler:
-    depends_on:
-      - migration
     environment:
       - NODE_ENV=production
       - OPENHIM_MONGO_URL=mongodb://openhim:${OPENHIM_MONGODB_PASSWORD}@mongo1/openhim-dev?replicaSet=rs0
@@ -875,8 +853,6 @@ services:
         gelf-address: 'udp://127.0.0.1:12201'
         tag: 'scheduler'
   documents:
-    depends_on:
-      - migration
     deploy:
       replicas: 1
       labels:
@@ -901,8 +877,6 @@ services:
         gelf-address: 'udp://127.0.0.1:12201'
         tag: 'documents'
   config:
-    depends_on:
-      - migration
     secrets:
       - jwt-public-key.{{ts}}
     environment:
@@ -942,15 +916,6 @@ services:
         gelf-address: 'udp://127.0.0.1:12201'
         tag: 'config'
   migration:
-    depends_on:
-      - mongo1
-      - mongo-on-update
-      # :
-      #     condition: service_completed_successfully
-      - elasticsearch
-      - minio
-      - influxdb
-      - redis
     environment:
       - USER_MGNT_MONGO_URL=mongodb://user-mgnt:${USER_MGNT_MONGODB_PASSWORD}@mongo1/user-mgnt?replicaSet=rs0
       - DASHBOARD_MONGO_URL=mongodb://performance:${PERFORMANCE_MONGODB_PASSWORD}@mongo1/performance?replicaSet=rs0
@@ -987,9 +952,6 @@ services:
       labels:
         - 'traefik.enable=false'
       replicas: 1
-    depends_on:
-      - mongo1
-      - mongo-on-update
     secrets:
       - jwt-public-key.{{ts}}
     configs:
@@ -1006,8 +968,6 @@ services:
         tag: 'hearth'
 
   webhooks:
-    depends_on:
-      - migration
     secrets:
       - jwt-public-key.{{ts}}
     environment:
@@ -1043,8 +1003,6 @@ services:
         tag: 'webhooks'
 
   dashboards:
-    depends_on:
-      - migration
     volumes:
       # Exceed Docker config file 500 kb file limit, thus a volume mount
       - /opt/opencrvs/infrastructure/metabase/metabase.init.db.sql:/metabase.init.db.sql
