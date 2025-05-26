@@ -26,6 +26,7 @@ on:
           - tmp-prod
           - tmp1
           - tmp2
+          - v19
 jobs:
   reset-data:
     name: 'Reset data'
