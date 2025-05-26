@@ -40,10 +40,6 @@ jobs:
   create-environment:
     name: Create New HCloud Environment
     runs-on: ubuntu-24.04
-    outputs:
-      ssh_host: ${{ steps.output.outputs.ssh_host }}
-      hostname: ${{ steps.output.outputs.hostname }}
-      countryconfig-image-tag: ${{ steps.get_latest_commit.outputs.config_tag }}
     environment: ${{ github.event.inputs.environment }}
     steps:
       - name: Checkout repo ${{ github.repository }}
@@ -213,9 +209,3 @@ jobs:
           git status
           git commit -m "Add environment file for ${{ github.event.inputs.environment }}"
           git push
-      - name: Get latest commit SHA
-        id: get_latest_commit
-        run: |
-          config_tag=$(git rev-parse HEAD | cut -c 1-7)
-          echo "Latest commit SHA: $config_tag"
-          echo "config_tag=$config_tag" >> $GITHUB_OUTPUT
