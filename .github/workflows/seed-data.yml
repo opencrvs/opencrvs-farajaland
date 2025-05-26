@@ -37,10 +37,10 @@ jobs:
   seed-data:
     environment: ${{ github.event.inputs.environment }}
     runs-on: ubuntu-24.04
-    outputs:
-      outcome: ${{ steps.seed.outcome }}
     timeout-minutes: 60
     steps:
+      - run: |
+          echo "Seeding data to ${{ github.event.inputs.environment }} environment with core image tag: ${{ github.event.inputs.core-image-tag }}"
       - name: Pull the seed-data image
         run: docker pull ghcr.io/opencrvs/ocrvs-data-seeder:${{ github.event.inputs.core-image-tag }}
       - name: Run docker container
