@@ -43,23 +43,17 @@ jobs:
       # steps.get_latest_commit.outputs.config_tag
     provision-server:
       needs: [verify-branch, create-server]
-      # uses: ./.github/workflows/dummy-provision.yml
-      uses: ./.github/workflows/provision.yml
+      uses: ./.github/workflows/dummy-provision.yml
+      # uses: ./.github/workflows/provision.yml
       with:
         environment: ${{ inputs.environment }}
       secrets: inherit
-    # check-countryconfig:
-    #   runs-on: ubuntu-24.04
-    #   needs: [verify-branch, create-server]
-    #   environment: ${{ inputs.environment }}
-    #   outputs:
-    #     image_tag: ${{ steps.get_latest_commit.outputs.config_tag }}
-    #   steps:
-    #       - name: Checkout repo ${{ github.repository }}
-    #         uses: actions/checkout@v4
-    #       - name: Get latest commit SHA
-    #         id: get_latest_commit
-    #         run: echo "config_tag=$(git rev-parse HEAD | cut -c 1-7)" >> $GITHUB_OUTPUT
+    verify-tag:
+      needs: [verify-branch, provision-server, create-server]
+      runs-on: ubuntu-24.04
+      steps:
+      - name: Verify country config image tag
+        run: "echo countryconfig-image-tag: ${{ needs.create-server.outputs.config_tag }}"
     deploy:
       needs: [verify-branch, provision-server, create-server]
       # uses: ./.github/workflows/dummy-deploy.yml
