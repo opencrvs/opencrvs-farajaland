@@ -6,7 +6,7 @@ on:
         environment:
           description: "Short server name (3–5 letters)"
           required: true
-        env_type:
+        type:
           description: "Environment type (single or multi node)"
           required: false
           type: choice
