@@ -30,7 +30,7 @@ env:
   TF_VAR_hcloud_token: ${{ secrets.HCLOUD_TOKEN }}
   TF_VAR_country_name: ${{ vars.COUNTRY_NAME }}
   TF_VAR_env_name: ${{ github.event.inputs.environment }}
-  TF_VAR_env_type: "${{ github.event.inputs.type }}"
+  TF_VAR_env_type: "${{ github.event.inputs.type || 'single-node' }}"
   TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
   TF_VAR_cloudflare_zone_id: ${{ secrets.CLOUDFLARE_ZONE_ID }}
   TERRAFORM_REPO: opencrvs/terraform-state
