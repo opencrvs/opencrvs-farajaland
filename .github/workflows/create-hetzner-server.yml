@@ -1,5 +1,5 @@
 name: Create Hetzner Server
-run-name: Create server for ${{ inputs.environment }} environment
+run-name: Create server for ${{ github.event.inputs.environment }} environment
 on:
     workflow_dispatch:
       inputs:
@@ -29,8 +29,8 @@ env:
   TF_PATH: infrastructure/provision-server/hetzner-cloud-empty-server
   TF_VAR_hcloud_token: ${{ secrets.HCLOUD_TOKEN }}
   TF_VAR_country_name: ${{ vars.COUNTRY_NAME }}
-  TF_VAR_env_name: ${{ inputs.environment }}
-  TF_VAR_env_type: "${{ inputs.type }}"
+  TF_VAR_env_name: ${{ github.event.inputs.environment }}
+  TF_VAR_env_type: "${{ github.event.inputs.type }}"
   TF_VAR_cloudflare_api_token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
   TF_VAR_cloudflare_zone_id: ${{ secrets.CLOUDFLARE_ZONE_ID }}
   TERRAFORM_REPO: opencrvs/terraform-state
@@ -43,7 +43,7 @@ jobs:
     outputs:
       ssh_host: ${{ steps.output.outputs.ssh_host }}
       hostname: ${{ steps.output.outputs.hostname }}
-    environment: ${{ inputs.environment }}
+    environment: ${{ github.event.inputs.environment }}
     steps:
       - name: Checkout repo ${{ github.repository }}
         uses: actions/checkout@v4
@@ -78,8 +78,8 @@ jobs:
       - name: Restore terraform state
         run: |
           mkdir -p terraform-state/${{ vars.COUNTRY_NAME }}
-          [ -f terraform-state/${{ vars.COUNTRY_NAME }}/${{ inputs.environment }}-${{ env.type }}.tfstate ] && \
-          cp terraform-state/${{ vars.COUNTRY_NAME }}/${{ inputs.environment }}-${{ env.type }}.tfstate ${{ env.TF_PATH }}/terraform.tfstate || \
+          [ -f terraform-state/${{ vars.COUNTRY_NAME }}/${{ github.event.inputs.environment }}-${{ env.type }}.tfstate ] && \
+          cp terraform-state/${{ vars.COUNTRY_NAME }}/${{ github.event.inputs.environment }}-${{ env.type }}.tfstate ${{ env.TF_PATH }}/terraform.tfstate || \
           echo "Terraform state file not found. Creating a new one."
 
       - name: Setup Terraform
@@ -109,11 +109,11 @@ jobs:
   
       - name: Update terraform state file in ${{ env.TERRAFORM_REPO }}
         run: |
-          cp ${{ env.TF_PATH }}/terraform.tfstate terraform-state/${{ vars.COUNTRY_NAME }}/${{ inputs.environment }}-${{ env.type }}.tfstate
+          cp ${{ env.TF_PATH }}/terraform.tfstate terraform-state/${{ vars.COUNTRY_NAME }}/${{ github.event.inputs.environment }}-${{ env.type }}.tfstate
           cd terraform-state/
           if [[ -n "$(git status --porcelain)" ]]; then
-            git add ${{ vars.COUNTRY_NAME }}/${{ inputs.environment }}-${{ env.type }}.tfstate
-            git commit -m "Add environment file for ${{ inputs.environment }} env with type ${{ env.type }}"
+            git add ${{ vars.COUNTRY_NAME }}/${{ github.event.inputs.environment }}-${{ env.type }}.tfstate
+            git commit -m "Add environment file for ${{ github.event.inputs.environment }} env with type ${{ env.type }}"
             git push
           else
             echo "No changes to commit"
@@ -125,17 +125,17 @@ jobs:
           HOSTNAME: ${{ steps.output.outputs.hostname }}
           # TODO: Fix hardcoded domain
         run: |
-          [ ! -f infrastructure/server-setup/inventory/${{ inputs.environment }}.yml ] && \
+          [ ! -f infrastructure/server-setup/inventory/${{ github.event.inputs.environment }}.yml ] && \
           (cat infrastructure/provision-server/templates/single-node-ansible-env.yml | \
           sed -e "s#HOSTNAME#$HOSTNAME#" \
               -e "s#SSH_HOST#$SSH_HOST#" \
-              > infrastructure/server-setup/inventory/${{ inputs.environment }}.yml && \
-          echo "Environment file created: infrastructure/server-setup/inventory/${{ inputs.environment }}.yml") || \
-          echo "infrastructure/server-setup/inventory/${{ inputs.environment }}.yml already exists"
+              > infrastructure/server-setup/inventory/${{ github.event.inputs.environment }}.yml && \
+          echo "Environment file created: infrastructure/server-setup/inventory/${{ github.event.inputs.environment }}.yml") || \
+          echo "infrastructure/server-setup/inventory/${{ github.event.inputs.environment }}.yml already exists"
       - name: Create docker compose
         run: |
-          [ ! -f infrastructure/docker-compose.${{ inputs.environment }}-deploy.yml ] && \
-          cp infrastructure/provision-server/templates/docker-compose.single-node.yml infrastructure/docker-compose.${{ inputs.environment }}-deploy.yml && \
+          [ ! -f infrastructure/docker-compose.${{ github.event.inputs.environment }}-deploy.yml ] && \
+          cp infrastructure/provision-server/templates/docker-compose.single-node.yml infrastructure/docker-compose.${{ github.event.inputs.environment }}-deploy.yml && \
           echo "Docker-compose created" || \
           echo "Docker-compose already exists"
 
@@ -150,21 +150,21 @@ jobs:
           path=".on.workflow_dispatch.inputs.environment.options"
 
           # Check if option already exists in first workflows file
-          if ! yq e "$path" "$workflows" | grep -qc "${{ inputs.environment }}"; then
-            echo "Adding new option '${{ inputs.environment }}' to workflows: ${workflows[@]}"
+          if ! yq e "$path" "$workflows" | grep -qc "${{ github.event.inputs.environment }}"; then
+            echo "Adding new option '${{ github.event.inputs.environment }}' to workflows: ${workflows[@]}"
             for workflow in ${workflows[@]}
             do
-              yq e "$path += [\"${{ inputs.environment }}\"]" -i "$workflow"
+              yq e "$path += [\"${{ github.event.inputs.environment }}\"]" -i "$workflow"
               echo "Updated workflow $workflow"
             done
           else
-            echo "Option '${{ inputs.environment }}' already exists in workflows ${workflows[@]}"
+            echo "Option '${{ github.event.inputs.environment }}' already exists in workflows ${workflows[@]}"
           fi
 
       - env:
           SSH_HOST: ${{ steps.output.outputs.ssh_host }}
           HOSTNAME: ${{ steps.output.outputs.hostname }}
-          DOMAIN: ${{ inputs.environment }}.opencrvs.dev
+          DOMAIN: ${{ github.event.inputs.environment }}.opencrvs.dev
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         name: Create environment variables and secrets on GitHub
         run: |
@@ -178,7 +178,7 @@ jobs:
               key=$(echo "$line" | cut -d '=' -f 1)
               value=$(echo "$line" | cut -d '=' -f 2-)
               echo "Adding variable: $key"
-              gh variable set --env ${{ inputs.environment }} $key --body "$value"
+              gh variable set --env ${{ github.event.inputs.environment }} $key --body "$value"
             fi
           done < infrastructure/environment.variables
           while read line; do
@@ -186,15 +186,15 @@ jobs:
               key=$(echo "$line" | cut -d '=' -f 1)
               value=$(echo "$line" | cut -d '=' -f 2-)
               echo "Adding secret with value: $key"
-              gh secret set $key --env ${{ inputs.environment }} --body "$value"
+              gh secret set $key --env ${{ github.event.inputs.environment }} --body "$value"
             else
               key=$line
               password=`openssl rand -base64 25 | tr -cd '[:alnum:]._-' ; echo ''`
               echo "Adding secret: $key"
-              gh secret set $key --env ${{ inputs.environment }} --body "$password"
+              gh secret set $key --env ${{ github.event.inputs.environment }} --body "$password"
             fi
           done < infrastructure/provision-server/templates/environment.secrets.tpl
-          gh secret set SSH_KEY --env ${{ inputs.environment }} < $TF_PATH/.ssh/id_rsa || echo "Failed"
+          gh secret set SSH_KEY --env ${{ github.event.inputs.environment }} < $TF_PATH/.ssh/id_rsa || echo "Failed"
       - name: Update known-hosts
         env:
           SSH_HOST: ${{ steps.output.outputs.ssh_host }}
@@ -205,10 +205,10 @@ jobs:
   
       - name: Commit and push changes to ${{ github.repository }}
         run: |
-          git add infrastructure/server-setup/inventory/${{ inputs.environment }}.yml \
+          git add infrastructure/server-setup/inventory/${{ github.event.inputs.environment }}.yml \
                   infrastructure/known-hosts \
                   .github \
-                  infrastructure/docker-compose.${{ inputs.environment }}-deploy.yml
+                  infrastructure/docker-compose.${{ github.event.inputs.environment }}-deploy.yml
           git status
-          git commit -m "Add environment file for ${{ inputs.environment }}"
+          git commit -m "Add environment file for ${{ github.event.inputs.environment }}"
           git push
