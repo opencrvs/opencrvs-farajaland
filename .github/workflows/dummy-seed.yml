@@ -1,5 +1,5 @@
-name: X - Seed data
-run-name: Seed data to ${{ inputs.environment }} core=${{ inputs.core-image-tag }}
+name: Seed data
+run-name: Seed data to ${{ github.event.inputs.environment }} core=${{ github.event.inputs.core-image-tag }}
 on:
   workflow_call:
     inputs:
@@ -22,9 +22,16 @@ on:
           - staging
           - production
           - e2e
-          - v17
+          - v19
+          - release-v16
+          - tmpdev
+          - tmpqa
+          - tmpstg
+          - tmp-prod
+          - tmp1
+          - tmp2
       core-image-tag:
-        description: Core image tag
+        description: Core DockerHub image tag
         required: true
 jobs:
   test:
