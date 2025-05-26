@@ -215,4 +215,7 @@ jobs:
           git push
       - name: Get latest commit SHA
         id: get_latest_commit
-        run: echo "config_tag=$(git rev-parse HEAD | cut -c 1-7)" >> $GITHUB_OUTPUT
+        run: |
+          config_tag=$(git rev-parse HEAD | cut -c 1-7)
+          echo "Latest commit SHA: $config_tag"
+          echo "config_tag=$config_tag" >> $GITHUB_OUTPUT
