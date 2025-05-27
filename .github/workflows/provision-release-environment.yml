@@ -23,8 +23,6 @@ jobs:
       runs-on: ubuntu-24.04
       steps:
       - name: Fail if not on release branch
-        # TODO: Before MERGE DON'T FORGET
-        # Delete condition: [[ "${{ github.ref }}" != refs/heads/ocrvs-9393-uber-pipeline ]]
         run: |
           echo "Current ref name: ${{ github.ref_name }} and ref: ${{ github.ref }}"
           if [[ "${{ github.ref }}" != refs/heads/release/* ]] && [[ "${{ github.ref }}" != refs/heads/ocrvs-9393-uber-pipeline ]]
@@ -35,15 +33,12 @@ jobs:
           fi
     create-server:
       needs: verify-branch
-      # uses: ./.github/workflows/dummy-create-server.yml
       uses: ./.github/workflows/create-hetzner-server.yml
       with:
         environment: ${{ inputs.environment }}
       secrets: inherit
-      # steps.get_latest_commit.outputs.config_tag
     provision-server:
       needs: [verify-branch, create-server]
-      # uses: ./.github/workflows/dummy-provision.yml
       uses: ./.github/workflows/provision.yml
       with:
         environment: ${{ inputs.environment }}
@@ -67,7 +62,6 @@ jobs:
               echo "config_tag=$config_tag" >> $GITHUB_OUTPUT
     deploy:
       needs: [verify-branch, provision-server, check-countryconfig, create-server]
-      # uses: ./.github/workflows/dummy-deploy.yml
       uses: ./.github/workflows/deploy.yml
       with:
         environment: ${{ inputs.environment }}
@@ -75,10 +69,3 @@ jobs:
         countryconfig-image-tag: ${{ needs.check-countryconfig.outputs.image_tag }}
         reset: 'true'
       secrets: inherit
-    # seed-data:
-    #   needs: [deploy, check-countryconfig]
-    #   uses: ./.github/workflows/dummy-seed.yml
-    #   # uses: ./.github/workflows/seed-data.yml
-    #   with:
-    #     environment: ${{ inputs.environment }}
-    #     core-image-tag: ${{ inputs.core_image_tag }}
