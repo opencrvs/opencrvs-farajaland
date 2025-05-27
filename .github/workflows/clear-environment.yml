@@ -21,6 +21,7 @@ on:
           - qa
           - development
           - tmp1
+          - tmp2
 jobs:
   reset-data:
     name: 'Reset data'

@@ -28,6 +28,7 @@ on:
           - e2e
           - v19
           - tmp1
+          - tmp2
       tag:
         type: choice
         description: Select group tag you want to execute
