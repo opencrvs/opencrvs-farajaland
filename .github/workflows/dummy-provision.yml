@@ -1,4 +1,4 @@
-name: Provision environment
+name: X - Provision environment
 run-name: Provision ${{ github.event.inputs.environment }}
 on:
   workflow_dispatch:
@@ -17,6 +17,7 @@ on:
           - jump
           - e2e
           - v17
+          - v19
       tag:
         type: choice
         description: Select group tag you want to execute
@@ -55,8 +56,13 @@ on:
 jobs:
   test:
     runs-on: ubuntu-24.04
+    environment: ${{ inputs.environment }}
     steps:
         - name: Test variables
           run: |
-            echo "environment: ${{ github.event.inputs.environment }}"
-            echo "tag: ${{ github.event.inputs.tag }}"
+            echo "environment: ${{ inputs.environment }}"
+            echo "tag: ${{ inputs.tag }}"
+            echo "repository: ${{ github.event.repository.name }}"
+            echo "repository: ${{ github.event.repository.full_name }}"
+            echo "github.repository: ${{ github.repository }}"
+            echo "CUSTOM BRANCH: ${{ github.ref_name }}"
