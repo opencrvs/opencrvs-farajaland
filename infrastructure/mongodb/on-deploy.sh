@@ -33,6 +33,12 @@ for (( i=1; i<=REPLICAS; i++ )); do
   fi
   WAIT_HOSTS="${WAIT_HOSTS}mongo${i}:27017"
 done
+export WAIT_HOSTS
+
+export WAIT_AFTER=30
+
+echo "Waiting for MongoDB replicas: $WAIT_HOSTS"
+/wait
 
 
 mongo_credentials() {
