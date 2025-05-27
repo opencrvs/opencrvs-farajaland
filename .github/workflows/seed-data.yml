@@ -25,6 +25,7 @@ on:
           - v19
           - tmp1
           - tmp2
+          - tmp3
       core-image-tag:
         description: Core DockerHub image tag
         required: true

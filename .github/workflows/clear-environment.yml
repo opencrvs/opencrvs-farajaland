@@ -22,6 +22,7 @@ on:
           - development
           - tmp1
           - tmp2
+          - tmp3
 jobs:
   reset-data:
     name: 'Reset data'

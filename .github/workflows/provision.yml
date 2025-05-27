@@ -29,6 +29,7 @@ on:
           - v19
           - tmp1
           - tmp2
+          - tmp3
       tag:
         type: choice
         description: Select group tag you want to execute
