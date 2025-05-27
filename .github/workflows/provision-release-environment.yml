@@ -24,10 +24,10 @@ jobs:
       steps:
       - name: Fail if not on release branch
         # TODO: Before MERGE DON'T FORGET
-        # Delete condition: [[ "${{ github.ref }}" != refs/heads/ocrvs-9393-uber-workflow ]]
+        # Delete condition: [[ "${{ github.ref }}" != refs/heads/ocrvs-9393-one-workflow ]]
         run: |
           echo "Current ref name: ${{ github.ref_name }} and ref: ${{ github.ref }}"
-          if [[ "${{ github.ref }}" != refs/heads/release/* ]] && [[ "${{ github.ref }}" != refs/heads/ocrvs-9393-uber-workflow ]]
+          if [[ "${{ github.ref }}" != refs/heads/release/* ]] && [[ "${{ github.ref }}" != refs/heads/ocrvs-9393-one-workflow ]]
           then
               echo "❌ This workflow must be run from a release/* branch."
               echo "Please check release documentation for more information: TODO: Add link to documentation"
