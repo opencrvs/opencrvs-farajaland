@@ -37,12 +37,6 @@ jobs:
       with:
         environment: ${{ inputs.environment }}
       secrets: inherit
-    provision-server:
-      needs: [verify-branch, create-server]
-      uses: ./.github/workflows/provision.yml
-      with:
-        environment: ${{ inputs.environment }}
-      secrets: inherit
     check-countryconfig:
       runs-on: ubuntu-24.04
       needs: [verify-branch, create-server]
@@ -60,6 +54,12 @@ jobs:
               config_tag=$(git rev-parse HEAD | cut -c 1-7)
               echo "Latest commit SHA: $config_tag"
               echo "config_tag=$config_tag" >> $GITHUB_OUTPUT
+    provision-server:
+      needs: [verify-branch, create-server, check-countryconfig]
+      uses: ./.github/workflows/provision.yml
+      with:
+        environment: ${{ inputs.environment }}
+      secrets: inherit
     deploy:
       needs: [verify-branch, provision-server, check-countryconfig, create-server]
       uses: ./.github/workflows/deploy.yml
