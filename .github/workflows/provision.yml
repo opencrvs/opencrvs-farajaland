@@ -30,6 +30,7 @@ on:
           - tmp1
           - tmp2
           - tmp3
+          - tmp4
       tag:
         type: choice
         description: Select group tag you want to execute
