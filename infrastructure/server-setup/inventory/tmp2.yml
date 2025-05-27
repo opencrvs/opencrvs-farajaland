@@ -71,7 +71,7 @@ all:
 docker-manager-first:
   hosts:
     farajaland-tmp2:
-      ansible_host: '138.199.236.19'
+      ansible_host: '188.245.88.47'
       data_label: data1
 
 docker-workers: {}
