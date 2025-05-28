@@ -75,7 +75,7 @@ while [[ $ATTEMPT -le $MAX_RETRIES ]]; do
         echo "✅ Replica set initiated successfully."
     fi
 
-    echo "❌ Failed to initiate replica set. Retrying in $DELAY seconds..."
+    echo "⏳ Failed to initiate replica set. Retrying in $DELAY seconds..."
     sleep $DELAY
     ((ATTEMPT++))
 done
