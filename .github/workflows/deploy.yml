@@ -43,6 +43,7 @@ on:
           - tmp2
           - tmp3
           - tmp4
+          - tmp5
       core-image-tag:
         description: Core image tag
         required: true
