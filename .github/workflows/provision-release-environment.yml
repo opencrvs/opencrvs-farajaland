@@ -23,7 +23,7 @@ jobs:
       - name: Set environment name
         id: set_environment
         run: |
-          environment=$(echo ${{ github.ref_name }} | sed -e 's/./_/g' -e 's/release\-///')
+          environment=$(echo ${{ github.ref_name }} | sed -e 's/[\.\-]/_/g' -e 's/release\-//g')
           echo "environment=v${environment}" >> $GITHUB_OUTPUT
     verify-branch:
       needs: get-environment
