@@ -237,6 +237,9 @@
 - name: Check SSH config syntax
   command: sudo sshd -T
   register: check_result
+  retries: 3
+  delay: 10
+  until: check_result.rc == 0
 
 - name: Enable logging in to the provisioning user with specified SSH keys
   authorized_key:
