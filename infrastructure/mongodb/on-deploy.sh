@@ -68,7 +68,6 @@ DELAY=10  # seconds
 ATTEMPT=1
 
 # Initiate the replica set
-mongo $(mongo_credentials) --host mongo1 --eval "rs.initiate({_id:\"rs0\",members:${MEMBERS}})"
 while [[ $ATTEMPT -le $MAX_RETRIES ]]; do
     echo "🔄 Attempt $ATTEMPT to initiate replica set..."
     
