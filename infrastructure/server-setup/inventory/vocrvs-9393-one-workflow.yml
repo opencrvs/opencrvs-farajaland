@@ -71,7 +71,7 @@ all:
 docker-manager-first:
   hosts:
     farajaland-vocrvs-9393-one-workflow:
-      ansible_host: '91.99.123.45'
+      ansible_host: '168.119.153.168'
       data_label: data1
 
 docker-workers: {}
