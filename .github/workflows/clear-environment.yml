@@ -25,6 +25,7 @@ on:
           - tmp3
           - tmp4
           - tmp5
+          - vocrvs-9393-one-workflow
 jobs:
   reset-data:
     name: 'Reset data'
