@@ -73,7 +73,6 @@ while [[ $ATTEMPT -le $MAX_RETRIES ]]; do
     
     if mongo $(mongo_credentials) --host mongo1 --eval "rs.initiate({_id:\"rs0\",members:${MEMBERS}})"; then
         echo "✅ Replica set initiated successfully."
-        exit 0
     fi
 
     echo "❌ Failed to initiate replica set. Retrying in $DELAY seconds..."
