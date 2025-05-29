@@ -12,14 +12,14 @@
   "license": "MPL-2.0",
   "husky": {
     "hooks": {
-      "pre-commit": "yarn precommit"
+      "pre-commit": "pnpm precommit"
     }
   },
   "scripts": {
-    "dev": "yarn start",
-    "e2e": "NODE_OPTIONS=--dns-result-order=ipv4first yarn playwright test --ui",
-    "e2e-dev": "NODE_ENV=development NODE_OPTIONS=--dns-result-order=ipv4first yarn playwright test --ui",
-    "e2e:generate-types": "graphql-codegen --config e2e/codegen.yml && yarn prettier --write e2e/gateway.ts",
+    "dev": "pnpm start",
+    "e2e": "NODE_OPTIONS=--dns-result-order=ipv4first pnpm playwright test --ui",
+    "e2e-dev": "NODE_ENV=development NODE_OPTIONS=--dns-result-order=ipv4first pnpm playwright test --ui",
+    "e2e:generate-types": "graphql-codegen --config e2e/codegen.yml && pnpm prettier --write e2e/gateway.ts",
     "precommit": "lint-staged",
     "test": "vitest 'src/**/*.test.ts' --passWithNoTests",
     "test:compilation": "tsc --noEmit --resolveJsonModule",
@@ -33,7 +33,7 @@
     "snapshot": "bash infrastructure/backups/backup.sh",
     "port-forward": "bash infrastructure/port-forward.sh",
     "environment:init": "ts-node infrastructure/environments/setup-environment.ts",
-    "environment:upgrade": "yarn environment:init",
+    "environment:upgrade": "pnpm environment:init",
     "sort-translations": "cross-env NODE_ENV=development ts-node -r tsconfig-paths/register src/sort-translations.ts"
   },
   "devDependencies": {
@@ -141,7 +141,7 @@
       "git add"
     ],
     "src/translations/*.csv": [
-      "yarn sort-translations",
+      "pnpm sort-translations",
       "git add"
     ]
   },
