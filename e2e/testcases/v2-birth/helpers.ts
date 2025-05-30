@@ -48,3 +48,15 @@ export async function openBirthDeclaration(page: Page) {
 
   return page
 }
+
+export async function expectRowValueWithChangeButton(
+  page: Page,
+  fieldName: string,
+  assertionText: string
+) {
+  await expect(page.getByTestId(`row-value-${fieldName}`)).toContainText(
+    assertionText
+  )
+
+  await expect(page.getByTestId(`change-button-${fieldName}`)).toBeVisible()
+}

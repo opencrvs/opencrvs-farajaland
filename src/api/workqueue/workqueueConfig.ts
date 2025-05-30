@@ -133,7 +133,7 @@ export const Workqueues = defineWorkqueues([
       description: 'Title of sent for review workqueue'
     },
     query: {
-      status: { type: 'exact', term: 'DECLARED' },
+      status: { type: 'anyOf', terms: ['DECLARED', 'NOTIFIED'] },
       createdBy: { type: 'exact', term: user('id') }
     },
     actions: [
@@ -152,7 +152,7 @@ export const Workqueues = defineWorkqueues([
       description: 'Title of ready for review workqueue'
     },
     query: {
-      status: { type: 'exact', term: 'DECLARED' },
+      status: { type: 'anyOf', terms: ['DECLARED', 'NOTIFIED'] },
       createdAtLocation: { type: 'exact', term: user('primaryOfficeId') }
     },
     actions: [
@@ -171,7 +171,7 @@ export const Workqueues = defineWorkqueues([
       description: 'Title of ready for review (all) workqueue'
     },
     query: {
-      status: { type: 'anyOf', terms: ['DECLARED', 'VALIDATED'] },
+      status: { type: 'anyOf', terms: ['DECLARED', 'NOTIFIED', 'VALIDATED'] },
       createdAtLocation: { type: 'exact', term: user('primaryOfficeId') }
     },
     actions: [
