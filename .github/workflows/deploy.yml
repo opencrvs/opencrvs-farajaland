@@ -39,6 +39,7 @@ on:
           - e2e
           - staging
           - v19
+          - vtmp2
       core-image-tag:
         description: Core image tag
         required: true
