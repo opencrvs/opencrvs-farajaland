@@ -27,6 +27,7 @@ on:
           - jump
           - e2e
           - v19
+          - vocrvs-9393-tmp1
       tag:
         type: choice
         description: Select group tag you want to execute
