@@ -1,6 +1,6 @@
-import { expect, test, type Page } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 import { goToSection, loginToV2, logout } from '../../helpers'
-import { CREDENTIALS } from '../../constants'
+import { CREDENTIALS, SAFE_WORKQUEUE_TIMEOUT_MS } from '../../constants'
 import { fillChildDetails, openBirthDeclaration } from './helpers'
 
 test.describe('Save and delete drafts', () => {
@@ -19,6 +19,10 @@ test.describe('Save and delete drafts', () => {
     ).toBeVisible()
 
     await page.getByRole('button', { name: 'Confirm' }).click()
+
+    await page.waitForTimeout(SAFE_WORKQUEUE_TIMEOUT_MS) // wait for the event to be in the workqueue. Handle better after outbox workqueue is implemented
+    await page.getByText('Ready for review').click()
+    await page.getByText('Assigned to you').click()
 
     await page.getByRole('button', { name: childName, exact: true }).click()
     await expect(page.locator('#content-name')).toHaveText(childName)

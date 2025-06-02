@@ -12,7 +12,9 @@ export async function selectAction(
     | 'Unassign'
     | 'Delete'
 ) {
-  await ensureAssigned(page)
+  if ((await page.getByTestId('status-value').innerText()) !== 'Draft') {
+    await ensureAssigned(page)
+  }
 
   // Keep retrying the click until the dropdown is visible
   let isVisible = false

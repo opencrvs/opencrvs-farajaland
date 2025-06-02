@@ -893,10 +893,9 @@ test.describe.serial('8. Validate declaration review page', () => {
           name: formatName(declaration.child.name)
         })
         .click()
-
-      await selectAction(page, 'Validate')
     })
     test('8.2.1.1 Verify information added on previous pages', async () => {
+      await selectAction(page, 'Validate')
       /*
        * Expected result: should include
        * - Child's First Name
@@ -1190,10 +1189,9 @@ test.describe.serial('8. Validate declaration review page', () => {
           name: formatName(declaration.child.name)
         })
         .click()
-
-      await selectAction(page, 'Register')
     })
     test('8.3.1.1 Verify information added on previous pages', async () => {
+      await selectAction(page, 'Register')
       /*
        * Expected result: should include
        * - Child's First Name
