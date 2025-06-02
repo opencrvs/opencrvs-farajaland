@@ -244,7 +244,7 @@ export const expectAddress = async (
   } else await expectTexts(locator, texts)
 }
 
-/*
+/**
   The deletion section is formatted like bellow:
   	'-'
     'Farajaland'
@@ -254,7 +254,6 @@ export const expectAddress = async (
     'Mitali Residential Area'
     '4/A'
     '1324'
-
 */
 const getDeletionPosition = (i: number) => i + 1 // for the extra '-' at the beginning
 
