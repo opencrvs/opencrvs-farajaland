@@ -244,7 +244,7 @@ export async function rejectDeclaration(
     eventId,
     declaration: {},
     transactionId: uuidv4(),
-    annotation: { message: '' }
+    reason: { message: 'For test' }
   })
 
   return rejectResponse
