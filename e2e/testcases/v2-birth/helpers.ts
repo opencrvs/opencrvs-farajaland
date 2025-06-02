@@ -1,6 +1,6 @@
 import { expect, type Page } from '@playwright/test'
 import { omit } from 'lodash'
-import { formatName } from '../../helpers'
+import { formatName, joinValuesWith } from '../../helpers'
 import { faker } from '@faker-js/faker'
 
 export const REQUIRED_VALIDATION_ERROR = 'Required for registration'
@@ -59,4 +59,12 @@ export async function expectRowValueWithChangeButton(
   )
 
   await expect(page.getByTestId(`change-button-${fieldName}`)).toBeVisible()
+}
+
+export const formatV2ChildName = (obj: {
+  ['child.firstname']: string
+  ['child.surname']: string
+  [key: string]: any
+}) => {
+  return joinValuesWith([obj['child.firstname'], obj['child.surname']])
 }
