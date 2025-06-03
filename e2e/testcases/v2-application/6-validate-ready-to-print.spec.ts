@@ -28,7 +28,7 @@ test.describe.serial('6 Validate Ready to print tab', () => {
   })
 
   test.afterAll(async () => {
-    // await page.close()
+    await page.close()
   })
 
   test('6.1 Go to Ready to print tab', async () => {

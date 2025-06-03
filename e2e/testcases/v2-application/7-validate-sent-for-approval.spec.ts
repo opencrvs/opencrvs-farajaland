@@ -29,7 +29,7 @@ test.describe.serial('7 Validate Sent for approval tab', () => {
   })
 
   test.afterAll(async () => {
-    // await page.close()
+    await page.close()
   })
 
   test('7.1 Go to Sent for approval tab', async () => {

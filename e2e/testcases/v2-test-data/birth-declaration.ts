@@ -11,7 +11,6 @@ import {
   ActionUpdate,
   AddressType
 } from '@opencrvs/toolkit/events'
-import { getTokenPayload } from '@countryconfig/index'
 
 type InformantRelation = 'MOTHER' | 'BROTHER'
 
@@ -228,20 +227,6 @@ export async function rejectDeclaration(
   eventId: string
 ): Promise<any> {
   const client = createClient(GATEWAY_HOST + '/events', `Bearer ${token}`)
-
-  await client.event.actions.assignment.unassign.mutate({
-    eventId,
-    transactionId: uuidv4(),
-    assignedTo: null
-  })
-
-  const userId = getTokenPayload(token).sub
-
-  await client.event.actions.assignment.assign.mutate({
-    eventId,
-    transactionId: uuidv4(),
-    assignedTo: userId
-  })
 
   const rejectResponse = await client.event.actions.reject.request.mutate({
     eventId,

@@ -30,7 +30,7 @@ test.describe
   })
 
   test.afterAll(async () => {
-    // await page.close()
+    await page.close()
   })
 
   test('5.1 Go to Ready for review tab', async () => {
