@@ -228,16 +228,19 @@ export async function rejectDeclaration(
 ): Promise<any> {
   const client = createClient(GATEWAY_HOST + '/events', `Bearer ${token}`)
 
-  await client.event.actions.assignment.unassign.mutate({
-    eventId,
-    transactionId: uuidv4(),
-    assignedTo: null
-  })
+  const unassignResponse =
+    await client.event.actions.assignment.unassign.mutate({
+      eventId,
+      transactionId: uuidv4(),
+      assignedTo: null
+    })
+
+  const userId = unassignResponse.actions.at(-1)?.createdBy || 'throw'
 
   await client.event.actions.assignment.assign.mutate({
     eventId,
     transactionId: uuidv4(),
-    assignedTo: '6821c175dce4d7886d4e8210'
+    assignedTo: userId
   })
 
   const rejectResponse = await client.event.actions.reject.request.mutate({
