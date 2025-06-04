@@ -19,6 +19,11 @@ jobs:
   release_workflow:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - name: Determine the Base Branch
         id: get_base_branch
         run: |
@@ -42,15 +47,10 @@ jobs:
             fi
           fi
           echo "base_branch=$base_branch" >> $GITHUB_OUTPUT
-
-      - name: Checkout the base branch
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ steps.get_base_branch.outputs.base_branch }}
-          fetch-depth: 0
       
       - name: Create a new release branch
         run: |
+          git checkout $base_branch
           version="${{ inputs.version }}"
           release_branch="release/$version"
           git checkout -b $release_branch
