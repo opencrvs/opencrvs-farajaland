@@ -10,13 +10,27 @@
  */
 import { tennisClubMembershipEvent } from '@countryconfig/form/tennis-club-membership'
 import { birthEvent } from '@countryconfig/form/v2/birth'
+import {
+  getCurrentCustomEvent,
+  hasActiveCustomEvent
+} from '@countryconfig/config-editor/handler'
 import * as Hapi from '@hapi/hapi'
 
 export function getCustomEventsHandler(
   _: Hapi.Request,
   h: Hapi.ResponseToolkit
 ) {
-  return h.response([tennisClubMembershipEvent, birthEvent]).code(200)
+  const events = [tennisClubMembershipEvent, birthEvent]
+
+  // Add the custom event if one is configured
+  if (hasActiveCustomEvent()) {
+    const customEvent = getCurrentCustomEvent()
+    if (customEvent) {
+      events.push(customEvent)
+    }
+  }
+
+  return h.response(events).code(200)
 }
 
 export function onAnyActionHandler(_: Hapi.Request, h: Hapi.ResponseToolkit) {

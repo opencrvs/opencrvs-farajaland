@@ -1,0 +1,719 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Event Config Editor</title>
+    <style>
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background-color: #f5f5f5;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+
+      .header {
+        background: #2196f3;
+        color: white;
+        padding: 20px;
+        text-align: center;
+      }
+
+      .content {
+        display: flex;
+      }
+
+      .editor-panel {
+        flex: 1;
+        padding: 20px;
+        border-right: 1px solid #eee;
+      }
+
+      .result-panel {
+        flex: 1;
+        padding: 20px;
+        background: #fafafa;
+      }
+
+      .form-group {
+        margin-bottom: 15px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 600;
+        color: #333;
+      }
+
+      textarea {
+        width: 100%;
+        height: 400px;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+        font-size: 12px;
+        resize: vertical;
+      }
+
+      .button-group {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+      }
+
+      button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s ease;
+      }
+
+      .btn-primary {
+        background: #2196f3;
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: #1976d2;
+      }
+
+      .btn-success {
+        background: #4caf50;
+        color: white;
+      }
+
+      .btn-success:hover {
+        background: #45a049;
+      }
+
+      .btn-secondary {
+        background: #757575;
+        color: white;
+      }
+
+      .btn-secondary:hover {
+        background: #616161;
+      }
+
+      .result {
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 15px;
+        height: 400px;
+        overflow-y: auto;
+        font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+        font-size: 12px;
+      }
+
+      .error {
+        color: #f44336;
+        background: #ffebee;
+        border-color: #f44336;
+      }
+
+      .success {
+        color: #4caf50;
+        background: #e8f5e9;
+        border-color: #4caf50;
+      }
+
+      .info {
+        color: #2196f3;
+        background: #e3f2fd;
+        border-color: #2196f3;
+      }
+
+      .status-indicator {
+        display: inline-block;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        margin-right: 8px;
+      }
+
+      .status-success {
+        background: #4caf50;
+      }
+
+      .status-error {
+        background: #f44336;
+      }
+
+      .status-pending {
+        background: #ff9800;
+      }
+
+      .current-config {
+        margin-top: 20px;
+        padding: 15px;
+        background: #e3f2fd;
+        border-radius: 4px;
+        border-left: 4px solid #2196f3;
+      }
+
+      .current-config h3 {
+        margin-top: 0;
+        color: #1976d2;
+      }
+
+      .config-info {
+        font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+        font-size: 11px;
+        color: #666;
+        max-height: 100px;
+        overflow-y: auto;
+      }
+
+      button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+
+      .schema-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .schema-modal-content {
+        background: white;
+        border-radius: 8px;
+        width: min(90vw, 800px);
+        max-height: 90vh;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      .schema-modal-header {
+        background: #2196f3;
+        color: white;
+        padding: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .schema-modal-body {
+        padding: 20px;
+        flex: 1;
+        overflow-y: auto;
+      }
+
+      .schema-content {
+        background: #f5f5f5;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 15px;
+        font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+        font-size: 12px;
+        white-space: pre-wrap;
+        max-height: 400px;
+        overflow-y: auto;
+      }
+
+      .schema-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+      }
+
+      .close-btn {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 24px;
+        cursor: pointer;
+        padding: 0;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .close-btn:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>Event Configuration Editor</h1>
+        <p>
+          Create and validate custom event configurations for OpenCRVS.
+        </p>
+      </div>
+      <div class="content">
+        <div class="editor-panel">
+          <div class="form-group">
+            <label for="configInput">Event Configuration JSON:</label>
+            <textarea
+              id="configInput"
+              placeholder="Enter your event configuration JSON here..."
+            ></textarea>
+          </div>
+
+          <div class="button-group">
+            <button id="validateBtn" class="btn-primary">
+              Validate Configuration
+            </button>
+            <button id="saveBtn" class="btn-success" disabled>
+              Save & Deploy
+            </button>
+            <button id="getSchemaBtn" class="btn-secondary">Get Schema</button>
+            <button id="loadExampleBtn" class="btn-secondary">
+              Load Example
+            </button>
+            <button id="clearBtn" class="btn-secondary">Clear</button>
+          </div>
+        </div>
+
+        <div class="result-panel">
+          <div class="form-group">
+            <label>
+              <span
+                class="status-indicator status-pending"
+                id="statusIndicator"
+              ></span>
+              Validation Result:
+            </label>
+            <div id="validationResult" class="result">
+              <p>
+                Enter a configuration and click "Validate Configuration" to see
+                the result.
+              </p>
+            </div>
+          </div>
+
+          <div class="current-config">
+            <h3>Current Active Configuration</h3>
+            <div id="currentConfig" class="config-info">
+              <p>No active configuration</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Schema Modal -->
+    <div id="schemaModal" class="schema-modal">
+      <div class="schema-modal-content">
+        <div class="schema-modal-header">
+          <h2>Event Configuration Schema</h2>
+          <button id="closeSchemaModal" class="close-btn">&times;</button>
+        </div>
+        <div class="schema-modal-body">
+          <p>
+            This is the complete schema for OpenCRVS event configurations. You
+            can copy this and use it with AI tools like ChatGPT or Claude to
+            generate valid configurations.
+          </p>
+          <div id="schemaContent" class="schema-content">Loading schema...</div>
+          <div class="schema-actions">
+            <button id="copySchemaBtn" class="btn-primary">
+              Copy to Clipboard
+            </button>
+            <button id="downloadSchemaBtn" class="btn-secondary">
+              Download as File
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const configInput = document.getElementById('configInput')
+      const validateBtn = document.getElementById('validateBtn')
+      const saveBtn = document.getElementById('saveBtn')
+      const getSchemaBtn = document.getElementById('getSchemaBtn')
+      const loadExampleBtn = document.getElementById('loadExampleBtn')
+      const clearBtn = document.getElementById('clearBtn')
+      const validationResult = document.getElementById('validationResult')
+      const statusIndicator = document.getElementById('statusIndicator')
+      const currentConfig = document.getElementById('currentConfig')
+
+      // Schema modal elements
+      const schemaModal = document.getElementById('schemaModal')
+      const closeSchemaModal = document.getElementById('closeSchemaModal')
+      const schemaContent = document.getElementById('schemaContent')
+      const copySchemaBtn = document.getElementById('copySchemaBtn')
+      const downloadSchemaBtn = document.getElementById('downloadSchemaBtn')
+
+      let isValid = false
+      let lastValidConfig = null
+
+      // Load current config on page load
+      loadCurrentConfig()
+
+      // Load saved config from localStorage if available
+      const savedConfig = localStorage.getItem('eventConfig')
+      if (savedConfig) {
+        configInput.value = savedConfig
+      }
+
+      // Auto-save to localStorage
+      configInput.addEventListener('input', () => {
+        localStorage.setItem('eventConfig', configInput.value)
+        isValid = false
+        saveBtn.disabled = true
+        updateStatusIndicator('pending')
+      })
+
+      // Event listeners
+      validateBtn.addEventListener('click', validateConfig)
+      saveBtn.addEventListener('click', saveConfig)
+      getSchemaBtn.addEventListener('click', showSchema)
+      loadExampleBtn.addEventListener('click', loadExample)
+      clearBtn.addEventListener('click', clearConfig)
+
+      // Schema modal event listeners
+      closeSchemaModal.addEventListener('click', hideSchema)
+      copySchemaBtn.addEventListener('click', copySchema)
+      downloadSchemaBtn.addEventListener('click', downloadSchema)
+
+      // Close schema modal on overlay click
+      schemaModal.addEventListener('click', (e) => {
+        if (e.target === schemaModal) {
+          hideSchema()
+        }
+      })
+
+      // Close schema modal on Escape key
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && schemaModal.style.display === 'flex') {
+          hideSchema()
+        }
+      })
+
+      async function validateConfig() {
+        const config = configInput.value.trim()
+
+        if (!config) {
+          showResult('Please enter a configuration to validate.', 'error')
+          return
+        }
+
+        try {
+          JSON.parse(config) // Basic JSON validation first
+        } catch (e) {
+          showResult(`Invalid JSON: ${e.message}`, 'error')
+          return
+        }
+
+        try {
+          validateBtn.disabled = true
+          validateBtn.textContent = 'Validating...'
+
+          const response = await fetch('/config-editor/validate', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: config
+          })
+
+          const result = await response.json()
+
+          if (response.ok && result.valid) {
+            showResult(
+              '✅ Configuration is valid and ready to deploy!',
+              'success'
+            )
+            isValid = true
+            lastValidConfig = config
+            saveBtn.disabled = false
+            updateStatusIndicator('success')
+          } else {
+            const errorMsg = result.errors
+              ? `❌ Validation failed:\n\n${result.errors.map((err) => `• ${err}`).join('\n')}`
+              : `❌ Validation failed: ${result.message || 'Unknown error'}`
+            showResult(errorMsg, 'error')
+            isValid = false
+            saveBtn.disabled = true
+            updateStatusIndicator('error')
+          }
+        } catch (error) {
+          showResult(`❌ Validation error: ${error.message}`, 'error')
+          isValid = false
+          saveBtn.disabled = true
+          updateStatusIndicator('error')
+        } finally {
+          validateBtn.disabled = false
+          validateBtn.textContent = 'Validate Configuration'
+        }
+      }
+
+      async function saveConfig() {
+        if (!isValid || !lastValidConfig) {
+          showResult('Please validate the configuration first.', 'error')
+          return
+        }
+
+        try {
+          saveBtn.disabled = true
+          saveBtn.textContent = 'Saving...'
+
+          const response = await fetch('/config-editor/save', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: lastValidConfig
+          })
+
+          const result = await response.json()
+
+          if (response.ok) {
+            showResult(
+              '✅ Configuration saved and deployed successfully!\n\nThe new event is now available at /events',
+              'success'
+            )
+            loadCurrentConfig() // Refresh current config display
+          } else {
+            showResult(
+              `❌ Save failed: ${result.message || 'Unknown error'}`,
+              'error'
+            )
+          }
+        } catch (error) {
+          showResult(`❌ Save error: ${error.message}`, 'error')
+        } finally {
+          saveBtn.disabled = false
+          saveBtn.textContent = 'Save & Deploy'
+        }
+      }
+
+      async function loadCurrentConfig() {
+        try {
+          const response = await fetch('/config-editor/current')
+          const result = await response.json()
+
+          if (result.config) {
+            const configSummary = {
+              id: result.config.id || 'Unknown',
+              label: result.config.label?.defaultMessage || 'No label',
+              lastUpdated: result.lastUpdated || 'Unknown'
+            }
+
+            currentConfig.innerHTML = `
+                        <p><strong>Event ID:</strong> ${configSummary.id}</p>
+                        <p><strong>Label:</strong> ${configSummary.label}</p>
+                        <p><strong>Last Updated:</strong> ${configSummary.lastUpdated}</p>
+                        <details>
+                            <summary>View full config</summary>
+                            <pre>${JSON.stringify(result.config, null, 2)}</pre>
+                        </details>
+                    `
+          } else {
+            currentConfig.innerHTML = '<p>No active configuration</p>'
+          }
+        } catch (error) {
+          currentConfig.innerHTML = '<p>Error loading current configuration</p>'
+        }
+      }
+
+      async function showSchema() {
+        schemaModal.style.display = 'flex'
+        schemaContent.textContent = 'Loading schema...'
+
+        try {
+          const response = await fetch('/config-editor/schema')
+          const result = await response.json()
+
+          if (response.ok) {
+            let schemaText = result.schema
+
+            // Add source information to the schema display
+            if (result.source === 'openapi' && result.endpoint) {
+              schemaText = `[Schema fetched from OpenAPI endpoint: ${result.endpoint}]\n\n${schemaText}`
+            } else if (result.source === 'static' && result.error) {
+              schemaText = `[Static fallback schema - OpenAPI fetch failed: ${result.error}]\n\n${schemaText}`
+            } else if (result.source === 'error') {
+              schemaText = `[Error generating schema: ${result.error}]\n\n${schemaText}`
+            }
+
+            schemaContent.textContent = schemaText
+          } else {
+            schemaContent.textContent =
+              'Error loading schema: ' + (result.message || result.error || 'Unknown error')
+          }
+        } catch (error) {
+          schemaContent.textContent = 'Error loading schema: ' + error.message
+        }
+      }
+
+      function hideSchema() {
+        schemaModal.style.display = 'none'
+      }
+
+      async function copySchema() {
+        try {
+          await navigator.clipboard.writeText(schemaContent.textContent)
+          const originalText = copySchemaBtn.textContent
+          copySchemaBtn.textContent = 'Copied!'
+          setTimeout(() => {
+            copySchemaBtn.textContent = originalText
+          }, 2000)
+        } catch (err) {
+          // Fallback for older browsers
+          const textArea = document.createElement('textarea')
+          textArea.value = schemaContent.textContent
+          document.body.appendChild(textArea)
+          textArea.select()
+          document.execCommand('copy')
+          document.body.removeChild(textArea)
+
+          const originalText = copySchemaBtn.textContent
+          copySchemaBtn.textContent = 'Copied!'
+          setTimeout(() => {
+            copySchemaBtn.textContent = originalText
+          }, 2000)
+        }
+      }
+
+      function downloadSchema() {
+        const blob = new Blob([schemaContent.textContent], {
+          type: 'text/plain'
+        })
+        const url = URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.href = url
+        a.download = 'opencrvs-event-config-schema.txt'
+        document.body.appendChild(a)
+        a.click()
+        document.body.removeChild(a)
+        URL.revokeObjectURL(url)
+      }
+
+      function loadExample() {
+        const exampleConfig = {
+          id: 'my-custom-event',
+          actions: [],
+          declaration: {
+            label: {
+              defaultMessage: 'My Custom Event',
+              description: 'Label for my custom event',
+              id: 'example.event.label'
+            },
+            pages: [
+              {
+                id: 'applicant',
+                type: 'FORM',
+                title: {
+                  defaultMessage: 'Applicant Information',
+                  description: 'Title for applicant information page',
+                  id: 'example.applicant.title'
+                },
+                fields: [
+                  {
+                    id: 'applicant.firstname',
+                    type: 'TEXT',
+                    label: {
+                      defaultMessage: 'First Name',
+                      description: 'Label for first name field',
+                      id: 'example.applicant.firstname.label'
+                    },
+                    configuration: {
+                      required: true
+                    }
+                  },
+                  {
+                    id: 'applicant.lastname',
+                    type: 'TEXT',
+                    label: {
+                      defaultMessage: 'Last Name',
+                      description: 'Label for last name field',
+                      id: 'example.applicant.lastname.label'
+                    },
+                    configuration: {
+                      required: true
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          label: {
+            defaultMessage: 'My Custom Event',
+            description: 'Label for my custom event',
+            id: 'example.event.label'
+          },
+          title: {
+            defaultMessage: '{applicant.firstname} {applicant.lastname}',
+            description: 'Title template for the event',
+            id: 'example.event.title'
+          },
+          summary: {
+            fields: [
+              {
+                id: 'applicant.firstname',
+                label: {
+                  defaultMessage: 'First Name',
+                  description: 'Summary label for first name',
+                  id: 'example.summary.firstname.label'
+                },
+                value: {
+                  defaultMessage: '{applicant.firstname}',
+                  description: 'Summary value for first name',
+                  id: 'example.summary.firstname.value'
+                }
+              }
+            ]
+          }
+        }
+
+        configInput.value = JSON.stringify(exampleConfig, null, 2)
+        localStorage.setItem('eventConfig', configInput.value)
+        isValid = false
+        saveBtn.disabled = true
+        updateStatusIndicator('pending')
+        showResult(
+          'Example configuration loaded. Click "Validate Configuration" to check it.',
+          'info'
+        )
+      }
+
+      function clearConfig() {
+        configInput.value = ''
+        localStorage.removeItem('eventConfig')
+        isValid = false
+        saveBtn.disabled = true
+        updateStatusIndicator('pending')
+        showResult('Configuration cleared.', 'info')
+      }
+
+      function showResult(message, type) {
+        validationResult.className = `result ${type}`
+        validationResult.innerHTML = `<pre>${message}</pre>`
+      }
+
+      function updateStatusIndicator(status) {
+        statusIndicator.className = `status-indicator status-${status}`
+      }
+    </script>
+  </body>
+</html>

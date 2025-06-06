@@ -69,6 +69,13 @@ import {
   getCustomEventsHandler,
   onAnyActionHandler
 } from '@countryconfig/api/custom-event/handler'
+import {
+  configEditorHandler,
+  validateConfigHandler,
+  saveConfigHandler,
+  getCurrentConfigHandler,
+  getSchemaHandler
+} from '@countryconfig/config-editor/handler'
 import { readFileSync } from 'fs'
 import { ActionType } from '@opencrvs/toolkit/events'
 import { Event } from './form/types/types'
@@ -389,6 +396,62 @@ export async function createServer() {
     }
   })
 
+  // Config Editor Routes
+  server.route({
+    method: 'GET',
+    path: '/config-editor',
+    handler: configEditorHandler,
+    options: {
+      auth: false,
+      tags: ['api', 'config-editor'],
+      description: 'Serves the event configuration editor HTML interface'
+    }
+  })
+
+  server.route({
+    method: 'POST',
+    path: '/config-editor/validate',
+    handler: validateConfigHandler,
+    options: {
+      auth: false,
+      tags: ['api', 'config-editor'],
+      description: 'Validates an event configuration using defineConfig'
+    }
+  })
+
+  server.route({
+    method: 'POST',
+    path: '/config-editor/save',
+    handler: saveConfigHandler,
+    options: {
+      auth: false,
+      tags: ['api', 'config-editor'],
+      description: 'Saves and deploys a validated event configuration'
+    }
+  })
+
+  server.route({
+    method: 'GET',
+    path: '/config-editor/current',
+    handler: getCurrentConfigHandler,
+    options: {
+      auth: false,
+      tags: ['api', 'config-editor'],
+      description: 'Gets the currently active custom event configuration'
+    }
+  })
+
+  server.route({
+    method: 'GET',
+    path: '/config-editor/schema',
+    handler: getSchemaHandler,
+    options: {
+      auth: false,
+      tags: ['api', 'config-editor'],
+      description: 'Gets the event configuration schema for AI tools'
+    }
+  })
+
   server.route({
     method: 'GET',
     path: '/content/{application}',
@@ -664,6 +727,7 @@ export async function createServer() {
     handler: getCustomEventsHandler,
     options: {
       tags: ['api', 'events'],
+      auth: false,
       description: 'Serves custom events'
     }
   })

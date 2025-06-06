@@ -1,0 +1,76 @@
+{
+  "config": {
+    "id": "my-custom-event",
+    "title": {
+      "id": "example.event.title",
+      "defaultMessage": "{applicant.firstname} {applicant.lastname}",
+      "description": "Title template for the event"
+    },
+    "summary": {
+      "fields": [
+        {
+          "id": "applicant.firstname",
+          "value": {
+            "id": "example.summary.firstname.value",
+            "defaultMessage": "{applicant.firstname}",
+            "description": "Summary value for first name"
+          },
+          "label": {
+            "id": "example.summary.firstname.label",
+            "defaultMessage": "First Name",
+            "description": "Summary label for first name"
+          }
+        }
+      ]
+    },
+    "label": {
+      "id": "example.event.label",
+      "defaultMessage": "My Custom Event",
+      "description": "Label for my custom event"
+    },
+    "actions": [],
+    "declaration": {
+      "label": {
+        "id": "example.event.label",
+        "defaultMessage": "My Custom Event",
+        "description": "Label for my custom event"
+      },
+      "pages": [
+        {
+          "id": "applicant",
+          "title": {
+            "id": "example.applicant.title",
+            "defaultMessage": "Applicant Information",
+            "description": "Title for applicant information page"
+          },
+          "fields": [
+            {
+              "id": "applicant.firstname",
+              "label": {
+                "id": "example.applicant.firstname.label",
+                "defaultMessage": "First Name",
+                "description": "Label for first name field"
+              },
+              "type": "TEXT",
+              "configuration": {}
+            },
+            {
+              "id": "applicant.lastname",
+              "label": {
+                "id": "example.applicant.lastname.label",
+                "defaultMessage": "Last Name",
+                "description": "Label for last name field"
+              },
+              "type": "TEXT",
+              "configuration": {}
+            }
+          ],
+          "type": "FORM"
+        }
+      ]
+    },
+    "deduplication": [],
+    "advancedSearch": []
+  },
+  "lastUpdated": "2025-06-06T10:08:18.454Z"
+}
