@@ -38,6 +38,7 @@ on:
           - qa
           - e2e
           - staging
+          - zero-trust
       core-image-tag:
         description: Core image tag
         required: true

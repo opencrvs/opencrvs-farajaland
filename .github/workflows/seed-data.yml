@@ -22,6 +22,7 @@ on:
           - staging
           - production
           - e2e
+          - zero-trust
       core-image-tag:
         description: Core DockerHub image tag
         required: true
