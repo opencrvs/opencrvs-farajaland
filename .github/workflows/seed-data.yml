@@ -27,6 +27,7 @@ on:
           - fix-analytics
           - mosip
           - openfn
+          - zero-trust
       core-image-tag:
         description: Core DockerHub image tag
         required: true

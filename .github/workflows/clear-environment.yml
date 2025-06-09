@@ -24,6 +24,7 @@ on:
           - fix-analytics
           - mosip
           - openfn
+          - zero-trust
 jobs:
   reset-data:
     name: 'Reset data'

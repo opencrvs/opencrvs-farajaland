@@ -43,6 +43,7 @@ on:
           - fix-analytics
           - mosip
           - openfn
+          - zero-trust
       core-image-tag:
         description: Core image tag
         required: true
