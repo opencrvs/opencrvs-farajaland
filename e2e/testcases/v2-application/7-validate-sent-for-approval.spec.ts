@@ -54,7 +54,8 @@ test.describe.serial('7 Validate Sent for approval tab', () => {
       'Title',
       'Event',
       'Date of Event',
-      'Sent for approval'
+      'Sent for approval',
+      ''
     ])
 
     const row = button.locator('xpath=ancestor::*[starts-with(@id, "row_")]')

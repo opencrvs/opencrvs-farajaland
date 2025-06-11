@@ -53,7 +53,8 @@ test.describe.serial('6 Validate Ready to print tab', () => {
       'Title',
       'Event',
       'Date of Event',
-      'Registered'
+      'Registered',
+      ''
     ])
 
     const row = button.locator('xpath=ancestor::*[starts-with(@id, "row_")]')

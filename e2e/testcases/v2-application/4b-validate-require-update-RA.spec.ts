@@ -74,7 +74,8 @@ test.describe
       'Title',
       'Event',
       'Date of Event',
-      'Sent for update'
+      'Sent for update',
+      ''
     ])
 
     const row = button.locator('xpath=ancestor::*[starts-with(@id, "row_")]')
