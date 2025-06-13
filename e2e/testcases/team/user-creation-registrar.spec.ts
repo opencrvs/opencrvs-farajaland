@@ -1,19 +1,9 @@
 import { test, expect, type Page } from '@playwright/test'
-import path from 'path' //imports Node.js's built-in path module to provide utilities for working with file
+import path from 'path'
 import {
-  assignRecord,
   ensureLoginPageReady,
-  auditRecord,
   continueForm,
   createPIN,
-  drawSignature,
-  expectAddress,
-  expectOutboxToBeEmpty,
-  formatDateObjectTo_ddMMMMyyyy,
-  formatName,
-  getAction,
-  getRandomDate,
-  goToSection,
   login
 } from '../../helpers'
 import { faker } from '@faker-js/faker'
@@ -27,8 +17,8 @@ test.describe.serial('1. Create user -1', () => {
     email: faker.internet.email(),
     role: 'Local Registrar'
   }
-  const filePath = path.resolve(__dirname, '../../assets/sign1.png') //filepath for signature
-  const username = `${userinfo.firstName[0]}.${userinfo.surname}`.toLowerCase() //newly created user's username
+  const signaturePath = path.resolve(__dirname, '../../assets/sign1.png')
+  const username = `${userinfo.firstName[0]}.${userinfo.surname}`.toLowerCase()
   const question00 = 'What city were you born in?'
   const question01 = 'What is your favorite movie?'
   const question02 = 'What is your favorite food?'
@@ -65,15 +55,12 @@ test.describe.serial('1. Create user -1', () => {
     })
 
     test('1.1.2 Upload Signture', async () => {
-      await page.setInputFiles('input[type="file"]', filePath)
+      await page.setInputFiles('input[type="file"]', signaturePath)
       await continueForm(page)
     })
 
     test('1.1.2 Create user', async () => {
-      await Promise.all([
-        page.waitForNavigation(), // waits for the navigation
-        page.getByRole('button', { name: 'Create user' }).click() // performs the click
-      ])
+      await page.getByRole('button', { name: 'Create user' }).click()
 
       await expect(page.locator('text=Embe, Pualula')).toBeVisible()
     })
@@ -93,12 +80,9 @@ test.describe.serial('1. Create user -1', () => {
     test('2.1.2 Enter your username and password', async ({ page }) => {
       await page.fill('#username', username)
       await page.fill('#password', 'test')
-      await Promise.all([
-        page.waitForNavigation(),
-        page.click('#login-mobile-submit')
-      ])
+      await page.click('#login-mobile-submit')
 
-      await expect(page.locator('text=Welcome to Farajaland CRS')).toBeVisible()
+      await expect(page.getByText('Welcome to Farajaland CRS')).toBeVisible()
       await page.click('#user-setup-start-button')
 
       //set up password
