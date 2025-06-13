@@ -39,10 +39,10 @@ test.describe.serial('1. Create user -1', () => {
         CREDENTIALS.NATIONAL_SYSTEM_ADMIN.PASSWORD
       )
       await createPIN(page)
-      await page.click('#navigation_team')
-      await expect(page.locator('text=HQ Office')).toBeVisible()
+      await page.getByRole('button', { name: 'Team' }).click()
+      await expect(page.getByText('HQ Office')).toBeVisible()
       await page.click('#add-user')
-      await expect(page.locator('text=User details')).toBeVisible()
+      await expect(page.getByText('User details')).toBeVisible()
     })
 
     test('1.1.1 Fill user details', async () => {
@@ -62,34 +62,32 @@ test.describe.serial('1. Create user -1', () => {
     test('1.1.2 Create user', async () => {
       await page.getByRole('button', { name: 'Create user' }).click()
 
-      await expect(page.locator('text=Embe, Pualula')).toBeVisible()
+      await expect(page.getByText('Embe, Pualula')).toBeVisible()
     })
   })
 
   test.describe('2.1 Login with newly created user credentials', () => {
-    test.beforeEach(async ({ page }) => {
+    test('2.1.1 Enter your username and password', async ({ page }) => {
       await page.goto(LOGIN_URL)
       await ensureLoginPageReady(page)
-    })
-
-    test('2.1.1 Navigate to the login URL', async ({ page }) => {
-      // Expected result: User should be redirected to the login page
-      await expect(page.locator('#login-step-one-box')).toBeVisible()
-    })
-
-    test('2.1.2 Enter your username and password', async ({ page }) => {
       await page.fill('#username', username)
       await page.fill('#password', 'test')
       await page.click('#login-mobile-submit')
 
+      await expect(
+        page
+          .locator('#appSpinner')
+          .or(page.getByText('Welcome to Farajaland CRS'))
+      ).toBeVisible()
+
       await expect(page.getByText('Welcome to Farajaland CRS')).toBeVisible()
-      await page.click('#user-setup-start-button')
+      await page.getByRole('button', { name: 'Start' }).click()
 
       //set up password
       await page.fill('#NewPassword', 'Bangladesh23')
       await page.fill('#ConfirmPassword', 'Bangladesh23')
-      await expect(page.locator('text=Passwords match')).toBeVisible()
-      await page.click('#Continue')
+      await expect(page.getByText('Passwords match')).toBeVisible()
+      await page.getByRole('button', { name: 'Continue' }).click()
 
       //set up security question
       await page.locator('#question-0').click()
@@ -101,10 +99,10 @@ test.describe.serial('1. Create user -1', () => {
       await page.locator('#question-2').click()
       await page.getByText(question02, { exact: true }).click()
       await page.fill('#answer-2', 'Burger')
-      await page.click('#submit-security-question')
+      await page.getByRole('button', { name: 'Continue' }).click()
 
-      await page.click('#Confirm')
-      await expect(page.locator('text=Account setup complete')).toBeVisible()
+      await page.getByRole('button', { name: 'Confirm' }).click()
+      await expect(page.getByText('Account setup complete')).toBeVisible()
     })
   })
 })
