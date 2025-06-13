@@ -24,7 +24,6 @@ test.describe.serial('6 Validate Ready to print tab', () => {
     eventId = res.eventId
 
     page = await browser.newPage()
-    await loginToV2(page, CREDENTIALS.LOCAL_REGISTRAR)
   })
 
   test.afterAll(async () => {
