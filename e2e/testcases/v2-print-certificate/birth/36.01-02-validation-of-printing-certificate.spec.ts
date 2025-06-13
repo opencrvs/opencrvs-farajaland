@@ -21,7 +21,6 @@ test.describe.serial('Print certificate', () => {
     const res = await createDeclaration(token)
     declaration = res.declaration
     page = await browser.newPage()
-    await loginToV2(page)
   })
 
   test.afterAll(async () => {
@@ -29,6 +28,7 @@ test.describe.serial('Print certificate', () => {
   })
 
   test('1.0 Click on "Print certificate" from action menu', async () => {
+    await loginToV2(page)
     await page.getByRole('button', { name: 'Ready to print' }).click()
     await navigateToCertificatePrintAction(page, declaration)
   })

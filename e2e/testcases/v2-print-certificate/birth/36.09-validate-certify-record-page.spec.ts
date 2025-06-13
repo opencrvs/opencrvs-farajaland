@@ -23,14 +23,17 @@ test.describe.serial('9.0 Validate "Certify record" page', () => {
     const res = await createDeclaration(token)
     declaration = res.declaration
     page = await browser.newPage()
-    await loginToV2(page)
-
-    await page.getByRole('button', { name: 'Ready to print' }).click()
-    await navigateToCertificatePrintAction(page, declaration)
   })
 
   test.afterAll(async () => {
     await page.close()
+  })
+
+  test('9.0 Navigate to certificate print action', async () => {
+    await loginToV2(page)
+
+    await page.getByRole('button', { name: 'Ready to print' }).click()
+    await navigateToCertificatePrintAction(page, declaration)
   })
 
   test('9.1 Review page validations', async () => {

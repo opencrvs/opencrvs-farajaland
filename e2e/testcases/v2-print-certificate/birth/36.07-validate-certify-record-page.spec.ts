@@ -31,14 +31,17 @@ test.describe.serial('7.0 Validate "Certify record" page', () => {
     eventId = res.eventId
     declaration = res.declaration
     page = await browser.newPage()
-    await loginToV2(page)
-
-    await page.getByRole('button', { name: 'Ready to print' }).click()
-    await navigateToCertificatePrintAction(page, declaration)
   })
 
   test.afterAll(async () => {
     await page.close()
+  })
+
+  test('7.0 Navigate to certificate print action', async () => {
+    await loginToV2(page)
+
+    await page.getByRole('button', { name: 'Ready to print' }).click()
+    await navigateToCertificatePrintAction(page, declaration)
   })
 
   test('7.1 continue with "Print and issue to Informant (Brother)" redirect to Collector details page', async () => {
