@@ -4,14 +4,12 @@ import {
   continueForm,
   createPIN,
   drawSignature,
-  expectAddress,
   expectOutboxToBeEmpty,
   expectTextWithChangeLink,
   formatDateObjectTo_ddMMMMyyyy,
   getAction,
   getRandomDate,
   goToSection,
-  joinValuesWith,
   login
 } from '../../../helpers'
 import { faker } from '@faker-js/faker'
@@ -123,7 +121,6 @@ test.describe.serial('1. Marriage declaration case - 1', () => {
       await page.click('#header_new_event')
       await page.getByLabel('Marriage').click()
       await page.getByRole('button', { name: 'Continue' }).click()
-      // await page.getByRole('button', { name: 'Continue' }).click()
     })
 
     test('1.1.1 Fill informant details', async () => {
@@ -153,11 +150,6 @@ test.describe.serial('1. Marriage declaration case - 1', () => {
       await page.getByPlaceholder('mm').fill(declaration.groom.birthDate.mm)
       await page.getByPlaceholder('yyyy').fill(declaration.groom.birthDate.yyyy)
 
-      /*  await page.locator('#nationality').click()
-    await page
-         .getByText(declaration.groom.nationality,{  exact: true })
-         .click()  */
-
       await page.locator('#groomIdType').click()
       await page
         .getByText(declaration.groom.identifier.type, { exact: true })
@@ -170,11 +162,6 @@ test.describe.serial('1. Marriage declaration case - 1', () => {
       await page
         .locator('#marriedLastNameEng')
         .fill(declaration.groom.lastNameAtBirth)
-
-      /* await page.locator('#countryPrimaryGroom').click()
-    await page
-      .getByText(declaration.groom.address.country,{ exact: true })
-      .click() */
 
       await page.locator('#statePrimaryGroom').click()
       await page
@@ -579,8 +566,6 @@ test.describe.serial('1. Marriage declaration case - 1', () => {
     })
 
     test('1.1.9 Fill up bride signature', async () => {
-      // await page.locator('button[name="brideSignature"]').click()
-
       await page.getByRole('button', { name: 'Sign' }).nth(0).click()
       await drawSignature(page, 'brideSignature_modal')
       await page
@@ -590,7 +575,6 @@ test.describe.serial('1. Marriage declaration case - 1', () => {
     })
 
     test('1.1.10 Fill up groom signature', async () => {
-      await page.pause()
       await page.getByRole('button', { name: 'Sign' }).nth(0).click()
       await drawSignature(page, 'groomSignature_modal')
       await page
