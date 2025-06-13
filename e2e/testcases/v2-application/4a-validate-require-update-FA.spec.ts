@@ -33,13 +33,19 @@ test.describe
     await page.close()
   })
 
-  test('4.0 Reject a declaration', async () => {
+  test('4.0.1 Login', async () => {
     await loginToV2(page, CREDENTIALS.LOCAL_REGISTRAR)
+  })
+
+  test('4.0.2 Navigate to record audit', async () => {
     await page.getByText('Ready for review').click()
 
     await page
       .getByRole('button', { name: formatV2ChildName(declaration) })
       .click()
+  })
+
+  test('4.0.3 Reject a declaration', async () => {
     await ensureAssigned(page)
 
     await rejectDeclaration(

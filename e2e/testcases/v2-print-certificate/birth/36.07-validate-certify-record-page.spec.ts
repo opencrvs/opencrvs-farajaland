@@ -37,9 +37,11 @@ test.describe.serial('7.0 Validate "Certify record" page', () => {
     await page.close()
   })
 
-  test('7.0 Navigate to certificate print action', async () => {
+  test('7.0.1 Log in', async () => {
     await loginToV2(page)
+  })
 
+  test('7.0.2 Navigate to certificate print action', async () => {
     await page.getByRole('button', { name: 'Ready to print' }).click()
     await navigateToCertificatePrintAction(page, declaration)
   })

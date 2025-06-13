@@ -25,11 +25,14 @@ test.describe.serial('7 Validate Sent for approval tab', () => {
     eventId = res.eventId
 
     page = await browser.newPage()
-    await loginToV2(page, CREDENTIALS.REGISTRATION_AGENT)
   })
 
   test.afterAll(async () => {
     await page.close()
+  })
+
+  test('7.0 Login', async () => {
+    await loginToV2(page, CREDENTIALS.REGISTRATION_AGENT)
   })
 
   test('7.1 Go to Sent for approval tab', async () => {

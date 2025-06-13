@@ -26,11 +26,14 @@ test.describe
     eventId = res.eventId
 
     page = await browser.newPage()
-    await loginToV2(page, CREDENTIALS.LOCAL_REGISTRAR)
   })
 
   test.afterAll(async () => {
     await page.close()
+  })
+
+  test('5.0 Login', async () => {
+    await loginToV2(page, CREDENTIALS.LOCAL_REGISTRAR)
   })
 
   test('5.1 Go to Ready for review tab', async () => {

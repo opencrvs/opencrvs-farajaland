@@ -31,6 +31,10 @@ test.describe.serial('6 Validate Ready to print tab', () => {
     await page.close()
   })
 
+  test('6.0 Login', async () => {
+    await loginToV2(page, CREDENTIALS.LOCAL_REGISTRAR)
+  })
+
   test('6.1 Go to Ready to print tab', async () => {
     await page.waitForTimeout(SAFE_WORKQUEUE_TIMEOUT_MS) // wait for the event to be in the workqueue. Handle better after outbox workqueue is implemented
     await page.getByText('Ready to print').click()

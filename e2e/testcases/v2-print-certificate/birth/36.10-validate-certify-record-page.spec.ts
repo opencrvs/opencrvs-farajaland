@@ -31,9 +31,11 @@ test.describe.serial('10.0 Validate "Review" page', () => {
     await page.close()
   })
 
-  test('10.0 Navigate to certificate print action', async () => {
+  test('10.0.1 Log in', async () => {
     await loginToV2(page)
+  })
 
+  test('10.0.2 Navigate to certificate print action', async () => {
     await page.getByRole('button', { name: 'Ready to print' }).click()
     await navigateToCertificatePrintAction(page, declaration)
   })
