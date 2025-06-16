@@ -9,6 +9,7 @@ import {
 import { formatV2ChildName } from '../v2-birth/helpers'
 import { selectAction } from '../../v2-utils'
 import { ActionType } from '@opencrvs/toolkit/events'
+import { getRowByTitle } from '../v2-print-certificate/birth/helpers'
 
 test.describe.serial('7 Validate Sent for approval tab', () => {
   let page: Page
@@ -47,10 +48,6 @@ test.describe.serial('7 Validate Sent for approval tab', () => {
   })
 
   test('7.2 validate the list', async () => {
-    const button = page.getByRole('button', {
-      name: formatV2ChildName(declaration)
-    })
-
     const header = page.locator('div[class^="TableHeader"]')
     const columns = await header.locator(':scope > div').allInnerTexts()
     expect(columns).toStrictEqual([
@@ -61,7 +58,7 @@ test.describe.serial('7 Validate Sent for approval tab', () => {
       ''
     ])
 
-    const row = button.locator('xpath=ancestor::*[starts-with(@id, "row_")]')
+    const row = getRowByTitle(page, formatV2ChildName(declaration))
     const cells = row.locator(':scope > div')
 
     expect(cells.nth(0)).toHaveText(formatV2ChildName(declaration))
