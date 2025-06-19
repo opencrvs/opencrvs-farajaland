@@ -166,7 +166,7 @@ jobs:
           script: |
             const branchName = slugify('${{ env.BRANCH_NAME }}');
             const deployMessage = `Your environment is deployed to https://${branchName}.opencrvs.dev.`;
-            const prNumber = ${{ needs.generate_stack_name_and_branch.outputs.pr_number }};
+            const prNumber = parseInt(${{ needs.generate_stack_name_and_branch.outputs.pr_number }});
 
             // Check if the comment already exists
             const comments = await github.rest.issues.listComments({
@@ -174,7 +174,7 @@ jobs:
               repo: 'opencrvs-farajaland',
               issue_number: prNumber
             });
-
+            console.log('PR Number:', prNumber);
             const existingComment = comments.data.find(comment => comment.body.includes(deployMessage));
             if (!existingComment) {
               // Add PR comment if it doesn't exist
