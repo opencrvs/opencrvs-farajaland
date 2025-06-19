@@ -65,11 +65,10 @@ jobs:
           echo "PR Head Commit Hash: ${{ env.HEAD_COMMIT_HASH }}"
           echo "Core Commit Hash: ${{ env.CORE_COMMIT_HASH }}"
 
-      - name: Trigger E2E Workflow
-        id: dispatch_e2e
+      - name: Slugify the branch name
+        id: slugify_bname
         uses: actions/github-script@v7
         with:
-          github-token: ${{ secrets.E2E_WORKFLOWS_TOKEN }}
           script: |
             function slugify(str) {
               return str
@@ -78,8 +77,17 @@ jobs:
                 .trim()
                 .replace(/\s+/g, '-')
                 .replace(/-+/g, '-')
-                .substr(0, 35);
+                .substr(0, 35)
+                .replace(/[^a-zA-Z0-9]+$/g, '');
             }
+            core.setOutput('stack', slugify('${{ env.BRANCH_NAME }}'));
+
+      - name: Trigger E2E Workflow
+        id: dispatch_e2e
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.E2E_WORKFLOWS_TOKEN }}
+          script: |
             const result = await github.rest.repos.createDispatchEvent({
               owner: 'opencrvs',
               repo: 'e2e',
@@ -88,7 +96,7 @@ jobs:
                 actor: '${{ github.actor }}',
                 'core-image-tag': '${{ env.CORE_COMMIT_HASH }}',
                 'countryconfig-image-tag': '${{ env.HEAD_COMMIT_HASH }}',
-                stack: slugify('${{ env.BRANCH_NAME }}')
+                stack: '${{ steps.slugify_bname.outputs.stack }}'
               }
             });
 
@@ -121,18 +129,6 @@ jobs:
             const repo = 'e2e';
             const runId = ${{ steps.dispatch_e2e.outputs.runId }};
             const prNumber = ${{ github.event.pull_request.number }};
-
-            function slugify(str) {
-              return str
-                .toLowerCase()
-                .replace(/[^\w\s-]/g, '')
-                .trim()
-                .replace(/\s+/g, '-')
-                .replace(/-+/g, '-')
-                .substr(0, 35);
-            }
-
-
             let deployJobCompleted = false;
 
             // Check if deploy job has completed
@@ -164,7 +160,7 @@ jobs:
         with:
           github-token: ${{ secrets.FARAJALAND_ISSUES_PR_TOKEN }}
           script: |
-            const branchName = slugify('${{ env.BRANCH_NAME }}');
+            const branchName = '${{ steps.slugify_bname.outputs.stack }}';
             const deployMessage = `Your environment is deployed to https://${branchName}.opencrvs.dev.`;
             const prNumber = parseInt(${{ needs.generate_stack_name_and_branch.outputs.pr_number }});
 
