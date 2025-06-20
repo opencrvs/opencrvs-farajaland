@@ -121,11 +121,9 @@ jobs:
               throw new Error('No workflow run found.');
             }
       - name: Print link to E2E workflow run
-        env:
-          RUN_ID: ${{ steps.dispatch_e2e.outputs.runId }}
         id: print-links
         run: |
-          E2E_RUN_LINK="https://github.com/opencrvs/e2e/actions/runs/$RUN_ID"
+          E2E_RUN_LINK="https://github.com/opencrvs/e2e/actions/runs/${{ steps.dispatch_e2e.outputs.runId }}"
           DEPLOYMENT_LINK="https://${{ steps.slugify_bname.outputs.stack }}.opencrvs.dev"
 
           echo """
