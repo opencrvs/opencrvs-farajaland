@@ -27,8 +27,6 @@ jobs:
     if: ${{ !contains(github.actor, 'bot') }}
     runs-on: ubuntu-22.04
     steps:
-      - run: |
-          echo "PR: ${{ github.event.pull_request.number }}"
       - uses: actions/checkout@v3
 
       - name: Get PR Information (when manually triggered)
@@ -118,7 +116,7 @@ jobs:
               console.log(`Captured runId: ${runId}`);
 
               // Set the runId as an output
-              core.setOutput('run_id', runId);
+              core.setOutput('runId', runId);
             } else {
               throw new Error('No workflow run found.');
             }
