@@ -67,7 +67,7 @@ jobs:
             image_tag=${{ inputs.countryconfig-image-tag }}
             echo "image_tag=$image_tag" >> $GITHUB_ENV
           fi
-          message="Core image tag: ${{ inputs.core-image-tag }} \n\n Country config image tag: $image_tag \n\n $message"
+          message="Core image tag: ${{ inputs.core-image-tag }} \n\nCountry config image tag: $image_tag \n\n $message"
           echo -e $message | tee -a $GITHUB_STEP_SUMMARY
 
       - name: Read known hosts
