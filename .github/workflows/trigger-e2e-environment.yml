@@ -116,10 +116,25 @@ jobs:
               console.log(`Captured runId: ${runId}`);
 
               // Set the runId as an output
-              core.setOutput('runId', runId);
+              core.setOutput('run_id', runId);
             } else {
               throw new Error('No workflow run found.');
             }
+      - name: Print link to E2E workflow run
+        id: print-links
+        run: |
+          E2E_RUN_LINK="https://github.com/opencrvs/e2e/actions/runs/${{ steps.dispatch_e2e.outputs.runId }}"
+          DEPLOYMENT_LINK="https://${{ steps.slugify_bname.outputs.stack }}.opencrvs.dev"
+
+          echo """
+          # E2E Environment summary
+          Action workflow (pipeline): $E2E_RUN_LINK
+          All Deployments: https://github.com/opencrvs/e2e/deployments/${{ steps.slugify_bname.outputs.stack }}
+
+          Web link: $DEPLOYMENT_LINK
+          """ >> $GITHUB_STEP_SUMMARY
+
+          echo "deployment_link=$DEPLOYMENT_LINK" >> $GITHUB_OUTPUT
 
       - name: Wait for Environment Deployment (Deploy Job)
         uses: actions/github-script@v7
