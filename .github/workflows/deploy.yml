@@ -15,10 +15,10 @@ on:
       core-image-tag:
         description: Core DockerHub image tag
         required: true
-        default: 'v1.7.2'
+        default: 'v1.8.0'
       countryconfig-image-tag:
         description: Your Country Config DockerHub image tag
-        required: true
+        required: false
       reset:
         type: boolean
         description: Reset the environment
@@ -44,6 +44,7 @@ jobs:
           path: './${{ github.event.repository.name }}'
 
       - name: Checkout country branch ${{ inputs.countryconfig-image-tag }}
+        if: ${{ inputs.countryconfig-image-tag != '' }}
         working-directory: ${{ github.event.repository.name }}
         run: git checkout ${{ inputs.countryconfig-image-tag }}
 
@@ -51,6 +52,13 @@ jobs:
         working-directory: opencrvs-core
         run: git checkout ${{ inputs.core-image-tag }}
 
+      - name: Clarify country config image tag
+        id: country_config
+        if: ${{ inputs.countryconfig-image-tag == '' }}
+        run: |
+          image_tag=`git log -1 --pretty=format:%h`
+          echo "You haven't provided country config image tag, using latest git hash: $image_tag"
+          echo "image_tag=$image_tag" >> GITHUB_OUTPUTS
       - name: Read known hosts
         working-directory: ${{ github.event.repository.name }}
         run: |
@@ -84,7 +92,7 @@ jobs:
             sleep 10
           done
           while true; do
-            if docker manifest inspect ${{ secrets.DOCKERHUB_ACCOUNT }}/${{ secrets.DOCKERHUB_REPO }}:${{ inputs.countryconfig-image-tag }}; then
+            if docker manifest inspect ${{ secrets.DOCKERHUB_ACCOUNT }}/${{ secrets.DOCKERHUB_REPO }}:${{ steps.country_config.outputs.image_tag }}; then
               break
             fi
             sleep 10
@@ -146,7 +154,7 @@ jobs:
           --ssh_port=${{ vars.SSH_PORT || secrets.SSH_PORT }} \
           --ssh_user=${{ secrets.SSH_USER }} \
           --version=${{ inputs.core-image-tag }} \
-          --country_config_version=${{ inputs.countryconfig-image-tag }} \
+          --country_config_version=${{ steps.country_config.outputs.image_tag }} \
           --replicas=${{ vars.REPLICAS }}
 
   reset:
