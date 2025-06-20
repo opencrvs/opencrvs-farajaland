@@ -59,11 +59,13 @@ jobs:
         if: ${{ inputs.countryconfig-image-tag == 'n/a' || inputs.countryconfig-image-tag == '' }}
         run: |
           if [ '${{ inputs.countryconfig-image-tag }}' == 'n/a' || '${{ inputs.countryconfig-image-tag }}' == '' ]
+          then
             image_tag=`git log -1 --pretty=format:%h`
             echo "You haven't provided country config image tag, using latest git hash: $image_tag"
             echo "image_tag=$image_tag" >> $GITHUB_ENV
           else
             echo "image_tag=${{ inputs.countryconfig-image-tag }}" >> $GITHUB_ENV
+          fi
       - name: Read known hosts
         working-directory: ${{ github.event.repository.name }}
         run: |
