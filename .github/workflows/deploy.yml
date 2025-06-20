@@ -58,7 +58,7 @@ jobs:
         working-directory: ${{ github.event.repository.name }}
         if: ${{ inputs.countryconfig-image-tag == 'n/a' || inputs.countryconfig-image-tag == '' }}
         run: |
-          if [ '${{ inputs.countryconfig-image-tag }}' == 'n/a' || '${{ inputs.countryconfig-image-tag }}' == '' ]
+          if [ '${{ inputs.countryconfig-image-tag }}' == 'n/a' ] || [ '${{ inputs.countryconfig-image-tag }}' == '' ]
           then
             image_tag=`git log -1 --pretty=format:%h`
             echo "You haven't provided country config image tag, using latest git hash: $image_tag"
