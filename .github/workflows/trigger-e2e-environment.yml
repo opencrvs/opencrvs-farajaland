@@ -144,7 +144,7 @@ jobs:
             const owner = 'opencrvs';
             const repo = 'e2e';
             const runId = ${{ steps.dispatch_e2e.outputs.runId }};
-            const prNumber = ${{ github.event.pull_request.number }};
+            const prNumber = parseInt(${{ github.event.pull_request.number }});
             let deployJobCompleted = false;
 
             // Check if deploy job has completed
