@@ -87,7 +87,7 @@ jobs:
         run: |
           if [ '${{ inputs.countryconfig-image-tag }}' == 'n/a' ] || [ '${{ inputs.countryconfig-image-tag }}' == '' ]
           then
-            image_tag=`git log -1 --pretty=format:%h`
+            image_tag=`git rev-parse --short=7 HEAD`
             message="⚠️ You haven't provided country config image tag, using latest git hash as image tag."
             message="$message Please make sure image with tag was built and pushed to your registry"
             echo "image_tag=$image_tag" >> $GITHUB_ENV
