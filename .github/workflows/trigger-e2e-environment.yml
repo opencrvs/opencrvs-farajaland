@@ -133,7 +133,7 @@ jobs:
 
           Web link: $DEPLOYMENT_LINK
           """ >> $GITHUB_STEP_SUMMARY
-
+          echo "PR: ${{ github.event.pull_request.number }}"
           echo "deployment_link=$DEPLOYMENT_LINK" >> $GITHUB_OUTPUT
 
       - name: Wait for Environment Deployment (Deploy Job)
