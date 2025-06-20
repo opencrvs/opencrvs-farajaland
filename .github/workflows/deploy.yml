@@ -67,8 +67,9 @@ jobs:
           else
             echo "image_tag=${{ inputs.countryconfig-image-tag }}" >> $GITHUB_ENV
           fi
-          echo "Country config image tag is ${{ env.image_tag }}" >> $GITHUB_STEP_SUMMARY
-          echo $message >> $GITHUB_STEP_SUMMARY
+          message="Country config image tag is ${{ env.image_tag }}. \n $message"
+          echo $message | tee -a $GITHUB_STEP_SUMMARY
+
       - name: Read known hosts
         working-directory: ${{ github.event.repository.name }}
         run: |
