@@ -65,10 +65,12 @@ jobs:
             message="$message Please make sure image with tag was built and pushed to your registry"
             echo "image_tag=$image_tag" >> $GITHUB_ENV
           else
-            echo "image_tag=${{ inputs.countryconfig-image-tag }}" >> $GITHUB_ENV
+            image_tag=${{ inputs.countryconfig-image-tag }}
+            echo "image_tag=$image_tag" >> $GITHUB_ENV
           fi
-          message="Country config image tag is ${{ env.image_tag }}. \n $message"
-          echo $message | tee -a $GITHUB_STEP_SUMMARY
+          message="Core image tag: ${{ inputs.core-image-tag }} \n\n"
+          message="Country config image tag: $image_tag \n\n $message"
+          echo -e $message | tee -a $GITHUB_STEP_SUMMARY
 
       - name: Read known hosts
         working-directory: ${{ github.event.repository.name }}
