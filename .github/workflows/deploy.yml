@@ -1,5 +1,5 @@
 name: Deploy (development)
-run-name: "Deploy to ${{ inputs.environment }} with reset=${{ inputs.reset }} (core: ${{ inputs.core-image-tag }}, country config: ${{ inputs.countryconfig-image-tag }}"
+run-name: "Deploy to ${{ inputs.environment }} with (core: ${{ inputs.core-image-tag }}, country config: ${{ inputs.countryconfig-image-tag }}, reset: ${{ inputs.reset }})"
 on:
   workflow_call:
     inputs:
@@ -72,7 +72,7 @@ jobs:
           path: './${{ github.event.repository.name }}'
 
       - name: Checkout country branch ${{ inputs.countryconfig-image-tag }}
-        if: ${{ inputs.countryconfig-image-tag != 'n/a' || inputs.countryconfig-image-tag != '' }}
+        if: ${{ inputs.countryconfig-image-tag != 'n/a' && inputs.countryconfig-image-tag != '' }}
         working-directory: ${{ github.event.repository.name }}
         run: git checkout ${{ inputs.countryconfig-image-tag }}
 
@@ -86,7 +86,7 @@ jobs:
         run: |
           image_tag=`git log -1 --pretty=format:%h`
           echo "You haven't provided country config image tag, using latest git hash: $image_tag"
-          echo "image_tag=$image_tag" >> GITHUB_OUTPUTS
+          echo "image_tag=$image_tag" >> GITHUB_OUTPUT
       - name: Read known hosts
         working-directory: ${{ github.event.repository.name }}
         run: |
