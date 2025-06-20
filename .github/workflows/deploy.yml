@@ -1,5 +1,5 @@
 name: Deploy (development)
-run-name: Deploy to ${{ inputs.environment }} with reset=${{ inputs.reset }} core=${{ inputs.core-image-tag }} country config=${{ inputs.countryconfig-image-tag }}
+run-name: "Deploy to ${{ inputs.environment }} with reset=${{ inputs.reset }} (core: ${{ inputs.core-image-tag }}, country config: ${{ inputs.countryconfig-image-tag }}"
 on:
   workflow_dispatch:
     inputs:
@@ -18,6 +18,7 @@ on:
         default: 'v1.8.0'
       countryconfig-image-tag:
         description: Your Country Config DockerHub image tag
+        default: 'n/a'
         required: false
       reset:
         type: boolean
@@ -44,7 +45,7 @@ jobs:
           path: './${{ github.event.repository.name }}'
 
       - name: Checkout country branch ${{ inputs.countryconfig-image-tag }}
-        if: ${{ inputs.countryconfig-image-tag != '' }}
+        if: ${{ inputs.countryconfig-image-tag != 'n/a' || inputs.countryconfig-image-tag != '' }}
         working-directory: ${{ github.event.repository.name }}
         run: git checkout ${{ inputs.countryconfig-image-tag }}
 
@@ -54,7 +55,7 @@ jobs:
 
       - name: Clarify country config image tag
         id: country_config
-        if: ${{ inputs.countryconfig-image-tag == '' }}
+        if: ${{ inputs.countryconfig-image-tag == 'n/a' || inputs.countryconfig-image-tag == '' }}
         run: |
           image_tag=`git log -1 --pretty=format:%h`
           echo "You haven't provided country config image tag, using latest git hash: $image_tag"
