@@ -53,8 +53,7 @@ jobs:
         working-directory: opencrvs-core
         run: git checkout ${{ inputs.core-image-tag }}
 
-      - name: Country config image tag
-        id: country_config
+      - name: Resolve image tags
         working-directory: ${{ github.event.repository.name }}
         if: ${{ inputs.countryconfig-image-tag == 'n/a' || inputs.countryconfig-image-tag == '' }}
         run: |
