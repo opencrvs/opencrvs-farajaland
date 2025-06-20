@@ -53,13 +53,17 @@ jobs:
         working-directory: opencrvs-core
         run: git checkout ${{ inputs.core-image-tag }}
 
-      - name: Clarify country config image tag
+      - name: Clarify country config image tag ${{ env.image_tag }}
         id: country_config
+        working-directory: ${{ github.event.repository.name }}
         if: ${{ inputs.countryconfig-image-tag == 'n/a' || inputs.countryconfig-image-tag == '' }}
         run: |
-          image_tag=`git log -1 --pretty=format:%h`
-          echo "You haven't provided country config image tag, using latest git hash: $image_tag"
-          echo "image_tag=$image_tag" >> GITHUB_OUTPUT
+          if [ '${{ inputs.countryconfig-image-tag }}' == 'n/a' || '${{ inputs.countryconfig-image-tag }}' == '' ]
+            image_tag=`git log -1 --pretty=format:%h`
+            echo "You haven't provided country config image tag, using latest git hash: $image_tag"
+            echo "image_tag=$image_tag" >> $GITHUB_ENV
+          else
+            echo "image_tag=${{ inputs.countryconfig-image-tag }}" >> $GITHUB_ENV
       - name: Read known hosts
         working-directory: ${{ github.event.repository.name }}
         run: |
@@ -93,7 +97,7 @@ jobs:
             sleep 10
           done
           while true; do
-            if docker manifest inspect ${{ secrets.DOCKERHUB_ACCOUNT }}/${{ secrets.DOCKERHUB_REPO }}:${{ steps.country_config.outputs.image_tag }}; then
+            if docker manifest inspect ${{ secrets.DOCKERHUB_ACCOUNT }}/${{ secrets.DOCKERHUB_REPO }}:${{ env.image_tag }}; then
               break
             fi
             sleep 10
@@ -155,7 +159,7 @@ jobs:
           --ssh_port=${{ vars.SSH_PORT || secrets.SSH_PORT }} \
           --ssh_user=${{ secrets.SSH_USER }} \
           --version=${{ inputs.core-image-tag }} \
-          --country_config_version=${{ steps.country_config.outputs.image_tag }} \
+          --country_config_version=${{ env.image_tag }} \
           --replicas=${{ vars.REPLICAS }}
 
   reset:
