@@ -19,7 +19,7 @@ jobs:
         runner: [ubuntu-24.04, ubuntu-24.04-arm]
     outputs:
       version: ${{ steps.country_config.outputs.version }}
-
+      version_common: ${{ steps.country_config.outputs.version_common }}
     runs-on: ${{ matrix.runner }}
     steps:
       - uses: actions/checkout@v4
