@@ -2,6 +2,7 @@ import { test, expect, type Page } from '@playwright/test'
 import { formatName, goToSection, loginToV2 } from '../../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS, SAFE_WORKQUEUE_TIMEOUT_MS } from '../../../constants'
+import { ensureOutboxIsEmpty } from '../../../v2-utils'
 
 test.describe.serial('Submit and verify incomplete birth declaration', () => {
   let page: Page
@@ -33,12 +34,8 @@ test.describe.serial('Submit and verify incomplete birth declaration', () => {
     })
 
     test('Fill child details', async () => {
-      await page
-        .locator('#child____firstname')
-        .fill(declaration.child.name.firstNames)
-      await page
-        .locator('#child____surname')
-        .fill(declaration.child.name.familyName)
+      await page.locator('#firstname').fill(declaration.child.name.firstNames)
+      await page.locator('#surname').fill(declaration.child.name.familyName)
 
       await page.locator('#child____placeOfBirth').click()
       await page
@@ -57,7 +54,7 @@ test.describe.serial('Submit and verify incomplete birth declaration', () => {
     })
 
     test('Verify summary page', async () => {
-      await page.waitForTimeout(SAFE_WORKQUEUE_TIMEOUT_MS) // wait for the event to be in the workqueue. Handle better after outbox workqueue is implemented
+      await ensureOutboxIsEmpty(page)
       await page.getByText('Sent for review').click()
 
       await page

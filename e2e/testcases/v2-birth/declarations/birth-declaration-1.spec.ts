@@ -18,7 +18,7 @@ import {
   fillDate,
   validateAddress
 } from '../helpers'
-import { selectAction } from '../../../v2-utils'
+import { ensureOutboxIsEmpty, selectAction } from '../../../v2-utils'
 
 test.describe.serial('1. Birth declaration case - 1', () => {
   let page: Page
@@ -104,12 +104,8 @@ test.describe.serial('1. Birth declaration case - 1', () => {
     })
 
     test('1.1.1 Fill child details', async () => {
-      await page
-        .locator('#child____firstname')
-        .fill(declaration.child.name.firstNames)
-      await page
-        .locator('#child____surname')
-        .fill(declaration.child.name.familyName)
+      await page.locator('#firstname').fill(declaration.child.name.firstNames)
+      await page.locator('#surname').fill(declaration.child.name.familyName)
       await page.locator('#child____gender').click()
       await page.getByText(declaration.child.gender, { exact: true }).click()
 
@@ -163,12 +159,8 @@ test.describe.serial('1. Birth declaration case - 1', () => {
     })
 
     test("1.1.3 Fill mother's details", async () => {
-      await page
-        .locator('#mother____firstname')
-        .fill(declaration.mother.name.firstNames)
-      await page
-        .locator('#mother____surname')
-        .fill(declaration.mother.name.familyName)
+      await page.locator('#firstname').fill(declaration.mother.name.firstNames)
+      await page.locator('#surname').fill(declaration.mother.name.familyName)
 
       await page.getByPlaceholder('dd').fill(declaration.mother.birthDate.dd)
       await page.getByPlaceholder('mm').fill(declaration.mother.birthDate.mm)
@@ -227,12 +219,8 @@ test.describe.serial('1. Birth declaration case - 1', () => {
     })
 
     test("1.1.4 Fill father's details", async () => {
-      await page
-        .locator('#father____firstname')
-        .fill(declaration.father.name.firstNames)
-      await page
-        .locator('#father____surname')
-        .fill(declaration.father.name.familyName)
+      await page.locator('#firstname').fill(declaration.father.name.firstNames)
+      await page.locator('#surname').fill(declaration.father.name.familyName)
 
       await fillDate(page, declaration.father.birthDate)
 
@@ -275,12 +263,10 @@ test.describe.serial('1. Birth declaration case - 1', () => {
        * - Child's First Name
        * - Child's Family Name
        */
-      await expect(page.getByTestId('row-value-child.firstname')).toHaveText(
-        declaration.child.name.firstNames
-      )
-
-      await expect(page.getByTestId('row-value-child.surname')).toHaveText(
-        declaration.child.name.familyName
+      await expect(page.getByTestId('row-value-child.name')).toHaveText(
+        declaration.child.name.firstNames +
+          ' ' +
+          declaration.child.name.familyName
       )
 
       /*
@@ -357,12 +343,10 @@ test.describe.serial('1. Birth declaration case - 1', () => {
        * - Mother's First Name
        * - Mother's Family Name
        */
-      await expect(page.getByTestId('row-value-mother.firstname')).toHaveText(
-        declaration.mother.name.firstNames
-      )
-
-      await expect(page.getByTestId('row-value-mother.surname')).toHaveText(
-        declaration.mother.name.familyName
+      await expect(page.getByTestId('row-value-mother.name')).toHaveText(
+        declaration.mother.name.firstNames +
+          ' ' +
+          declaration.mother.name.familyName
       )
 
       /*
@@ -425,12 +409,10 @@ test.describe.serial('1. Birth declaration case - 1', () => {
        * - Father's First Name
        * - Father's Family Name
        */
-      await expect(page.getByTestId('row-value-father.firstname')).toHaveText(
-        declaration.father.name.firstNames
-      )
-
-      await expect(page.getByTestId('row-value-father.surname')).toHaveText(
-        declaration.father.name.familyName
+      await expect(page.getByTestId('row-value-father.name')).toHaveText(
+        declaration.father.name.firstNames +
+          ' ' +
+          declaration.father.name.familyName
       )
 
       /*
@@ -503,7 +485,8 @@ test.describe.serial('1. Birth declaration case - 1', () => {
       await expect(page.getByText('Send for review?')).toBeVisible()
       await page.getByRole('button', { name: 'Confirm' }).click()
 
-      await page.waitForTimeout(SAFE_WORKQUEUE_TIMEOUT_MS) // wait for the event to be in the workqueue. Handle better after outbox workqueue is implemented
+      await ensureOutboxIsEmpty(page)
+
       await page.getByText('Sent for review').click()
       await expect(
         page.getByRole('button', {
@@ -516,7 +499,6 @@ test.describe.serial('1. Birth declaration case - 1', () => {
   test.describe('1.2 Declaration Review by RA', async () => {
     test('1.2.1 Navigate to the declaration review page', async () => {
       await loginToV2(page, CREDENTIALS.REGISTRATION_AGENT)
-      await page.waitForTimeout(SAFE_WORKQUEUE_TIMEOUT_MS) // wait for the event to be in the workqueue. Handle better after outbox workqueue is implemented
       await page.getByText('Ready for review').click()
       await page
         .getByRole('button', {
@@ -535,13 +517,10 @@ test.describe.serial('1. Birth declaration case - 1', () => {
        */
       await expectRowValueWithChangeButton(
         page,
-        'child.firstname',
-        declaration.child.name.firstNames
-      )
-      await expectRowValueWithChangeButton(
-        page,
-        'child.surname',
-        declaration.child.name.familyName
+        'child.name',
+        declaration.child.name.firstNames +
+          ' ' +
+          declaration.child.name.familyName
       )
 
       /*
@@ -637,13 +616,8 @@ test.describe.serial('1. Birth declaration case - 1', () => {
        */
       await expectRowValueWithChangeButton(
         page,
-        'mother.firstname',
+        'mother.name',
         declaration.mother.name.firstNames
-      )
-      await expectRowValueWithChangeButton(
-        page,
-        'mother.surname',
-        declaration.mother.name.familyName
       )
 
       /*
@@ -719,13 +693,10 @@ test.describe.serial('1. Birth declaration case - 1', () => {
        */
       await expectRowValueWithChangeButton(
         page,
-        'father.firstname',
-        declaration.father.name.firstNames
-      )
-      await expectRowValueWithChangeButton(
-        page,
-        'father.surname',
-        declaration.father.name.familyName
+        'father.name',
+        declaration.father.name.firstNames +
+          ' ' +
+          declaration.father.name.familyName
       )
 
       /*
