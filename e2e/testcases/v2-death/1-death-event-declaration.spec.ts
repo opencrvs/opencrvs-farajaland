@@ -3,7 +3,9 @@ import { loginToV2 } from '../../helpers'
 import { faker } from '@faker-js/faker'
 import { SAFE_WORKQUEUE_TIMEOUT_MS } from '../../constants'
 const deceased = {
-  firstNames: faker.person.firstName('male')
+  name: {
+    firstname: faker.person.firstName('male')
+  }
 }
 
 test.describe('1. Death event declaration', () => {
@@ -169,7 +171,7 @@ test.describe('1. Death event declaration', () => {
       })
 
       test('1.4.2 Validate Deceased details block', async () => {
-        await page.locator('#deceased____firstname').fill(deceased.firstNames)
+        await page.locator('#firstname').fill(deceased.name.firstname)
       })
 
       test('1.4.3 Click "continue"', async () => {
@@ -418,7 +420,7 @@ test.describe('1. Death event declaration', () => {
 
         await page.waitForTimeout(SAFE_WORKQUEUE_TIMEOUT_MS) // wait for the event to be in the workqueue. Handle better after outbox workqueue is implemented
 
-        await expect(page.getByText(deceased.firstNames)).toBeVisible()
+        await expect(page.getByText(deceased.name.firstname)).toBeVisible()
       })
     })
   })
@@ -474,7 +476,7 @@ test.describe('1. Death event declaration', () => {
 
       await page.waitForTimeout(SAFE_WORKQUEUE_TIMEOUT_MS) // wait for the event to be in the workqueue. Handle better after outbox workqueue is implemented
 
-      await expect(page.getByText(deceased.firstNames)).toBeHidden()
+      await expect(page.getByText(deceased.name.firstname)).toBeHidden()
     })
   })
 
@@ -535,7 +537,7 @@ test.describe('1. Death event declaration', () => {
 
       await page.waitForTimeout(SAFE_WORKQUEUE_TIMEOUT_MS) // wait for the event to be in the workqueue. Handle better after outbox workqueue is implemented
 
-      await expect(page.getByText(deceased.firstNames)).toBeHidden()
+      await expect(page.getByText(deceased.name.firstname)).toBeHidden()
     })
 
     // @TODO: This test is not implemented in V2 events yet

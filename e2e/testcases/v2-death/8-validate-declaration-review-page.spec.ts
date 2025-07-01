@@ -27,8 +27,10 @@ test.describe.serial('8. Validate declaration review page', () => {
   }
   const declaration = {
     deceased: {
-      firstname: faker.person.firstName('male'),
-      surname: faker.person.lastName('male'),
+      name: {
+        firstname: faker.person.firstName('male'),
+        surname: faker.person.lastName('male')
+      },
       gender: 'Male',
       dob: getRandomDate(75, 200),
       nationality: 'Farajaland',
@@ -49,8 +51,10 @@ test.describe.serial('8. Validate declaration review page', () => {
     },
     informant: {
       relation: 'Spouse',
-      firstname: '',
-      surname: '',
+      name: {
+        firstname: '',
+        surname: ''
+      },
       dob: { dd: '', mm: '', yyyy: '' },
       nationality: '',
       idType: '',
@@ -60,8 +64,10 @@ test.describe.serial('8. Validate declaration review page', () => {
       addressSameAs: true
     },
     spouse: {
-      firstname: faker.person.firstName('female'),
-      surname: faker.person.lastName('female'),
+      name: {
+        firstname: faker.person.firstName('female'),
+        surname: faker.person.lastName('female')
+      },
       dob: getRandomDate(50, 200),
       nationality: 'Farajaland',
       idType: 'National ID',
@@ -94,11 +100,9 @@ test.describe.serial('8. Validate declaration review page', () => {
     test.describe('8.1.0 Fill up death registration form', async () => {
       test('8.1.0.1 Fill deceased details', async () => {
         await page
-          .locator('#deceased____firstname')
-          .fill(declaration.deceased.firstname)
-        await page
-          .locator('#deceased____surname')
-          .fill(declaration.deceased.surname)
+          .locator('#firstname')
+          .fill(declaration.deceased.name.firstname)
+        await page.locator('#surname').fill(declaration.deceased.name.surname)
         await page.locator('#deceased____gender').click()
         await page
           .getByText(declaration.deceased.gender, { exact: true })
@@ -159,12 +163,8 @@ test.describe.serial('8. Validate declaration review page', () => {
       })
 
       test('8.1.0.4 Fill spouse details', async () => {
-        await page
-          .locator('#spouse____firstname')
-          .fill(declaration.spouse.firstname)
-        await page
-          .locator('#spouse____surname')
-          .fill(declaration.spouse.surname)
+        await page.locator('#firstname').fill(declaration.spouse.name.firstname)
+        await page.locator('#surname').fill(declaration.spouse.name.surname)
 
         await page.getByPlaceholder('dd').fill(declaration.spouse.dob.dd)
         await page.getByPlaceholder('mm').fill(declaration.spouse.dob.mm)
@@ -190,13 +190,10 @@ test.describe.serial('8. Validate declaration review page', () => {
          * - Change button
          */
         await expectRowValueWithChangeButton(
-          'deceased.firstname',
-          declaration.deceased.firstname
-        )
-
-        await expectRowValueWithChangeButton(
-          'deceased.surname',
-          declaration.deceased.surname
+          'deceased.name',
+          declaration.deceased.name.firstname +
+            ' ' +
+            declaration.deceased.name.surname
         )
 
         /*
@@ -301,12 +298,10 @@ test.describe.serial('8. Validate declaration review page', () => {
          * - Change button
          */
         await expectRowValueWithChangeButton(
-          'spouse.firstname',
-          declaration.spouse.firstname
-        )
-        await expectRowValueWithChangeButton(
-          'spouse.surname',
-          declaration.spouse.surname
+          'spouse.name',
+          declaration.spouse.name.firstname +
+            ' ' +
+            declaration.spouse.name.surname
         )
 
         /*
@@ -354,28 +349,25 @@ test.describe.serial('8. Validate declaration review page', () => {
 
     test.describe('8.1.2 Click any "Change" link', async () => {
       test("8.1.2.1 Change deceased's name", async () => {
-        await page.getByTestId('change-button-deceased.firstname').click()
+        await page.getByTestId('change-button-deceased.name').click()
         await page.getByRole('button', { name: 'Continue' }).click()
 
-        declaration.deceased.firstname = faker.person.firstName('male')
-        declaration.deceased.surname = faker.person.lastName('male')
+        declaration.deceased.name.firstname = faker.person.firstName('male')
+        declaration.deceased.name.surname = faker.person.lastName('male')
         await page
-          .locator('#deceased____firstname')
-          .fill(declaration.deceased.firstname)
-        await page
-          .locator('#deceased____surname')
-          .fill(declaration.deceased.surname)
+          .locator('#firstname')
+          .fill(declaration.deceased.name.firstname)
+        await page.locator('#surname').fill(declaration.deceased.name.surname)
 
         await page.getByRole('button', { name: 'Back to review' }).click()
         /*
          * Expected result: should change deceased's name
          */
-        await expect(
-          page.getByTestId('row-value-deceased.firstname')
-        ).toContainText(declaration.deceased.firstname)
-        await expect(
-          page.getByTestId('row-value-deceased.surname')
-        ).toContainText(declaration.deceased.surname)
+        await expect(page.getByTestId('row-value-deceased.name')).toContainText(
+          declaration.deceased.name.firstname +
+            ' ' +
+            declaration.deceased.name.surname
+        )
       })
 
       test("8.1.2.2 Change deceased's gender", async () => {
@@ -522,26 +514,21 @@ test.describe.serial('8. Validate declaration review page', () => {
       })
 
       test("8.1.2.9 Change spouse's name", async () => {
-        await page.getByTestId('change-button-spouse.firstname').click()
+        await page.getByTestId('change-button-spouse.name').click()
         await page.getByRole('button', { name: 'Continue' }).click()
-        declaration.spouse.firstname = faker.person.firstName('female')
-        declaration.spouse.surname = faker.person.lastName('female')
-        await page
-          .locator('#spouse____firstname')
-          .fill(declaration.spouse.firstname)
-        await page
-          .locator('#spouse____surname')
-          .fill(declaration.spouse.surname)
+        declaration.spouse.name.firstname = faker.person.firstName('female')
+        declaration.spouse.name.surname = faker.person.lastName('female')
+        await page.locator('#firstname').fill(declaration.spouse.name.firstname)
+        await page.locator('#surname').fill(declaration.spouse.name.surname)
         await page.getByRole('button', { name: 'Back to review' }).click()
         /*
          * Expected result: should change spouse's name
          */
-        await expect(
-          page.getByTestId('row-value-spouse.firstname')
-        ).toContainText(declaration.spouse.firstname)
-        await expect(
-          page.getByTestId('row-value-spouse.surname')
-        ).toContainText(declaration.spouse.surname)
+        await expect(page.getByTestId('row-value-spouse.name')).toContainText(
+          declaration.spouse.name.firstname +
+            ' ' +
+            declaration.spouse.name.surname
+        )
       })
       test("8.1.2.10 Change spouse's birthday", async () => {
         await page.getByTestId('change-button-spouse.dob').click()
@@ -660,7 +647,7 @@ test.describe.serial('8. Validate declaration review page', () => {
         }
       })
 
-      test.skip('8.1.3.3 Upload proof of death', async () => {
+      test('8.1.3.3 Upload proof of death', async () => {
         const imageUploadSectionTitles = [
           'Attested letter of death',
           'Police certificate of death',
@@ -673,10 +660,10 @@ test.describe.serial('8. Validate declaration review page', () => {
         for (const sectionTitle of imageUploadSectionTitles) {
           await uploadImageToSection({
             page,
-            sectionLocator: page.locator('#uploadDocForDeceasedDeath'),
+            sectionLocator: page.locator('#documents____proofOfDeath'),
             sectionTitle,
             buttonLocator: page.locator(
-              'button[name="uploadDocForDeceasedDeath"]'
+              'button[name="documents____proofOfDeath"]'
             )
           })
         }
@@ -725,7 +712,9 @@ test.describe.serial('8. Validate declaration review page', () => {
       await expect(
         page.getByRole('button', {
           name:
-            declaration.deceased.firstname + ' ' + declaration.deceased.surname
+            declaration.deceased.name.firstname +
+            ' ' +
+            declaration.deceased.name.surname
         })
       ).toBeVisible()
     })
@@ -736,12 +725,14 @@ test.describe.serial('8. Validate declaration review page', () => {
       await loginToV2(page, CREDENTIALS.REGISTRATION_AGENT)
 
       await page.waitForTimeout(SAFE_WORKQUEUE_TIMEOUT_MS) // wait for the event to be in the workqueue. Handle better after outbox workqueue is implemented
-      await page.getByText('Ready for review').click()
+      await page.getByText('Notifications').click()
 
       await page
         .getByRole('button', {
           name:
-            declaration.deceased.firstname + ' ' + declaration.deceased.surname
+            declaration.deceased.name.firstname +
+            ' ' +
+            declaration.deceased.name.surname
         })
         .click()
     })
@@ -754,12 +745,10 @@ test.describe.serial('8. Validate declaration review page', () => {
        * - Change button
        */
       await expectRowValueWithChangeButton(
-        'deceased.firstname',
-        declaration.deceased.firstname
-      )
-      await expectRowValueWithChangeButton(
-        'deceased.surname',
-        declaration.deceased.surname
+        'deceased.name',
+        declaration.deceased.name.firstname +
+          ' ' +
+          declaration.deceased.name.surname
       )
 
       /*
@@ -845,12 +834,10 @@ test.describe.serial('8. Validate declaration review page', () => {
        * - Change button
        */
       await expectRowValueWithChangeButton(
-        'spouse.firstname',
-        declaration.spouse.firstname
-      )
-      await expectRowValueWithChangeButton(
-        'spouse.surname',
-        declaration.spouse.surname
+        'spouse.name',
+        declaration.spouse.name.firstname +
+          ' ' +
+          declaration.spouse.name.surname
       )
 
       /*
@@ -905,28 +892,25 @@ test.describe.serial('8. Validate declaration review page', () => {
 
     test.describe('8.2.2 Click any "Change" link', async () => {
       test("8.2.2.1 Change deceased's name", async () => {
-        await page.getByTestId('change-button-deceased.firstname').click()
+        await page.getByTestId('change-button-deceased.name').click()
         await page.getByRole('button', { name: 'Continue' }).click()
 
-        declaration.deceased.firstname = faker.person.firstName('male')
-        declaration.deceased.surname = faker.person.lastName('male')
+        declaration.deceased.name.firstname = faker.person.firstName('male')
+        declaration.deceased.name.surname = faker.person.lastName('male')
         await page
-          .locator('#deceased____firstname')
-          .fill(declaration.deceased.firstname)
-        await page
-          .locator('#deceased____surname')
-          .fill(declaration.deceased.surname)
+          .locator('#firstname')
+          .fill(declaration.deceased.name.firstname)
+        await page.locator('#surname').fill(declaration.deceased.name.surname)
 
         await page.getByRole('button', { name: 'Back to review' }).click()
         /*
          * Expected result: should change deceased's name
          */
-        await expect(
-          page.getByTestId('row-value-deceased.firstname')
-        ).toContainText(declaration.deceased.firstname)
-        await expect(
-          page.getByTestId('row-value-deceased.surname')
-        ).toContainText(declaration.deceased.surname)
+        await expect(page.getByTestId('row-value-deceased.name')).toContainText(
+          declaration.deceased.name.firstname +
+            ' ' +
+            declaration.deceased.name.surname
+        )
       })
 
       test("8.2.2.2 Change deceased's gender", async () => {
@@ -1071,26 +1055,21 @@ test.describe.serial('8. Validate declaration review page', () => {
       })
 
       test("8.2.2.9 Change spouse's name", async () => {
-        await page.getByTestId('change-button-spouse.firstname').click()
+        await page.getByTestId('change-button-spouse.name').click()
         await page.getByRole('button', { name: 'Continue' }).click()
-        declaration.spouse.firstname = faker.person.firstName('female')
-        declaration.spouse.surname = faker.person.lastName('female')
-        await page
-          .locator('#spouse____firstname')
-          .fill(declaration.spouse.firstname)
-        await page
-          .locator('#spouse____surname')
-          .fill(declaration.spouse.surname)
+        declaration.spouse.name.firstname = faker.person.firstName('female')
+        declaration.spouse.name.surname = faker.person.lastName('female')
+        await page.locator('#firstname').fill(declaration.spouse.name.firstname)
+        await page.locator('#surname').fill(declaration.spouse.name.surname)
         await page.getByRole('button', { name: 'Back to review' }).click()
         /*
          * Expected result: should change spouse's name
          */
-        await expect(
-          page.getByTestId('row-value-spouse.firstname')
-        ).toContainText(declaration.spouse.firstname)
-        await expect(
-          page.getByTestId('row-value-spouse.surname')
-        ).toContainText(declaration.spouse.surname)
+        await expect(page.getByTestId('row-value-spouse.name')).toContainText(
+          declaration.spouse.name.firstname +
+            ' ' +
+            declaration.spouse.name.surname
+        )
       })
       test("8.2.2.10 Change spouse's birthday", async () => {
         await page.getByTestId('change-button-spouse.dob').click()
@@ -1184,7 +1163,9 @@ test.describe.serial('8. Validate declaration review page', () => {
       await expect(
         page.getByRole('button', {
           name:
-            declaration.deceased.firstname + ' ' + declaration.deceased.surname
+            declaration.deceased.name.firstname +
+            ' ' +
+            declaration.deceased.name.surname
         })
       ).toBeVisible()
     })
@@ -1200,7 +1181,9 @@ test.describe.serial('8. Validate declaration review page', () => {
       await page
         .getByRole('button', {
           name:
-            declaration.deceased.firstname + ' ' + declaration.deceased.surname
+            declaration.deceased.name.firstname +
+            ' ' +
+            declaration.deceased.name.surname
         })
         .click()
     })
@@ -1213,12 +1196,10 @@ test.describe.serial('8. Validate declaration review page', () => {
        * - Change button
        */
       await expectRowValueWithChangeButton(
-        'deceased.firstname',
-        declaration.deceased.firstname
-      )
-      await expectRowValueWithChangeButton(
-        'deceased.surname',
-        declaration.deceased.surname
+        'deceased.name',
+        declaration.deceased.name.firstname +
+          ' ' +
+          declaration.deceased.name.surname
       )
 
       /*
@@ -1310,12 +1291,10 @@ test.describe.serial('8. Validate declaration review page', () => {
        * - Change button
        */
       await expectRowValueWithChangeButton(
-        'spouse.firstname',
-        declaration.spouse.firstname
-      )
-      await expectRowValueWithChangeButton(
-        'spouse.surname',
-        declaration.spouse.surname
+        'spouse.name',
+        declaration.spouse.name.firstname +
+          ' ' +
+          declaration.spouse.name.surname
       )
 
       /*
@@ -1367,28 +1346,25 @@ test.describe.serial('8. Validate declaration review page', () => {
 
     test.describe('8.3.2 Click any "Change" link', async () => {
       test("8.3.2.1 Change deceased's name", async () => {
-        await page.getByTestId('change-button-deceased.firstname').click()
+        await page.getByTestId('change-button-deceased.name').click()
         await page.getByRole('button', { name: 'Continue' }).click()
 
-        declaration.deceased.firstname = faker.person.firstName('male')
-        declaration.deceased.surname = faker.person.lastName('male')
+        declaration.deceased.name.firstname = faker.person.firstName('male')
+        declaration.deceased.name.surname = faker.person.lastName('male')
         await page
-          .locator('#deceased____firstname')
-          .fill(declaration.deceased.firstname)
-        await page
-          .locator('#deceased____surname')
-          .fill(declaration.deceased.surname)
+          .locator('#firstname')
+          .fill(declaration.deceased.name.firstname)
+        await page.locator('#surname').fill(declaration.deceased.name.surname)
 
         await page.getByRole('button', { name: 'Back to review' }).click()
         /*
          * Expected result: should change deceased's name
          */
-        await expect(
-          page.getByTestId('row-value-deceased.firstname')
-        ).toContainText(declaration.deceased.firstname)
-        await expect(
-          page.getByTestId('row-value-deceased.surname')
-        ).toContainText(declaration.deceased.surname)
+        await expect(page.getByTestId('row-value-deceased.name')).toContainText(
+          declaration.deceased.name.firstname +
+            ' ' +
+            declaration.deceased.name.surname
+        )
       })
 
       test("8.3.2.2 Change deceased's gender", async () => {
@@ -1502,8 +1478,10 @@ test.describe.serial('8. Validate declaration review page', () => {
 
         declaration.informant = {
           relation: 'Father',
-          firstname: faker.person.firstName('male'),
-          surname: faker.person.lastName('male'),
+          name: {
+            firstname: faker.person.firstName('male'),
+            surname: faker.person.lastName('male')
+          },
           dob: getRandomDate(20, 50),
           nationality: 'Farajaland',
           idType: 'National ID',
@@ -1521,11 +1499,9 @@ test.describe.serial('8. Validate declaration review page', () => {
           .click()
 
         await page
-          .locator('#informant____firstname')
-          .fill(declaration.informant.firstname)
-        await page
-          .locator('#informant____surname')
-          .fill(declaration.informant.surname)
+          .locator('#firstname')
+          .fill(declaration.informant.name.firstname)
+        await page.locator('#surname').fill(declaration.informant.name.surname)
 
         await page.getByPlaceholder('dd').fill(declaration.informant.dob.dd)
         await page.getByPlaceholder('mm').fill(declaration.informant.dob.mm)
@@ -1568,26 +1544,21 @@ test.describe.serial('8. Validate declaration review page', () => {
       })
 
       test("8.3.2.9 Change spouse's name", async () => {
-        await page.getByTestId('change-button-spouse.firstname').click()
+        await page.getByTestId('change-button-spouse.name').click()
         await page.getByRole('button', { name: 'Continue' }).click()
-        declaration.spouse.firstname = faker.person.firstName('female')
-        declaration.spouse.surname = faker.person.lastName('female')
-        await page
-          .locator('#spouse____firstname')
-          .fill(declaration.spouse.firstname)
-        await page
-          .locator('#spouse____surname')
-          .fill(declaration.spouse.surname)
+        declaration.spouse.name.firstname = faker.person.firstName('female')
+        declaration.spouse.name.surname = faker.person.lastName('female')
+        await page.locator('#firstname').fill(declaration.spouse.name.firstname)
+        await page.locator('#surname').fill(declaration.spouse.name.surname)
         await page.getByRole('button', { name: 'Back to review' }).click()
         /*
          * Expected result: should change spouse's name
          */
-        await expect(
-          page.getByTestId('row-value-spouse.firstname')
-        ).toContainText(declaration.spouse.firstname)
-        await expect(
-          page.getByTestId('row-value-spouse.surname')
-        ).toContainText(declaration.spouse.surname)
+        await expect(page.getByTestId('row-value-spouse.name')).toContainText(
+          declaration.spouse.name.firstname +
+            ' ' +
+            declaration.spouse.name.surname
+        )
       })
       test("8.3.2.10 Change spouse's birthday", async () => {
         await page.getByTestId('change-button-spouse.dob').click()
@@ -1683,7 +1654,9 @@ test.describe.serial('8. Validate declaration review page', () => {
       await expect(
         page.getByRole('button', {
           name:
-            declaration.deceased.firstname + ' ' + declaration.deceased.surname
+            declaration.deceased.name.firstname +
+            ' ' +
+            declaration.deceased.name.surname
         })
       ).toBeVisible()
     })

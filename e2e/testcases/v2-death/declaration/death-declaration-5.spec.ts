@@ -25,8 +25,10 @@ test.describe.serial('5. Death declaration case - 5', () => {
   }
   const declaration = {
     deceased: {
-      firstname: faker.person.firstName('female') + '-Peter',
-      surname: faker.person.lastName('female'),
+      name: {
+        firstname: faker.person.firstName('female') + '-Peter',
+        surname: faker.person.lastName('female')
+      },
       gender: 'Female',
       age: 45,
       nationality: 'Farajaland',
@@ -63,8 +65,10 @@ test.describe.serial('5. Death declaration case - 5', () => {
     informant: {
       relation: 'Daughter in law',
       email: faker.internet.email(),
-      firstname: faker.person.firstName('male'),
-      surname: faker.person.lastName('male'),
+      name: {
+        firstname: faker.person.firstName('male'),
+        surname: faker.person.lastName('male')
+      },
       age: 17,
       nationality: 'Malawi',
       idType: 'None',
@@ -108,12 +112,8 @@ test.describe.serial('5. Death declaration case - 5', () => {
       await page.getByRole('button', { name: 'Continue' }).click()
     })
     test('5.1.1 Fill deceased details', async () => {
-      await page
-        .locator('#deceased____firstname')
-        .fill(declaration.deceased.firstname)
-      await page
-        .locator('#deceased____surname')
-        .fill(declaration.deceased.surname)
+      await page.locator('#firstname').fill(declaration.deceased.name.firstname)
+      await page.locator('#surname').fill(declaration.deceased.name.surname)
       await page.locator('#deceased____gender').click()
       await page.getByText(declaration.deceased.gender, { exact: true }).click()
 
@@ -215,11 +215,9 @@ test.describe.serial('5. Death declaration case - 5', () => {
       await page.waitForTimeout(500) // Temporary measurement untill the bug is fixed. BUG: rerenders after selecting relation with deceased
 
       await page
-        .locator('#informant____firstname')
-        .fill(declaration.informant.firstname)
-      await page
-        .locator('#informant____surname')
-        .fill(declaration.informant.surname)
+        .locator('#firstname')
+        .fill(declaration.informant.name.firstname)
+      await page.locator('#surname').fill(declaration.informant.name.surname)
 
       await page.getByLabel('Exact date of birth unknown').check()
 
@@ -289,13 +287,10 @@ test.describe.serial('5. Death declaration case - 5', () => {
        * - Change button
        */
       await expectRowValueWithChangeButton(
-        'deceased.firstname',
-        declaration.deceased.firstname
-      )
-
-      await expectRowValueWithChangeButton(
-        'deceased.surname',
-        declaration.deceased.surname
+        'deceased.name',
+        declaration.deceased.name.firstname +
+          ' ' +
+          declaration.deceased.name.surname
       )
 
       /*
@@ -429,12 +424,10 @@ test.describe.serial('5. Death declaration case - 5', () => {
        * - Change button
        */
       await expectRowValueWithChangeButton(
-        'informant.firstname',
-        declaration.informant.firstname
-      )
-      await expectRowValueWithChangeButton(
-        'informant.surname',
-        declaration.informant.surname
+        'informant.name',
+        declaration.informant.name.firstname +
+          ' ' +
+          declaration.informant.name.surname
       )
 
       /*
@@ -537,7 +530,9 @@ test.describe.serial('5. Death declaration case - 5', () => {
       await expect(
         page.getByRole('button', {
           name:
-            declaration.deceased.firstname + ' ' + declaration.deceased.surname
+            declaration.deceased.name.firstname +
+            ' ' +
+            declaration.deceased.name.surname
         })
       ).toBeVisible()
     })
@@ -552,7 +547,9 @@ test.describe.serial('5. Death declaration case - 5', () => {
       await page
         .getByRole('button', {
           name:
-            declaration.deceased.firstname + ' ' + declaration.deceased.surname
+            declaration.deceased.name.firstname +
+            ' ' +
+            declaration.deceased.name.surname
         })
         .click()
     })
@@ -566,13 +563,10 @@ test.describe.serial('5. Death declaration case - 5', () => {
        * - Change button
        */
       await expectRowValueWithChangeButton(
-        'deceased.firstname',
-        declaration.deceased.firstname
-      )
-
-      await expectRowValueWithChangeButton(
-        'deceased.surname',
-        declaration.deceased.surname
+        'deceased.name',
+        declaration.deceased.name.firstname +
+          ' ' +
+          declaration.deceased.name.surname
       )
 
       /*
@@ -706,12 +700,10 @@ test.describe.serial('5. Death declaration case - 5', () => {
        * - Change button
        */
       await expectRowValueWithChangeButton(
-        'informant.firstname',
-        declaration.informant.firstname
-      )
-      await expectRowValueWithChangeButton(
-        'informant.surname',
-        declaration.informant.surname
+        'informant.name',
+        declaration.informant.name.firstname +
+          ' ' +
+          declaration.informant.name.surname
       )
 
       /*

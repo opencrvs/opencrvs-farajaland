@@ -24,7 +24,10 @@ test.describe.serial('9. Death declaration case - 9', () => {
   const REQUIRED = 'Required for registration'
   const declaration = {
     deceased: {
-      firstname: faker.person.firstName('male'),
+      name: {
+        firstname: faker.person.firstName('male'),
+        surname: faker.person.lastName('male')
+      },
       nationality: 'Farajaland',
       address: {
         country: 'Farajaland',
@@ -34,6 +37,11 @@ test.describe.serial('9. Death declaration case - 9', () => {
     },
     informant: {
       relation: 'Grandson'
+    }
+  }
+  const annotation = {
+    review: {
+      comment: "He was a great person, we'll miss him"
     }
   }
   test.beforeAll(async ({ browser }) => {
@@ -55,9 +63,8 @@ test.describe.serial('9. Death declaration case - 9', () => {
     })
 
     test('9.1.1 Fill deceased details', async () => {
-      await page
-        .locator('#deceased____firstname')
-        .fill(declaration.deceased.firstname)
+      await page.locator('#firstname').fill(declaration.deceased.name.firstname)
+      await page.locator('#surname').fill(declaration.deceased.name.surname)
       await continueForm(page)
     })
 
@@ -89,11 +96,11 @@ test.describe.serial('9. Death declaration case - 9', () => {
        * - Change button
        */
       await expectRowValueWithChangeButton(
-        'deceased.firstname',
-        declaration.deceased.firstname
+        'deceased.name',
+        declaration.deceased.name.firstname +
+          ' ' +
+          declaration.deceased.name.surname
       )
-
-      await expectRowValueWithChangeButton('deceased.surname', REQUIRED)
 
       /*
        * Expected result: should require
@@ -175,8 +182,7 @@ test.describe.serial('9. Death declaration case - 9', () => {
        * - Change button
        */
 
-      await expectRowValueWithChangeButton('spouse.firstname', REQUIRED)
-      await expectRowValueWithChangeButton('spouse.surname', REQUIRED)
+      await expectRowValueWithChangeButton('spouse.name', REQUIRED)
 
       /*
        * Expected result: should require
@@ -208,6 +214,7 @@ test.describe.serial('9. Death declaration case - 9', () => {
     })
 
     test('9.1.6 Fill up informant signature', async () => {
+      await page.locator('#review____comment').fill(annotation.review.comment)
       await page.getByRole('button', { name: 'Sign' }).click()
       await drawSignature(page, true)
       await page
@@ -235,7 +242,10 @@ test.describe.serial('9. Death declaration case - 9', () => {
        */
       await expect(
         page.getByRole('button', {
-          name: declaration.deceased.firstname
+          name:
+            declaration.deceased.name.firstname +
+            ' ' +
+            declaration.deceased.name.surname
         })
       ).toBeVisible()
     })
@@ -246,11 +256,14 @@ test.describe.serial('9. Death declaration case - 9', () => {
       await loginToV2(page, CREDENTIALS.REGISTRATION_AGENT)
 
       await page.waitForTimeout(SAFE_WORKQUEUE_TIMEOUT_MS) // wait for the event to be in the workqueue. Handle better after outbox workqueue is implemented
-      await page.getByText('Ready for review').click()
+      await page.getByText('Notifications').click()
 
       await page
         .getByRole('button', {
-          name: declaration.deceased.firstname
+          name:
+            declaration.deceased.name.firstname +
+            ' ' +
+            declaration.deceased.name.surname
         })
         .click()
     })
@@ -264,8 +277,8 @@ test.describe.serial('9. Death declaration case - 9', () => {
        * - Change button
        */
       await expectRowValueWithChangeButton(
-        'deceased.firstname',
-        declaration.deceased.firstname
+        'deceased.name',
+        declaration.deceased.name.firstname
       )
 
       /*
@@ -348,8 +361,7 @@ test.describe.serial('9. Death declaration case - 9', () => {
        * - Change button
        */
 
-      await expectRowValueWithChangeButton('spouse.firstname', REQUIRED)
-      await expectRowValueWithChangeButton('spouse.surname', REQUIRED)
+      await expectRowValueWithChangeButton('spouse.name', REQUIRED)
 
       /*
        * Expected result: should require
