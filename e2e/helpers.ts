@@ -55,6 +55,9 @@ export async function loginToV2(
   // Navigate to the v2 client
   await page.goto(CLIENT_V2_URL)
 
+  // Wait until the app is initialized
+  await page.getByText('Loading records...').waitFor({ state: 'detached' })
+
   return token
 }
 
