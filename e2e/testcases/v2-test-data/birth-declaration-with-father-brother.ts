@@ -50,6 +50,18 @@ async function getPlaceOfBirth(type: 'PRIVATE_HOME' | 'HEALTH_FACILITY') {
   throw new Error('Invalid place of birth type')
 }
 
+function generateCustomPhoneNumber() {
+  // Starts with 0
+  // Second digit is 7 or 9
+  // Followed by 8 digits (0-9)
+  const secondDigit = Math.random() < 0.5 ? '7' : '9'
+  let rest = ''
+  for (let i = 0; i < 8; i++) {
+    rest += Math.floor(Math.random() * 10)
+  }
+  return `0${secondDigit}${rest}`
+}
+
 export async function getDeclaration({
   partialDeclaration = {},
   placeOfBirthType = 'PRIVATE_HOME'
@@ -115,6 +127,7 @@ export async function getDeclaration({
     'informant.dob': '2008-09-12',
     'informant.nationality': 'FAR',
     'informant.idType': 'NATIONAL_ID',
+    'informant.phoneNo': generateCustomPhoneNumber(),
     'informant.nid': faker.string.numeric(10)
   }
   // 💡 Merge overriden fields

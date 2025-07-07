@@ -4,22 +4,11 @@ import { createDeclaration } from '../v2-test-data/birth-declaration-with-father
 import { CREDENTIALS } from '../../constants'
 import { faker } from '@faker-js/faker'
 
-function generateCustomPhoneNumber() {
-  // Starts with 0
-  // Second digit is 7 or 9
-  // Followed by 8 digits (0-9)
-  const secondDigit = Math.random() < 0.5 ? '7' : '9'
-  let rest = ''
-  for (let i = 0; i < 8; i++) {
-    rest += Math.floor(Math.random() * 10)
-  }
-  return `0${secondDigit}${rest}`
-}
-
 test.describe
   .serial("Qucik Search - Birth Event Declaration - Child's details", () => {
   let page: Page
   let record: Awaited<ReturnType<typeof createDeclaration>>
+  let recordWithDefaultEmail: Awaited<ReturnType<typeof createDeclaration>>
   test.beforeAll(async ({ browser }) => {
     page = await browser.newPage()
     const token = await getToken(
@@ -27,11 +16,19 @@ test.describe
       CREDENTIALS.LOCAL_REGISTRAR.PASSWORD
     )
 
+    recordWithDefaultEmail = await createDeclaration(
+      token,
+      {
+        'informant.email': faker.internet.email()
+      },
+      'REGISTER',
+      'HEALTH_FACILITY'
+    )
+
     record = await createDeclaration(
       token,
       {
-        'informant.email': faker.internet.email(),
-        'informant.phoneNo': generateCustomPhoneNumber()
+        'informant.email': faker.internet.email()
       },
       'REGISTER',
       'HEALTH_FACILITY'
@@ -46,7 +43,78 @@ test.describe
     await loginToV2(page)
     await page
       .locator('#searchText')
-      .fill(record.declaration['informant.email'])
+      .fill(recordWithDefaultEmail.declaration['informant.email']) // search by email
+    await page.locator('#searchIconButton').click()
+    const searchResultRegex = /Search result for “([^”]+)”/
+    const searchResult = await page.locator('#content-name').textContent()
+    await expect(searchResult).toMatch(searchResultRegex)
+    await expect(
+      page.getByText(
+        `${recordWithDefaultEmail.declaration['child.name'].firstname} ${recordWithDefaultEmail.declaration['child.name'].surname}`
+      )
+    ).toBeVisible()
+  })
+
+  test('1.2 Navigate to workqueue and search with email (case insensitive)', async () => {
+    await page.locator('#navigation_workqueue_assigned-to-you').click()
+    await expect(page.locator('#searchText')).toHaveValue('')
+
+    await page
+      .locator('#searchText')
+      .fill(recordWithDefaultEmail.declaration['informant.email'].toUpperCase()) // Search by uppercase email
+    await page.locator('#searchIconButton').click()
+    const searchResultRegex = /Search result for “([^”]+)”/
+    const searchResult = await page.locator('#content-name').textContent()
+    await expect(searchResult).toMatch(searchResultRegex)
+    await expect(
+      page.getByText(
+        `${recordWithDefaultEmail.declaration['child.name'].firstname} ${recordWithDefaultEmail.declaration['child.name'].surname}`
+      )
+    ).toBeVisible()
+  })
+
+  test('1.3 Navigate to workqueue and search with different email and get single result', async () => {
+    await page.locator('#navigation_workqueue_assigned-to-you').click()
+    await expect(page.locator('#searchText')).toHaveValue('')
+
+    await page
+      .locator('#searchText')
+      .fill(record.declaration['informant.email']) // search by different email
+    await page.locator('#searchIconButton').click()
+    const searchResultRegex = /Search result for “([^”]+)”/
+    const searchResult = await page.locator('#content-name').textContent()
+    await expect(searchResult).toMatch(searchResultRegex)
+
+    const results = await page.locator('[id^="row_"]')
+    await expect(results).toHaveCount(1) // Expect exactly one result
+    await expect(
+      page.getByText(
+        `${record.declaration['child.name'].firstname} ${record.declaration['child.name'].surname}`
+      )
+    ).toBeVisible()
+  })
+
+  test('1.4 Navigate to workqueue and do quick search with phone number', async () => {
+    await page.locator('#navigation_workqueue_assigned-to-you').click()
+    await expect(page.locator('#searchText')).toHaveValue('')
+    await page
+      .locator('#searchText')
+      .fill(record.declaration['informant.phoneNo']) // search by phone
+    await page.locator('#searchIconButton').click()
+    const searchResultRegex = /Search result for “([^”]+)”/
+    const searchResult = await page.locator('#content-name').textContent()
+    await expect(searchResult).toMatch(searchResultRegex)
+    await expect(
+      page.getByText(
+        `${record.declaration['child.name'].firstname} ${record.declaration['child.name'].surname}`
+      )
+    ).toBeVisible()
+  })
+
+  test('1.5 Navigate to workqueue and do quick search with id', async () => {
+    await page.locator('#navigation_workqueue_assigned-to-you').click()
+    await expect(page.locator('#searchText')).toHaveValue('')
+    await page.locator('#searchText').fill(record.declaration['informant.nid']) // search by id
     await page.locator('#searchIconButton').click()
     const searchResultRegex = /Search result for “([^”]+)”/
     const searchResult = await page.locator('#content-name').textContent()
