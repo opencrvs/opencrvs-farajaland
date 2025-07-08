@@ -134,6 +134,7 @@ mkdir -p $ROOT_PATH/backups/mongo
 mkdir -p $ROOT_PATH/backups/minio
 mkdir -p $ROOT_PATH/backups/vsexport
 mkdir -p $ROOT_PATH/backups/sqlite
+mkdir -p $ROOT_PATH/backups/postgres
 
 # This enables root-created directory to be writable by the docker user
 chown -R 1000:1000 $ROOT_PATH/backups
@@ -218,6 +219,17 @@ docker run --rm \
   -v $ROOT_PATH/backups/sqlite:/data/backup \
   alpine sh -c "apk add --no-cache sqlite && \
   sqlite3 /data/sqlite/mosip-api.db \".backup '/data/backup/mosip-api-${LABEL:-$BACKUP_DATE}.sqlite'\""
+
+# Backup PostgreSQL
+# -----------------
+
+echo "Backing up PostgreSQL 'events' database"
+docker run --rm \
+  -e PGPASSWORD=$POSTGRES_PASSWORD \
+  -v $ROOT_PATH/backups/postgres:/backups \
+  --network=$NETWORK \
+  postgres:17 \
+  bash -c "pg_dump -h postgres -U $POSTGRES_USER -d events -F c -f /backups/events-${LABEL:-$BACKUP_DATE}.dump"
 
 #-------------------------------------------------------------------------------------
 
@@ -314,6 +326,7 @@ mkdir -p $BACKUP_RAW_FILES_DIR/mongo/ && cp $ROOT_PATH/backups/mongo/metrics-${L
 mkdir -p $BACKUP_RAW_FILES_DIR/mongo/ && cp $ROOT_PATH/backups/mongo/webhooks-${LABEL:-$BACKUP_DATE}.gz $BACKUP_RAW_FILES_DIR/mongo/
 mkdir -p $BACKUP_RAW_FILES_DIR/mongo/ && cp $ROOT_PATH/backups/mongo/performance-${LABEL:-$BACKUP_DATE}.gz $BACKUP_RAW_FILES_DIR/mongo/
 mkdir -p $BACKUP_RAW_FILES_DIR/sqlite/ && cp $ROOT_PATH/backups/sqlite/mosip-api-${LABEL:-$BACKUP_DATE}.sqlite $BACKUP_RAW_FILES_DIR/sqlite/
+mkdir -p $BACKUP_RAW_FILES_DIR/postgres/ && cp $ROOT_PATH/backups/postgres/events-${LABEL:-$BACKUP_DATE}.dump $BACKUP_RAW_FILES_DIR/postgres/
 
 tar -czf /tmp/${LABEL:-$BACKUP_DATE}.tar.gz -C "$BACKUP_RAW_FILES_DIR" .
 
