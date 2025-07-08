@@ -21,6 +21,7 @@ on:
           - qa
           - development
           - vpostgres-backup-staging
+          - vpostgres-backup-prod
 jobs:
   reset-data:
     name: 'Reset data'
