@@ -30,6 +30,7 @@ on:
           - backup
           - jump
           - e2e
+          - vpostgres-backup-staging
       tag:
         type: choice
         description: Select group tag you want to execute
