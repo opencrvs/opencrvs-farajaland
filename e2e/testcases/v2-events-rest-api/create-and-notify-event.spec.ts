@@ -524,6 +524,8 @@ test.describe('Events REST API', () => {
         familyName: faker.person.lastName()
       }
 
+      // foo
+
       await fetchClientAPI(
         '/api/events/events/notifications',
         'POST',
