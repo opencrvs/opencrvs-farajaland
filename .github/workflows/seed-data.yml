@@ -22,6 +22,9 @@ on:
           - staging
           - production
           - e2e
+          - vpostgres-backup-staging
+          - vpostgres-backup-prod
+          - postgress-backup
       core-image-tag:
         description: Core DockerHub image tag
         required: true

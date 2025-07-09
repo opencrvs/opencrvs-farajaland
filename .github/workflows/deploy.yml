@@ -38,6 +38,9 @@ on:
           - qa
           - e2e
           - staging
+          - vpostgres-backup-staging
+          - vpostgres-backup-prod
+          - postgress-backup
       core-image-tag:
         description: Core image tag
         required: true
