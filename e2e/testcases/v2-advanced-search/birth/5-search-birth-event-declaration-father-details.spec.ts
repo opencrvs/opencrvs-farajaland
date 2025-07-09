@@ -1,16 +1,20 @@
 import { expect, test, type Page } from '@playwright/test'
-import { getToken, loginToV2 } from '../../helpers'
-import { createDeclaration } from '../v2-test-data/birth-declaration-with-father-brother'
-import { CREDENTIALS } from '../../constants'
-import { formatDateToLongString } from './utils'
-import { getMonthFormatted } from './helper'
-import { type } from '../../v2-utils'
+import { getToken, loginToV2 } from '../../../helpers'
+import {
+  createDeclaration,
+  Declaration
+} from '../../v2-test-data/birth-declaration-with-father-brother'
+import { CREDENTIALS } from '../../../constants'
+import { formatDateToLongString } from '../utils'
+import { faker } from '@faker-js/faker'
+import { getMonthFormatted } from '../helper'
+import { type } from '../../../v2-utils'
 
 test.describe
-  .serial("Advanced Search - Birth Event Declaration - Informant's details", () => {
+  .serial("Advanced Search - Birth Event Declaration - Father's details", () => {
   let page: Page
   let [yyyy, mm, dd] = ['', '', '']
-  let record: Awaited<ReturnType<typeof createDeclaration>>
+  let record: { eventId: string; declaration: Declaration }
 
   test.beforeAll(async ({ browser }) => {
     page = await browser.newPage()
@@ -19,7 +23,7 @@ test.describe
       CREDENTIALS.LOCAL_REGISTRAR.PASSWORD
     )
     record = await createDeclaration(token, {}, 'REGISTER', 'HEALTH_FACILITY')
-    ;[yyyy, mm, dd] = record.declaration['informant.dob'].split('-')
+    ;[yyyy, mm, dd] = (record.declaration['father.dob'] ?? '').split('-')
   })
 
   test.afterAll(async () => {
@@ -33,28 +37,28 @@ test.describe
     await page.getByText('Birth').click()
   })
 
-  test.describe.serial("2.5 - Validate search by Informant's details", () => {
+  test.describe.serial("2.5 - Validate search by Father's details", () => {
     test('2.5.1 - Validate filling name and dob filters', async () => {
-      await page.getByText('Informant details').click()
+      await page.getByText('Father details').click()
 
       await type(
         page,
         '#firstname',
-        record.declaration['informant.name'].firstname
+        record.declaration['father.name'].firstname ?? faker.person.firstName
       )
-      await type(page, '#surname', record.declaration['informant.name'].surname)
+      await type(page, '#surname', record.declaration['father.name'].surname)
 
-      await type(page, '[data-testid="informant____dob-dd"]', dd)
-      await type(page, '[data-testid="informant____dob-mm"]', mm)
-      await type(page, '[data-testid="informant____dob-yyyy"]', yyyy)
+      await type(page, '[data-testid="father____dob-dd"]', dd)
+      await type(page, '[data-testid="father____dob-mm"]', mm)
+      await type(page, '[data-testid="father____dob-yyyy"]', yyyy)
     })
 
     test('2.5.2 - Validate search and show results', async () => {
       await page.click('#search')
       await expect(page).toHaveURL(/.*\/search-result/)
-      await expect(page.url()).toContain(`informant.dob=${yyyy}-${mm}-${dd}`)
+      await expect(page.url()).toContain(`father.dob=${yyyy}-${mm}-${dd}`)
       await expect(page.url()).toContain(
-        `informant.name=${encodeURIComponent(JSON.stringify({ firstname: record.declaration['informant.name'].firstname, middlename: '', surname: record.declaration['informant.name'].surname }))}`
+        `father.name=${encodeURIComponent(JSON.stringify({ firstname: record.declaration['father.name'].firstname ?? faker.person.firstName, middlename: '', surname: record.declaration['father.name'].surname }))}`
       )
       await expect(page.getByText('Search results')).toBeVisible()
 
@@ -64,12 +68,12 @@ test.describe
       await expect(page.getByText('Event: V2 birth')).toBeVisible()
       await expect(
         page.getByText(
-          `Informant's Date of birth: ${formatDateToLongString(record.declaration['informant.dob'])}`
+          `Father's Date of birth: ${formatDateToLongString(record.declaration['father.dob'])}`
         )
       ).toBeVisible()
       await expect(
         page.getByText(
-          `Informant's Name: ${record.declaration['informant.name'].firstname} ${record.declaration['informant.name'].surname}`
+          `Father's Name: ${record.declaration['father.name'].firstname ?? faker.person.firstName} ${record.declaration['father.name'].surname}`
         )
       ).toBeVisible()
       await expect(page.getByRole('button', { name: 'Edit' })).toBeVisible()
@@ -78,28 +82,28 @@ test.describe
     test('2.5.3 - Validate clicking on the search edit button', async () => {
       await page.getByRole('button', { name: 'Edit' }).click()
       await expect(page).toHaveURL(/.*\/advanced-search/)
-      await expect(page.url()).toContain(`informant.dob=${yyyy}-${mm}-${dd}`)
+      await expect(page.url()).toContain(`father.dob=${yyyy}-${mm}-${dd}`)
       await expect(page.url()).toContain(
-        `informant.name=${encodeURIComponent(JSON.stringify({ firstname: record.declaration['informant.name'].firstname, surname: record.declaration['informant.name'].surname, middlename: '' }))}`
+        `father.name=${encodeURIComponent(JSON.stringify({ firstname: record.declaration['father.name'].firstname ?? faker.person.firstName, surname: record.declaration['father.name'].surname, middlename: '' }))}`
       )
       await expect(page.locator('#tab_v2\\.birth')).toHaveText('Birth')
-      await expect(page.getByTestId('informant____dob-dd')).toHaveValue(dd)
-      await expect(page.getByTestId('informant____dob-mm')).toHaveValue(mm)
-      await expect(page.getByTestId('informant____dob-yyyy')).toHaveValue(yyyy)
+      await expect(page.getByTestId('father____dob-dd')).toHaveValue(dd)
+      await expect(page.getByTestId('father____dob-mm')).toHaveValue(mm)
+      await expect(page.getByTestId('father____dob-yyyy')).toHaveValue(yyyy)
       await expect(page.locator('#firstname')).toHaveValue(
-        record.declaration['informant.name'].firstname
+        record.declaration['father.name'].firstname ?? faker.person.firstName
       )
       await expect(page.locator('#surname')).toHaveValue(
-        record.declaration['informant.name'].surname
+        record.declaration['father.name'].surname
       )
     })
 
-    test('2.5.4 - Validate informant.dob range input', async () => {
-      const informantDOBRangeButton = page.locator(
-        '#informant____dob-date_range_button'
+    test('2.5.4 - Validate father.dob range input', async () => {
+      const fatherDOBRangeButton = page.locator(
+        '#father____dob-date_range_button'
       )
-      if (await informantDOBRangeButton.isVisible()) {
-        await page.locator('#informant____dob-date_range_button').click()
+      if (await fatherDOBRangeButton.isVisible()) {
+        await page.locator('#father____dob-date_range_button').click()
         await expect(page.locator('#picker-modal')).toBeVisible()
 
         const currentMonth = new Date().getMonth() + 1
@@ -114,7 +118,7 @@ test.describe
         await expect(page.locator('#picker-modal')).toBeHidden()
 
         const checkbox = page.locator(
-          'input[type="checkbox"][name="informant____dobdate_range_toggle"]'
+          'input[type="checkbox"][name="father____dobdate_range_toggle"]'
         )
         await expect(checkbox).toBeVisible()
         await expect(checkbox).toBeChecked()

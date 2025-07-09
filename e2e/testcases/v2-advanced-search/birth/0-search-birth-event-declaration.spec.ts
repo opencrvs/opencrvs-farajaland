@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test'
-import { loginToV2 } from '../../helpers'
+import { loginToV2 } from '../../../helpers'
 
 test.describe.serial('Advanced Search - Birth Event Declaration', () => {
   let page: Page
