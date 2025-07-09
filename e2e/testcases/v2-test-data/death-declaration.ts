@@ -22,7 +22,7 @@ async function getPlaceOfDeath(
     )
 
     return {
-      'deceased.deathLocation': locationId
+      'eventDetails.deathLocation': locationId
     }
   }
 
