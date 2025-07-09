@@ -141,6 +141,7 @@ export type Declaration = Awaited<ReturnType<typeof getDeclaration>>
 
 export interface CreateDeclarationResponse {
   eventId: string
+  trackingId: string
   declaration: Declaration
 }
 
@@ -195,6 +196,7 @@ export async function createDeclaration(
     transactionId: uuidv4()
   })
   const eventId = createResponse.id as string
+  const trackingId = createResponse.trackingId
 
   const file = await uploadFile(getSignatureFile(), token)
 
@@ -216,7 +218,11 @@ export async function createDeclaration(
       (action: ActionDocument) => action.type === 'DECLARE'
     )
 
-    return { eventId, declaration: declareAction?.declaration as Declaration }
+    return {
+      eventId,
+      trackingId,
+      declaration: declareAction?.declaration as Declaration
+    }
   }
 
   const validateRes = await client.event.actions.validate.request.mutate({
@@ -235,6 +241,7 @@ export async function createDeclaration(
 
     return {
       eventId,
+      trackingId,
       declaration: validateAction?.declaration as Declaration
     }
   }
@@ -250,5 +257,13 @@ export async function createDeclaration(
     (action: ActionDocument) => action.type === 'REGISTER'
   )
 
-  return { eventId, declaration: registerAction?.declaration as Declaration }
+  return {
+    eventId,
+    trackingId,
+    declaration: registerAction?.declaration as Declaration
+  }
+}
+
+export const getChildNameFromRecord = (record: CreateDeclarationResponse) => {
+  return `${record.declaration['child.name'].firstname} ${record.declaration['child.name'].surname}`
 }
