@@ -210,17 +210,16 @@ jobs:
           done < infrastructure/environment.variables
           existing_secrets=$(gh secret list --env "$ENVIRONMENT" --json name -q '.[].name')
           while read line; do
+            key=$(echo "$line" | cut -d '=' -f 1)
             if echo "$existing_secrets" | grep -qw "$key"; then
               echo "Secret $key already exists, skipping."
               continue;
             fi
 
             if [[ $line == *"="* ]]; then
-              key=$(echo "$line" | cut -d '=' -f 1)
               value=$(echo "$line" | cut -d '=' -f 2-)
               echo "Adding secret with predefined value: $key"
             else
-              key=$line
               value=`openssl rand -base64 25 | tr -cd '[:alnum:]._-' ; echo ''`
               echo "Adding secret with random value: $key"
             fi
