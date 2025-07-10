@@ -20,18 +20,21 @@ test.describe.serial('Assign & Unassign', () => {
     const res = await createDeclaration(token)
     declaration = res.declaration
     page = await browser.newPage()
-    await loginToV2(page)
   })
 
   test.afterAll(async () => {
     await page.close()
   })
 
+  test('Login', async () => {
+    await loginToV2(page)
+  })
+
   test('Click on "Assign" from action menu', async () => {
-    await page.waitForTimeout(SAFE_WORKQUEUE_TIMEOUT_MS) // wait for the event to be in the workqueue. Handle better after outbox workqueue is implemented
+    await page.waitForTimeout(SAFE_WORKQUEUE_TIMEOUT_MS) // wait for the event to be in the workqueue.
     await page.getByText('Ready to print').click()
 
-    const childName = `${declaration['child.firstname']} ${declaration['child.surname']}`
+    const childName = `${declaration['child.name'].firstname} ${declaration['child.name'].surname}`
     await page.getByRole('button', { name: childName }).click()
     await ensureAssigned(page)
     await expect(page.getByTestId('assignedTo-value')).toHaveText(

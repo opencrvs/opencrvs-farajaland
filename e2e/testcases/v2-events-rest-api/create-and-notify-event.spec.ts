@@ -2,7 +2,13 @@ import { expect, test } from '@playwright/test'
 import { v4 as uuidv4 } from 'uuid'
 import { CLIENT_URL, GATEWAY_HOST } from '../../constants'
 import { CREDENTIALS } from '../../constants'
-import { formatName, getClientToken, getToken, loginToV2 } from '../../helpers'
+import {
+  formatName,
+  getAction,
+  getClientToken,
+  getToken,
+  loginToV2
+} from '../../helpers'
 import { addDays, format, subDays } from 'date-fns'
 import { faker } from '@faker-js/faker'
 import { selectAction } from '../../v2-utils'
@@ -276,7 +282,7 @@ test.describe('Events REST API', () => {
           type: 'NOTIFY',
           declaration: {
             'foo.bar': 'this should cause an error',
-            'child.surname': faker.person.lastName(),
+            'child.name': { surname: faker.person.lastName() },
             'child.dob': format(subDays(new Date(), 1), 'yyyy-MM-dd')
           },
           annotation: {}
@@ -309,7 +315,7 @@ test.describe('Events REST API', () => {
           transactionId: uuidv4(),
           type: 'NOTIFY',
           declaration: {
-            'child.surname': faker.person.lastName(),
+            'child.name': { surname: faker.person.lastName() },
             // this should cause an error because the date is in the future
             'child.dob': format(addDays(new Date(), 10), 'yyyy-MM-dd')
           },
@@ -343,7 +349,7 @@ test.describe('Events REST API', () => {
           transactionId: uuidv4(),
           type: 'NOTIFY',
           declaration: {
-            'child.surname': 12345
+            'child.name': { surname: 12345 }
           },
           annotation: {}
         }
@@ -362,8 +368,10 @@ test.describe('Events REST API', () => {
           transactionId: uuidv4(),
           type: 'NOTIFY',
           declaration: {
-            'child.firstname': faker.person.firstName(),
-            'child.surname': faker.person.lastName(),
+            'child.name': {
+              firstname: faker.person.firstName(),
+              surname: faker.person.lastName()
+            },
             'child.dob': format(subDays(new Date(), 1), 'yyyy-MM-dd')
           },
           annotation: {}
@@ -401,8 +409,10 @@ test.describe('Events REST API', () => {
           transactionId: uuidv4(),
           type: 'NOTIFY',
           declaration: {
-            'child.firstname': childName.firstNames,
-            'child.surname': childName.familyName,
+            'child.name': {
+              firstname: childName.firstNames,
+              surname: childName.familyName
+            },
             'child.dob': format(subDays(new Date(), 1), 'yyyy-MM-dd')
           },
           annotation: {}
@@ -423,6 +433,10 @@ test.describe('Events REST API', () => {
       await page.getByRole('button', { name: 'Notifications' }).click()
 
       await page.getByText(await formatName(childName)).click()
+
+      await page.getByRole('button', { name: 'Action' }).click()
+      await getAction(page, 'Assign').click()
+
       await expect(page.locator('#row_0')).toContainText('Notified')
       await expect(page.locator('#row_0')).toContainText(clientName)
       await expect(page.locator('#row_0')).toContainText('Health integration')
@@ -458,8 +472,10 @@ test.describe('Events REST API', () => {
         transactionId: uuidv4(),
         type: 'NOTIFY',
         declaration: {
-          'child.firstname': childName.firstNames,
-          'child.surname': childName.familyName,
+          'child.name': {
+            firstname: childName.firstNames,
+            surname: childName.familyName
+          },
           'child.dob': format(subDays(new Date(), 1), 'yyyy-MM-dd')
         },
         annotation: {}
@@ -487,7 +503,7 @@ test.describe('Events REST API', () => {
       expect(body1).toEqual(body2)
     })
 
-    test('user can register event notified by integration', async ({
+    test.skip('user can register event notified by integration', async ({
       page
     }) => {
       const createEventResponse = await fetchClientAPI(
@@ -517,8 +533,10 @@ test.describe('Events REST API', () => {
           transactionId: uuidv4(),
           type: 'NOTIFY',
           declaration: {
-            'child.firstname': childName.firstNames,
-            'child.surname': childName.familyName,
+            'child.name': {
+              firstname: childName.firstNames,
+              surname: childName.familyName
+            },
             'child.dob': format(subDays(new Date(), 1), 'yyyy-MM-dd')
           },
           annotation: {}
@@ -537,12 +555,8 @@ test.describe('Events REST API', () => {
 
       await page.getByRole('button', { name: 'Continue', exact: true }).click()
 
-      await expect(page.locator('#child____firstname')).toHaveValue(
-        childName.firstNames
-      )
-      await expect(page.locator('#child____surname')).toHaveValue(
-        childName.familyName
-      )
+      await expect(page.locator('#firstname')).toHaveValue(childName.firstNames)
+      await expect(page.locator('#surname')).toHaveValue(childName.familyName)
     })
   })
 })

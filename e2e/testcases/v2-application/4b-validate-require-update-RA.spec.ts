@@ -4,13 +4,17 @@ import { loginToV2, getToken } from '../../helpers'
 import { CREDENTIALS, SAFE_WORKQUEUE_TIMEOUT_MS } from '../../constants'
 import {
   createDeclaration,
-  Declaration,
-  rejectDeclaration
+  Declaration
 } from '../v2-test-data/birth-declaration'
 import { ActionType } from '@opencrvs/toolkit/events'
 import { formatV2ChildName } from '../v2-birth/helpers'
-import { ensureAssigned, selectAction } from '../../v2-utils'
+import {
+  ensureAssigned,
+  ensureOutboxIsEmpty,
+  selectAction
+} from '../../v2-utils'
 import { getRowByTitle } from '../v2-print-certificate/birth/helpers'
+import { faker } from '@faker-js/faker'
 
 test.describe
   .serial('4(b) Validate Requires update tab for registration agent', () => {
@@ -47,20 +51,18 @@ test.describe
   })
 
   test('4.0.3 Reject a declaration', async () => {
-    await ensureAssigned(page)
+    await selectAction(page, 'Register')
 
-    await rejectDeclaration(
-      await getToken(
-        CREDENTIALS.LOCAL_REGISTRAR.USERNAME,
-        CREDENTIALS.LOCAL_REGISTRAR.PASSWORD
-      ),
-      eventId
-    )
+    await page.getByRole('button', { name: 'Reject' }).click()
+
+    await page.getByTestId('reject-reason').fill(faker.lorem.sentence())
+
+    await page.getByRole('button', { name: 'Send For Update' }).click()
   })
 
   test('4.1 Go to Requires update tab', async () => {
     await loginToV2(page, CREDENTIALS.REGISTRATION_AGENT)
-    await page.waitForTimeout(SAFE_WORKQUEUE_TIMEOUT_MS) // wait for the event to be in the workqueue. Handle better after outbox workqueue is implemented
+    await page.waitForTimeout(SAFE_WORKQUEUE_TIMEOUT_MS) // wait for the event to be in the workqueue.
     await page.getByText('Requires update').click()
     await expect(
       page.getByRole('button', { name: formatV2ChildName(declaration) })
@@ -104,6 +106,8 @@ test.describe
     await page.goBack()
 
     const row = getRowByTitle(page, formatV2ChildName(declaration))
+
+    await row.getByRole('button', { name: 'Assign record' }).click()
     await row.getByRole('button', { name: 'Validate' }).click()
 
     expect(
@@ -118,10 +122,7 @@ test.describe
     // Should redirect back to requires update workqueue
     await expect(page.locator('#content-name')).toHaveText('Requires updates')
 
-    await page.waitForTimeout(SAFE_WORKQUEUE_TIMEOUT_MS) // wait for the event to be in the workqueue. Handle better after outbox workqueue is implemented
-    await page.getByText('Recent').click()
-    await page.waitForTimeout(500)
-    await page.getByText('Requires updates').click()
+    await ensureOutboxIsEmpty(page)
 
     await expect(
       page.getByRole('button', { name: formatV2ChildName(declaration) })

@@ -9,13 +9,14 @@ import {
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS, SAFE_WORKQUEUE_TIMEOUT_MS } from '../../../constants'
 import { REQUIRED_VALIDATION_ERROR } from '../helpers'
+import { ensureOutboxIsEmpty } from '../../../v2-utils'
 test.describe.serial('10. Birth declaration case - 10', () => {
   let page: Page
   const declaration = {
     child: {
       name: {
         firstNames: faker.person.lastName(),
-        familyName: ''
+        familyName: faker.person.lastName()
       }
     },
     informantType: 'Father',
@@ -44,9 +45,8 @@ test.describe.serial('10. Birth declaration case - 10', () => {
     })
 
     test('10.1.1 Fill child details', async () => {
-      await page
-        .locator('#child____firstname')
-        .fill(declaration.child.name.firstNames)
+      await page.locator('#firstname').fill(declaration.child.name.firstNames)
+      await page.locator('#surname').fill(declaration.child.name.familyName)
 
       await continueForm(page)
     })
@@ -79,14 +79,12 @@ test.describe.serial('10. Birth declaration case - 10', () => {
       /*
        * Expected result: should include
        * - Child's First Name
-       * * should require
        * - Child's Family Name
        */
-      await expect(page.getByTestId('row-value-child.firstname')).toContainText(
-        declaration.child.name.firstNames
-      )
-      await expect(page.getByTestId('row-value-child.surname')).toContainText(
-        REQUIRED_VALIDATION_ERROR
+      await expect(page.getByTestId('row-value-child.name')).toContainText(
+        declaration.child.name.firstNames +
+          ' ' +
+          declaration.child.name.familyName
       )
 
       /*
@@ -143,10 +141,7 @@ test.describe.serial('10. Birth declaration case - 10', () => {
        * - Father's First Name
        * - Father's Family Name
        */
-      await expect(
-        page.getByTestId('row-value-father.firstname')
-      ).toContainText(REQUIRED_VALIDATION_ERROR)
-      await expect(page.getByTestId('row-value-father.surname')).toContainText(
+      await expect(page.getByTestId('row-value-father.name')).toContainText(
         REQUIRED_VALIDATION_ERROR
       )
 
@@ -184,7 +179,7 @@ test.describe.serial('10. Birth declaration case - 10', () => {
       await expect(page.getByText('Send for review?')).toBeVisible()
       await page.getByRole('button', { name: 'Confirm' }).click()
 
-      await page.waitForTimeout(SAFE_WORKQUEUE_TIMEOUT_MS) // wait for the event to be in the workqueue. Handle better after outbox workqueue is implemented
+      await ensureOutboxIsEmpty(page)
       await page.getByText('Sent for review').click()
 
       await expect(
@@ -199,8 +194,7 @@ test.describe.serial('10. Birth declaration case - 10', () => {
     test('10.2.1 Navigate to the declaration review page', async () => {
       await loginToV2(page, CREDENTIALS.REGISTRATION_AGENT)
 
-      await page.waitForTimeout(SAFE_WORKQUEUE_TIMEOUT_MS) // wait for the event to be in the workqueue. Handle better after outbox workqueue is implemented
-      await page.getByText('Ready for review').click()
+      await page.getByText('Notifications').click()
 
       await page
         .getByRole('button', {
@@ -219,11 +213,8 @@ test.describe.serial('10. Birth declaration case - 10', () => {
        * * should require
        * - Child's Family Name
        */
-      await expect(page.getByTestId('row-value-child.firstname')).toContainText(
+      await expect(page.getByTestId('row-value-child.name')).toContainText(
         declaration.child.name.firstNames
-      )
-      await expect(page.getByTestId('row-value-child.surname')).toContainText(
-        REQUIRED_VALIDATION_ERROR
       )
 
       /*
@@ -280,10 +271,7 @@ test.describe.serial('10. Birth declaration case - 10', () => {
        * - Father's First Name
        * - Father's Family Name
        */
-      await expect(
-        page.getByTestId('row-value-father.firstname')
-      ).toContainText(REQUIRED_VALIDATION_ERROR)
-      await expect(page.getByTestId('row-value-father.surname')).toContainText(
+      await expect(page.getByTestId('row-value-father.name')).toContainText(
         REQUIRED_VALIDATION_ERROR
       )
 

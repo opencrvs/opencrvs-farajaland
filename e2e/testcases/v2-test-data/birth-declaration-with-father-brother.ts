@@ -50,6 +50,18 @@ async function getPlaceOfBirth(type: 'PRIVATE_HOME' | 'HEALTH_FACILITY') {
   throw new Error('Invalid place of birth type')
 }
 
+function generateCustomPhoneNumber() {
+  // Starts with 0
+  // Second digit is 7 or 9
+  // Followed by 8 digits (0-9)
+  const secondDigit = Math.random() < 0.5 ? '7' : '9'
+  let rest = ''
+  for (let i = 0; i < 8; i++) {
+    rest += Math.floor(Math.random() * 10)
+  }
+  return `0${secondDigit}${rest}`
+}
+
 export async function getDeclaration({
   partialDeclaration = {},
   placeOfBirthType = 'PRIVATE_HOME'
@@ -66,8 +78,10 @@ export async function getDeclaration({
   }
 
   const mockDeclaration = {
-    'mother.firstname': faker.person.firstName(),
-    'mother.surname': faker.person.lastName(),
+    'mother.name': {
+      firstname: faker.person.firstName(),
+      surname: faker.person.lastName()
+    },
     'mother.dob': '1995-09-12',
     'mother.nationality': 'FAR',
     'mother.idType': 'NATIONAL_ID',
@@ -79,8 +93,10 @@ export async function getDeclaration({
       urbanOrRural: 'URBAN' as const,
       addressType: AddressType.DOMESTIC
     },
-    'father.firstname': faker.person.firstName(),
-    'father.surname': faker.person.lastName(),
+    'father.name': {
+      firstname: faker.person.firstName(),
+      surname: faker.person.lastName()
+    },
     'father.dob': '1995-09-12',
     'father.nationality': 'FAR',
     'father.idType': 'NATIONAL_ID',
@@ -93,8 +109,10 @@ export async function getDeclaration({
       urbanOrRural: 'URBAN' as const,
       addressType: AddressType.DOMESTIC
     },
-    'child.firstname': faker.person.firstName(),
-    'child.surname': faker.person.lastName(),
+    'child.name': {
+      firstname: faker.person.firstName(),
+      surname: faker.person.lastName()
+    },
     'child.gender': 'female',
     'child.dob': new Date(Date.now() - 60 * 60 * 24 * 1000)
       .toISOString()
@@ -102,11 +120,14 @@ export async function getDeclaration({
     ...(await getPlaceOfBirth(placeOfBirthType)),
     'informant.relation': 'BROTHER',
     'informant.email': 'brothers@email.com',
-    'informant.firstname': faker.person.firstName(),
-    'informant.surname': faker.person.lastName(),
+    'informant.name': {
+      firstname: faker.person.firstName(),
+      surname: faker.person.lastName()
+    },
     'informant.dob': '2008-09-12',
     'informant.nationality': 'FAR',
     'informant.idType': 'NATIONAL_ID',
+    'informant.phoneNo': generateCustomPhoneNumber(),
     'informant.nid': faker.string.numeric(10)
   }
   // 💡 Merge overriden fields
@@ -120,6 +141,7 @@ export type Declaration = Awaited<ReturnType<typeof getDeclaration>>
 
 export interface CreateDeclarationResponse {
   eventId: string
+  trackingId: string
   declaration: Declaration
 }
 
@@ -174,6 +196,7 @@ export async function createDeclaration(
     transactionId: uuidv4()
   })
   const eventId = createResponse.id as string
+  const trackingId = createResponse.trackingId
 
   const file = await uploadFile(getSignatureFile(), token)
 
@@ -195,7 +218,11 @@ export async function createDeclaration(
       (action: ActionDocument) => action.type === 'DECLARE'
     )
 
-    return { eventId, declaration: declareAction?.declaration as Declaration }
+    return {
+      eventId,
+      trackingId,
+      declaration: declareAction?.declaration as Declaration
+    }
   }
 
   const validateRes = await client.event.actions.validate.request.mutate({
@@ -214,6 +241,7 @@ export async function createDeclaration(
 
     return {
       eventId,
+      trackingId,
       declaration: validateAction?.declaration as Declaration
     }
   }
@@ -229,5 +257,13 @@ export async function createDeclaration(
     (action: ActionDocument) => action.type === 'REGISTER'
   )
 
-  return { eventId, declaration: registerAction?.declaration as Declaration }
+  return {
+    eventId,
+    trackingId,
+    declaration: registerAction?.declaration as Declaration
+  }
+}
+
+export const getChildNameFromRecord = (record: CreateDeclarationResponse) => {
+  return `${record.declaration['child.name'].firstname} ${record.declaration['child.name'].surname}`
 }

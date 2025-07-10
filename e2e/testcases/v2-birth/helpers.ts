@@ -2,8 +2,11 @@ import { expect, type Page } from '@playwright/test'
 import { omit } from 'lodash'
 import { formatName, joinValuesWith } from '../../helpers'
 import { faker } from '@faker-js/faker'
+import { ensureOutboxIsEmpty } from '../../v2-utils'
+import { getRowByTitle } from '../v2-print-certificate/birth/helpers'
+import { SAFE_OUTBOX_TIMEOUT_MS } from '../../constants'
 
-export const REQUIRED_VALIDATION_ERROR = 'Required for registration'
+export const REQUIRED_VALIDATION_ERROR = 'Required'
 
 export async function validateAddress(
   page: Page,
@@ -34,8 +37,8 @@ export async function fillDate(
 export async function fillChildDetails(page: Page) {
   const firstName = faker.person.firstName('female')
   const lastName = faker.person.lastName('female')
-  await page.locator('#child____firstname').fill(firstName)
-  await page.locator('#child____surname').fill(lastName)
+  await page.locator('#firstname').fill(firstName)
+  await page.locator('#surname').fill(lastName)
 
   return formatName({ firstNames: firstName, familyName: lastName })
 }
@@ -62,9 +65,60 @@ export async function expectRowValueWithChangeButton(
 }
 
 export const formatV2ChildName = (obj: {
-  ['child.firstname']: string
-  ['child.surname']: string
+  'child.name': { firstname: string; surname: string }
   [key: string]: any
 }) => {
-  return joinValuesWith([obj['child.firstname'], obj['child.surname']])
+  return joinValuesWith([
+    obj['child.name'].firstname,
+    obj['child.name'].surname
+  ])
+}
+
+export const assertRecordInWorkqueue = async ({
+  page,
+  name,
+  workqueues
+}: {
+  page: Page
+  name: string
+  workqueues: { title: string; exists: boolean }[]
+}) => {
+  await page.getByRole('button', { name: 'Outbox' }).click()
+  await ensureOutboxIsEmpty(page)
+
+  for (const { title, exists } of workqueues) {
+    await page
+      .getByRole('button', {
+        name: title
+      })
+      .click()
+
+    await expect(page.getByTestId('search-result')).toContainText(title)
+
+    if (exists) {
+      await expect(page.getByRole('button', { name })).toBeVisible()
+    } else {
+      await expect(page.getByRole('button', { name })).toBeHidden()
+    }
+  }
+}
+
+export const assignFromWorkqueue = async (page: Page, name: string) => {
+  await getRowByTitle(page, name)
+    .getByRole('button', { name: 'Assign record' })
+    .click()
+  await page.getByRole('button', { name: 'Assign', exact: true }).click()
+
+  /**
+   * We need to wait a while before assign mutation goes to outbox.
+   * Reason: We have `await refetchEvent()` before assign mutation is fired
+   */
+
+  await expect(page.locator('#navigation_workqueue_outbox')).toContainText(
+    '1',
+    {
+      timeout: SAFE_OUTBOX_TIMEOUT_MS
+    }
+  )
+  await ensureOutboxIsEmpty(page)
 }

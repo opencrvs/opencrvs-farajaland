@@ -15,7 +15,6 @@ import fetch from 'node-fetch'
 export async function login(page: Page, username: string, password: string) {
   const token = await getToken(username, password)
   await page.goto(`${CLIENT_URL}?token=${token}`)
-  console.log('Going to: ', `${CLIENT_URL}?token=${token}`)
 
   await expect(
     page.locator('#appSpinner').or(page.locator('#pin-input'))
@@ -31,16 +30,27 @@ export async function createPIN(page: Page) {
 }
 
 export async function logout(page: Page) {
-  await page.getByRole('button', { name: 'Logout' }).click()
+  await page.locator('#ProfileMenu-dropdownMenu').click()
+  await page
+    .locator('#ProfileMenu-dropdownMenu')
+    .getByRole('listitem')
+    .filter({
+      hasText: new RegExp('Logout')
+    })
+    .click()
   await page.context().clearCookies()
 }
 
 export async function loginToV2(
   page: Page,
-  credentials = CREDENTIALS.LOCAL_REGISTRAR
+  credentials = CREDENTIALS.LOCAL_REGISTRAR,
+  skipPin?: boolean
 ) {
   const token = await login(page, credentials.USERNAME, credentials.PASSWORD)
-  await createPIN(page)
+
+  if (!skipPin) {
+    await createPIN(page)
+  }
 
   // Navigate to the v2 client
   await page.goto(CLIENT_V2_URL)
@@ -114,7 +124,7 @@ export const goToSection = async (
   page: Page,
   section: DeclarationSection | CorrectionSection | V2ReviewSection
 ) => {
-  while (!page.url().includes(section)) {
+  while (!page.url().includes(`/${section}`)) {
     await page.getByRole('button', { name: 'Continue' }).click()
   }
 }
@@ -345,12 +355,15 @@ export const joinValuesWith = (
 }
 
 type PersonOrName = {
-  firstNames: string
-  familyName: string
+  firstNames?: string
+  familyName?: string
   [key: string]: any
 }
 export const formatName = (name: PersonOrName) => {
-  return joinValuesWith([name.firstNames, name.familyName])
+  const nameArray = []
+  if (name.firstNames) nameArray.push(name.firstNames)
+  if (name.familyName) nameArray.push(name.familyName)
+  return joinValuesWith(nameArray)
 }
 
 export const drawSignature = async (page: Page, v2Events = false) => {
@@ -413,6 +426,7 @@ export const generateRandomSuffix = () => {
 }
 
 type ActionMenuOptions =
+  | 'Assign'
   | 'Correct record'
   | 'Print certified copy'
   | 'Review declaration'

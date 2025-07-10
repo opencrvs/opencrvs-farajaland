@@ -9,8 +9,9 @@ import {
 } from '../v2-test-data/birth-declaration'
 import { ActionType } from '@opencrvs/toolkit/events'
 import { formatV2ChildName } from '../v2-birth/helpers'
-import { ensureAssigned } from '../../v2-utils'
+import { ensureAssigned, selectAction } from '../../v2-utils'
 import { getRowByTitle } from '../v2-print-certificate/birth/helpers'
+import { faker } from '@faker-js/faker'
 
 test.describe
   .serial('4(a) Validate Requires update tab for field agent', () => {
@@ -47,20 +48,18 @@ test.describe
   })
 
   test('4.0.3 Reject a declaration', async () => {
-    await ensureAssigned(page)
+    await selectAction(page, 'Validate')
 
-    await rejectDeclaration(
-      await getToken(
-        CREDENTIALS.LOCAL_REGISTRAR.USERNAME,
-        CREDENTIALS.LOCAL_REGISTRAR.PASSWORD
-      ),
-      eventId
-    )
+    await page.getByRole('button', { name: 'Reject' }).click()
+
+    await page.getByTestId('reject-reason').fill(faker.lorem.sentence())
+
+    await page.getByRole('button', { name: 'Send For Update' }).click()
   })
 
   test('4.1 Go to Requires update tab', async () => {
     await loginToV2(page, CREDENTIALS.FIELD_AGENT)
-    await page.waitForTimeout(SAFE_WORKQUEUE_TIMEOUT_MS) // wait for the event to be in the workqueue. Handle better after outbox workqueue is implemented
+    await page.waitForTimeout(SAFE_WORKQUEUE_TIMEOUT_MS) // wait for the event to be in the workqueue.
     await page.getByText('Requires update').click()
     await expect(
       page.getByRole('button', { name: formatV2ChildName(declaration) })

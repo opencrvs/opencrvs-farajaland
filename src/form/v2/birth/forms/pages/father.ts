@@ -98,14 +98,15 @@ export const father = defineFormPage({
       ]
     },
     {
-      id: 'father.firstname',
-      configuration: { maxLength: MAX_NAME_LENGTH },
-      type: FieldType.TEXT,
+      id: 'father.name',
+      type: FieldType.NAME,
       required: true,
+      configuration: { maxLength: MAX_NAME_LENGTH },
+      hideLabel: true,
       label: {
-        defaultMessage: 'First name(s)',
+        defaultMessage: "Father's name",
         description: 'This is the label for the field',
-        id: 'v2.event.birth.action.declare.form.section.person.field.firstname.label'
+        id: 'v2.event.birth.action.declare.form.section.father.field.name.label'
       },
       conditionals: [
         {
@@ -113,30 +114,13 @@ export const father = defineFormPage({
           conditional: requireFatherDetails
         }
       ],
-      validation: [invalidNameValidator('father.firstname')]
-    },
-    {
-      id: 'father.surname',
-      configuration: { maxLength: MAX_NAME_LENGTH },
-      type: FieldType.TEXT,
-      required: true,
-      label: {
-        defaultMessage: 'Last name',
-        description: 'This is the label for the field',
-        id: 'v2.event.birth.action.declare.form.section.person.field.surname.label'
-      },
-      conditionals: [
-        {
-          type: ConditionalType.SHOW,
-          conditional: requireFatherDetails
-        }
-      ],
-      validation: [invalidNameValidator('father.surname')]
+      validation: [invalidNameValidator('father.name')]
     },
     {
       id: 'father.dob',
       type: 'DATE',
       required: true,
+      secured: true,
       validation: [
         {
           message: {
@@ -252,7 +236,7 @@ export const father = defineFormPage({
     },
     {
       id: 'father.nid',
-      type: FieldType.TEXT,
+      type: FieldType.ID,
       required: true,
       label: {
         defaultMessage: 'ID Number',
@@ -377,6 +361,7 @@ export const father = defineFormPage({
       id: 'father.address',
       type: FieldType.ADDRESS,
       hideLabel: true,
+      secured: true,
       label: {
         defaultMessage: 'Usual place of residence',
         description: 'This is the label for the field',

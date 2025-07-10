@@ -12,6 +12,7 @@ import {
   navigateToCertificatePrintAction
 } from './helpers'
 import { expectInUrl } from '../../../v2-utils'
+import { REQUIRED_VALIDATION_ERROR } from '../../v2-birth/helpers'
 
 async function selectIdType(page: Page, idType: string) {
   await page.locator('#collector____OTHER____idType').click()
@@ -83,17 +84,13 @@ test.describe.serial('Validate collect payment page', () => {
   })
 
   test('5.3 should be able to enter first name', async () => {
-    await page.fill('#collector____OTHER____firstName', 'Muhammed Tareq')
-    await expect(page.locator('#collector____OTHER____firstName')).toHaveValue(
-      'Muhammed Tareq'
-    )
+    await page.fill('#firstname', 'Muhammed Tareq')
+    await expect(page.locator('#firstname')).toHaveValue('Muhammed Tareq')
   })
 
   test('5.4 should be able to enter last name', async () => {
-    await page.fill('#collector____OTHER____lastName', 'Aziz')
-    await expect(page.locator('#collector____OTHER____lastName')).toHaveValue(
-      'Aziz'
-    )
+    await page.fill('#surname', 'Aziz')
+    await expect(page.locator('#surname')).toHaveValue('Aziz')
   })
 
   test('5.5 keep relationship null and continue', async () => {
@@ -101,7 +98,7 @@ test.describe.serial('Validate collect payment page', () => {
     await expect(
       page
         .locator('#collector____OTHER____relationshipToChild_error')
-        .getByText('Required for registration')
+        .getByText(REQUIRED_VALIDATION_ERROR)
     ).toBeVisible()
   })
 

@@ -12,6 +12,7 @@ import {
   navigateToCertificatePrintAction,
   selectRequesterType
 } from '../v2-print-certificate/birth/helpers'
+import { REQUIRED_VALIDATION_ERROR } from '../v2-birth/helpers'
 
 test.describe('Form state', () => {
   test.describe
@@ -58,11 +59,8 @@ test.describe('Form state', () => {
       await goToSection(page, 'review')
 
       // Child name fields should be empty
-      await expect(page.getByTestId('row-value-child.firstname')).toHaveText(
-        'Required for registration'
-      )
-      await expect(page.getByTestId('row-value-child.surname')).toHaveText(
-        'Required for registration'
+      await expect(page.getByTestId('row-value-child.name')).toHaveText(
+        REQUIRED_VALIDATION_ERROR
       )
       // Comment should be empty and sign button should be visible
       await expect(page.locator('#review____comment')).toHaveValue('')
@@ -122,14 +120,12 @@ test.describe('Form state', () => {
 
       await selectAction(page, 'Declare')
 
-      await expect(
-        page.getByTestId('row-value-child.firstname')
-      ).not.toHaveText('Required for registration')
-      await expect(page.getByTestId('row-value-child.surname')).not.toHaveText(
-        'Required for registration'
+      await expect(page.getByTestId('row-value-child.name')).not.toHaveText(
+        REQUIRED_VALIDATION_ERROR
       )
+
       await expect(page.getByTestId('row-value-informant.email')).toHaveText(
-        'Required for registration'
+        REQUIRED_VALIDATION_ERROR
       )
       // Comment should be empty and sign button should be visible
       await expect(page.locator('#review____comment')).toHaveValue('')
@@ -169,9 +165,7 @@ test.describe('Form state', () => {
       await navigateToCertificatePrintAction(page, declaration!)
       await selectRequesterType(page, 'Print and issue to someone else')
 
-      await page
-        .getByTestId('text__collector____OTHER____firstName')
-        .fill(faker.person.firstName())
+      await page.getByTestId('text__firstname').fill(faker.person.firstName())
 
       await page.getByTestId('exit-button').click()
 
@@ -181,9 +175,7 @@ test.describe('Form state', () => {
         page.getByTestId('select__collector____requesterId')
       ).not.toHaveText('Print and issue to someone else')
 
-      await expect(
-        page.getByTestId('text__collector____OTHER____firstName')
-      ).not.toBeVisible()
+      await expect(page.getByTestId('text__firstname')).not.toBeVisible()
     })
   })
 })

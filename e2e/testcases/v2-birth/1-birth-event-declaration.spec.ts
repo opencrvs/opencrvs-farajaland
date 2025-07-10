@@ -2,13 +2,15 @@ import { expect, test, type Page } from '@playwright/test'
 import { loginToV2 } from '../../helpers'
 import path from 'path'
 import { faker } from '@faker-js/faker'
-import { selectAction } from '../../v2-utils'
+import { ensureOutboxIsEmpty, selectAction } from '../../v2-utils'
 import { REQUIRED_VALIDATION_ERROR } from './helpers'
 import { trackAndDeleteCreatedEvents } from '../v2-test-data/eventDeletion'
-import { SAFE_WORKQUEUE_TIMEOUT_MS } from '../../constants'
 
 const child = {
-  firstNames: faker.person.firstName('female')
+  name: {
+    firstNames: faker.person.firstName('female'),
+    surname: faker.person.lastName()
+  }
 }
 
 test.describe.serial('1. Birth event declaration', () => {
@@ -177,7 +179,10 @@ test.describe.serial('1. Birth event declaration', () => {
       })
 
       test('1.4.2 Validate Child details block', async () => {
-        await page.locator('#child____firstname').fill(child.firstNames)
+        await page.locator('#firstname').fill(child.name.firstNames)
+        await page.locator('#firstname').blur()
+        await page.locator('#surname').fill(child.name.surname)
+        await page.locator('#surname').blur()
       })
 
       test('1.4.3 Click "continue"', async () => {
@@ -229,7 +234,7 @@ test.describe.serial('1. Birth event declaration', () => {
 
         /*
          * Expected result: should throw error:
-         * - Required for registration
+         * - Required
          */
         await expect(page.getByText("Informant's details")).toBeVisible()
         await expect(page.getByText(REQUIRED_VALIDATION_ERROR)).toBeVisible()
@@ -459,15 +464,15 @@ test.describe.serial('1. Birth event declaration', () => {
           'Assigned to you'
         )
 
-        await page.waitForTimeout(SAFE_WORKQUEUE_TIMEOUT_MS) // wait for the event to be in the workqueue. Handle better after outbox workqueue is implemented
+        await ensureOutboxIsEmpty(page)
 
-        await expect(page.getByText(child.firstNames)).toBeVisible()
+        await expect(page.getByText(child.name.firstNames)).toBeVisible()
       })
 
       test('1.9.4 Reopen draft and navigate to review page', async () => {
         await page
           .getByRole('button', {
-            name: child.firstNames
+            name: child.name.firstNames + ' ' + child.name.surname
           })
           .click()
 

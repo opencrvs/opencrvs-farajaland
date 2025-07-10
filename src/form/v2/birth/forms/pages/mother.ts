@@ -96,14 +96,15 @@ export const mother = defineFormPage({
       ]
     },
     {
-      id: 'mother.firstname',
-      configuration: { maxLength: MAX_NAME_LENGTH },
-      type: FieldType.TEXT,
+      id: 'mother.name',
+      type: FieldType.NAME,
       required: true,
+      configuration: { maxLength: MAX_NAME_LENGTH },
+      hideLabel: true,
       label: {
-        defaultMessage: 'First name(s)',
+        defaultMessage: "Mother's name",
         description: 'This is the label for the field',
-        id: 'v2.event.birth.action.declare.form.section.person.field.firstname.label'
+        id: 'v2.event.birth.action.declare.form.section.mother.field.name.label'
       },
       conditionals: [
         {
@@ -111,30 +112,13 @@ export const mother = defineFormPage({
           conditional: requireMotherDetails
         }
       ],
-      validation: [invalidNameValidator('mother.firstname')]
-    },
-    {
-      id: 'mother.surname',
-      configuration: { maxLength: MAX_NAME_LENGTH },
-      type: FieldType.TEXT,
-      required: true,
-      label: {
-        defaultMessage: 'Last name',
-        description: 'This is the label for the field',
-        id: 'v2.event.birth.action.declare.form.section.person.field.surname.label'
-      },
-      conditionals: [
-        {
-          type: ConditionalType.SHOW,
-          conditional: requireMotherDetails
-        }
-      ],
-      validation: [invalidNameValidator('mother.surname')]
+      validation: [invalidNameValidator('mother.name')]
     },
     {
       id: 'mother.dob',
       type: 'DATE',
       required: true,
+      secured: true,
       validation: [
         {
           message: {
@@ -250,7 +234,7 @@ export const mother = defineFormPage({
     },
     {
       id: 'mother.nid',
-      type: FieldType.TEXT,
+      type: FieldType.ID,
       required: true,
       label: {
         defaultMessage: 'ID Number',
@@ -349,6 +333,7 @@ export const mother = defineFormPage({
     {
       id: 'mother.address',
       type: FieldType.ADDRESS,
+      secured: true,
       hideLabel: true,
       label: {
         defaultMessage: 'Usual place of residence',
