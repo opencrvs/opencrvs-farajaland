@@ -20,6 +20,7 @@ on:
           - staging
           - qa
           - development
+          - v19-alpha-staging
 jobs:
   reset-data:
     name: 'Reset data'
