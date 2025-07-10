@@ -30,7 +30,6 @@ on:
           - backup
           - jump
           - e2e
-          - vpostgres-backup-staging
           - vpostgres-backup-prod
           - postgress-backup
       tag:
