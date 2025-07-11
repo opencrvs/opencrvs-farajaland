@@ -20,6 +20,7 @@ on:
           - staging
           - qa
           - development
+          - vocrvs-6983
 jobs:
   reset-data:
     name: 'Reset data'

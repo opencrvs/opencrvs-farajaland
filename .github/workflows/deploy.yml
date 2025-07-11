@@ -38,6 +38,7 @@ on:
           - qa
           - e2e
           - staging
+          - vocrvs-6983
       core-image-tag:
         description: Core image tag
         required: true
