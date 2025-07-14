@@ -36,7 +36,7 @@ test.describe.serial('Certified copies', () => {
       ).toBeVisible()
     })
 
-    test('2.2 Click continue without after selecting collector type', async () => {
+    test('2.2 Click continue after selecting collector type', async () => {
       await page.reload({ waitUntil: 'networkidle' })
       await page.getByLabel('Print in advance').check()
       await page.getByRole('button', { name: 'Continue' }).click()
