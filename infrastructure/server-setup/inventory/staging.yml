@@ -17,6 +17,7 @@ all:
     enable_backups: true
     backup_server_remote_target_directory: /home/backup/staging-backups
     backup_server_remote_source_directory: /home/backup/backups
+    single_node: true
     periodic_restore_from_backup: true
     # external_backup_server_ssh_port: Defined in --extra-vars by the provisioning pipeline
     # external_backup_server_ip: Defined in --extra-vars by the provisioning pipeline
