@@ -1,10 +1,10 @@
 import { expect, test, type Page } from '@playwright/test'
-import { getToken, loginToV2 } from '../../helpers'
-import { createDeclaration } from '../v2-test-data/birth-declaration-with-father-brother'
-import { CREDENTIALS } from '../../constants'
+import { getToken, loginToV2 } from '../../../helpers'
+import { createDeclaration } from '../../v2-test-data/birth-declaration-with-father-brother'
+import { CREDENTIALS } from '../../../constants'
 import { faker } from '@faker-js/faker'
-import { formatDateToLongString } from './utils'
-import { getAllLocations, getLocationIdByName } from '../birth/helpers'
+import { formatDateToLongString } from '../utils'
+import { getAllLocations, getLocationIdByName } from '../../birth/helpers'
 
 test.describe
   .serial("Advanced Search - Birth Event Declaration - Child's details", () => {

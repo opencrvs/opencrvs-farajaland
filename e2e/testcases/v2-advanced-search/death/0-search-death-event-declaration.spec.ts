@@ -1,7 +1,7 @@
 import { expect, test, type Page } from '@playwright/test'
-import { loginToV2 } from '../../helpers'
+import { loginToV2 } from '../../../helpers'
 
-test.describe.serial('Advanced Search - Birth Event Declaration', () => {
+test.describe.serial('Advanced Search - Death Event Declaration', () => {
   let page: Page
 
   test.beforeAll(async ({ browser }) => {
@@ -23,8 +23,8 @@ test.describe.serial('Advanced Search - Birth Event Declaration', () => {
   })
 
   test('0.3 - Validate display child details when selecting Birth', async () => {
-    await page.getByText('Birth').click()
-    await expect(page.getByText('Child details')).toBeVisible()
+    await page.getByText('Death').click()
+    await expect(page.getByText('Deceased details')).toBeVisible()
   })
 
   test('0.4 - Validate Search button disabled when form is incomplete', async () => {

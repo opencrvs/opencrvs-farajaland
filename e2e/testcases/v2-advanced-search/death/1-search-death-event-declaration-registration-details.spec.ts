@@ -1,7 +1,7 @@
 import { expect, test, type Page } from '@playwright/test'
-import { getToken, loginToV2 } from '../../helpers'
-import { createDeclaration } from '../v2-test-data/birth-declaration-with-father-brother'
-import { CREDENTIALS } from '../../constants'
+import { getToken, loginToV2 } from '../../../helpers'
+import { createDeclaration } from '../../v2-test-data/death-declaration'
+import { CREDENTIALS } from '../../../constants'
 import { faker } from '@faker-js/faker'
 
 const todayDate = `${new Date().getDate() < 10 ? '0' : ''}${new Date().getDate().toString()}`
@@ -9,7 +9,7 @@ const thisMonth = `${new Date().getMonth() < 9 ? '0' : ''}${(new Date().getMonth
 const thisYear = new Date().getFullYear().toString()
 
 test.describe
-  .serial('Advanced Search - Birth Event Declaration - Registration details', () => {
+  .serial('Advanced Search - Death Event Declaration - Registration details', () => {
   let page: Page
   let [yyyy, mm, dd] = ['', '', '']
   let fullNameOfChild = ''
@@ -23,17 +23,16 @@ test.describe
 
     const record: Awaited<ReturnType<typeof createDeclaration>> =
       await createDeclaration(token, {
-        'child.dob': faker.date
-          // Randomly chosen DOB between 2010-01-01 and 2020-12-31
+        'eventDetails.date': faker.date
+          // Randomly chosen date between 2010-01-01 and 2020-12-31
           // Ensures the created record appears on the first page of search results
           .between({ from: '2010-01-01', to: '2020-12-31' })
           .toISOString()
           .split('T')[0],
-        'child.reason': 'Other', // needed for late dob value
-        'child.gender': 'female'
+        'eventDetails.reasonForLateRegistration': 'Other' // needed for late registration date
       })
-    ;[yyyy, mm, dd] = record.declaration['child.dob'].split('-')
-    fullNameOfChild = `${record.declaration['child.name'].firstname} ${record.declaration['child.name'].surname}`
+    ;[yyyy, mm, dd] = record.declaration['eventDetails.date'].split('-')
+    fullNameOfChild = `${record.declaration['deceased.name'].firstname} ${record.declaration['deceased.name'].surname}`
   })
 
   test.afterAll(async () => {
@@ -44,7 +43,7 @@ test.describe
     await loginToV2(page)
     await page.click('#searchType')
     await expect(page).toHaveURL(/.*\/advanced-search/)
-    await page.getByText('Birth').click()
+    await page.getByText('Death').click()
   })
 
   test.describe
@@ -53,24 +52,24 @@ test.describe
       await page.getByText('Registration details').click()
 
       await page
-        .locator('#event____legalStatuses____REGISTERED____createdAtLocation')
+        .locator('#event____legalStatus____REGISTERED____createdAtLocation')
         .fill('Ibombo')
       await expect(page.getByText('Ibombo District Office')).toBeVisible()
       await page.getByText('Ibombo District Office').click()
 
       await page
         .locator(
-          '[data-testid="event____legalStatuses____REGISTERED____acceptedAt-dd"]'
+          '[data-testid="event____legalStatus____REGISTERED____createdAt-dd"]'
         )
         .fill(todayDate)
       await page
         .locator(
-          '[data-testid="event____legalStatuses____REGISTERED____acceptedAt-mm"]'
+          '[data-testid="event____legalStatus____REGISTERED____createdAt-mm"]'
         )
         .fill(thisMonth)
       await page
         .locator(
-          '[data-testid="event____legalStatuses____REGISTERED____acceptedAt-yyyy"]'
+          '[data-testid="event____legalStatus____REGISTERED____createdAt-yyyy"]'
         )
         .fill(thisYear)
 
@@ -94,13 +93,13 @@ test.describe
     test('1.5.2 - Validate search and show results', async () => {
       await page.click('#search')
       await expect(page).toHaveURL(/.*\/search-result/)
-      // event____legalStatuses____REGISTERED____acceptedAt=2025-05-19&
+      // event____legalStatus____REGISTERED____createdAt=2025-05-19&
       await expect(page.url()).toContain(
-        `event.legalStatuses.REGISTERED.acceptedAt=${thisYear}-${thisMonth}-${todayDate}`
+        `event.legalStatus.REGISTERED.createdAt=${thisYear}-${thisMonth}-${todayDate}`
       )
-      // event.legalStatuses.REGISTERED.createdAtLocation=ad207d45-3418-4771-af03-e0759572fcaa&
+      // event.legalStatus.REGISTERED.createdAtLocation=ad207d45-3418-4771-af03-e0759572fcaa&
       await expect(page.url()).toContain(
-        `event.legalStatuses.REGISTERED.createdAtLocation=`
+        `event.legalStatus.REGISTERED.createdAtLocation=`
       )
       // event.status=REGISTERED&
       await expect(page.url()).toContain(`event.status=REGISTERED&`)
@@ -111,9 +110,9 @@ test.describe
       const searchResult = await page.locator('#content-name').textContent()
       const searchResultCountNumberInBracketsRegex = /\((\d+)\)$/
       await expect(searchResult).toMatch(searchResultCountNumberInBracketsRegex)
-      await expect(page.getByText('Event: V2 birth')).toBeVisible()
+      await expect(page.getByText('Event: V2 death')).toBeVisible()
       // Check for each pill
-      await expect(page.getByText('Event: V2 birth')).toBeVisible()
+      await expect(page.getByText('Event: V2 death')).toBeVisible()
       await expect(
         page.getByText(
           `Date of registration: ${thisYear}-${thisMonth}-${todayDate}`
@@ -132,13 +131,13 @@ test.describe
     test('1.5.3 - Validate clicking on the search edit button', async () => {
       await page.getByRole('button', { name: 'Edit' }).click()
       await expect(page).toHaveURL(/.*\/advanced-search/)
-      // event____legalStatuses____REGISTERED____createdAt=2025-05-19&
+      // event____legalStatus____REGISTERED____createdAt=2025-05-19&
       await expect(page.url()).toContain(
-        `event.legalStatuses.REGISTERED.acceptedAt=${thisYear}-${thisMonth}-${todayDate}`
+        `event.legalStatus.REGISTERED.createdAt=${thisYear}-${thisMonth}-${todayDate}`
       )
-      // event.legalStatuses.REGISTERED.createdAtLocation=ad207d45-3418-4771-af03-e0759572fcaa&
+      // event.legalStatus.REGISTERED.createdAtLocation=ad207d45-3418-4771-af03-e0759572fcaa&
       await expect(page.url()).toContain(
-        `event.legalStatuses.REGISTERED.createdAtLocation=`
+        `event.legalStatus.REGISTERED.createdAtLocation=`
       )
       // event.status=REGISTERED&
       await expect(page.url()).toContain(`event.status=REGISTERED&`)
@@ -147,18 +146,16 @@ test.describe
       await expect(page.locator('#tab_v2\\.birth')).toHaveText('Birth')
 
       await expect(
-        page.locator(
-          '#event____legalStatuses____REGISTERED____createdAtLocation'
-        )
+        page.locator('#event____legalStatus____REGISTERED____createdAtLocation')
       ).toHaveValue('Ibombo District Office')
       await expect(
-        page.locator('#event____legalStatuses____REGISTERED____acceptedAt-dd')
+        page.locator('#event____legalStatus____REGISTERED____createdAt-dd')
       ).toHaveValue(todayDate)
       await expect(
-        page.locator('#event____legalStatuses____REGISTERED____acceptedAt-mm')
+        page.locator('#event____legalStatus____REGISTERED____createdAt-mm')
       ).toHaveValue(thisMonth)
       await expect(
-        page.locator('#event____legalStatuses____REGISTERED____acceptedAt-yyyy')
+        page.locator('#event____legalStatus____REGISTERED____createdAt-yyyy')
       ).toHaveValue(thisYear)
     })
   })
