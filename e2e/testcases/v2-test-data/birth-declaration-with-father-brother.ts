@@ -1,8 +1,6 @@
 import { v4 as uuidv4 } from 'uuid'
 import { GATEWAY_HOST } from '../../constants'
 import { faker } from '@faker-js/faker'
-import fs from 'fs'
-import path from 'path'
 import { getAllLocations, getLocationIdByName } from '../birth/helpers'
 import { createClient } from '@opencrvs/toolkit/api'
 import {
@@ -11,6 +9,7 @@ import {
   ActionUpdate,
   AddressType
 } from '@opencrvs/toolkit/events'
+import { getSignatureFile, uploadFile } from './utils'
 
 async function getPlaceOfBirth(type: 'PRIVATE_HOME' | 'HEALTH_FACILITY') {
   if (type === 'HEALTH_FACILITY') {
@@ -48,6 +47,18 @@ async function getPlaceOfBirth(type: 'PRIVATE_HOME' | 'HEALTH_FACILITY') {
   }
 
   throw new Error('Invalid place of birth type')
+}
+
+function generateCustomPhoneNumber() {
+  // Starts with 0
+  // Second digit is 7 or 9
+  // Followed by 8 digits (0-9)
+  const secondDigit = Math.random() < 0.5 ? '7' : '9'
+  let rest = ''
+  for (let i = 0; i < 8; i++) {
+    rest += Math.floor(Math.random() * 10)
+  }
+  return `0${secondDigit}${rest}`
 }
 
 export async function getDeclaration({
@@ -115,6 +126,7 @@ export async function getDeclaration({
     'informant.dob': '2008-09-12',
     'informant.nationality': 'FAR',
     'informant.idType': 'NATIONAL_ID',
+    'informant.phoneNo': generateCustomPhoneNumber(),
     'informant.nid': faker.string.numeric(10)
   }
   // 💡 Merge overriden fields
@@ -128,40 +140,8 @@ export type Declaration = Awaited<ReturnType<typeof getDeclaration>>
 
 export interface CreateDeclarationResponse {
   eventId: string
+  trackingId: string
   declaration: Declaration
-}
-
-async function uploadFile(file: File, token: string) {
-  const formData = new FormData()
-  const transactionId = uuidv4()
-  formData.append('file', file)
-  formData.append('transactionId', transactionId)
-
-  const url = new URL('/upload', GATEWAY_HOST)
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${token}`
-    },
-    body: formData
-  })
-
-  if (!res.ok) {
-    throw new Error(`Failed to upload file: ${res.statusText}`)
-  }
-
-  return {
-    filename: `${transactionId}.png`,
-    originalFilename: file.name,
-    type: file.type
-  }
-}
-
-function getSignatureFile() {
-  const buffer = fs.readFileSync(path.join(__dirname, 'signature.png'))
-  return new File([buffer], `signature-${Date.now()}.png`, {
-    type: 'image/png'
-  })
 }
 
 export async function createDeclaration(
@@ -182,6 +162,7 @@ export async function createDeclaration(
     transactionId: uuidv4()
   })
   const eventId = createResponse.id as string
+  const trackingId = createResponse.trackingId
 
   const file = await uploadFile(getSignatureFile(), token)
 
@@ -203,7 +184,11 @@ export async function createDeclaration(
       (action: ActionDocument) => action.type === 'DECLARE'
     )
 
-    return { eventId, declaration: declareAction?.declaration as Declaration }
+    return {
+      eventId,
+      trackingId,
+      declaration: declareAction?.declaration as Declaration
+    }
   }
 
   const validateRes = await client.event.actions.validate.request.mutate({
@@ -222,6 +207,7 @@ export async function createDeclaration(
 
     return {
       eventId,
+      trackingId,
       declaration: validateAction?.declaration as Declaration
     }
   }
@@ -237,5 +223,13 @@ export async function createDeclaration(
     (action: ActionDocument) => action.type === 'REGISTER'
   )
 
-  return { eventId, declaration: registerAction?.declaration as Declaration }
+  return {
+    eventId,
+    trackingId,
+    declaration: registerAction?.declaration as Declaration
+  }
+}
+
+export const getChildNameFromRecord = (record: CreateDeclarationResponse) => {
+  return `${record.declaration['child.name'].firstname} ${record.declaration['child.name'].surname}`
 }
