@@ -227,7 +227,7 @@ echo "Creating a backup for SQLite"
 docker run --rm \
   -v $ROOT_PATH/sqlite:/data/sqlite \
   -v $ROOT_PATH/backups/sqlite:/data/backup \
-  alpine sh -c "apk add --no-cache sqlite && \
+  alpine:3.22.1 sh -c "apk add --no-cache sqlite && \
   sqlite3 /data/sqlite/mosip-api.db \".backup '/data/backup/mosip-api-${LABEL:-$BACKUP_DATE}.sqlite'\""
 
 #-------------------------------------------------------------------------------------
