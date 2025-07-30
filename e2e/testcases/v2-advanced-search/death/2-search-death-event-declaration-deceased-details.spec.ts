@@ -5,6 +5,7 @@ import { CREDENTIALS } from '../../../constants'
 import { faker } from '@faker-js/faker'
 import { formatDateToLongString } from '../utils'
 import { getMonthFormatted } from '../helper'
+import { type } from '../../../v2-utils'
 
 test.describe
   .serial("Advanced Search - Death Event Declaration - Deceased's details", () => {
@@ -48,19 +49,19 @@ test.describe
     test('2.5.1 - Validate filling DOB and gender filters', async () => {
       await page.getByText('Deceased details').click()
 
-      await page
-        .locator('#firstname')
-        .fill(record.declaration['deceased.name'].firstname)
-      await page
-        .locator('#surname')
-        .fill(record.declaration['deceased.name'].surname)
+      await type(
+        page,
+        '#firstname',
+        record.declaration['deceased.name'].firstname
+      )
+      await type(page, '#surname', record.declaration['deceased.name'].surname)
 
       await page.locator('#deceased____gender').click()
       await page.getByText('Male', { exact: true }).click()
 
-      await page.locator('[data-testid="deceased____dob-dd"]').fill(dd)
-      await page.locator('[data-testid="deceased____dob-mm"]').fill(mm)
-      await page.locator('[data-testid="deceased____dob-yyyy"]').fill(yyyy)
+      await type(page, '[data-testid="deceased____dob-dd"]', dd)
+      await type(page, '[data-testid="deceased____dob-mm"]', mm)
+      await type(page, '[data-testid="deceased____dob-yyyy"]', yyyy)
     })
 
     test('2.5.2 - Validate search and show results', async () => {

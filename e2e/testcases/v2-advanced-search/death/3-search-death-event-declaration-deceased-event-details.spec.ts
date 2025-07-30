@@ -4,6 +4,7 @@ import { createDeclaration } from '../../v2-test-data/death-declaration'
 import { CREDENTIALS } from '../../../constants'
 import { faker } from '@faker-js/faker'
 import { formatDateToLongString } from '../utils'
+import { type } from '../../../v2-utils'
 
 test.describe
   .serial("Advanced Search - Death Event Declaration - Deceased's details", () => {
@@ -45,28 +46,31 @@ test.describe
     await page.close()
   })
 
-  test('2.1 - Validate log in and load search page', async () => {
+  test('3.1 - Validate log in and load search page', async () => {
     await loginToV2(page)
     await page.click('#searchType')
     await expect(page).toHaveURL(/.*\/advanced-search/)
     await page.getByText('Death').click()
   })
 
-  test.describe
-    .serial("2.5 - Validate search by Deceased's DOB & Gender", () => {
-    test('2.5.1 - Validate filling DOB and gender filters', async () => {
+  test.describe.serial("3 - Validate search by Deceased's DOB & Gender", () => {
+    test('3.1.1 - Validate filling DOB and gender filters', async () => {
       await page.getByText('Deceased details').click()
 
-      await page
-        .getByTestId('text__firstname')
-        .fill(record.declaration['deceased.name'].firstname)
-      await page
-        .getByTestId('text__surname')
-        .fill(record.declaration['deceased.name'].surname)
+      await type(
+        page,
+        '[data-testid="text__firstname"]',
+        record.declaration['deceased.name'].firstname
+      )
+      await type(
+        page,
+        '[data-testid="text__surname"]',
+        record.declaration['deceased.name'].surname
+      )
 
-      await page.locator('[data-testid="deceased____dob-dd"]').fill(dd)
-      await page.locator('[data-testid="deceased____dob-mm"]').fill(mm)
-      await page.locator('[data-testid="deceased____dob-yyyy"]').fill(yyyy)
+      await type(page, '[data-testid="deceased____dob-dd"]', dd)
+      await type(page, '[data-testid="deceased____dob-mm"]', mm)
+      await type(page, '[data-testid="deceased____dob-yyyy"]', yyyy)
 
       await page.locator('#deceased____gender').click()
       await page.getByText('Male', { exact: true }).click()
@@ -77,7 +81,7 @@ test.describe
       await page.getByText('Ibombo Rural Health Centre').click()
     })
 
-    test('2.5.2 - Validate search and show results', async () => {
+    test('3.1.2 - Validate search and show results', async () => {
       await page.click('#search')
       await expect(page).toHaveURL(/.*\/search-result/)
       await expect(page.url()).toContain(`deceased.dob=${yyyy}-${mm}-${dd}`)
@@ -106,7 +110,7 @@ test.describe
       await expect(page.getByText(fullNameOfDeceased).last()).toBeVisible()
     })
 
-    test('2.5.3 - Validate clicking on the search edit button', async () => {
+    test('3.1.3 - Validate clicking on the search edit button', async () => {
       await page.getByRole('button', { name: 'Edit' }).click()
       await expect(page).toHaveURL(/.*\/advanced-search/)
       await expect(page.url()).toContain(

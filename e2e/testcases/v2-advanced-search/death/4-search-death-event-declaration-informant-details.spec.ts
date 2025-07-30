@@ -2,9 +2,9 @@ import { expect, test, type Page } from '@playwright/test'
 import { getToken, loginToV2 } from '../../../helpers'
 import { createDeclaration } from '../../v2-test-data/death-declaration'
 import { CREDENTIALS } from '../../../constants'
-import { faker } from '@faker-js/faker'
 import { formatDateToLongString } from '../utils'
 import { getMonthFormatted } from '../helper'
+import { type } from '../../../v2-utils'
 
 test.describe
   .serial("Advanced Search - Death Event Declaration - Informant's details (Spouse)", () => {
@@ -37,16 +37,19 @@ test.describe
     test('2.5.1 - Validate filling name and dob filters', async () => {
       await page.getByText('Informant details').click()
 
-      await page
-        .locator('#firstname')
-        .fill(record.declaration['spouse.name'].firstname)
-      await page
-        .locator('#surname')
-        .fill(record.declaration['spouse.name'].surname)
-
-      await page.locator('[data-testid="informant____dob-dd"]').fill(dd)
-      await page.locator('[data-testid="informant____dob-mm"]').fill(mm)
-      await page.locator('[data-testid="informant____dob-yyyy"]').fill(yyyy)
+      await type(
+        page,
+        '[data-testid="text__firstname"]',
+        record.declaration['spouse.name'].firstname
+      )
+      await type(
+        page,
+        '[data-testid="text__surname"]',
+        record.declaration['spouse.name'].surname
+      )
+      await type(page, '[data-testid="informant____dob-dd"]', dd)
+      await type(page, '[data-testid="informant____dob-mm"]', mm)
+      await type(page, '[data-testid="informant____dob-yyyy"]', yyyy)
     })
 
     test('2.5.2 - Validate search and show results', async () => {
