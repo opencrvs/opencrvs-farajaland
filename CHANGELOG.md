@@ -6,6 +6,10 @@
 
 - Ensure that place of birth/death only shows active facilities/offices on the form [#9311](https://github.com/opencrvs/opencrvs-core/issues/9311)
 
+### Improvements
+
+- Use the Alpine image with the fixed tag `3.22.1` during the backup process
+
 ## 1.8.0
 
 ### New features
