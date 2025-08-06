@@ -79,6 +79,10 @@ jobs:
       test_matrix: ${{ steps.list-tests.outputs.test_matrix }}
     steps:
       - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+          run_install: false
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
@@ -90,18 +94,16 @@ jobs:
           echo "Test suites: $tests_suites"
           echo "test_matrix=$tests_suites" >> $GITHUB_OUTPUT
           echo "test_matrix=$tests_suites"
-      - name: Cache Node.js dependencies
+      - name: Setup pnpm cache
         uses: actions/cache@v4
         with:
-          path: |
-            node_modules
-            ~/.cache/yarn/v6
+          path: ${{ env.STORE_PATH }}
           key: ${{github.event.inputs.countryconfig-image-tag || needs.get-country-config-commit.outputs.short_sha}}
           restore-keys: |
-            ${{ runner.os }}-node-
+            ${{ runner.os }}-pnpm-store-
 
       - name: Install Dependencies
-        run: yarn
+        run: pnpm install
   test:
     needs: [deploy, discover-tests, get-core-commit, get-country-config-commit]
     runs-on: ubuntu-22.04
@@ -113,22 +115,24 @@ jobs:
     name: ${{ matrix.test_file }}
     steps:
       - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+          run_install: false
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
 
-      - name: Cache Node.js dependencies
+      - name: Setup pnpm cache
         uses: actions/cache@v4
         with:
-          path: |
-            node_modules
-            ~/.cache/yarn/v6
+          path: ${{ env.STORE_PATH }}
           key: ${{github.event.inputs.countryconfig-image-tag || needs.get-country-config-commit.outputs.short_sha}}
           restore-keys: |
-            ${{ runner.os }}-node-
+            ${{ runner.os }}-pnpm-store-
 
       - name: Install Dependencies
-        run: yarn
+        run: pnpm install
 
       - uses: nick-fields/retry@v3
         with:

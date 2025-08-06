@@ -37,9 +37,9 @@ jobs:
         with:
           ref: ${{ github.event.inputs.branch }}
       - name: Install dependencies
-        run: yarn install
+        run: pnpm install
       - name: Start generating test data
-        run: yarn data-generator
+        run: pnpm data-generator
         env:
           COUNTRY_CONFIG_HOST: ${{ vars.COUNTRY_CONFIG_HOST }}
           AUTH_HOST: ${{ vars.AUTH_HOST }}
