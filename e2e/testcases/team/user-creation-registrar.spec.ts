@@ -40,7 +40,7 @@ test.describe.serial('1. Create user -1', () => {
       )
       await createPIN(page)
       await page.getByRole('button', { name: 'Team' }).click()
-      await expect(page.getByText('HQ Office')).toBeVisible()
+      await expect(page.locator('#content-name')).toHaveText('HQ Office')
       await page.click('#add-user')
       await expect(page.getByText('User details')).toBeVisible()
     })
