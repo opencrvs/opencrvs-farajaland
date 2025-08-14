@@ -147,11 +147,11 @@ test.describe('1. Correct record - 1', () => {
 
       /*
        * Expected result: should show
-       * Text: Verify their identity
+       * Text: Verify ID
        * Button: Verified
        * Button: Identity does not match
        */
-      await expect(page.getByText('Verify their identity')).toBeVisible()
+      await expect(page.getByText('Verify ID')).toBeVisible()
       await expect(page.getByRole('button', { name: 'Verified' })).toBeVisible()
       await expect(
         page.getByRole('button', { name: 'Identity does not match' })
