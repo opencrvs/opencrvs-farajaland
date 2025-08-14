@@ -61,7 +61,7 @@ export async function createUser(
     throw new Error(JSON.stringify(json.errors))
   }
 
-  const fullName = formatName(user.name)
+  const fullName = formatName(user.name[0])
 
   return { ...json.data.createOrUpdateUser, fullName }
 }
