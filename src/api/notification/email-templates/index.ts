@@ -9,9 +9,11 @@
  * Copyright (C) The OpenCRVS Authors located at https://github.com/opencrvs/opencrvs-core/blob/master/AUTHORS.
  */
 
+import { TriggerEvent } from '@opencrvs/toolkit/notification'
 import * as fs from 'fs'
 import * as Handlebars from 'handlebars'
 import { join } from 'path'
+import { z } from 'zod'
 
 const readBirthTemplate = <T extends Record<string, string>>(
   templateName: string
@@ -34,67 +36,72 @@ const readOtherTemplate = <T extends Record<string, string>>(
     fs.readFileSync(join(__dirname, `./other/${templateName}.html`)).toString()
   )
 
-type OnboardingInviteVariables = {
-  firstNames: string
-  username: string
-  password: string
-  applicationName: string
-  completeSetupUrl: string
-  countryLogo: string
-  loginURL: string
-}
-type TwoFactorAuthenticationVariables = {
-  firstNames: string
-  authCode: string
-  applicationName: string
-  countryLogo: string
-}
-type ChangePhoneNumberVariables = {
-  firstNames: string
-  authCode: string
-  applicationName: string
-  countryLogo: string
-}
-type ChangeEmailAddressVariables = {
-  firstNames: string
-  authCode: string
-  applicationName: string
-  countryLogo: string
-}
-type ResetPasswordBySysAdminVariables = {
-  firstNames: string
-  password: string
-  applicationName: string
-  countryLogo: string
-}
-type ResetPasswordVariables = {
-  firstNames: string
-  authCode: string
-  applicationName: string
-  countryLogo: string
-}
-type UsernameReminderVariables = {
-  firstNames: string
-  username: string
-  applicationName: string
-  countryLogo: string
+const BaseVariables = z.object({
+  applicationName: z.string(),
+  countryLogo: z.string()
+})
+
+export type BaseVariables = z.infer<typeof BaseVariables>
+
+export const TriggerVariable = {
+  [TriggerEvent.USER_CREATED]: z.object({
+    firstNames: z.string(),
+    username: z.string(),
+    password: z.string(),
+    completeSetupUrl: z.string(),
+    loginURL: z.string()
+  }),
+  [TriggerEvent.USER_UPDATED]: z.object({
+    firstNames: z.string(),
+    username: z.string()
+  }),
+  [TriggerEvent.USERNAME_REMINDER]: z.object({
+    firstNames: z.string(),
+    username: z.string()
+  }),
+  [TriggerEvent.RESET_PASSWORD]: z.object({
+    firstNames: z.string(),
+    authCode: z.string()
+  }),
+  [TriggerEvent.RESET_PASSWORD_BY_ADMIN]: z.object({
+    firstNames: z.string(),
+    password: z.string()
+  }),
+  [TriggerEvent.TWO_FA]: z.object({
+    firstNames: z.string(),
+    authCode: z.string()
+  })
+} as const
+
+export type TriggerVariable = {
+  [T in TriggerEvent]: z.infer<(typeof TriggerVariable)[T]>
 }
 
-type UsernameUpdateVariables = {
-  firstNames: string
-  username: string
-  applicationName: string
-  countryLogo: string
-}
+export const ChangePhoneNumberVariables = BaseVariables.extend({
+  firstNames: z.string(),
+  authCode: z.string()
+})
+export type ChangePhoneNumberVariables = z.infer<
+  typeof ChangePhoneNumberVariables
+>
 
-type ApproveCorrectionVariables = {
-  firstNames: string
-  lastName: string
-  event: string
-  trackingId: string
-  applicationName: string
-  countryLogo: string
-}
+export const ChangeEmailAddressVariables = BaseVariables.extend({
+  firstNames: z.string(),
+  authCode: z.string()
+})
+export type ChangeEmailAddressVariables = z.infer<
+  typeof ChangeEmailAddressVariables
+>
+
+export const ApproveCorrectionVariables = BaseVariables.extend({
+  firstNames: z.string(),
+  lastName: z.string(),
+  event: z.string(),
+  trackingId: z.string()
+})
+export type ApproveCorrectionVariables = z.infer<
+  typeof ApproveCorrectionVariables
+>
 
 type RejectCorrectionVariables = ApproveCorrectionVariables & { reason: string }
 
@@ -125,15 +132,16 @@ export type AllUserNotificationVariables = {
 }
 
 const templates = {
-  'onboarding-invite': {
+  'user-created': {
     type: 'onboarding-invite',
     subject: 'Welcome to OpenCRVS!',
-    template: readOtherTemplate<OnboardingInviteVariables>('onboarding-invite')
+    template:
+      readOtherTemplate<TriggerVariable['user-created']>('onboarding-invite')
   },
-  '2-factor-authentication': {
+  '2fa': {
     type: '2-factor-authentication',
     subject: 'Two factor authentication',
-    template: readOtherTemplate<TwoFactorAuthenticationVariables>(
+    template: readOtherTemplate<TriggerVariable['2fa']>(
       '2-factor-authentication'
     )
   },
@@ -151,27 +159,32 @@ const templates = {
       'change-email-address'
     )
   },
-  'password-reset-by-system-admin': {
+  'reset-password-by-admin': {
     type: 'password-reset-by-system-admin',
     subject: 'Account password reset invitation',
-    template: readOtherTemplate<ResetPasswordBySysAdminVariables>(
+    template: readOtherTemplate<TriggerVariable['reset-password-by-admin']>(
       'password-reset-by-system-admin'
     )
   },
-  'password-reset': {
+  'reset-password': {
     type: 'password-reset',
     subject: 'Account password reset request',
-    template: readOtherTemplate<ResetPasswordVariables>('password-reset')
+    template:
+      readOtherTemplate<TriggerVariable['reset-password']>('password-reset')
   },
   'username-reminder': {
     type: 'username-reminder',
     subject: 'Account username reminder',
-    template: readOtherTemplate<UsernameReminderVariables>('username-reminder')
+    template:
+      readOtherTemplate<TriggerVariable['username-reminder']>(
+        'username-reminder'
+      )
   },
-  'username-updated': {
+  'user-updated': {
     type: 'username-updated',
     subject: 'Account username updated',
-    template: readOtherTemplate<UsernameUpdateVariables>('username-updated')
+    template:
+      readOtherTemplate<TriggerVariable['user-updated']>('username-updated')
   },
   'correction-approved': {
     type: 'correction-approved',
@@ -249,17 +262,3 @@ export function renderTemplate<T extends (typeof templates)[EmailTemplateType]>(
 ) {
   return template.template(variables as any)
 }
-
-export type TemplateVariables =
-  | OnboardingInviteVariables
-  | TwoFactorAuthenticationVariables
-  | ChangePhoneNumberVariables
-  | ResetPasswordBySysAdminVariables
-  | ResetPasswordVariables
-  | UsernameReminderVariables
-  | UsernameUpdateVariables
-  | InProgressDeclarationVariables
-  | InReviewDeclarationVariables
-  | RegistrationDeclarationVariables
-  | RejectionDeclarationVariables
-  | AllUserNotificationVariables
