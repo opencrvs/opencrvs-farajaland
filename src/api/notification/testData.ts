@@ -26,7 +26,8 @@ export const testData: TriggerEventPayloadPair[] = [
     event: 'user-updated',
     payload: {
       recipient,
-      username: 'j.doe'
+      oldUsername: 'z.roronoa',
+      newUsername: 'j.doe'
     }
   },
   {
