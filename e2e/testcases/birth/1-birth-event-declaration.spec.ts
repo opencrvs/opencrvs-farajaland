@@ -430,7 +430,7 @@ test.describe('1. Birth event declaration', () => {
          * - find the declared birth event record on this page list with saved data
          */
         await expect(page.locator('#content-name')).toHaveText('My drafts')
-        await expect(page.getByText(/seconds ago/)).toBeVisible()
+        await expect(page.getByText(/seconds? ago/)).toBeVisible()
       })
     })
   })
@@ -491,7 +491,7 @@ test.describe('1. Birth event declaration', () => {
       await expect(
         page.locator('#content-name', { hasText: 'My drafts' })
       ).toBeVisible()
-      await expect(page.getByText(/seconds ago/)).toBeHidden()
+      await expect(page.getByText(/seconds? ago/)).toBeHidden()
     })
   })
 
@@ -560,7 +560,7 @@ test.describe('1. Birth event declaration', () => {
       await expect(
         page.locator('#content-name', { hasText: 'My drafts' })
       ).toBeVisible()
-      await expect(page.getByText(/seconds ago/)).toBeHidden()
+      await expect(page.getByText(/seconds? ago/)).toBeHidden()
     })
   })
 

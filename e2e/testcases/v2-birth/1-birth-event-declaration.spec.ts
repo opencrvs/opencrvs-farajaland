@@ -540,7 +540,7 @@ test.describe.serial('1. Birth event declaration', () => {
       // await expect(
       //   page.locator('#content-name', { hasText: 'My drafts' })
       // ).toBeVisible()
-      // await expect(page.getByText(/seconds ago/)).toBeHidden()
+      // await expect(page.getByText(/seconds? ago/)).toBeHidden()
 
       await expect(
         page.getByTestId('search-result').getByText('Assigned to you')
@@ -605,7 +605,7 @@ test.describe.serial('1. Birth event declaration', () => {
       // await expect(
       //   page.locator('#content-name', { hasText: 'My drafts' })
       // ).toBeVisible()
-      // await expect(page.getByText(/seconds ago/)).toBeHidden()
+      // await expect(page.getByText(/seconds? ago/)).toBeHidden()
 
       await expect(
         page.getByTestId('search-result').getByText('Assigned to you')
