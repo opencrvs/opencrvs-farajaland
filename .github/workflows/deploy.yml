@@ -1,4 +1,4 @@
-name: Deploy (development)
+name: Deploy pentest
 run-name: "Deploy to ${{ inputs.environment }} with (core: ${{ inputs.core-image-tag }}, country config: ${{ inputs.countryconfig-image-tag }}, reset: ${{ inputs.reset }})"
 on:
   workflow_call:
@@ -32,15 +32,8 @@ on:
         type: choice
         description: Environment to deploy to
         required: true
-        default: 'development'
+        default: 'pentest'
         options:
-          - development
-          - qa
-          - e2e
-          - v17
-          - staging
-          - v19-alpha-staging
-          - v19-alpha-prod
           - pentest
       core-image-tag:
         description: Core image tag
