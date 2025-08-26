@@ -24,7 +24,7 @@ import {
 } from '../../v2-utils'
 import { formatV2ChildName } from '../v2-birth/helpers'
 
-test.describe('1. Correct record - 1', () => {
+test.describe.serial('1. Correct record - 1', () => {
   let declaration: Declaration
   let trackingId: string | undefined
   let registrationNumber: string | undefined
@@ -61,7 +61,7 @@ test.describe('1. Correct record - 1', () => {
     eventId = res.eventId
   })
 
-  test.describe('1.1 Validate verbiage', async () => {
+  test.describe.serial('1.1 Validate verbiage', async () => {
     test.beforeEach(async ({ page }) => {
       await loginToV2(page, CREDENTIALS.REGISTRATION_AGENT)
       await page.getByRole('button', { name: 'Ready to print' }).click()
@@ -258,7 +258,7 @@ test.describe('1. Correct record - 1', () => {
       await expectInUrl(page, `/events/correction/${eventId}/review`)
     })
 
-    test.describe('1.2.4 Correction made on child details', async () => {
+    test.describe.serial('1.2.4 Correction made on child details', async () => {
       test('1.2.4.1 Change name', async () => {
         await page.getByTestId('change-button-child.name').click()
 
@@ -514,7 +514,7 @@ test.describe('1. Correct record - 1', () => {
       })
     })
 
-    test.describe('1.2.5 Correction summary', async () => {
+    test.describe.serial('1.2.5 Correction summary', async () => {
       test('1.2.5.1 Go back to review', async () => {
         await page
           .getByRole('button', { name: 'Continue', exact: true })
@@ -667,7 +667,7 @@ test.describe('1. Correct record - 1', () => {
       })
     })
 
-    test.describe('1.2.6 Correction Approval', async () => {
+    test.describe.serial('1.2.6 Correction Approval', async () => {
       test.beforeAll(async ({ browser }) => {
         await page.close()
         page = await browser.newPage()
