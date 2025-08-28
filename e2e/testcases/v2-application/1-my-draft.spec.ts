@@ -5,6 +5,7 @@ import { CREDENTIALS } from '../../constants'
 import { faker } from '@faker-js/faker'
 import { getRowByTitle } from '../v2-print-certificate/birth/helpers'
 import { ensureOutboxIsEmpty } from '../../v2-utils'
+import { assertRecordInWorkqueue } from '../v2-birth/helpers'
 
 test.describe.serial('1: Validate my draft tab', () => {
   let page: Page
@@ -44,13 +45,16 @@ test.describe.serial('1: Validate my draft tab', () => {
   })
 
   test('1.3 Record appears in draft ', async () => {
-    await ensureOutboxIsEmpty(page)
-
-    await page.getByRole('button', { name: 'My drafts' }).click()
-
-    await expect(page.getByTestId('search-result')).toContainText(
-      formatName(name)
-    )
+    await assertRecordInWorkqueue({
+      page,
+      workqueues: [
+        {
+          title: 'My drafts',
+          exists: true
+        }
+      ],
+      name: formatName(name)
+    })
   })
 
   test('1.4 Record does not appear in draft for other user: RA ', async () => {
@@ -86,11 +90,15 @@ test.describe.serial('1: Validate my draft tab', () => {
     await page.getByRole('button', { name: 'Send for review' }).click()
     await page.getByRole('button', { name: 'Confirm' }).click()
 
-    await ensureOutboxIsEmpty(page)
-
-    await expect(page.getByTestId('search-result')).toContainText('My drafts')
-    await expect(page.getByTestId('search-result')).not.toContainText(
-      formatName(name)
-    )
+    await assertRecordInWorkqueue({
+      page,
+      workqueues: [
+        {
+          title: 'My drafts',
+          exists: false
+        }
+      ],
+      name: formatName(name)
+    })
   })
 })

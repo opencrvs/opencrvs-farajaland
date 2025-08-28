@@ -108,8 +108,6 @@ export async function expectInUrl(page: Page, assertionString: string) {
 }
 
 export async function ensureOutboxIsEmpty(page: Page) {
-  await page.waitForTimeout(SAFE_INPUT_CHANGE_TIMEOUT_MS)
-
   await expect(page.locator('#navigation_workqueue_outbox')).toHaveText(
     'Outbox',
     {

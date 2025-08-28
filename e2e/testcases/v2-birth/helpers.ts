@@ -4,7 +4,10 @@ import { formatName, joinValuesWith } from '../../helpers'
 import { faker } from '@faker-js/faker'
 import { ensureOutboxIsEmpty } from '../../v2-utils'
 import { getRowByTitle } from '../v2-print-certificate/birth/helpers'
-import { SAFE_OUTBOX_TIMEOUT_MS } from '../../constants'
+import {
+  SAFE_OUTBOX_TIMEOUT_MS,
+  SAFE_WORKQUEUE_TIMEOUT_MS
+} from '../../constants'
 
 export const REQUIRED_VALIDATION_ERROR = 'Required'
 export const NAME_VALIDATION_ERROR =
@@ -85,7 +88,6 @@ export const assertRecordInWorkqueue = async ({
   name: string
   workqueues: { title: string; exists: boolean }[]
 }) => {
-  await page.getByRole('button', { name: 'Outbox' }).click()
   await ensureOutboxIsEmpty(page)
 
   for (const { title, exists } of workqueues) {

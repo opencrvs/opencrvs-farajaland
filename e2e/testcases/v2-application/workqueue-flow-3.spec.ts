@@ -145,9 +145,9 @@ test.describe.serial('3. Workqueue flow - 3', () => {
         page,
         name: childName,
         workqueues: [
-          { title: 'Assigned to you', exists: false },
           { title: 'Recent', exists: true },
           { title: 'Sent for review', exists: true },
+          { title: 'Assigned to you', exists: false },
           { title: 'Requires updates', exists: false }
         ]
       })
@@ -162,9 +162,9 @@ test.describe.serial('3. Workqueue flow - 3', () => {
         page,
         name: childName,
         workqueues: [
+          { title: 'Notifications', exists: true },
           { title: 'Assigned to you', exists: false },
           { title: 'Recent', exists: false },
-          { title: 'Notifications', exists: true },
           { title: 'Ready for review', exists: false },
           { title: 'Requires updates', exists: false },
           { title: 'Sent for approval', exists: false },
@@ -194,12 +194,12 @@ test.describe.serial('3. Workqueue flow - 3', () => {
         page,
         name: childName,
         workqueues: [
-          { title: 'Assigned to you', exists: false },
           { title: 'Recent', exists: true },
+          { title: 'Requires updates', exists: true },
+          { title: 'Assigned to you', exists: false },
           { title: 'Notifications', exists: false },
           { title: 'Ready for review', exists: false },
           { title: 'Sent for approval', exists: false },
-          { title: 'Requires updates', exists: true },
           { title: 'In external validation', exists: false },
           { title: 'Ready to print', exists: false }
         ]
@@ -214,10 +214,10 @@ test.describe.serial('3. Workqueue flow - 3', () => {
         page,
         name: childName,
         workqueues: [
+          { title: 'Requires updates', exists: true },
           { title: 'Assigned to you', exists: false },
           { title: 'Recent', exists: false },
-          { title: 'Sent for review', exists: false },
-          { title: 'Requires updates', exists: true }
+          { title: 'Sent for review', exists: false }
         ]
       })
     })
@@ -329,9 +329,9 @@ test.describe.serial('3. Workqueue flow - 3', () => {
         page,
         name: childName,
         workqueues: [
-          { title: 'Assigned to you', exists: false },
           { title: 'Recent', exists: true },
           { title: 'Sent for review', exists: true },
+          { title: 'Assigned to you', exists: false },
           { title: 'Requires updates', exists: false }
         ]
       })
@@ -346,10 +346,10 @@ test.describe.serial('3. Workqueue flow - 3', () => {
         page,
         name: childName,
         workqueues: [
+          { title: 'Ready for review', exists: true },
           { title: 'Assigned to you', exists: false },
           { title: 'Recent', exists: false },
           { title: 'Notifications', exists: false },
-          { title: 'Ready for review', exists: true },
           { title: 'Requires updates', exists: false },
           { title: 'In external validation', exists: false },
           { title: 'Ready to print', exists: false }
@@ -374,8 +374,8 @@ test.describe.serial('3. Workqueue flow - 3', () => {
         page,
         name: childName,
         workqueues: [
-          { title: 'Assigned to you', exists: false },
           { title: 'Recent', exists: true },
+          { title: 'Assigned to you', exists: false },
           { title: 'Notifications', exists: false },
           { title: 'Ready for review', exists: false },
           // { title: 'Sent for approval', exists: true }, @ToDo: Investigate why this fails
@@ -395,10 +395,10 @@ test.describe.serial('3. Workqueue flow - 3', () => {
         page,
         name: childName,
         workqueues: [
+          { title: 'Ready for review', exists: true },
           { title: 'Assigned to you', exists: false },
           { title: 'Recent', exists: false },
           { title: 'Notifications', exists: false },
-          { title: 'Ready for review', exists: true },
           { title: 'Requires updates', exists: false },
           { title: 'In external validation', exists: false },
           { title: 'Ready to print', exists: false }
@@ -423,11 +423,11 @@ test.describe.serial('3. Workqueue flow - 3', () => {
         page,
         name: childName,
         workqueues: [
-          { title: 'Assigned to you', exists: false },
           { title: 'Recent', exists: true },
+          { title: 'Requires updates', exists: true },
+          { title: 'Assigned to you', exists: false },
           { title: 'Notifications', exists: false },
           { title: 'Ready for review', exists: false },
-          { title: 'Requires updates', exists: true },
           { title: 'In external validation', exists: false },
           { title: 'Ready to print', exists: false }
         ]
@@ -442,11 +442,11 @@ test.describe.serial('3. Workqueue flow - 3', () => {
         page,
         name: childName,
         workqueues: [
+          { title: 'Requires updates', exists: true },
           { title: 'Assigned to you', exists: false },
           { title: 'Recent', exists: false },
           { title: 'Notifications', exists: false },
           { title: 'Ready for review', exists: false },
-          { title: 'Requires updates', exists: true },
           { title: 'Sent for approval', exists: false },
           { title: 'In external validation', exists: false },
           { title: 'Ready to print', exists: false }
@@ -469,8 +469,8 @@ test.describe.serial('3. Workqueue flow - 3', () => {
         page,
         name: childName,
         workqueues: [
-          { title: 'Assigned to you', exists: false },
           { title: 'Recent', exists: true },
+          { title: 'Assigned to you', exists: false },
           { title: 'Notifications', exists: false },
           { title: 'Ready for review', exists: false },
           { title: 'Requires updates', exists: false },
@@ -489,10 +489,10 @@ test.describe.serial('3. Workqueue flow - 3', () => {
         page,
         name: childName,
         workqueues: [
+          { title: 'Ready for review', exists: true },
           { title: 'Assigned to you', exists: false },
           { title: 'Recent', exists: false },
           { title: 'Notifications', exists: false },
-          { title: 'Ready for review', exists: true },
           { title: 'Requires updates', exists: false },
           { title: 'In external validation', exists: false },
           { title: 'Ready to print', exists: false }
@@ -514,13 +514,13 @@ test.describe.serial('3. Workqueue flow - 3', () => {
         page,
         name: childName,
         workqueues: [
-          { title: 'Assigned to you', exists: false },
           { title: 'Recent', exists: true },
+          { title: 'Ready to print', exists: true },
+          { title: 'Assigned to you', exists: false },
           { title: 'Notifications', exists: false },
           { title: 'Ready for review', exists: false },
           { title: 'Requires updates', exists: false },
-          { title: 'In external validation', exists: false },
-          { title: 'Ready to print', exists: true }
+          { title: 'In external validation', exists: false }
         ]
       })
     })

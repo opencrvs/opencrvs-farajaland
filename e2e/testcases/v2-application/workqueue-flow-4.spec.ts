@@ -214,9 +214,9 @@ test.describe.serial('4. Workqueue flow - 4', () => {
         page,
         name: formatName(declaration.child.name),
         workqueues: [
-          { title: 'Assigned to you', exists: false },
           { title: 'Recent', exists: true },
           { title: 'Sent for review', exists: true },
+          { title: 'Assigned to you', exists: false },
           { title: 'Requires updates', exists: false }
         ]
       })
@@ -230,10 +230,10 @@ test.describe.serial('4. Workqueue flow - 4', () => {
       page,
       name: formatName(declaration.child.name),
       workqueues: [
+        { title: 'Ready for review', exists: true },
         { title: 'Assigned to you', exists: false },
         { title: 'Recent', exists: false },
         { title: 'Notifications', exists: false },
-        { title: 'Ready for review', exists: true },
         { title: 'Requires updates', exists: false },
         { title: 'In external validation', exists: false },
         { title: 'Ready to print', exists: false }
@@ -249,10 +249,10 @@ test.describe.serial('4. Workqueue flow - 4', () => {
         page,
         name: formatName(declaration.child.name),
         workqueues: [
+          { title: 'Ready for review', exists: true },
           { title: 'Assigned to you', exists: false },
           { title: 'Recent', exists: false },
           { title: 'Notifications', exists: false },
-          { title: 'Ready for review', exists: true },
           { title: 'Requires updates', exists: false },
           { title: 'Sent for approval', exists: false },
           { title: 'In external validation', exists: false },
@@ -280,8 +280,8 @@ test.describe.serial('4. Workqueue flow - 4', () => {
         page,
         name: formatName(declaration.child.name),
         workqueues: [
-          { title: 'Assigned to you', exists: false },
           { title: 'Recent', exists: true },
+          { title: 'Assigned to you', exists: false },
           { title: 'Notifications', exists: false },
           { title: 'Ready for review', exists: false },
           { title: 'Requires updates', exists: false },
@@ -316,10 +316,10 @@ test.describe.serial('4. Workqueue flow - 4', () => {
         page,
         name: formatName(declaration.child.name),
         workqueues: [
+          { title: 'Ready for review', exists: true },
           { title: 'Assigned to you', exists: false },
           { title: 'Recent', exists: false },
           { title: 'Notifications', exists: false },
-          { title: 'Ready for review', exists: true },
           { title: 'Requires updates', exists: false },
           { title: 'In external validation', exists: false },
           { title: 'Ready to print', exists: false }
@@ -349,13 +349,13 @@ test.describe.serial('4. Workqueue flow - 4', () => {
         page,
         name: formatName(declaration.child.name),
         workqueues: [
-          { title: 'Assigned to you', exists: false },
           { title: 'Recent', exists: true },
+          { title: 'Ready to print', exists: true },
+          { title: 'Assigned to you', exists: false },
           { title: 'Notifications', exists: false },
           { title: 'Ready for review', exists: false },
           { title: 'Requires updates', exists: false },
-          { title: 'In external validation', exists: false },
-          { title: 'Ready to print', exists: true }
+          { title: 'In external validation', exists: false }
         ]
       })
     })
@@ -383,14 +383,14 @@ test.describe.serial('4. Workqueue flow - 4', () => {
       page,
       name: formatName(declaration.child.name),
       workqueues: [
+        { title: 'Ready to print', exists: true },
         { title: 'Assigned to you', exists: false },
         { title: 'Recent', exists: false },
         { title: 'Notifications', exists: false },
         { title: 'Ready for review', exists: false },
         { title: 'Sent for approval', exists: false },
         { title: 'Requires updates', exists: false },
-        { title: 'In external validation', exists: false },
-        { title: 'Ready to print', exists: true }
+        { title: 'In external validation', exists: false }
       ]
     })
   })

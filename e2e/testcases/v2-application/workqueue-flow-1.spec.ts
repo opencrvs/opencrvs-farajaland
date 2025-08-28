@@ -141,9 +141,9 @@ test.describe.serial('1. Workqueue flow - 1', () => {
         page,
         name: formatName(declaration.child.name),
         workqueues: [
-          { title: 'Assigned to you', exists: false },
           { title: 'Recent', exists: true },
           { title: 'Sent for review', exists: true },
+          { title: 'Assigned to you', exists: false },
           { title: 'Requires updates', exists: false }
         ]
       })
@@ -158,9 +158,9 @@ test.describe.serial('1. Workqueue flow - 1', () => {
         page,
         name: formatName(declaration.child.name),
         workqueues: [
+          { title: 'Notifications', exists: true },
           { title: 'Assigned to you', exists: false },
           { title: 'Recent', exists: false },
-          { title: 'Notifications', exists: true },
           { title: 'Ready for review', exists: false },
           { title: 'Requires updates', exists: false },
           { title: 'Sent for approval', exists: false },
@@ -269,18 +269,16 @@ test.describe.serial('1. Workqueue flow - 1', () => {
       await page.getByRole('button', { name: 'Send for approval' }).click()
       await page.getByRole('button', { name: 'Confirm' }).click()
 
-      await ensureOutboxIsEmpty(page)
-
       await assertRecordInWorkqueue({
         page,
         name: formatName(declaration.child.name),
         workqueues: [
-          { title: 'Assigned to you', exists: false },
           { title: 'Recent', exists: true },
+          { title: 'Sent for approval', exists: true },
+          { title: 'Assigned to you', exists: false },
           { title: 'Notifications', exists: false },
           { title: 'Ready for review', exists: false },
           { title: 'Requires updates', exists: false },
-          { title: 'Sent for approval', exists: true },
           { title: 'In external validation', exists: false },
           { title: 'Ready to print', exists: false }
         ]
@@ -311,10 +309,10 @@ test.describe.serial('1. Workqueue flow - 1', () => {
         page,
         name: formatName(declaration.child.name),
         workqueues: [
+          { title: 'Ready for review', exists: true },
           { title: 'Assigned to you', exists: false },
           { title: 'Recent', exists: false },
           { title: 'Notifications', exists: false },
-          { title: 'Ready for review', exists: true },
           { title: 'Requires updates', exists: false },
           { title: 'In external validation', exists: false },
           { title: 'Ready to print', exists: false }
@@ -338,19 +336,18 @@ test.describe.serial('1. Workqueue flow - 1', () => {
         })
         .click()
       await page.locator('#confirm_Register').click()
-      await ensureOutboxIsEmpty(page)
 
       await assertRecordInWorkqueue({
         page,
         name: formatName(declaration.child.name),
         workqueues: [
-          { title: 'Assigned to you', exists: false },
           { title: 'Recent', exists: true },
+          { title: 'Ready to print', exists: true },
+          { title: 'Assigned to you', exists: false },
           { title: 'Notifications', exists: false },
           { title: 'Ready for review', exists: false },
           { title: 'Requires updates', exists: false },
-          { title: 'In external validation', exists: false },
-          { title: 'Ready to print', exists: true }
+          { title: 'In external validation', exists: false }
         ]
       })
     })
@@ -400,8 +397,8 @@ test.describe.serial('1. Workqueue flow - 1', () => {
       page,
       name: formatName(declaration.child.name),
       workqueues: [
-        { title: 'Assigned to you', exists: false },
         { title: 'Recent', exists: true },
+        { title: 'Assigned to you', exists: false },
         { title: 'Notifications', exists: false },
         { title: 'Ready for review', exists: false },
         { title: 'Requires updates', exists: false },
