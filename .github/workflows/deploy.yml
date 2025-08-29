@@ -1,4 +1,4 @@
-name: Deploy pentest
+name: Deploy (development)
 run-name: "Deploy to ${{ inputs.environment }} with (core: ${{ inputs.core-image-tag }}, country config: ${{ inputs.countryconfig-image-tag }}, reset: ${{ inputs.reset }})"
 on:
   workflow_call:
