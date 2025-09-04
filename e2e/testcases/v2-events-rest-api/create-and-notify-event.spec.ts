@@ -11,7 +11,8 @@ import {
 } from '../../helpers'
 import { addDays, format, subDays } from 'date-fns'
 import { faker } from '@faker-js/faker'
-import { ensureAssigned, selectAction } from '../../v2-utils'
+import { ensureAssigned } from '../../v2-utils'
+import { getAllLocations } from '../birth/helpers'
 
 async function fetchClientAPI(
   path: string,
@@ -151,6 +152,8 @@ test.describe('Events REST API', () => {
       )
 
       expect(response.status).toBe(400)
+      const body = await response.json()
+      expect(body.message).toBe('Input validation failed')
     })
 
     test('HTTP 400 with invalid payload', async () => {
@@ -164,6 +167,8 @@ test.describe('Events REST API', () => {
       )
 
       expect(response.status).toBe(400)
+      const body = await response.json()
+      expect(body.message).toBe('Input validation failed')
     })
 
     test('HTTP 200 with valid payload', async () => {
@@ -216,6 +221,18 @@ test.describe('Events REST API', () => {
   })
 
   test.describe('POST /api/events/events/notifications', () => {
+    let healthFacilityId: string
+
+    test.beforeAll(async () => {
+      const healthFacilities = await getAllLocations('HEALTH_FACILITY')
+
+      if (!healthFacilities[0].id) {
+        throw new Error('No health facility found')
+      }
+
+      healthFacilityId = healthFacilities[0].id
+    })
+
     test('HTTP 401 when invalid token is used', async () => {
       const response = await fetchClientAPI(
         '/api/events/events/notifications',
@@ -243,6 +260,8 @@ test.describe('Events REST API', () => {
       )
 
       expect(response.status).toBe(400)
+      const body = await response.json()
+      expect(body.message).toBe('Input validation failed')
     })
 
     test('HTTP 400 with invalid payload', async () => {
@@ -256,6 +275,8 @@ test.describe('Events REST API', () => {
       )
 
       expect(response.status).toBe(400)
+      const body = await response.json()
+      expect(body.message).toBe('Input validation failed')
     })
 
     test('HTTP 400 with payload containing declaration with unexpected fields', async () => {
@@ -290,6 +311,10 @@ test.describe('Events REST API', () => {
       )
 
       expect(response.status).toBe(400)
+      const body = await response.json()
+      expect(body.message).toBe(
+        '[{"message":"Unexpected field","id":"foo.bar","value":"this should cause an error"},{"message":"Invalid input","id":"child.name","value":{}}]'
+      )
     })
 
     test('HTTP 400 with payload containing declaration with invalid values', async () => {
@@ -324,6 +349,10 @@ test.describe('Events REST API', () => {
       )
 
       expect(response.status).toBe(400)
+      const body = await response.json()
+      expect(body.message).toBe(
+        '[{"message":"Invalid input","id":"child.name","value":{}}]'
+      )
     })
 
     test('HTTP 400 with payload containing declaration with values of wrong type', async () => {
@@ -356,6 +385,10 @@ test.describe('Events REST API', () => {
       )
 
       expect(response.status).toBe(400)
+      const body = await response.json()
+      expect(body.message).toBe(
+        '[{"message":"Invalid input","id":"child.name","value":{}}]'
+      )
     })
 
     test('HTTP 404 when trying to notify a non-existing event', async () => {
@@ -381,7 +414,7 @@ test.describe('Events REST API', () => {
       expect(response.status).toBe(404)
     })
 
-    test('HTTP 200 with valid payload', async ({ page }) => {
+    test('HTTP 400 when trying to notify an event without createdAtLocation', async () => {
       const createEventResponse = await fetchClientAPI(
         '/api/events/events',
         'POST',
@@ -421,11 +454,160 @@ test.describe('Events REST API', () => {
 
       const body = await response.json()
 
+      expect(response.status).toBe(400)
+      expect(body.message).toBe(
+        'createdAtLocation is required and must be a valid office id'
+      )
+    })
+
+    test('HTTP 400 when trying to notify an event with an invalid createdAtLocation', async () => {
+      const createEventResponse = await fetchClientAPI(
+        '/api/events/events',
+        'POST',
+        clientToken,
+        {
+          type: EVENT_TYPE,
+          transactionId: uuidv4()
+        }
+      )
+
+      const createEventResponseBody = await createEventResponse.json()
+      const eventId = createEventResponseBody.id
+
+      const childName = {
+        firstNames: faker.person.firstName(),
+        familyName: faker.person.lastName()
+      }
+
+      const response = await fetchClientAPI(
+        '/api/events/events/notifications',
+        'POST',
+        clientToken,
+        {
+          eventId,
+          transactionId: uuidv4(),
+          type: 'NOTIFY',
+          declaration: {
+            'child.name': {
+              firstname: childName.firstNames,
+              surname: childName.familyName
+            },
+            'child.dob': format(subDays(new Date(), 1), 'yyyy-MM-dd')
+          },
+          annotation: {},
+          createdAtLocation: 'invalid-location-id'
+        }
+      )
+
+      const body = await response.json()
+
+      expect(response.status).toBe(400)
+      expect(body.message).toBe('Input validation failed')
+    })
+
+    test('HTTP 400 when trying to notify an event with a non-office createdAtLocation', async () => {
+      const createEventResponse = await fetchClientAPI(
+        '/api/events/events',
+        'POST',
+        clientToken,
+        {
+          type: EVENT_TYPE,
+          transactionId: uuidv4()
+        }
+      )
+
+      const createEventResponseBody = await createEventResponse.json()
+      const eventId = createEventResponseBody.id
+
+      const childName = {
+        firstNames: faker.person.firstName(),
+        familyName: faker.person.lastName()
+      }
+
+      const locations = await getAllLocations('ADMIN_STRUCTURE')
+      const centralLocation = locations.find(
+        (location) => location.name === 'Central'
+      )
+
+      if (!centralLocation) {
+        throw new Error('No central location found')
+      }
+
+      const response = await fetchClientAPI(
+        '/api/events/events/notifications',
+        'POST',
+        clientToken,
+        {
+          eventId,
+          transactionId: uuidv4(),
+          type: 'NOTIFY',
+          declaration: {
+            'child.name': {
+              firstname: childName.firstNames,
+              surname: childName.familyName
+            },
+            'child.dob': format(subDays(new Date(), 1), 'yyyy-MM-dd')
+          },
+          annotation: {},
+          createdAtLocation: centralLocation.id
+        }
+      )
+
+      const body = await response.json()
+
+      expect(response.status).toBe(400)
+      expect(body.message).toBe('createdAtLocation must be an office location')
+    })
+
+    test('HTTP 200 with valid payload', async ({ page }) => {
+      const createEventResponse = await fetchClientAPI(
+        '/api/events/events',
+        'POST',
+        clientToken,
+        {
+          type: EVENT_TYPE,
+          transactionId: uuidv4()
+        }
+      )
+
+      const createEventResponseBody = await createEventResponse.json()
+      const eventId = createEventResponseBody.id
+
+      const childName = {
+        firstNames: faker.person.firstName(),
+        familyName: faker.person.lastName()
+      }
+
+      const response = await fetchClientAPI(
+        '/api/events/events/notifications',
+        'POST',
+        clientToken,
+        {
+          eventId,
+          transactionId: uuidv4(),
+          type: 'NOTIFY',
+          declaration: {
+            'child.name': {
+              firstname: childName.firstNames,
+              surname: childName.familyName
+            },
+            'child.dob': format(subDays(new Date(), 1), 'yyyy-MM-dd')
+          },
+          annotation: {},
+          createdAtLocation: healthFacilityId
+        }
+      )
+
+      const body = await response.json()
+
       expect(response.status).toBe(200)
       expect(body.type).toBe(EVENT_TYPE)
-      expect(body.actions.length).toBe(2)
+      expect(body.actions.length).toBe(3)
       expect(body.actions[0].type).toBe('CREATE')
       expect(body.actions[1].type).toBe('NOTIFY')
+      expect(body.actions[1].status).toBe('Requested')
+      expect(body.actions[2].type).toBe('NOTIFY')
+      expect(body.actions[2].status).toBe('Accepted')
 
       // check that event is created in UI
       await loginToV2(page)
@@ -477,7 +659,8 @@ test.describe('Events REST API', () => {
           },
           'child.dob': format(subDays(new Date(), 1), 'yyyy-MM-dd')
         },
-        annotation: {}
+        annotation: {},
+        createdAtLocation: healthFacilityId
       }
 
       const response1 = await fetchClientAPI(
@@ -538,7 +721,8 @@ test.describe('Events REST API', () => {
             },
             'child.dob': format(subDays(new Date(), 1), 'yyyy-MM-dd')
           },
-          annotation: {}
+          annotation: {},
+          createdAtLocation: healthFacilityId
         }
       )
 

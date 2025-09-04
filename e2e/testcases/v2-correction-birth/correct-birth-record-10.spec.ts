@@ -142,7 +142,7 @@ test.describe('10. Correct record', () => {
        */
       await expectInUrl(
         page,
-        `/events/correction/${eventId}/onboarding/documents`
+        `/events/request-correction/${eventId}/onboarding/documents`
       )
     })
 
@@ -161,7 +161,10 @@ test.describe('10. Correct record', () => {
     const fee = faker.number.int({ min: 1, max: 1000 })
 
     test('10.1.3 Fees', async () => {
-      await expectInUrl(page, `/events/correction/${eventId}/onboarding/fees`)
+      await expectInUrl(
+        page,
+        `/events/request-correction/${eventId}/onboarding/fees`
+      )
 
       // Clicking continue without filling required fields should cause validation errors
       await page.getByRole('button', { name: 'Continue' }).click()
@@ -171,7 +174,7 @@ test.describe('10. Correct record', () => {
 
       await page.getByRole('button', { name: 'Continue' }).click()
 
-      await expectInUrl(page, `/events/correction/${eventId}/review`)
+      await expectInUrl(page, `/events/request-correction/${eventId}/review`)
     })
 
     test.describe('10.1.4 Correction made on child details', async () => {
@@ -185,7 +188,7 @@ test.describe('10. Correct record', () => {
          */
         await expectInUrl(
           page,
-          `/events/correction/${eventId}/pages/child?from=review#child____name`
+          `/events/request-correction/${eventId}/pages/child?from=review#child____name`
         )
 
         await page
@@ -204,7 +207,7 @@ test.describe('10. Correct record', () => {
          * - show previous name with strikethrough
          * - show updated name
          */
-        await expectInUrl(page, `/events/correction/${eventId}/review`)
+        await expectInUrl(page, `/events/request-correction/${eventId}/review`)
 
         await expect(
           await page.getByTestId('row-value-child.name').getByRole('deletion')
@@ -232,7 +235,7 @@ test.describe('10. Correct record', () => {
 
         await expectInUrl(
           page,
-          `/events/correction/${eventId}/pages/child?from=review#child____gender`
+          `/events/request-correction/${eventId}/pages/child?from=review#child____gender`
         )
 
         await page.getByTestId('select__child____gender').locator('svg').click()
@@ -247,7 +250,7 @@ test.describe('10. Correct record', () => {
          * - show updated gender
          */
 
-        await expectInUrl(page, `/events/correction/${eventId}/review`)
+        await expectInUrl(page, `/events/request-correction/${eventId}/review`)
 
         await expect(
           page.getByTestId('row-value-child.gender').getByRole('deletion')
@@ -270,7 +273,7 @@ test.describe('10. Correct record', () => {
          */
         await expectInUrl(
           page,
-          `/events/correction/${eventId}/pages/child?from=review#child____dob`
+          `/events/request-correction/${eventId}/pages/child?from=review#child____dob`
         )
 
         const birthDay = updatedChildDetails.birthDate.split('-')
@@ -288,7 +291,7 @@ test.describe('10. Correct record', () => {
          * - show updated gender
          */
 
-        await expectInUrl(page, `/events/correction/${eventId}/review`)
+        await expectInUrl(page, `/events/request-correction/${eventId}/review`)
 
         await expect(
           page.getByTestId('row-value-child.dob').getByRole('deletion')
@@ -311,7 +314,7 @@ test.describe('10. Correct record', () => {
          */
         await expectInUrl(
           page,
-          `/events/correction/${eventId}/pages/child?from=review#child____placeOfBirth`
+          `/events/request-correction/${eventId}/pages/child?from=review#child____placeOfBirth`
         )
 
         await page
@@ -328,7 +331,7 @@ test.describe('10. Correct record', () => {
          * - show updated place of birth
          */
 
-        await expectInUrl(page, `/events/correction/${eventId}/review`)
+        await expectInUrl(page, `/events/request-correction/${eventId}/review`)
 
         childBirthLocationName = await getLocationNameFromFhirId(
           declaration['child.birthLocation']!
@@ -360,7 +363,7 @@ test.describe('10. Correct record', () => {
 
         await expectInUrl(
           page,
-          `/events/correction/${eventId}/pages/child?from=review#child____attendantAtBirth`
+          `/events/request-correction/${eventId}/pages/child?from=review#child____attendantAtBirth`
         )
 
         await page.getByTestId('select__child____attendantAtBirth').click()
@@ -375,13 +378,13 @@ test.describe('10. Correct record', () => {
          * - show updated Attendant at birth
          */
 
-        await expectInUrl(page, `/events/correction/${eventId}/review`)
+        await expectInUrl(page, `/events/request-correction/${eventId}/review`)
 
         await expect(
           page
             .getByTestId('row-value-child.attendantAtBirth')
             .getByRole('deletion')
-        ).toHaveText('')
+        ).toHaveText('-')
 
         await expect(
           page
@@ -401,7 +404,7 @@ test.describe('10. Correct record', () => {
 
         await expectInUrl(
           page,
-          `/events/correction/${eventId}/pages/child?from=review#child____birthType`
+          `/events/request-correction/${eventId}/pages/child?from=review#child____birthType`
         )
 
         await page.getByTestId('select__child____birthType').click()
@@ -416,11 +419,11 @@ test.describe('10. Correct record', () => {
          * - show updated type of birth
          */
 
-        await expectInUrl(page, `/events/correction/${eventId}/review`)
+        await expectInUrl(page, `/events/request-correction/${eventId}/review`)
 
         await expect(
           page.getByTestId('row-value-child.birthType').getByRole('deletion')
-        ).toHaveText('')
+        ).toHaveText('-')
 
         await expect(
           page
@@ -439,7 +442,7 @@ test.describe('10. Correct record', () => {
         /* Expected result: should
          * - navigate to correction summary
          */
-        await expectInUrl(page, `/events/correction/${eventId}/summary`)
+        await expectInUrl(page, `/events/request-correction/${eventId}/summary`)
 
         await page
           .getByRole('button', { name: 'Back to review', exact: true })
@@ -448,7 +451,7 @@ test.describe('10. Correct record', () => {
         /* Expected result: should
          * - navigate to correction review
          */
-        await expectInUrl(page, `/events/correction/${eventId}/review`)
+        await expectInUrl(page, `/events/request-correction/${eventId}/review`)
       })
 
       test('10.1.5.2 Change weight at birth', async () => {
@@ -462,7 +465,7 @@ test.describe('10. Correct record', () => {
 
         await expectInUrl(
           page,
-          `/events/correction/${eventId}/pages/child?from=review#child____weightAtBirth`
+          `/events/request-correction/${eventId}/pages/child?from=review#child____weightAtBirth`
         )
 
         await page
@@ -478,11 +481,11 @@ test.describe('10. Correct record', () => {
          * - show updated weight at birth
          */
 
-        await expectInUrl(page, `/events/correction/${eventId}/review`)
+        await expectInUrl(page, `/events/request-correction/${eventId}/review`)
 
         await expect(
           page.getByTestId('row-value-child.birthType').getByRole('deletion')
-        ).toHaveText('')
+        ).toHaveText('-')
 
         await expect(
           page
@@ -500,7 +503,7 @@ test.describe('10. Correct record', () => {
          * Expected result: should
          * - navigate to correction summary
          */
-        await expectInUrl(page, `/events/correction/${eventId}/summary`)
+        await expectInUrl(page, `/events/request-correction/${eventId}/summary`)
 
         /*
          * Expected result: should show
@@ -550,16 +553,16 @@ test.describe('10. Correct record', () => {
         await expect(
           page.locator('#listTable-corrections-table-child')
         ).toContainText(
-          `Attendant at birth${updatedChildDetails.attendantAtBirth}`
+          `Attendant at birth-${updatedChildDetails.attendantAtBirth}`
         )
 
         await expect(
           page.locator('#listTable-corrections-table-child')
-        ).toContainText(`Type of birth${updatedChildDetails.typeOfBirth}`)
+        ).toContainText(`Type of birth-${updatedChildDetails.typeOfBirth}`)
 
         await expect(
           page.locator('#listTable-corrections-table-child')
-        ).toContainText(`Weight at birth${updatedChildDetails.weightAtBirth}`)
+        ).toContainText(`Weight at birth-${updatedChildDetails.weightAtBirth}`)
 
         await page
           .getByRole('button', { name: 'Submit correction request' })
@@ -702,7 +705,7 @@ test.describe('10. Correct record', () => {
               )
           ).toBeVisible()
 
-          await expect(page.getByText('Type of birthTwin')).toBeVisible()
+          await expect(page.getByText('Type of birth-Twin')).toBeVisible()
 
           await page.locator('#close-btn').click()
         })

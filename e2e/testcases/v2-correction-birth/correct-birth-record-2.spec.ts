@@ -140,7 +140,7 @@ test.describe.serial('Correct record - 2', () => {
 
       await expectInUrl(
         page,
-        `/events/correction/${eventId}/pages/informant?from=review#informant____relation`
+        `/events/request-correction/${eventId}/pages/informant?from=review#informant____relation`
       )
 
       await page.locator('#informant____relation').click()
@@ -162,7 +162,7 @@ test.describe.serial('Correct record - 2', () => {
 
       await page.getByRole('button', { name: 'Back to review' }).click()
 
-      await expectInUrl(page, `/events/correction/${eventId}/review`)
+      await expectInUrl(page, `/events/request-correction/${eventId}/review`)
 
       await expect(
         page.getByTestId('row-value-informant.relation').getByRole('deletion')
@@ -178,7 +178,7 @@ test.describe.serial('Correct record - 2', () => {
 
       await expectInUrl(
         page,
-        `/events/correction/${eventId}/pages/child?from=review#child____placeOfBirth`
+        `/events/request-correction/${eventId}/pages/child?from=review#child____placeOfBirth`
       )
 
       await page.locator('#child____placeOfBirth').click()
@@ -277,6 +277,7 @@ test.describe.serial('Correct record - 2', () => {
       await expect(
         page.locator('#listTable-corrections-table-informant').getByText(
           "Informant's name" +
+            '-' +
             formatName({
               firstNames: updatedInformantDetails.firstNames,
               familyName: updatedInformantDetails.familyName
@@ -286,18 +287,22 @@ test.describe.serial('Correct record - 2', () => {
 
       await expect(
         page.getByText('Exact date of birth unknown' + '-' + 'Yes')
+      ).not.toBeVisible()
+
+      await expect(
+        page
+          .locator('#listTable-corrections-table-informant')
+          .getByText('Age of informant' + '-' + updatedInformantDetails.age)
       ).toBeVisible()
 
       await expect(
-        page.getByText('Age of informant' + updatedInformantDetails.age)
+        page.getByRole('row', { name: 'Birth Registration Number' })
       ).toBeVisible()
 
       await expect(
-        page.getByRole('row', { name: 'Type of ID Birth Registration' })
-      ).toBeVisible()
-
-      await expect(
-        page.getByText('ID Number' + updatedInformantDetails.brn)
+        page
+          .locator('#listTable-corrections-table-informant')
+          .getByText('ID Number' + '-' + updatedInformantDetails.brn)
       ).toBeVisible()
 
       await expect(
@@ -362,7 +367,7 @@ test.describe.serial('Correct record - 2', () => {
 
         await expect(
           page.getByText(
-            "Informant's name" + formatName(updatedInformantDetails)
+            "Informant's name" + '-' + formatName(updatedInformantDetails)
           )
         ).toBeVisible()
 
