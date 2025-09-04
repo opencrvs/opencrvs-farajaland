@@ -160,9 +160,10 @@ export async function getDeclaration({
         ...(partialDeclaration['father.addressSameAs'] === 'NO' && {
           'father.address': {
             country: 'FAR',
-            addressType: 'DOMESTIC',
+            addressType: 'DOMESTIC' as const,
             province,
-            district
+            district,
+            urbanOrRural: 'URBAN' as const
           }
         }),
         ...partialDeclaration
@@ -217,6 +218,10 @@ export async function createDeclaration(
     const declareAction = declareRes.actions.find(
       (action: ActionDocument) => action.type === 'DECLARE'
     )
+
+    if (!declareAction || !('declaration' in declareAction)) {
+      throw new Error('Declaration info not found in action')
+    }
 
     return {
       eventId,
