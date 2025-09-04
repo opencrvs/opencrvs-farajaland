@@ -40,8 +40,7 @@ async function getPlaceOfDeath(
         country: 'FAR',
         addressType: AddressType.DOMESTIC,
         province,
-        district,
-        urbanOrRural: 'URBAN' as const
+        district
       }
     }
   }
