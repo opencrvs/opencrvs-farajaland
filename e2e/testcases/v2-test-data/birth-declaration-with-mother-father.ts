@@ -79,7 +79,7 @@ export async function getDeclaration({
   placeOfBirthType = 'PRIVATE_HOME'
 }: {
   informantRelation?: InformantRelation
-  partialDeclaration?: Record<string, any>
+  partialDeclaration?: any
   placeOfBirthType?: 'PRIVATE_HOME' | 'HEALTH_FACILITY'
 }) {
   const locations = await getAllLocations('ADMIN_STRUCTURE')

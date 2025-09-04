@@ -256,7 +256,7 @@ test.describe
       if (address !== null) {
         const addressObject = JSON.parse(address)
         await expect(addressObject.country).toBe('FAR')
-        //await expect(addressObject.town).toBe('Dhaka')
+        await expect(addressObject.town).toBe('Dhaka')
         await expect(addressObject.addressType).toBe('DOMESTIC')
         await expect(addressObject.province).toBeTruthy()
         await expect(addressObject.district).toBeTruthy()
@@ -267,7 +267,7 @@ test.describe
       await expect(page.locator('#country')).toHaveText('Farajaland')
       await expect(page.locator('#province')).toHaveText('Central')
       await expect(page.locator('#district')).toHaveText('Ibombo')
-      //await expect(page.locator('#town')).toHaveValue('Dhaka')
+      await expect(page.locator('#town')).toHaveValue('Dhaka')
     })
   })
 })

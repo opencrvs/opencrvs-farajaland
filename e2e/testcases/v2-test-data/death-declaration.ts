@@ -39,8 +39,7 @@ async function getPlaceOfDeath(
       'deceased.address': {
         country: 'FAR',
         addressType: AddressType.DOMESTIC,
-        province,
-        district
+        administrativeArea: district
       }
     }
   }
