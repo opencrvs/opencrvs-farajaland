@@ -112,7 +112,7 @@ export async function getDeclaration({
     'mother.address': {
       country: 'FAR',
       province,
-      district,
+      administrativeArea: district,
       town: null,
       residentialArea: null,
       street: null,
