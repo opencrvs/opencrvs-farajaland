@@ -93,7 +93,7 @@ test.describe
         middlename: ''
       })
 
-      await expect(page.locator('#tab_v2\\.birth')).toHaveText('Birth')
+      await expect(page.locator('#tab_birth')).toHaveText('Birth')
       await expect(page.getByTestId('informant____dob-dd')).toHaveValue(dd)
       await expect(page.getByTestId('informant____dob-mm')).toHaveValue(mm)
       await expect(page.getByTestId('informant____dob-yyyy')).toHaveValue(yyyy)

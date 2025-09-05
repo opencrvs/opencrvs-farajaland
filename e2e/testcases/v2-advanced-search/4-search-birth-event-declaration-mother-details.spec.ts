@@ -96,7 +96,7 @@ test.describe
         surname: record.declaration['mother.name'].surname,
         middlename: ''
       })
-      await expect(page.locator('#tab_v2\\.birth')).toHaveText('Birth')
+      await expect(page.locator('#tab_birth')).toHaveText('Birth')
       await expect(page.getByTestId('mother____dob-dd')).toHaveValue(dd)
       await expect(page.getByTestId('mother____dob-mm')).toHaveValue(mm)
       await expect(page.getByTestId('mother____dob-yyyy')).toHaveValue(yyyy)
