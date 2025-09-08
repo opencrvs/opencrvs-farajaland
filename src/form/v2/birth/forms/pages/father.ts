@@ -34,6 +34,7 @@ import {
   yesNoRadioOptions,
   YesNoTypes
 } from '../../../person'
+import { defaultStreetAddressConfiguration } from '@countryconfig/form/street-address-configuration'
 
 export const requireFatherDetails = or(
   field('father.detailsNotAvailable').isFalsy(),
@@ -342,13 +343,15 @@ export const father = defineFormPage({
         description: 'This is the label for the field',
         id: 'v2.event.birth.action.declare.form.section.father.field.address.addressSameAs.label'
       },
-      defaultValue: YesNoTypes.YES,
+      parent: field('mother.detailsNotAvailable'),
+      // Keep default address when mother details is updated
+      defaultValue: YesNoTypes.NO,
       conditionals: [
         {
           type: ConditionalType.SHOW,
           conditional: and(
             not(field('mother.detailsNotAvailable').isEqualTo(true)),
-            requireFatherDetails
+            field('father.detailsNotAvailable').isFalsy()
           )
         },
         {
@@ -379,12 +382,22 @@ export const father = defineFormPage({
           )
         }
       ],
+      validation: [
+        {
+          message: {
+            defaultMessage: 'Invalid input',
+            description: 'Error message when generic field is invalid',
+            id: 'v2.error.invalidInput'
+          },
+          validator: field('father.address').isValidAdministrativeLeafLevel()
+        }
+      ],
       defaultValue: {
         country: 'FAR',
-        addressType: AddressType.DOMESTIC,
-        province: '$user.province',
-        district: '$user.district',
-        urbanOrRural: 'URBAN'
+        addressType: AddressType.DOMESTIC
+      },
+      configuration: {
+        streetAddressForm: defaultStreetAddressConfiguration
       }
     },
     {

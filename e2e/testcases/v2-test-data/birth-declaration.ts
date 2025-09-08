@@ -63,9 +63,7 @@ async function getPlaceOfBirth(type: 'PRIVATE_HOME' | 'HEALTH_FACILITY') {
       'child.address.privateHome': {
         country: 'FAR',
         addressType: AddressType.DOMESTIC,
-        province,
-        district,
-        urbanOrRural: 'URBAN' as const
+        administrativeArea: district
       }
     }
   }
@@ -108,7 +106,6 @@ export async function getDeclaration({
       country: 'FAR',
       province,
       district,
-      urbanOrRural: 'URBAN' as const,
       town: null,
       residentialArea: null,
       street: null,
@@ -166,7 +163,7 @@ export async function createDeclaration(
   const client = createClient(GATEWAY_HOST + '/events', `Bearer ${token}`)
 
   const createResponse = await client.event.create.mutate({
-    type: 'v2.birth',
+    type: 'birth',
     transactionId: uuidv4()
   })
 
@@ -191,6 +188,10 @@ export async function createDeclaration(
     const declareAction = declareRes.actions.find(
       (action: ActionDocument) => action.type === 'DECLARE'
     )
+
+    if (!declareAction || !('declaration' in declareAction)) {
+      throw new Error('Declaration info not found in action')
+    }
 
     return {
       eventId,

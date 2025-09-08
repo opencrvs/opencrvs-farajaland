@@ -639,7 +639,7 @@ services:
       - CERT_PRIVATE_KEY_PATH=/run/secrets/jwt-private-key.{{ts}}
       - CERT_PUBLIC_KEY_PATH=/run/secrets/jwt-public-key.{{ts}}
       - LOGIN_URL=https://login.{{hostname}}
-      - COUNTRY_CONFIG_URL=https://countryconfig.{{hostname}}
+      - COUNTRY_CONFIG_URL_EXTERNAL=https://countryconfig.{{hostname}}
       - CLIENT_APP_URL=https://register.{{hostname}}
       - DOMAIN={{hostname}}
       - REDIS_USERNAME=${AUTH_REDIS_USERNAME}
@@ -659,6 +659,11 @@ services:
         - 'traefik.http.middlewares.auth.headers.stsseconds=31536000'
         - 'traefik.http.middlewares.auth.headers.stsincludesubdomains=true'
         - 'traefik.http.middlewares.auth.headers.stspreload=true'
+        # This is an invalid IP range, effectively blocking all IPs from accessing below paths.
+        # It's only meant to be accessed from the internal docker network.
+        - 'traefik.http.middlewares.block-internal-routes.ipwhitelist.sourcerange=255.255.255.255'
+        - 'traefik.http.routers.block-internal.rule=Host(`countryconfig.{{hostname}}`) && PathPrefix(`/internal`)'
+        - 'traefik.http.routers.block-internal.middlewares=block-internal-routes'
       replicas: 1
     networks:
       - overlay_net
@@ -971,7 +976,7 @@ services:
         tag: 'hearth'
 
   postgres:
-    image: postgres:17
+    image: postgres:17.6
     networks:
       - overlay_net
     restart: unless-stopped
@@ -989,7 +994,7 @@ services:
           - node.labels.data1 == true
 
   postgres-on-update:
-    image: postgres:17
+    image: postgres:17.6
     command: bash /on-deploy.sh
     configs:
       - source: postgres-on-deploy.{{ts}}

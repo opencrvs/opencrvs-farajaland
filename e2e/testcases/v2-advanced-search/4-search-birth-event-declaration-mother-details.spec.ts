@@ -69,7 +69,7 @@ test.describe
       const searchResult = await page.locator('#content-name').textContent()
       const searchResultCountNumberInBracketsRegex = /\((\d+)\)$/
       expect(searchResult).toMatch(searchResultCountNumberInBracketsRegex)
-      await expect(page.getByText('Event: V2 birth')).toBeVisible()
+      await expect(page.getByText('Event: Birth')).toBeVisible()
       await expect(
         page.getByText(`Mother's Date of birth: ${yyyy}-${mm}-${dd}`)
       ).toBeVisible()
@@ -86,10 +86,17 @@ test.describe
       await page.getByRole('button', { name: 'Edit' }).click()
       await expect(page).toHaveURL(/.*\/advanced-search/)
       expect(page.url()).toContain(`mother.dob=${yyyy}-${mm}-${dd}`)
-      expect(page.url()).toContain(
-        `mother.name=${encodeURIComponent(JSON.stringify({ firstname: record.declaration['mother.name'].firstname, surname: record.declaration['mother.name'].surname, middlename: '' }))}`
-      )
-      await expect(page.locator('#tab_v2\\.birth')).toHaveText('Birth')
+
+      const param = new URL(page.url()).searchParams.get('mother.name')!
+      const decoded = decodeURIComponent(param)
+      const name = JSON.parse(decoded)
+
+      expect(name).toEqual({
+        firstname: record.declaration['mother.name'].firstname,
+        surname: record.declaration['mother.name'].surname,
+        middlename: ''
+      })
+      await expect(page.locator('#tab_birth')).toHaveText('Birth')
       await expect(page.getByTestId('mother____dob-dd')).toHaveValue(dd)
       await expect(page.getByTestId('mother____dob-mm')).toHaveValue(mm)
       await expect(page.getByTestId('mother____dob-yyyy')).toHaveValue(yyyy)

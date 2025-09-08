@@ -65,8 +65,7 @@ async function getPlaceOfBirth(type: 'PRIVATE_HOME' | 'HEALTH_FACILITY') {
         country: 'FAR',
         addressType: AddressType.DOMESTIC,
         province,
-        district,
-        urbanOrRural: 'URBAN' as const
+        district
       }
     }
   }
@@ -80,7 +79,7 @@ export async function getDeclaration({
   placeOfBirthType = 'PRIVATE_HOME'
 }: {
   informantRelation?: InformantRelation
-  partialDeclaration?: Record<string, any>
+  partialDeclaration?: any
   placeOfBirthType?: 'PRIVATE_HOME' | 'HEALTH_FACILITY'
 }) {
   const locations = await getAllLocations('ADMIN_STRUCTURE')
@@ -104,6 +103,7 @@ export async function getDeclaration({
       surname: faker.person.lastName()
     },
     'mother.dob': '1995-09-12',
+    'mother.dobUnknown': false,
     'mother.nationality': 'FAR',
     'mother.idType': 'NATIONAL_ID',
     'mother.educationalAttainment': 'NO_SCHOOLING',
@@ -112,8 +112,7 @@ export async function getDeclaration({
     'mother.address': {
       country: 'FAR',
       province,
-      district,
-      urbanOrRural: 'URBAN' as const,
+      administrativeArea: district,
       town: null,
       residentialArea: null,
       street: null,
@@ -161,10 +160,10 @@ export async function getDeclaration({
         ...(partialDeclaration['father.addressSameAs'] === 'NO' && {
           'father.address': {
             country: 'FAR',
-            addressType: 'DOMESTIC',
+            addressType: 'DOMESTIC' as const,
             province,
             district,
-            urbanOrRural: 'URBAN'
+            urbanOrRural: 'URBAN' as const
           }
         }),
         ...partialDeclaration
@@ -195,7 +194,7 @@ export async function createDeclaration(
   const client = createClient(GATEWAY_HOST + '/events', `Bearer ${token}`)
 
   const createResponse = await client.event.create.mutate({
-    type: 'v2.birth',
+    type: 'birth',
     transactionId: uuidv4()
   })
 
@@ -207,7 +206,6 @@ export async function createDeclaration(
     'review.comment': 'My comment',
     'review.signature': filename
   }
-  console.log(declaration)
   const declareRes = await client.event.actions.declare.request.mutate({
     eventId: eventId,
     transactionId: uuidv4(),
@@ -220,6 +218,10 @@ export async function createDeclaration(
     const declareAction = declareRes.actions.find(
       (action: ActionDocument) => action.type === 'DECLARE'
     )
+
+    if (!declareAction || !('declaration' in declareAction)) {
+      throw new Error('Declaration info not found in action')
+    }
 
     return {
       eventId,
@@ -255,7 +257,13 @@ export async function createDeclaration(
   })
 
   const registerAction = registerRes.actions.find(
-    (action: ActionDocument) => action.type === 'REGISTER'
+    (action: ActionDocument) =>
+      action.type === 'REGISTER' && action.status === 'Accepted'
+  )
+
+  const registerRequestAction = registerRes.actions.find(
+    (action: ActionDocument) =>
+      action.type === 'REGISTER' && action.status === 'Requested'
   )
 
   const trackingId = registerRes?.trackingId as string
@@ -263,7 +271,7 @@ export async function createDeclaration(
 
   return {
     eventId,
-    declaration: registerAction?.declaration as Declaration,
+    declaration: registerRequestAction?.declaration as Declaration,
     trackingId,
     registrationNumber
   }

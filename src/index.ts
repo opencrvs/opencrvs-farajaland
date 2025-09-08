@@ -43,12 +43,7 @@ import { eventRegistrationHandler } from '@countryconfig/api/event-registration/
 import decode from 'jwt-decode'
 import { join } from 'path'
 import { logger } from '@countryconfig/logger'
-import {
-  emailHandler,
-  emailSchema,
-  notificationHandler,
-  notificationSchema
-} from './api/notification/handler'
+import { emailHandler, emailSchema } from './api/notification/handler'
 import { ErrorContext } from 'hapi-auth-jwt2'
 import { mapGeojsonHandler } from '@countryconfig/api/dashboards/handler'
 import { formHandler } from '@countryconfig/form'
@@ -87,6 +82,7 @@ import {
 } from './utils/mosip'
 import { getEventType } from './utils/fhir'
 import { workqueueconfigHandler } from './api/workqueue/handler'
+import getUserNotificationRoutes from './config/routes/userNotificationRoutes'
 
 export interface ITokenPayload {
   sub: string
@@ -321,15 +317,11 @@ export async function createServer() {
           ? '/client-config.prod.js'
           : '/client-config.js'
 
-      if (process.env.NODE_ENV !== 'production') {
-        const template = Handlebars.compile(
-          readFileSync(join(__dirname, file), 'utf8')
-        )
-        const result = template({ V2_EVENTS: process.env.V2_EVENTS || false })
-        return h.response(result).type('application/javascript')
-      }
-
-      return h.file(join(__dirname, file))
+      const template = Handlebars.compile(
+        readFileSync(join(__dirname, file), 'utf8')
+      )
+      const result = template({ V2_EVENTS: process.env.V2_EVENTS || false })
+      return h.response(result).type('application/javascript')
     },
     options: {
       auth: false,
@@ -505,21 +497,6 @@ export async function createServer() {
 
   server.route({
     method: 'POST',
-    path: '/notification',
-    handler: notificationHandler,
-    options: {
-      tags: ['api'],
-      auth: false,
-      validate: {
-        payload: notificationSchema
-      },
-      description:
-        'Handles sending either SMS or email using a predefined template file'
-    }
-  })
-
-  server.route({
-    method: 'POST',
     path: '/email',
     handler: emailHandler,
     options: {
@@ -663,6 +640,7 @@ export async function createServer() {
     path: '/events',
     handler: getCustomEventsHandler,
     options: {
+      auth: false,
       tags: ['api', 'events'],
       description: 'Serves custom events'
     }
@@ -670,7 +648,7 @@ export async function createServer() {
 
   server.route({
     method: 'POST',
-    path: '/events/{event}/actions/{action}',
+    path: '/trigger/events/{event}/actions/{action}',
     handler: onAnyActionHandler,
     options: {
       tags: ['api', 'events'],
@@ -680,7 +658,7 @@ export async function createServer() {
 
   server.route({
     method: 'POST',
-    path: '/events/{event}/actions/sent-notification',
+    path: '/trigger/events/{event}/actions/sent-notification',
     handler: mosipRegistrationForReviewHandler({
       url: env.isProd ? 'http://mosip-api:2024' : 'http://localhost:2024'
     }),
@@ -692,7 +670,7 @@ export async function createServer() {
 
   server.route({
     method: 'POST',
-    path: '/events/{event}/actions/sent-notification-for-review',
+    path: '/trigger/events/{event}/actions/sent-notification-for-review',
     handler: mosipRegistrationForReviewHandler({
       url: env.isProd ? 'http://mosip-api:2024' : 'http://localhost:2024'
     }),
@@ -705,7 +683,7 @@ export async function createServer() {
 
   server.route({
     method: 'POST',
-    path: '/events/{event}/actions/sent-for-approval',
+    path: '/trigger/events/{event}/actions/sent-for-approval',
     handler: mosipRegistrationForApprovalHandler({
       url: env.isProd ? 'http://mosip-api:2024' : 'http://localhost:2024'
     }),
@@ -717,7 +695,7 @@ export async function createServer() {
 
   server.route({
     method: 'POST',
-    path: `/events/${Event.TENNIS_CLUB_MEMBERSHIP}/actions/${ActionType.REGISTER}`,
+    path: `/trigger/events/${Event.TENNIS_CLUB_MEMBERSHIP}/actions/${ActionType.REGISTER}`,
     handler: onRegisterHandler,
     options: {
       tags: ['api', 'events'],
@@ -727,7 +705,7 @@ export async function createServer() {
 
   server.route({
     method: 'POST',
-    path: `/events/${Event.V2_BIRTH}/actions/${ActionType.REGISTER}`,
+    path: `/trigger/events/${Event.Birth}/actions/${ActionType.REGISTER}`,
     handler: onRegisterHandler,
     options: {
       tags: ['api', 'events'],
@@ -737,13 +715,15 @@ export async function createServer() {
 
   server.route({
     method: 'POST',
-    path: `/events/${Event.V2_DEATH}/actions/${ActionType.REGISTER}`,
+    path: `/trigger/events/${Event.Death}/actions/${ActionType.REGISTER}`,
     handler: onRegisterHandler,
     options: {
       tags: ['api', 'events'],
       description: 'Receives notifications on event actions'
     }
   })
+
+  server.route(getUserNotificationRoutes())
 
   server.ext({
     type: 'onRequest',

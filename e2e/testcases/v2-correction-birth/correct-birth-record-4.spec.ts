@@ -99,8 +99,7 @@ test.describe.serial(' Correct record - 4', () => {
           country: 'FAR',
           addressType: 'DOMESTIC',
           province: 'Central',
-          district: 'Ibombo',
-          urbanOrRural: 'URBAN'
+          district: 'Ibombo'
         },
         'child.attendantAtBirth': 'PHYSICIAN',
         'child.birthType': 'SINGLE',
@@ -123,8 +122,7 @@ test.describe.serial(' Correct record - 4', () => {
           country: 'FAR',
           addressType: 'DOMESTIC',
           province: 'Central',
-          district: 'Ibombo',
-          urbanOrRural: 'URBAN'
+          district: 'Ibombo'
         },
         'father.name': {
           firstname: faker.person.firstName('male'),
@@ -798,14 +796,7 @@ test.describe.serial(' Correct record - 4', () => {
     )
 
     await visible(
-      page.locator('#listTable-corrections-table-father'),
-      "Same as mother's usual place of residence?",
-      'Yes',
-      'No'
-    )
-
-    await visible(
-      page.locator('#listTable-corrections-table-father').locator('#row_6'),
+      page.locator('#listTable-corrections-table-father').locator('#row_5'),
       'Usual place of residence'
     )
 
@@ -822,7 +813,7 @@ test.describe.serial(' Correct record - 4', () => {
         expect(
           page
             .locator('#listTable-corrections-table-father')
-            .locator('#row_6')
+            .locator('#row_5')
             .getByText(x)
         ).toBeVisible()
       )
@@ -1021,14 +1012,7 @@ test.describe.serial(' Correct record - 4', () => {
     )
 
     await visible(
-      page.locator('#listTable-corrections-table-father'),
-      "Same as mother's usual place of residence?",
-      'Yes',
-      'No'
-    )
-
-    await visible(
-      page.locator('#listTable-corrections-table-father').locator('#row_6'),
+      page.locator('#listTable-corrections-table-father').locator('#row_5'),
       'Usual place of residence'
     )
 
@@ -1045,7 +1029,7 @@ test.describe.serial(' Correct record - 4', () => {
         expect(
           page
             .locator('#listTable-corrections-table-father')
-            .locator('#row_6')
+            .locator('#row_5')
             .getByText(x)
         ).toBeVisible()
       )

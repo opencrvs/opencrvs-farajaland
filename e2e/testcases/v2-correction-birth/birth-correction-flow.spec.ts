@@ -6,7 +6,13 @@ import {
   createDeclaration,
   Declaration
 } from '../v2-test-data/birth-declaration-with-mother-father'
-import { ensureAssigned, expectInUrl, selectAction, type } from '../../v2-utils'
+import {
+  ensureAssigned,
+  ensureOutboxIsEmpty,
+  expectInUrl,
+  selectAction,
+  type
+} from '../../v2-utils'
 import {
   formatV2ChildName,
   REQUIRED_VALIDATION_ERROR
@@ -97,7 +103,7 @@ test.describe.serial('Birth correction flow', () => {
   })
 
   test('Review page should be displayed and continue button should be disabled', async () => {
-    await expectInUrl(page, `/events/correction/${eventId}/review`)
+    await expectInUrl(page, `/events/request-correction/${eventId}/review`)
     await expect(page.getByRole('button', { name: 'Continue' })).toBeDisabled()
   })
 
@@ -130,7 +136,7 @@ test.describe.serial('Birth correction flow', () => {
   })
 
   test('When back on review page, continue button should still be disabled', async () => {
-    await expectInUrl(page, `/events/correction/${eventId}/review`)
+    await expectInUrl(page, `/events/request-correction/${eventId}/review`)
     await expect(page.getByRole('button', { name: 'Continue' })).toBeDisabled()
   })
 
@@ -184,7 +190,7 @@ test.describe.serial('Birth correction flow', () => {
 
   test('Continue to the summary page', async () => {
     await page.getByRole('button', { name: 'Continue' }).click()
-    await expectInUrl(page, `/events/correction/${eventId}/summary`)
+    await expectInUrl(page, `/events/request-correction/${eventId}/summary`)
     await expect(
       page.getByRole('button', { name: 'Back to review' })
     ).toBeEnabled()
@@ -235,6 +241,7 @@ test.describe.serial('Birth correction flow', () => {
 
     await page.getByRole('button', { name: 'Confirm', exact: true }).click()
     await expectInUrl(page, `/events/overview/${eventId}`)
+    await ensureOutboxIsEmpty(page)
   })
 
   test("Event appears in 'Sent for approval' workqueue", async () => {
@@ -284,7 +291,7 @@ test.describe.serial('Birth correction flow', () => {
       await expect(page.getByText("Child's details")).toBeVisible()
       await expect(
         page.getByText(
-          `Reason for delayed registration${reasonForDelayedRegistration}`
+          `Reason for delayed registration-${reasonForDelayedRegistration}`
         )
       ).toBeVisible()
 
@@ -302,7 +309,7 @@ test.describe.serial('Birth correction flow', () => {
       ).toBeVisible()
 
       await expect(
-        page.getByRole('cell', { name: "Child's details" })
+        page.getByRole('heading', { name: "Child's details" })
       ).toBeVisible()
     })
 
@@ -321,7 +328,9 @@ test.describe.serial('Birth correction flow', () => {
             }
           })
         )
-      ).toBeVisible()
+      ).toBeVisible({
+        timeout: 60_000
+      })
     })
 
     test('Correction approved action appears in audit history', async () => {

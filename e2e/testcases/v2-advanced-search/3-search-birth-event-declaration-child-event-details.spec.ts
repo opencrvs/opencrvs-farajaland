@@ -99,7 +99,7 @@ test.describe
       const searchResult = await page.locator('#content-name').textContent()
       const searchResultCountNumberInBracketsRegex = /\((\d+)\)$/
       expect(searchResult).toMatch(searchResultCountNumberInBracketsRegex)
-      await expect(page.getByText('Event: V2 birth')).toBeVisible()
+      await expect(page.getByText('Event: Birth')).toBeVisible()
       await expect(
         page.getByText(`Child's Date of birth: ${yyyy}-${mm}-${dd}`)
       ).toBeVisible()
@@ -119,8 +119,8 @@ test.describe
       expect(page.url()).toContain(`child.birthLocation=${facilityId}`)
       expect(page.url()).toContain(`child.dob=${yyyy}-${mm}-${dd}`)
       expect(page.url()).toContain(`child.gender=female`)
-      expect(page.url()).toContain(`eventType=v2.birth`)
-      await expect(page.locator('#tab_v2\\.birth')).toHaveText('Birth')
+      expect(page.url()).toContain(`eventType=birth`)
+      await expect(page.locator('#tab_birth')).toHaveText('Birth')
 
       await expect(page.getByTestId('child____dob-dd')).toHaveValue(dd)
       await expect(page.getByTestId('child____dob-mm')).toHaveValue(mm)
@@ -173,7 +173,6 @@ test.describe
           country: 'FAR',
           province: province,
           district: district,
-          urbanOrRural: 'URBAN',
           town: 'Dhaka'
         },
         'child.reason': 'Other', // needed for late dob value
@@ -211,8 +210,12 @@ test.describe
       await page.getByText('Residential address', { exact: true }).click()
 
       page.locator('#country').getByText('Farajaland')
-      page.locator('#province').getByText('Central')
-      page.locator('#district').getByText('Ibombo')
+
+      await page.locator('#province').click()
+      await page.getByText('Central', { exact: true }).click()
+
+      await page.locator('#district').click()
+      await page.getByText('Ibombo', { exact: true }).click()
 
       await page.locator('#town').fill('Dhaka')
       await page.locator('#town').blur()
@@ -227,7 +230,6 @@ test.describe
       if (address !== null) {
         const addressObject = JSON.parse(address)
         await expect(addressObject.country).toBe('FAR')
-        await expect(addressObject.urbanOrRural).toBe('URBAN')
         await expect(addressObject.town).toBe('Dhaka')
         await expect(addressObject.addressType).toBe('DOMESTIC')
         await expect(addressObject.province).toBeTruthy()
@@ -239,7 +241,7 @@ test.describe
       const searchResult = await page.locator('#content-name').textContent()
       const searchResultCountNumberInBracketsRegex = /\((\d+)\)$/
       expect(searchResult).toMatch(searchResultCountNumberInBracketsRegex)
-      await expect(page.getByText('Event: V2 birth')).toBeVisible()
+      await expect(page.getByText('Event: Birth')).toBeVisible()
       await expect(
         page.getByText(`Location of birth: Farajaland, Central, Ibombo, Dhaka`)
       ).toBeVisible()
@@ -258,14 +260,13 @@ test.describe
       if (address !== null) {
         const addressObject = JSON.parse(address)
         await expect(addressObject.country).toBe('FAR')
-        await expect(addressObject.urbanOrRural).toBe('URBAN')
         await expect(addressObject.town).toBe('Dhaka')
         await expect(addressObject.addressType).toBe('DOMESTIC')
         await expect(addressObject.province).toBeTruthy()
         await expect(addressObject.district).toBeTruthy()
       }
       expect(page.url()).toContain(`child.placeOfBirth=PRIVATE_HOME`)
-      expect(page.url()).toContain(`eventType=v2.birth`)
+      expect(page.url()).toContain(`eventType=birth`)
 
       await expect(page.locator('#country')).toHaveText('Farajaland')
       await expect(page.locator('#province')).toHaveText('Central')

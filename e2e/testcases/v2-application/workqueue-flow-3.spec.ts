@@ -54,8 +54,7 @@ test.describe.serial('3. Workqueue flow - 3', () => {
       address: {
         country: 'Farajaland',
         province: 'Sulaka',
-        district: 'Irundu',
-        urbanOrRural: 'Urban'
+        district: 'Irundu'
       }
     },
     father: {
@@ -225,7 +224,7 @@ test.describe.serial('3. Workqueue flow - 3', () => {
       await assignFromWorkqueue(page, childName)
 
       await getRowByTitle(page, childName)
-        .getByRole('button', { name: 'Declare' })
+        .getByRole('button', { name: 'Review' })
         .click()
     })
 
@@ -314,14 +313,6 @@ test.describe.serial('3. Workqueue flow - 3', () => {
 
     test('3.3.6 Send for review', async () => {
       await continueForm(page, 'Back to review')
-
-      await page.locator('#review____comment').fill(faker.lorem.sentence())
-      await page.getByRole('button', { name: 'Sign', exact: true }).click()
-      await drawSignature(page, 'review____signature_canvas_element', false)
-      await page
-        .locator('#review____signature_modal')
-        .getByRole('button', { name: 'Apply' })
-        .click()
 
       await expect(page.getByRole('dialog')).not.toBeVisible()
 

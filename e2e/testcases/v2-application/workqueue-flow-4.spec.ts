@@ -48,8 +48,7 @@ test.describe.serial('4. Workqueue flow - 4', () => {
       address: {
         country: 'Farajaland',
         province: 'Sulaka',
-        district: 'Irundu',
-        urbanOrRural: 'Urban'
+        district: 'Irundu'
       }
     },
     father: {
@@ -293,7 +292,7 @@ test.describe.serial('4. Workqueue flow - 4', () => {
     })
   })
 
-  test("4.4 FA can't see the record", async () => {
+  test('4.4 FA can see the record', async () => {
     await loginToV2(page, CREDENTIALS.FIELD_AGENT, true)
 
     await assertRecordInWorkqueue({
@@ -302,7 +301,7 @@ test.describe.serial('4. Workqueue flow - 4', () => {
       workqueues: [
         { title: 'Assigned to you', exists: false },
         { title: 'Recent', exists: false },
-        { title: 'Sent for review', exists: false },
+        { title: 'Sent for review', exists: true },
         { title: 'Requires updates', exists: false }
       ]
     })
@@ -361,7 +360,7 @@ test.describe.serial('4. Workqueue flow - 4', () => {
     })
   })
 
-  test("4.6 FA can't see the record", async () => {
+  test('4.6 FA can see the record', async () => {
     await loginToV2(page, CREDENTIALS.FIELD_AGENT, true)
 
     await assertRecordInWorkqueue({
@@ -370,7 +369,7 @@ test.describe.serial('4. Workqueue flow - 4', () => {
       workqueues: [
         { title: 'Assigned to you', exists: false },
         { title: 'Recent', exists: false },
-        { title: 'Sent for review', exists: false },
+        { title: 'Sent for review', exists: true },
         { title: 'Requires updates', exists: false }
       ]
     })

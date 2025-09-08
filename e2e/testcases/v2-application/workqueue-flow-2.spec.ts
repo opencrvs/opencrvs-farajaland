@@ -48,8 +48,7 @@ test.describe.serial('2. Workqueue flow - 2', () => {
       address: {
         country: 'Farajaland',
         province: 'Sulaka',
-        district: 'Irundu',
-        urbanOrRural: 'Urban'
+        district: 'Irundu'
       }
     },
     father: {
@@ -261,7 +260,7 @@ test.describe.serial('2. Workqueue flow - 2', () => {
       await goToSection(page, 'review')
 
       await page.getByRole('button', { name: 'Register' }).click()
-      await page.locator('#confirm_Validate').click()
+      await page.locator('#confirm_Declare').click()
 
       await ensureOutboxIsEmpty(page)
 
@@ -281,7 +280,7 @@ test.describe.serial('2. Workqueue flow - 2', () => {
     })
   })
 
-  test("2.3 FA can't see the record", async () => {
+  test('2.3 FA can see the record', async () => {
     await loginToV2(page, CREDENTIALS.FIELD_AGENT, true)
 
     await assertRecordInWorkqueue({
@@ -290,7 +289,7 @@ test.describe.serial('2. Workqueue flow - 2', () => {
       workqueues: [
         { title: 'Assigned to you', exists: false },
         { title: 'Recent', exists: false },
-        { title: 'Sent for review', exists: false },
+        { title: 'Sent for review', exists: true },
         { title: 'Requires updates', exists: false }
       ]
     })
