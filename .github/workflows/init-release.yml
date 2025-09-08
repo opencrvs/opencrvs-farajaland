@@ -47,7 +47,7 @@ jobs:
             fi
           fi
           echo "base_branch=$base_branch" >> $GITHUB_OUTPUT
-      
+
       - name: Create a new release branch
         run: |
           git checkout $base_branch
@@ -55,6 +55,3 @@ jobs:
           release_branch="release/$version"
           git checkout -b $release_branch
           git push origin $release_branch
-
-
-    
