@@ -34,7 +34,7 @@ for (( i=1; i<=REPLICAS; i++ )); do
   WAIT_HOSTS="${WAIT_HOSTS}mongo${i}:27017"
 done
 export WAIT_HOSTS
-export WAIT_AFTER=30
+export WAIT_AFTER=90
 echo "Waiting for MongoDB replicas: $WAIT_HOSTS"
 /wait
 
