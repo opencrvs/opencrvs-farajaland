@@ -132,7 +132,7 @@ jobs:
       - name: Export all secrets and environment variables
         working-directory: ${{ github.event.repository.name }}
         run: |
-          jq. -n -r '
+          jq -n -r '
               [${{ toJSON(secrets) }}, ${{ toJSON(vars) }}] 
               | add
               | to_entries
