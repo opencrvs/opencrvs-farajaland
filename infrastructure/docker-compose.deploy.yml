@@ -923,6 +923,12 @@ services:
         gelf-address: 'udp://127.0.0.1:12201'
         tag: 'config'
   migration:
+    depends_on:
+      - elasticsearch
+      - mongo1
+      - postgres
+      - postgres-on-update
+      - mongo-on-update
     environment:
       - USER_MGNT_MONGO_URL=mongodb://user-mgnt:${USER_MGNT_MONGODB_PASSWORD}@mongo1/user-mgnt?replicaSet=rs0
       - DASHBOARD_MONGO_URL=mongodb://performance:${PERFORMANCE_MONGODB_PASSWORD}@mongo1/performance?replicaSet=rs0
@@ -1094,7 +1100,7 @@ services:
   mosip-api:
     volumes:
       - /data/sqlite:/data/sqlite
-      - /certs:/certs:ro 
+      - /certs:/certs:ro
     image: ghcr.io/opencrvs/mosip-api:1.8.0
     environment:
       - NODE_ENV=production
@@ -1186,7 +1192,7 @@ services:
   esignet-mock:
     image: ghcr.io/opencrvs/esignet-mock:1.8.0-beta.18
     volumes:
-      - /certs:/certs:ro 
+      - /certs:/certs:ro
     environment:
       - NODE_ENV=production
       - CLIENT_APP_URL=https://register.{{hostname}}
