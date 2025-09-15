@@ -42,6 +42,7 @@ on:
           - pentest
           - v19-beta-staging
           - v19-beta-prod
+          - dev1
       core-image-tag:
         description: Core image tag
         required: true
@@ -132,16 +133,7 @@ jobs:
           done
       - name: Export all secrets and environment variables
         working-directory: ${{ github.event.repository.name }}
-        run: |
-          jq -n -r '
-              [${{ toJSON(secrets) }}, ${{ toJSON(vars) }}] 
-              | add
-              | to_entries
-              | map(select(.value | test("\n") | not))
-              | map("\(.key)=\"\(.value)\"")
-              | .[]
-          ' > .env.${{ inputs.environment }}
-
+        run: "jq -n -r '\n    [${{ toJSON(secrets) }}, ${{ toJSON(vars) }}] \n    | add\n    | to_entries\n    | map(select(.value | test(\"\\n\") | not))\n    | map(\"\\(.key)=\\\"\\(.value)\\\"\")\n    | .[]\n' > .env.${{ inputs.environment }}\n"
       - name: Use Node.js from .nvmrc
         uses: actions/setup-node@v4
         with:

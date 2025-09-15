@@ -34,6 +34,7 @@ on:
           - pentest
           - v19-beta-staging
           - v19-beta-prod
+          - dev1
       tag:
         type: choice
         description: Select group tag you want to execute
