@@ -1,4 +1,3 @@
-import { faker } from '@faker-js/faker'
 import { expect, type Page } from '@playwright/test'
 import { CREDENTIALS } from '../../../constants'
 import { getToken, login, createPIN, getAction } from '../../../helpers'
