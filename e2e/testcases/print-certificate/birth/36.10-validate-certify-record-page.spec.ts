@@ -32,7 +32,7 @@ test.describe.serial('10.0 Validate "Review" page', () => {
 
     await page.getByRole('button', { name: 'Verified' }).click()
 
-    // @TODO - remove this after if payment issue can be identified
+    // @TODO - remove this after payment issue is identified
     // patch fix
     if (page.url().includes('/print/payment')) {
       await page.getByRole('button', { name: 'Continue' }).click()
