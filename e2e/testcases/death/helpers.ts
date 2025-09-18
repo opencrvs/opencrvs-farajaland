@@ -61,7 +61,7 @@ const declaration = {
   },
   event: {
     manner: 'Natural causes',
-    date: getRandomDate(0, 10, 10),
+    date: getRandomDate(0, 20, 20),
     cause: {
       established: true,
       source: 'Physician'
