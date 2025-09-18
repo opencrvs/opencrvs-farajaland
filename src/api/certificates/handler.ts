@@ -90,7 +90,7 @@ export async function certificateHandler(request: Request, h: ResponseToolkit) {
       },
       isDefault: false,
       fee: {
-        onTime: 0,
+        onTime: 8,
         late: 11.5,
         delayed: 17
       },
@@ -163,7 +163,7 @@ export async function certificateHandler(request: Request, h: ResponseToolkit) {
       },
       isDefault: false,
       fee: {
-        onTime: 0,
+        onTime: 6,
         late: 9,
         delayed: 14.5
       },
