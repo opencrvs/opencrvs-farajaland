@@ -1,6 +1,8 @@
 import { expect, test, type Page } from '@playwright/test'
 import { DeathDeclaration } from '../../death/types'
 import { getDeathDeclarationForPrintCertificate } from './certificate-helper'
+import { format } from 'date-fns'
+import { CLIENT_URL } from '../../../constants'
 
 test.describe.serial('8.0 Validate "Payment" page', () => {
   let declaration: DeathDeclaration
@@ -55,13 +57,6 @@ test.describe.serial('8.0 Validate "Payment" page', () => {
     ).toBeTruthy()
 
     await page.getByRole('button', { name: 'Verified' }).click()
-
-    // @TODO - remove this after payment issue is identified
-    // patch fix
-    if (page.url().includes('/print/payment')) {
-      await page.getByRole('button', { name: 'Continue' }).click()
-    }
-
     await expect(
       page.url().includes(`/review/${declaration.id}/death`)
     ).toBeTruthy()
