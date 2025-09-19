@@ -28,6 +28,7 @@ on:
           - v19-beta-staging
           - v19-beta-prod
           - fix-analytics
+          - fix-au
       core-image-tag:
         description: Core DockerHub image tag
         required: true
