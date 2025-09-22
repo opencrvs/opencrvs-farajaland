@@ -36,7 +36,6 @@ on:
           - v19-beta-staging
           - v19-beta-prod
           - fix-analytics
-          - fix-au
       tag:
         type: choice
         description: Select group tag you want to execute
