@@ -44,6 +44,7 @@ on:
           - v19-beta-staging
           - v19-beta-prod
           - fix-analytics
+          - tmp3
       core-image-tag:
         description: Core image tag
         required: true
