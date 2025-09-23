@@ -20,7 +20,7 @@
     mode: '0644'
     owner: root
     group: root
-  notify: restart journald
+
 - name: Reload systemd daemon
   systemd:
     daemon_reload: yes
