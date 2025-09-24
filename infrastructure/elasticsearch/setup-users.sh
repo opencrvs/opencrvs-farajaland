@@ -50,7 +50,7 @@ roles_files=(
 
 
 echo "-------- $(date) --------"
-
+echo "Something interesting again"
 log 'Waiting for availability of Elasticsearch'
 wait_for_elasticsearch
 sublog 'Elasticsearch is running'

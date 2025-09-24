@@ -15,7 +15,8 @@ set -o pipefail
 source "$(dirname "${BASH_SOURCE[0]}")/setup-helpers.sh"
 
 echo "-------- $(date) --------"
-
+echo "Doing blablabla"
+docker network ls
 log 'Waiting for availability of Elasticsearch'
 wait_for_elasticsearch
 

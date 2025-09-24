@@ -14,7 +14,9 @@
 set -e
 
 docker_command="docker run --rm --network=opencrvs_overlay_net curlimages/curl"
-
+echo "Setting up Elastalert indices"
+ifconfig
+docker network ls
 echo 'Waiting for availability of Elasticsearch'
 ping_status_code=$($docker_command --connect-timeout 60 -u elastic:$ELASTICSEARCH_SUPERUSER_PASSWORD -o /dev/null -w '%{http_code}' "http://elasticsearch:9200")
 
