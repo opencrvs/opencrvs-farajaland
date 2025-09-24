@@ -1253,7 +1253,7 @@ configs:
   hearth-queryparam-extensions-conf.{{ts}}:
     file: /opt/opencrvs/infrastructure/hearth-queryparam-extensions.json
   metricbeat-conf.{{ts}}:
-    file: /opt/opencrvs/infrastructure/monitoring/beats/metricbeat.yml
+    file: /opt/opencrvs/infrastructure/monitoring/metricbeat/metricbeat.yml
   filebeat.{{ts}}:
     file: /opt/opencrvs/infrastructure/monitoring/filebeat/filebeat.yml
   mongo-on-deploy.{{ts}}:
@@ -1263,9 +1263,9 @@ configs:
   postgres-analytics-on-deploy.{{ts}}:
     file: /opt/opencrvs/infrastructure/postgres/setup-analytics.sh
   filebeat-rollover-policy.{{ts}}:
-    file: /opt/opencrvs/infrastructure/monitoring/beats/filebeat-rollover-policy.json
+    file: /opt/opencrvs/infrastructure/monitoring/filebeat/filebeat-rollover-policy.json
   metricbeat-rollover-policy.{{ts}}:
-    file: /opt/opencrvs/infrastructure/monitoring/beats/metricbeat-rollover-policy.json
+    file: /opt/opencrvs/infrastructure/monitoring/metricbeat/metricbeat-rollover-policy.json
   kibana.{{ts}}:
     file: /opt/opencrvs/infrastructure/monitoring/kibana/kibana.yml
   apm.{{ts}}:
