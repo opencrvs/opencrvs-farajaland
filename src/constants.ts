@@ -36,3 +36,6 @@ export const OPENID_PROVIDER_CLIENT_ID = env.OPENID_PROVIDER_CLIENT_ID
 export const OPENID_PROVIDER_CLAIMS = env.OPENID_PROVIDER_CLAIMS
 export const MOSIP_API_USERINFO_URL = env.MOSIP_API_USERINFO_URL
 export const ANALYTICS_DATABASE_URL = env.ANALYTICS_DATABASE_URL
+export const MOSIP_INTEROP_URL = env.isProd
+  ? 'http://mosip-api:2024'
+  : 'http://localhost:2024'

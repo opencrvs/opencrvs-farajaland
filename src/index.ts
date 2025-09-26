@@ -60,7 +60,9 @@ import { fontsHandler } from './api/fonts/handler'
 import { recordNotificationHandler } from './api/record-notification/handler'
 import {
   getCustomEventsHandler,
-  onAnyActionHandler
+  onAnyActionHandler,
+  onBirthActionHandler,
+  onDeathActionHandler
 } from '@countryconfig/api/custom-event/handler'
 import { readFileSync } from 'fs'
 import {
@@ -70,7 +72,11 @@ import {
   EventDocument
 } from '@opencrvs/toolkit/events'
 import { Event } from './form/types/types'
-import { onRegisterHandler } from './api/registration'
+import {
+  onMosipBirthRegisterHandler,
+  onMosipDeathRegisterHandler,
+  onRegisterHandler
+} from './api/registration'
 import { env } from './environment'
 import {
   mosipRegistrationForApprovalHandler,
@@ -735,6 +741,26 @@ export async function createServer() {
 
   server.route({
     method: 'POST',
+    path: '/trigger/events/birth/actions/{action}',
+    handler: onBirthActionHandler,
+    options: {
+      tags: ['api', 'events'],
+      description: 'Receives notifications on event actions'
+    }
+  })
+
+  server.route({
+    method: 'POST',
+    path: '/trigger/events/death/actions/{action}',
+    handler: onDeathActionHandler,
+    options: {
+      tags: ['api', 'events'],
+      description: 'Receives notifications on event actions'
+    }
+  })
+
+  server.route({
+    method: 'POST',
     path: '/trigger/events/{event}/actions/sent-notification',
     handler: mosipRegistrationForReviewHandler({
       url: env.isProd ? 'http://mosip-api:2024' : 'http://localhost:2024'
@@ -783,7 +809,7 @@ export async function createServer() {
   server.route({
     method: 'POST',
     path: `/trigger/events/${Event.Birth}/actions/${ActionType.REGISTER}`,
-    handler: onRegisterHandler,
+    handler: onMosipBirthRegisterHandler,
     options: {
       tags: ['api', 'events'],
       description: 'Receives notifications on event actions'
@@ -793,7 +819,7 @@ export async function createServer() {
   server.route({
     method: 'POST',
     path: `/trigger/events/${Event.Death}/actions/${ActionType.REGISTER}`,
-    handler: onRegisterHandler,
+    handler: onMosipDeathRegisterHandler,
     options: {
       tags: ['api', 'events'],
       description: 'Receives notifications on event actions'
