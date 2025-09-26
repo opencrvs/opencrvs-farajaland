@@ -105,6 +105,27 @@ export const mother = defineFormPage({
       ]
     },
     {
+      id: 'mother.verified',
+      type: FieldType.VERIFICATION_STATUS,
+      label: {
+        id: 'event.birth.action.declare.form.section.mother.field.verified.label',
+        defaultMessage: 'Verification status',
+        description: 'The title for the status field label'
+      },
+      configuration: {
+        text: {
+          id: 'event.birth.verification.failed',
+          defaultMessage: '@TODO: Verification status',
+          description: 'Status text when the informant is failed'
+        },
+        description: {
+          id: 'event.birth.verification.failed.description',
+          defaultMessage: '@TODO: Verification status',
+          description: 'Status description when the informant is failed'
+        }
+      }
+    },
+    {
       id: 'mother.name',
       type: FieldType.NAME,
       required: true,
