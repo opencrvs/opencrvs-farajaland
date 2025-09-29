@@ -108,20 +108,23 @@ export const mother = defineFormPage({
       id: 'mother.verified',
       type: FieldType.VERIFICATION_STATUS,
       label: {
-        id: 'event.birth.action.declare.form.section.mother.field.verified.label',
+        id: 'mother.status',
         defaultMessage: 'Verification status',
         description: 'The title for the status field label'
       },
       configuration: {
         text: {
-          id: 'event.birth.verification.failed',
-          defaultMessage: '@TODO: Verification status',
-          description: 'Status text when the informant is failed'
+          id: 'mother.status.text',
+          defaultMessage:
+            '{value, select, authenticated {ID Authenticated} verified {ID Verified} failed {Unverified ID} pending {Pending verification} other {Invalid value}}',
+          description:
+            'Status text shown on the pill on both form declaration and review page'
         },
         description: {
-          id: 'event.birth.verification.failed.description',
-          defaultMessage: '@TODO: Verification status',
-          description: 'Status description when the informant is failed'
+          id: 'mother.status.description',
+          defaultMessage:
+            'The identity card scanned has not been successfully authenticated',
+          description: 'Description text of the status'
         }
       }
     },
