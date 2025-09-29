@@ -131,25 +131,44 @@ export async function onDeathActionHandler(
     `Bearer ${token}`
   )
 
-  const deceased = await mosipInteropClient.verifyNid({
-    dob: declaration['deceased.dob'],
-    nid: declaration['deceased.nationalId'],
-    name: declaration['deceased.name'],
-    gender: declaration['deceased.gender']
-  })
+  const updatedFields: Record<string, 'verified' | 'failed'> = {}
 
-  const informant = await mosipInteropClient.verifyNid({
-    dob: declaration['informant.dob'],
-    nid: declaration['informant.nationalId'],
-    name: declaration['informant.name']
-  })
+  const isDeceasedAvailable =
+    declaration['deceased.dob'] &&
+    declaration['deceased.nid'] &&
+    declaration['deceased.name']
 
-  return h
-    .response({
-      declaration: {
-        'deceased.verified': deceased,
-        'informant.verified': informant
-      }
+  if (isDeceasedAvailable)
+    updatedFields['deceased.verified'] = await mosipInteropClient.verifyNid({
+      dob: declaration['deceased.dob'],
+      nid: declaration['deceased.nid'],
+      name: declaration['deceased.name'],
+      gender: declaration['deceased.gender']
     })
-    .code(200)
+
+  const isInformantAvailable =
+    declaration['informant.dob'] &&
+    declaration['informant.nid'] &&
+    declaration['informant.name']
+
+  if (isInformantAvailable)
+    updatedFields['informant.verified'] = await mosipInteropClient.verifyNid({
+      dob: declaration['informant.dob'],
+      nid: declaration['informant.nid'],
+      name: declaration['informant.name']
+    })
+
+  const isSpouseAvailable =
+    declaration['spouse.dob'] &&
+    declaration['spouse.nid'] &&
+    declaration['spouse.name']
+
+  if (isSpouseAvailable)
+    updatedFields['spouse.verified'] = await mosipInteropClient.verifyNid({
+      dob: declaration['spouse.dob'],
+      nid: declaration['spouse.nid'],
+      name: declaration['spouse.name']
+    })
+
+  return h.response({ declaration: updatedFields }).code(200)
 }
