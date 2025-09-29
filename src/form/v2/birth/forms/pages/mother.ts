@@ -126,7 +126,13 @@ export const mother = defineFormPage({
             '{value, select, authenticated {Identity authenticated with National ID system} verified {Identity verified with National ID system} pending {Identity pending verification with National ID system} other {Invalid value}}',
           description: 'Description text of the status'
         }
-      }
+      },
+      conditionals: [
+        {
+          type: ConditionalType.SHOW,
+          conditional: requireMotherDetails
+        }
+      ]
     },
     {
       id: 'mother.name',

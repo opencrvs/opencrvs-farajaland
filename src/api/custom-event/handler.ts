@@ -65,21 +65,50 @@ export async function onBirthActionHandler(
     `Bearer ${token}`
   )
 
-  const mother = await mosipInteropClient.verifyNid({
-    dob: declaration['mother.dob'],
-    nid: declaration['mother.nid'],
-    name: declaration['mother.name'],
-    gender: 'female',
-    transactionId: `mother-${event.id}`
-  })
+  const updatedFields: Record<string, 'verified' | 'failed'> = {}
 
-  return h
-    .response({
-      declaration: {
-        'mother.verified': mother
-      }
+  const isMotherAvailable =
+    declaration['mother.dob'] &&
+    declaration['mother.nid'] &&
+    declaration['mother.name']
+
+  if (isMotherAvailable)
+    updatedFields['mother.verified'] = await mosipInteropClient.verifyNid({
+      dob: declaration['mother.dob'],
+      nid: declaration['mother.nid'],
+      name: declaration['mother.name'],
+      gender: 'female',
+      transactionId: `mother-${event.id}`
     })
-    .code(200)
+
+  const isFatherAvailable =
+    declaration['father.dob'] &&
+    declaration['father.nid'] &&
+    declaration['father.name']
+
+  if (isFatherAvailable)
+    declaration['father.verified'] = await mosipInteropClient.verifyNid({
+      dob: declaration['father.dob'],
+      nid: declaration['father.nid'],
+      name: declaration['father.name'],
+      gender: 'male',
+      transactionId: `father-${event.id}`
+    })
+
+  const isInformantAvailable =
+    declaration['informant.dob'] &&
+    declaration['informant.nid'] &&
+    declaration['informant.name']
+
+  if (isInformantAvailable)
+    updatedFields['informant.verified'] = await mosipInteropClient.verifyNid({
+      dob: declaration['informant.dob'],
+      nid: declaration['informant.nid'],
+      name: declaration['informant.name'],
+      transactionId: `informant-${event.id}`
+    })
+
+  return h.response({ declaration: updatedFields }).code(200)
 }
 
 export async function onDeathActionHandler(
