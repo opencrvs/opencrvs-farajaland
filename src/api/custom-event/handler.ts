@@ -87,7 +87,7 @@ export async function onBirthActionHandler(
     declaration['father.name']
 
   if (isFatherAvailable)
-    declaration['father.verified'] = await mosipInteropClient.verifyNid({
+    updatedFields['father.verified'] = await mosipInteropClient.verifyNid({
       dob: declaration['father.dob'],
       nid: declaration['father.nid'],
       name: declaration['father.name'],
