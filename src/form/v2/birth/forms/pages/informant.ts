@@ -163,7 +163,7 @@ export const informant = defineFormPage({
         description: {
           id: 'informant.verified.status.description',
           defaultMessage:
-            '{value, select, authenticated {Identity authenticated with National ID system} verified {Identity verified with National ID system} pending {Identity pending verification with National ID system} other {Invalid value}}',
+            '{value, select, authenticated {Identity authenticated with National ID system} verified {Identity verified with National ID system} pending {Identity pending verification with National ID system} failed {Identity verification with National ID system failed} other {Invalid value}}',
           description: 'Description text of the status'
         }
       },
