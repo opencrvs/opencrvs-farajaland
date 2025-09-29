@@ -108,22 +108,22 @@ export const mother = defineFormPage({
       id: 'mother.verified',
       type: FieldType.VERIFICATION_STATUS,
       label: {
-        id: 'mother.status',
+        id: 'mother.verified.status',
         defaultMessage: 'Verification status',
         description: 'The title for the status field label'
       },
       configuration: {
         text: {
-          id: 'mother.status.text',
+          id: 'mother.verified.status.text',
           defaultMessage:
             '{value, select, authenticated {ID Authenticated} verified {ID Verified} failed {Unverified ID} pending {Pending verification} other {Invalid value}}',
           description:
             'Status text shown on the pill on both form declaration and review page'
         },
         description: {
-          id: 'mother.status.description',
+          id: 'mother.verified.status.description',
           defaultMessage:
-            'The identity card scanned has not been successfully authenticated',
+            '{value, select, authenticated {Identity authenticated with National ID system} verified {Identity verified with National ID system} pending {Identity pending verification with National ID system} other {Invalid value}}',
           description: 'Description text of the status'
         }
       }
