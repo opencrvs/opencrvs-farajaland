@@ -114,7 +114,7 @@ export const spouse = defineFormPage({
         description: 'The title for the status field label'
       },
       configuration: {
-        text: {
+        status: {
           id: 'spouse.verified.status.text',
           defaultMessage:
             '{value, select, authenticated {ID Authenticated} verified {ID Verified} failed {Unverified ID} pending {Pending verification} other {Invalid value}}',
