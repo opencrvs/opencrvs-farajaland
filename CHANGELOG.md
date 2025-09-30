@@ -36,6 +36,7 @@
 
 - Remove special characters from role ids on generation [#10049](https://github.com/opencrvs/opencrvs-core/issues/10049)
 
+
 ## 1.7.3
 
 No changes
