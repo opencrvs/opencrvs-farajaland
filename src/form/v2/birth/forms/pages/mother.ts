@@ -113,7 +113,7 @@ export const mother = defineFormPage({
         description: 'The title for the status field label'
       },
       configuration: {
-        text: {
+        status: {
           id: 'mother.verified.status.text',
           defaultMessage:
             '{value, select, authenticated {ID Authenticated} verified {ID Verified} failed {Unverified ID} pending {Pending verification} other {Invalid value}}',
@@ -123,7 +123,7 @@ export const mother = defineFormPage({
         description: {
           id: 'mother.verified.status.description',
           defaultMessage:
-            '{value, select, authenticated {Identity authenticated with National ID system} verified {Identity verified with National ID system} pending {Identity pending verification with National ID system} failed {Identity verification with National ID system failed} other {Invalid value}}',
+            '{value, select, authenticated {This identity has been successfully authenticated with the Farajaland’s National ID System. To make edits, please remove the authentication first.} verified {This identity data has been successfully verified with the Farajaland’s National ID System. Please note that their identity has not been authenticated using the individuals biometrics. To make edits, please remove the verification first.} pending {Identity pending verification with Farajaland’s National ID system} failed {The identity data does match an entry in Farajaland’s National ID System} other {Invalid value}}',
           description: 'Description text of the status'
         }
       },
