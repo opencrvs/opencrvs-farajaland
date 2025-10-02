@@ -56,7 +56,7 @@ export async function onBirthActionHandler(
 
   const pendingAction = getPendingAction(event.actions)
   const declaration = deepMerge(
-    aggregateActionDeclarations(event, birthEvent),
+    aggregateActionDeclarations(event),
     pendingAction.declaration
   )
 
@@ -122,7 +122,7 @@ export async function onDeathActionHandler(
 
   const pendingAction = getPendingAction(event.actions)
   const declaration = deepMerge(
-    aggregateActionDeclarations(event, birthEvent),
+    aggregateActionDeclarations(event),
     pendingAction.declaration
   )
 
