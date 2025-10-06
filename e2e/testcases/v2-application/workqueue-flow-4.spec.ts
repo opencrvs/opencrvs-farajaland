@@ -292,7 +292,7 @@ test.describe.serial('4. Workqueue flow - 4', () => {
     })
   })
 
-  test('4.4 FA can see the record', async () => {
+  test('4.4 FA can not see the validated record', async () => {
     await loginToV2(page, CREDENTIALS.FIELD_AGENT, true)
 
     await assertRecordInWorkqueue({
@@ -360,7 +360,7 @@ test.describe.serial('4. Workqueue flow - 4', () => {
     })
   })
 
-  test('4.6 FA can see the record', async () => {
+  test('4.6 FA can not see the registered record', async () => {
     await loginToV2(page, CREDENTIALS.FIELD_AGENT, true)
 
     await assertRecordInWorkqueue({
