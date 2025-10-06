@@ -20,5 +20,6 @@ describe('Workqueue config', () => {
       'DECLARED',
       'NOTIFIED'
     ])
+    expect(sentForReviewWorkqueue.actions.length).toEqual(0)
   })
 })

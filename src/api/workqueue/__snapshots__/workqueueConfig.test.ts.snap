@@ -299,12 +299,7 @@ exports[`Workqueue config > should match the snapshot (Workqueue integrity) 1`] 
     "slug": "requires-completion",
   },
   {
-    "actions": [
-      {
-        "conditionals": [],
-        "type": "DEFAULT",
-      },
-    ],
+    "actions": [],
     "columns": [
       {
         "label": {
