@@ -301,7 +301,7 @@ test.describe.serial('4. Workqueue flow - 4', () => {
       workqueues: [
         { title: 'Assigned to you', exists: false },
         { title: 'Recent', exists: false },
-        { title: 'Sent for review', exists: true },
+        { title: 'Sent for review', exists: false }, // only DECLARED and NOTIFIED records should be visible
         { title: 'Requires updates', exists: false }
       ]
     })
@@ -369,7 +369,7 @@ test.describe.serial('4. Workqueue flow - 4', () => {
       workqueues: [
         { title: 'Assigned to you', exists: false },
         { title: 'Recent', exists: false },
-        { title: 'Sent for review', exists: true },
+        { title: 'Sent for review', exists: false }, // only DECLARED and NOTIFIED records should be visible
         { title: 'Requires updates', exists: false }
       ]
     })
