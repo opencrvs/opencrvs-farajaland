@@ -35,7 +35,9 @@ function getInformantDetails(informantRelation: InformantRelation) {
   }
 }
 
-async function getPlaceOfBirth(type: 'PRIVATE_HOME' | 'HEALTH_FACILITY') {
+export async function getPlaceOfBirth(
+  type: 'PRIVATE_HOME' | 'HEALTH_FACILITY'
+) {
   if (type === 'HEALTH_FACILITY') {
     const locations = await getAllLocations('HEALTH_FACILITY')
     const locationId = getLocationIdByName(
@@ -60,7 +62,7 @@ async function getPlaceOfBirth(type: 'PRIVATE_HOME' | 'HEALTH_FACILITY') {
 
     return {
       'child.placeOfBirth': 'PRIVATE_HOME',
-      'child.address.privateHome': {
+      'child.birthLocation.privateHome': {
         country: 'FAR',
         addressType: AddressType.DOMESTIC,
         administrativeArea: district
@@ -151,14 +153,15 @@ export interface CreateDeclarationResponse {
 
 export async function createDeclaration(
   token: string,
-  dec?: Partial<ActionUpdate>,
+  dec?: ActionUpdate,
   action: ActionType = ActionType.REGISTER,
   placeOfBirthType?: 'PRIVATE_HOME' | 'HEALTH_FACILITY'
 ): Promise<CreateDeclarationResponse> {
-  const declaration = await getDeclaration({
-    partialDeclaration: dec,
-    placeOfBirthType
-  })
+  const declaration =
+    dec ??
+    (await getDeclaration({
+      placeOfBirthType
+    }))
 
   const client = createClient(GATEWAY_HOST + '/events', `Bearer ${token}`)
 

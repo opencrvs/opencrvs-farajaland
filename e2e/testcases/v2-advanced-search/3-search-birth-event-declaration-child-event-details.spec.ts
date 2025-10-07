@@ -168,12 +168,11 @@ test.describe
           .toISOString()
           .split('T')[0],
         'child.placeOfBirth': 'PRIVATE_HOME',
-        'child.address.privateHome': {
-          addressType: 'DOMESTIC',
+        'child.birthLocation.privateHome': {
           country: 'FAR',
-          province: province,
-          district: district,
-          town: 'Dhaka'
+          addressType: 'DOMESTIC',
+          administrativeArea: district,
+          streetLevelDetails: { town: 'Dhaka' }
         },
         'child.reason': 'Other', // needed for late dob value
         'child.gender': 'female'
@@ -222,7 +221,7 @@ test.describe
       await expect(page).toHaveURL(/.*\/search-result/)
 
       const searchParams = new URLSearchParams(page.url())
-      const address = searchParams.get('child.address.privateHome')
+      const address = searchParams.get('child.birthLocation.privateHome')
       if (address !== null) {
         const addressObject = JSON.parse(address)
         await expect(addressObject.country).toBe('FAR')
@@ -252,7 +251,7 @@ test.describe
       await page.getByRole('button', { name: 'Edit' }).click()
       await expect(page).toHaveURL(/.*\/advanced-search/)
       const searchParams = new URLSearchParams(page.url())
-      const address = searchParams.get('child.address.privateHome')
+      const address = searchParams.get('child.birthLocation.privateHome')
       if (address !== null) {
         const addressObject = JSON.parse(address)
         await expect(addressObject.country).toBe('FAR')

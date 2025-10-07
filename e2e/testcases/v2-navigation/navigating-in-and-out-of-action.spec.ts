@@ -43,15 +43,15 @@ test.describe.serial('Navigating in and out of action', () => {
 
   test('Navigate successfully through the print certificate action flow', async () => {
     await navigateToCertificatePrintAction(page, declaration)
-    await selectCertificationType(page, 'Birth Certificate Certified Copy')
+    await selectCertificationType(page, 'Birth Certificate')
     await selectRequesterType(page, 'Print and issue to Informant (Mother)')
     await page.getByRole('button', { name: 'Continue' }).click()
     await page.getByRole('button', { name: 'Verified' }).click()
     await page.getByRole('button', { name: 'Continue' }).click()
-
+    await page.waitForURL(/\/review/)
     await expectInUrl(
       page,
-      `/events/print-certificate/${eventId}/review?templateId=v2.birth-certified-certificate`
+      `/events/print-certificate/${eventId}/review?templateId=v2.birth-certificate`
     )
   })
 
@@ -66,9 +66,10 @@ test.describe.serial('Navigating in and out of action', () => {
     )
     await page.goForward()
     await page.goForward()
+    await page.waitForURL(/\/review/)
     await expectInUrl(
       page,
-      `/events/print-certificate/${eventId}/review?templateId=v2.birth-certified-certificate`
+      `/events/print-certificate/${eventId}/review?templateId=v2.birth-certificate`
     )
   })
 
@@ -81,12 +82,12 @@ test.describe.serial('Navigating in and out of action', () => {
     await expectInUrl(page, `/events/overview/${eventId}`)
   })
 
-  test.skip('Browser back button should take user to the front page instead of action flow', async () => {
+  test('Browser back button should take user to the front page instead of action flow', async () => {
     await page.goBack()
     await expect(page.locator('#content-name')).toContainText('Ready to print')
   })
 
-  test.skip('Browser forward button should take user back to the event overview page', async () => {
+  test('Browser forward button should take user back to the event overview page', async () => {
     await page.goForward()
     await expectInUrl(page, `/events/overview/${eventId}`)
   })

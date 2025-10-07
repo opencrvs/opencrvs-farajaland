@@ -18,7 +18,7 @@ import {
   createDeclaration as createDeclarationV2,
   Declaration as DeclarationV2
 } from '../v2-test-data/birth-declaration-with-mother-father'
-import { format, subYears } from 'date-fns'
+import { format, subDays, subYears } from 'date-fns'
 import { formatV2ChildName } from '../v2-birth/helpers'
 import { IdType } from '@countryconfig/form/v2/person'
 import {
@@ -104,8 +104,7 @@ test.describe.serial(' Correct record - 3', () => {
           surname: faker.person.lastName()
         },
         'child.gender': 'male',
-        'child.dob': format(subYears(new Date(), 1), 'yyyy-MM-dd'),
-        'child.reason': 'Late',
+        'child.dob': format(subDays(new Date(), 360), 'yyyy-MM-dd'),
         'child.placeOfBirth': 'HEALTH_FACILITY',
         'child.attendantAtBirth': 'PHYSICIAN',
         'child.birthType': 'SINGLE',
@@ -745,7 +744,9 @@ test.describe.serial(' Correct record - 3', () => {
 
       for (const part of addressParts) {
         await expect(
-          page.getByTestId('row-value-child.address.other').getByText(part)
+          page
+            .getByTestId('row-value-child.birthLocation.other')
+            .getByText(part)
         ).toBeVisible()
       }
 
@@ -946,13 +947,11 @@ test.describe.serial(' Correct record - 3', () => {
     })
 
     test('3.8.1 Record audit by local registrar', async () => {
-      // await type(page, '#searchText', trackingId?.toString())
-      auditRecord({
+      await auditRecord({
         page,
         name: `${formatV2ChildName(declaration)}`,
         trackingId
       })
-      await page.getByText(formatV2ChildName(declaration)).click()
       await ensureAssigned(page)
 
       await expect(page.getByText(formatV2ChildName(declaration))).toBeVisible()
@@ -1122,18 +1121,10 @@ test.describe.serial(' Correct record - 3', () => {
        * - include the updated declaration in this tab
        */
       expect(page.url().includes(`events/overview/${eventId}`)).toBeTruthy()
-      // await page.getByRole('button', { name: 'Outbox' }).click()
-      // await expectOutboxToBeEmpty(page)
-      // await page.getByRole('button', { name: 'Ready to print' }).click()
-
-      // await expect(
-      //   page.getByText(`${formatV2ChildName(declaration)}`).first()
-      // ).toBeVisible()
       await ensureOutboxIsEmpty(page)
     })
 
     test('3.8.4 Validate history in record audit', async () => {
-      await page.reload()
       await ensureAssigned(page)
       await page.getByRole('button', { name: 'Next page' }).click()
 

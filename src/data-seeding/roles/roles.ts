@@ -368,7 +368,7 @@ export const roles: Role[] = [
     label: {
       defaultMessage: 'Local Leader',
       description: 'Name for user role Local Leader',
-      id: 'userRole.localLeader'
+      id: 'userRole.LocalLeader'
     },
     scopes: [
       SCOPES.RECORD_DECLARE_BIRTH,
