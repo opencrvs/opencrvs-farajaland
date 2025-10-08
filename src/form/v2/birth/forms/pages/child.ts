@@ -265,7 +265,7 @@ export const child = defineFormPage({
       ]
     },
     {
-      id: 'child.divider1',
+      id: 'child.divider_1',
       type: FieldType.DIVIDER,
       label: emptyMessage
     },
@@ -387,7 +387,7 @@ export const child = defineFormPage({
       }
     },
     {
-      id: 'child.divider2',
+      id: 'child.divider_2',
       type: FieldType.DIVIDER,
       label: emptyMessage
     },

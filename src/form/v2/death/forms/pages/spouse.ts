@@ -304,7 +304,7 @@ export const spouse = defineFormPage({
       ]
     },
     {
-      id: 'spouse.addressDivider1',
+      id: 'spouse.addressDivider_1',
       type: FieldType.DIVIDER,
       label: emptyMessage,
       conditionals: [
@@ -400,7 +400,7 @@ export const spouse = defineFormPage({
       }
     },
     {
-      id: 'spouse.addressDivider2',
+      id: 'spouse.addressDivider_2',
       type: FieldType.DIVIDER,
       label: emptyMessage,
       conditionals: [
