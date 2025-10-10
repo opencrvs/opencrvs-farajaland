@@ -121,9 +121,9 @@ test.describe.serial('Side navigation', () => {
     const nationalSystemAdminNavItemsWithFrame = ['Organisation', 'Team']
 
     const nationalSystemAdminNavItemsWithoutFrame = [
-      'Dashboard',
-      'Statistics',
-      'Leaderboards'
+      'Registrations Dashboard',
+      'Completeness Dashboard',
+      'Registry'
     ]
 
     // Should not have any workqueues, check that none of the workqueues are present
