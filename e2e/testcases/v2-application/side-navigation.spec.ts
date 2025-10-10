@@ -37,9 +37,9 @@ test.describe.serial('Side navigation', () => {
     const localRegistrarNavItemsWithFrame = ['Organisation', 'Team']
 
     const localRegistrarNavItemsWithoutFrame = [
-      'Dashboard',
-      'Statistics',
-      'Leaderboards'
+      'Registrations Dashboard',
+      'Completeness Dashboard',
+      'Registry'
     ]
 
     for (const item of localRegistrarNavItemsWithFrame) {
