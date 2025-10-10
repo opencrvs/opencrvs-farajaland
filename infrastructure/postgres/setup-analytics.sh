@@ -10,8 +10,9 @@ set -euo pipefail
 : "${ANALYTICS_POSTGRES_USER:?Must set ANALYTICS_POSTGRES_USER}"
 : "${POSTGRES_PASSWORD:?Must set POSTGRES_PASSWORD}"
 : "${KEEP_ALIVE_SECONDS:=0}" # Prevent Swarm from marking this task as failed due to early exit
+: "${TARGET_DB:=events}"
 
-TARGET_DB="events"
+TARGET_DB=${TARGET_DB//-/_}
 
 echo "Waiting for PostgreSQL to be ready at ${POSTGRES_HOST}:${POSTGRES_PORT}..."
 until PGPASSWORD="$POSTGRES_PASSWORD" psql -h "$POSTGRES_HOST" -p "$POSTGRES_PORT" \
@@ -25,7 +26,7 @@ create_or_update_role() {
   local role=$1
   local password=$2
   local db=$3
-
+  echo "Creating or updating role '$role' with access to database '$db'..."
   PGPASSWORD="$POSTGRES_PASSWORD" psql -v ON_ERROR_STOP=1 -h "$POSTGRES_HOST" -p "$POSTGRES_PORT" \
     -U "$POSTGRES_USER" -d postgres <<EOSQL
 DO \$\$
@@ -50,6 +51,7 @@ PGPASSWORD="$POSTGRES_PASSWORD" psql -v ON_ERROR_STOP=1 -h "$POSTGRES_HOST" -p "
 
 CREATE SCHEMA IF NOT EXISTS analytics;
 
+DROP VIEW IF EXISTS analytics.locations;
 CREATE TABLE IF NOT EXISTS analytics.locations (
   id uuid PRIMARY KEY,
   name text NOT NULL,
