@@ -26,6 +26,7 @@ on:
           - fix-analytics
           - mosip
           - openfn
+          - temp
 jobs:
   reset-data:
     name: 'Reset data'
