@@ -16,7 +16,7 @@ all:
     # This should always be set when configuring a production server if there is no other firewall in front of the server.
     # SSH and other services should never be exposed to the public internet.
     # Enable backups
-    enable_backups: true
+    enable_backups: false
     backup_server_remote_target_directory: /home/backup/dockerbug
     single_node: false # At least 2 nodes are recommended for production environment. Set "single_node: true" at your own discretion.
     users:
