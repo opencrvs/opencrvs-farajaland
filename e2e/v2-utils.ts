@@ -26,6 +26,8 @@ export async function selectAction(
     await ensureAssigned(page)
   }
 
+  await page.getByRole('button', { name: 'Action', exact: true }).click()
+
   await page
     .locator('#action-Dropdown-Content')
     .getByText(action, { exact: true })
