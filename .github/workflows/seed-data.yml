@@ -29,7 +29,6 @@ on:
           - fix-analytics
           - mosip
           - openfn
-          - temp
       core-image-tag:
         description: Core DockerHub image tag
         required: true
