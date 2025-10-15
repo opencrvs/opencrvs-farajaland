@@ -26,25 +26,6 @@ export async function selectAction(
     await ensureAssigned(page)
   }
 
-  // Keep retrying the click until the dropdown is visible
-  let isVisible = false
-  let attempts = 0
-  const maxAttempts = 10
-
-  while (!isVisible && attempts < maxAttempts) {
-    await page.getByRole('button', { name: 'Action', exact: true }).click()
-    isVisible = await page
-      .locator('#action-Dropdown-Content')
-      .getByText(action, { exact: true })
-      .isVisible()
-
-    if (!isVisible) {
-      // Small wait before retrying
-      await page.waitForTimeout(500)
-      attempts++
-    }
-  }
-
   await page
     .locator('#action-Dropdown-Content')
     .getByText(action, { exact: true })
