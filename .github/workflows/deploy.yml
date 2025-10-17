@@ -45,7 +45,6 @@ on:
           - fix-analytics
           - mosip
           - openfn
-          - dockerbug
       core-image-tag:
         description: Core image tag
         required: true

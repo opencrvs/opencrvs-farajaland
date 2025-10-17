@@ -26,7 +26,6 @@ on:
           - fix-analytics
           - mosip
           - openfn
-          - dockerbug
 jobs:
   reset-data:
     name: 'Reset data'
