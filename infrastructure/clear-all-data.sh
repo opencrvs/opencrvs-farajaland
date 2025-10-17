@@ -132,7 +132,7 @@ EVENTS_MIGRATOR_ROLE="events_migrator"
 EVENTS_APP_ROLE="events_app"
 ANALYTICS_POSTGRES_ROLE=${ANALYTICS_POSTGRES_USER:-"events_analytics"}
 
-echo "🔁 Dropping database '${POSTGRES_DB}' and roles..."
+echo "🔁 Dropping database '${POSTGRES_DB}' and roles... and testing"
 
 echo "POSTGRES_DB=$POSTGRES_DB"
 echo "ANALYTICS_POSTGRES_DB=$ANALYTICS_POSTGRES_DB"
