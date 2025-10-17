@@ -50,7 +50,13 @@ all:
           - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEEtz5M5hYKcUehDiCm84BplV+3t1ex8DPjIsMtQEWGv cihan.m.bebek@gmail.com
         state: present
         sudoer: true
+      - name: ashikul
+        ssh_keys:
+          - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC4HN92sqAGC9Q765Xc3tdR4Mc8pkAFM4X53cmcq5XWL
+        state: present
+        sudoer: true
+
 backups-host:
   hosts:
-    farajaland-backup:
-      ansible_host: '188.245.61.69'
+    ashikul-newland-backup:
+      ansible_host: '91.98.85.227'

@@ -84,18 +84,23 @@ all:
           - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICw4vvV33xxrTzxAiPoRhuwyWUzmgrP5NPo2n4bmKx7P
         state: present
         sudoer: true
+      - name: ashikul
+        ssh_keys:
+          - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIC4HN92sqAGC9Q765Xc3tdR4Mc8pkAFM4X53cmcq5XWL
+        state: present
+        sudoer: true
 docker-manager-first:
   hosts:
-    farajaland-staging:
-      ansible_host: '5.223.47.53'
+    ashikul-newland-staging:
+      ansible_host: '78.47.131.127'
       data_label: data1
 
 # QA and staging servers are not configured to use workers.
 docker-workers: {}
 backups:
   hosts:
-    farajaland-backup:
-      ansible_host: '188.245.61.69'
+    ashikul-newland-backup:
+      ansible_host: '91.98.85.227'
       # Written by provision pipeline. Assumes "backup" environment
       # exists in Github environments
       ansible_ssh_private_key_file: /tmp/backup_ssh_private_key
