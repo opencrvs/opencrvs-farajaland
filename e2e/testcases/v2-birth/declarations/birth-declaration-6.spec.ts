@@ -384,12 +384,12 @@ test.describe.serial('6. Birth declaration case - 6', () => {
           declaration.informant.name.familyName
       )
 
-      /*
-       * Expected result: should include
-       * - Informant's date of birth
-       */
+      const asOfDate = await page
+        .getByTestId('row-value-child.dob')
+        .textContent()
+
       await expect(page.getByTestId('row-value-informant.age')).toHaveText(
-        declaration.informant.age.toString()
+        `${declaration.informant.age} (as of ${asOfDate})`
       )
 
       /*
@@ -442,12 +442,8 @@ test.describe.serial('6. Birth declaration case - 6', () => {
           declaration.father.name.familyName
       )
 
-      /*
-       * Expected result: should include
-       * - Father's date of birth
-       */
       await expect(page.getByTestId('row-value-father.age')).toHaveText(
-        declaration.father.age.toString()
+        `${declaration.father.age} (as of ${asOfDate})`
       )
 
       /*

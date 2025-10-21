@@ -123,6 +123,8 @@ test.describe.serial('Correct record - Change ages', () => {
     declaration = res.declaration
   })
 
+  let asOfDate: string | null = ''
+
   test('Login as Registration Agent', async () => {
     await loginToV2(page, CREDENTIALS.REGISTRATION_AGENT)
   })
@@ -201,12 +203,16 @@ test.describe.serial('Correct record - Change ages', () => {
       .getByRole('button', { name: 'Back to review', exact: true })
       .click()
 
-    await expect(
-      page.getByTestId('row-value-informant.age').getByRole('deletion')
-    ).toHaveText(informantAgeBefore)
+    asOfDate = await page.getByTestId('row-value-child.dob').textContent()
 
     await expect(
-      page.getByTestId('row-value-informant.age').getByText(informantAgeAfter)
+      page.getByTestId('row-value-informant.age').getByRole('deletion')
+    ).toHaveText(`${informantAgeBefore} (as of ${asOfDate})`)
+
+    await expect(
+      page
+        .getByTestId('row-value-informant.age')
+        .getByText(`${informantAgeAfter} (as of ${asOfDate})`)
     ).toBeVisible()
   })
 
@@ -253,10 +259,12 @@ test.describe.serial('Correct record - Change ages', () => {
 
     await expect(
       page.getByTestId('row-value-mother.age').getByRole('deletion')
-    ).toHaveText(motherAgeBefore)
+    ).toHaveText(`${motherAgeBefore} (as of ${asOfDate})`)
 
     await expect(
-      page.getByTestId('row-value-mother.age').getByText(motherAgeAfter)
+      page
+        .getByTestId('row-value-mother.age')
+        .getByText(`${motherAgeAfter} (as of ${asOfDate})`)
     ).toBeVisible()
   })
 
@@ -271,7 +279,11 @@ test.describe.serial('Correct record - Change ages', () => {
     await expect(page.getByText("Mother's details")).toBeVisible()
 
     await expect(
-      page.getByText('Age of mother' + motherAgeBefore + motherAgeAfter)
+      page.getByText(
+        'Age of mother' +
+          `${motherAgeBefore} (as of ${asOfDate})` +
+          `${motherAgeAfter} (as of ${asOfDate})`
+      )
     ).toBeVisible()
 
     await expect(
@@ -281,7 +293,9 @@ test.describe.serial('Correct record - Change ages', () => {
     await expect(page.getByText("Informant's details")).toBeVisible()
     await expect(
       page.getByText(
-        'Age of informant' + informantAgeBefore + informantAgeAfter
+        'Age of informant' +
+          `${informantAgeBefore} (as of ${asOfDate})` +
+          `${informantAgeAfter} (as of ${asOfDate})`
       )
     ).toBeVisible()
   })
@@ -328,11 +342,15 @@ test.describe.serial('Correct record - Change ages', () => {
     await selectAction(page, 'View')
 
     await expect(
-      page.getByTestId('row-value-informant.age').getByText(informantAgeAfter)
+      page
+        .getByTestId('row-value-informant.age')
+        .getByText(`${informantAgeAfter} (as of ${asOfDate})`)
     ).toBeVisible()
 
     await expect(
-      page.getByTestId('row-value-mother.age').getByText(motherAgeAfter)
+      page
+        .getByTestId('row-value-mother.age')
+        .getByText(`${motherAgeAfter} (as of ${asOfDate})`)
     ).toBeVisible()
   })
 })
