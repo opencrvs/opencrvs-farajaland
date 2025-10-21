@@ -73,6 +73,8 @@
         url: `${scheme}//metabase.${hostname}/public/dashboard/dc66b77a-79df-4f68-8fc8-5e5d5a2d7a35#bordered=false&titled=false&refresh=300`
       }
     ],
+    // NOTE: This is not valid javascript until replaced during build time.
+    // IIFE just reveals it.
     FEATURES: {}
   }
 })()
