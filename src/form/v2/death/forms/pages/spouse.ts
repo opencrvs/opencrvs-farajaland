@@ -178,7 +178,7 @@ export const spouse = defineFormPage({
         disableIf: ['pending', 'verified', 'authenticated']
       }
     ),
-    connectToMOSIPVerificationStatus(
+    connectToMOSIPIdReader(
       {
         id: 'spouse.dobUnknown',
         type: FieldType.CHECKBOX,
@@ -198,7 +198,10 @@ export const spouse = defineFormPage({
           }
         ]
       },
-      { disableIf: ['pending', 'verified', 'authenticated'] }
+      {
+        valuePath: 'data.dobUnknown',
+        disableIf: ['pending', 'verified', 'authenticated']
+      }
     ),
     connectToMOSIPVerificationStatus(
       {
@@ -321,44 +324,60 @@ export const spouse = defineFormPage({
         disableIf: ['pending', 'verified']
       }
     ),
-    {
-      id: 'spouse.passport',
-      type: FieldType.TEXT,
-      required: true,
-      label: {
-        defaultMessage: 'ID Number',
-        description: 'This is the label for the field',
-        id: 'event.death.action.declare.form.section.spouse.field.passport.label'
+    connectToMOSIPIdReader(
+      {
+        id: 'spouse.passport',
+        type: FieldType.TEXT,
+        required: true,
+        label: {
+          defaultMessage: 'ID Number',
+          description: 'This is the label for the field',
+          id: 'event.death.action.declare.form.section.spouse.field.passport.label'
+        },
+        conditionals: [
+          {
+            type: ConditionalType.SHOW,
+            conditional: and(
+              field('spouse.idType').isEqualTo(IdType.PASSPORT),
+              requireSpouseDetails
+            )
+          }
+        ]
       },
-      conditionals: [
-        {
-          type: ConditionalType.SHOW,
-          conditional: and(
-            field('spouse.idType').isEqualTo(IdType.PASSPORT),
-            requireSpouseDetails
-          )
-        }
-      ]
-    },
-    {
-      id: 'spouse.brn',
-      type: FieldType.TEXT,
-      required: true,
-      label: {
-        defaultMessage: 'ID Number',
-        description: 'This is the label for the field',
-        id: 'event.death.action.declare.form.section.spouse.field.brn.label'
+      {
+        valuePath: 'data.passport',
+        hideIf: ['authenticated'],
+        disableIf: ['pending', 'verified']
+      }
+    ),
+    connectToMOSIPIdReader(
+      {
+        id: 'spouse.brn',
+        type: FieldType.TEXT,
+        required: true,
+        label: {
+          defaultMessage: 'ID Number',
+          description: 'This is the label for the field',
+          id: 'event.death.action.declare.form.section.spouse.field.brn.label'
+        },
+        conditionals: [
+          {
+            type: ConditionalType.SHOW,
+            conditional: and(
+              field('spouse.idType').isEqualTo(
+                IdType.BIRTH_REGISTRATION_NUMBER
+              ),
+              requireSpouseDetails
+            )
+          }
+        ]
       },
-      conditionals: [
-        {
-          type: ConditionalType.SHOW,
-          conditional: and(
-            field('spouse.idType').isEqualTo(IdType.BIRTH_REGISTRATION_NUMBER),
-            requireSpouseDetails
-          )
-        }
-      ]
-    },
+      {
+        valuePath: 'data.brn',
+        hideIf: ['authenticated'],
+        disableIf: ['pending', 'verified']
+      }
+    ),
     {
       id: 'spouse.addressDivider1',
       type: FieldType.DIVIDER,
