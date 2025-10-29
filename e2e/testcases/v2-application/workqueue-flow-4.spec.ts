@@ -10,7 +10,7 @@ import {
 } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
 import {
-  ensureExternalValidationIsEmpty,
+  ensureInExternalValidationIsEmpty,
   ensureOutboxIsEmpty,
   selectAction
 } from '../../v2-utils'
@@ -347,7 +347,7 @@ test.describe.serial('4. Workqueue flow - 4', () => {
         .click()
       await page.locator('#confirm_Register').click()
       await ensureOutboxIsEmpty(page)
-      await ensureExternalValidationIsEmpty(page)
+      await ensureInExternalValidationIsEmpty(page)
 
       await assertRecordInWorkqueue({
         page,
