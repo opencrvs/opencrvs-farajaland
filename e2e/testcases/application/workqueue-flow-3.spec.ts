@@ -436,6 +436,20 @@ test.describe.serial('3. Workqueue flow - 3', () => {
         ]
       })
     })
+    test('3.5.3 Validate FA workqueue', async () => {
+      await login(page, CREDENTIALS.FIELD_AGENT, true)
+
+      await assertRecordInWorkqueue({
+        page,
+        name: childName,
+        workqueues: [
+          { title: 'Assigned to you', exists: false },
+          { title: 'Recent', exists: false },
+          { title: 'Sent for review', exists: false },
+          { title: 'Requires updates', exists: true }
+        ]
+      })
+    })
   })
   test.describe('3.6 Re-validate by RA', async () => {
     test('3.6.1 Login with RA', async () => {
