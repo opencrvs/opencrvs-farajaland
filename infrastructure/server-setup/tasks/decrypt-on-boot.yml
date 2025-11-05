@@ -8,13 +8,13 @@
 
 - name: Check if Disk encryption key file exists
   ansible.builtin.stat:
-    path: "{{ disk_encryption_key_path }}"
+    path: "/root/disk-encryption-key.txt"
   register: encryption_keyfile_stat
   when: disk_encryption_key is defined
 
 - name: Read existing Disk encryption key
   ansible.builtin.slurp:
-    src: "{{ disk_encryption_key_path }}"
+    src: "/root/disk-encryption-key.txt"
   register: existing_disk_encryption_key
   when:
     - disk_encryption_key is defined
@@ -22,7 +22,7 @@
 
 - name: Backup existing key file if differs
   shell: |
-    cp "{{ disk_encryption_key_path }}" "{{ disk_encryption_key_path }}.{{ lookup('pipe', 'date +%F') }}.txt"
+    cp /root/disk-encryption-key.txt "/root/disk-encryption-key.txt.{{ lookup('pipe', 'date +%F') }}.txt"
   when:
     - disk_encryption_key is defined
     - encryption_keyfile_stat.stat.exists
