@@ -119,10 +119,10 @@
         apply:
           tags:
             - data-partition
-            - decrypt-on-boot
+            - decrypt
       tags:
         - data-partition
-        - decrypt-on-boot
+        - decrypt
 
     - include_tasks:
         file: tasks/swap.yml
@@ -162,9 +162,9 @@
         file: tasks/decrypt-on-boot.yml
         apply:
           tags:
-            - decrypt-on-boot
+            - decrypt
       tags:
-        - decrypt-on-boot
+        - decrypt
 
 - import_playbook: swarm.yml
 
