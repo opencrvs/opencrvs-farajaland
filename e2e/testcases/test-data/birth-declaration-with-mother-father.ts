@@ -114,11 +114,18 @@ export async function getDeclaration({
       administrativeArea: district,
       addressType: AddressType.DOMESTIC,
       streetLevelDetails: {
-        town: 'my town',
-        residentialArea: 'RA',
-        street: 'street name',
-        number: '123',
-        zipCode: '12345'
+        town: null,
+        residentialArea: null,
+        street: null,
+        number: null,
+        zipCode: null,
+        state: null,
+        district2: null,
+        cityOrTown: null,
+        addressLine1: null,
+        addressLine2: null,
+        addressLine3: null,
+        postcodeOrZip: null
       }
     },
     'child.name': {
