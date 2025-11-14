@@ -86,7 +86,10 @@ test.describe.serial('Navigating in and out of action', () => {
       familyName: declaration['child.name'].surname
     })
     // Locate the row with correct name
-    const row = page.locator('div', { hasText: childName }).first()
+    const row = page
+      .locator('div[id^="row_"]')
+      .filter({ hasText: childName })
+      .first()
 
     // Click the "Assign record" button inside that row
     await row

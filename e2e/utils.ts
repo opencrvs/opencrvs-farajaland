@@ -116,7 +116,8 @@ export async function ensureAssigned(page: Page) {
 }
 
 export async function expectInUrl(page: Page, assertionString: string) {
-  await expect(page.url().includes(assertionString)).toBeTruthy()
+  await page.waitForURL(`**${assertionString}**`)
+  expect(page.url().includes(assertionString)).toBeTruthy()
 }
 
 export async function ensureOutboxIsEmpty(page: Page) {
