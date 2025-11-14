@@ -48,7 +48,9 @@ test.describe.serial('1. User conditional form flow', () => {
       await page.locator('#surname').fill(declaration.applicant.name.familyName)
 
       await page.getByPlaceholder('dd').fill(declaration.applicant.birthDate.dd)
-      await page.getByPlaceholder('mm').fill(declaration.applicant.birthDate.mm)
+      await page
+        .getByTestId('applicant____dob-mm')
+        .fill(declaration.applicant.birthDate.mm)
       await page
         .getByPlaceholder('yyyy')
         .fill(declaration.applicant.birthDate.yyyy)
