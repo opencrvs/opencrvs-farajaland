@@ -796,6 +796,7 @@ error.weAreTryingToFixThisError,Error description,This page could not be found,"
 errors.notAssigned,User not assigned error toast message,You've been unassigned from the event,Vous avez été désassigné de l'événement
 errors.somethingWentWrong,Error toast message for general errors,Something went wrong. Please try again,Une erreur s'est produite. Veuillez réessayer
 event.action.declare.form.section.person.field.age.error,Error message for invalid age,Age must be between 12 and 120,L'auteur doit avoir entre 12 et 120 ans
+event.action.declare.form.section.person.field.contactHelper.label,This is the label for the field,Point of contact,Point de contact
 event.action.notAvailableForEvent,Shown when user tries to perform an action that is not available for the event,The action you're trying to perform is not available for this event anymore,L'action que vous essayez d'effectuer n'est plus disponible pour cet événement
 event.action.outbox-retry.label,Label for retry button for outbox,Retry,Réessayer
 event.action.review-correction.label,Label for review correction button in dropdown menu,Review,Revoir
@@ -853,6 +854,7 @@ event.birth.action.declare.form.section.person.field.educationalAttainment.label
 event.birth.action.declare.form.section.person.field.idType.label,This is the label for the field,Type of ID,Type d'identification
 event.birth.action.declare.form.section.person.field.maritalStatus.label,This is the label for the field,Marital Status,Marital Status
 event.birth.action.declare.form.section.person.field.nationality.label,This is the label for the field,Nationality,Nationalité
+event.birth.action.declare.form.section.person.field.notifyingOfficialDetailsHelper.label,This is the label for the field,Notifying official,Détails de l'officiel notifiant
 event.birth.action.declare.form.section.person.field.nid.label,This is the label for the field,ID Number,Numéro d'identification
 event.birth.action.declare.form.section.person.field.occupation.label,This is the label for the field,Occupation,Profession
 event.birth.action.declare.form.section.person.field.passport.label,This is the label for the field,ID Number,Numéro d'identification
@@ -1264,6 +1266,7 @@ form.field.label.informantRelation.groomAndBride,Label for option Groom & Bride,
 form.field.label.informantRelation.legalGuardian,Label for option Legal Guardian,Legal guardian,Tuteur légal
 form.field.label.informantRelation.mother,Label for option mother,Mother,Mère
 form.field.label.informantRelation.others,Label for option someone else,Someone else,Quelqu'un d'autre
+form.field.label.informantRelation.self,Label for option self,Self,Sois-même
 form.field.label.informantRelation.sister,Label for option Sister,Sister,Sœur
 form.field.label.informantRelation.son,Label for option Son,Son,Fils
 form.field.label.informantRelation.sonInLaw,Label for option Son in law,Son in law,Fils par alliance

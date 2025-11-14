@@ -37,16 +37,6 @@ export const informantMessageDescriptors = {
     description: 'Label for option Grandmother',
     id: 'form.field.label.informantRelation.grandmother'
   },
-  BROTHER: {
-    defaultMessage: 'Brother',
-    description: 'Label for option brother',
-    id: 'form.field.label.informantRelation.brother'
-  },
-  SISTER: {
-    defaultMessage: 'Sister',
-    description: 'Label for option Sister',
-    id: 'form.field.label.informantRelation.sister'
-  },
   OTHER_FAMILY_MEMBER: {
     defaultMessage: 'Other family member',
     description: 'Label for other family member relation',
@@ -66,6 +56,11 @@ export const informantMessageDescriptors = {
     defaultMessage: 'Who is applying for death registration?',
     description: 'Who is applying for death registration',
     id: 'register.selectInformant.deathInformantTitle'
+  },
+  SELF: {
+    defaultMessage: 'Self',
+    description: 'Label for option Self',
+    id: 'form.field.label.informantRelation.self'
   },
   SPOUSE: {
     defaultMessage: 'Spouse',

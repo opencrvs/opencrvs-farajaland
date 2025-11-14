@@ -167,14 +167,6 @@ export const birthInformantTypeOptions: ISelectOption[] = [
     label: informantMessageDescriptors.GRANDMOTHER
   },
   {
-    value: informantTypes.BROTHER,
-    label: informantMessageDescriptors.BROTHER
-  },
-  {
-    value: informantTypes.SISTER,
-    label: informantMessageDescriptors.SISTER
-  },
-  {
     value: informantTypes.LEGAL_GUARDIAN,
     label: informantMessageDescriptors.LEGAL_GUARDIAN
   },
