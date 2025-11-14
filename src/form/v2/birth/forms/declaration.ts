@@ -59,5 +59,6 @@ export const BIRTH_DECLARATION_FORM = defineDeclarationForm({
     id: 'event.birth.action.declare.form.label',
     description: 'This is what this form is referred as in the system'
   },
-  pages: [introduction, informant, child, mother, father, documents]
+
+  pages: [introduction, child, informant, mother, father, documents]
 })
