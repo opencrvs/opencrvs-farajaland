@@ -21,13 +21,19 @@ import {
   getPendingAction
 } from '@opencrvs/toolkit/events'
 import { MOSIP_INTEROP_URL } from '@countryconfig/constants'
+import { newBirthEvent } from '@countryconfig/form/v2/new-birth'
 
 export function getCustomEventsHandler(
   _: Hapi.Request,
   h: Hapi.ResponseToolkit
 ) {
   return h
-    .response([tennisClubMembershipEvent, birthEvent, deathEvent])
+    .response([
+      tennisClubMembershipEvent,
+      birthEvent,
+      deathEvent,
+      newBirthEvent
+    ])
     .code(200)
 }
 
