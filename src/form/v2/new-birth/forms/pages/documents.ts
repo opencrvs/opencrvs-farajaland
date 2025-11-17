@@ -27,9 +27,7 @@ import { InformantType } from './informant'
 
 const IdType = {
   NATIONAL_ID: 'NATIONAL_ID',
-  PASSPORT: 'PASSPORT',
-  BIRTH_CERTIFICATE: 'BIRTH_CERTIFICATE',
-  OTHER: 'OTHER'
+  PASSPORT: 'PASSPORT'
 } as const
 
 const idTypeMessageDescriptors = {
@@ -42,16 +40,6 @@ const idTypeMessageDescriptors = {
     defaultMessage: 'Passport',
     description: 'Option for form field: Type of ID',
     id: 'form.field.label.iDTypePassport'
-  },
-  BIRTH_CERTIFICATE: {
-    defaultMessage: 'Birth Certificate',
-    description: 'Option for form field: Type of ID',
-    id: 'form.field.label.iDTypeBirthCertificate'
-  },
-  OTHER: {
-    defaultMessage: 'Other',
-    description: 'Option for form field: Type of ID',
-    id: 'form.field.label.iDTypeOther'
   }
 } satisfies Record<keyof typeof IdType, TranslationConfig>
 
@@ -98,7 +86,7 @@ export const documents = defineFormPage({
     {
       id: 'documents.proofOfBirth',
       type: FieldType.FILE,
-      required: false,
+      required: true,
       uncorrectable: true,
       configuration: {
         ...DEFAULT_FILE_CONFIGURATION,
@@ -183,7 +171,7 @@ export const documents = defineFormPage({
     {
       id: 'documents.proofOther',
       type: FieldType.FILE_WITH_OPTIONS,
-      required: false,
+      required: true,
       uncorrectable: true,
       label: {
         defaultMessage: 'Other',
