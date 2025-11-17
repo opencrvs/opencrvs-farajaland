@@ -35,7 +35,7 @@ const EducationalAttainment = {
   FIRST_STAGE_TERTIARY_ISCED_5: 'FIRST_STAGE_TERTIARY_ISCED_5'
 } as const
 
-const idTypeMessageDescriptors = {
+export const idTypeMessageDescriptors = {
   NATIONAL_ID: {
     defaultMessage: 'National ID',
     description: 'Option for form field: Type of ID',
