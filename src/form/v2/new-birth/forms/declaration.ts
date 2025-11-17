@@ -9,7 +9,17 @@
  * Copyright (C) The OpenCRVS Authors located at https://github.com/opencrvs/opencrvs-core/blob/master/AUTHORS.
  */
 
-import { defineDeclarationForm, FieldType } from '@opencrvs/toolkit/events'
+import {
+  ConditionalType,
+  defineDeclarationForm,
+  FieldType,
+  never,
+  user,
+  event,
+  ActionType,
+  not,
+  and
+} from '@opencrvs/toolkit/events'
 import { child } from './pages/child'
 import { informant } from './pages/informant'
 import { mother } from './pages/mother'
@@ -26,14 +36,31 @@ export const NEW_BIRTH_DECLARATION_REVIEW = {
   },
   fields: [
     {
-      id: 'review.comment',
-      type: FieldType.TEXTAREA,
+      type: FieldType.ALPHA_PRINT_BUTTON,
+      id: 'review.print',
       label: {
-        defaultMessage: 'Comment',
-        id: 'event.birth.action.declare.form.review.comment.label',
-        description: 'Label for the comment field in the review section'
+        defaultMessage: 'Print declaration',
+        description: 'Print',
+        id: 'event.tennis-club-membership.action.declare.form.review.print.label'
       },
-      required: true
+      configuration: {
+        template: 'v2.birth-certified-certificate',
+        buttonLabel: {
+          defaultMessage: 'Print declaration summary',
+          description: "Print button's label",
+          id: 'event.tennis-club-membership.action.declare.form.review.print.button.label'
+        }
+      },
+      conditionals: [
+        {
+          type: ConditionalType.SHOW,
+          conditional: and(
+            user.hasRole('LOCAL_REGISTRAR'),
+            not(event.hasAction(ActionType.DECLARE)),
+            not(event.hasAction(ActionType.NOTIFY))
+          )
+        }
+      ]
     },
     {
       type: FieldType.SIGNATURE,
