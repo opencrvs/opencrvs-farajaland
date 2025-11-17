@@ -555,15 +555,15 @@ services:
         - 'traefik.http.middlewares.countryconfig.headers.stspreload=true'
         # This is an invalid IP range, effectively blocking all IPs from accessing below paths.
         # It's only meant to be accessed from the internal docker network.
-        - 'traefik.http.middlewares.block-internal-routes.ipwhitelist.sourcerange=255.255.255.255'
-        - 'traefik.http.routers.block-email.rule=Host(`countryconfig.{{hostname}}`) && Path(`/email`)'
-        - 'traefik.http.routers.block-email.middlewares=block-internal-routes'
-        - 'traefik.http.routers.block-reindex.rule=Host(`countryconfig.{{hostname}}`) && Path(`/reindex`)'
-        - 'traefik.http.routers.block-reindex.middlewares=block-internal-routes'
-        - 'traefik.http.routers.block-notification.rule=Host(`countryconfig.{{hostname}}`) && Path(`/notification`)'
-        - 'traefik.http.routers.block-notification.middlewares=block-internal-routes'
-        - 'traefik.http.routers.block-dashboard-queries.rule=Host(`countryconfig.{{hostname}}`) && Path(`/dashboards/queries.json`)'
-        - 'traefik.http.routers.block-dashboard-queries.middlewares=block-internal-routes'
+        # - 'traefik.http.middlewares.block-internal-routes.ipwhitelist.sourcerange=255.255.255.255'
+        # - 'traefik.http.routers.block-email.rule=Host(`countryconfig.{{hostname}}`) && Path(`/email`)'
+        # - 'traefik.http.routers.block-email.middlewares=block-internal-routes'
+        # - 'traefik.http.routers.block-reindex.rule=Host(`countryconfig.{{hostname}}`) && Path(`/reindex`)'
+        # - 'traefik.http.routers.block-reindex.middlewares=block-internal-routes'
+        # - 'traefik.http.routers.block-notification.rule=Host(`countryconfig.{{hostname}}`) && Path(`/notification`)'
+        # - 'traefik.http.routers.block-notification.middlewares=block-internal-routes'
+        # - 'traefik.http.routers.block-dashboard-queries.rule=Host(`countryconfig.{{hostname}}`) && Path(`/dashboards/queries.json`)'
+        # - 'traefik.http.routers.block-dashboard-queries.middlewares=block-internal-routes'
       replicas: 1
     environment:
       - NODE_ENV=production
