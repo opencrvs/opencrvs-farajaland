@@ -15,6 +15,7 @@ import { informant } from './pages/informant'
 import { mother } from './pages/mother'
 import { father } from './pages/father'
 import { documents } from './pages/documents'
+import { introduction } from './pages/introduction'
 
 export const NEW_BIRTH_DECLARATION_REVIEW = {
   title: {
@@ -58,5 +59,5 @@ export const NEW_BIRTH_DECLARATION_FORM = defineDeclarationForm({
     id: 'event.birth.action.declare.form.label',
     description: 'This is what this form is referred as in the system'
   },
-  pages: [informant, child, mother, father, documents]
+  pages: [introduction, informant, child, mother, father, documents]
 })

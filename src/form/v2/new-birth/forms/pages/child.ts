@@ -46,16 +46,12 @@ const TypeOfBirth = {
   SINGLE: 'SINGLE',
   TWIN: 'TWIN',
   TRIPLET: 'TRIPLET',
-  QUADRUPLET: 'QUADRUPLET',
   HIGHER_MULTIPLE_DELIVERY: 'HIGHER_MULTIPLE_DELIVERY'
 } as const
 
 const AttendantAtBirth = {
-  PHYSICIAN: 'PHYSICIAN',
   NURSE: 'NURSE',
   MIDWIFE: 'MIDWIFE',
-  OTHER_PARAMEDICAL_PERSONNEL: 'OTHER_PARAMEDICAL_PERSONNEL',
-  LAYPERSON: 'LAYPERSON',
   TRADITIONAL_BIRTH_ATTENDANT: 'TRADITIONAL_BIRTH_ATTENDANT',
   NONE: 'NONE'
 } as const
@@ -100,11 +96,6 @@ const typeOfBirthMessageDescriptors = {
     description: 'Label for triplet birth',
     id: 'form.field.label.birthTypeTriplet'
   },
-  QUADRUPLET: {
-    defaultMessage: 'Quadruplet',
-    description: 'Label for quadruplet birth',
-    id: 'form.field.label.birthTypeQuadruplet'
-  },
   HIGHER_MULTIPLE_DELIVERY: {
     defaultMessage: 'Higher multiple delivery',
     description: 'Label for higher multiple delivery birth',
@@ -113,11 +104,6 @@ const typeOfBirthMessageDescriptors = {
 } satisfies Record<keyof typeof TypeOfBirth, TranslationConfig>
 
 const attendantAtBirthMessageDescriptors = {
-  PHYSICIAN: {
-    defaultMessage: 'Physician',
-    description: 'Label for physician attendant',
-    id: 'form.field.label.attendantAtBirthPhysician'
-  },
   NURSE: {
     defaultMessage: 'Nurse',
     description: 'Label for nurse attendant',
@@ -127,16 +113,6 @@ const attendantAtBirthMessageDescriptors = {
     defaultMessage: 'Midwife',
     description: 'Label for midwife attendant',
     id: 'form.field.label.attendantAtBirthMidwife'
-  },
-  OTHER_PARAMEDICAL_PERSONNEL: {
-    defaultMessage: 'Other paramedical personnel',
-    description: 'Label for other paramedical personnel',
-    id: 'form.field.label.attendantAtBirthOtherParamedicalPersonnel'
-  },
-  LAYPERSON: {
-    defaultMessage: 'Layperson',
-    description: 'Label for layperson attendant',
-    id: 'form.field.label.attendantAtBirthLayperson'
   },
   TRADITIONAL_BIRTH_ATTENDANT: {
     defaultMessage: 'Traditional birth attendant',
@@ -223,18 +199,6 @@ export const child = defineFormPage({
       validation: [invalidNameValidator('child.name')]
     },
     {
-      id: 'child.gender',
-      analytics: true,
-      type: FieldType.SELECT,
-      required: true,
-      label: {
-        defaultMessage: 'Sex',
-        description: 'This is the label for the field',
-        id: 'event.birth.action.declare.form.section.child.field.gender.label'
-      },
-      options: genderOptions
-    },
-    {
       id: 'child.dob',
       analytics: true,
       type: 'DATE',
@@ -279,6 +243,18 @@ export const child = defineFormPage({
           )
         }
       ]
+    },
+    {
+      id: 'child.gender',
+      analytics: true,
+      type: FieldType.SELECT,
+      required: true,
+      label: {
+        defaultMessage: 'Sex',
+        description: 'This is the label for the field',
+        id: 'event.birth.action.declare.form.section.child.field.gender.label'
+      },
+      options: genderOptions
     },
     {
       id: 'child.divider1',
