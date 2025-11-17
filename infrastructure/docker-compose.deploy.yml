@@ -1198,6 +1198,10 @@ services:
       - MOSIP_WEBSUB_CALLBACK_URL=http://mosip-api:2024/websub/callback
       - ISSUER_URL=http://mosip-mock:20240
       - MOSIP_WEBSUB_TOPIC=CREDENTIAL_ISSUED
+    deploy:
+      replicas: 1
+      labels:
+       -  'traefik.enable=false'
     networks:
       - overlay_net
     logging:
