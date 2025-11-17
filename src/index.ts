@@ -628,7 +628,8 @@ export async function createServer() {
     handler: async (req, h) => {
       const shouldReindex = Boolean(env.ANALYTICS_DATABASE_URL)
 
-      logger.info('Reindex requested...', { shouldReindex })
+      // eslint-disable-next-line no-console
+      console.log('Reindex requested...', { shouldReindex })
 
       if (!shouldReindex) {
         // kill client upload immediately
@@ -636,7 +637,8 @@ export async function createServer() {
           req.raw.req.destroy()
         }
 
-        logger.warn(
+        // eslint-disable-next-line no-console
+        console.log(
           'Skipping reindex, no ANALYTICS_DATABASE_URL environment variable set.'
         )
         return h.response().code(200)
@@ -648,7 +650,8 @@ export async function createServer() {
       const client = getClient()
 
       try {
-        logger.info('Starting reindex of all events into analytics...')
+        // eslint-disable-next-line no-console
+        console.log('Starting reindex of all events into analytics...')
 
         await client.transaction().execute(async (trx) => {
           for await (const { value } of stream) {
@@ -657,13 +660,15 @@ export async function createServer() {
             if (queue.length >= BATCH_SIZE) {
               const batch = queue.splice(0, queue.length)
 
-              logger.info(`Importing batch of ${batch.length} events...`)
+              // eslint-disable-next-line no-console
+              console.log(`Importing batch of ${batch.length} events...`)
               await importEvents(batch, trx)
             }
           }
 
           if (queue.length > 0) {
-            logger.info(`Importing final batch of ${queue.length} events...`)
+            // eslint-disable-next-line no-console
+            console.log(`Importing final batch of ${queue.length} events...`)
             await importEvents(queue, trx)
           }
 
@@ -672,17 +677,20 @@ export async function createServer() {
           const client = createClient(url, req.headers.authorization)
           const locations = await client.locations.list.query()
 
-          logger.info('Importing locations...')
+          // eslint-disable-next-line no-console
+          console.log('Importing locations...')
           await importLocations(locations)
         })
 
-        logger.info(
+        // eslint-disable-next-line no-console
+        console.log(
           'Reindexed all events & locations into analytics successfully.'
         )
 
         return h.response().code(200)
       } catch (e) {
-        logger.error(e)
+        // eslint-disable-next-line no-console
+        console.error(e)
 
         // stop consuming the stream if something failed on import
         if (!stream.destroyed) stream.destroy(e)
