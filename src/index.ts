@@ -774,6 +774,26 @@ export async function createServer() {
   server.ext({
     type: 'onRequest',
     method(request: Hapi.Request & { sentryScope?: any }, h) {
+      console.log('>>> onRequest:', {
+        method: request.method,
+        path: request.path,
+        rawUrl: request.raw.req.url,
+        headers: request.raw.req.headers
+      })
+
+      // log low-level socket events
+      request.raw.req.on('aborted', () => {
+        console.log(
+          `>>> Request aborted by client: ${request.method} ${request.path}`
+        )
+      })
+
+      request.raw.req.on('close', () => {
+        console.log(
+          `>>> Request socket closed early: ${request.method} ${request.path}`
+        )
+      })
+
       request.sentryScope?.setExtra('payload', request.payload)
       return h.continue
     }
