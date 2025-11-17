@@ -622,7 +622,9 @@ export async function createServer() {
       auth: false,
       payload: {
         output: 'stream',
-        parse: false
+        parse: false,
+        maxBytes: 1024 * 1024 * 1024 * 10,
+        timeout: false
       }
     },
     handler: async (req, h) => {
@@ -632,11 +634,7 @@ export async function createServer() {
       console.log('Reindex requested...', { shouldReindex })
 
       if (!shouldReindex) {
-        // kill client upload immediately
-        if (!req.raw.req.destroyed) {
-          req.raw.req.destroy()
-        }
-
+        req.raw.req.resume()
         // eslint-disable-next-line no-console
         console.log(
           'Skipping reindex, no ANALYTICS_DATABASE_URL environment variable set.'
