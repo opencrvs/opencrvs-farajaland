@@ -15,7 +15,6 @@ type InformantRelation = 'MOTHER' | 'BROTHER'
 
 function getInformantDetails(
   informantRelation: InformantRelation,
-  province?: string,
   district?: string
 ) {
   if (informantRelation === 'MOTHER') {
@@ -34,8 +33,7 @@ function getInformantDetails(
     },
     'informant.address': {
       country: 'FAR',
-      province,
-      district,
+      administrativeArea: district,
       addressType: AddressType.DOMESTIC
     },
     'informant.dob': '2008-09-12',
@@ -128,7 +126,7 @@ export async function getDeclaration({
       .toISOString()
       .split('T')[0], // yesterday
     ...(await getPlaceOfBirth(placeOfBirthType)),
-    ...getInformantDetails(informantRelation, province, district)
+    ...getInformantDetails(informantRelation, district)
   }
 
   // 💡 Merge overriden fields
