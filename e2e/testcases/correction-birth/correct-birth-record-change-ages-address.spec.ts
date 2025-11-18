@@ -93,21 +93,7 @@ test.describe.serial('Correct record - Change ages', () => {
       'mother.address': {
         country: 'FAR',
         addressType: AddressType.DOMESTIC,
-        administrativeArea: district,
-        streetLevelDetails: {
-          town: null,
-          residentialArea: null,
-          street: null,
-          number: null,
-          zipCode: null,
-          state: null,
-          district2: null,
-          cityOrTown: null,
-          addressLine1: null,
-          addressLine2: null,
-          addressLine3: null,
-          postcodeOrZip: null
-        }
+        administrativeArea: district
       },
       'child.name': {
         firstname: faker.person.firstName(),
