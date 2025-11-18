@@ -164,9 +164,9 @@ export async function getDeclaration({
             district,
             urbanOrRural: 'URBAN' as const
           }
-        }),
-        ...partialDeclaration
-      })
+        })
+      }),
+    ...partialDeclaration
   }
 }
 
