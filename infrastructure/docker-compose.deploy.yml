@@ -699,6 +699,8 @@ services:
         gelf-address: 'udp://127.0.0.1:12201'
         tag: 'user-mgnt'
   events:
+    ports:
+      - '9229:9229'
     secrets:
       - jwt-public-key.{{ts}}
     environment:
