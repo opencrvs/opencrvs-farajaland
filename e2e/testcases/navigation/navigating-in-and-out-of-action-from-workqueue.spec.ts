@@ -11,9 +11,7 @@ import {
 import { expectInUrl, selectAction } from '../../utils'
 import { ActionType } from '@opencrvs/toolkit/events'
 
-// @TODO: This test has been flaky, disable it until it's fixed properly.
-// test.describe.skip.serial('Navigating in and out of action', () => {
-test.describe.skip('Navigating in and out of action', () => {
+test.describe.serial('Navigating in and out of action', () => {
   let page: Page
   let declaration: Declaration
   let eventId: string
