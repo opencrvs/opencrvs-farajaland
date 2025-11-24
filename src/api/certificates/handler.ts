@@ -58,11 +58,11 @@ export async function certificateHandler(request: Request, h: ResponseToolkit) {
       },
       svgUrl: '/api/countryconfig/certificates/birth-certificate.svg',
       fonts: {
-        'Libre Baskerville': {
-          normal: '/api/countryconfig/fonts/LibreBaskerville-Regular.ttf',
-          bold: '/api/countryconfig/fonts/LibreBaskerville-Bold.ttf',
-          italics: '/api/countryconfig/fonts/LibreBaskerville-Italic.ttf',
-          bolditalics: '/api/countryconfig/fonts/LibreBaskerville-Regular.ttf'
+        'Noto Sans': {
+          normal: '/api/countryconfig/fonts/NotoSans-Regular.ttf',
+          bold: '/api/countryconfig/fonts/NotoSans-Bold.ttf',
+          italics: '/api/countryconfig/fonts/NotoSans-Regular.ttf',
+          bolditalics: '/api/countryconfig/fonts/NotoSans-Regular.ttf'
         }
       }
     },
