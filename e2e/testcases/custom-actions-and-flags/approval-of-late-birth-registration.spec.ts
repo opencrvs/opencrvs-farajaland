@@ -172,7 +172,7 @@ test.describe.serial('Approval of late birth registration', () => {
     })
 
     test('Approve action should be disabled before assignment', async () => {
-      await validateActionMenuButton(page, 'Approve', false)
+      await validateActionMenuButton(page, 'Approve declaration', false)
     })
 
     test('Assign', async () => {
