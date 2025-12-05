@@ -819,9 +819,9 @@ exports[`Workqueue config > should match the snapshot (Workqueue integrity) 1`] 
         },
       },
     ],
-    "icon": "MagnifyingGlass",
+    "icon": "FileSearch",
     "name": {
-      "defaultMessage": "Requires approval",
+      "defaultMessage": "Pending approval",
       "description": "Title of Requires approval workqueue",
       "id": "workqueues.requiresApproval.title",
     },
