@@ -2,6 +2,7 @@ id,description,en,fr
 action.action,Label for action button,Action,Action
 action.archive,Label for archive record button in dropdown menu,Archive declaration,Déclaration d'archive
 action.assignee,Label for asignee,Assigned to {name } at {officeName},Attribué à {name} chez {officeName}
+action.noActionsAvailable,Message shown on action menu if no actions are available,No actions available,Aucune action disponible
 action.correct,Label for correct record button in dropdown menu,Correct record,Enregistrement correct
 action.issue,Label for reinstate issue button in dropdown menu,Issue certificate,Délivrer un certificat
 action.print,Label for reinstate print button in dropdown menu,Print certified copy,Imprimer une copie certifiée
@@ -2273,7 +2274,6 @@ verifyCertificate.timeOut,message when time out after few minute,You been timed 
 verifyCertificate.toastMessage,Message for the toast when time spend 1 minute,"After verifying the certificate, please close the browser window","Après avoir vérifié le certificat, veuillez fermer la fenêtre du navigateur."
 views.idReader.label.eSignet,E-signet button label,Authenticate with e-Signet,S'authentifier avec e-Signet
 views.idReader.label.manualInput,Label that shows below the divider on the id reader component,Complete fields below,Complétez les champs ci-dessous
-actions.notify,Notify action label,Notify,Notifier
 views.idReader.label.or,Label that shows on the divider,Or,Ou
 views.idVerification.banner.actions.reset,,Reset,Réinitialiser
 views.idVerification.banner.actions.revoke,,Revoke,Révoquer
