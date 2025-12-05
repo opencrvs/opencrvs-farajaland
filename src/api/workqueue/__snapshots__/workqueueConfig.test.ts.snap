@@ -822,7 +822,7 @@ exports[`Workqueue config > should match the snapshot (Workqueue integrity) 1`] 
     "icon": "FileSearch",
     "name": {
       "defaultMessage": "Pending approval",
-      "description": "Title of Requires approval workqueue",
+      "description": "Title of Pending approval workqueue",
       "id": "workqueues.requiresApproval.title",
     },
     "query": {
