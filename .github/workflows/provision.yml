@@ -37,6 +37,7 @@ on:
           - fix-analytics
           - mosip
           - openfn
+          - vc-demo
       tag:
         type: choice
         description: Select group tag you want to execute
