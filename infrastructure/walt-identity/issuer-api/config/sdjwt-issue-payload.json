@@ -10,7 +10,7 @@
     }
   },
   "issuerDid": "did:key:z6MkjoRhq1jSNJdLiruSXrFFxagqrztZaXHqHGUTKJbcNywp",
-  "credentialConfigurationId": "BirthCertificate_vc+sd-jwt",
+  "credentialConfigurationId": "crvs_birth_v1",
   "credentialData": {
     "@context": [
       "https://www.w3.org/2018/credentials/v1",
