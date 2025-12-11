@@ -45,6 +45,7 @@ on:
           - fix-analytics
           - mosip
           - openfn
+          - vc-demo
       core-image-tag:
         description: Core image tag
         required: true
