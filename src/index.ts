@@ -89,6 +89,7 @@ import {
 } from './analytics/analytics'
 import { getClient } from './analytics/postgres'
 import { createClient } from '@opencrvs/toolkit/api'
+import { credentialOfferRoute } from './verifiable-credentials/credential-offer-handler'
 
 export interface ITokenPayload {
   sub: string
@@ -762,6 +763,7 @@ export async function createServer() {
   })
 
   server.route(getUserNotificationRoutes())
+  server.route(credentialOfferRoute)
 
   server.ext({
     type: 'onRequest',

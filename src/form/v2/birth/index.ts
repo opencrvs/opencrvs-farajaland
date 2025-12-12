@@ -31,6 +31,7 @@ import { PlaceOfBirth } from './forms/pages/child'
 import { CORRECTION_FORM } from './forms/correctionForm'
 import { dedupConfig } from './dedupConfig'
 import { applicationConfig } from '@countryconfig/api/application/application-config'
+import * as verifiableCredentialActions from '@countryconfig/verifiable-credentials/actions'
 
 export const birthEvent = defineConfig({
   id: Event.Birth,
@@ -443,7 +444,8 @@ export const birthEvent = defineConfig({
         description: 'Title of the form to show in review page'
       },
       correctionForm: CORRECTION_FORM
-    }
+    },
+    verifiableCredentialActions.issueBirthCredentialAction
   ],
   advancedSearch: advancedSearchBirth
 })

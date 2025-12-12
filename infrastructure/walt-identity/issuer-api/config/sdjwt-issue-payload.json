@@ -31,7 +31,7 @@
   },
   "mapping": {
     "id": "<uuid>",
-    "iss": "did:web:1566464d96cc.ngrok-free.app",
+    "iss": "did:web:vc-demo.opencrvs.dev",
     "credentialSubject": {
       "id": "<subjectDid>"
     },
