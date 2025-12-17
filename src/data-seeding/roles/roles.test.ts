@@ -1,6 +1,5 @@
 import { describe, it, expect } from 'vitest'
 import { roles } from './roles'
-import { parse } from '@opencrvs/toolkit/scopes'
 
 describe('Roles config', () => {
   it('each role should have valid scopes', () => {
