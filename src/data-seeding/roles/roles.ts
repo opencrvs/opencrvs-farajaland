@@ -222,9 +222,7 @@ export const roles: Role[] = [
       SCOPES.SEARCH_MARRIAGE,
       SCOPES.ORGANISATION_READ_LOCATIONS_MY_JURISDICTION,
       SCOPES.USER_READ_MY_OFFICE,
-      'search[event=birth,access=all]',
-      'search[event=death,access=all]',
-      'search[event=tennis-club-membership,access=all]',
+      'type=record.search&event=birth,death,tennis-club-membership',
       'workqueue[id=assigned-to-you|recent|requires-completion|requires-updates-office|in-review-all|in-external-validation|ready-to-print|ready-to-issue|pending-feedback-registrar-general]',
       'record.create[event=birth|death|tennis-club-membership]',
       'record.read[event=birth|death|tennis-club-membership]',
@@ -413,6 +411,41 @@ export const roles: Role[] = [
       'record.declare[event=birth|death|tennis-club-membership]',
       'record.declared.edit[event=birth|death|tennis-club-membership]',
       'record.notify[event=birth|death|tennis-club-membership]'
+    ]
+  },
+  {
+    id: 'EMBASSY_OFFICIAL',
+    label: {
+      defaultMessage: 'Embassy official',
+      description: 'Name for user role Embassy official',
+      id: 'userRole.embassyOfficial'
+    },
+    scopes: [
+      'record.assign[event=birth|death declared_in:my-location]',
+      'type=record.search&event=birth,death&declaredIn=location',
+      'record.read[event=birth|death declared_in:my-location]',
+      'record.create[event=birth|death event_location:my-location]',
+      'record.declare[event=birth|death]',
+      'record.declared.edit[event=birth|death]',
+      'record.custom-action[customActionType=escalate][event=birth|death]',
+      'record.registered.print-certified-copies[event=birth|death]',
+      'record.registered.correct[event=birth|death]'
+    ]
+  },
+  {
+    id: 'HEALTH_OFFICER',
+    label: {
+      defaultMessage: 'Health Officer',
+      description: 'Name for user role Health Officer',
+      id: 'userRole.healthOfficer'
+    },
+    scopes: [
+      'record.assign[event=birth|death declared_in:my-location]',
+      'type=record.search&event=birth,death&declaredIn=location',
+      'record.read[event=birth|death declared_in:my-location]',
+      'record.create[event=birth|death event_location:my-location]',
+      'record.declare',
+      'record.declared.edit[event=birth|death declared_by:me]'
     ]
   }
 ]
