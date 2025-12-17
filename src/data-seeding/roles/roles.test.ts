@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { roles } from './roles'
+import { parse } from '@opencrvs/toolkit/scopes'
 
 describe('Roles config', () => {
   it('each role should have valid scopes', () => {
@@ -11,7 +12,7 @@ describe('Roles config', () => {
       for (const scope of role.scopes) {
         expect(typeof scope).toBe('string')
 
-        const valid =
+        const validV1 =
           // Configurable search scopes
           scope.startsWith('search[') ||
           // Legacyt search scopes
@@ -34,7 +35,8 @@ describe('Roles config', () => {
           scope.startsWith('config.')
         // Any other scopes should be manually added here
 
-        if (!valid) {
+        const validV2 = scope.startsWith('type=')
+        if (!validV1 && !validV2) {
           throw new Error(`Invalid scope "${scope}" found in role ${role.id}`)
         }
       }
