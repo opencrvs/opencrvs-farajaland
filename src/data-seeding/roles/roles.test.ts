@@ -69,8 +69,10 @@ describe('Roles config', () => {
     // Update this list if requirements change
     expect(rolesWithCreateRecord.sort()).toEqual([
       'COMMUNITY_LEADER',
+      'EMBASSY_OFFICIAL',
       'FIELD_AGENT',
       'HEALTHCARE_WORKER',
+      'HEALTH_OFFICER',
       'HOSPITAL_CLERK',
       'LOCAL_LEADER',
       'LOCAL_REGISTRAR',
@@ -89,8 +91,10 @@ describe('Roles config', () => {
     // Update this list if requirements change
     expect(rolesWithWorkqueue.sort()).toEqual([
       'COMMUNITY_LEADER',
+      'EMBASSY_OFFICIAL',
       'FIELD_AGENT',
       'HEALTHCARE_WORKER',
+      'HEALTH_OFFICER',
       'HOSPITAL_CLERK',
       'LOCAL_LEADER',
       'LOCAL_REGISTRAR',

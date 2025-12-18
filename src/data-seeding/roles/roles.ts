@@ -423,6 +423,7 @@ export const roles: Role[] = [
     },
     // Commented out ones are todos
     scopes: [
+      'workqueue[id=assigned-to-you|recent|requires-updates-self|sent-for-review]',
       // 'record.assign[event=birth|death declared_in:my-location]',
       'type=record.search&event=birth,death&declaredIn=location',
       // 'record.read[event=birth|death declared_in:my-location]',
@@ -445,6 +446,7 @@ export const roles: Role[] = [
     },
     // Commented out ones are todos
     scopes: [
+      'workqueue[id=assigned-to-you|recent|requires-updates-self|sent-for-review]',
       'type=record.search&event=birth,death&declaredIn=location',
       // 'record.read[event=birth|death declared_in:my-location]',
       'record.read[event=birth|death|tennis-club-membership]',
