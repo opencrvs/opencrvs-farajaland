@@ -421,14 +421,17 @@ export const roles: Role[] = [
       description: 'Name for user role Embassy official',
       id: 'userRole.embassyOfficial'
     },
+    // Commented out ones are todos
     scopes: [
-      'record.assign[event=birth|death declared_in:my-location]',
+      // 'record.assign[event=birth|death declared_in:my-location]',
       'type=record.search&event=birth,death&declaredIn=location',
-      'record.read[event=birth|death declared_in:my-location]',
-      'record.create[event=birth|death event_location:my-location]',
+      // 'record.read[event=birth|death declared_in:my-location]',
+      'record.read[event=birth|death|tennis-club-membership]',
+      // 'record.create[event=birth|death event_location:my-location]',
+      `record.create[event=birth|death|tennis-club-membership]`,
       'record.declare[event=birth|death]',
       'record.declared.edit[event=birth|death]',
-      'record.custom-action[customActionType=escalate][event=birth|death]',
+      'record.custom-action[customActionType=ESCALATE,event=birth|death]',
       'record.registered.print-certified-copies[event=birth|death]',
       'record.registered.correct[event=birth|death]'
     ]
@@ -440,13 +443,17 @@ export const roles: Role[] = [
       description: 'Name for user role Health Officer',
       id: 'userRole.healthOfficer'
     },
+    // Commented out ones are todos
     scopes: [
-      'record.assign[event=birth|death declared_in:my-location]',
       'type=record.search&event=birth,death&declaredIn=location',
-      'record.read[event=birth|death declared_in:my-location]',
-      'record.create[event=birth|death event_location:my-location]',
-      'record.declare',
-      'record.declared.edit[event=birth|death declared_by:me]'
+      // 'record.read[event=birth|death declared_in:my-location]',
+      'record.read[event=birth|death|tennis-club-membership]',
+      // 'record.create[event=birth|death event_location:my-location]',
+      `record.create[event=birth|death|tennis-club-membership]`,
+      // 'record.declare',
+      'record.declare[event=birth|death|tennis-club-membership]',
+      'record.declared.edit[event=birth|death]'
+      // 'record.declared.edit[event=birth|death declared_by:me]'
     ]
   }
 ]
