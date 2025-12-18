@@ -154,7 +154,12 @@ export async function createDeclaration(
   const declaration =
     dec ??
     (await getDeclaration({
-      placeOfBirthType
+      placeOfBirthType,
+      partialDeclaration:
+        action === ActionType.NOTIFY
+          ? // Drop arbitrary fields not needed for notify action
+            { 'mother.nid': null, 'mother.dob': null }
+          : undefined
     }))
 
   const client = createClient(GATEWAY_HOST + '/events', `Bearer ${token}`)
@@ -173,6 +178,28 @@ export async function createDeclaration(
     'review.signature': filename
   }
 
+  if (action === ActionType.NOTIFY) {
+    const notifyRes = await client.event.actions.notify.request.mutate({
+      eventId: eventId,
+      transactionId: uuidv4(),
+      declaration,
+      annotation
+    })
+
+    const declareAction = notifyRes.actions.find(
+      (action: ActionDocument) => action.type === ActionType.NOTIFY
+    )
+
+    if (!declareAction || !('declaration' in declareAction)) {
+      throw new Error('Declaration info not found in action')
+    }
+
+    return {
+      eventId,
+      declaration: declareAction?.declaration as Declaration
+    }
+  }
+
   const declareRes = await client.event.actions.declare.request.mutate({
     eventId: eventId,
     transactionId: uuidv4(),
@@ -183,7 +210,7 @@ export async function createDeclaration(
 
   if (action === ActionType.DECLARE) {
     const declareAction = declareRes.actions.find(
-      (action: ActionDocument) => action.type === 'DECLARE'
+      (action: ActionDocument) => action.type === ActionType.DECLARE
     )
 
     if (!declareAction || !('declaration' in declareAction)) {
@@ -204,7 +231,7 @@ export async function createDeclaration(
   })
 
   const registerAction = registerRes.actions.find(
-    (action: ActionDocument) => action.type === 'REGISTER'
+    (action: ActionDocument) => action.type === ActionType.REGISTER
   )
 
   const trackingId = registerRes?.trackingId as string
