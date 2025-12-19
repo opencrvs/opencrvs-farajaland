@@ -55,13 +55,13 @@ export default defineConfig({
         ...devices['Desktop Chrome'],
         ignoreHTTPSErrors,
         launchOptions: {
-          args: 
-                ['--ignore-certificate-errors',
-                '--ignore-ssl-errors',
-                '--allow-running-insecure-content',
-                '--disable-web-security',
-                ...insecureOrigins
-              ]
+          args: [
+            '--ignore-certificate-errors',
+            '--ignore-ssl-errors',
+            '--allow-running-insecure-content',
+            '--disable-web-security',
+            ...insecureOrigins
+          ]
         }
       }
     }

@@ -44,14 +44,12 @@ function getInformantDetails(
 }
 
 export async function getPlaceOfBirth(
-  type: 'PRIVATE_HOME' | 'HEALTH_FACILITY'
+  type: 'PRIVATE_HOME' | 'HEALTH_FACILITY',
+  facilityName: string = 'Ibombo Rural Health Centre'
 ) {
   if (type === 'HEALTH_FACILITY') {
     const locations = await getAllLocations('HEALTH_FACILITY')
-    const locationId = getLocationIdByName(
-      locations,
-      'Ibombo Rural Health Centre'
-    )
+    const locationId = getLocationIdByName(locations, facilityName)
 
     return {
       'child.placeOfBirth': 'HEALTH_FACILITY',

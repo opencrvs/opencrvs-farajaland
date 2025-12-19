@@ -1,26 +1,34 @@
 import { test, type Page } from '@playwright/test'
 import { getToken, login } from '../../helpers'
-import { faker } from '@faker-js/faker'
 import { trackAndDeleteCreatedEvents } from '../test-data/eventDeletion'
 import { CREDENTIALS } from '../../constants'
-import { createDeclaration } from '../test-data/birth-declaration'
+import {
+  createDeclaration,
+  getDeclaration,
+  getPlaceOfBirth
+} from '../test-data/birth-declaration'
 import { ActionType } from '@opencrvs/toolkit/events'
-
-const child = {
-  name: {
-    firstNames: faker.person.firstName('female'),
-    surname: faker.person.lastName()
-  }
-}
+import { formatV2ChildName } from '../birth/helpers'
 
 test.describe.serial('1.Farajaland as location parent', () => {
   trackAndDeleteCreatedEvents()
 
   let page: Page
   let declaration: any
-  let eventId: string
+  let name: string
 
   test.beforeAll(async ({ browser }) => {
+    declaration = await getDeclaration({
+      partialDeclaration: {
+        'mother.nid': null,
+        'mother.dob': null,
+        ...(await getPlaceOfBirth(
+          'HEALTH_FACILITY',
+          'Mpepo Rural Health Centre'
+        ))
+      }
+    })
+    name = formatV2ChildName(declaration)
     page = await browser.newPage()
   })
 
@@ -33,18 +41,17 @@ test.describe.serial('1.Farajaland as location parent', () => {
       CREDENTIALS.HEALTH_OFFICER.USERNAME,
       CREDENTIALS.HEALTH_OFFICER.PASSWORD
     )
-    // Update fn to allow notify actions.
-    const res = await createDeclaration(token, undefined, ActionType.NOTIFY)
-    declaration = res.declaration
-    eventId = res.eventId
+    await createDeclaration(token, undefined, ActionType.NOTIFY)
   })
 
   test('1.2.1 Local Registrar in another administrative area should not find the declaration', async () => {
     await login(page, CREDENTIALS.LOCAL_REGISTRAR)
+    // Try to search for the declaration with name. It should not be found.
   })
 
   test('1.2.2 Registrar general completes and registers', async () => {
     await login(page, CREDENTIALS.NATIONAL_REGISTRAR)
+    // Try to search for the declaration with name. It should be found.
   })
 
   test('1.3 Print certified copies', async () => {})
