@@ -642,11 +642,21 @@ export async function selectDeclarationAction(
   }
 }
 
-export async function searchFromSearchBar(page: Page, searchText: string) {
+export async function searchFromSearchBar(
+  page: Page,
+  searchText: string,
+  expectToBeFound: boolean = true
+) {
   const searchResultRegex = /Search result for “([^”]+)”/
   await page.locator('#searchText').fill(searchText)
   await page.locator('#searchIconButton').click()
   const searchResult = await page.locator('#content-name').textContent()
   expect(searchResult).toMatch(searchResultRegex)
-  await page.getByText(searchText, { exact: true }).click()
+  if (expectToBeFound) {
+    await page.getByText(searchText, { exact: true }).click()
+  } else {
+    await expect(
+      page.getByRole('button', { name: searchText, exact: true })
+    ).not.toBeVisible()
+  }
 }
