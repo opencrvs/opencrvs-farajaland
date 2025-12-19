@@ -43,7 +43,6 @@ export const birthEvent = defineConfig({
     id: 'event.birth.label'
   },
   dateOfEvent: field('child.dob'),
-  placeOfEvent: field('child.birthLocationId'),
   title: {
     defaultMessage: '{child.name.firstname} {child.name.surname}',
     description: 'This is the title of the summary',
@@ -268,6 +267,21 @@ export const birthEvent = defineConfig({
             user.hasRole('LOCAL_REGISTRAR')
           )
         }
+      ]
+    },
+    {
+      type: ActionType.EDIT,
+      label: {
+        defaultMessage: 'Edit',
+        description:
+          'This is shown as the action name anywhere the user can trigger the action from',
+        id: 'actions.edit'
+      },
+      flags: [
+        { id: 'validated', operation: 'remove' },
+        { id: 'approval-required-for-late-registration', operation: 'remove' },
+        { id: 'escalated-to-provincial-registrar', operation: 'remove' },
+        { id: 'escalated-to-registrar-general', operation: 'remove' }
       ]
     },
     {
