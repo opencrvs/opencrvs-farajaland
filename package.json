@@ -1,6 +1,6 @@
 {
   "name": "@opencrvs/countryconfig",
-  "version": "1.9.2",
+  "version": "1.9.4",
   "description": "OpenCRVS country configuration for reference data",
   "os": [
     "darwin",
@@ -75,7 +75,6 @@
     "vitest": "^2.1.2"
   },
   "dependencies": {
-    "@opencrvs/mosip": "1.9.0-beta.7",
     "@faker-js/faker": "^9.3.0",
     "@hapi/boom": "^9.1.1",
     "@hapi/h2o2": "^9.1.0",
