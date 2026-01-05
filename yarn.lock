@@ -1728,6 +1728,11 @@
   dependencies:
     "@octokit/openapi-types" "^18.0.0"
 
+"@opencrvs/mosip@1.9.0":
+  version "1.9.0"
+  resolved "https://registry.yarnpkg.com/@opencrvs/mosip/-/mosip-1.9.0.tgz#453ee10f97bbbd5e8249604ee826d195f5843a14"
+  integrity sha512-oY/Y+MfRKN+FZJLrtx4LJ2xIBKxs4iwRZxhiOSX1DDktifyKFvSd5v9rg0xlkiS5BXlzrL8Yz/xIheMm94DncQ==
+
 "@opencrvs/toolkit@1.9.4-rc.8948883":
   version "1.9.4-rc.8948883"
   resolved "https://registry.yarnpkg.com/@opencrvs/toolkit/-/toolkit-1.9.4-rc.8948883.tgz#56142ddfa6e9cecf8ddf584b8b3fb4879d8b7f37"
