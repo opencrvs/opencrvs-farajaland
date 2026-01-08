@@ -29,7 +29,7 @@ export const Workqueues = defineWorkqueues([
     query: {},
     actions: [
       {
-        type: 'VALIDATE',
+        type: 'DECLARE',
         conditionals: []
       }
     ]
@@ -137,7 +137,7 @@ export const Workqueues = defineWorkqueues([
       flags: {
         anyOf: ['pending-certified-copy-issuance']
       },
-      updatedAtLocation: { type: 'exact', term: user('primaryOfficeId') }
+      updatedAtLocation: { type: 'within', location: user('primaryOfficeId') }
     },
     actions: [
       {
@@ -164,7 +164,7 @@ export const Workqueues = defineWorkqueues([
         anyOf: [InherentFlags.INCOMPLETE],
         noneOf: [InherentFlags.REJECTED]
       },
-      updatedAtLocation: { type: 'exact', term: user('primaryOfficeId') }
+      updatedAtLocation: { type: 'within', location: user('primaryOfficeId') }
     },
     actions: [
       {
@@ -177,6 +177,65 @@ export const Workqueues = defineWorkqueues([
       defaultMessage: 'No notifications',
       description: 'Empty message for notifications workqueue'
     }
+  },
+  {
+    slug: 'escalated',
+    icon: 'FileArrowUp',
+    name: {
+      id: 'workqueues.escalated.title',
+      defaultMessage: 'Escalated',
+      description: 'Title of escalated workqueue'
+    },
+    query: {
+      flags: {
+        anyOf: [
+          'escalated-to-registrar-general',
+          'escalated-to-provincial-registrar'
+        ]
+      }
+    },
+    actions: []
+  },
+  {
+    slug: 'pending-feedback-registrar-general',
+    icon: 'ChatText',
+    name: {
+      id: 'workqueues.reviewRequested.title',
+      defaultMessage: 'Review requested',
+      description: 'Title of review requested workqueue'
+    },
+    query: {
+      flags: {
+        anyOf: ['escalated-to-registrar-general']
+      }
+    },
+    actions: [
+      {
+        type: 'DEFAULT',
+        conditionals: []
+      }
+    ]
+  },
+  {
+    slug: 'pending-feedback-provincinal-registrar',
+    icon: 'ChatText',
+    name: {
+      id: 'workqueues.reviewRequested.title',
+      defaultMessage: 'Review requested',
+      description: 'Title of review requested workqueue'
+    },
+    query: {
+      flags: {
+        anyOf: ['escalated-to-provincial-registrar']
+      },
+      updatedAtLocation: { type: 'within', location: user('primaryOfficeId') }
+    },
+    actions: [
+      {
+        type: 'DEFAULT',
+        conditionals: []
+      }
+    ]
   },
   {
     slug: 'sent-for-review',
@@ -222,7 +281,10 @@ export const Workqueues = defineWorkqueues([
       flags: {
         noneOf: [InherentFlags.REJECTED, 'validated']
       },
-      updatedAtLocation: { type: 'exact', term: user('primaryOfficeId') }
+      updatedAtLocation: {
+        type: 'within',
+        location: user('administrativeAreaId')
+      }
     },
     actions: [
       {
@@ -261,13 +323,19 @@ export const Workqueues = defineWorkqueues([
           flags: {
             noneOf: [InherentFlags.REJECTED]
           },
-          updatedAtLocation: { type: 'exact', term: user('primaryOfficeId') }
+          updatedAtLocation: {
+            type: 'within',
+            location: user('primaryOfficeId')
+          }
         },
         {
           flags: {
             anyOf: [InherentFlags.CORRECTION_REQUESTED]
           },
-          updatedAtLocation: { type: 'exact', term: user('primaryOfficeId') }
+          updatedAtLocation: {
+            type: 'within',
+            location: user('primaryOfficeId')
+          }
         }
       ]
     },
@@ -334,7 +402,7 @@ export const Workqueues = defineWorkqueues([
       flags: {
         anyOf: [InherentFlags.REJECTED]
       },
-      updatedAtLocation: { type: 'exact', term: user('primaryOfficeId') }
+      updatedAtLocation: { type: 'within', location: user('primaryOfficeId') }
     },
     actions: [
       {
@@ -363,17 +431,12 @@ export const Workqueues = defineWorkqueues([
       description: 'Title of sent for approval workqueue'
     },
     query: {
-      type: 'or',
-      clauses: [
-        {
-          updatedBy: { type: 'exact', term: user('id') },
-          flags: { noneOf: [InherentFlags.REJECTED] }
-        },
-        {
-          flags: { anyOf: [InherentFlags.CORRECTION_REQUESTED, 'validated'] },
-          updatedBy: { type: 'exact', term: user('id') }
-        }
-      ]
+      status: { type: 'anyOf', terms: ['DECLARED', 'NOTIFIED', 'REGISTERED'] },
+      updatedBy: { type: 'exact', term: user('id') },
+      flags: {
+        noneOf: [InherentFlags.REJECTED],
+        anyOf: [InherentFlags.CORRECTION_REQUESTED, 'validated']
+      }
     },
     actions: [],
     columns: [
@@ -402,7 +465,7 @@ export const Workqueues = defineWorkqueues([
           `${ActionType.REGISTER}:${ActionStatus.Requested}`.toLowerCase()
         ]
       },
-      updatedAtLocation: { type: 'exact', term: user('primaryOfficeId') }
+      updatedAtLocation: { type: 'within', location: user('primaryOfficeId') }
     },
     actions: [
       {
@@ -425,7 +488,7 @@ export const Workqueues = defineWorkqueues([
         anyOf: [InherentFlags.PENDING_CERTIFICATION]
       },
       status: { type: 'exact', term: 'REGISTERED' },
-      updatedAtLocation: { type: 'exact', term: user('primaryOfficeId') }
+      updatedAtLocation: { type: 'within', location: user('primaryOfficeId') }
     },
     actions: [
       {
@@ -457,7 +520,7 @@ export const Workqueues = defineWorkqueues([
       flags: {
         anyOf: ['approval-required-for-late-registration']
       },
-      updatedAtLocation: { type: 'exact', term: user('primaryOfficeId') }
+      updatedAtLocation: { type: 'within', location: user('primaryOfficeId') }
     },
     actions: [
       {

@@ -13,10 +13,11 @@ import { getSignatureFile, uploadFile } from './utils'
 import { omitBy } from 'lodash'
 
 async function getPlaceOfDeath(
-  type: 'DECEASED_USUAL_RESIDENCE' | 'HEALTH_FACILITY'
+  type: 'DECEASED_USUAL_RESIDENCE' | 'HEALTH_FACILITY',
+  token: string
 ) {
   if (type === 'HEALTH_FACILITY') {
-    const locations = await getAllLocations('HEALTH_FACILITY')
+    const locations = await getAllLocations('HEALTH_FACILITY', token)
     const locationId = getLocationIdByName(
       locations,
       'Ibombo Rural Health Centre'
@@ -28,7 +29,7 @@ async function getPlaceOfDeath(
   }
 
   if (type === 'DECEASED_USUAL_RESIDENCE') {
-    const locations = await getAllLocations('ADMIN_STRUCTURE')
+    const locations = await getAllLocations('ADMIN_STRUCTURE', token)
     const province = getLocationIdByName(locations, 'Central')
     const district = getLocationIdByName(locations, 'Ibombo')
 
@@ -50,14 +51,16 @@ async function getPlaceOfDeath(
 
 export async function getDeclaration({
   partialDeclaration = {},
-  placeOfDeathType: placeOfDeathType = 'DECEASED_USUAL_RESIDENCE'
+  placeOfDeathType: placeOfDeathType = 'DECEASED_USUAL_RESIDENCE',
+  token
 }: {
   partialDeclaration?:
     | ((_: Record<string, any>) => Record<string, any>)
     | Record<string, any>
   placeOfDeathType?: 'DECEASED_USUAL_RESIDENCE' | 'HEALTH_FACILITY'
+  token: string
 }) {
-  const locations = await getAllLocations('ADMIN_STRUCTURE')
+  const locations = await getAllLocations('ADMIN_STRUCTURE', token)
   const province = getLocationIdByName(locations, 'Central')
   const district = getLocationIdByName(locations, 'Ibombo')
 
@@ -96,7 +99,7 @@ export async function getDeclaration({
     'deceased.numberOfDependants': 3,
     'eventDetails.sourceCauseDeath': 'PHYSICIAN',
     'eventDetails.causeOfDeathEstablished': true,
-    ...(await getPlaceOfDeath(placeOfDeathType))
+    ...(await getPlaceOfDeath(placeOfDeathType, token))
   }
 
   const overrides =
@@ -129,7 +132,8 @@ export async function createDeclaration(
 ): Promise<CreateDeclarationResponse> {
   const declaration = await getDeclaration({
     partialDeclaration: dec,
-    placeOfDeathType: placeOfDeathType
+    placeOfDeathType: placeOfDeathType,
+    token
   })
 
   const client = createClient(GATEWAY_HOST + '/events', `Bearer ${token}`)
@@ -166,25 +170,6 @@ export async function createDeclaration(
     }
 
     return { eventId, declaration: declareAction?.declaration as Declaration }
-  }
-
-  const validateRes = await client.event.actions.validate.request.mutate({
-    eventId: eventId,
-    transactionId: uuidv4(),
-    declaration,
-    annotation,
-    keepAssignment: true
-  })
-
-  if (action === ActionType.VALIDATE) {
-    const validateAction = validateRes.actions.find(
-      (action: ActionDocument) => action.type === 'VALIDATE'
-    )
-
-    return {
-      eventId,
-      declaration: validateAction?.declaration as Declaration
-    }
   }
 
   const registerRes = await client.event.actions.register.request.mutate({

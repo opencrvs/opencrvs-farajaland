@@ -11,6 +11,8 @@ import { format, parseISO } from 'date-fns'
 import { isArray, random } from 'lodash'
 import fetch from 'node-fetch'
 import { isMobile } from './mobile-helpers'
+import { createClient } from '@opencrvs/toolkit/api'
+import { UUID } from 'crypto'
 
 async function createPIN(page: Page) {
   await page.click('#pin-input')
@@ -163,6 +165,7 @@ export async function ensureLoginPageReady(page: Page) {
    */
   await page.waitForSelector('#Box img', { state: 'attached' })
   await page.waitForFunction(() => {
+    // eslint-disable-next-line no-undef
     const img = document.querySelector<HTMLImageElement>('#Box img')!
     return img && img.src && img.src.trim() !== ''
   })
@@ -289,9 +292,11 @@ export const expectTextWithChangeLink = async (
   await expect(locator).toContainText('Change')
 }
 
-export const getLocationNameFromFhirId = async (fhirId: string) => {
-  const res = await fetch(`${GATEWAY_HOST}/location/${fhirId}`)
-  const location = (await res.json()) as fhir.Location
+export const getLocationNameFromId = async (id: UUID, token: string) => {
+  const client = createClient(GATEWAY_HOST + '/events', `Bearer ${token}`)
+  const [location] = await client.locations.list.query({
+    locationIds: [id]
+  })
   return location.name
 }
 
@@ -531,9 +536,7 @@ const post = async <T = any>({
 type GetUser = {
   getUser: {
     primaryOffice: {
-      hierarchy: Array<{
-        id: string
-      }>
+      id: string
     }
   }
 }
@@ -542,14 +545,17 @@ export const fetchUserLocationHierarchy = async (
   userId: string,
   { headers }: { headers: Record<string, any> }
 ) => {
+  if (!headers.Authorization) {
+    throw new Error('Authorization token not found')
+  }
+  const client = createClient(GATEWAY_HOST + '/events', headers.Authorization)
+
   const res = await post<GetUser>({
     query: /* GraphQL */ `
       query fetchUser($userId: String!) {
         getUser(userId: $userId) {
           primaryOffice {
-            hierarchy {
-              id
-            }
+            id
           }
         }
       }
@@ -557,7 +563,9 @@ export const fetchUserLocationHierarchy = async (
     variables: { userId },
     headers
   })
-  return res.data.getUser.primaryOffice.hierarchy.map(({ id }) => id)
+  return await client.locations.getLocationHierarchy.query({
+    locationId: res.data.getUser.primaryOffice.id
+  })
 }
 
 export async function expectRowValue(
@@ -590,7 +598,13 @@ export async function switchEventTab(page: Page, tab: 'Audit' | 'Record') {
 /** Assert whether a button on the action menu exists and is enabled/disabled */
 export async function validateActionMenuButton(
   page: Page,
-  action: 'Declare' | 'Notify' | 'Approve declaration' | 'Register',
+  action:
+    | 'Declare'
+    | 'Notify'
+    | 'Approve declaration'
+    | 'Register'
+    | 'Declare with edits'
+    | 'Register with edits',
   isEnabled = true
 ) {
   await page.getByRole('button', { name: 'Action', exact: true }).click()
@@ -615,13 +629,31 @@ export async function selectDeclarationAction(
     | 'Register'
     | 'Reject'
     | 'Delete declaration'
-    | 'Save & Exit',
+    | 'Save & Exit'
+    | 'Declare with edits'
+    | 'Notify with edits'
+    | 'Register with edits',
   confirm = true
 ) {
   await page.getByRole('button', { name: 'Action', exact: true }).click()
   await page.getByText(action, { exact: true }).click()
 
   if (confirm) {
-    await page.getByRole('button', { name: action, exact: true }).click()
+    const confirmBtn = page.getByRole('button', { name: 'Confirm' })
+
+    if ((await confirmBtn.count()) > 0) {
+      await confirmBtn.click()
+    } else {
+      await page.getByRole('button', { name: action, exact: true }).click()
+    }
   }
+}
+
+export async function searchFromSearchBar(page: Page, searchText: string) {
+  const searchResultRegex = /Search result for “([^”]+)”/
+  await page.locator('#searchText').fill(searchText)
+  await page.locator('#searchIconButton').click()
+  const searchResult = await page.locator('#content-name').textContent()
+  expect(searchResult).toMatch(searchResultRegex)
+  await page.getByText(searchText, { exact: true }).click()
 }

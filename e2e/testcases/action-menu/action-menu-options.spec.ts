@@ -4,6 +4,7 @@ import { login, getToken } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
 import { createDeclaration, Declaration } from '../test-data/birth-declaration'
 import { ActionType } from '@opencrvs/toolkit/events'
+import { selectAction } from '../../utils'
 
 async function getActionMenuOptions(page: Page, declaration: Declaration) {
   const childName = `${declaration['child.name'].firstname} ${declaration['child.name'].surname}`
@@ -32,8 +33,8 @@ test.describe('Action menu options', () => {
 
     test.beforeAll(async () => {
       const token = await getToken(
-        CREDENTIALS.LOCAL_REGISTRAR.USERNAME,
-        CREDENTIALS.LOCAL_REGISTRAR.PASSWORD
+        CREDENTIALS.FIELD_AGENT.USERNAME,
+        CREDENTIALS.FIELD_AGENT.PASSWORD
       )
       const res = await createDeclaration(token, undefined, ActionType.DECLARE)
       declaration = res.declaration
@@ -43,19 +44,39 @@ test.describe('Action menu options', () => {
       await login(page, CREDENTIALS.REGISTRATION_AGENT)
       await page.getByRole('button', { name: 'Ready for review' }).click()
       const options = await getActionMenuOptions(page, declaration)
-      expect(options).toStrictEqual(['Assign', 'Validate', 'Archive', 'Reject'])
-      expect(options).toStrictEqual(['Assign', 'Validate', 'Archive', 'Reject'])
+      expect(options).toStrictEqual([
+        'Assign',
+        'Archive',
+        'Reject',
+        'Edit',
+        'Validate declaration'
+      ])
+      expect(options).toStrictEqual([
+        'Assign',
+        'Archive',
+        'Reject',
+        'Edit',
+        'Validate declaration'
+      ])
     })
 
     test('Local Registrar', async () => {
       await login(page, CREDENTIALS.LOCAL_REGISTRAR)
       await page.getByRole('button', { name: 'Ready for review' }).click()
       const options = await getActionMenuOptions(page, declaration)
-      expect(options).toStrictEqual(['Assign', 'Register', 'Archive', 'Reject'])
+      expect(options).toStrictEqual([
+        'Assign',
+        'Register',
+        'Archive',
+        'Reject',
+        'Edit',
+        'Validate declaration',
+        'Escalate'
+      ])
     })
   })
 
-  test.describe('Event status: VALIDATED', async () => {
+  test.describe('Declared and validated', async () => {
     let declaration: Declaration
 
     test.beforeAll(async () => {
@@ -63,7 +84,7 @@ test.describe('Action menu options', () => {
         CREDENTIALS.LOCAL_REGISTRAR.USERNAME,
         CREDENTIALS.LOCAL_REGISTRAR.PASSWORD
       )
-      const res = await createDeclaration(token, undefined, ActionType.VALIDATE)
+      const res = await createDeclaration(token, undefined, ActionType.DECLARE)
       declaration = res.declaration
     })
 
@@ -72,10 +93,12 @@ test.describe('Action menu options', () => {
       await page.getByRole('button', { name: 'Ready for review' }).click()
       const options = await getActionMenuOptions(page, declaration)
       expect(options).toStrictEqual([
-        'Unassign',
+        'Assign',
         'Register',
         'Archive',
-        'Reject'
+        'Reject',
+        'Edit',
+        'Escalate'
       ])
     })
   })
@@ -96,7 +119,12 @@ test.describe('Action menu options', () => {
       await login(page, CREDENTIALS.LOCAL_REGISTRAR)
       await page.getByRole('button', { name: 'Ready to print' }).click()
       const options = await getActionMenuOptions(page, declaration)
-      expect(options).toStrictEqual(['Assign', 'Print', 'Correct record'])
+      expect(options).toStrictEqual([
+        'Assign',
+        'Print',
+        'Correct record',
+        'Escalate'
+      ])
     })
   })
 })

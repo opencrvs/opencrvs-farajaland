@@ -1728,15 +1728,15 @@
   dependencies:
     "@octokit/openapi-types" "^18.0.0"
 
-"@opencrvs/mosip@1.9.0-beta.7":
-  version "1.9.0-beta.7"
-  resolved "https://registry.yarnpkg.com/@opencrvs/mosip/-/mosip-1.9.0-beta.7.tgz#fc2a04233257d8337550ff41cf25710c67e3df17"
-  integrity sha512-LVwITpR/GqnmOOOMbSz2YUiTH0FkNknj2hvwWXH8/KfflY23NM4oFfQUDfEtoMoo0pJEOcHD1/OWwrwhrmUStA==
+"@opencrvs/mosip@1.9.0":
+  version "1.9.0"
+  resolved "https://registry.yarnpkg.com/@opencrvs/mosip/-/mosip-1.9.0.tgz#453ee10f97bbbd5e8249604ee826d195f5843a14"
+  integrity sha512-oY/Y+MfRKN+FZJLrtx4LJ2xIBKxs4iwRZxhiOSX1DDktifyKFvSd5v9rg0xlkiS5BXlzrL8Yz/xIheMm94DncQ==
 
-"@opencrvs/toolkit@1.9.2-rc.b6d3a68":
-  version "1.9.2-rc.b6d3a68"
-  resolved "https://registry.yarnpkg.com/@opencrvs/toolkit/-/toolkit-1.9.2-rc.b6d3a68.tgz#9b690aef78663d155bcc85d7dd77b82cf333768a"
-  integrity sha512-hObP65glspm9PZTmfm9v9pJV3YPDgrtanZdvKm2SqvK27mdNg6tONgme/0w9Lc3XAoIq98OjFaNnbugr5Wxfgw==
+"@opencrvs/toolkit@1.9.4-rc.5d99caf":
+  version "1.9.4-rc.5d99caf"
+  resolved "https://registry.yarnpkg.com/@opencrvs/toolkit/-/toolkit-1.9.4-rc.5d99caf.tgz#06c323516244a29b6042fab670f54b7b1290f6b2"
+  integrity sha512-QVLpBePiBsUpLuqHsTgu0YtEC+66EJSVEFlwCpbpVo7/bYIRZsYAv5CLztlKZdTx9Uute4DEWdbKlf4uybZ32g==
   dependencies:
     "@trpc/client" "11.4.3"
     "@trpc/server" "11.4.3"
@@ -8282,9 +8282,9 @@ yocto-queue@^0.1.0:
   integrity sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==
 
 zod-openapi@^5.4.3:
-  version "5.4.3"
-  resolved "https://registry.yarnpkg.com/zod-openapi/-/zod-openapi-5.4.3.tgz#ec886fac181b778bc2e9ccc3462c470543f23e26"
-  integrity sha512-6kJ/gJdvHZtuxjYHoMtkl2PixCwRuZ/s79dVkEr7arHvZGXfx7Cvh53X3HfJ5h9FzGelXOXlnyjwfX0sKEPByw==
+  version "5.4.5"
+  resolved "https://registry.yarnpkg.com/zod-openapi/-/zod-openapi-5.4.5.tgz#050917f4b724d85c07692ee7f528040c15c18fa9"
+  integrity sha512-DVLBNsnggh8k/Yq7qp+NeQCH6JuLIyGzUQWA1wN5+7DpQJSwC7WYR/2lE6uQDmGcS/X6l4tUyYFpeG4nk3nOpA==
 
 zod@^4.1.12:
   version "4.1.12"

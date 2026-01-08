@@ -32,7 +32,7 @@ export async function selectAction(
   action:
     | 'Print'
     | 'Declare'
-    | 'Validate'
+    | 'Validate declaration'
     | 'Review'
     | 'Register'
     | 'Assign'
@@ -43,6 +43,10 @@ export async function selectAction(
     | 'Reject'
     | 'Review correction request'
     | 'Approve declaration'
+    | 'Edit'
+    | 'Escalate'
+    | 'Registrar general feedback'
+    | 'Provincial registrar feedback'
 ) {
   if (await page.getByRole('button', { name: 'Assign record' }).isVisible()) {
     await ensureAssigned(page)
