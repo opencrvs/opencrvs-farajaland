@@ -13,6 +13,11 @@ import { CREDENTIAL_OFFER_HANDLER_URL } from './credential-offer-handler'
 export const issueBirthCredentialAction = {
   type: ActionType.CUSTOM,
   customActionType: 'IssueVC',
+  auditHistoryLabel: {
+    defaultMessage: 'Issued Verifiable Credential',
+    description: '',
+    id: 'event.birth.action.issue-vc.audit-history-label'
+  },
   label: {
     defaultMessage: 'Issue VC',
     description: '',
@@ -95,24 +100,24 @@ export const issueBirthCredentialAction = {
         body: { pathname: window().location.get('pathname') },
         timeout: 10000
       }
-    },
-    {
-      parent: field('get-credential-offer'),
-      id: 'qr-code',
-      type: FieldType.IMAGE,
-      label: {
-        defaultMessage: 'QR Code',
-        description: 'Upload the QR code image for the VC',
-        id: 'event.birth.custom.action.issue-vc.field.qr-code.label'
-      },
-      configuration: {
-        alt: {
-          defaultMessage: 'QR Code',
-          description: 'Upload the QR code image for the VC',
-          id: 'event.birth.custom.action.issue-vc.field.qr-code.configuration.alt'
-        }
-      },
-      value: field('get-credential-offer').get('data.credential_offer_uri_qr')
     }
+    // {
+    //   parent: field('get-credential-offer'),
+    //   id: 'qr-code',
+    //   type: FieldType.IMAGE,
+    //   label: {
+    //     defaultMessage: 'QR Code',
+    //     description: 'Upload the QR code image for the VC',
+    //     id: 'event.birth.custom.action.issue-vc.field.qr-code.label'
+    //   },
+    //   configuration: {
+    //     alt: {
+    //       defaultMessage: 'QR Code',
+    //       description: 'Upload the QR code image for the VC',
+    //       id: 'event.birth.custom.action.issue-vc.field.qr-code.configuration.alt'
+    //     }
+    //   },
+    //   value: field('get-credential-offer').get('data.credential_offer_uri_qr')
+    // }
   ]
 } satisfies ActionConfig
