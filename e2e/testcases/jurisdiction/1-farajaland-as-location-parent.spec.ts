@@ -18,6 +18,10 @@ test.describe.serial('1.Farajaland as location parent', () => {
   let name: string
 
   test.beforeAll(async ({ browser }) => {
+    const token = await getToken(
+      CREDENTIALS.HEALTH_OFFICER.USERNAME,
+      CREDENTIALS.HEALTH_OFFICER.PASSWORD
+    )
     declaration = await getDeclaration({
       partialDeclaration: {
         'mother.nid': null,
@@ -26,7 +30,8 @@ test.describe.serial('1.Farajaland as location parent', () => {
           'HEALTH_FACILITY',
           'Mpepo Rural Health Centre'
         ))
-      }
+      },
+      token
     })
     name = formatV2ChildName(declaration)
     page = await browser.newPage()
