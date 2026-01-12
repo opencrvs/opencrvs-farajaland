@@ -95,8 +95,8 @@ const rolesWithDecodedScopes: RoleWithDecodedScopes[] = [
       {
         type: 'record.search',
         options: {
-          event: ['birth', 'death', 'tennis-club-membership'],
-          declaredIn: 'administrativeArea'
+          event: ['birth', 'death', 'tennis-club-membership']
+          // declaredIn: 'administrativeArea' @ToDo: Figure out notify
         }
       },
       {
@@ -197,8 +197,8 @@ const rolesWithDecodedScopes: RoleWithDecodedScopes[] = [
       {
         type: 'record.search',
         options: {
-          event: ['birth', 'death', 'tennis-club-membership'],
-          declaredIn: 'administrativeArea'
+          event: ['birth', 'death', 'tennis-club-membership']
+          // declaredIn: 'administrativeArea' @ToDo: Figure out notify
         }
       },
       {
@@ -536,8 +536,8 @@ const rolesWithDecodedScopes: RoleWithDecodedScopes[] = [
       {
         type: 'record.search',
         options: {
-          event: ['birth', 'death', 'tennis-club-membership'],
-          declaredIn: 'administrativeArea'
+          event: ['birth', 'death', 'tennis-club-membership']
+          // declaredIn: 'administrativeArea' @ToDo: Figure out notify
         }
       }
     ]
@@ -560,8 +560,8 @@ const rolesWithDecodedScopes: RoleWithDecodedScopes[] = [
       {
         type: 'record.search',
         options: {
-          event: ['birth', 'death', 'tennis-club-membership'],
-          declaredIn: 'location'
+          event: ['birth', 'death', 'tennis-club-membership']
+          // declaredIn: 'location' @ToDo: Figure out notify
         }
       },
       {
@@ -673,8 +673,8 @@ const rolesWithDecodedScopes: RoleWithDecodedScopes[] = [
       {
         type: 'record.search',
         options: {
-          event: ['birth', 'death', 'tennis-club-membership'],
-          declaredIn: 'location'
+          event: ['birth', 'death', 'tennis-club-membership']
+          // declaredIn: 'location' @ToDo: Figure out notify
         }
       },
       {
