@@ -137,7 +137,7 @@ export const Workqueues = defineWorkqueues([
       flags: {
         anyOf: ['pending-certified-copy-issuance']
       },
-      updatedAtLocation: { type: 'exact', term: user('primaryOfficeId') }
+      updatedAtLocation: { type: 'within', location: user('primaryOfficeId') }
     },
     actions: [
       {
@@ -164,7 +164,7 @@ export const Workqueues = defineWorkqueues([
         anyOf: [InherentFlags.INCOMPLETE],
         noneOf: [InherentFlags.REJECTED]
       },
-      updatedAtLocation: { type: 'exact', term: user('primaryOfficeId') }
+      updatedAtLocation: { type: 'within', location: user('primaryOfficeId') }
     },
     actions: [
       {
@@ -200,15 +200,26 @@ export const Workqueues = defineWorkqueues([
     slug: 'pending-feedback-registrar-general',
     icon: 'ChatText',
     name: {
-      id: 'workqueues.reviewRequested.title',
-      defaultMessage: 'Review requested',
-      description: 'Title of review requested workqueue'
+      id: 'workqueues.pendingFeedback.title',
+      defaultMessage: 'Pending feedback',
+      description: 'Title of pending feedback workqueue'
     },
     query: {
       flags: {
         anyOf: ['escalated-to-registrar-general']
       }
     },
+    columns: [
+      DATE_OF_EVENT_COLUMN,
+      {
+        label: {
+          id: 'workqueues.reviewRequested.title',
+          defaultMessage: 'Review requested',
+          description: 'Title of review requested workqueue'
+        },
+        value: event.field('updatedAt')
+      }
+    ],
     actions: [
       {
         type: 'DEFAULT',
@@ -220,16 +231,27 @@ export const Workqueues = defineWorkqueues([
     slug: 'pending-feedback-provincinal-registrar',
     icon: 'ChatText',
     name: {
-      id: 'workqueues.reviewRequested.title',
-      defaultMessage: 'Review requested',
-      description: 'Title of review requested workqueue'
+      id: 'workqueues.pendingFeedback.title',
+      defaultMessage: 'Pending feedback',
+      description: 'Title of pending feedback workqueue'
     },
     query: {
       flags: {
         anyOf: ['escalated-to-provincial-registrar']
       },
-      updatedAtLocation: { type: 'exact', term: user('primaryOfficeId') }
+      updatedAtLocation: { type: 'within', location: user('primaryOfficeId') }
     },
+    columns: [
+      DATE_OF_EVENT_COLUMN,
+      {
+        label: {
+          id: 'workqueues.reviewRequested.title',
+          defaultMessage: 'Review requested',
+          description: 'Title of review requested workqueue'
+        },
+        value: event.field('updatedAt')
+      }
+    ],
     actions: [
       {
         type: 'DEFAULT',
@@ -281,7 +303,10 @@ export const Workqueues = defineWorkqueues([
       flags: {
         noneOf: [InherentFlags.REJECTED, 'validated']
       },
-      updatedAtLocation: { type: 'exact', term: user('primaryOfficeId') }
+      updatedAtLocation: {
+        type: 'within',
+        location: user('administrativeAreaId')
+      }
     },
     actions: [
       {
@@ -320,13 +345,19 @@ export const Workqueues = defineWorkqueues([
           flags: {
             noneOf: [InherentFlags.REJECTED]
           },
-          updatedAtLocation: { type: 'exact', term: user('primaryOfficeId') }
+          updatedAtLocation: {
+            type: 'within',
+            location: user('primaryOfficeId')
+          }
         },
         {
           flags: {
             anyOf: [InherentFlags.CORRECTION_REQUESTED]
           },
-          updatedAtLocation: { type: 'exact', term: user('primaryOfficeId') }
+          updatedAtLocation: {
+            type: 'within',
+            location: user('primaryOfficeId')
+          }
         }
       ]
     },
@@ -393,7 +424,7 @@ export const Workqueues = defineWorkqueues([
       flags: {
         anyOf: [InherentFlags.REJECTED]
       },
-      updatedAtLocation: { type: 'exact', term: user('primaryOfficeId') }
+      updatedAtLocation: { type: 'within', location: user('primaryOfficeId') }
     },
     actions: [
       {
@@ -456,7 +487,7 @@ export const Workqueues = defineWorkqueues([
           `${ActionType.REGISTER}:${ActionStatus.Requested}`.toLowerCase()
         ]
       },
-      updatedAtLocation: { type: 'exact', term: user('primaryOfficeId') }
+      updatedAtLocation: { type: 'within', location: user('primaryOfficeId') }
     },
     actions: [
       {
@@ -479,7 +510,7 @@ export const Workqueues = defineWorkqueues([
         anyOf: [InherentFlags.PENDING_CERTIFICATION]
       },
       status: { type: 'exact', term: 'REGISTERED' },
-      updatedAtLocation: { type: 'exact', term: user('primaryOfficeId') }
+      updatedAtLocation: { type: 'within', location: user('primaryOfficeId') }
     },
     actions: [
       {
@@ -501,17 +532,29 @@ export const Workqueues = defineWorkqueues([
   },
   {
     slug: 'late-registration-approval-required',
-    icon: 'FileSearch',
+    icon: 'Stamp',
     name: {
       id: 'workqueues.requiresApproval.title',
       defaultMessage: 'Pending approval',
       description: 'Title of Pending approval workqueue'
     },
+    columns: [
+      DATE_OF_EVENT_COLUMN,
+      {
+        label: {
+          defaultMessage: 'Approval requested',
+          description:
+            'This is the label for the pending approval workqueue column',
+          id: 'workqueue.late-registration-approval.column.approval-requested'
+        },
+        value: event.field('updatedAt')
+      }
+    ],
     query: {
       flags: {
         anyOf: ['approval-required-for-late-registration']
       },
-      updatedAtLocation: { type: 'exact', term: user('primaryOfficeId') }
+      updatedAtLocation: { type: 'within', location: user('primaryOfficeId') }
     },
     actions: [
       {

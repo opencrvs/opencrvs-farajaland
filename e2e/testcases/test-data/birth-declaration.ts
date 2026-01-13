@@ -203,7 +203,7 @@ export async function createDeclaration(
   }
 
   const declareRes = await client.event.actions.declare.request.mutate({
-    eventId: eventId,
+    eventId,
     transactionId: uuidv4(),
     declaration,
     annotation,
@@ -226,7 +226,7 @@ export async function createDeclaration(
   }
 
   const registerRes = await client.event.actions.register.request.mutate({
-    eventId: eventId,
+    eventId,
     transactionId: uuidv4(),
     declaration,
     annotation
