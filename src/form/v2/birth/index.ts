@@ -44,6 +44,7 @@ export const birthEvent = defineConfig({
     id: 'event.birth.label'
   },
   dateOfEvent: field('child.dob'),
+  placeOfEvent: field('child.birthLocationId'),
   title: {
     defaultMessage: '{child.name.firstname} {child.name.surname}',
     description: 'This is the title of the summary',
@@ -216,6 +217,24 @@ export const birthEvent = defineConfig({
       }
     ]
   },
+  actionOrder: [
+    ActionType.ASSIGN,
+    ActionType.REGISTER,
+    ActionType.DECLARE,
+    ActionType.EDIT,
+    'VALIDATE_DECLARATION',
+    'APPROVE_DECLARATION',
+    ActionType.REJECT,
+    ActionType.ARCHIVE,
+    ActionType.DELETE,
+    'ESCALATE',
+    'PROVINCIAL_REGISTER_FEEDBACK',
+    'REGISTRAR_GENERAL_FEEDBACK',
+    ActionType.MARK_AS_DUPLICATE,
+    ActionType.PRINT_CERTIFICATE,
+    ActionType.REQUEST_CORRECTION,
+    ActionType.UNASSIGN
+  ],
   actions: [
     {
       type: ActionType.READ,
@@ -297,7 +316,7 @@ export const birthEvent = defineConfig({
       },
       supportingCopy: {
         defaultMessage:
-          'Approving this declaration confirms it as legally accepted and eligible for registration.',
+          'Validating this declaration confirms it meets all requirements and is eligible for registration.',
         description:
           'This is the supporting copy for the Validate declaration -action',
         id: 'event.birth.custom.action.validate-declaration.supportingCopy'
@@ -658,6 +677,7 @@ export const birthEvent = defineConfig({
         {
           type: ConditionalType.ENABLE,
           conditional: and(
+            flag('validated'),
             not(flag('approval-required-for-late-registration')),
             not(flag('escalated-to-provincial-registrar')),
             not(flag('escalated-to-registrar-general'))
