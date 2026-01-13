@@ -122,3 +122,25 @@ services:
     environment:
       - QA_ENV=true
       - NODE_ENV=production
+
+  dci-crvs-api:
+    image: opencrvs/dci-crvs-api:6c37e63
+    restart: unless-stopped
+    deploy:
+      replicas: 1
+      labels:
+        - 'traefik.enable=true'
+        - 'traefik.http.routers.dci-crvs-api.rule=Host(`dci-crvs-api.{{hostname}}`)'
+        - 'traefik.http.services.dci-crvs-api.loadbalancer.server.port=1660'
+        - 'traefik.http.routers.dci-crvs-api.tls=true'
+        - 'traefik.http.routers.dci-crvs-api.tls.certresolver=certResolver'
+        - 'traefik.http.routers.dci-crvs-api.entrypoints=web,websecure'
+        - 'traefik.docker.network=opencrvs_overlay_net'
+        - 'traefik.http.middlewares.dci-crvs-api.headers.customresponseheaders.Pragma=no-cache'
+        - 'traefik.http.middlewares.dci-crvs-api.headers.customresponseheaders.Cache-control=no-store'
+        - 'traefik.http.middlewares.dci-crvs-api.headers.customresponseheaders.X-Robots-Tag=none'
+        - 'traefik.http.middlewares.dci-crvs-api.headers.stsseconds=31536000'
+        - 'traefik.http.middlewares.dci-crvs-api.headers.stsincludesubdomains=true'
+        - 'traefik.http.middlewares.dci-crvs-api.headers.stspreload=true'
+    networks:
+      - overlay_net
