@@ -16,6 +16,7 @@ test.describe.serial('1.Farajaland as location parent', () => {
   let page: Page
   let declaration: any
   let name: string
+  let token: string
 
   test.beforeAll(async ({ browser }) => {
     declaration = await getDeclaration({
@@ -24,9 +25,11 @@ test.describe.serial('1.Farajaland as location parent', () => {
         'mother.dob': null,
         ...(await getPlaceOfBirth(
           'HEALTH_FACILITY',
+          token,
           'Mpepo Rural Health Centre'
         ))
-      }
+      },
+      token
     })
     name = formatV2ChildName(declaration)
     page = await browser.newPage()
@@ -37,7 +40,7 @@ test.describe.serial('1.Farajaland as location parent', () => {
   })
 
   test('1.1. Health officer creates an incomplete declaration', async () => {
-    const token = await getToken(
+    token = await getToken(
       CREDENTIALS.HEALTH_OFFICER.USERNAME,
       CREDENTIALS.HEALTH_OFFICER.PASSWORD
     )

@@ -45,10 +45,11 @@ function getInformantDetails(
 
 export async function getPlaceOfBirth(
   type: 'PRIVATE_HOME' | 'HEALTH_FACILITY',
+  token: string,
   facilityName: string = 'Ibombo Rural Health Centre'
 ) {
   if (type === 'HEALTH_FACILITY') {
-    const locations = await getAllLocations('HEALTH_FACILITY')
+    const locations = await getAllLocations('HEALTH_FACILITY', token)
     const locationId = getLocationIdByName(locations, facilityName)
 
     return {
@@ -58,7 +59,7 @@ export async function getPlaceOfBirth(
   }
 
   if (type === 'PRIVATE_HOME') {
-    const locations = await getAllLocations('ADMIN_STRUCTURE')
+    const locations = await getAllLocations('ADMIN_STRUCTURE', token)
     const province = getLocationIdByName(locations, 'Central')
     const district = getLocationIdByName(locations, 'Ibombo')
 
@@ -82,13 +83,15 @@ export async function getPlaceOfBirth(
 export async function getDeclaration({
   informantRelation = 'MOTHER',
   partialDeclaration = {},
-  placeOfBirthType = 'PRIVATE_HOME'
+  placeOfBirthType = 'PRIVATE_HOME',
+  token
 }: {
   informantRelation?: InformantRelation
   partialDeclaration?: Record<string, any>
   placeOfBirthType?: 'PRIVATE_HOME' | 'HEALTH_FACILITY'
+  token: string
 }) {
-  const locations = await getAllLocations('ADMIN_STRUCTURE')
+  const locations = await getAllLocations('ADMIN_STRUCTURE', token)
   const province = getLocationIdByName(locations, 'Central')
   const district = getLocationIdByName(locations, 'Ibombo')
 
@@ -123,7 +126,7 @@ export async function getDeclaration({
     'child.dob': new Date(Date.now() - 60 * 60 * 24 * 1000)
       .toISOString()
       .split('T')[0], // yesterday
-    ...(await getPlaceOfBirth(placeOfBirthType)),
+    ...(await getPlaceOfBirth(placeOfBirthType, token)),
     ...getInformantDetails(informantRelation, district)
   }
 
@@ -157,7 +160,8 @@ export async function createDeclaration(
         action === ActionType.NOTIFY
           ? // Drop arbitrary fields not needed for notify action
             { 'mother.nid': null, 'mother.dob': null }
-          : undefined
+          : undefined,
+      token
     }))
 
   const client = createClient(GATEWAY_HOST + '/events', `Bearer ${token}`)
