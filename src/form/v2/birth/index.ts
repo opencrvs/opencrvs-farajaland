@@ -101,6 +101,15 @@ export const birthEvent = defineConfig({
         description: 'Flag label for pending certified copy issuance'
       },
       requiresAction: true
+    },
+    {
+      id: 'vc-issued',
+      label: {
+        defaultMessage: 'Verifiable Credential issued',
+        description: 'Flag label for verifiable credential issued',
+        id: 'event.birth.flag.vc-issued'
+      },
+      requiresAction: true
     }
   ],
   summary: {
@@ -233,7 +242,8 @@ export const birthEvent = defineConfig({
     ActionType.MARK_AS_DUPLICATE,
     ActionType.PRINT_CERTIFICATE,
     ActionType.REQUEST_CORRECTION,
-    ActionType.UNASSIGN
+    ActionType.UNASSIGN,
+    'ISSUE_VERIFIABLE_CREDENTIAL'
   ],
   actions: [
     {

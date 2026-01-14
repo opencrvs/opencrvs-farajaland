@@ -3,6 +3,8 @@ import { logger } from '@countryconfig/logger'
 import { ServerRoute, ReqRefDefaults } from '@hapi/hapi'
 import { birthCredentialTemplate } from './birth-credential-template'
 import QRCode from 'qrcode'
+import { buildTypeScriptToJavaScript } from '@countryconfig/utils'
+import { join } from 'path'
 
 const SDJWT_ISSUE_URL = `https://${DOMAIN}:7002/openid4vc/sdjwt/issue`
 
@@ -56,3 +58,16 @@ export const credentialOfferRoute = {
 } satisfies ServerRoute<ReqRefDefaults>
 
 export const CREDENTIAL_OFFER_HANDLER_URL = `${CLIENT_APP_URL}api/countryconfig/${credentialOfferRoute.path}`
+
+export const qrCodeComponentRoute = {
+  method: 'GET',
+  path: '/qr.js',
+  handler: async (_req, h) => {
+    return h
+      .response(await buildTypeScriptToJavaScript(join(__dirname, 'qr.ts')))
+      .type('text/javascript')
+  },
+  options: {
+    auth: false
+  }
+} satisfies ServerRoute<ReqRefDefaults>
