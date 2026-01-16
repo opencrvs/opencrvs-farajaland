@@ -9,6 +9,7 @@ import {
   window
 } from '@opencrvs/toolkit/events'
 import { CREDENTIAL_OFFER_HANDLER_URL } from './credential-offer-handler'
+import { COUNTRY_CONFIG_URL } from '@countryconfig/constants'
 
 export const issueBirthCredentialAction = {
   type: ActionType.CUSTOM,
@@ -116,7 +117,7 @@ export const issueBirthCredentialAction = {
       parent: field('get-credential-offer'),
       id: 'storybook.data',
       type: FieldType._EXPERIMENTAL_CUSTOM,
-      src: '/test.js',
+      src: COUNTRY_CONFIG_URL + '/image.js',
       label: {
         defaultMessage: 'QR Code',
         description: 'Upload the QR code image for the VC',

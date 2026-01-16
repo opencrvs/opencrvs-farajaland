@@ -61,10 +61,10 @@ export const CREDENTIAL_OFFER_HANDLER_URL = `${CLIENT_APP_URL}api/countryconfig/
 
 export const qrCodeComponentRoute = {
   method: 'GET',
-  path: '/qr.js',
+  path: '/image.js',
   handler: async (_req, h) => {
     return h
-      .response(await buildTypeScriptToJavaScript(join(__dirname, 'qr.ts')))
+      .response(await buildTypeScriptToJavaScript(join(__dirname, 'image.ts')))
       .type('text/javascript')
   },
   options: {
