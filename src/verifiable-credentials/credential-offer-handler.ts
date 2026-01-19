@@ -1,4 +1,4 @@
-import { CLIENT_APP_URL, DOMAIN } from '@countryconfig/constants'
+import { CLIENT_APP_URL } from '@countryconfig/constants'
 import { logger } from '@countryconfig/logger'
 import { ServerRoute, ReqRefDefaults } from '@hapi/hapi'
 import { birthCredentialTemplate } from './birth-credential-template'
@@ -6,7 +6,7 @@ import QRCode from 'qrcode'
 import { buildTypeScriptToJavaScript } from '@countryconfig/utils'
 import { join } from 'path'
 
-const SDJWT_ISSUE_URL = `https://${DOMAIN}:7002/openid4vc/sdjwt/issue`
+const SDJWT_ISSUE_URL = `https://vc-demo.opencrvs.dev:7002/openid4vc/sdjwt/issue`
 
 export const credentialOfferRoute = {
   method: 'POST',
@@ -43,7 +43,7 @@ export const credentialOfferRoute = {
       )
     }
 
-    const credentialOfferUrl = (await response.json()) as string
+    const credentialOfferUrl = (await response.text()) as string
 
     const qrDataUrl = await QRCode.toDataURL(credentialOfferUrl, {
       width: 300,
@@ -61,10 +61,14 @@ export const CREDENTIAL_OFFER_HANDLER_URL = `${CLIENT_APP_URL}api/countryconfig/
 
 export const qrCodeComponentRoute = {
   method: 'GET',
-  path: '/image.js',
+  path: '/field-type/image.js',
   handler: async (_req, h) => {
     return h
-      .response(await buildTypeScriptToJavaScript(join(__dirname, 'image.ts')))
+      .response(
+        await buildTypeScriptToJavaScript(
+          join(__dirname, 'field-type-image.tsx')
+        )
+      )
       .type('text/javascript')
   },
   options: {
