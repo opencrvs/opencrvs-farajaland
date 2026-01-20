@@ -21,11 +21,10 @@ jobs:
                 [${{ toJSON(vars) }}] 
                 | add
                 | with_entries(.value |= @base64)
-            ')
+            ' | base64)
             
-            echo "export_data<<EOF" >> $GITHUB_OUTPUT
-            echo "$EXPORT_JSON" >> $GITHUB_OUTPUT
-            echo "EOF" >> $GITHUB_OUTPUT
+            echo "data=$EXPORT_JSON" >> $GITHUB_OUTPUT
+
       - name: Trigger import in ${{ inputs.target_repo }}
         env:
             GH_TOKEN: ${{ secrets.MIGRATION_GH_TOKEN }}
@@ -35,4 +34,4 @@ jobs:
             --method POST \
             -f event_type=import-config \
             -F client_payload[data_type]="variables" \
-            -F client_payload[data]='${{ steps.export-repo-secrets.outputs.export_data }}'
+            -F client_payload[data]='${{ steps.export-repo-secrets.outputs.data }}'
