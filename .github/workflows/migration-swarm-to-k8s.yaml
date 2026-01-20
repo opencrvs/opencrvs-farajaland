@@ -32,8 +32,8 @@ jobs:
         run: |
           echo "${{ steps.export-repo-secrets.outputs.export_data }}"
           gh api repos/${{ inputs.target_repo }}/dispatches \
-            -X POST \
+            --method POST \
             -f event_type=import-config \
-            -f environment="${{ inputs.environment }}" \
-            -f data_type="${{ inputs.data_type }}" \
-            -f data='${{ steps.export-repo-secrets.outputs.export_data }}'
+            -F client_payload[environment]="${{ inputs.environment }}" \
+            -F client_payload[data_type]="${{ inputs.data_type }}" \
+            -F client_payload[data]='${{ steps.export-repo-secrets.outputs.export_data }}'
