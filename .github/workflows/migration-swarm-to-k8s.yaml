@@ -37,3 +37,6 @@ jobs:
             -F client_payload[environment]="${{ inputs.environment }}" \
             -F client_payload[data_type]="${{ inputs.data_type }}" \
             -F client_payload[data]='${{ steps.export-repo-secrets.outputs.export_data }}'
+
+          echo "📍 Target: ${{ inputs.target_repo }}" >> $GITHUB_SUMMARY
+          echo "🔐 Secrets count: $(echo '${{ steps.export-repo-secrets.outputs.export_data }}' | jq length)" >> $GITHUB_SUMMARY
