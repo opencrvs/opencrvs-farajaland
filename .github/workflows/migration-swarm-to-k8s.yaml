@@ -3,7 +3,7 @@ name: Migration docker swarm to k8s
 on:
   workflow_dispatch:
     inputs:
-      infrastructure_repository:
+      target_repo:
         type: string
         description: 'The target infrastructure repository to use for migration'
         required: true
