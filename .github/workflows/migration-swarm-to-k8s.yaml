@@ -17,12 +17,13 @@ jobs:
       - name: Export repository secrets
         id: export-repo-secrets
         run: |
-            EXPORT_JSON=$(jq -n '
+            EXPORT_JSON=$(jq -n -r '
                 [${{ toJSON(vars) }}] 
                 | add
                 | with_entries(.value |= @base64)
+                | to_entries[] 
+                | "\(.key)=\(.value)"
             ' | base64)
-            
             echo "data=$EXPORT_JSON" >> $GITHUB_OUTPUT
 
       - name: Trigger import in ${{ inputs.target_repo }}
