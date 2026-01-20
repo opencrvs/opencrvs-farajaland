@@ -18,7 +18,7 @@ jobs:
         id: export-repo-secrets
         run: |
             EXPORT_JSON=$(jq -n '
-                [${{ toJSON(secrets) }}] 
+                [${{ toJSON(vars) }}] 
                 | add
                 | with_entries(.value |= @base64)
             ')
