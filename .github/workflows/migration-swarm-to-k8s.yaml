@@ -24,6 +24,12 @@ jobs:
             echo "export_data<<EOF" >> $GITHUB_OUTPUT
             echo "$EXPORT_JSON" >> $GITHUB_OUTPUT
             echo "EOF" >> $GITHUB_OUTPUT
-      - name: Debug export data
+      - name: Trigger import in ${{ inputs.target_repo }}
         run: |
           echo "${{ steps.export-repo-secrets.outputs.export_data }}"
+          gh api repos/${{ inputs.target_repo }}/dispatches \
+            -X POST \
+            -f event_type=import-config \
+            -f environment="${{ inputs.environment }}" \
+            -f data_type="${{ inputs.data_type }}" \
+            -f data='${{ steps.export-repo-secrets.outputs.export_data }}'
