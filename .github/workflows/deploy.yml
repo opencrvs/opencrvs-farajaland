@@ -43,6 +43,7 @@ on:
           - fix-analytics
           - mosip
           - openfn
+          - swarm-to-k8s
       core-image-tag:
         description: Core image tag
         required: true
