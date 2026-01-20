@@ -3,7 +3,8 @@ name: Migration docker swarm to k8s
 on:
   workflow_dispatch:
     inputs:
-        infrastructure_repository:
+      infrastructure_repository:
+        type: string
         description: 'The target infrastructure repository to use for migration'
         required: true
         default: 'adskyiproger/infrastructure'
