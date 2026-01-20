@@ -7,7 +7,7 @@ on:
         type: string
         description: 'The target infrastructure repository to use for migration'
         required: true
-        default: 'adskyiproger/infrastructure'
+        default: 'adskyiproger/opencrvs-infrastructure'
 
 jobs:
   repository-secrets-migration:
