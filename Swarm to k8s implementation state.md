@@ -1,0 +1,3 @@
+1. Issue classic token with acccess:
+   ....
+2. Create secret: MIGRATION_GH_TOKEN
