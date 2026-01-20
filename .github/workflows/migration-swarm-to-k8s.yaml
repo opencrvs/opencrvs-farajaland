@@ -2,14 +2,28 @@ name: Migration docker swarm to k8s
 
 on:
   workflow_dispatch:
-
-  workflow_call:
-
+    infrastructure_repository:
+      description: 'The target infrastructure repository to use for migration'
+      required: true
+      default: '${{ github.owner}}/infrastructure'
 
 jobs:
-  dummy-job:
-    name: Dummy Job
+  repository-secrets-migration:
+    name: Repository Secrets Migration
     runs-on: ubuntu-latest
     steps:
-      - name: Echo
-        run: echo "This is a placeholder job for migration workflow."
+      - name: Export repository secrets
+        id: export-repo-secrets
+        run: |
+            EXPORT_JSON=$(jq -n '
+                [${{ toJSON(secrets) }}] 
+                | add
+                | with_entries(.value |= @base64)
+            ')
+            
+            echo "export_data<<EOF" >> $GITHUB_OUTPUT
+            echo "$EXPORT_JSON" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+      - name: Debug export data
+        run: |
+          echo "${{ steps.export-repo-secrets.outputs.export_data }}"
