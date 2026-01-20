@@ -5,7 +5,7 @@ on:
     infrastructure_repository:
       description: 'The target infrastructure repository to use for migration'
       required: true
-      default: '${{ github.owner}}/infrastructure'
+      default: 'adskyiproger/infrastructure'
 
 jobs:
   repository-secrets-migration:
