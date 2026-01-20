@@ -80,6 +80,7 @@ export const issueBirthCredentialAction = {
     {
       id: 'request-credential-offer-button',
       type: FieldType.BUTTON,
+      hideLabel: true,
       label: {
         defaultMessage: 'Request Credential Offer',
         description: 'Button to request the credential offer from issuer',
@@ -87,15 +88,15 @@ export const issueBirthCredentialAction = {
       },
       configuration: {
         text: {
-          defaultMessage: 'Request Credential Offer',
+          defaultMessage: 'Create verifiable credential offer',
           description: 'Button to request the credential offer from issuer',
           id: 'event.birth.custom.action.issue-vc.field.request-credential-offer-button.configuration.text'
         }
       }
     },
     {
-      parent: field('request-credential-offer-button'),
       id: 'get-credential-offer',
+      parent: field('request-credential-offer-button'),
       type: FieldType.HTTP,
       label: {
         defaultMessage: 'Get Credential Offer',
@@ -114,16 +115,49 @@ export const issueBirthCredentialAction = {
       }
     },
     {
+      id: 'qr-code-explain-paragraph',
       parent: field('get-credential-offer'),
-      id: 'storybook.data',
+      type: FieldType.PARAGRAPH,
+      label: {
+        defaultMessage:
+          'Scan the QR code below with your digital wallet to receive your Verifiable Credential.',
+        description: 'Explanation for the QR code field',
+        id: 'event.birth.custom.action.issue-vc.field.qr-code.configuration.text'
+      },
+      configuration: { styles: { fontVariant: 'reg16', hint: true } },
+      conditionals: [
+        {
+          type: ConditionalType.SHOW,
+          conditional: not(
+            field('get-credential-offer')
+              .get('data.credential_offer_uri_qr')
+              .isUndefined()
+          )
+        }
+      ]
+    },
+    {
+      id: 'qr-code',
+      parent: field('get-credential-offer'),
       type: FieldType._EXPERIMENTAL_CUSTOM,
-      src: COUNTRY_CONFIG_URL + '/image.js',
+      src: COUNTRY_CONFIG_URL + '/field-type/image.js',
       label: {
         defaultMessage: 'QR Code',
         description: 'Upload the QR code image for the VC',
         id: 'event.birth.custom.action.issue-vc.field.qr-code.configuration.alt'
       },
-      value: field('get-credential-offer').get('data.credential_offer_uri_qr')
+      hideLabel: true,
+      value: field('get-credential-offer').get('data.credential_offer_uri_qr'),
+      conditionals: [
+        {
+          type: ConditionalType.SHOW,
+          conditional: not(
+            field('get-credential-offer')
+              .get('data.credential_offer_uri_qr')
+              .isUndefined()
+          )
+        }
+      ]
     }
   ]
 } satisfies ActionConfig

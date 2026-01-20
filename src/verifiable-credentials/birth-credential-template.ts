@@ -1,10 +1,15 @@
 import { logger } from '@countryconfig/logger'
-import { EventDocument } from '@opencrvs/toolkit/events'
+import { EventIndex, NameFieldValue } from '@opencrvs/toolkit/events'
 
-export const birthCredentialTemplate = (event: EventDocument) => {
+export const birthCredentialTemplate = (event: EventIndex) => {
+  console.log(JSON.stringify(event, null, 2))
+
   logger.warn(
     `Passing issuer key UNSAFELY for birth credential template <event-id:${event.id}>! DO NOT USE IN PRODUCTION!`
   )
+
+  const childName = event.declaration['child.name'] as NameFieldValue
+  const dateOfEvent = event.dateOfEvent as string
 
   return {
     issuerKey: {
@@ -27,10 +32,10 @@ export const birthCredentialTemplate = (event: EventDocument) => {
       id: 'urn:uuid:THIS WILL BE REPLACED WITH DYNAMIC DATA FUNCTION (see below)',
       type: ['VerifiableCredential', 'BirthCertificateCredential'],
       credentialSubject: {
-        given_name: 'Baby',
-        family_name: 'Example',
-        birthdate: '2025-06-01',
-        place_of_birth: 'Tampere',
+        given_name: childName.firstname,
+        family_name: childName.surname,
+        birthdate: dateOfEvent,
+        place_of_birth: 'Chamakubi Health Post, Ibombo, Central, Farajaland',
         id: '<subjectDid>'
       }
     },

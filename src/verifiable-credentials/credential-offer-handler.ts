@@ -1,10 +1,11 @@
-import { CLIENT_APP_URL } from '@countryconfig/constants'
+import { CLIENT_APP_URL, GATEWAY_URL } from '@countryconfig/constants'
 import { logger } from '@countryconfig/logger'
 import { ServerRoute, ReqRefDefaults } from '@hapi/hapi'
 import { birthCredentialTemplate } from './birth-credential-template'
 import QRCode from 'qrcode'
 import { buildTypeScriptToJavaScript } from '@countryconfig/utils'
 import { join } from 'path'
+import { createClient } from '@opencrvs/toolkit/api'
 
 const SDJWT_ISSUE_URL = `https://vc-demo.opencrvs.dev:7002/openid4vc/sdjwt/issue`
 
@@ -24,13 +25,24 @@ export const credentialOfferRoute = {
       `[verifiable credentials] requesting credential offer for <event-id:${eventId}>`
     )
 
+    const url = new URL('events', GATEWAY_URL).toString()
+    const client = createClient(url, req.headers.authorization)
+    const event = await client.event.search.query({
+      query: {
+        type: 'and',
+        clauses: [
+          {
+            id: eventId
+          }
+        ]
+      }
+    })
     const response = await fetch(SDJWT_ISSUE_URL, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      // @TODO: Fetch real event data from DB instead of faking it
-      body: JSON.stringify(birthCredentialTemplate({ id: eventId } as any))
+      body: JSON.stringify(birthCredentialTemplate(event.results[0]))
     })
 
     if (!response.ok) {
@@ -57,6 +69,7 @@ export const credentialOfferRoute = {
   }
 } satisfies ServerRoute<ReqRefDefaults>
 
+/** The url to the above handler. FieldType.HTTP uses to fetch the credential offer from here in the form */
 export const CREDENTIAL_OFFER_HANDLER_URL = `${CLIENT_APP_URL}api/countryconfig/${credentialOfferRoute.path}`
 
 export const qrCodeComponentRoute = {
