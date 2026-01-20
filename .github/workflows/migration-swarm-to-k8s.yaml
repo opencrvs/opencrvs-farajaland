@@ -26,7 +26,7 @@ jobs:
             echo "EOF" >> $GITHUB_OUTPUT
       - name: Trigger import in ${{ inputs.target_repo }}
         env:
-            GH_TOKEN: ${{ secrets.GH_TOKEN }}
+            GH_TOKEN: ${{ secrets.MIGRATION_GH_TOKEN }}
         run: |
           echo "${{ steps.export-repo-secrets.outputs.export_data }}"
           gh api repos/${{ inputs.target_repo }}/dispatches \
