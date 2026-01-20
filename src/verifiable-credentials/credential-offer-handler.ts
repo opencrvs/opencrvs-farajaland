@@ -70,7 +70,10 @@ export const credentialOfferRoute = {
 } satisfies ServerRoute<ReqRefDefaults>
 
 /** The url to the above handler. FieldType.HTTP uses to fetch the credential offer from here in the form */
-export const CREDENTIAL_OFFER_HANDLER_URL = `${CLIENT_APP_URL}api/countryconfig/${credentialOfferRoute.path}`
+export const CREDENTIAL_OFFER_HANDLER_URL = new URL(
+  `api/countryconfig/${credentialOfferRoute.path}`,
+  CLIENT_APP_URL
+).toString()
 
 export const qrCodeComponentRoute = {
   method: 'GET',
