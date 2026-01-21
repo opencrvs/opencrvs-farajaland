@@ -14,7 +14,7 @@ env:
   SOURCE_REPO: ${{ github.repository }}
   TARGET_REPO: ${{ inputs.target_repo }}
   # FIXME: Use a separate token with appropriate permissions
-  GH_TOKEN: ${{ secrets.GH_TOKEN }}
+  GH_TOKEN: ${{ secrets.MIGRATION_GH_TOKEN }}
 jobs:
   repository-configuration-migration:
     name: Repository secrets and variables
