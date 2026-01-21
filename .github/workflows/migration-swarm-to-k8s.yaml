@@ -157,19 +157,17 @@ jobs:
         run: |
           echo "📊 Importing variables to $TARGET_REPO"
           # Import each variable
-          cc=0
+
+          SKIPPED_KEYS=""
           while read line; do
             [ -z "$line" ] && continue # Skip empty lines
             KEY=$(echo "$line" | cut -d'=' -f1)
             VALUE=$(echo "$line" | cut -d'=' -f2-)
             # TODO: Add whitelist, e/g ACTIVATE_USERS might be present at repo level
-            SKIPPED_KEYS=""
             echo $VARS_LIST | grep -q "$KEY" && SKIPPED_KEYS+=$KEY && continue
             DECODED_VALUE=$(echo "$VALUE" | base64 -d)
             echo "  ✓ Setting variable: $KEY"
-            gh variable set "$KEY" --body "$DECODED_VALUE" --env "$ENVIRONMENT" --repo "$TARGET_REPO"
-            echo "+ done"
-            ((cc++))
+            gh variable set "$KEY" --body "$DECODED_VALUE" --env "$ENVIRONMENT" --repo "$TARGET_REPO"            
           done < variables.env
           echo "
           ## Target repository: $TARGET_REPO - environment: $ENVIRONMENT
