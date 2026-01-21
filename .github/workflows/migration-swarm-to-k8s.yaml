@@ -65,51 +65,51 @@ jobs:
       #       -F client_payload[data_type]="secrets" \
       #       -F client_payload[data]='${{ steps.export-repo-secrets.outputs.repository_secrets }}'
 
-  environment-secrets-migration:
-    name: Repository Secrets Migration
-    runs-on: ubuntu-latest
-    strategy:
-      max-parallel: 1  # Ensure jobs run one by one
-      fail-fast: true  # Stop on first failure
-      matrix:
-        environment:
-          - aaa
-    environment: ${{ matrix.environment }}
-    steps:
-      - name: Export repository variables
-        id: export-repo-variables
-        run: |
-            EXPORT_JSON=$(jq -n -r '
-                [${{ toJSON(vars) }}] 
-                | add
-                | with_entries(.value |= @base64)
-                | to_entries[] 
-                | "\(.key)=\(.value)"
-            ' | base64 -w 0)
-            echo "::add-mask::$EXPORT_JSON"
-            echo "repository_variables=$EXPORT_JSON" >> $GITHUB_OUTPUT
-      - name: Export repository secrets
-        id: export-repo-secrets
-        run: |
-            EXPORT_JSON=$(jq -n -r '
-                [${{ toJSON(secrets) }}] 
-                | add
-                | with_entries(.value |= @base64)
-                | to_entries[] 
-                | "\(.key)=\(.value)"
-            ' | base64 -w 0)
-            echo "::add-mask::$EXPORT_JSON"
-            echo "repository_secrets=$EXPORT_JSON" >> $GITHUB_OUTPUT
-      - name: Trigger variables import in ${{ inputs.target_repo }}
-        env:
-            GH_TOKEN: ${{ secrets.MIGRATION_GH_TOKEN }}
-            ENVIRONMENT: ${{ matrix.environment }}
-        run: |
-          gh api repos/${{ inputs.target_repo }}/dispatches \
-            --method POST \
-            -f event_type=import-config \
-            -F client_payload[data_type]="variables" \
-            -F client_payload[data]='${{ steps.export-repo-variables.outputs.repository_variables }}'
+  # environment-secrets-migration:
+  #   name: Repository Secrets Migration
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     max-parallel: 1  # Ensure jobs run one by one
+  #     fail-fast: true  # Stop on first failure
+  #     matrix:
+  #       environment:
+  #         - aaa
+  #   environment: ${{ matrix.environment }}
+  #   steps:
+  #     - name: Export repository variables
+  #       id: export-repo-variables
+  #       run: |
+  #           EXPORT_JSON=$(jq -n -r '
+  #               [${{ toJSON(vars) }}] 
+  #               | add
+  #               | with_entries(.value |= @base64)
+  #               | to_entries[] 
+  #               | "\(.key)=\(.value)"
+  #           ' | base64 -w 0)
+  #           echo "::add-mask::$EXPORT_JSON"
+  #           echo "repository_variables=$EXPORT_JSON" >> $GITHUB_OUTPUT
+  #     - name: Export repository secrets
+  #       id: export-repo-secrets
+  #       run: |
+  #           EXPORT_JSON=$(jq -n -r '
+  #               [${{ toJSON(secrets) }}] 
+  #               | add
+  #               | with_entries(.value |= @base64)
+  #               | to_entries[] 
+  #               | "\(.key)=\(.value)"
+  #           ' | base64 -w 0)
+  #           echo "::add-mask::$EXPORT_JSON"
+  #           echo "repository_secrets=$EXPORT_JSON" >> $GITHUB_OUTPUT
+  #     - name: Trigger variables import in ${{ inputs.target_repo }}
+  #       env:
+  #           GH_TOKEN: ${{ secrets.MIGRATION_GH_TOKEN }}
+  #           ENVIRONMENT: ${{ matrix.environment }}
+  #       run: |
+  #         gh api repos/${{ inputs.target_repo }}/dispatches \
+  #           --method POST \
+  #           -f event_type=import-config \
+  #           -F client_payload[data_type]="variables" \
+  #           -F client_payload[data]='${{ steps.export-repo-variables.outputs.repository_variables }}'
       # - name: Trigger secrets import in ${{ inputs.target_repo }}
       #   env:
       #       GH_TOKEN: ${{ secrets.MIGRATION_GH_TOKEN }}
