@@ -168,6 +168,7 @@ jobs:
             DECODED_VALUE=$(echo "$VALUE" | base64 -d)
             echo "  ✓ Setting variable: $KEY"
             gh variable set "$KEY" --body "$DECODED_VALUE" --env "$ENVIRONMENT" --repo "$TARGET_REPO"
+            echo "+ done"
             ((cc++))
           done < variables.env
           echo "
