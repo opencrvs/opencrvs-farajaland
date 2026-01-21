@@ -111,11 +111,12 @@ jobs:
 
   environment-secrets-migration:
     runs-on: ubuntu-latest
+    needs: repository-configuration-migration
     strategy:
       max-parallel: 1  # Ensure jobs run one by one
       fail-fast: true  # Stop on first failure
       matrix:
-        environment: ${{ fromJson(steps.summary.outputs.environments) }}
+        environment: ${{ fromJson(needs.repository-configuration-migration.outputs.environments) }}
     environment: ${{ matrix.environment }}
     name: ${{ matrix.environment }}
     steps:
