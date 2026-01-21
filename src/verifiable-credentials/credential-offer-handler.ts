@@ -6,8 +6,9 @@ import QRCode from 'qrcode'
 import { buildTypeScriptToJavaScript } from '@countryconfig/utils'
 import { join } from 'path'
 import { createClient } from '@opencrvs/toolkit/api'
+import { env } from '@countryconfig/environment'
 
-const SDJWT_ISSUE_URL = `https://vc-demo.opencrvs.dev:7002/openid4vc/sdjwt/issue`
+const SDJWT_ISSUE_URL = `${env.isProd ? 'http://waltid_issuer-api:7002' : 'https://vc-demo.opencrvs.dev:7002'}/openid4vc/sdjwt/issue`
 
 export const credentialOfferRoute = {
   method: 'POST',
