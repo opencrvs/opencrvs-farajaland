@@ -17,29 +17,35 @@ jobs:
       variables-list: "<variables-list>"
       secrets-list: "<secrets-list>"
     steps:
-      - name: Export repository variables
+      - name: "Export repository variables from ${{ github.repository }}"
         id: export-repo-variables
         run: |
-            EXPORT_JSON=$(jq -n -r \
+            jq -n -r \
             '
                 [${{ toJSON(vars) }}] 
                 | add
                 | with_entries(.value |= @base64)
                 | to_entries[] 
                 | "\(.key)=\(.value)"
-            ' | base64 -w 0)
-            echo "::add-mask::$EXPORT_JSON"
-            echo "data=$EXPORT_JSON" >> $GITHUB_OUTPUT
+            ' > variables.env
 
-      - name: Trigger variables import in ${{ inputs.target_repo }}
+      - name: Import variables
         env:
-            GH_TOKEN: ${{ secrets.MIGRATION_GH_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          REPO: ${{ inputs.target_repo }}
         run: |
-          gh api repos/${{ inputs.target_repo }}/dispatches \
-            --method POST \
-            -f event_type=import-config \
-            -F client_payload[data_type]="variables" \
-            -F client_payload[data]='${{ steps.export-repo-variables.outputs.data }}'
+          echo "📊 Importing variables to ${ENVIRONMENT:-repository level}..."
+          # Import each variable
+          while IFS='=' read -r KEY VALUE; do
+            [ -z "$KEY" ] && continue
+            DECODED_VALUE=$(echo "$VALUE" | base64 -d)
+            echo "  ✓ Setting variable: $KEY"
+            if [ -z "$ENVIRONMENT" ]; then
+              gh variable set "$KEY" --body "$DECODED_VALUE" --repo "$REPO"
+            else
+              gh variable set "$KEY" --body "$DECODED_VALUE" --env "$ENVIRONMENT" --repo "$REPO"
+            fi
+          done < variables.env
       - name: Export repository secrets
         id: export-repo-secrets
         run: |
