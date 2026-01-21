@@ -1,5 +1,5 @@
-name: Migration docker swarm to k8s
-
+name: Migration secrets and variables
+run-name: "Migration secrets and variables ${{ inputs.target_repo }}"
 on:
   workflow_dispatch:
     inputs:
