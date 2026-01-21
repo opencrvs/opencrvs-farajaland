@@ -95,15 +95,16 @@ jobs:
                 | to_entries[] 
                 | "\(.key)=\(.value)"
             ' > secrets.env
-      # - name: Trigger secrets import in ${{ inputs.target_repo }}
-      #   env:
-      #       GH_TOKEN: ${{ secrets.MIGRATION_GH_TOKEN }}
-      #   run: |
-      #     gh api repos/${{ inputs.target_repo }}/dispatches \
-      #       --method POST \
-      #       -f event_type=import-config \
-      #       -F client_payload[data_type]="secrets" \
-      #       -F client_payload[data]='${{ steps.export-repo-secrets.outputs.repository_secrets }}'
+      - name: Import secrets to ${{ inputs.target_repo }}
+        run: |
+          echo "📊 Importing secrets to $TARGET_REPO"
+          # Import each secret
+          while IFS='=' read -r KEY VALUE; do
+            [ -z "$KEY" ] && continue
+            DECODED_VALUE=$(echo "$VALUE" | base64 -d)
+            echo "  ✓ Setting secret: $KEY"
+            gh secret set "$KEY" --body "$DECODED_VALUE" --repo "$TARGET_REPO"
+          done < secrets.env
 
   environment-secrets-migration:
     runs-on: ubuntu-latest
@@ -133,18 +134,16 @@ jobs:
                 | to_entries[] 
                 | "\(.key)=\(.value)"
             ' > variables.env
-  #     - name: Export repository secrets
-  #       id: export-repo-secrets
-  #       run: |
-  #           EXPORT_JSON=$(jq -n -r '
-  #               [${{ toJSON(secrets) }}] 
-  #               | add
-  #               | with_entries(.value |= @base64)
-  #               | to_entries[] 
-  #               | "\(.key)=\(.value)"
-  #           ' | base64 -w 0)
-  #           echo "::add-mask::$EXPORT_JSON"
-  #           echo "repository_secrets=$EXPORT_JSON" >> $GITHUB_OUTPUT
+      - name: "Export secrets from ${{ github.repository }}/${{ matrix.environment }}"
+        run: |
+            jq -n -r \
+            '
+                [${{ toJSON(secrets) }}] 
+                | add
+                | with_entries(.value |= @base64)
+                | to_entries[] 
+                | "\(.key)=\(.value)"
+            ' > secrets.env
       - name: Create environment in ${{ inputs.target_repo }} if not exists
         run: |
           if gh api repos/$TARGET_REPO/environments/$ENVIRONMENT 2>/dev/null; then
@@ -172,23 +171,36 @@ jobs:
           done < variables.env
           echo "⚠️ Skipped variables already present at repository level: ${SKIPPED_KEYS[*]}"
           echo "SKIPPED_KEYS=${SKIPPED_KEYS[*]}" >> $GITHUB_OUTPUT
+      - name: Import secrets to ${{ inputs.target_repo }} in ${{ matrix.environment }} environment
+        id: import-environment-secrets
+        run: |
+          echo "📊 Importing secrets to $TARGET_REPO"
+          # Import each secret
 
-      # - name: Trigger secrets import in ${{ inputs.target_repo }}
-      #   env:
-      #       GH_TOKEN: ${{ secrets.MIGRATION_GH_TOKEN }}
-      #       ENVIRONMENT: ${{ matrix.environment }}
-      #   run: |
-      #     gh api repos/${{ inputs.target_repo }}/dispatches \
-      #       --method POST \
-      #       -f event_type=import-config \
-      #       -F client_payload[data_type]="secrets" \
-      #       -F client_payload[data]='${{ steps.export-repo-secrets.outputs.repository_secrets }}'
+          SKIPPED_KEYS=()
+          while read line; do
+            [ -z "$line" ] && continue # Skip empty lines
+            KEY=$(echo "$line" | cut -d'=' -f1)
+            VALUE=$(echo "$line" | cut -d'=' -f2-)
+            # TODO: Add whitelist, e/g ACTIVATE_USERS might be present at repo level
+            echo $SECRETS_LIST | grep -q "$KEY" && SKIPPED_KEYS+=("$KEY") && continue
+            DECODED_VALUE=$(echo "$VALUE" | base64 -d)
+            echo "  ✓ Setting secret: $KEY"
+            gh secret set "$KEY" --body "$DECODED_VALUE" --env "$ENVIRONMENT" --repo "$TARGET_REPO"
+          done < secrets.env
+          echo "⚠️ Skipped secrets already present at repository level: ${SKIPPED_KEYS[*]}"
+          echo "SKIPPED_KEYS=${SKIPPED_KEYS[*]}" >> $GITHUB_OUTPUT
+
       - name: Summary
         run: |
+          {
           echo "
-          ## Environment: $ENVIRONMENT
-
-          - 🔐 Number of secrets (repo scope): $(wc -l variables.env)
+          ## Summary for environment: $ENVIRONMENT
           - 📋 Number of variables (repo scope): $(wc -l variables.env)
-          - ⚠️ Skipped variables (already exist at repo level): ${{ steps.import-environment-variables.outputs.SKIPPED_KEYS }}
-          " >> $GITHUB_STEP_SUMMARY
+          - 🔐 Number of secrets (repo scope): $(wc -l secrets.env)
+          - ⚠️ Skipped variables (already exist at repo level):
+          "
+          printf "   - %s\n" ${{ steps.import-environment-variables.outputs.SKIPPED_KEYS }}
+          echo "- ⚠️ Skipped secrets (already exist at repo level):"
+          printf "   - %s\n" ${{ steps.import-environment-secrets.outputs.SKIPPED_KEYS }}
+          } >> $GITHUB_STEP_SUMMARY
