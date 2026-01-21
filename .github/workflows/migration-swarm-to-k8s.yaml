@@ -115,23 +115,22 @@ jobs:
       matrix:
         environment: ${{ fromJSON(needs.repository-configuration-migration.outputs.environments) }}
     environment: ${{ matrix.environment }}
-    name: ${{ matrix.environment }}
+    name: Migration ${{ matrix.environment }} environment
+    env:
+      SECRETS_LIST: ${{ needs.repository-configuration-migration.outputs.secrets }}
+      VARS_LIST: ${{ needs.repository-configuration-migration.outputs.variables }}
+      ENVIRONMENT: ${{ matrix.environment }}
     steps:
-      - name: "Export variables from ${{ github.repository }}"
+      - name: "Export variables from ${{ github.repository }}/${{ matrix.environment }}"
         run: |
-            gh api repos/${{ github.repository }}/environments/${{ matrix.environment }}/variables --jq '.variables'
-  #     - name: Export repository variables
-  #       id: export-repo-variables
-  #       run: |
-  #           EXPORT_JSON=$(jq -n -r '
-  #               [${{ toJSON(vars) }}] 
-  #               | add
-  #               | with_entries(.value |= @base64)
-  #               | to_entries[] 
-  #               | "\(.key)=\(.value)"
-  #           ' | base64 -w 0)
-  #           echo "::add-mask::$EXPORT_JSON"
-  #           echo "repository_variables=$EXPORT_JSON" >> $GITHUB_OUTPUT
+            jq -n -r \
+            '
+                [${{ toJSON(vars) }}] 
+                | add
+                | with_entries(.value |= @base64)
+                | to_entries[] 
+                | "\(.key)=\(.value)"
+            ' > variables.env
   #     - name: Export repository secrets
   #       id: export-repo-secrets
   #       run: |
@@ -144,14 +143,17 @@ jobs:
   #           ' | base64 -w 0)
   #           echo "::add-mask::$EXPORT_JSON"
   #           echo "repository_secrets=$EXPORT_JSON" >> $GITHUB_OUTPUT
-  #     - name: Trigger variables import in ${{ inputs.target_repo }}
-  #       env:
-  #           GH_TOKEN: ${{ secrets.MIGRATION_GH_TOKEN }}
-  #           ENVIRONMENT: ${{ matrix.environment }}
-  #       run: |
-            # else
-            #   gh variable set "$KEY" --body "$DECODED_VALUE" --env "$ENVIRONMENT" --repo "$REPO"
-            # fi
+      - name: Import variables to ${{ inputs.target_repo }} in ${{ matrix.environment }} environment
+        run: |
+          echo "📊 Importing variables to $TARGET_REPO"
+          # Import each variable
+          while IFS='=' read -r KEY VALUE; do
+            [ -z "$KEY" ] && continue. # Skip empty lines
+            echo $VARS_LIST | $grep -q "$KEY" && echo "  Skipping variable: $KEY, exists at repository scope" && continue
+            DECODED_VALUE=$(echo "$VALUE" | base64 -d)
+            echo "  ✓ Setting variable: $KEY"
+            gh variable set "$KEY" --body "$DECODED_VALUE" --env "$ENVIRONMENT" --repo "$REPO"
+          done < variables.env
       # - name: Trigger secrets import in ${{ inputs.target_repo }}
       #   env:
       #       GH_TOKEN: ${{ secrets.MIGRATION_GH_TOKEN }}
