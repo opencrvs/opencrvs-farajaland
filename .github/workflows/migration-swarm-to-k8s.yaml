@@ -153,6 +153,7 @@ jobs:
           while IFS='=' read -r KEY VALUE; do
             [ -z "$KEY" ] && continue. # Skip empty lines
             echo $VARS_LIST | grep -q "$KEY" && echo "  Skipping variable: $KEY, exists at repository scope" && continue
+            echo "$KEY = $VALUE"
             DECODED_VALUE=$(echo "$VALUE" | base64 -d)
             echo "  ✓ Setting variable: $KEY"
             # gh variable set "$KEY" --body "$DECODED_VALUE" --env "$ENVIRONMENT" --repo "$REPO"
