@@ -169,17 +169,9 @@ jobs:
             echo "  ✓ Setting variable: $KEY"
             gh variable set "$KEY" --body "$DECODED_VALUE" --env "$ENVIRONMENT" --repo "$TARGET_REPO"            
           done < variables.env
+          echo "⚠️ Skipped variables already present at repository level: ${SKIPPED_KEYS[*]}"
+          echo "SKIPPED_KEYS=${SKIPPED_KEYS[*]}" >> $GITHUB_OUTPUT
 
-          {
-          echo "
-          ## Target repository: $TARGET_REPO - environment: $ENVIRONMENT
-
-          Import summary:
-          - 🔐 Number of secrets: $TARGET_SECRETS_COUNT
-          - 📋 Number of variables: $TARGET_VARS_COUNT
-          - Skipped variables (already present at repo level):"
-          printf '   - %s\n' "${SKIPPED_KEYS[@]}"
-          } >> $GITHUB_STEP_SUMMARY
       # - name: Trigger secrets import in ${{ inputs.target_repo }}
       #   env:
       #       GH_TOKEN: ${{ secrets.MIGRATION_GH_TOKEN }}
@@ -190,3 +182,12 @@ jobs:
       #       -f event_type=import-config \
       #       -F client_payload[data_type]="secrets" \
       #       -F client_payload[data]='${{ steps.export-repo-secrets.outputs.repository_secrets }}'
+      - name: Summary
+        run: |
+          echo "
+          ## Environment: $ENVIRONMENT
+
+          - 🔐 Number of secrets (repo scope): $(echo $SECRETS_LIST | grep -o ' ' | wc -l)
+          - 📋 Number of variables (repo scope): $(echo $VARS_LIST | grep -o ' ' | wc -l)
+          - ⚠️ Skipped variables (already exist at repo level): ${{ steps.import-environment-variables.outputs.SKIPPED_KEYS }}
+          " >> $GITHUB_STEP_SUMMARY
