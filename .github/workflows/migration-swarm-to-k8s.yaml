@@ -35,7 +35,7 @@ jobs:
           SOURCE_VARS_NAMES=$(echo "$SOURCE_VARS" | jq -r '.[].name' | sort)
           echo vars=$SOURCE_VARS_NAMES >> $GITHUB_OUTPUT
 
-          SOURCE_ENVS=$(gh api repos/$SOURCE_REPO/environments --jq '.[].name')
+          SOURCE_ENVS=$(gh api repos/$SOURCE_REPO/environments --jq '.environments[].name')
           SOURCE_ENVS_COUNT=$(echo "$SOURCE_ENVS" | wc -l)
           echo environments=$SOURCE_ENVS >> $GITHUB_OUTPUT
 
