@@ -14,7 +14,51 @@ jobs:
   repository-configuration-migration:
     name: Repository Configuration Migration
     runs-on: ubuntu-latest
+    outputs:
+      repository_secrets: ${{ steps.export-repo-secrets.outputs.repository_secrets }}
     steps:
+      - name: Summary
+        env:
+          SOURCE_REPO: ${{ github.repository }}
+          TARGET_REPO: ${{ inputs.target_repo }}
+        run: |
+          # Repository-level counts
+          SOURCE_SECRETS=$(gh api repos/$SOURCE_REPO/actions/secrets --jq '.secrets')
+          SOURCE_SECRETS_COUNT=$(echo "$SOURCE_SECRETS" | jq 'length')
+          SOURCE_SECRETS_NAMES=$(echo "$SOURCE_SECRETS" | jq -r '.[].name' | sort)
+          echo secrets=$SOURCE_SECRETS_NAMES >> $GITHUB_OUTPUT
+
+          SOURCE_VARS=$(gh api repos/$SOURCE_REPO/actions/variables --jq '.variables')
+          SOURCE_VARS_COUNT=$(echo "$SOURCE_VARS" | jq 'length')
+          SOURCE_VARS_NAMES=$(echo "$SOURCE_VARS" | jq -r '.[].name' | sort)
+          echo vars=$SOURCE_VARS_NAMES >> $GITHUB_OUTPUT
+
+          SOURCE_ENVS=$(gh api repos/$SOURCE_REPO/environments --jq '.[].name')
+          SOURCE_ENVS_COUNT=$(echo "$SOURCE_ENVS" | wc -l)
+          echo environments=$SOURCE_ENVS >> $GITHUB_OUTPUT
+
+          TARGET_SECRETS=$(gh api repos/$TARGET_REPO/actions/secrets --jq '.secrets')
+          TARGET_SECRETS_COUNT=$(echo "$TARGET_SECRETS" | jq 'length')
+          TARGET_SECRETS_NAMES=$(echo "$TARGET_SECRETS" | jq -r '.[].name' | sort)
+
+          TARGET_VARS=$(gh api repos/$TARGET_REPO/actions/variables --jq '.variables')
+          TARGET_VARS_COUNT=$(echo "$TARGET_VARS" | jq 'length')
+          TARGET_VARS_NAMES=$(echo "$TARGET_VARS" | jq -r '.[].name' | sort)
+
+          TARGET_ENVS_COUNT=$(gh api repos/$TARGET_REPO/environments --jq '.total_count')
+          echo "
+          # Migration Summary
+          ## Source repository: $SOURCE_REPO
+
+          - 🌍 Number of environments: $SOURCE_ENVS_COUNT
+          - 🔐 Number of secrets (repo scope): $SOURCE_SECRETS_COUNT
+          - 📋 Number of variables (repo scope): $SOURCE_VARS_COUNT
+
+          ## Target repository: $TARGET_REPO
+          - 🌍 Number of environments: $TARGET_ENVS_COUNT
+          - 🔐 Number of secrets (repo scope): $TARGET_SECRETS_COUNT
+          - 📋 Number of variables (repo scope): $TARGET_VARS_COUNT
+          " >> $GITHUB_STEP_SUMMARY
       - name: "Export variables from ${{ github.repository }}"
         id: export-repo-variables
         run: |
