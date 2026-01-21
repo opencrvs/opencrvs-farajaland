@@ -116,7 +116,7 @@ jobs:
       max-parallel: 1  # Ensure jobs run one by one
       fail-fast: true  # Stop on first failure
       matrix:
-        environment: ${{ needs.repository-configuration-migration.outputs.environments }}
+        environment: ${{ fromJSON(needs.repository-configuration-migration.outputs.environments) }}
     environment: ${{ matrix.environment }}
     name: ${{ matrix.environment }}
     steps:
