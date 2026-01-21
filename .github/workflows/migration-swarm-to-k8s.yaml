@@ -39,7 +39,7 @@ jobs:
           echo vars=$SOURCE_VARS_NAMES >> $GITHUB_OUTPUT
 
           SOURCE_ENVS=$(gh api repos/$SOURCE_REPO/environments --jq '.environments | map(.name)')
-          SOURCE_ENVS_COUNT=$(echo "$SOURCE_ENVS" | wc -l)
+          SOURCE_ENVS_COUNT=$(echo "$SOURCE_ENVS" | jq ' . | length')
           echo environments=$SOURCE_ENVS >> $GITHUB_OUTPUT
 
           TARGET_SECRETS=$(gh api repos/$TARGET_REPO/actions/secrets --jq '.secrets')
