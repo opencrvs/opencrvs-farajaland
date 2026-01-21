@@ -19,11 +19,6 @@ jobs:
   repository-configuration-migration:
     name: Repository Configuration Migration
     runs-on: ubuntu-latest
-    env:
-      SOURCE_REPO: ${{ github.repository }}
-      TARGET_REPO: ${{ inputs.target_repo }}
-      # FIXME: Use a separate token with appropriate permissions
-      GH_TOKEN: ${{ secrets.GH_TOKEN }}
     outputs:
       secrets: ${{ steps.summary.outputs.secrets }}
       variables: ${{ steps.summary.outputs.variables }}
@@ -121,11 +116,6 @@ jobs:
         environment: ${{ fromJSON(needs.repository-configuration-migration.outputs.environments) }}
     environment: ${{ matrix.environment }}
     name: ${{ matrix.environment }}
-    env:
-      SOURCE_REPO: ${{ github.repository }}
-      TARGET_REPO: ${{ inputs.target_repo }}
-      # FIXME: Use a separate token with appropriate permissions
-      GH_TOKEN: ${{ secrets.GH_TOKEN }}
     steps:
       - name: "Export variables from ${{ github.repository }}"
         run: |
