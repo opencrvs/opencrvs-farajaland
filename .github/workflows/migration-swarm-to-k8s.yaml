@@ -158,25 +158,27 @@ jobs:
           echo "📊 Importing variables to $TARGET_REPO"
           # Import each variable
 
-          SKIPPED_KEYS=""
+          SKIPPED_KEYS=()
           while read line; do
             [ -z "$line" ] && continue # Skip empty lines
             KEY=$(echo "$line" | cut -d'=' -f1)
             VALUE=$(echo "$line" | cut -d'=' -f2-)
             # TODO: Add whitelist, e/g ACTIVATE_USERS might be present at repo level
-            echo $VARS_LIST | grep -q "$KEY" && SKIPPED_KEYS+=" - $KEY\n" && continue
+            echo $VARS_LIST | grep -q "$KEY" && SKIPPED_KEYS+=("$KEY") && continue
             DECODED_VALUE=$(echo "$VALUE" | base64 -d)
             echo "  ✓ Setting variable: $KEY"
             gh variable set "$KEY" --body "$DECODED_VALUE" --env "$ENVIRONMENT" --repo "$TARGET_REPO"            
           done < variables.env
-          echo "
-          ## Target repository: $TARGET_REPO - environment: $ENVIRONMENT
+          {
+            echo "
+            ## Target repository: $TARGET_REPO - environment: $ENVIRONMENT
 
-          Import summary:
-          - 🔐 Number of secrets: $TARGET_SECRETS_COUNT
-          - 📋 Number of variables: $TARGET_VARS_COUNT
-          - Skipped variables (already present at repo level): $SKIPPED_KEYS
-          " >> $GITHUB_STEP_SUMMARY
+            Import summary:
+            - 🔐 Number of secrets: $TARGET_SECRETS_COUNT
+            - 📋 Number of variables: $TARGET_VARS_COUNT
+            - Skipped variables (already present at repo level): $SKIPPED_KEYS"
+            printf '   - %s\n' "${SKIPPED_KEYS[@]}"
+          } >> $GITHUB_STEP_SUMMARY
       # - name: Trigger secrets import in ${{ inputs.target_repo }}
       #   env:
       #       GH_TOKEN: ${{ secrets.MIGRATION_GH_TOKEN }}
