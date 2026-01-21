@@ -104,6 +104,7 @@ jobs:
           while read line; do
             [ -z "$line" ] && continue # Skip empty lines
             KEY=$(echo "$line" | cut -d'=' -f1)
+            echo $KEY | grep -iq github && continue # Skip GitHub token secrets
             VALUE=$(echo "$line" | cut -d'=' -f2-)
             DECODED_VALUE=$(echo "$VALUE" | base64 -d)
             echo "  ✓ Setting secret: $KEY"
@@ -187,6 +188,7 @@ jobs:
             KEY=$(echo "$line" | cut -d'=' -f1)
             VALUE=$(echo "$line" | cut -d'=' -f2-)
             # TODO: Add whitelist, e/g ACTIVATE_USERS might be present at repo level
+            echo $KEY | grep -iq github && continue # Skip GitHub token secrets
             echo $SECRETS_LIST | grep -q "$KEY" && SKIPPED_KEYS+=("$KEY") && continue
             DECODED_VALUE=$(echo "$VALUE" | base64 -d)
             echo "  ✓ Setting secret: $KEY"
