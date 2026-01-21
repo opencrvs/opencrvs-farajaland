@@ -8,15 +8,20 @@ import {
 import { isMobile } from './mobile-helpers'
 
 type Workqueue =
-  | 'Ready to print'
-  | 'Ready for review'
-  | 'Notifications'
-  | 'Requires updates'
-  | 'In external validation'
+  | 'Outbox'
+  | 'My drafts'
   | 'Assigned to you'
   | 'Recent'
-  | 'Sent for review'
-  | 'Outbox'
+  | 'Notifications'
+  | 'Potential duplicate'
+  | 'Pending updates'
+  | 'Pending approval'
+  | 'Escalated'
+  | 'Pending registration'
+  | 'In external validation'
+  | 'Pending certification'
+  | 'Pending issuance'
+  | 'Pending corrections'
 
 export async function navigateToWorkqueue(page: Page, workqueue: Workqueue) {
   if (isMobile(page)) {
@@ -47,6 +52,8 @@ export async function selectAction(
     | 'Escalate'
     | 'Registrar general feedback'
     | 'Provincial registrar feedback'
+    | 'Revoke registration'
+    | 'Reinstate registration'
 ) {
   if (await page.getByRole('button', { name: 'Assign record' }).isVisible()) {
     await ensureAssigned(page)
