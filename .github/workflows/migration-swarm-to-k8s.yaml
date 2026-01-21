@@ -13,9 +13,6 @@ jobs:
   repository-configuration-migration:
     name: Repository Configuration Migration
     runs-on: ubuntu-latest
-    outputs:
-      variables-list: "<variables-list>"
-      secrets-list: "<secrets-list>"
     steps:
       - name: "Export repository variables from ${{ github.repository }}"
         id: export-repo-variables
