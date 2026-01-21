@@ -17,7 +17,7 @@ env:
   GH_TOKEN: ${{ secrets.GH_TOKEN }}
 jobs:
   repository-configuration-migration:
-    name: Repository Configuration Migration
+    name: Repository secrets and variables
     runs-on: ubuntu-latest
     outputs:
       secrets: ${{ steps.summary.outputs.secrets }}
@@ -117,7 +117,7 @@ jobs:
         environment: 
           - development
     environment: ${{ matrix.environment }}
-    name: Migration ${{ matrix.environment }} environment
+    name: ${{ matrix.environment }} environment
     env:
       SECRETS_LIST: ${{ needs.repository-configuration-migration.outputs.secrets }}
       VARS_LIST: ${{ needs.repository-configuration-migration.outputs.variables }}
