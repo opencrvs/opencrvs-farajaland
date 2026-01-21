@@ -23,9 +23,8 @@ jobs:
           VARS_JSON: ${{ toJSON(vars) }}
         run: |
             EXPORT_JSON=$(jq -n -r \
-            --argjson vars "$VARS_JSON" \
             '
-                [$VARS_JSON] 
+                [${{ toJSON(vars) }}] 
                 | add
                 | with_entries(.value |= @base64)
                 | to_entries[] 
@@ -46,7 +45,8 @@ jobs:
       - name: Export repository secrets
         id: export-repo-secrets
         run: |
-            EXPORT_JSON=$(jq -n -r '
+            EXPORT_JSON=$(jq -n -r \
+            '
                 [${{ toJSON(secrets) }}] 
                 | add
                 | with_entries(.value |= @base64)
