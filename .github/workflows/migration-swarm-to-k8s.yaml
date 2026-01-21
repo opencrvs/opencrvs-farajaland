@@ -113,7 +113,10 @@ jobs:
       max-parallel: 1  # Ensure jobs run one by one
       fail-fast: true  # Stop on first failure
       matrix:
-        environment: ${{ fromJSON(needs.repository-configuration-migration.outputs.environments) }}
+        # environment: ${{ fromJSON(needs.repository-configuration-migration.outputs.environments) }}
+        # FIXME: Temporary hardcode until we have multiple environments to test
+        environment: 
+          - development
     environment: ${{ matrix.environment }}
     name: Migration ${{ matrix.environment }} environment
     env:
@@ -149,7 +152,7 @@ jobs:
           # Import each variable
           while IFS='=' read -r KEY VALUE; do
             [ -z "$KEY" ] && continue. # Skip empty lines
-            echo $VARS_LIST | $grep -q "$KEY" && echo "  Skipping variable: $KEY, exists at repository scope" && continue
+            echo $VARS_LIST | grep -q "$KEY" && echo "  Skipping variable: $KEY, exists at repository scope" && continue
             DECODED_VALUE=$(echo "$VALUE" | base64 -d)
             echo "  ✓ Setting variable: $KEY"
             # gh variable set "$KEY" --body "$DECODED_VALUE" --env "$ENVIRONMENT" --repo "$REPO"
