@@ -19,8 +19,6 @@ jobs:
     steps:
       - name: Export repository variables
         id: export-repo-variables
-        env:
-          VARS_JSON: ${{ toJSON(vars) }}
         run: |
             EXPORT_JSON=$(jq -n -r \
             '
@@ -31,7 +29,7 @@ jobs:
                 | "\(.key)=\(.value)"
             ' | base64 -w 0)
             echo "::add-mask::$EXPORT_JSON"
-            echo "repository_variables=$EXPORT_JSON" >> $GITHUB_OUTPUT
+            echo "data=$EXPORT_JSON" >> $GITHUB_OUTPUT
 
       - name: Trigger variables import in ${{ inputs.target_repo }}
         env:
@@ -41,7 +39,7 @@ jobs:
             --method POST \
             -f event_type=import-config \
             -F client_payload[data_type]="variables" \
-            -F client_payload[data]='${{ steps.export-repo-variables.outputs.repository_variables }}'
+            -F client_payload[data]='${{ steps.export-repo-variables.outputs.data }}'
       - name: Export repository secrets
         id: export-repo-secrets
         run: |
