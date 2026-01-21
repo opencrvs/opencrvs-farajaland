@@ -169,15 +169,16 @@ jobs:
             echo "  ✓ Setting variable: $KEY"
             gh variable set "$KEY" --body "$DECODED_VALUE" --env "$ENVIRONMENT" --repo "$TARGET_REPO"            
           done < variables.env
-          {
-            echo "
-            ## Target repository: $TARGET_REPO - environment: $ENVIRONMENT
 
-            Import summary:
-            - 🔐 Number of secrets: $TARGET_SECRETS_COUNT
-            - 📋 Number of variables: $TARGET_VARS_COUNT
-            - Skipped variables (already present at repo level): $SKIPPED_KEYS"
-            printf '   - %s\n' "${SKIPPED_KEYS[@]}"
+          {
+          echo "
+          ## Target repository: $TARGET_REPO - environment: $ENVIRONMENT
+
+          Import summary:
+          - 🔐 Number of secrets: $TARGET_SECRETS_COUNT
+          - 📋 Number of variables: $TARGET_VARS_COUNT
+          - Skipped variables (already present at repo level):"
+          printf '   - %s\n' "${SKIPPED_KEYS[@]}"
           } >> $GITHUB_STEP_SUMMARY
       # - name: Trigger secrets import in ${{ inputs.target_repo }}
       #   env:
