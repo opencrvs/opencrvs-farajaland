@@ -164,7 +164,7 @@ jobs:
             KEY=$(echo "$line" | cut -d'=' -f1)
             VALUE=$(echo "$line" | cut -d'=' -f2-)
             # TODO: Add whitelist, e/g ACTIVATE_USERS might be present at repo level
-            echo $VARS_LIST | grep -q "$KEY" && SKIPPED_KEYS+=$KEY && continue
+            echo $VARS_LIST | grep -q "$KEY" && SKIPPED_KEYS+=" - $KEY\n" && continue
             DECODED_VALUE=$(echo "$VALUE" | base64 -d)
             echo "  ✓ Setting variable: $KEY"
             gh variable set "$KEY" --body "$DECODED_VALUE" --env "$ENVIRONMENT" --repo "$TARGET_REPO"            
