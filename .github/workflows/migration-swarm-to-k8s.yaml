@@ -10,6 +10,11 @@ on:
         required: true
         default: 'adskyiproger/opencrvs-infrastructure'
 
+env:
+  SOURCE_REPO: ${{ github.repository }}
+  TARGET_REPO: ${{ inputs.target_repo }}
+  # FIXME: Use a separate token with appropriate permissions
+  GH_TOKEN: ${{ secrets.GH_TOKEN }}
 jobs:
   repository-configuration-migration:
     name: Repository Configuration Migration
