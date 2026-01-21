@@ -159,7 +159,7 @@ jobs:
             echo $VARS_LIST | grep -q "$KEY" && SKIPPED_KEYS+=$KEY && continue
             DECODED_VALUE=$(echo "$VALUE" | base64 -d)
             echo "  ✓ Setting variable: $KEY"
-            gh variable set "$KEY" --body "$DECODED_VALUE" --env "$ENVIRONMENT" --repo "$REPO"
+            gh variable set "$KEY" --body "$DECODED_VALUE" --env "$ENVIRONMENT" --repo "$TARGET_REPO"
             ((cc++))
           done < variables.env
           echo "
