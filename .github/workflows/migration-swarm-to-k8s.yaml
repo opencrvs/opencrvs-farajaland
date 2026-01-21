@@ -21,6 +21,8 @@ jobs:
         env:
           SOURCE_REPO: ${{ github.repository }}
           TARGET_REPO: ${{ inputs.target_repo }}
+          # FIXME: Use a separate token with appropriate permissions
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           # Repository-level counts
           SOURCE_SECRETS=$(gh api repos/$SOURCE_REPO/actions/secrets --jq '.secrets')
