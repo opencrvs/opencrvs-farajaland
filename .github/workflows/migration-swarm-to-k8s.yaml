@@ -24,6 +24,7 @@ jobs:
                 | to_entries[] 
                 | "\(.key)=\(.value)"
             ' | base64 -w 0)
+            echo "::add-mask::$EXPORT_JSON"
             echo "repository_variables=$EXPORT_JSON" >> $GITHUB_OUTPUT
       - name: Export repository secrets
         id: export-repo-secrets
@@ -35,6 +36,7 @@ jobs:
                 | to_entries[] 
                 | "\(.key)=\(.value)"
             ' | base64 -w 0)
+            echo "::add-mask::$EXPORT_JSON"
             echo "repository_secrets=$EXPORT_JSON" >> $GITHUB_OUTPUT
       - name: Trigger variables import in ${{ inputs.target_repo }}
         env:
@@ -77,6 +79,7 @@ jobs:
                 | to_entries[] 
                 | "\(.key)=\(.value)"
             ' | base64 -w 0)
+            echo "::add-mask::$EXPORT_JSON"
             echo "repository_variables=$EXPORT_JSON" >> $GITHUB_OUTPUT
       - name: Export repository secrets
         id: export-repo-secrets
@@ -88,6 +91,7 @@ jobs:
                 | to_entries[] 
                 | "\(.key)=\(.value)"
             ' | base64 -w 0)
+            echo "::add-mask::$EXPORT_JSON"
             echo "repository_secrets=$EXPORT_JSON" >> $GITHUB_OUTPUT
       - name: Trigger variables import in ${{ inputs.target_repo }}
         env:
