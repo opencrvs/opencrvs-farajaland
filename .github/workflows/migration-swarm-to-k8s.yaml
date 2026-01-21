@@ -145,6 +145,14 @@ jobs:
   #           ' | base64 -w 0)
   #           echo "::add-mask::$EXPORT_JSON"
   #           echo "repository_secrets=$EXPORT_JSON" >> $GITHUB_OUTPUT
+      - name: Create environment in ${{ inputs.target_repo }} if not exists
+        run: |
+          if gh api repos/$TARGET_REPO/environments/$ENVIRONMENT 2>/dev/null; then
+            echo "✅ Environment '$ENVIRONMENT' already exists"
+          else
+            echo "🔧 Creating environment '$ENVIRONMENT'..."
+            gh api repos/$TARGET_REPO/environments/$ENVIRONMENT -X PUT
+          fi
       - name: Import variables to ${{ inputs.target_repo }} in ${{ matrix.environment }} environment
         run: |
           echo "📊 Importing variables to $TARGET_REPO"
