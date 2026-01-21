@@ -14,6 +14,11 @@ jobs:
   repository-configuration-migration:
     name: Repository Configuration Migration
     runs-on: ubuntu-latest
+    env:
+      SOURCE_REPO: ${{ github.repository }}
+      TARGET_REPO: ${{ inputs.target_repo }}
+      # FIXME: Use a separate token with appropriate permissions
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
     outputs:
       secrets: ${{ steps.summary.outputs.secrets }}
       variables: ${{ steps.summary.outputs.variables }}
@@ -21,11 +26,6 @@ jobs:
     steps:
       - name: Summary
         id: summary
-        env:
-          SOURCE_REPO: ${{ github.repository }}
-          TARGET_REPO: ${{ inputs.target_repo }}
-          # FIXME: Use a separate token with appropriate permissions
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           # Repository-level counts
           SOURCE_SECRETS=$(gh api repos/$SOURCE_REPO/actions/secrets --jq '.secrets')
@@ -76,17 +76,14 @@ jobs:
                 | "\(.key)=\(.value)"
             ' > variables.env
       - name: Import variables to ${{ inputs.target_repo }}
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
-          REPO: ${{ inputs.target_repo }}
         run: |
-          echo "📊 Importing variables to $REPO"
+          echo "📊 Importing variables to $TARGET_REPO"
           # Import each variable
           while IFS='=' read -r KEY VALUE; do
             [ -z "$KEY" ] && continue
             DECODED_VALUE=$(echo "$VALUE" | base64 -d)
             echo "  ✓ Setting variable: $KEY"
-            gh variable set "$KEY" --body "$DECODED_VALUE" --repo "$REPO"
+            gh variable set "$KEY" --body "$DECODED_VALUE" --repo "$TARGET_REPO"
           done < variables.env
       - name: Export repository secrets
         id: export-repo-secrets
@@ -119,6 +116,11 @@ jobs:
         environment: ${{ fromJSON(needs.repository-configuration-migration.outputs.environments) }}
     environment: ${{ matrix.environment }}
     name: ${{ matrix.environment }}
+    env:
+      SOURCE_REPO: ${{ github.repository }}
+      TARGET_REPO: ${{ inputs.target_repo }}
+      # FIXME: Use a separate token with appropriate permissions
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
     steps:
       - name: "Export variables from ${{ github.repository }}"
         run: |
