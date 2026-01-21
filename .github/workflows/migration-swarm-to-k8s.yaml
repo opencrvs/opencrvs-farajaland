@@ -110,13 +110,13 @@ jobs:
             -f event_type=import-config \
             -F client_payload[data_type]="variables" \
             -F client_payload[data]='${{ steps.export-repo-variables.outputs.repository_variables }}'
-      - name: Trigger secrets import in ${{ inputs.target_repo }}
-        env:
-            GH_TOKEN: ${{ secrets.MIGRATION_GH_TOKEN }}
-            ENVIRONMENT: ${{ matrix.environment }}
-        run: |
-          gh api repos/${{ inputs.target_repo }}/dispatches \
-            --method POST \
-            -f event_type=import-config \
-            -F client_payload[data_type]="secrets" \
-            -F client_payload[data]='${{ steps.export-repo-secrets.outputs.repository_secrets }}'
+      # - name: Trigger secrets import in ${{ inputs.target_repo }}
+      #   env:
+      #       GH_TOKEN: ${{ secrets.MIGRATION_GH_TOKEN }}
+      #       ENVIRONMENT: ${{ matrix.environment }}
+      #   run: |
+      #     gh api repos/${{ inputs.target_repo }}/dispatches \
+      #       --method POST \
+      #       -f event_type=import-config \
+      #       -F client_payload[data_type]="secrets" \
+      #       -F client_payload[data]='${{ steps.export-repo-secrets.outputs.repository_secrets }}'
