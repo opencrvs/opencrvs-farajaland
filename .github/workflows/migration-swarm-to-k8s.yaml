@@ -153,11 +153,11 @@ jobs:
             [ -z "$line" ] && continue # Skip empty lines
             KEY=$(echo "$line" | cut -d'=' -f1)
             VALUE=$(echo "$line" | cut -d'=' -f2-)
-            echo $VARS_LIST | grep -q "$KEY" && echo "  Skipping variable: $KEY, exists at repository scope" && \
-               skip_counter=0 && continue
+            # TODO: Add whitelist, e/g ACTIVATE_USERS might be present at repo level
+            echo $VARS_LIST | grep -q "$KEY" && continue
             DECODED_VALUE=$(echo "$VALUE" | base64 -d)
             echo "  ✓ Setting variable: $KEY"
-            # gh variable set "$KEY" --body "$DECODED_VALUE" --env "$ENVIRONMENT" --repo "$REPO"
+            gh variable set "$KEY" --body "$DECODED_VALUE" --env "$ENVIRONMENT" --repo "$REPO"
           done < variables.env
       # - name: Trigger secrets import in ${{ inputs.target_repo }}
       #   env:
