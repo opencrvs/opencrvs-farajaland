@@ -10,9 +10,12 @@ on:
         default: 'adskyiproger/opencrvs-infrastructure'
 
 jobs:
-  repository-secrets-migration:
-    name: Repository Secrets Migration
+  repository-configuration-migration:
+    name: Repository Configuration Migration
     runs-on: ubuntu-latest
+    outputs:
+      variables-list: "<variables-list>"
+      secrets-list: "<secrets-list>"
     steps:
       - name: Export repository variables
         id: export-repo-variables
@@ -26,6 +29,16 @@ jobs:
             ' | base64 -w 0)
             echo "::add-mask::$EXPORT_JSON"
             echo "repository_variables=$EXPORT_JSON" >> $GITHUB_OUTPUT
+
+      - name: Trigger variables import in ${{ inputs.target_repo }}
+        env:
+            GH_TOKEN: ${{ secrets.MIGRATION_GH_TOKEN }}
+        run: |
+          gh api repos/${{ inputs.target_repo }}/dispatches \
+            --method POST \
+            -f event_type=import-config \
+            -F client_payload[data_type]="variables" \
+            -F client_payload[data]='${{ steps.export-repo-variables.outputs.repository_variables }}'
       - name: Export repository secrets
         id: export-repo-secrets
         run: |
@@ -38,15 +51,6 @@ jobs:
             ' | base64 -w 0)
             echo "::add-mask::$EXPORT_JSON"
             echo "repository_secrets=$EXPORT_JSON" >> $GITHUB_OUTPUT
-      - name: Trigger variables import in ${{ inputs.target_repo }}
-        env:
-            GH_TOKEN: ${{ secrets.MIGRATION_GH_TOKEN }}
-        run: |
-          gh api repos/${{ inputs.target_repo }}/dispatches \
-            --method POST \
-            -f event_type=import-config \
-            -F client_payload[data_type]="variables" \
-            -F client_payload[data]='${{ steps.export-repo-variables.outputs.repository_variables }}'
       # - name: Trigger secrets import in ${{ inputs.target_repo }}
       #   env:
       #       GH_TOKEN: ${{ secrets.MIGRATION_GH_TOKEN }}
@@ -66,8 +70,7 @@ jobs:
       matrix:
         environment:
           - aaa
-    environment:
-      name: ${{ matrix.environment }}
+    environment: ${{ matrix.environment }}
     steps:
       - name: Export repository variables
         id: export-repo-variables
