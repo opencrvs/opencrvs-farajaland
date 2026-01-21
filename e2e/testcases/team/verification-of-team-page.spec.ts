@@ -19,7 +19,7 @@ test.describe.serial('1. Team Page -1', () => {
 
   test.describe('1.1 Team Page', async () => {
     test('1.1.0 Verify UI', async () => {
-      await login(page, CREDENTIALS.LOCAL_REGISTRAR)
+      await login(page, CREDENTIALS.REGISTRAR)
       await page.getByRole('button', { name: 'Team' }).click()
       await expect(page.locator('#content-name')).toHaveText(
         'Ibombo District Office'

@@ -52,14 +52,14 @@ test.describe.serial('1.Farajaland as location parent', () => {
   })
 
   test('1.2.1 Local Registrar in another administrative area should not find the declaration', async () => {
-    await login(page, CREDENTIALS.LOCAL_REGISTRAR)
+    await login(page, CREDENTIALS.REGISTRAR)
     // Try to search for the declaration with name. It should not be found.
 
     await searchFromSearchBar(page, name, false)
   })
 
   test('1.2.2 Registrar general completes and registers', async () => {
-    await login(page, CREDENTIALS.NATIONAL_REGISTRAR)
+    await login(page, CREDENTIALS.REGISTRAR_GENERAL)
     // Try to search for the declaration with name. It should be found.
     await searchFromSearchBar(page, name, true)
   })
