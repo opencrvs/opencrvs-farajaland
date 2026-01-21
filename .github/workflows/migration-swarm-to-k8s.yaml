@@ -36,7 +36,7 @@ jobs:
           SOURCE_VARS=$(gh api repos/$SOURCE_REPO/actions/variables --jq '.variables')
           SOURCE_VARS_COUNT=$(echo "$SOURCE_VARS" | jq 'length')
           SOURCE_VARS_NAMES=$(echo "$SOURCE_VARS" | jq -r '.[].name' | sort)
-          echo vars=$SOURCE_VARS_NAMES >> $GITHUB_OUTPUT
+          echo variables=$SOURCE_VARS_NAMES >> $GITHUB_OUTPUT
 
           SOURCE_ENVS=$(gh api repos/$SOURCE_REPO/environments --jq '.environments | map(.name)')
           SOURCE_ENVS_COUNT=$(echo "$SOURCE_ENVS" | jq ' . | length')
@@ -52,7 +52,6 @@ jobs:
 
           TARGET_ENVS_COUNT=$(gh api repos/$TARGET_REPO/environments --jq '.total_count')
           echo "
-          # Migration Summary
           ## Source repository: $SOURCE_REPO
 
           - 🌍 Number of environments: $SOURCE_ENVS_COUNT
@@ -154,8 +153,8 @@ jobs:
             [ -z "$line" ] && continue # Skip empty lines
             KEY=$(echo "$line" | cut -d'=' -f1)
             VALUE=$(echo "$line" | cut -d'=' -f2-)
-            echo $VARS_LIST | grep -q "$KEY" && echo "  Skipping variable: $KEY, exists at repository scope" && continue
-            echo "$KEY = $VALUE"
+            echo $VARS_LIST | grep -q "$KEY" && echo "  Skipping variable: $KEY, exists at repository scope" && \
+               skip_counter=0 && continue
             DECODED_VALUE=$(echo "$VALUE" | base64 -d)
             echo "  ✓ Setting variable: $KEY"
             # gh variable set "$KEY" --body "$DECODED_VALUE" --env "$ENVIRONMENT" --repo "$REPO"
