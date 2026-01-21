@@ -154,6 +154,7 @@ jobs:
             gh api repos/$TARGET_REPO/environments/$ENVIRONMENT -X PUT
           fi
       - name: Import variables to ${{ inputs.target_repo }} in ${{ matrix.environment }} environment
+        id: import-environment-variables
         run: |
           echo "📊 Importing variables to $TARGET_REPO"
           # Import each variable
@@ -187,7 +188,7 @@ jobs:
           echo "
           ## Environment: $ENVIRONMENT
 
-          - 🔐 Number of secrets (repo scope): $(echo $SECRETS_LIST | grep -o ' ' | wc -l)
-          - 📋 Number of variables (repo scope): $(echo $VARS_LIST | grep -o ' ' | wc -l)
+          - 🔐 Number of secrets (repo scope): $(wc -l variables.env)
+          - 📋 Number of variables (repo scope): $(wc -l variables.env)
           - ⚠️ Skipped variables (already exist at repo level): ${{ steps.import-environment-variables.outputs.SKIPPED_KEYS }}
           " >> $GITHUB_STEP_SUMMARY
