@@ -15,9 +15,12 @@ jobs:
     name: Repository Configuration Migration
     runs-on: ubuntu-latest
     outputs:
-      repository_secrets: ${{ steps.export-repo-secrets.outputs.repository_secrets }}
+      secrets: ${{ steps.summary.outputs.secrets }}
+      variables: ${{ steps.summary.outputs.variables }}
+      environments: ${{ toJSON(steps.summary.outputs.environments) }}
     steps:
       - name: Summary
+        id: summary
         env:
           SOURCE_REPO: ${{ github.repository }}
           TARGET_REPO: ${{ inputs.target_repo }}
@@ -88,16 +91,14 @@ jobs:
       - name: Export repository secrets
         id: export-repo-secrets
         run: |
-            EXPORT_JSON=$(jq -n -r \
+            jq -n -r \
             '
                 [${{ toJSON(secrets) }}] 
                 | add
                 | with_entries(.value |= @base64)
                 | to_entries[] 
                 | "\(.key)=\(.value)"
-            ' | base64 -w 0)
-            echo "::add-mask::$EXPORT_JSON"
-            echo "repository_secrets=$EXPORT_JSON" >> $GITHUB_OUTPUT
+            ' > secrets.env
       # - name: Trigger secrets import in ${{ inputs.target_repo }}
       #   env:
       #       GH_TOKEN: ${{ secrets.MIGRATION_GH_TOKEN }}
@@ -108,17 +109,19 @@ jobs:
       #       -F client_payload[data_type]="secrets" \
       #       -F client_payload[data]='${{ steps.export-repo-secrets.outputs.repository_secrets }}'
 
-  # environment-secrets-migration:
-  #   name: Repository Secrets Migration
-  #   runs-on: ubuntu-latest
-  #   strategy:
-  #     max-parallel: 1  # Ensure jobs run one by one
-  #     fail-fast: true  # Stop on first failure
-  #     matrix:
-  #       environment:
-  #         - aaa
-  #   environment: ${{ matrix.environment }}
-  #   steps:
+  environment-secrets-migration:
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 1  # Ensure jobs run one by one
+      fail-fast: true  # Stop on first failure
+      matrix:
+        environment: ${{ fromJson(steps.summary.outputs.environments) }}
+    environment: ${{ matrix.environment }}
+    name: ${{ matrix.environment }}
+    steps:
+      - name: "Export variables from ${{ github.repository }}"
+        run: |
+            gh api repos/${{ github.repository }}/environments/${{ matrix.environment }}/variables --jq '.variables'
   #     - name: Export repository variables
   #       id: export-repo-variables
   #       run: |
