@@ -19,9 +19,13 @@ jobs:
     steps:
       - name: Export repository variables
         id: export-repo-variables
+        env:
+          VARS_JSON: ${{ toJSON(vars) }}
         run: |
-            EXPORT_JSON=$(jq -n -r '
-                [${{ toJSON(vars) }}] 
+            EXPORT_JSON=$(jq -n -r \
+            --argjson vars "$VARS_JSON" \
+            '
+                [$VARS_JSON] 
                 | add
                 | with_entries(.value |= @base64)
                 | to_entries[] 
