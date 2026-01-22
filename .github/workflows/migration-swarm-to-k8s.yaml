@@ -128,7 +128,7 @@ jobs:
         environment: 
           - swarm-to-k8s # THIS IS REAL ENV NAME IN FARAJALAND
     environment: ${{ matrix.environment }}
-    name: ${{ matrix.environment }} environment
+    name: Copy secrets and vars to ${{ matrix.environment }} environment
     env:
       SECRETS_LIST: ${{ needs.repository-configuration-migration.outputs.secrets }}
       VARS_LIST: ${{ needs.repository-configuration-migration.outputs.variables }}
@@ -216,7 +216,6 @@ jobs:
           printf "   - %s\n" ${{ steps.import-environment-secrets.outputs.SKIPPED_KEYS }}
           } >> $GITHUB_STEP_SUMMARY
   bootstrap-self-hosted-runner:
-    name: Bootstrap self-hosted runner on target repo
     needs: repository-configuration-migration
     strategy:
       max-parallel: 1  # Ensure jobs run one by one
@@ -227,7 +226,7 @@ jobs:
         environment: 
           - swarm-to-k8s # THIS IS REAL ENV NAME IN FARAJALAND
     environment: ${{ matrix.environment }}
-    name: ${{ matrix.environment }} environment
+    name: Bootstrap ${{ matrix.environment }} self-hosted runner
     runs-on: ubuntu-24.04
     outputs:
       outcome: ${{ steps.deploy.outcome }}
