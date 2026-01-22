@@ -856,6 +856,10 @@ export const birthEvent = defineConfig({
         {
           type: ConditionalType.ENABLE,
           conditional: and(
+            or(
+              field('mother.verified').isEqualTo('verified'),
+              field('mother.verified').isEqualTo('authenticated')
+            ),
             flag('validated'),
             not(flag('approval-required-for-late-registration')),
             not(flag('escalated-to-provincial-registrar')),
