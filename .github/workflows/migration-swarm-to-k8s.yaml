@@ -277,6 +277,5 @@ jobs:
           directory: ${{ github.event.repository.name }}/infrastructure/server-setup
           options: |
             --verbose
-            --inventory inventory/${{ inputs.environment }}.yml
-            ${{ inputs.tag != 'all' && format('--tags={0}', inputs.tag) || ''}}
+            --inventory inventory/${{ matrix.environment }}.yml
             --extra-vars ""${{ steps.ansible-variables.outputs.EXTRA_VARS }}""
