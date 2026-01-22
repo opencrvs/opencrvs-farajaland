@@ -4,15 +4,20 @@ run-name: "Migration secrets and variables ${{ inputs.target_repo }}"
 on:
   workflow_dispatch:
     inputs:
-      target_repo:
+      target_owner:
         type: string
-        description: 'The target infrastructure repository to use for migration'
+        description: 'The target organization owner'
         required: true
-        default: 'adskyiproger/opencrvs-infrastructure'
+        default: 'adskyiproger'
+      target_repo_name:
+        type: string
+        description: 'The target infrastructure repository'
+        required: true
+        default: 'opencrvs-infrastructure'
 
 env:
   SOURCE_REPO: ${{ github.repository }}
-  TARGET_REPO: ${{ inputs.target_repo }}
+  TARGET_REPO: ${{ inputs.target_owner }}/${{ inputs.target_repo_name }}
   # FIXME: Use a separate token with appropriate permissions
   GH_TOKEN: ${{ secrets.MIGRATION_GH_TOKEN }}
 jobs:
@@ -74,7 +79,7 @@ jobs:
                 | to_entries[] 
                 | "\(.key)=\(.value)"
             ' > variables.env
-      - name: Import variables to ${{ inputs.target_repo }}
+      - name: Import variables to ${{ inputs.target_owner }}/${{ inputs.target_repo_name }}
         run: |
           echo "📊 Importing variables to $TARGET_REPO"
           # Import each variable
@@ -97,7 +102,7 @@ jobs:
                 | to_entries[] 
                 | "\(.key)=\(.value)"
             ' > secrets.env
-      - name: Import secrets to ${{ inputs.target_repo }}
+      - name: Import secrets to ${{ inputs.target_owner }}/${{ inputs.target_repo_name }}
         run: |
           echo "📊 Importing secrets to $TARGET_REPO"
           # Import each secret
@@ -121,7 +126,7 @@ jobs:
         # environment: ${{ fromJSON(needs.repository-configuration-migration.outputs.environments) }}
         # FIXME: Temporary hardcode until we have multiple environments to test
         environment: 
-          - development
+          - swarm-to-k8s # THIS IS REAL ENV NAME IN FARAJALAND
     environment: ${{ matrix.environment }}
     name: ${{ matrix.environment }} environment
     env:
@@ -149,7 +154,7 @@ jobs:
                 | to_entries[] 
                 | "\(.key)=\(.value)"
             ' > secrets.env
-      - name: Create environment in ${{ inputs.target_repo }} if not exists
+      - name: Create environment in ${{ inputs.target_owner }}/${{ inputs.target_repo_name }} if not exists
         run: |
           if gh api repos/$TARGET_REPO/environments/$ENVIRONMENT 2>/dev/null; then
             echo "✅ Environment '$ENVIRONMENT' already exists"
@@ -157,7 +162,7 @@ jobs:
             echo "🔧 Creating environment '$ENVIRONMENT'..."
             gh api repos/$TARGET_REPO/environments/$ENVIRONMENT -X PUT
           fi
-      - name: Import variables to ${{ inputs.target_repo }} in ${{ matrix.environment }} environment
+      - name: Import variables to ${{ inputs.target_owner }}/${{ inputs.target_repo_name }} in ${{ matrix.environment }} environment
         id: import-environment-variables
         run: |
           echo "📊 Importing variables to $TARGET_REPO"
@@ -176,7 +181,7 @@ jobs:
           done < variables.env
           echo "⚠️ Skipped variables already present at repository level: ${SKIPPED_KEYS[*]}"
           echo "SKIPPED_KEYS=${SKIPPED_KEYS[*]}" >> $GITHUB_OUTPUT
-      - name: Import secrets to ${{ inputs.target_repo }} in ${{ matrix.environment }} environment
+      - name: Import secrets to ${{ inputs.target_owner }}/${{ inputs.target_repo_name }} in ${{ matrix.environment }} environment
         id: import-environment-secrets
         run: |
           echo "📊 Importing secrets to $TARGET_REPO"
@@ -210,3 +215,69 @@ jobs:
           echo "- ⚠️ Skipped secrets (already exist at repo level):"
           printf "   - %s\n" ${{ steps.import-environment-secrets.outputs.SKIPPED_KEYS }}
           } >> $GITHUB_STEP_SUMMARY
+  bootstrap-self-hosted-runner:
+    name: Bootstrap self-hosted runner on target repo
+    needs: repository-configuration-migration
+    strategy:
+      max-parallel: 1  # Ensure jobs run one by one
+      fail-fast: true  # Stop on first failure
+      matrix:
+        # environment: ${{ fromJSON(needs.repository-configuration-migration.outputs.environments) }}
+        # FIXME: Temporary hardcode until we have multiple environments to test
+        environment: 
+          - swarm-to-k8s # THIS IS REAL ENV NAME IN FARAJALAND
+    environment: ${{ matrix.environment }}
+    name: ${{ matrix.environment }} environment
+    runs-on: ubuntu-24.04
+    outputs:
+      outcome: ${{ steps.deploy.outcome }}
+    timeout-minutes: 60
+    steps:
+      - name: Clone country config resource package
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          ref: ${{ github.ref_name }}
+          path: './${{ github.event.repository.name }}'
+
+      - name: Set variables for ansible
+        id: ansible-variables
+        run: |
+          JSON_WITH_NEWLINES=$(cat<<EOF
+            ${{ toJSON(env) }}
+          EOF)
+          JSON_WITHOUT_NEWLINES=$(echo $JSON_WITH_NEWLINES | jq -R -c .)
+          echo "EXTRA_VARS=$JSON_WITHOUT_NEWLINES" >> $GITHUB_OUTPUT
+        env:
+          manager_production_server_ip: ${{ vars.SSH_HOST }}
+          ansible_user: ${{ secrets.SSH_USER }}
+          target_repo_owner: ${{ inputs.target_owner }}
+          target_repo_name: ${{ inputs.target_repo_name }}
+          migration_token: ${{ secrets.MIGRATION_RUNNER_TOKEN }}
+          environment: ${{ matrix.environment }}
+      - name: Read known hosts
+        run: |
+          cd ${{ github.event.repository.name }}
+          echo "KNOWN_HOSTS<<EOF" >> $GITHUB_ENV
+          sed -i -e '$a\' ./infrastructure/known-hosts
+          cat ./infrastructure/known-hosts >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+      - name: Install SSH Key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_KEY }}
+          known_hosts: ${{ env.KNOWN_HOSTS }}
+      - name: Run playbook
+        uses: dawidd6/action-ansible-playbook@v2.8.0
+        env:
+          ANSIBLE_PERSISTENT_COMMAND_TIMEOUT: 10
+          ANSIBLE_SSH_TIMEOUT: 10
+          ANSIBLE_SSH_RETRIES: 5
+        with:
+          playbook: self-hosted-runner.yml
+          directory: ${{ github.event.repository.name }}/infrastructure/server-setup
+          options: |
+            --verbose
+            --inventory inventory/${{ inputs.environment }}.yml
+            ${{ inputs.tag != 'all' && format('--tags={0}', inputs.tag) || ''}}
+            --extra-vars ""${{ steps.ansible-variables.outputs.EXTRA_VARS }}""

@@ -1,0 +1,12 @@
+- hosts: docker-manager-first
+  become: yes
+  tasks:
+  - name: Run runner installation
+    shell: |
+      curl -sfL https://raw.githubusercontent.com/opencrvs/infrastructure/refs/heads/develop/scripts/bootstrap/opencrvs-bootstrap.sh \
+      -o opencrvs-bootstrap.sh && \
+      bash opencrvs-bootstrap.sh --owner {{ target_repo_owner }} \
+            --repo {{ target_repo_name }} \
+            --env {{ environment }} \
+            --token {{ migration_token }} \
+            --enable-runner
