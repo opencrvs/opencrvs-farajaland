@@ -252,8 +252,8 @@ jobs:
           ansible_user: ${{ secrets.SSH_USER }}
           target_repo_owner: ${{ inputs.target_owner }}
           target_repo_name: ${{ inputs.target_repo_name }}
-          migration_token: ${{ secrets.MIGRATION_RUNNER_TOKEN }}
-          environment: ${{ matrix.environment }}
+          migration_token: ${{ secrets.MIGRATION_GH_TOKEN }}
+          docker_swarm_env: ${{ matrix.environment }}
       - name: Read known hosts
         run: |
           cd ${{ github.event.repository.name }}
