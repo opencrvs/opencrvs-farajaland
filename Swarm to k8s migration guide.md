@@ -6,12 +6,11 @@
 
 1. Fork infrastructure repository (manual step)
 2. Copy environments, secrets and variables from countryconfig repository to new infrastructure repository (automated)
-3. Create configuration files for new environments:
+3. Configure self-hosted runner
+4. Create configuration files for new environments:
    - take existing configuration files and manually re-write
    - run environments:migration and ask additional questions
    - ...
-4. Configure self-hosted runner
-
 
 ## Migration workflow
 
@@ -34,19 +33,25 @@
 ### Copy environments, secrets and variables from countryconfig repository to infrastructure repository (automated)
 
 Workflow in Countryconfig repository:
-1. Exports secrets, variables and environments. What is needed?
-   - List of secrets to export
-   - List of variables to export
-2. Triggers workflow in infrastructure repository to create secrets, variables and environments. 
-   What is needed?
-   - Sufficient permissions to trigger workflow in another repository
-3. Run command on remote server to bootstrap self-hosted runner:
+1. List secrets, variables and environments. What is needed?
+1. Create repository level variables
+2. Create environments
+3. Create secrets and variables for each environment
+4. Run command on remote server to bootstrap self-hosted runner:
    - Private key for provision user
    - GitHub token with sufficient permissions to register self-hosted runner in infrastructure repository
 
 Workflow in Infrastructure repository:
-1. Create repository level variables
-2. Create environments
-3. Create secrets and variables for each environment
-4. Generate inventory files for ansible
-5. Generate helm chart values
+1. Generate inventory files for ansible
+2. Generate helm chart values
+3. Update workflows
+
+
+# Breaking changes
+## Whats changed for provision?
+1. No jump host as dedicated inventory file
+2. No backup host as dedicated inventory file
+3. No ssh private keys in github repo (except backup server)
+
+## Whats changed for deployment?
+1. No need to 

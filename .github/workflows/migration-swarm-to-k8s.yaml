@@ -1,6 +1,6 @@
 # FIXME: Add more clear job description and name
 name: Migration secrets and variables
-run-name: "Migration secrets and variables ${{ inputs.target_repo }}"
+run-name: "Migration secrets and variable to ${{ inputs.target_repo_name }}"
 on:
   workflow_dispatch:
     inputs:
