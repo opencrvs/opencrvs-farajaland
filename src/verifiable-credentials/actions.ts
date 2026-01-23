@@ -15,7 +15,7 @@ export const issueBirthCredentialAction = {
   type: ActionType.CUSTOM,
   customActionType: 'ISSUE_VERIFIABLE_CREDENTIAL',
   label: {
-    defaultMessage: 'Issue VC',
+    defaultMessage: 'Issue a verifiable credential',
     description: '',
     id: 'event.birth.action.issue-vc.label'
   },
@@ -26,7 +26,7 @@ export const issueBirthCredentialAction = {
   },
   supportingCopy: {
     defaultMessage:
-      'Your feedback will be officially recorded and may influence the final decision on the declaration.',
+      'Check the requesters details and issue the verifiable credential.',
     description:
       'This is the confirmation text for the registrar general feedback action',
     id: 'event.birth.action.registrar-general-feedback.supportingCopy'
@@ -50,12 +50,13 @@ export const issueBirthCredentialAction = {
   ],
   form: [
     {
-      id: 'requester',
+      id: 'requester.type',
       type: FieldType.SELECT,
+      required: true,
       // @TODO: import this from birth form?
       options: [
         {
-          value: 'mother',
+          value: 'MOTHER',
           label: {
             defaultMessage: 'Mother',
             description: '@TODO',
@@ -63,7 +64,7 @@ export const issueBirthCredentialAction = {
           }
         },
         {
-          value: 'father',
+          value: 'FATHER',
           label: {
             defaultMessage: 'Father',
             description: '@TODO',
@@ -78,6 +79,7 @@ export const issueBirthCredentialAction = {
       }
     },
     {
+      parent: field('requester.type'),
       id: 'request-credential-offer-button',
       type: FieldType.BUTTON,
       hideLabel: true,
@@ -92,7 +94,13 @@ export const issueBirthCredentialAction = {
           description: 'Button to request the credential offer from issuer',
           id: 'event.birth.custom.action.issue-vc.field.request-credential-offer-button.configuration.text'
         }
-      }
+      },
+      conditionals: [
+        {
+          type: ConditionalType.SHOW,
+          conditional: not(field('requester.type').isUndefined())
+        }
+      ]
     },
     {
       id: 'get-credential-offer',
