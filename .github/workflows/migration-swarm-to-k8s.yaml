@@ -238,10 +238,10 @@ jobs:
       max-parallel: 1  # Ensure jobs run one by one
       fail-fast: true  # Stop on first failure
       matrix:
-        # environment: ${{ fromJSON(needs.repository-configuration-migration.outputs.environments) }}
+        environment: ${{ fromJSON(needs.repository-configuration-migration.outputs.environments) }}
         # FIXME: Temporary hardcode until we have multiple environments to test
-        environment: 
-          - swarm-to-k8s # THIS IS REAL ENV NAME IN FARAJALAND
+        # environment: 
+          # - swarm-to-k8s # THIS IS REAL ENV NAME IN FARAJALAND
     environment: ${{ matrix.environment }}
     name: Bootstrap ${{ matrix.environment }} self-hosted runner
     runs-on: ubuntu-24.04
