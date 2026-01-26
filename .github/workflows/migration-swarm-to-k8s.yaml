@@ -319,21 +319,25 @@ jobs:
         with:
           repository: ${{ inputs.target_owner }}/${{ inputs.target_repo_name }}
           token: ${{ secrets.MIGRATION_GH_TOKEN }}
+          path: infrastructure-repo
       - name: Configure git client for ${{ env.TERRAFORM_REPO }}
+        working-directory: infrastructure-repo
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
       - name: Check preconditions
+        working-directory: infrastructure-repo
         run: |
           git status
           ls -l
           echo "Environment: ${{ matrix.environment }}" > ${{ matrix.environment }}.txt
       - name: Commit and push changes
+        working-directory: infrastructure-repo
         run: |
           git checkout -b add-config-files-${{ matrix.environment }}
           git add .
           git commit -m "chore: Create configuration files for ${{ matrix.environment }} environment"
-          git push
+          git push --set-upstream origin add-config-files-${{ matrix.environment }}
       # - name: Use Node.js from .nvmrc
       #   uses: actions/setup-node@v4
       #   with:
