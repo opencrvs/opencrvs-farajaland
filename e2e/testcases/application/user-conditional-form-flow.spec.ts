@@ -41,7 +41,7 @@ test.describe.serial('1. User conditional form flow', () => {
       await page.getByRole('button', { name: 'Continue' }).click()
     })
 
-    test('1.1.0 Go to review page and look for errors', async () => {
+    test('1.1.0 Go to review page and ensure default values are resolved properly', async () => {
       await continueForm(page)
       await continueForm(page)
 
