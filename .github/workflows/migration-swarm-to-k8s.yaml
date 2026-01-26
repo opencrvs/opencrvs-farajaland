@@ -225,7 +225,9 @@ jobs:
           - ⚠️ There are skipped variables and secrets (please check):
             - $(echo  ${{ steps.import-environment-secrets.outputs.SKIPPED_KEYS }} | wc -l)
             - $(echo  ${{ steps.import-environment-variables.outputs.SKIPPED_KEYS }} | wc -l)
-          **NOTE:** Skipped items doesn't mean there is an error, probably items are defined at repository level
+          **NOTE:** Skipped items doesn't mean there is an error, probably items are defined at repository level,
+          variable or secret name conflicts with existing secret or variable in the target repository,
+          incorrect filter applied.
           "
           } >> $GITHUB_STEP_SUMMARY
   bootstrap-self-hosted-runner:
