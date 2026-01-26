@@ -317,8 +317,7 @@ jobs:
       - name: Clone country config resource package
         uses: actions/checkout@v5
         with:
-          fetch-depth: 0
-          ref: ${{ inputs.target_owner }}/${{ inputs.target_repo_name }}
+          repository: ${{ inputs.target_owner }}/${{ inputs.target_repo_name }}
           token: ${{ secrets.MIGRATION_GH_TOKEN }}
       - name: Configure git client for ${{ env.TERRAFORM_REPO }}
         run: |
@@ -335,6 +334,7 @@ jobs:
           echo "Environment: ${{ matrix.environment }}" > ${{ matrix.environment }}.txt
       - name: Commit and push changes
         run: |
+          git checkout -b add-config-files-${{ matrix.environment }}
           git add .
           git commit -m "chore: Create configuration files for ${{ matrix.environment }} environment"
           git push
