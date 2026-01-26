@@ -325,12 +325,10 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-      - name: Check preconditions
+      - name: Create configuration files
         working-directory: infrastructure-repo
         run: |
-          git status
-          ls -l
-          echo "Environment: ${{ matrix.environment }}" > ${{ matrix.environment }}.txt
+          yarn
       - name: Commit, push changes and create PR
         working-directory: infrastructure-repo
         env:
