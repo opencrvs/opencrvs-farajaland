@@ -232,7 +232,7 @@ jobs:
           "
           } >> $GITHUB_STEP_SUMMARY
   bootstrap-self-hosted-runner:
-    needs: repository-configuration-migration
+    needs: environment-secrets-migration
     strategy:
       max-parallel: 1  # Ensure jobs run one by one
       fail-fast: true  # Stop on first failure
@@ -241,8 +241,6 @@ jobs:
     environment: ${{ matrix.environment }}
     name: Bootstrap ${{ matrix.environment }} self-hosted runner
     runs-on: ubuntu-24.04
-    outputs:
-      outcome: ${{ steps.deploy.outcome }}
     timeout-minutes: 60
     steps:
       - name: Clone country config resource package
@@ -292,3 +290,35 @@ jobs:
             --verbose
             --inventory inventory/${{ matrix.environment }}.yml
             --extra-vars ""${{ steps.ansible-variables.outputs.EXTRA_VARS }}""
+      - name: Runner summary
+        run: |
+          echo "
+          ## Self-hosted runner bootstrap for environment: ${{ matrix.environment }}
+          ✅ Runner has been bootstrapped:
+            - Runner host: ${{ vars.SSH_HOST }}
+            - Connected to repository: ${{ inputs.target_owner }}/${{ inputs.target_repo_name }}
+          " >> $GITHUB_STEP_SUMMARY
+  create-configuration-files:
+    needs:
+      - repository-configuration-migration
+      - bootstrap-self-hosted-runner
+    strategy:
+      max-parallel: 1  # Ensure jobs run one by one
+      fail-fast: true  # Stop on first failure
+      matrix:
+        environment: ${{ fromJSON(needs.repository-configuration-migration.outputs.environments) }}
+    environment: ${{ matrix.environment }}
+    name: Create configuration files for ${{ matrix.environment }} env
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - name: Clone country config resource package
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          ref: ${{ inputs.target_owner }}/${{ inputs.target_repo_name }}
+          token: ${{ secrets.MIGRATION_GH_TOKEN }}
+      - name: Configure git client for ${{ env.TERRAFORM_REPO }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
