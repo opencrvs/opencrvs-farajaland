@@ -339,11 +339,10 @@ jobs:
           BASE_BRANCH=$(git branch --show-current)
           git ls-remote --exit-code --heads origin $BRANCH_NAME
           if git ls-remote --exit-code --heads origin $BRANCH_NAME >/dev/null 2>&1; then
-            REMOTE_EXISTS=true
-            echo "⚠️  Branch '$BRANCH_NAME' exists on remote"
+            echo "⚠️  Branch '$BRANCH_NAME' exists on remote."
+            echo "⚠️  Branch '$BRANCH_NAME' exists on remote. New branch ${BRANCH_NAME}-$(date +%s) was created to avoid conflicts." >> $GITHUB_STEP_SUMMARY
             BRANCH_NAME=${BRANCH_NAME}-$(date +%s)
             echo "➡️  New branch name: $BRANCH_NAME"
-            echo "⚠️  Branch '$BRANCH_NAME' exists on remote. New branch was created to avoid conflicts." >> $GITHUB_STEP_SUMMARY
           fi
 
           git checkout -b $BRANCH_NAME
@@ -352,6 +351,7 @@ jobs:
           git push --set-upstream origin $BRANCH_NAME
 
           gh pr create \
+            --repo ${{ inputs.target_owner }}/${{ inputs.target_repo_name }} \
             --title "🔧 Add configuration for ${{ matrix.environment }}" \
             --body "Automated configuration migration from workflow run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
             --base $BASE_BRANCH \
