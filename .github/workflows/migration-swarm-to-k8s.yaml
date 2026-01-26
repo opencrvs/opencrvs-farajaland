@@ -325,6 +325,11 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+      - name: Use Node.js from .nvmrc
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: infrastructure-repo/.nvmrc
+
       - name: Create configuration files
         working-directory: infrastructure-repo
         run: |
@@ -354,7 +359,3 @@ jobs:
             --body "Automated configuration migration from workflow run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
             --base $BASE_BRANCH \
             --head $BRANCH_NAME
-      - name: Use Node.js from .nvmrc
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: infrastructure-repo/.nvmrc
