@@ -141,9 +141,6 @@ jobs:
       fail-fast: true  # Stop on first failure
       matrix:
         environment: ${{ fromJSON(needs.repository-configuration-migration.outputs.environments) }}
-        # FIXME: Temporary hardcode until we have multiple environments to test
-        # environment: 
-          # - swarm-to-k8s # THIS IS REAL ENV NAME IN FARAJALAND
     environment: ${{ matrix.environment }}
     name: Copy secrets and vars to ${{ matrix.environment }} environment
     env:
@@ -184,14 +181,13 @@ jobs:
         run: |
           echo "📊 Importing variables to $TARGET_REPO"
           # Import each variable
-
+          VARIABLES_LIST=$(gh api repos/$SOURCE_REPO/environments/$ENVIRONMENT/variables --jq '.variables[].name')
           SKIPPED_KEYS=()
           while read line; do
             [ -z "$line" ] && continue # Skip empty lines
             KEY=$(echo "$line" | cut -d'=' -f1)
             VALUE=$(echo "$line" | cut -d'=' -f2-)
-            # TODO: Add whitelist, e/g ACTIVATE_USERS might be present at repo level
-            echo $VARS_LIST | grep -q "$KEY" && SKIPPED_KEYS+=("$KEY") && continue
+            echo $VARIABLES_LIST | grep -q "$KEY" || { SKIPPED_KEYS+=("$KEY") && continue; }
             DECODED_VALUE=$(echo "$VALUE" | base64 -d)
             echo "  ✓ Setting variable: $KEY"
             gh variable set "$KEY" --body "$DECODED_VALUE" --env "$ENVIRONMENT" --repo "$TARGET_REPO"            
@@ -203,15 +199,15 @@ jobs:
         run: |
           echo "📊 Importing secrets to $TARGET_REPO"
           # Import each secret
+          SECRETS_LIST=$(gh api repos/$SOURCE_REPO/environments/$ENVIRONMENT/secrets --jq '.secrets[].name')
 
           SKIPPED_KEYS=()
           while read line; do
             [ -z "$line" ] && continue # Skip empty lines
             KEY=$(echo "$line" | cut -d'=' -f1)
             VALUE=$(echo "$line" | cut -d'=' -f2-)
-            # TODO: Add whitelist, e/g ACTIVATE_USERS might be present at repo level
             echo $KEY | grep -iq github && continue # Skip GitHub token secrets
-            echo $SECRETS_LIST | grep -q "$KEY" && SKIPPED_KEYS+=("$KEY") && continue
+            echo $SECRETS_LIST | grep -q "$KEY" || { SKIPPED_KEYS+=("$KEY") && continue; }
             DECODED_VALUE=$(echo "$VALUE" | base64 -d)
             echo "  ✓ Setting secret: $KEY"
             gh secret set "$KEY" --body "$DECODED_VALUE" --env "$ENVIRONMENT" --repo "$TARGET_REPO"
@@ -226,10 +222,10 @@ jobs:
           ## Summary for environment: $ENVIRONMENT
           - 📋 Number of variables (repo scope): $(wc -l variables.env)
           - 🔐 Number of secrets (repo scope): $(wc -l secrets.env)
-          - ⚠️ Skipped variables (already exist at repo level):
+          - ⚠️ Skipped variables (please move manually):
           "
           printf "   - %s\n" ${{ steps.import-environment-variables.outputs.SKIPPED_KEYS }}
-          echo "- ⚠️ Skipped secrets (already exist at repo level):"
+          echo "- ⚠️ Skipped secrets (please move manually):"
           printf "   - %s\n" ${{ steps.import-environment-secrets.outputs.SKIPPED_KEYS }}
           } >> $GITHUB_STEP_SUMMARY
   bootstrap-self-hosted-runner:
@@ -239,9 +235,6 @@ jobs:
       fail-fast: true  # Stop on first failure
       matrix:
         environment: ${{ fromJSON(needs.repository-configuration-migration.outputs.environments) }}
-        # FIXME: Temporary hardcode until we have multiple environments to test
-        # environment: 
-          # - swarm-to-k8s # THIS IS REAL ENV NAME IN FARAJALAND
     environment: ${{ matrix.environment }}
     name: Bootstrap ${{ matrix.environment }} self-hosted runner
     runs-on: ubuntu-24.04
