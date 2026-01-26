@@ -231,6 +231,17 @@ jobs:
           incorrect filter applied.
           "
           } >> $GITHUB_STEP_SUMMARY
+      - name: Clone country config resource package
+        uses: actions/checkout@v5
+        with:
+          token: ${{ github.token }}
+      - name: Add missing variable to GitHub Actions environment
+        # TODO:
+        # if: ${{ matrix.environment == 'production' }}
+        if: ${{ matrix.environment == 'swarm-to-k8s' }}
+        run: |
+          ls -l 
+          exit 1
   bootstrap-self-hosted-runner:
     needs:
       - repository-configuration-migration
