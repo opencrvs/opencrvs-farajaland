@@ -336,6 +336,7 @@ jobs:
         env:
           BRANCH_NAME: add-config-files-${{ matrix.environment }}
         run: |
+          BASE_BRANCH=$(git branch --show-current)
           git ls-remote --exit-code --heads origin $BRANCH_NAME
           if git ls-remote --exit-code --heads origin $BRANCH_NAME >/dev/null 2>&1; then
             REMOTE_EXISTS=true
@@ -344,6 +345,7 @@ jobs:
             echo "➡️  New branch name: $BRANCH_NAME"
             echo "⚠️  Branch '$BRANCH_NAME' exists on remote. New branch was created to avoid conflicts." >> $GITHUB_STEP_SUMMARY
           fi
+
           git checkout -b $BRANCH_NAME
           git add .
           git commit -m "chore: Create configuration files for ${{ matrix.environment }} environment"
@@ -352,7 +354,7 @@ jobs:
           gh pr create \
             --title "🔧 Add configuration for ${{ matrix.environment }}" \
             --body "Automated configuration migration from workflow run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
-            --base main \
+            --base $BASE_BRANCH \
             --head $BRANCH_NAME
       - name: Use Node.js from .nvmrc
         uses: actions/setup-node@v4
