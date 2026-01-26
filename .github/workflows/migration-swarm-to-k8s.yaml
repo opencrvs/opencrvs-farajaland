@@ -232,7 +232,9 @@ jobs:
           "
           } >> $GITHUB_STEP_SUMMARY
   bootstrap-self-hosted-runner:
-    needs: environment-secrets-migration
+    needs:
+      - repository-configuration-migration
+      - environment-secrets-migration
     strategy:
       max-parallel: 1  # Ensure jobs run one by one
       fail-fast: true  # Stop on first failure
