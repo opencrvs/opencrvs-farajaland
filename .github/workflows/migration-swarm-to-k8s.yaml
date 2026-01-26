@@ -332,3 +332,9 @@ jobs:
         run: |
           git status
           ls -l
+          echo "Environment: ${{ matrix.environment }}" > ${{ matrix.environment }}.txt
+      - name: Commit and push changes
+        run: |
+          git add .
+          git commit -m "chore: Create configuration files for ${{ matrix.environment }} environment"
+          git push
