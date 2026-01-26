@@ -331,7 +331,7 @@ jobs:
           git status
           ls -l
           echo "Environment: ${{ matrix.environment }}" > ${{ matrix.environment }}.txt
-      - name: Commit and push changes
+      - name: Commit, push changes and create PR
         working-directory: infrastructure-repo
         env:
           BRANCH_NAME: add-config-files-${{ matrix.environment }}
@@ -348,14 +348,12 @@ jobs:
           git add .
           git commit -m "chore: Create configuration files for ${{ matrix.environment }} environment"
           git push --set-upstream origin $BRANCH_NAME
-      - name: Create Pull Request
-        working-directory: infrastructure-repo
-        run: |
+
           gh pr create \
             --title "🔧 Add configuration for ${{ matrix.environment }}" \
             --body "Automated configuration migration from workflow run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
             --base main \
-            --head ${{ steps.push.outputs.branch_name }}
+            --head $BRANCH_NAME
       - name: Use Node.js from .nvmrc
         uses: actions/setup-node@v4
         with:
