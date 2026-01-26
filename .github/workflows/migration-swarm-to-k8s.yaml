@@ -317,6 +317,11 @@ jobs:
       - name: Clone country config resource package
         uses: actions/checkout@v5
         with:
+          token: ${{ secrets.MIGRATION_GH_TOKEN }}
+          path: country-config-repo
+      - name: Clone infrastructure repository
+        uses: actions/checkout@v5
+        with:
           repository: ${{ inputs.target_owner }}/${{ inputs.target_repo_name }}
           token: ${{ secrets.MIGRATION_GH_TOKEN }}
           path: infrastructure-repo
@@ -332,8 +337,11 @@ jobs:
 
       - name: Create configuration files
         working-directory: infrastructure-repo
+        env:
+          ENVIRONMENT: ${{ matrix.environment }}
+          OLD_INVENTORY_PATH: country-config-repo/infrastructure/server-setup/inventory
         run: |
-          yarn
+          yarn environment:swarm-to-k8s
       - name: Commit, push changes and create PR
         working-directory: infrastructure-repo
         env:
