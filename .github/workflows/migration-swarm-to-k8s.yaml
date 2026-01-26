@@ -349,7 +349,6 @@ jobs:
           git commit -m "chore: Create configuration files for ${{ matrix.environment }} environment"
           git push --set-upstream origin $BRANCH_NAME
       - name: Create Pull Request
-        if: steps.push.outputs.has_changes == 'true'
         working-directory: infrastructure-repo
         run: |
           gh pr create \
