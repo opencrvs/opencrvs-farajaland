@@ -60,7 +60,7 @@ jobs:
           if [ "${{ inputs.environment_to_migrate }}" = "all" ]; then
             echo environments=$SOURCE_ENVS >> $GITHUB_OUTPUT
           else
-            echo environments=[${{ inputs.environment_to_migrate }}] >> $GITHUB_OUTPUT
+            echo environments='["${{ inputs.environment_to_migrate }}"]' >> $GITHUB_OUTPUT
           fi
           
 
