@@ -324,3 +324,11 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+      - name: Use Node.js from .nvmrc
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ${{ github.event.repository.name }}/.nvmrc
+      - name: Check preconditions
+        run: |
+          git status
+          ls -l
