@@ -192,7 +192,7 @@ jobs:
             echo "  ✓ Setting variable: $KEY"
             gh variable set "$KEY" --body "$DECODED_VALUE" --env "$ENVIRONMENT" --repo "$TARGET_REPO"            
           done < variables.env
-          echo "⚠️ Skipped variables already present at repository level: ${SKIPPED_KEYS[*]}"
+          echo "⚠️ Skipped variables, please check and move manually: ${SKIPPED_KEYS[*]}"
           echo "SKIPPED_KEYS=${SKIPPED_KEYS[*]}" >> $GITHUB_OUTPUT
       - name: Import secrets to ${{ inputs.target_owner }}/${{ inputs.target_repo_name }} in ${{ matrix.environment }} environment
         id: import-environment-secrets
@@ -212,7 +212,7 @@ jobs:
             echo "  ✓ Setting secret: $KEY"
             gh secret set "$KEY" --body "$DECODED_VALUE" --env "$ENVIRONMENT" --repo "$TARGET_REPO"
           done < secrets.env
-          echo "⚠️ Skipped secrets already present at repository level: ${SKIPPED_KEYS[*]}"
+          echo "⚠️ Skipped secrets, please check and move manually: ${SKIPPED_KEYS[*]}"
           echo "SKIPPED_KEYS=${SKIPPED_KEYS[*]}" >> $GITHUB_OUTPUT
 
       - name: Summary
@@ -222,11 +222,11 @@ jobs:
           ## Summary for environment: $ENVIRONMENT
           - 📋 Number of variables (repo scope): $(wc -l variables.env)
           - 🔐 Number of secrets (repo scope): $(wc -l secrets.env)
-          - ⚠️ Skipped variables (please move manually):
+          - ⚠️ There are skipped variables and secrets (please check):
+            - $(echo  ${{ steps.import-environment-secrets.outputs.SKIPPED_KEYS }} | wc -l)
+            - $(echo  ${{ steps.import-environment-variables.outputs.SKIPPED_KEYS }} | wc -l)
+          **NOTE:** Skipped items doesn't mean there is an error, probably items are defined at repository level
           "
-          printf "   - %s\n" ${{ steps.import-environment-variables.outputs.SKIPPED_KEYS }}
-          echo "- ⚠️ Skipped secrets (please move manually):"
-          printf "   - %s\n" ${{ steps.import-environment-secrets.outputs.SKIPPED_KEYS }}
           } >> $GITHUB_STEP_SUMMARY
   bootstrap-self-hosted-runner:
     needs: repository-configuration-migration
