@@ -149,6 +149,7 @@ const TENNIS_CLUB_DECLARATION_FORM = defineDeclarationForm({
         {
           id: 'applicant.registrationDuration',
           analytics: true,
+          required: true,
           type: FieldType.NUMBER_WITH_UNIT,
           label: {
             defaultMessage: 'Registration duration',
