@@ -223,8 +223,8 @@ jobs:
           - 📋 Number of variables (repo scope): $(wc -l variables.env)
           - 🔐 Number of secrets (repo scope): $(wc -l secrets.env)
           - ⚠️ There are skipped variables and secrets (please check):
-            - $(echo  ${{ steps.import-environment-secrets.outputs.SKIPPED_KEYS }} | wc -l)
-            - $(echo  ${{ steps.import-environment-variables.outputs.SKIPPED_KEYS }} | wc -l)
+            - $(echo  ${{ steps.import-environment-secrets.outputs.SKIPPED_KEYS }} | wc -w)
+            - $(echo  ${{ steps.import-environment-variables.outputs.SKIPPED_KEYS }} | wc -w)
           **NOTE:** Skipped items doesn't mean there is an error, probably items are defined at repository level,
           variable or secret name conflicts with existing secret or variable in the target repository,
           incorrect filter applied.
