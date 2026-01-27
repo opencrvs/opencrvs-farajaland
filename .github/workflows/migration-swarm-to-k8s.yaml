@@ -255,6 +255,7 @@ jobs:
           token: ${{ github.token }}
       - name: Verify environment inventory file exists
         run: |
+          ls -l
           [ ! -f infrastructure/server-setup/inventory/${ENVIRONMENT}.yml ] && \
            echo "Environment file not found: infrastructure/server-setup/inventory/${ENVIRONMENT}.yml" && \
            exit 1
