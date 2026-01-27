@@ -261,6 +261,8 @@ jobs:
           git checkout swarm-to-k8s
           git status
           ls -l
+          ls -l infrastructure/server-setup
+          ls -l infrastructure/server-setup/inventory/
           [ ! -f infrastructure/server-setup/inventory/${ENVIRONMENT}.yml ] && \
            echo "Environment file not found: infrastructure/server-setup/inventory/${ENVIRONMENT}.yml" && \
            exit 1
