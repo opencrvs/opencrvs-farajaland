@@ -270,7 +270,7 @@ jobs:
           echo "$PRIVATE_KEY" | gh secret set BACKUP_HOST_PRIVATE_KEY --repo $TARGET_REPO --env $ENVIRONMENT
           echo "$PUBLIC_KEY" | gh secret set BACKUP_HOST_PUBLIC_KEY --repo $TARGET_REPO --env $ENVIRONMENT
           echo "backup" | gh secret set BACKUP_SERVER_USER --repo $TARGET_REPO --env $ENVIRONMENT
-          BACKUP_HOST=$(yq '.docker-workers.hosts[].ansible_host' infrastructure/server-setup/inventory/production.yml')
+          BACKUP_HOST=$(yq '.docker-workers.hosts[].ansible_host' infrastructure/server-setup/inventory/production.yml)
           echo "Added backup host as a secret: $BACKUP_HOST"
           echo "$BACKUP_HOST" | gh secret set BACKUP_SERVER_HOST --repo $TARGET_REPO --env $ENVIRONMENT
       - name: Configuring backup server
