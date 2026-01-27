@@ -18,12 +18,12 @@ export const birthCredentialTemplate = (event: EventIndex) => {
         kty: 'OKP',
         d: '2dQmjsyXThwBLALSYTj2lkgFif9vM-EXZ9asghs2c9k',
         crv: 'Ed25519',
-        kid: 'iSVvz00BRpHm_pT_LcPBS_bf_o_tV_L7nhzu1tuZPMs',
+        kid: '0',
         x: 'YGhGkVotqEto5cUGMFblSra8Y-UILePgOIH_-qnX3rc'
       }
     },
     issuerDid:
-      'did:jwk:eyJrdHkiOiJPS1AiLCJjcnYiOiJFZDI1NTE5Iiwia2lkIjoiaVNWdnowMEJScEhtX3BUX0xjUEJTX2JmX29fdFZfTDduaHp1MXR1WlBNcyIsIngiOiJZR2hHa1ZvdHFFdG81Y1VHTUZibFNyYThZLVVJTGVQZ09JSF8tcW5YM3JjIn0',
+      'did:jwk:eyJjcnYiOiJFZDI1NTE5Iiwia2lkIjoiMCIsImt0eSI6Ik9LUCIsIngiOiJZR2hHa1ZvdHFFdG81Y1VHTUZibFNyYThZLVVJTGVQZ09JSF8tcW5YM3JjIn0',
     credentialConfigurationId: 'crvs_birth_v1',
     credentialData: {
       given_name: childName.firstname,
