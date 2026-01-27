@@ -79,6 +79,33 @@ export const issueBirthCredentialAction = {
       }
     },
     {
+      id: 'collector.identity.verify.data.other',
+      type: FieldType.DATA,
+      conditionals: [
+        {
+          type: ConditionalType.SHOW,
+          conditional: field('requester.type').isEqualTo('MOTHER')
+        }
+      ],
+      label: {
+        defaultMessage: '',
+        description: 'Title for the data section',
+        id: 'event.death.action.certificate.form.section.verifyIdentity.data.label'
+      },
+      configuration: {
+        data: [
+          { fieldId: 'mother.idType' },
+          { fieldId: 'mother.nid' },
+          { fieldId: 'mother.passport' },
+          { fieldId: 'mother.brn' },
+          { fieldId: 'mother.name' },
+          { fieldId: 'mother.dob' },
+          { fieldId: 'mother.age' },
+          { fieldId: 'mother.nationality' }
+        ]
+      }
+    },
+    {
       parent: field('requester.type'),
       id: 'request-credential-offer-button',
       type: FieldType.BUTTON,
