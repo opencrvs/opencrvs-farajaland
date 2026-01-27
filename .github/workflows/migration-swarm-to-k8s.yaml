@@ -242,6 +242,9 @@ jobs:
       matrix:
         environment: ${{ fromJSON(needs.repository-configuration-migration.outputs.environments) }}
     environment: ${{ matrix.environment }}
+    env:
+      TARGET_REPO: ${{ inputs.target_owner }}/${{ inputs.target_repo_name }}
+      ENVIRONMENT: ${{ matrix.environment }}
     name: Create k8s secrets and vars for ${{ matrix.environment }}
     runs-on: ubuntu-24.04
     timeout-minutes: 60
