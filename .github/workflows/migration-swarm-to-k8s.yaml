@@ -278,7 +278,7 @@ jobs:
         # if: matrix.environment == 'production'
         if: matrix.environment == 'swarm-to-k8s'
         run: |
-          WORKER_NODES=$(yq '.docker-workers.hosts[].ansible_host' infrastructure/server-setup/inventory/production.yml | yq -o csv '.' | sed 's/ /,/g)
+          WORKER_NODES=$(yq '.docker-workers.hosts[].ansible_host' infrastructure/server-setup/inventory/production.yml | yq -o csv '.' | sed 's/ /,/g')
           echo "Adding worker nodes as variable: $WORKER_NODES"
           echo "$WORKER_NODES" | gh variable set WORKER_NODES --repo $TARGET_REPO --env $ENVIRONMENT
   bootstrap-self-hosted-runner:
