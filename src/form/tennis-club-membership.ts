@@ -151,7 +151,7 @@ const TENNIS_CLUB_DECLARATION_FORM = defineDeclarationForm({
           analytics: true,
           required: {
             message: {
-              defaultMessage: 'Number and unit required',
+              defaultMessage: 'Number and unit required for registration',
               description: 'This is the error message for invalid duration',
               id: 'event.tennis-club.action.declare.form.section.applicant.field.registrationDuration.error'
             }
