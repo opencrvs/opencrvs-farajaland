@@ -81,11 +81,12 @@ import { env } from './environment'
 import { workqueueconfigHandler } from './api/workqueue/handler'
 import getUserNotificationRoutes from './config/routes/userNotificationRoutes'
 import {
+  importAdministrativeAreas,
   importEvent,
   importEvents,
-  importLocations,
   syncLocationLevels,
-  syncLocationStatistics
+  syncLocationStatistics,
+  importLocations
 } from './analytics/analytics'
 import { getClient } from './analytics/postgres'
 import { createClient } from '@opencrvs/toolkit/api'
@@ -666,7 +667,11 @@ export async function createServer() {
           // Import locations
           const url = new URL('events', GATEWAY_URL).toString()
           const client = createClient(url, req.headers.authorization)
+          const administrativeAreas =
+            await client.administrativeAreas.list.query()
           const locations = await client.locations.list.query()
+
+          await importAdministrativeAreas(administrativeAreas)
           await importLocations(locations)
         })
 
