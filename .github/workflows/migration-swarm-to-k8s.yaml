@@ -231,17 +231,47 @@ jobs:
           incorrect filter applied.
           "
           } >> $GITHUB_STEP_SUMMARY
+
+  create-k8s-secrets-and-variables:
+    needs:
+      - repository-configuration-migration
+      - environment-secrets-migration
+    strategy:
+      max-parallel: 1  # Ensure jobs run one by one
+      fail-fast: true  # Stop on first failure
+      matrix:
+        environment: ${{ fromJSON(needs.repository-configuration-migration.outputs.environments) }}
+    environment: ${{ matrix.environment }}
+    name: Create k8s secrets and vars for ${{ matrix.environment }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
       - name: Clone country config resource package
         uses: actions/checkout@v5
         with:
           token: ${{ github.token }}
-      - name: Add missing secrets and variables to GitHub Actions environment
-        # TODO:
-        # if: ${{ matrix.environment == 'production' }}
-        if: ${{ matrix.environment == 'swarm-to-k8s' }}
+      - name: Verify environment inventory file exists
         run: |
-          ls -l 
-          exit 1
+          [ ! -f infrastructure/server-setup/inventory/${ENVIRONMENT}.yml ] && \
+           echo "Environment file not found: infrastructure/server-setup/inventory/${ENVIRONMENT}.yml" && \
+           exit 1
+      - name: Configuring backup server
+        # Production only trick for backup SSH keys
+        # if: matrix.environment == 'production'
+        if: matrix.environment == 'swarm-to-k8s'
+        run: |
+          ssh-keygen -t ed25519 -f backup_key -N "" -C "k8s-backup-key-${ENVIRONMENT}"
+          
+          # Read the keys and encode them properly
+          PRIVATE_KEY=$(cat backup_key)
+          PUBLIC_KEY=$(cat backup_key.pub)
+          echo "$PRIVATE_KEY" | gh secret set BACKUP_HOST_PRIVATE_KEY --repo $TARGET_REPO --env $ENVIRONMENT
+          echo "$PUBLIC_KEY" | gh secret set BACKUP_HOST_PUBLIC_KEY --repo $TARGET_REPO --env $ENVIRONMENT
+          BACKUP_SERVER_USER
+          echo "backup" | gh secret set BACKUP_SERVER_USER --repo $TARGET_REPO --env $ENVIRONMENT
+          BACKUP_HOST=$(cat infrastructure/server-setup/inventory/production.yml | yq '.backups.hosts[].ansible_host')
+          echo "$BACKUP_HOST" | gh secret set BACKUP_SERVER_HOST --repo $TARGET_REPO --env $ENVIRONMENT
+
   bootstrap-self-hosted-runner:
     needs:
       - repository-configuration-migration
@@ -311,6 +341,7 @@ jobs:
             - Runner host: ${{ vars.SSH_HOST }}
             - Connected to repository: ${{ inputs.target_owner }}/${{ inputs.target_repo_name }}
           " >> $GITHUB_STEP_SUMMARY
+
   create-configuration-files:
     needs:
       - repository-configuration-migration
