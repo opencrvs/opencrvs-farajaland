@@ -2,9 +2,12 @@
    ....
 2. Create secret: MIGRATION_GH_TOKEN
 
+# Before migration steps:
 
-Grant provision user:
-   1. On production environment get provision user public key
-   2. Add provision user public key from production to /home/provision/.ssh/authorized_keys on backup server
+1. Grant provision user:
+   1.1. On production environment get provision user public key
+   1.2. Add provision user public key from production to /home/provision/.ssh/authorized_keys on backup server
 
-Configure approval users list
+# Post migration steps:
+
+1. Configure approval users list
