@@ -257,7 +257,7 @@ jobs:
         run: |
           [ ! -f infrastructure/server-setup/inventory/${ENVIRONMENT}.yml ] && \
            echo "Environment file not found: infrastructure/server-setup/inventory/${ENVIRONMENT}.yml" && \
-           exit 1 || true
+           exit 1 || echo "✅ Inventory file found."
       - name: Configuring backup server
         # Production only trick for backup SSH keys
         # if: matrix.environment == 'production'
