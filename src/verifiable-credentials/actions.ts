@@ -78,62 +78,62 @@ export const issueBirthCredentialAction = {
         id: 'event.birth.custom.action.issue-vc.field.requester.label'
       }
     },
-    {
-      parent: field('requester.type'),
-      id: 'requester.data.mother',
-      type: FieldType.DATA,
-      conditionals: [
-        {
-          type: ConditionalType.SHOW,
-          conditional: field('requester.type').isEqualTo('MOTHER')
-        }
-      ],
-      label: {
-        defaultMessage: '',
-        description: 'Title for the data section',
-        id: 'event.death.action.certificate.form.section.verifyIdentity.data.label'
-      },
-      configuration: {
-        data: [
-          { fieldId: 'mother.idType' },
-          { fieldId: 'mother.nid' },
-          { fieldId: 'mother.passport' },
-          { fieldId: 'mother.brn' },
-          { fieldId: 'mother.name' },
-          { fieldId: 'mother.dob' },
-          { fieldId: 'mother.age' },
-          { fieldId: 'mother.nationality' }
-        ]
-      }
-    },
-    {
-      parent: field('requester.type'),
-      id: 'requester.data.father',
-      type: FieldType.DATA,
-      conditionals: [
-        {
-          type: ConditionalType.SHOW,
-          conditional: field('requester.type').isEqualTo('FATHER')
-        }
-      ],
-      label: {
-        defaultMessage: '',
-        description: 'Title for the data section',
-        id: 'event.death.action.certificate.form.section.verifyIdentity.data.label'
-      },
-      configuration: {
-        data: [
-          { fieldId: 'father.idType' },
-          { fieldId: 'father.nid' },
-          { fieldId: 'father.passport' },
-          { fieldId: 'father.brn' },
-          { fieldId: 'father.name' },
-          { fieldId: 'father.dob' },
-          { fieldId: 'father.age' },
-          { fieldId: 'father.nationality' }
-        ]
-      }
-    },
+    // {
+    //   parent: field('requester.type'),
+    //   id: 'requester.data.mother',
+    //   type: FieldType.DATA,
+    //   conditionals: [
+    //     {
+    //       type: ConditionalType.SHOW,
+    //       conditional: field('requester.type').isEqualTo('MOTHER')
+    //     }
+    //   ],
+    //   label: {
+    //     defaultMessage: '',
+    //     description: 'Title for the data section',
+    //     id: 'event.death.action.certificate.form.section.verifyIdentity.data.label'
+    //   },
+    //   configuration: {
+    //     data: [
+    //       { fieldId: 'mother.idType' },
+    //       { fieldId: 'mother.nid' },
+    //       { fieldId: 'mother.passport' },
+    //       { fieldId: 'mother.brn' },
+    //       { fieldId: 'mother.name' },
+    //       { fieldId: 'mother.dob' },
+    //       { fieldId: 'mother.age' },
+    //       { fieldId: 'mother.nationality' }
+    //     ]
+    //   }
+    // },
+    // {
+    //   parent: field('requester.type'),
+    //   id: 'requester.data.father',
+    //   type: FieldType.DATA,
+    //   conditionals: [
+    //     {
+    //       type: ConditionalType.SHOW,
+    //       conditional: field('requester.type').isEqualTo('FATHER')
+    //     }
+    //   ],
+    //   label: {
+    //     defaultMessage: '',
+    //     description: 'Title for the data section',
+    //     id: 'event.death.action.certificate.form.section.verifyIdentity.data.label'
+    //   },
+    //   configuration: {
+    //     data: [
+    //       { fieldId: 'father.idType' },
+    //       { fieldId: 'father.nid' },
+    //       { fieldId: 'father.passport' },
+    //       { fieldId: 'father.brn' },
+    //       { fieldId: 'father.name' },
+    //       { fieldId: 'father.dob' },
+    //       { fieldId: 'father.age' },
+    //       { fieldId: 'father.nationality' }
+    //     ]
+    //   }
+    // },
     {
       parent: field('requester.type'),
       id: 'request-credential-offer-button',
