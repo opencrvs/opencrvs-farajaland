@@ -7,13 +7,14 @@ on:
         type: choice
         description: 'The environment to migrate'
         required: true
-        default: 'development'
+        default: 'swarm-to-k8s'
         options:
           - all
           - development
           - qa
           - staging
           - production
+          - swarm-to-k8s
       target_owner:
         type: string
         description: 'The target organization owner'
