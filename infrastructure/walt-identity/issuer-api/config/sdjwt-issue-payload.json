@@ -2,14 +2,14 @@
   "issuerKey": {
     "type": "jwk",
     "jwk": {
-      "kty": "OKP",
-      "d": "mDhpwaH6JYSrD2Bq7Cs-pzmsjlLj4EOhxyI-9DM1mFI",
-      "crv": "Ed25519",
-      "kid": "Vzx7l5fh56F3Pf9aR3DECU5BwfrY6ZJe05aiWYWzan8",
-      "x": "T3T4-u1Xz3vAV2JwPNxWfs4pik_JLiArz_WTCvrCFUM"
+      "kty": "EC",
+      "d": "mRBPit9_rAbHQYvNryui2dUGD1jcCujw6tKuDfxyCMc",
+      "crv": "P-256",
+      "x": "_HjVaFEFG2KdAUSThLfJxIqXQeQcVQ6Vp0Z7fF_Xbxw",
+      "y": "1IOLn3cyQCbbPnWroO1vNfnwql2bu2BtfLH1WQyIcOY"
     }
   },
-  "issuerDid": "did:key:z6MkjoRhq1jSNJdLiruSXrFFxagqrztZaXHqHGUTKJbcNywp",
+  "issuerDid": "did:jwk:eyJjcnYiOiJQLTI1NiIsImt0eSI6IkVDIiwieCI6Il9IalZhRkVGRzJLZEFVU1RoTGZKeElxWFFlUWNWUTZWcDBaN2ZGX1hieHciLCJ5IjoiMUlPTG4zY3lRQ2JiUG5Xcm9PMXZOZm53cWwyYnUyQnRmTEgxV1F5SWNPWSJ9",
   "credentialConfigurationId": "crvs_birth_v1",
   "credentialData": {
     "@context": [
@@ -17,10 +17,7 @@
       "https://schemas.opencrvs.org/birth-certificate.json"
     ],
     "id": "urn:uuid:THIS WILL BE REPLACED WITH DYNAMIC DATA FUNCTION (see below)",
-    "type": [
-      "VerifiableCredential",
-      "BirthCertificateCredential"
-    ],
+    "type": ["VerifiableCredential", "BirthCertificateCredential"],
     "credentialSubject": {
       "given_name": "Baby",
       "family_name": "Example",
@@ -53,5 +50,9 @@
         "sd": true
       }
     }
-  }
+  },
+  "x5Chain": [
+    "-----BEGIN CERTIFICATE-----\nMIIBxDCCAWqgAwIBAgIUO2py5HB6G0XKrcnSQmY4Ko6PmGkwCgYIKoZIzj0EAwIw\nJzElMCMGA1UEAwwcdmMtZGVtby5vcGVuY3J2cy5kZXYgUm9vdCBDQTAeFw0yNjAx\nMjgwOTAwNDVaFw0zNjAxMjYwOTAwNDVaMB8xHTAbBgNVBAMMFHZjLWRlbW8ub3Bl\nbmNydnMuZGV2MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAE/HjVaFEFG2KdAUST\nhLfJxIqXQeQcVQ6Vp0Z7fF/XbxzUg4ufdzJAJts+daug7W81+fCqXZu7YG18sfVZ\nDIhw5qN8MHowCQYDVR0TBAIwADAOBgNVHQ8BAf8EBAMCB4AwHQYDVR0lBBYwFAYI\nKwYBBQUHAwIGCCsGAQUFBwMBMB0GA1UdDgQWBBR/X6Pa7VaquLJhDO96ReyRJyOJ\nVzAfBgNVHSMEGDAWgBS6UlfiDSp0FaiXr0impWL1wX1bsjAKBggqhkjOPQQDAgNI\nADBFAiAt2/6fw+iLlDOPNMNv4vDl/DHSrHoVGv3otvU2h1tNJwIhAMTLDUXm/RMK\ngJEyNh8i5xy6Izl9wb0MQJK7bG8ZCdLb\n-----END CERTIFICATE-----",
+    "-----BEGIN CERTIFICATE-----\nMIIBszCCAVmgAwIBAgIUWj4tLgEQCFWc6kxWzdlPwP0WS5QwCgYIKoZIzj0EAwIw\nJzElMCMGA1UEAwwcdmMtZGVtby5vcGVuY3J2cy5kZXYgUm9vdCBDQTAeFw0yNjAx\nMjgwOTAwNDVaFw0zNjAxMjYwOTAwNDVaMCcxJTAjBgNVBAMMHHZjLWRlbW8ub3Bl\nbmNydnMuZGV2IFJvb3QgQ0EwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAAQGd7Rg\nFSCFBjPwE47nOaN36SIIkAI7IGxrHwDOnBzCrvYtaBocfN4Q6vu95WJk/Ba6O14k\nzyuDIc2PSzu3+YLFo2MwYTAdBgNVHQ4EFgQUulJX4g0qdBWol69IpqVi9cF9W7Iw\nHwYDVR0jBBgwFoAUulJX4g0qdBWol69IpqVi9cF9W7IwDwYDVR0TAQH/BAUwAwEB\n/zAOBgNVHQ8BAf8EBAMCAQYwCgYIKoZIzj0EAwIDSAAwRQIhAOP5NnI1XL0yqxc3\nage1Gg2VvO4oe5E3Sf/Y54MdiAPVAiAByuxMocqKVxxHSJFDcbD37pXFcVB05z8r\n3hwSaDZ/eA==\n-----END CERTIFICATE-----"
+  ]
 }

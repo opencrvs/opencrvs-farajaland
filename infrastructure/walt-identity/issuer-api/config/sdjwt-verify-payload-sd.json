@@ -1,0 +1,34 @@
+{
+  "flow_type": "cross_device",
+  "core_flow": {
+    "dcql_query": {
+      "credentials": [
+        {
+          "id": "birth",
+          "format": "dc+sd-jwt", // paradym probably expects dc while we use sd+jwt
+          "meta": {
+            "vct_values": [
+              "crvs_birth_v1"
+            ]
+          },
+          "claims": [
+            {
+              "path": [
+                "birthdate"
+              ]
+            },
+            {
+              "path": [
+                "place_of_birth"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "redirects": {
+    "success_redirect_uri": "https://vc-demo.opencrvs.dev:7102/success/$id",
+    "error_redirect_uri": "https://vc-demo.opencrvs.dev:7102/error/$id"
+  }
+}

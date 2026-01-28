@@ -1,0 +1,35 @@
+{
+  "flow_type": "cross_device",
+  "core_flow": {
+    "dcql_query": {
+      "credentials": [
+        {
+          "id": "crvs_birth_v0",
+          "format": "jwt_vc_json",
+          "meta": {
+            "type_values": [
+              [
+                "BirthCertificateCredential"
+              ]
+            ]
+          }
+        }
+      ]
+    },
+    "signed_request": true,
+    "clientId": "x509_san_dns:vc-demo.opencrvs.dev",
+    "key": {
+      "type": "jwk",
+      "jwk": {
+        "kty": "EC",
+        "x": "tZyzvd8Vz7trswAnyIfk1aR8teGnD13cn4MLMiEFhEA",
+        "y": "zMMUkryfUI2Dv-xW1WslYTBDMCqJmjIyaSBuRTcgeJU",
+        "crv": "P-256",
+        "d": "u0-cviQ-QOqCHhduzPieP1kZQ_jI_VL7_lwa_37quKc",
+        "use": "sig",
+        "alg": "ES256",
+        "kid": "lMFMDHG2Nf79zbHwn8HYzY9pYOwpRaKnSnUD9qAf5-Q"
+      }
+    }
+  }
+}

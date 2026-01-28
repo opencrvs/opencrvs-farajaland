@@ -1,0 +1,13 @@
+{
+  "type": "jwk",
+  "jwk": {
+    "kty": "EC",
+    "x": "_HjVaFEFG2KdAUSThLfJxIqXQeQcVQ6Vp0Z7fF_Xbxw",
+    "y": "1IOLn3cyQCbbPnWroO1vNfnwql2bu2BtfLH1WQyIcOY",
+    "crv": "P-256",
+    "d": "mRBPit9_rAbHQYvNryui2dUGD1jcCujw6tKuDfxyCMc",
+    "use": "sig",
+    "alg": "ES256",
+    "kid": "3-uO1nzhTm6-8xDcbtir07GDwSuutDHbfKj5PVYF5Vo"
+  }
+}
