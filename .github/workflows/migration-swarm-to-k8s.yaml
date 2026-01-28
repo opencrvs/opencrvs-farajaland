@@ -406,6 +406,11 @@ jobs:
 
           git checkout -b $BRANCH_NAME
           git add .
+          git status | grep -q 'nothing to commit' && {
+            echo "ℹ️  No changes detected, skipping commit and PR creation."
+            echo "ℹ️  No changes detected, skipping commit and PR creation." >> $GITHUB_STEP_SUMMARY
+            exit 0
+          }
           git commit -m "chore: Create configuration files for ${{ matrix.environment }} environment"
           git push --set-upstream origin $BRANCH_NAME
 
