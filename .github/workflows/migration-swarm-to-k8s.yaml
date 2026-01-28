@@ -387,7 +387,6 @@ jobs:
           ENVIRONMENT: ${{ matrix.environment }}
           OLD_INVENTORY_PATH: ../country-config-repo/infrastructure/server-setup/inventory
         run: |
-          ls -l ../country-config-repo/ || ls -l ..
           yarn install
           yarn environment:swarm-to-k8s
       - name: Commit, push changes and create PR
