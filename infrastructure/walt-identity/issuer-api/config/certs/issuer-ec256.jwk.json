@@ -2,12 +2,11 @@
   "type": "jwk",
   "jwk": {
     "kty": "EC",
-    "x": "_HjVaFEFG2KdAUSThLfJxIqXQeQcVQ6Vp0Z7fF_Xbxw",
-    "y": "1IOLn3cyQCbbPnWroO1vNfnwql2bu2BtfLH1WQyIcOY",
+    "x": "AaHi6zid20drjPgMtiwnluW5Dt2wZK25QqFgpgcKYOo",
+    "y": "Ar7ijcnX1Z2jujYP_zTFeZizO5rLLsNPHQ_UAzVy5eg",
     "crv": "P-256",
-    "d": "mRBPit9_rAbHQYvNryui2dUGD1jcCujw6tKuDfxyCMc",
+    "d": "bT6oe9YINqDSeIopwO4d2AC3ltP2z8dbSYdsAoXDcbk",
     "use": "sig",
-    "alg": "ES256",
-    "kid": "3-uO1nzhTm6-8xDcbtir07GDwSuutDHbfKj5PVYF5Vo"
+    "alg": "ES256"
   }
 }

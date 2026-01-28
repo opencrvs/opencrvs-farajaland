@@ -59,7 +59,8 @@ Some verifiers (e.g., Inji) currently require SD-JWT VC signing keys to be
 embedded as X.509 certificates in the JOSE header (x5c). Walt.id expects x5c
 input as PEM in the issuance request and converts it to base64 DER internally.
 This demo root + leaf chain is used to generate a valid x5c header for testing
-and demos.
+and demos. The certificates include SAN entries for HTTPS URI and DNS to satisfy
+wallets that require HTTPS URIs in the certificate metadata.
 
 ## Important
 
