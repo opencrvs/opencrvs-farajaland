@@ -1,0 +1,566 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Farajaland Health Services | Verifier</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;700&family=Space+Grotesk:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f6f1e7;
+        --bg-accent: #e4efe2;
+        --card: #ffffff;
+        --ink: #1c2a1f;
+        --muted: #5a6b60;
+        --brand: #2f7b46;
+        --brand-dark: #215534;
+        --warn: #b5521c;
+        --border: #d9e2d6;
+        --shadow: 0 16px 40px rgba(21, 38, 25, 0.12);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: 'Space Grotesk', 'Segoe UI', sans-serif;
+        color: var(--ink);
+        background: radial-gradient(
+            circle at 20% 20%,
+            #ffffff 0%,
+            transparent 45%
+          ),
+          radial-gradient(circle at 80% 0%, #e8f5e7 0%, transparent 50%),
+          linear-gradient(135deg, var(--bg) 0%, var(--bg-accent) 100%);
+        min-height: 100vh;
+      }
+
+      header {
+        padding: 36px 24px 18px;
+        text-align: center;
+      }
+
+      header h1 {
+        font-family: 'Fraunces', serif;
+        font-size: clamp(28px, 3vw, 40px);
+        margin: 0 0 8px;
+        letter-spacing: 0.5px;
+      }
+
+      header p {
+        margin: 0;
+        color: var(--muted);
+      }
+
+      main {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 24px;
+        display: grid;
+        gap: 24px;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      }
+
+      .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 20px 22px;
+        box-shadow: var(--shadow);
+      }
+
+      .card h2 {
+        font-family: 'Fraunces', serif;
+        font-size: 20px;
+        margin: 0 0 12px;
+      }
+
+      .actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        align-items: center;
+        margin-bottom: 12px;
+      }
+
+      button {
+        border: none;
+        background: var(--brand);
+        color: #fff;
+        padding: 12px 18px;
+        border-radius: 999px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition:
+          transform 0.2s ease,
+          box-shadow 0.2s ease;
+      }
+
+      button:disabled {
+        background: #8aa393;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+      }
+
+      button:hover:not(:disabled) {
+        transform: translateY(-1px);
+        box-shadow: 0 8px 20px rgba(47, 123, 70, 0.25);
+      }
+
+      .status {
+        font-weight: 600;
+        color: var(--brand-dark);
+      }
+
+      .muted {
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      #qr {
+        display: grid;
+        place-items: center;
+        padding: 16px;
+        min-height: 260px;
+        border: 1px dashed var(--border);
+        border-radius: 16px;
+        background: #f7fbf7;
+      }
+
+      .link {
+        word-break: break-all;
+        font-size: 12px;
+        color: var(--muted);
+        margin-top: 10px;
+      }
+
+      .results {
+        display: grid;
+        gap: 10px;
+      }
+
+      .id-card {
+        display: grid;
+        gap: 12px;
+        padding: 18px;
+        border-radius: 16px;
+        background: linear-gradient(135deg, #fdfbf7 0%, #eef6ec 100%);
+        border: 1px solid var(--border);
+        box-shadow: 0 10px 24px rgba(32, 74, 48, 0.08);
+      }
+
+      .id-card.highlight {
+        border-color: #86c79b;
+        box-shadow: 0 18px 40px rgba(33, 85, 52, 0.22);
+      }
+
+      .id-card h3 {
+        margin: 0;
+        font-size: 16px;
+        letter-spacing: 0.4px;
+        text-transform: uppercase;
+        color: var(--brand-dark);
+      }
+
+      .id-grid {
+        display: grid;
+        gap: 12px;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      }
+
+      .id-card-wrapper {
+        display: grid;
+        place-items: center;
+      }
+
+      .verification-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 12px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.4px;
+        text-transform: uppercase;
+        background: #e6f6eb;
+        color: var(--brand-dark);
+        border: 1px solid #9dd7b0;
+        justify-self: start;
+      }
+
+      .verification-badge svg {
+        width: 14px;
+        height: 14px;
+      }
+
+      .verification-badge.hidden {
+        display: none;
+      }
+
+      .id-field span {
+        display: block;
+        font-size: 12px;
+        color: var(--muted);
+        margin-bottom: 4px;
+      }
+
+      .id-field strong {
+        font-size: 16px;
+        font-weight: 600;
+      }
+
+      .pill {
+        display: inline-flex;
+        gap: 8px;
+        align-items: center;
+        padding: 6px 10px;
+        border-radius: 999px;
+        background: #f1f7f1;
+        color: var(--brand-dark);
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      pre {
+        background: #f6f7f4;
+        border-radius: 12px;
+        padding: 12px;
+        margin: 0;
+        font-size: 12px;
+        max-height: 280px;
+        overflow: auto;
+      }
+
+      .warning {
+        color: var(--warn);
+        font-size: 13px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Farajaland Health Services</h1>
+      <p>Verify birth credentials through a secure cross‑device flow.</p>
+    </header>
+
+    <main>
+      <section class="card">
+        <h2>Verification Session</h2>
+        <div class="actions">
+          <button id="start">Start Verification</button>
+          <span id="status" class="status">Idle</span>
+        </div>
+        <p class="muted">
+          This will create a new verification session and display a QR code for
+          the wallet to scan.
+        </p>
+        <p id="error" class="warning"></p>
+      </section>
+
+      <section class="card">
+        <h2>Scan QR</h2>
+        <div id="qr">Waiting for session…</div>
+        <div id="requestLink" class="link"></div>
+      </section>
+
+      <section class="card">
+        <h2>Session Details</h2>
+        <div class="results">
+          <div class="pill" id="sessionId">Session: —</div>
+          <div class="pill" id="sessionState">State: —</div>
+          <pre id="sessionJson">{}</pre>
+        </div>
+      </section>
+
+      <section class="card" style="grid-column: 1 / 4">
+        <h2>Verified ID Card</h2>
+        <div class="id-card-wrapper">
+          <div class="id-card" id="idCard">
+            <h3>Farajaland Health Services</h3>
+            <div id="verificationBadge" class="verification-badge hidden">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path
+                  d="M20 7.5L10.75 18 4 11.5"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              Verified
+            </div>
+            <div class="id-grid">
+              <div class="id-field">
+                <span>Given name</span>
+                <strong id="idGivenName">—</strong>
+              </div>
+              <div class="id-field">
+                <span>Family name</span>
+                <strong id="idFamilyName">—</strong>
+              </div>
+              <div class="id-field">
+                <span>Date of birth</span>
+                <strong id="idBirthdate">—</strong>
+              </div>
+              <div class="id-field">
+                <span>Place of birth</span>
+                <strong id="idPlaceOfBirth">—</strong>
+              </div>
+              <div class="id-field">
+                <span>Credential ID</span>
+                <strong id="idCredentialId">—</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <script>
+      const API_BASE = 'https://vc-demo.opencrvs.dev:7004'
+      const startBtn = document.getElementById('start')
+      const statusEl = document.getElementById('status')
+      const errorEl = document.getElementById('error')
+      const qrEl = document.getElementById('qr')
+      const requestLinkEl = document.getElementById('requestLink')
+      const sessionIdEl = document.getElementById('sessionId')
+      const sessionStateEl = document.getElementById('sessionState')
+      const sessionJsonEl = document.getElementById('sessionJson')
+      const idGivenNameEl = document.getElementById('idGivenName')
+      const idFamilyNameEl = document.getElementById('idFamilyName')
+      const idBirthdateEl = document.getElementById('idBirthdate')
+      const idPlaceOfBirthEl = document.getElementById('idPlaceOfBirth')
+      const idCredentialIdEl = document.getElementById('idCredentialId')
+      const idCardEl = document.getElementById('idCard')
+      const badgeEl = document.getElementById('verificationBadge')
+
+      let pollTimer = null
+      let currentSessionId = null
+
+      const verificationPayload = {
+        flow_type: 'cross_device',
+        core_flow: {
+          dcql_query: {
+            credentials: [
+              {
+                id: 'birth_sdjwt',
+                format: 'dc+sd-jwt',
+                meta: {
+                  vct_values: ['crvs_birth_v1']
+                },
+                claims: [
+                  { path: ['given_name'] },
+                  { path: ['family_name'] },
+                  { path: ['birthdate'] },
+                  { path: ['place_of_birth'] }
+                ]
+              }
+            ]
+          },
+          signed_request: true,
+          clientId: 'x509_san_dns:vc-demo.opencrvs.dev',
+          key: {
+            type: 'jwk',
+            jwk: {
+              kty: 'EC',
+              d: 'u0-cviQ-QOqCHhduzPieP1kZQ_jI_VL7_lwa_37quKc',
+              crv: 'P-256',
+              kid: 'lMFMDHG2Nf79zbHwn8HYzY9pYOwpRaKnSnUD9qAf5-Q',
+              x: 'tZyzvd8Vz7trswAnyIfk1aR8teGnD13cn4MLMiEFhEA',
+              y: 'zMMUkryfUI2Dv-xW1WslYTBDMCqJmjIyaSBuRTcgeJU'
+            }
+          }
+        }
+      }
+
+      function setStatus(text) {
+        statusEl.textContent = text
+      }
+
+      function setError(text) {
+        errorEl.textContent = text || ''
+      }
+
+      function clearQr() {
+        qrEl.innerHTML = 'Waiting for session…'
+      }
+
+      function renderQr(url) {
+        qrEl.innerHTML = ''
+        new QRCode(qrEl, {
+          text: url,
+          width: 220,
+          height: 220,
+          colorDark: '#1c2a1f',
+          colorLight: '#f7fbf7',
+          correctLevel: QRCode.CorrectLevel.M
+        })
+      }
+
+      function findFirstValue(node, key) {
+        if (!node || typeof node !== 'object') return null
+        if (Array.isArray(node)) {
+          for (const item of node) {
+            const found = findFirstValue(item, key)
+            if (found !== null && found !== undefined) return found
+          }
+          return null
+        }
+        if (Object.prototype.hasOwnProperty.call(node, key)) {
+          return node[key]
+        }
+        for (const value of Object.values(node)) {
+          const found = findFirstValue(value, key)
+          if (found !== null && found !== undefined) return found
+        }
+        return null
+      }
+
+      function setIdField(element, value) {
+        element.textContent = value && String(value).trim() ? value : '—'
+      }
+
+      function updateVerifiedState(isVerified) {
+        if (isVerified) {
+          idCardEl.classList.add('highlight')
+          badgeEl.classList.remove('hidden')
+        } else {
+          idCardEl.classList.remove('highlight')
+          badgeEl.classList.add('hidden')
+        }
+      }
+
+      async function createSession() {
+        setError('')
+        setStatus('Creating session...')
+        startBtn.disabled = true
+        clearQr()
+        requestLinkEl.textContent = ''
+        sessionJsonEl.textContent = '{}'
+        sessionIdEl.textContent = 'Session: —'
+        sessionStateEl.textContent = 'State: —'
+
+        const response = await fetch(
+          `${API_BASE}/verification-session/create`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(verificationPayload)
+          }
+        )
+
+        if (!response.ok) {
+          const text = await response.text()
+          throw new Error(`Session creation failed: ${response.status} ${text}`)
+        }
+
+        const data = await response.json()
+        const bootstrapUrl =
+          data.bootstrapAuthorizationRequestUrl ||
+          data.authorizationRequestUrl ||
+          data.authorizationRequestUri ||
+          data.request_uri
+        const sessionId =
+          data.id || data.sessionId || extractSessionId(bootstrapUrl)
+
+        if (!bootstrapUrl || !sessionId) {
+          throw new Error('Missing session URL or session id in response.')
+        }
+
+        currentSessionId = sessionId
+        renderQr(bootstrapUrl)
+        requestLinkEl.textContent = bootstrapUrl
+        sessionIdEl.textContent = `Session: ${sessionId}`
+        setStatus('Awaiting wallet...')
+
+        startPolling()
+      }
+
+      function extractSessionId(url) {
+        if (!url) return null
+        const match = url.match(/verification-session\/([a-f0-9-]+)/i)
+        return match ? match[1] : null
+      }
+
+      async function fetchSessionInfo() {
+        if (!currentSessionId) return
+        const response = await fetch(
+          `${API_BASE}/verification-session/${currentSessionId}/info`,
+          { headers: { Accept: 'application/json' } }
+        )
+
+        if (!response.ok) {
+          setStatus('Polling error')
+          return
+        }
+
+        const data = await response.json()
+        sessionJsonEl.textContent = JSON.stringify(data, null, 2)
+        sessionStateEl.textContent = `State: ${data.status || 'unknown'}`
+
+        const givenName = findFirstValue(data, 'given_name')
+        const familyName = findFirstValue(data, 'family_name')
+        const birthdate = findFirstValue(data, 'birthdate')
+        const placeOfBirth = findFirstValue(data, 'place_of_birth')
+        const credentialId =
+          findFirstValue(data, 'id') || findFirstValue(data, 'credentialId')
+
+        setIdField(idGivenNameEl, givenName)
+        setIdField(idFamilyNameEl, familyName)
+        setIdField(idBirthdateEl, birthdate)
+        setIdField(idPlaceOfBirthEl, placeOfBirth)
+        setIdField(idCredentialIdEl, credentialId)
+
+        if (data.status === 'SUCCESSFUL') {
+          setStatus('Verified')
+          updateVerifiedState(true)
+          stopPolling()
+        } else if (data.status === 'UNSUCCESSFUL') {
+          setStatus('Failed')
+          updateVerifiedState(false)
+          stopPolling()
+        } else {
+          setStatus('Awaiting wallet...')
+          updateVerifiedState(false)
+        }
+      }
+
+      function startPolling() {
+        stopPolling()
+        pollTimer = setInterval(fetchSessionInfo, 2000)
+      }
+
+      function stopPolling() {
+        if (pollTimer) {
+          clearInterval(pollTimer)
+          pollTimer = null
+        }
+        startBtn.disabled = false
+      }
+
+      startBtn.addEventListener('click', async () => {
+        try {
+          await createSession()
+        } catch (error) {
+          setError(error.message)
+          setStatus('Error')
+          startBtn.disabled = false
+        }
+      })
+    </script>
+  </body>
+</html>

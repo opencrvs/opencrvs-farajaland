@@ -92,3 +92,23 @@ export const qrCodeComponentRoute = {
     auth: false
   }
 } satisfies ServerRoute<ReqRefDefaults>
+
+export const verifierRoute = {
+  method: 'GET',
+  path: '/verifier.html',
+  handler: async (_req, h) => {
+    return h
+      .response(
+        await import('fs/promises').then((fs) =>
+          fs.readFile(
+            join(__dirname, 'verifiable-credentials-verifier.html'),
+            'utf-8'
+          )
+        )
+      )
+      .type('text/html')
+  },
+  options: {
+    auth: false
+  }
+} satisfies ServerRoute<ReqRefDefaults>
