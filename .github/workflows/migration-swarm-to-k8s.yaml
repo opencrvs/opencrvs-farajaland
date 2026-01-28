@@ -245,18 +245,20 @@ jobs:
     name: Create k8s secrets and vars for ${{ matrix.environment }}
     runs-on: ubuntu-24.04
     timeout-minutes: 60
-    if: ${{ matrix.environment == 'production' }}
     steps:
       - name: Clone country config resource package
+        if: ${{ matrix.environment == 'production' }}
         uses: actions/checkout@v5
         with:
           token: ${{ github.token }}
       - name: Verify environment inventory file exists
+        if: ${{ matrix.environment == 'production' }}
         run: |
           [ ! -f infrastructure/server-setup/inventory/${ENVIRONMENT}.yml ] && \
            echo "Environment file not found: infrastructure/server-setup/inventory/${ENVIRONMENT}.yml" && \
            exit 1 || echo "✅ Inventory file found."
       - name: Configuring backup server
+        if: ${{ matrix.environment == 'production' }}
         run: |
           ssh-keygen -t ed25519 -f backup_key -N "" -C "k8s-backup-key-${ENVIRONMENT}"
           # Read the keys and encode them properly
@@ -269,6 +271,7 @@ jobs:
           echo "Added backup host as a secret: $BACKUP_HOST"
           echo "$BACKUP_HOST" | gh secret set BACKUP_SERVER_HOST --repo $TARGET_REPO --env $ENVIRONMENT
       - name: Configuring backup server
+        if: ${{ matrix.environment == 'production' }}
         run: |
           WORKER_NODES=$(yq '.docker-workers.hosts[].ansible_host' infrastructure/server-setup/inventory/production.yml | yq -o csv '.' | sed 's/ /,/g')
           echo "Adding worker nodes as variable: $WORKER_NODES"
