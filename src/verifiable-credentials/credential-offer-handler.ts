@@ -7,6 +7,7 @@ import { buildTypeScriptToJavaScript } from '@countryconfig/utils'
 import { join } from 'path'
 import { createClient } from '@opencrvs/toolkit/api'
 import { env } from '@countryconfig/environment'
+import { readFile } from 'fs/promises'
 
 const SDJWT_ISSUE_URL = `${env.isProd ? 'http://waltid_issuer-api:7002' : 'https://vc-demo.opencrvs.dev:7002'}/openid4vc/sdjwt/issue`
 
@@ -98,14 +99,7 @@ export const verifierRoute = {
   path: '/verifier.html',
   handler: async (_req, h) => {
     return h
-      .response(
-        await import('fs/promises').then((fs) =>
-          fs.readFile(
-            join(__dirname, 'verifiable-credentials-verifier.html'),
-            'utf-8'
-          )
-        )
-      )
+      .response(await readFile(join(__dirname, 'verifier.html'), 'utf-8'))
       .type('text/html')
   },
   options: {
