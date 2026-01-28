@@ -245,7 +245,7 @@ jobs:
     name: Create k8s secrets and vars for ${{ matrix.environment }}
     runs-on: ubuntu-24.04
     timeout-minutes: 60
-    if: matrix.environment == 'production'
+    if: ${{ matrix.environment == 'production' }}
     steps:
       - name: Clone country config resource package
         uses: actions/checkout@v5
