@@ -3,7 +3,7 @@ import { goToSection, login, logout } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
 import { fillChildDetails, openBirthDeclaration } from './helpers'
 import { selectDeclarationAction } from '../../helpers'
-import { ensureOutboxIsEmpty } from '../../utils'
+import { ensureOutboxIsEmpty, selectAction } from '../../utils'
 
 /**
  * Skipping tests until the outbox workqueue is implemented.
@@ -31,7 +31,7 @@ test.describe('Save and delete drafts', () => {
       await page.getByRole('button', { name: 'Confirm' }).click()
 
       await ensureOutboxIsEmpty(page)
-      await page.getByRole('button', { name: 'My drafts' }).click()
+      await page.getByRole('button', { name: 'Drafts' }).click()
 
       await page.getByRole('button', { name: childName, exact: true }).click()
       await expect(page.locator('#content-name')).toHaveText(childName)
@@ -41,7 +41,7 @@ test.describe('Save and delete drafts', () => {
       await logout(page)
       await login(page, CREDENTIALS.REGISTRAR_GENERAL)
 
-      await page.getByText('My drafts').click()
+      await page.getByText('Drafts').click()
 
       await expect(
         page.getByRole('button', { name: childName, exact: true })
@@ -54,11 +54,9 @@ test.describe('Save and delete drafts', () => {
     })
 
     test('Delete saved draft', async () => {
-      await page.getByRole('button', { name: 'My drafts' }).click()
+      await page.getByRole('button', { name: 'Drafts' }).click()
       await page.getByRole('button', { name: childName, exact: true }).click()
-      await page.getByRole('button', { name: 'Action', exact: true }).click()
-
-      await page.getByText('Declare').click()
+      await selectAction(page, 'Update')
       await selectDeclarationAction(page, 'Delete declaration', false)
       await expect(
         page.getByText('Are you sure you want to delete this declaration?')
@@ -66,7 +64,7 @@ test.describe('Save and delete drafts', () => {
       await page.getByRole('button', { name: 'Confirm' }).click()
 
       await ensureOutboxIsEmpty(page)
-      await page.getByText('My drafts').click()
+      await page.getByText('Drafts').click()
 
       await expect(
         page.getByRole('button', { name: childName, exact: true })

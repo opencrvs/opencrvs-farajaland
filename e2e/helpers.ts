@@ -295,6 +295,7 @@ export const getLocationNameFromId = async (id: UUID, token: string) => {
   const [location] = await client.locations.list.query({
     locationIds: [id]
   })
+
   return location.name
 }
 
@@ -625,7 +626,6 @@ export async function selectDeclarationAction(
     | 'Declare'
     | 'Validate'
     | 'Register'
-    | 'Reject'
     | 'Delete declaration'
     | 'Save & Exit'
     | 'Declare with edits'

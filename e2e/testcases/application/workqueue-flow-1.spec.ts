@@ -160,14 +160,14 @@ test.describe.serial('1. Workqueue flow - 1', () => {
           { title: 'Pending updates', exists: false },
           { title: 'Pending approval', exists: false },
           { title: 'Escalated', exists: false },
-          { title: 'In external validation', exists: false },
+          { title: 'Pending external validation', exists: false },
           { title: 'Pending certification', exists: false },
           { title: 'Pending issuance', exists: false }
         ]
       })
     })
 
-    test('1.2.2 Review', async () => {
+    test('1.2.2 Go to Edit', async () => {
       await page.getByText('Notifications').click()
       await page
         .getByRole('button', {
@@ -175,14 +175,12 @@ test.describe.serial('1. Workqueue flow - 1', () => {
         })
         .click()
 
-      await selectAction(page, 'Review')
+      await selectAction(page, 'Edit')
 
       await page
         .getByTestId('accordion-Accordion_informant')
         .getByRole('button', { name: 'Change all' })
         .click()
-
-      await page.getByRole('button', { name: 'Continue' }).click()
     })
     test('1.2.3 Fill informant details', async () => {
       await page.locator('#informant____relation').click()
@@ -261,8 +259,8 @@ test.describe.serial('1. Workqueue flow - 1', () => {
       await page.getByRole('button', { name: 'Back to review' }).click()
     })
 
-    test('1.2.6 Declare', async () => {
-      await selectDeclarationAction(page, 'Declare')
+    test('1.2.6 Declare with edits', async () => {
+      await selectDeclarationAction(page, 'Declare with edits')
 
       await ensureOutboxIsEmpty(page)
 
@@ -277,7 +275,7 @@ test.describe.serial('1. Workqueue flow - 1', () => {
           { title: 'Pending updates', exists: false },
           { title: 'Pending approval', exists: false },
           { title: 'Escalated', exists: false },
-          { title: 'In external validation', exists: false },
+          { title: 'Pending external validation', exists: false },
           { title: 'Pending certification', exists: false },
           { title: 'Pending issuance', exists: false }
         ]
@@ -308,7 +306,7 @@ test.describe.serial('1. Workqueue flow - 1', () => {
         name: formatName(declaration.child.name),
         workqueues: [
           { title: 'Outbox', exists: false },
-          { title: 'My drafts', exists: false },
+          { title: 'Drafts', exists: false },
           { title: 'Assigned to you', exists: false },
           { title: 'Recent', exists: false },
           { title: 'Notifications', exists: false },
@@ -317,7 +315,7 @@ test.describe.serial('1. Workqueue flow - 1', () => {
           { title: 'Pending approval', exists: false },
           { title: 'Pending registration', exists: true },
           { title: 'Escalated', exists: false },
-          { title: 'In external validation', exists: false },
+          { title: 'Pending external validation', exists: false },
           { title: 'Pending certification', exists: false },
           { title: 'Pending issuance', exists: false }
         ]
@@ -343,7 +341,7 @@ test.describe.serial('1. Workqueue flow - 1', () => {
         name: formatName(declaration.child.name),
         workqueues: [
           { title: 'Outbox', exists: false },
-          { title: 'My drafts', exists: false },
+          { title: 'Drafts', exists: false },
           { title: 'Assigned to you', exists: false },
           { title: 'Recent', exists: true },
           { title: 'Notifications', exists: false },
@@ -352,7 +350,7 @@ test.describe.serial('1. Workqueue flow - 1', () => {
           { title: 'Pending approval', exists: false },
           { title: 'Pending registration', exists: false },
           { title: 'Escalated', exists: false },
-          { title: 'In external validation', exists: false },
+          { title: 'Pending external validation', exists: false },
           { title: 'Pending certification', exists: true },
           { title: 'Pending issuance', exists: false }
         ]
@@ -405,7 +403,7 @@ test.describe.serial('1. Workqueue flow - 1', () => {
       name: formatName(declaration.child.name),
       workqueues: [
         { title: 'Outbox', exists: false },
-        { title: 'My drafts', exists: false },
+        { title: 'Drafts', exists: false },
         { title: 'Assigned to you', exists: false },
         { title: 'Recent', exists: true },
         { title: 'Notifications', exists: false },
@@ -414,7 +412,7 @@ test.describe.serial('1. Workqueue flow - 1', () => {
         { title: 'Pending approval', exists: false },
         { title: 'Pending registration', exists: false },
         { title: 'Escalated', exists: false },
-        { title: 'In external validation', exists: false },
+        { title: 'Pending external validation', exists: false },
         { title: 'Pending certification', exists: false },
         { title: 'Pending issuance', exists: false }
       ]
@@ -449,7 +447,7 @@ test.describe.serial('1. Workqueue flow - 1', () => {
         { title: 'Pending updates', exists: false },
         { title: 'Pending approval', exists: false },
         { title: 'Escalated', exists: false },
-        { title: 'In external validation', exists: false },
+        { title: 'Pending external validation', exists: false },
         { title: 'Pending certification', exists: false },
         { title: 'Pending issuance', exists: false }
       ]

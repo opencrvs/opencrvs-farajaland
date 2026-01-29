@@ -154,7 +154,7 @@ test.describe.serial('2. Workqueue flow - 2', () => {
         name: formatName(declaration.child.name),
         workqueues: [
           { title: 'Outbox', exists: false },
-          { title: 'My drafts', exists: false },
+          { title: 'Drafts', exists: false },
           { title: 'Assigned to you', exists: false },
           { title: 'Recent', exists: false },
           { title: 'Notifications', exists: true },
@@ -163,14 +163,14 @@ test.describe.serial('2. Workqueue flow - 2', () => {
           { title: 'Pending approval', exists: false },
           { title: 'Pending registration', exists: false },
           { title: 'Escalated', exists: false },
-          { title: 'In external validation', exists: false },
+          { title: 'Pending external validation', exists: false },
           { title: 'Pending certification', exists: false },
           { title: 'Pending issuance', exists: false }
         ]
       })
     })
 
-    test('2.2.2 Review', async () => {
+    test('2.2.2 Go to Edit', async () => {
       await page.getByText('Notifications').click()
       await page
         .getByRole('button', {
@@ -178,15 +178,14 @@ test.describe.serial('2. Workqueue flow - 2', () => {
         })
         .click()
 
-      await selectAction(page, 'Review')
+      await selectAction(page, 'Edit')
 
       await page
         .getByTestId('accordion-Accordion_informant')
         .getByRole('button', { name: 'Change all' })
         .click()
-
-      await page.getByRole('button', { name: 'Continue' }).click()
     })
+
     test('2.2.3 Fill informant details', async () => {
       await page.locator('#informant____relation').click()
       await page
@@ -263,9 +262,9 @@ test.describe.serial('2. Workqueue flow - 2', () => {
       await page.locator('#father____addressSameAs_YES').click()
     })
 
-    test('2.2.6 Register', async () => {
+    test('2.2.6 Register with edits', async () => {
       await goToSection(page, 'review')
-      await selectDeclarationAction(page, 'Register')
+      await selectDeclarationAction(page, 'Register with edits')
 
       await ensureOutboxIsEmpty(page)
       await ensureInExternalValidationIsEmpty(page)
@@ -275,7 +274,7 @@ test.describe.serial('2. Workqueue flow - 2', () => {
         name: formatName(declaration.child.name),
         workqueues: [
           { title: 'Outbox', exists: false },
-          { title: 'My drafts', exists: false },
+          { title: 'Drafts', exists: false },
           { title: 'Assigned to you', exists: false },
           { title: 'Recent', exists: true },
           { title: 'Notifications', exists: false },
@@ -284,7 +283,7 @@ test.describe.serial('2. Workqueue flow - 2', () => {
           { title: 'Pending approval', exists: false },
           { title: 'Pending registration', exists: false },
           { title: 'Escalated', exists: false },
-          { title: 'In external validation', exists: false },
+          { title: 'Pending external validation', exists: false },
           { title: 'Pending certification', exists: true },
           { title: 'Pending issuance', exists: false }
         ]
@@ -320,7 +319,7 @@ test.describe.serial('2. Workqueue flow - 2', () => {
         { title: 'Pending updates', exists: false },
         { title: 'Pending approval', exists: false },
         { title: 'Escalated', exists: false },
-        { title: 'In external validation', exists: false },
+        { title: 'Pending external validation', exists: false },
         { title: 'Pending certification', exists: true },
         { title: 'Pending issuance', exists: false }
       ]
