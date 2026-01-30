@@ -33,7 +33,7 @@ import { PlaceOfBirth } from './forms/pages/child'
 import { CORRECTION_FORM } from './forms/correctionForm'
 import { dedupConfig } from './dedupConfig'
 import { applicationConfig } from '@countryconfig/api/application/application-config'
-import * as verifiableCredentialActions from '@countryconfig/verifiable-credentials/actions'
+import * as verifiableCredentialActions from '@countryconfig/verifiable-credentials/issue-birth-credential-action'
 
 export const birthEvent = defineConfig({
   id: Event.Birth,

@@ -38,11 +38,11 @@ export const issueBirthCredentialAction = {
     id: 'event.birth.action.registrar-general-feedback.supportingCopy'
   },
   flags: [
-    // @TODO: This is added in issuer service to record
-    {
-      id: 'vc-issued',
-      operation: 'add'
-    }
+    // @TODO: This should be added on _issuance_ of the VC, not here
+    // {
+    //   id: 'vc-issued',
+    //   operation: 'add'
+    // }
   ],
   conditionals: [
     {
@@ -95,9 +95,9 @@ export const issueBirthCredentialAction = {
         }
       ],
       label: {
-        defaultMessage: '',
+        defaultMessage: 'Details in the birth record',
         description: 'Title for the data section',
-        id: 'event.death.action.certificate.form.section.verifyIdentity.data.label'
+        id: 'event.birth.custom.action.issue-vc.field.requester.label'
       },
       configuration: {
         data: [
@@ -123,9 +123,9 @@ export const issueBirthCredentialAction = {
         }
       ],
       label: {
-        defaultMessage: '',
+        defaultMessage: 'Details in the birth record',
         description: 'Title for the data section',
-        id: 'event.death.action.certificate.form.section.verifyIdentity.data.label'
+        id: 'event.birth.custom.action.issue-vc.field.requester.label'
       },
       configuration: {
         data: [
