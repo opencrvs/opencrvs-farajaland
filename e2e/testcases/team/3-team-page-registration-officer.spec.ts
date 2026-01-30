@@ -9,7 +9,7 @@ import { isPageHeaderFieldType } from '@opencrvs/toolkit/events'
 import { type } from '../../utils'
 import exp from 'constants'
 
-test.describe.serial('2. Team Page -1', () => {
+test.describe.serial('3. Team Page -1', () => {
   let page: Page
 
   test.beforeAll(async ({ browser }) => {
@@ -20,8 +20,8 @@ test.describe.serial('2. Team Page -1', () => {
     await page.close()
   })
 
-  test.describe('2.1 Basic UI check', async () => {
-    test('2.1.0 Verify UI', async () => {
+  test.describe('3.1 Basic UI check', async () => {
+    test('3.1.0 Verify UI', async () => {
       await login(page, CREDENTIALS.REGISTRATION_OFFICER)
       await page.getByRole('button', { name: 'Team' }).click()
       await expect(page.locator('#content-name')).toHaveText(
@@ -31,7 +31,7 @@ test.describe.serial('2. Team Page -1', () => {
         page.locator('.LocationInfoValue-sc-1ou3q8c-5.cCnjTR')
       ).toHaveText('Ibombo, Central')
     })
-    test('2.1.1 Verify Team Members Status', async () => {
+    test('3.1.1 Verify Team Members Status', async () => {
       const row1 = page.getByRole('row', { name: /Mitchell Owen/ })
       await expect(row1.getByText('Active')).toBeVisible()
       const button1 = row1.getByRole('button', { name: 'Mitchell Owen' })

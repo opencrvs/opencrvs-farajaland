@@ -30,10 +30,10 @@ test.describe.serial('5. Team Page -1', () => {
       ).toHaveText('Embe, Pualula')
     })
     test('5.1.1 Verify Team Members Status', async () => {
-      const row1 = page.getByRole('row', { name: /Jay Douglas/ })
+      const row1 = page.getByRole('row', { name: /Wilson Cruickshank/ })
       await expect(row1.getByText('Active')).toBeVisible()
       await expect(row1.getByText('Registrar')).toBeVisible()
-      const button1 = row1.getByRole('button', { name: 'Jay Douglas' })
+      const button1 = row1.getByRole('button', { name: 'Wilson Cruickshank' })
       await expect(button1).toBeDisabled()
 
       const row2 = page.getByRole('row', { name: /Joseph Musonda/ })
@@ -57,9 +57,9 @@ test.describe.serial('5. Team Page -1', () => {
       await expect(page).toHaveURL(/.*\/team/)
     })
     test('5.2.2 Verify for different locations', async () => {
-      await page.getByRole('button', { name: 'HQ Office' }).click()
+      await page.getByRole('button', { name: /HQ Office/ }).click()
       await page.getByTestId('locationSearchInput').fill('Il')
-      await page.getByText('Ilanga District Office', { exact: true }).click()
+      await page.getByText(/Ilanga District Office/).click()
       await expect(page.locator('#content-name')).toHaveText(
         'Ilanga District Office'
       )

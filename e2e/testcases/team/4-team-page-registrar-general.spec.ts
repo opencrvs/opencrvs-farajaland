@@ -9,7 +9,7 @@ import { isPageHeaderFieldType } from '@opencrvs/toolkit/events'
 import { type } from '../../utils'
 import exp from 'constants'
 
-test.describe.serial('2. Team Page -1', () => {
+test.describe.serial('4. Team Page -1', () => {
   let page: Page
 
   test.beforeAll(async ({ browser }) => {
@@ -20,8 +20,8 @@ test.describe.serial('2. Team Page -1', () => {
     await page.close()
   })
 
-  test.describe('2.1 Basic UI check', async () => {
-    test('2.1.0 Verify UI', async () => {
+  test.describe('4.1 Basic UI check', async () => {
+    test('4.1.0 Verify UI', async () => {
       await login(page, CREDENTIALS.REGISTRAR_GENERAL)
       await page.getByRole('button', { name: 'Team' }).click()
       await expect(page.locator('#content-name')).toHaveText('HQ Office')
@@ -29,12 +29,14 @@ test.describe.serial('2. Team Page -1', () => {
         page.locator('.LocationInfoValue-sc-1ou3q8c-5.cCnjTR')
       ).toHaveText('Embe, Pualula')
     })
-    test('2.1.1 Verify Team Members Status', async () => {
-      const row1 = page.getByRole('row', { name: /Jay Douglas/ })
+    test('4.1.1 Verify Team Members Status', async () => {
+      const row1 = page.getByRole('row', { name: /Wilson Cruickshank/ })
       await expect(row1.getByText('Active')).toBeVisible()
-      const button1 = row1.getByRole('button', { name: 'Jay Douglas' })
+      const button1 = row1.getByRole('button', { name: 'Wilson Cruickshank' })
       await button1.click()
-      await expect(page.locator('#content-name')).toHaveText('Jay Douglas')
+      await expect(page.locator('#content-name')).toHaveText(
+        'Wilson Cruickshank'
+      )
       await page.getByRole('button', { name: 'HQ Office' }).click()
       await expect(page).toHaveURL(/.*\/team/)
 

@@ -38,44 +38,7 @@ test.describe.serial('2. Team Page -1', () => {
       await expect(row3.getByText('Active')).toBeVisible()
     })
   })
-  // test.describe('2.2 User Account Actions', async () => {
 
-  //   test('2.2.1 Edit User Details', async () => {
-  //     await login(page, CREDENTIALS.NATIONAL_SYSTEM_ADMIN)
-  //     await page.getByRole('button', { name: 'Team' }).click()
-
-  //     await page.locator('//nav[@id="user-item-0-menu-dropdownMenu"]').click()
-  //     await page
-  //       .locator('//ul[@id="user-item-0-menu-Dropdown-Content"]')
-  //       .getByText('Edit details')
-  //       .click()
-
-  //     await expect(page.getByText('Confirm details')).toBeVisible()
-
-  //     await expect(
-  //       page
-  //         .getByTestId('list-view-label')
-  //         .filter({ hasText: 'Registration Office' })
-  //     ).toBeVisible()
-
-  //     test('2.2.2 Change Phone Number', async () => {
-  //     await page.locator('#btn_change_phoneNumber:visible').click()
-  //     await page.locator('input[name="phoneNumber"]').fill('0785963214')
-  //     await page.getByRole('button', { name: 'Continue' }).click()
-  //     await page.getByRole('button', { name: 'Continue' }).click()
-  //     await page.getByRole('button', { name: 'Confirm' }).click()
-  //     })
-
-  //     test('2.2.3 Verify Phone Number Changed', async () => {
-  //     await expect(
-  //       page
-  //         .getByTestId('list-view-label')
-  //         .filter({ hasText: '0785963214' })
-  //     ).toBeVisible()
-  //     })
-
-  //   })
-  // })
   test.describe('2.2 User Account Actions', () => {
     test('2.2.1 Edit User Details', async () => {
       await login(page, CREDENTIALS.NATIONAL_SYSTEM_ADMIN)
