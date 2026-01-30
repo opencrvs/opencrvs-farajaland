@@ -179,6 +179,15 @@ export const deathEvent = defineConfig({
         description: 'Flag label for validated'
       },
       requiresAction: true
+    },
+    {
+      id: 'pending-first-certificate-issuance',
+      label: {
+        id: 'event.birth.flag.pending-first-certificate-issuance',
+        defaultMessage: 'Pending first certificate issuance',
+        description: 'Flag label for first certificate issuance'
+      },
+      requiresAction: true
     }
   ],
   actionOrder: [
@@ -337,12 +346,15 @@ export const deathEvent = defineConfig({
         id: 'event.death.action.register.label'
       },
       supportingCopy: {
-        id: 'review.register.description.complete',
+        id: 'event.death.action.register.supportingCopy',
         description: 'Confirmation text for the register action',
         defaultMessage:
-          "By clicking 'Confirm', you confirm that the information entered is correct and the event can be registered."
+          'Registering this death event will create an official civil registration record. Please ensure all details are correct before proceeding.'
       },
-      flags: [{ id: 'validated', operation: 'remove' }],
+      flags: [
+        { id: 'validated', operation: 'remove' },
+        { id: 'pending-first-certificate-issuance', operation: 'add' }
+      ],
       conditionals: [
         {
           type: ConditionalType.ENABLE,
@@ -368,6 +380,9 @@ export const deathEvent = defineConfig({
           'This is shown as the action name anywhere the user can trigger the action from',
         id: 'event.death.action.collect-certificate.label'
       },
+      flags: [
+        { id: 'pending-first-certificate-issuance', operation: 'remove' }
+      ],
       printForm: DEATH_CERTIFICATE_COLLECTOR_FORM
     },
     {

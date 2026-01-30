@@ -48,7 +48,7 @@ export const Workqueues = defineWorkqueues([
       description: 'Title of assigned to you workqueue'
     },
     query: { assignedTo: { type: 'exact', term: user('id') } },
-    actions: [{ type: 'DEFAULT', conditionals: [] }]
+    actions: [{ type: ActionType.READ }]
   },
   {
     slug: 'recent',
@@ -62,7 +62,7 @@ export const Workqueues = defineWorkqueues([
       updatedBy: { type: 'exact', term: user('id') },
       updatedAt: { type: 'timePeriod', term: 'last7Days' }
     },
-    actions: [{ type: 'DEFAULT', conditionals: [] }],
+    actions: [{ type: ActionType.READ }],
     emptyMessage: {
       id: 'workqueues.recent.emptyMessage',
       defaultMessage: 'No recent records',
@@ -84,12 +84,23 @@ export const Workqueues = defineWorkqueues([
       },
       updatedAtLocation: { type: 'within', location: user('primaryOfficeId') }
     },
-    actions: [{ type: 'DEFAULT', conditionals: [] }],
+    actions: [{ type: ActionType.READ }],
     emptyMessage: {
       id: 'workqueues.notifications.emptyMessage',
       defaultMessage: 'No notifications',
       description: 'Empty message for notifications workqueue'
-    }
+    },
+    columns: [
+      DATE_OF_EVENT_COLUMN,
+      {
+        label: {
+          defaultMessage: 'Notified',
+          description: 'This is the label for the Notified column',
+          id: 'workqueue.notifications.updatedAtColumn'
+        },
+        value: event.field('updatedAt')
+      }
+    ]
   },
   {
     slug: 'pending-validation',
@@ -110,7 +121,7 @@ export const Workqueues = defineWorkqueues([
         ]
       }
     },
-    actions: [{ type: 'DEFAULT', conditionals: [] }],
+    actions: [{ type: ActionType.READ }],
     columns: [
       DATE_OF_EVENT_COLUMN,
       {
@@ -136,7 +147,18 @@ export const Workqueues = defineWorkqueues([
       ...declaredInMyAdminArea,
       flags: { anyOf: [InherentFlags.POTENTIAL_DUPLICATE] }
     },
-    actions: [{ type: 'DEFAULT', conditionals: [] }]
+    actions: [{ type: ActionType.READ }],
+    columns: [
+      DATE_OF_EVENT_COLUMN,
+      {
+        label: {
+          defaultMessage: 'Flagged as duplicate',
+          description: 'This is the label for the Flagged as duplicate column',
+          id: 'workqueue.potential-duplicate.updatedAtColumn'
+        },
+        value: event.field('updatedAt')
+      }
+    ]
   },
   {
     slug: 'pending-updates',
@@ -150,7 +172,7 @@ export const Workqueues = defineWorkqueues([
       ...createdInMyAdminArea,
       flags: { anyOf: [InherentFlags.REJECTED] }
     },
-    actions: [{ type: 'DEFAULT', conditionals: [] }],
+    actions: [{ type: ActionType.READ }],
     columns: [
       DATE_OF_EVENT_COLUMN,
       {
@@ -188,7 +210,7 @@ export const Workqueues = defineWorkqueues([
       status: { type: 'exact', term: EventStatus.enum.DECLARED },
       flags: { anyOf: ['approval-required-for-late-registration'] }
     },
-    actions: [{ type: 'DEFAULT', conditionals: [] }]
+    actions: [{ type: ActionType.READ }]
   },
   {
     slug: 'pending-registration',
@@ -206,7 +228,7 @@ export const Workqueues = defineWorkqueues([
         noneOf: ['approval-required-for-late-registration']
       }
     },
-    actions: [{ type: 'DEFAULT', conditionals: [] }],
+    actions: [{ type: ActionType.READ }],
     columns: [
       DATE_OF_EVENT_COLUMN,
       {
@@ -229,7 +251,7 @@ export const Workqueues = defineWorkqueues([
       description: 'Title of pending registration workqueue'
     },
     query: { status: { type: 'exact', term: EventStatus.enum.DECLARED } },
-    actions: [{ type: 'DEFAULT', conditionals: [] }],
+    actions: [{ type: ActionType.READ }],
     columns: [
       DATE_OF_EVENT_COLUMN,
       {
@@ -260,7 +282,18 @@ export const Workqueues = defineWorkqueues([
         ]
       }
     },
-    actions: [{ type: 'DEFAULT', conditionals: [] }]
+    actions: [{ type: ActionType.READ }],
+    columns: [
+      DATE_OF_EVENT_COLUMN,
+      {
+        label: {
+          defaultMessage: 'Escalated',
+          description: 'This is the label for the Escalated column',
+          id: 'workqueue.escalated.updatedAtColumn'
+        },
+        value: event.field('updatedAt')
+      }
+    ]
   },
   {
     slug: 'pending-feedback-registrar-general',
@@ -282,7 +315,7 @@ export const Workqueues = defineWorkqueues([
         value: event.field('updatedAt')
       }
     ],
-    actions: [{ type: 'DEFAULT', conditionals: [] }]
+    actions: [{ type: ActionType.READ }]
   },
   {
     slug: 'pending-feedback-provincinal-registrar',
@@ -304,15 +337,15 @@ export const Workqueues = defineWorkqueues([
         value: event.field('updatedAt')
       }
     ],
-    actions: [{ type: 'DEFAULT', conditionals: [] }]
+    actions: [{ type: ActionType.READ }]
   },
   {
     slug: 'in-external-validation',
     icon: 'FileText',
     name: {
       id: 'workqueues.inExternalValidation.title',
-      defaultMessage: 'In external validation',
-      description: 'Title of in external validation workqueue'
+      defaultMessage: 'Pending external validation',
+      description: 'Title of pending external validation workqueue'
     },
     query: {
       flags: {
@@ -322,7 +355,18 @@ export const Workqueues = defineWorkqueues([
       },
       updatedAtLocation: { type: 'within', location: user('primaryOfficeId') }
     },
-    actions: [{ type: 'DEFAULT', conditionals: [] }]
+    actions: [{ type: ActionType.READ }],
+    columns: [
+      DATE_OF_EVENT_COLUMN,
+      {
+        label: {
+          defaultMessage: 'External validated',
+          description: 'This is the label for the External validated column',
+          id: 'workqueue.in-external-validation.updatedAtColumn'
+        },
+        value: event.field('updatedAt')
+      }
+    ]
   },
   {
     slug: 'pending-certification',
@@ -335,14 +379,11 @@ export const Workqueues = defineWorkqueues([
     query: {
       ...registeredInMyAdminArea,
       flags: {
-        anyOf: [
-          'pending-first-certificate-issuance',
-          InherentFlags.PENDING_CERTIFICATION
-        ],
-        noneOf: ['revoked']
+        anyOf: ['pending-first-certificate-issuance'],
+        noneOf: ['revoked', InherentFlags.CORRECTION_REQUESTED]
       }
     },
-    actions: [{ type: 'DEFAULT', conditionals: [] }],
+    actions: [{ type: ActionType.PRINT_CERTIFICATE }],
     emptyMessage: {
       id: 'workqueues.pendingCertification.emptyMessage',
       defaultMessage: 'No pending certification records',
@@ -372,19 +413,31 @@ export const Workqueues = defineWorkqueues([
       ...registeredInMyAdminArea,
       flags: {
         anyOf: ['certified-copy-printed-in-advance-of-issuance'],
-        noneOf: ['revoked']
+        noneOf: ['revoked', InherentFlags.CORRECTION_REQUESTED]
       }
     },
-    actions: [{ type: 'DEFAULT', conditionals: [] }],
+    actions: [{ type: ActionType.READ }],
     emptyMessage: {
       id: 'workqueues.pendingCertification.emptyMessage',
       defaultMessage: 'No pending certification records',
       description: 'Empty message for pending certification workqueue'
-    }
+    },
+    columns: [
+      DATE_OF_EVENT_COLUMN,
+      {
+        label: {
+          defaultMessage: 'Certified copy printed',
+          description:
+            'This is the label for the Certified copy printed column',
+          id: 'workqueue.pending-issuance.updatedAtColumn'
+        },
+        value: event.field('updatedAt')
+      }
+    ]
   },
   {
     slug: 'correction-requested',
-    icon: 'FileText',
+    icon: 'FilePlus',
     name: {
       id: 'workqueues.correctionRequested.title',
       defaultMessage: 'Pending corrections',
@@ -397,6 +450,17 @@ export const Workqueues = defineWorkqueues([
         noneOf: ['revoked']
       }
     },
-    actions: [{ type: 'DEFAULT', conditionals: [] }]
+    actions: [{ type: ActionType.READ }],
+    columns: [
+      DATE_OF_EVENT_COLUMN,
+      {
+        label: {
+          defaultMessage: 'Correction requested',
+          description: 'This is the label for the Correction requested column',
+          id: 'workqueue.correction-requested.updatedAtColumn'
+        },
+        value: event.field('updatedAt')
+      }
+    ]
   }
 ])

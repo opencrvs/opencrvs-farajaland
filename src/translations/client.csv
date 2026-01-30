@@ -212,6 +212,7 @@ config.emailAllUsers.subtitle,Subtitle for email all users,This email will be se
 config.emailAllUsers.title,Title for email all users,Email all users,Envoyer un e-mail à tous les utilisateurs
 config.userRoles.language,Language name,"{language, select, en {English} fr {French} other {{language}}}","{language, select, en {Anglais} fr {Français} other {{language}}}"
 configuration.dateFormat,Default format for date values,d MMMM y,d MMMM y
+configuration.timeField.outputFormat,Default output format for time fields,hh:mm a,hh:mm a
 configuration.timeFormat,Default time format for timestamps,"MMMM dd, yyyy · hh.mm a","MMMM dd, yyyy · hh.mm a"
 conflicts.modal.assign.description,Description for modal when assign,Please note you will have sole access to this record. Please make any updates promptly otherwise unassign the record.,"Veuillez noter que vous aurez un accès exclusif à cet enregistrement. Veuillez effectuer rapidement les mises à jour éventuelles, sinon vous désassignez l'enregistrement."
 conflicts.modal.assign.title,Title for modal when assign,Assign record?,Attribuer un enregistrement ?
@@ -789,6 +790,7 @@ error.invalidName,This is the error message for invalid name,"Input contains inv
 error.occurred,The error message that displays if we want the user to try the action again,An error occurred. Please try again.,Une erreur s'est produite. Veuillez réessayer.
 error.page.load.failed,Error message when page failed to load,"Sorry, we couldn't load the content for this page","Désolé, nous n'avons pas pu charger le contenu de cette page."
 error.passwordSubmissionError,Error message when password verification fails,Sorry that password did not work,Désolé que le mot de passe n'ait pas fonctionné
+error.pdf,PDF load Error,Failed to load PDF,Échec du chargement du PDF
 error.required.password,New password required,New password is not valid,Le nouveau mot de passe n'est pas valide
 error.search,The error message shown when a search query fails,An error occurred while searching,Une erreur s'est produite lors de la recherche
 error.searchParamCountError,Error message when the search parameters are less than two,You must select a minimum of 2 search criteria,Vous devez sélectionner un minimum de 2 critères de recherche
@@ -803,7 +805,7 @@ event.action.declare.form.section.person.field.age.error,Error message for inval
 event.action.notAvailableForEvent,Shown when user tries to perform an action that is not available for the event,The action you're trying to perform is not available for this event anymore,L'action que vous essayez d'effectuer n'est plus disponible pour cet événement
 event.action.outbox-retry.label,Label for retry button for outbox,Retry,Réessayer
 event.action.review-correction.label,Label for review correction button in dropdown menu,Review correction request,Revoir la demande de correction
-event.birth.action.approve.confirmationText,This is the confirmation text for the approve action,This birth has been registered late. You are now approving it for further validation and registration.,Cette naissance a été enregistrée en retard. Vous l'approuvez maintenant pour une validation et un enregistrement supplémentaires.
+event.birth.action.approve.confirmationText,This is the confirmation text for the approve action,Approving this declaration confirms it as legally accepted and eligible for registration.,L'approbation de cette déclaration confirme qu'elle est légalement acceptée et éligible à l'enregistrement.
 event.birth.action.approve.label,This is shown as the action name anywhere the user can trigger the action from,Approve declaration,Approuver la déclaration
 event.birth.action.archive.label,Label for archive record button in dropdown menu,Archive,Aarchiver
 event.birth.action.certificate.form.section.collectPayment.data.label,Title for the data section,Payment details,Détails du paiement
@@ -876,6 +878,7 @@ event.birth.action.issued.audit-history-label,The label to show in audit history
 event.birth.action.mark-as-duplicate.label,Label for review potential duplicate button in dropdown menu,Review,Revoir
 event.birth.action.provincial-registrar-feedback.label,This is shown when the provincial registrar feedback can be triggered from the action from,Provincial registrar feedback,Retour du registraire provincial
 event.birth.action.register.label,Label for review record button in dropdown menu,Register,Enregistrer
+event.birth.action.register.supportingCopy,The description for registration action when form is complete,Registering this birth event will create an official civil registration record. Please ensure all details are correct before proceeding.,L'enregistrement de cet événement de naissance créera un dossier officiel d'état civil. Veuillez vous assurer que tous les détails sont corrects avant de continuer.
 event.birth.action.registrar-general-feedback.label,This is shown when the registrar general feedback can be triggered from the action from,Registrar general feedback,Retour du registraire général
 event.birth.action.reject.label,This is the label for the reject action,Reject,Rejeter
 event.birth.action.request-correction.label,This is shown as the action name anywhere the user can trigger the action from,Correct record,Enregistrement correct
@@ -1060,6 +1063,7 @@ event.death.action.form.section.relationshipToDeceased.label,This is the label f
 event.death.action.form.section.signedAffidavit.fileName,This is the label for the file name,Signed Affidavit,Déclaration signée
 event.death.action.form.section.signedAffidavit.label,This is the label for uploading a signed affidavit,Signed Affidavit (Optional),Déclaration signée (Optionnel)
 event.death.action.register.label,This is shown as the action name anywhere the user can trigger the action from,Register,Enregistrer
+event.death.action.register.supportingCopy,The description for registration action when form is complete,Registering this death event will create an official civil registration record. Please ensure all details are correct before proceeding.,L'enregistrement de cet événement de décès créera un dossier officiel d'état civil. Veuillez vous assurer que tous les détails sont corrects avant de continuer.
 event.death.action.request-correction.label,This is shown as the action name anywhere the user can trigger the action from,Correct record,Corriger l'enregistrement
 event.death.action.validate.label,This is shown as the action name anywhere the user can trigger the action from,Validate,Valider
 event.death.label,This is what this event is referred as in the system,Death,Décès
@@ -1497,6 +1501,8 @@ home.header.teamTitle,Team title,Team,Équipe
 home.header.typeName,Search menu name type,Name,Nom
 home.header.typePhone,Search menu phone no type,Phone no.,N° de téléphone
 home.header.typeRN,Search menu brn drn type,Registration no.,N ° d'enregistrement.
+imageEditorModal.description,Description for the image editor modal,Resize and position the chosen image,Redimensionner et positionner l'image choisie
+imageEditorModal.title,Title for the image editor modal,Crop & resize image,Recadrer et redimensionner l'image
 imageUploadOption.upload.documentType,Show error message if the document type is not selected,Please select the type of document first,Veuillez d'abord sélectionner le type de document
 imageUploadOption.upload.error,Show error messages while uploading,File format not supported. Please upload a .png or .jpg (max {maxSize}mb),"Format de fichier non pris en charge. Veuillez joindre un png, jpg (max {maxSize}mb)"
 imageUploadOption.upload.imageFormat,Show error message if the selected image type is not supported,File format not supported. Please upload a .png or .jpg (max {maxSize}mb),Le format d'image n'est pas supporté. Veuillez joindre un png ou un jpg (max {maxSize}mb)
@@ -1977,7 +1983,6 @@ review.modal.desc.submitConfirmation,Submit description text on modal,"{complete
 review.modal.title.registerConfirmation,Title for register confirmation modal,Register event?,Enregistrer l'événement?
 review.modal.title.submitConfirmation,Submit title text on modal,"{completeDeclaration, select, true {Send for review?} other {Send for review?}}","{completeDeclaration, select, true {Envoyer la déclaration pour examen?} other {Envoyer une déclaration incomplète?}}"
 review.register.confirmModal.title,The title for review action modal when registering,Register the {event}?,Enregistrer cet {event}?
-review.register.description.complete,The description for registration action when form is complete,"By clicking 'Confirm', you confirm that the information entered is correct and the event can be registered.","En cliquant sur enregistrer, vous confirmez que les informations saisies sont correctes et que l'événement peut être enregistré."
 review.rej.form.reasons.missSupDoc,Label for rejection option missing supporting doc,Missing supporting documents,Documents justificatifs manquants
 review.rejection.form,Rejection form name,Rejection form,Formulaire de rejet
 review.rejection.form.commentLabel,,Comments,Commentaires ou instructions à l'intention de l'agent de santé pour rectifier la déclaration
@@ -2009,7 +2014,7 @@ search.labels.results.eventRegistrationNumber,Label for event registration numbe
 search.loadingDeclarations,The text when loading declaration,Loading declarations...,Chargement des déclarations...
 search.locationNotFound,Label for location not found,Location Not Found,Emplacement non trouvé
 search.noDeclarations,The text when there is no declaration to review,No declarations to review,Aucune déclaration à examiner
-search.noRecord,The no record text,"No records {slug, select, draft {in my drafts} outbox {require processing} other {{title}}}","Aucun enregistrement {slug, select, draft {dans mes brouillons} outbox {à traiter} other {{title}}}"
+search.noRecord,The no record text,"No records {slug, select, draft {in drafts} outbox {require processing} other {{title}}}","Aucun enregistrement {slug, select, draft {dans brouillons} outbox {à traiter} other {{title}}}"
 search.noResult,The no result text,No result,Pas de résultats”
 search.noResultFor,The no result text,No results for ”{param}”,Aucun résultat pour “{param}”
 search.noResultForSearchTerm,The no result text,No results for “{searchTerm}”,Pas de résultats pour “{searchTerm}”
@@ -2305,14 +2310,26 @@ views.qrReader.tutorial.distance,Distance tutorial,Hold the device steadily 6-12
 views.qrReader.tutorial.lightBalance,Light balance tutorial,Ensure the QR code is well-lit and not damaged or blurry.,Assurez-vous que le code QR est bien éclairé et non endommagé ou flou.
 workqueue.late-registration-approval.column.approval-requested,This is the label for the pending approval workqueue column,Approval requested,Approbation demandée
 workqueue.ready-to-print.column.registered,This is the label for the workqueue column,Registered,Enregistré
+workqueues.assignedToYou.title,Title of assigned to you workqueue,Assigned to you,Attribué à vous
+workqueues.correctionRequested.title,Title of correction requested workqueue,Pending corrections,Corrections en attente
 workqueues.dateOfEvent,Label for workqueue column: dateOfEvent,Date of Event,Date de l'événement
-workqueues.draft.title,Title of draft workqueue,My drafts,Mes brouillons
+workqueues.draft.title,Title of draft workqueue,Drafts,Brouillons
 workqueues.escalated.title,Title of escalated workqueue,Escalated,Transmis
+workqueues.escalated.title,Title of escalated workqueue,Escalated,Escalade
+workqueues.inExternalValidation.title,Title of pending external validation workqueue,Pending external validation,En attente de validation externe
+workqueues.notifications.title,Title of notifications workqueue,Notifications,Notifications
 workqueues.outbox.title,Title of outbox workqueue,Outbox,Boîte d'envoi
 workqueues.pendingCertification.emptyMessage,Empty message for pending certification workqueue,No pending certification records,Aucun dossier de certification en attente
-workqueues.pendingCertification.title,Title of pending certification workqueue,Pending certification,En attente de certification
-workqueues.pendingFeedback.title,Title of pending feedback workqueue,Pending feedback,En attente de révision
+workqueues.pendingCertification.title,Title of pending certification workqueue,Pending certification,Certification en attente
+workqueues.pendingFeedback.title,Title of pending feedback workqueue,Pending feedback,En attente de commentaires
+workqueues.pendingIssuance.title,Title of pending issuance workqueue,Pending issuance,En attente d'émission
+workqueues.pendingRegistration.title,Title of pending registration workqueue,Pending registration,Inscription en attente
+workqueues.pendingUpdates.title,Title of pending updates workqueue,Pending updates,Mises à jour en attente
+workqueues.pendingValidation.title,Title of pending validation workqueue,Pending validation,En attente de validation
+workqueues.potentialDuplicate.title,Title of potential duplicate workqueue,Potential duplicate,Duplicata potentiel
+workqueues.recent.title,Title of recent workqueue,Recent,Récent
 workqueues.requiresApproval.title,Title of pending approval workqueue,Pending approval,En attente d'approbation
+workqueues.requiresApproval.title,Title of Pending approval workqueue,Pending approval,En attente d'approbation
 workqueues.reviewRequested.title,Title of review requested workqueue,Review requested,Révision demandée
 wq.noRecords.CREATED,No records messages for empty draft tab,No records in progress,Aucun enregistrement en cours
 wq.noRecords.DECLARED,No records messages for ready for review tab,No records ready for review,Aucun document prêt à être examiné

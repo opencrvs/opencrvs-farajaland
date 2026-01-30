@@ -22,9 +22,10 @@ import {
   event,
   user,
   or,
+  not,
   defineConditional,
   never,
-  not
+  now
 } from '@opencrvs/toolkit/events'
 import { Event } from './types/types'
 import { MAX_NAME_LENGTH } from './v2/birth/validators'
@@ -117,6 +118,11 @@ const TENNIS_CLUB_DECLARATION_FORM = defineDeclarationForm({
           },
           hideLabel: true,
           required: true,
+          defaultValue: {
+            firstname: user('firstname'),
+            middlename: user('middlename'),
+            surname: user('surname')
+          },
           validation: [
             {
               validator: field('applicant.name').object({
@@ -141,10 +147,87 @@ const TENNIS_CLUB_DECLARATION_FORM = defineDeclarationForm({
           }
         },
         {
+          id: 'applicant.registrationDuration',
+          analytics: true,
+          type: FieldType.NUMBER_WITH_UNIT,
+          label: {
+            defaultMessage: 'Registration duration',
+            description: 'This is the label for the field',
+            id: 'event.tennis-club.registrationDuration.label'
+          },
+          placeholder: {
+            defaultMessage: 'Time Unit',
+            description: 'This is the placeholder for the field',
+            id: 'event.tennis-club.registrationDuration.placeholder'
+          },
+          options: [
+            {
+              value: 'Days',
+              label: {
+                id: 'unit.days',
+                defaultMessage: 'Days',
+                description: 'Days'
+              }
+            },
+            {
+              value: 'Hours',
+              label: {
+                id: 'unit.hours',
+                defaultMessage: 'Hours',
+                description: 'Hours'
+              }
+            },
+            {
+              value: 'Minutes',
+              label: {
+                id: 'unit.minutes',
+                defaultMessage: 'Minutes',
+                description: 'Minutes'
+              }
+            }
+          ],
+          configuration: {
+            min: 0,
+            numberFieldPlaceholder: {
+              defaultMessage: 'Interval',
+              description: 'This is the placeholder for the field',
+              id: 'event.birth.action.declare.form.section.child.field.birthDuration.placeholder'
+            }
+          },
+          validation: [
+            {
+              message: {
+                defaultMessage: 'Number and unit required',
+                description: 'This is the error message for invalid duration',
+                id: 'event.birth.action.declare.form.section.child.field.birthDuration.error'
+              },
+              validator: or(
+                and(
+                  field('applicant.registrationDuration')
+                    .get('numericValue')
+                    .isFalsy(),
+                  field('applicant.registrationDuration').get('unit').isFalsy()
+                ),
+                not(
+                  or(
+                    field('applicant.registrationDuration')
+                      .get('numericValue')
+                      .isFalsy(),
+                    field('applicant.registrationDuration')
+                      .get('unit')
+                      .isFalsy()
+                  )
+                )
+              )
+            }
+          ]
+        },
+        {
           id: 'applicant.dob',
           type: FieldType.DATE,
           required: true,
           analytics: true,
+          defaultValue: now(),
           validation: [
             {
               message: {
@@ -165,6 +248,7 @@ const TENNIS_CLUB_DECLARATION_FORM = defineDeclarationForm({
           id: 'applicant.tob',
           type: FieldType.TIME,
           required: false,
+          defaultValue: now(),
           configuration: {
             use12HourFormat: true
           },
@@ -179,10 +263,42 @@ const TENNIS_CLUB_DECLARATION_FORM = defineDeclarationForm({
           type: 'FILE',
           required: false,
           uncorrectable: true,
+          configuration: {
+            maxImageSize: { targetSize: { height: 600, width: 600 } }
+          },
           label: {
             defaultMessage: "Applicant's profile picture",
             description: 'This is the label for the field',
             id: 'event.tennis-club-membership.action.declare.form.section.who.field.image.label'
+          }
+        },
+        {
+          id: 'applicant.idImage',
+          type: 'FILE_WITH_OPTIONS',
+          required: false,
+          uncorrectable: true,
+          options: [
+            {
+              label: {
+                id: 'event.tennis-club-membership.action.declare.form.section.who.field.idImage.option.front.label',
+                defaultMessage: 'Upload front side of ID',
+                description: 'Option to upload front side of ID'
+              },
+              value: 'ID_FRONT'
+            },
+            {
+              label: {
+                id: 'event.tennis-club-membership.action.declare.form.section.who.field.idImage.option.back.label',
+                defaultMessage: 'Upload back side of ID',
+                description: 'Option to upload back side of ID'
+              },
+              value: 'ID_BACK'
+            }
+          ],
+          label: {
+            defaultMessage: "Image of Applicant's ID",
+            description: 'This is the label for the field',
+            id: 'event.tennis-club-membership.action.declare.form.section.who.field.idImage.label'
           }
         },
         {
@@ -337,6 +453,11 @@ const TENNIS_CLUB_DECLARATION_FORM = defineDeclarationForm({
           type: FieldType.NAME,
           required: true,
           parent: field('recommender.search'),
+          defaultValue: {
+            firstname: user('firstname'),
+            middlename: user('middlename'),
+            surname: user('surname')
+          },
           value: field('recommender.search').getByPath([
             'data',
             'firstResult',
@@ -354,6 +475,54 @@ const TENNIS_CLUB_DECLARATION_FORM = defineDeclarationForm({
             defaultMessage: "Recommender's name",
             description: 'This is the label for the field',
             id: 'event.tennis-club-membership.action.declare.form.section.recommender.field.firstname.label'
+          }
+        },
+        {
+          id: 'recommender.device',
+          type: 'TEXT',
+          defaultValue: user('device'),
+          conditionals: [
+            {
+              type: ConditionalType.SHOW,
+              conditional: field('recommender.none').isFalsy()
+            }
+          ],
+          label: {
+            defaultMessage: "Recommender's device",
+            description: 'This is the label for the field',
+            id: 'event.tennis-club-membership.action.declare.form.section.recommender.device'
+          }
+        },
+        {
+          id: 'recommender.fullHonorificName',
+          type: 'TEXT',
+          defaultValue: user('fullHonorificName'),
+          conditionals: [
+            {
+              type: ConditionalType.SHOW,
+              conditional: field('recommender.none').isFalsy()
+            }
+          ],
+          label: {
+            defaultMessage: 'Recommender full honorific name',
+            description: 'This is the label for the field',
+            id: 'event.tennis-club-membership.action.declare.form.section.recommender2.fullHonorificName'
+          }
+        },
+        {
+          id: 'recommender.role',
+          type: 'TEXT',
+          defaultValue: user('role'),
+          conditionals: [
+            {
+              type: ConditionalType.SHOW,
+              conditional: field('recommender.none').isFalsy()
+            }
+          ],
+          label: {
+            defaultMessage: 'Recommender role',
+            description: 'This is the label for the field',
+            id: 'event.tennis-club-membership.action.declare.form.section.recommender.role'
           }
         },
         {

@@ -9,7 +9,7 @@ import {
 import { CREDENTIALS } from '../../constants'
 import { faker } from '@faker-js/faker'
 import { getRowByTitle } from '../print-certificate/birth/helpers'
-import { ensureOutboxIsEmpty } from '../../utils'
+import { ensureOutboxIsEmpty, selectAction } from '../../utils'
 
 test.describe.serial('1: Validate my draft tab', () => {
   let page: Page
@@ -17,6 +17,7 @@ test.describe.serial('1: Validate my draft tab', () => {
     firstNames: faker.person.firstName('male'),
     familyName: faker.person.lastName('male')
   }
+  const formattedName = formatName(name)
 
   test.beforeAll(async ({ browser }) => {
     page = await browser.newPage()
@@ -28,10 +29,10 @@ test.describe.serial('1: Validate my draft tab', () => {
 
   test('1.1 Record does not appear in draft ', async () => {
     await login(page, CREDENTIALS.FIELD_AGENT)
-    await page.getByRole('button', { name: 'My drafts' }).click()
+    await page.getByRole('button', { name: 'Drafts' }).click()
 
     await expect(page.getByTestId('search-result')).not.toContainText(
-      formatName(name)
+      formattedName
     )
   })
 
@@ -48,53 +49,58 @@ test.describe.serial('1: Validate my draft tab', () => {
     await page.getByRole('button', { name: 'Confirm' }).click()
   })
 
-  test('1.3 Record appears in draft ', async () => {
+  test('1.3 Record appears in draft', async () => {
     await ensureOutboxIsEmpty(page)
 
-    await page.getByRole('button', { name: 'My drafts' }).click()
+    await page.getByRole('button', { name: 'Drafts' }).click()
 
-    await expect(page.getByTestId('search-result')).toContainText(
-      formatName(name)
-    )
+    await expect(page.getByTestId('search-result')).toContainText(formattedName)
   })
 
-  test('1.4 Record does not appear in draft for other user: RO', async () => {
+  test('1.4 Record has "Update" -CTA', async () => {
+    const row = getRowByTitle(page, formattedName)
+    await row.getByRole('button', { name: 'Update' }).click()
+    await expect(page.getByTestId('row-value-child.name')).toHaveText(
+      formattedName
+    )
+    await expect(page.getByTestId('change-button-child.name')).toBeVisible()
+  })
+
+  test('1.5 Record does not appear in draft for other user: RO', async () => {
     await login(page, CREDENTIALS.REGISTRATION_OFFICER)
-    await page.getByRole('button', { name: 'My drafts' }).click()
+    await page.getByRole('button', { name: 'Drafts' }).click()
 
     await expect(page.getByTestId('search-result')).not.toContainText(
-      formatName(name)
+      formattedName
     )
   })
 
-  test('1.5 Record does not appear in draft for other user: LR ', async () => {
+  test('1.6 Record does not appear in draft for other user: LR ', async () => {
     await login(page, CREDENTIALS.REGISTRAR)
-    await page.getByRole('button', { name: 'My drafts' }).click()
+    await page.getByRole('button', { name: 'Drafts' }).click()
 
     await expect(page.getByTestId('search-result')).not.toContainText(
-      formatName(name)
+      formattedName
     )
   })
 
-  test('1.6 Record does not appear in draft after notifying ', async () => {
+  test('1.7 Record does not appear in draft after notifying ', async () => {
     await login(page, CREDENTIALS.FIELD_AGENT, true)
-    await page.getByRole('button', { name: 'My drafts' }).click()
+    await page.getByRole('button', { name: 'Drafts' }).click()
 
-    await getRowByTitle(page, formatName(name))
+    await getRowByTitle(page, formattedName)
       .getByRole('button', {
-        name: 'Declare'
+        name: 'Update'
       })
       .click()
-
-    await goToSection(page, 'review')
 
     await selectDeclarationAction(page, 'Notify')
 
     await ensureOutboxIsEmpty(page)
 
-    await expect(page.getByTestId('search-result')).toContainText('My drafts')
+    await expect(page.getByTestId('search-result')).toContainText('Drafts')
     await expect(page.getByTestId('search-result')).not.toContainText(
-      formatName(name)
+      formattedName
     )
   })
 })
