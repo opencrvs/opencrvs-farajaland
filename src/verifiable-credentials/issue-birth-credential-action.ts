@@ -3,6 +3,7 @@ import {
   ActionType,
   ConditionalType,
   FieldType,
+  and,
   field,
   flag,
   not,
@@ -11,7 +12,7 @@ import {
 import { CREDENTIAL_OFFER_HANDLER_URL } from './credential-offer-handler'
 import { COUNTRY_CONFIG_URL } from '@countryconfig/constants'
 
-const qrAvailable = not(
+const qrGenerated = not(
   field('get-credential-offer')
     .get('data.credential_offer_uri_qr')
     .isUndefined()
@@ -29,13 +30,6 @@ export const issueBirthCredentialAction = {
     defaultMessage: 'Verifiable Credential issued',
     description: '',
     id: 'event.birth.action.issue-vc.audit-history-label'
-  },
-  supportingCopy: {
-    defaultMessage:
-      'Check the requesters details and issue the verifiable credential.',
-    description:
-      'This is the confirmation text for the registrar general feedback action',
-    id: 'event.birth.action.registrar-general-feedback.supportingCopy'
   },
   flags: [
     // @TODO: This should be added on _issuance_ of the VC, not here
@@ -56,10 +50,33 @@ export const issueBirthCredentialAction = {
   ],
   form: [
     {
+      id: 'supporting-copy',
+      type: FieldType.PARAGRAPH,
+      label: {
+        defaultMessage:
+          'Check the requesters details and issue the verifiable credential.',
+        description:
+          'This is the confirmation text for the registrar general feedback action',
+        id: 'event.birth.action.registrar-general-feedback.supportingCopy'
+      },
+      configuration: { styles: { fontVariant: 'reg16', hint: true } },
+      conditionals: [
+        {
+          type: ConditionalType.SHOW,
+          conditional: not(qrGenerated)
+        }
+      ]
+    },
+    {
       id: 'requester.type',
       type: FieldType.SELECT,
       required: true,
-      // @TODO: import this from birth form?
+      conditionals: [
+        {
+          type: ConditionalType.SHOW,
+          conditional: not(qrGenerated)
+        }
+      ],
       options: [
         {
           value: 'MOTHER',
@@ -91,7 +108,10 @@ export const issueBirthCredentialAction = {
       conditionals: [
         {
           type: ConditionalType.SHOW,
-          conditional: field('requester.type').isEqualTo('MOTHER')
+          conditional: and(
+            field('requester.type').isEqualTo('MOTHER'),
+            not(qrGenerated)
+          )
         }
       ],
       label: {
@@ -119,7 +139,10 @@ export const issueBirthCredentialAction = {
       conditionals: [
         {
           type: ConditionalType.SHOW,
-          conditional: field('requester.type').isEqualTo('FATHER')
+          conditional: and(
+            field('requester.type').isEqualTo('FATHER'),
+            not(qrGenerated)
+          )
         }
       ],
       label: {
@@ -160,7 +183,10 @@ export const issueBirthCredentialAction = {
       conditionals: [
         {
           type: ConditionalType.SHOW,
-          conditional: not(field('requester.type').isUndefined())
+          conditional: and(
+            not(field('requester.type').isUndefined()),
+            not(qrGenerated)
+          )
         }
       ]
     },
@@ -198,7 +224,7 @@ export const issueBirthCredentialAction = {
       conditionals: [
         {
           type: ConditionalType.SHOW,
-          conditional: qrAvailable
+          conditional: qrGenerated
         }
       ]
     },
@@ -217,7 +243,7 @@ export const issueBirthCredentialAction = {
       conditionals: [
         {
           type: ConditionalType.SHOW,
-          conditional: qrAvailable
+          conditional: qrGenerated
         }
       ]
     }
