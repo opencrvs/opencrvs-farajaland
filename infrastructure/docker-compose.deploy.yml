@@ -1227,7 +1227,7 @@ services:
         tag: 'mosip-api'
 
   mosip-mock:
-    image: ghcr.io/opencrvs/mosip-mock:1.9.2-mock.1
+    image: ghcr.io/opencrvs/mosip-mock:1.9.2-demo.1
     depends_on:
       - mosip-api
     environment:
@@ -1251,7 +1251,7 @@ services:
         tag: 'mosip-mock'
 
   esignet-mock:
-    image: ghcr.io/opencrvs/esignet-mock:1.9.2-mock.1
+    image: ghcr.io/opencrvs/esignet-mock:1.9.2-demo.1
     volumes:
       - /certs:/certs:ro
     environment:
