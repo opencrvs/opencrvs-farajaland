@@ -9,18 +9,17 @@ import { isPageHeaderFieldType } from '@opencrvs/toolkit/events'
 import { type } from '../../utils'
 import exp from 'constants'
 
-test.describe.serial('2. Team Page -1', () => {
-  let page: Page
+test.describe('2. Team Page', () => {
+  test.describe.serial('2.1 Basic UI check', async () => {
+    let page: Page
 
-  test.beforeAll(async ({ browser }) => {
-    page = await browser.newPage()
-  })
+    test.beforeAll(async ({ browser }) => {
+      page = await browser.newPage()
+    })
 
-  test.afterAll(async () => {
-    await page.close()
-  })
-
-  test.describe('2.1 Basic UI check', async () => {
+    test.afterAll(async () => {
+      await page.close()
+    })
     test('2.1.0 Verify UI', async () => {
       await login(page, CREDENTIALS.NATIONAL_SYSTEM_ADMIN)
       await page.getByRole('button', { name: 'Team' }).click()
@@ -39,9 +38,19 @@ test.describe.serial('2. Team Page -1', () => {
     })
   })
 
-  test.describe('2.2 User Account Actions', () => {
+  test.describe.serial('2.2 User Account Actions', () => {
+    let page: Page
+
+    test.beforeAll(async ({ browser }) => {
+      page = await browser.newPage()
+    })
+
+    test.afterAll(async () => {
+      await page.close()
+    })
     test('2.2.1 Edit User Details', async () => {
       await login(page, CREDENTIALS.NATIONAL_SYSTEM_ADMIN)
+
       await page.getByRole('button', { name: 'Team' }).click()
       await page.locator('//nav[@id="user-item-0-menu-dropdownMenu"]').click()
       await page
@@ -61,7 +70,7 @@ test.describe.serial('2. Team Page -1', () => {
       await page.locator('#btn_change_phoneNumber:visible').click()
       await page.locator('input[name="phoneNumber"]').fill('0785963214')
       await page.getByRole('button', { name: 'Continue' }).click()
-      await page.getByRole('button', { name: 'Continue' }).click()
+
       await page.getByRole('button', { name: 'Confirm' }).click()
     })
 
