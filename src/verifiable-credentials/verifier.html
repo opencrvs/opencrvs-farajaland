@@ -518,7 +518,9 @@
         const placeOfBirth = findFirstValue(data, 'place_of_birth')
         const placeOfBirthName = placeOfBirth ? placeOfBirth.name : null
         const credentialId =
-          findFirstValue(data, 'id') || findFirstValue(data, 'credentialId')
+          (findFirstValue(data, 'verified_data') || {}).id ||
+          (findFirstValue(data, 'credentialData') || {}).id ||
+          findFirstValue(data, 'credentialId')
 
         setIdField(idGivenNameEl, givenName)
         setIdField(idFamilyNameEl, familyName)
