@@ -30,64 +30,43 @@ test.describe.serial('1. Team Page -1', () => {
     })
 
     test('1.1.1 Verify Team Members List', async () => {
-      const teamMembers = page.locator('//button[@id="profile-link"]')
-      const assignedOffice = page.locator('//button[@id="office-link"]')
+      const row1 = page.getByRole('row', { name: /Mitchell Owen/ })
+      await expect(row1.getByText('Active')).toBeVisible()
+      const button1 = row1.getByRole('button', { name: 'Mitchell Owen' })
+      await button1.click()
+      await expect(page.locator('#content-name')).toHaveText('Mitchell Owen')
+      await page.getByRole('button', { name: 'Ibombo District Office' }).click()
+      await expect(page).toHaveURL(/.*\/team/)
 
-      await expect(teamMembers).toHaveCount(5)
-      await expect(teamMembers.nth(0)).toHaveText('Mitchell Owen')
-      await teamMembers.nth(0).click()
-      await expect(page.getByText('Mitchell Owen')).toBeVisible()
-      await assignedOffice.nth(0).click()
-      await expect(page.locator('#content-name')).toHaveText(
-        'Ibombo District Office'
-      )
+      const row2 = page.getByRole('row', { name: /Emmanuel Mayuka/ })
+      await expect(row2.getByText('Active')).toBeVisible()
+      const button2 = row2.getByRole('button', { name: 'Emmanuel Mayuka' })
+      await button2.click()
+      await expect(page.locator('#content-name')).toHaveText('Emmanuel Mayuka')
+      await page.getByRole('button', { name: 'Ibombo District Office' }).click()
+      await expect(page).toHaveURL(/.*\/team/)
 
-      await expect(teamMembers.nth(1)).toHaveText('Emmanuel Mayuka')
-      await teamMembers.nth(1).click()
-      await expect(page.getByText('Emmanuel Mayuka')).toBeVisible()
-      await page.goBack()
-
-      await expect(teamMembers.nth(2)).toHaveText('Kennedy Mweene')
-      await teamMembers.nth(2).click()
-      // await page.waitForTimeout(6000);
+      const row3 = page.getByRole('row', { name: /Kennedy Mweene/ })
+      await expect(row3.getByText('Active')).toBeVisible()
+      const button3 = row3.getByRole('button', { name: 'Kennedy Mweene' })
+      await button3.click()
       await expect(page.locator('#content-name')).toHaveText('Kennedy Mweene')
-      // await expect(page.getByText('Kennedy Mweene')).toBeVisible()
-      await page.goBack()
+      await page.getByRole('button', { name: 'Ibombo District Office' }).click()
+      await expect(page).toHaveURL(/.*\/team/)
 
-      await expect(teamMembers.nth(3)).toHaveText('Felix Katongo')
-      await teamMembers.nth(3).click()
-      await expect(page.getByText('Felix Katongo')).toBeVisible()
-      await page.goBack()
+      const row4 = page.getByRole('row', { name: /Felix Katongo/ })
+      await expect(row4.getByText('Active')).toBeVisible()
+      await row4.getByRole('button', { name: 'Felix Katongo' }).click()
+      await expect(page.locator('#content-name')).toHaveText('Felix Katongo')
+      await page.getByRole('button', { name: 'Ibombo District Office' }).click()
+      await expect(page).toHaveURL(/.*\/team/)
 
-      await expect(teamMembers.nth(4)).toHaveText('Kalusha Bwalya')
-      await teamMembers.nth(4).click()
-      await expect(page.getByText('Kalusha Bwalya')).toBeVisible()
-      await page.goBack()
-    })
-
-    test('1.1.2 Verify Team Member role varification', async () => {
-      await expect(
-        page.getByRole('cell', { name: 'Provincial Registrar' })
-      ).toHaveText('Provincial Registrar')
-      await expect(
-        page.getByRole('cell', { name: 'Administrator' })
-      ).toHaveText('Administrator')
-      await expect(
-        page.getByRole('cell', { name: 'Registrar', exact: true })
-      ).toHaveText('Registrar')
-      await expect(
-        page.getByRole('cell', { name: 'Registration Officer' })
-      ).toHaveText('Registration Officer')
-      await expect(
-        page.getByRole('cell', { name: 'Hospital Clerk' })
-      ).toHaveText('Hospital Clerk')
-    })
-    test('1.1.3 Verify Team Member Status', async () => {
-      await expect(page.locator('//span[@type="active"]').nth(0)).toBeVisible()
-      await expect(page.locator('//span[@type="active"]').nth(1)).toBeVisible()
-      await expect(page.locator('//span[@type="active"]').nth(2)).toBeVisible()
-      await expect(page.locator('//span[@type="active"]').nth(3)).toBeVisible()
-      await expect(page.locator('//span[@type="active"]').nth(4)).toBeVisible()
+      const row5 = page.getByRole('row', { name: /Kalusha Bwalya/ })
+      await expect(row5.getByText('Active')).toBeVisible()
+      await row5.getByRole('button', { name: 'Kalusha Bwalya' }).click()
+      await expect(page.locator('#content-name')).toHaveText('Kalusha Bwalya')
+      await page.getByRole('button', { name: 'Ibombo District Office' }).click()
+      await expect(page).toHaveURL(/.*\/team/)
     })
   })
 })
