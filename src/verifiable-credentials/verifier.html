@@ -516,13 +516,14 @@
         const familyName = findFirstValue(data, 'family_name')
         const birthdate = findFirstValue(data, 'birthdate')
         const placeOfBirth = findFirstValue(data, 'place_of_birth')
+        const placeOfBirthName = placeOfBirth ? placeOfBirth.name : null
         const credentialId =
           findFirstValue(data, 'id') || findFirstValue(data, 'credentialId')
 
         setIdField(idGivenNameEl, givenName)
         setIdField(idFamilyNameEl, familyName)
         setIdField(idBirthdateEl, birthdate)
-        setIdField(idPlaceOfBirthEl, placeOfBirth)
+        setIdField(idPlaceOfBirthEl, placeOfBirthName)
         setIdField(idCredentialIdEl, credentialId)
 
         if (data.status === 'SUCCESSFUL') {
