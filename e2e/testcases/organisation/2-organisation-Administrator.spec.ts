@@ -8,7 +8,7 @@ import _, { has, nth, slice } from 'lodash'
 import { isPageHeaderFieldType } from '@opencrvs/toolkit/events'
 import { type } from '../../utils'
 import exp from 'constants'
-test.describe.serial('1. Organisation Page -1', () => {
+test.describe.serial('2. Organisation Page -1', () => {
   let page: Page
 
   test.beforeAll(async ({ browser }) => {
@@ -22,14 +22,14 @@ test.describe.serial('1. Organisation Page -1', () => {
   //User: Local System Admin(e.mayuka)
   //Scope: Ibombo, Central,Farajaland
 
-  test.describe.serial('1.1 UI check', async () => {
-    test('1.1.0 Verify UI', async () => {
+  test.describe.serial('2.1 UI check', async () => {
+    test('2.1.0 Verify UI', async () => {
       await login(page, CREDENTIALS.LOCAL_SYSTEM_ADMIN)
       await page.getByRole('button', { name: 'Organisation' }).click()
       await expect(page.locator('#content-name')).toHaveText('Organisation')
       await expect(page.getByText('Farajaland', { exact: true })).toBeVisible()
     })
-    test('1.1.1 Verify Province-> Distric -> Health Facility(No Data)', async () => {
+    test('2.1.1 Verify Province-> Distric -> Health Facility(No Data)', async () => {
       await page.getByRole('button', { name: /Central/ }).click()
       await page.getByRole('button', { name: /Ibombo/ }).click()
       const pageNavigator = page.getByRole('button', { name: '2' })
@@ -45,7 +45,7 @@ test.describe.serial('1. Organisation Page -1', () => {
       ).toBeVisible()
       await expect(page.getByText('No result')).toBeVisible()
     })
-    test('1.1.2 Verify Province-> Distric -> District Office', async () => {
+    test('2.1.2 Verify Province-> Distric -> District Office', async () => {
       for (let i = 0; i < 3; i++) {
         await page.goBack()
       }
@@ -64,7 +64,7 @@ test.describe.serial('1. Organisation Page -1', () => {
         page.getByText('Ibombo, Central', { exact: true })
       ).toBeVisible()
     })
-    test('6.1.1 Verify Team Members Status', async () => {
+    test('2.1.3 Verify Team Members Status', async () => {
       const row1 = page.getByRole('row', { name: /Mitchell Owen/ })
       await expect(row1.getByText('Active')).toBeVisible()
       const button1 = row1.getByRole('button', { name: 'Mitchell Owen' })
@@ -104,7 +104,7 @@ test.describe.serial('1. Organisation Page -1', () => {
       await expect(page).toHaveURL(/.*\/team/)
     })
   })
-  test.describe.serial('1.2 User Creation ', async () => {
+  test.describe.serial('2.2 User Creation ', async () => {
     const userinfo = {
       firstName: faker.person.firstName('male'),
       surname: faker.person.lastName('male'),
@@ -112,7 +112,7 @@ test.describe.serial('1. Organisation Page -1', () => {
       role: 'Hospital Clerk'
     }
 
-    test('1.2.1 Prerequisite of user creation', async () => {
+    test('2.2.1 Prerequisite of user creation', async () => {
       await page.getByRole('button', { name: 'Organisation' }).click()
       await page.getByRole('button', { name: /Central/ }).click()
       await page.getByRole('button', { name: /Ibombo/ }).click()
@@ -129,7 +129,7 @@ test.describe.serial('1. Organisation Page -1', () => {
       await page.click('#add-user')
       await expect(page.getByText('User details')).toBeVisible()
     })
-    test('1.2.2 Fill user details', async () => {
+    test('2.2.2 Fill user details', async () => {
       await page.locator('#familyName').fill(userinfo.surname)
       await page.locator('#firstName').fill(userinfo.firstName)
       await page.locator('#email').fill(userinfo.email)
@@ -137,14 +137,14 @@ test.describe.serial('1. Organisation Page -1', () => {
       await page.getByText(userinfo.role, { exact: true }).click()
       await continueForm(page)
     })
-    test.fail('1.2.3 Create user', async () => {
+    test.fail('2.2.3 Create user', async () => {
       await page.getByRole('button', { name: 'Create user' }).click()
 
       await expect(
         page.getByText('Ibombo, Central', { exact: true })
       ).toBeVisible()
     })
-    test.fail('1.2.4 Verify user created in team page', async () => {
+    test.fail('2.2.4 Verify user created in team page', async () => {
       const fullName = `${userinfo.firstName} ${userinfo.surname}`
       const row = page.getByRole('row', { name: fullName })
       await expect(row.getByText('Pending')).toBeVisible()
@@ -152,8 +152,8 @@ test.describe.serial('1. Organisation Page -1', () => {
       await expect(page.locator('#content-name')).toHaveText(fullName)
     })
   })
-  test.describe.serial('1.3 Out of Scope Access', async () => {
-    test('1.3.1 Verify Province-> Distric -> Health Facility', async () => {
+  test.describe.serial('2.3 Out of Scope Access', async () => {
+    test('2.3.1 Verify Province-> Distric -> Health Facility', async () => {
       for (let i = 0; i < 3; i++) {
         await page.goBack()
       }
@@ -164,7 +164,7 @@ test.describe.serial('1. Organisation Page -1', () => {
         page.getByRole('button', { name: /KundamfumuRural Health Centre/ })
       ).toBeDisabled()
     })
-    test('1.3.2 Verify Province-> Distric -> District Office', async () => {
+    test('2.3.2 Verify Province-> Distric -> District Office', async () => {
       for (let i = 0; i < 2; i++) {
         await page.goBack()
       }
@@ -178,7 +178,7 @@ test.describe.serial('1. Organisation Page -1', () => {
         page.getByRole('button', { name: /Funabuli District Office/ })
       ).toBeDisabled()
     })
-    test.fail('1.3.3 Verify Embassy ', async () => {
+    test.fail('2.3.3 Verify Embassy ', async () => {
       for (let i = 0; i < 2; i++) {
         await page.goBack()
       }
