@@ -51,6 +51,9 @@ export const issueBirthCredentialAction = {
   form: [
     {
       id: 'supporting-copy',
+      // NOTE! HACK!
+      // Setting PARAGRAPH to required disables submission, which is what we want.
+      required: true,
       type: FieldType.PARAGRAPH,
       label: {
         defaultMessage:
@@ -167,15 +170,15 @@ export const issueBirthCredentialAction = {
       parent: field('requester.type'),
       id: 'request-credential-offer-button',
       type: FieldType.BUTTON,
-      hideLabel: true,
+      required: true,
       label: {
-        defaultMessage: 'Request Credential Offer',
+        defaultMessage: 'Verifiable credential offer',
         description: 'Button to request the credential offer from issuer',
         id: 'event.birth.custom.action.issue-vc.field.request-credential-offer-button.label'
       },
       configuration: {
         text: {
-          defaultMessage: 'Create verifiable credential offer',
+          defaultMessage: 'Generate',
           description: 'Button to request the credential offer from issuer',
           id: 'event.birth.custom.action.issue-vc.field.request-credential-offer-button.configuration.text'
         }
@@ -220,7 +223,9 @@ export const issueBirthCredentialAction = {
         description: 'Explanation for the QR code field',
         id: 'event.birth.custom.action.issue-vc.field.qr-code.configuration.text'
       },
-      configuration: { styles: { fontVariant: 'reg16', hint: true } },
+      configuration: {
+        styles: { fontVariant: 'reg16', hint: true, textAlign: 'center' }
+      },
       conditionals: [
         {
           type: ConditionalType.SHOW,
