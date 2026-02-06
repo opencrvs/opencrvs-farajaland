@@ -7,7 +7,8 @@ import {
   field,
   flag,
   not,
-  window
+  window,
+  status
 } from '@opencrvs/toolkit/events'
 import { CREDENTIAL_OFFER_HANDLER_URL } from './credential-offer-handler'
 import { COUNTRY_CONFIG_URL } from '@countryconfig/constants'
@@ -45,7 +46,7 @@ export const issueBirthCredentialAction = {
     },
     {
       type: ConditionalType.SHOW,
-      conditional: not(flag('vc-issued'))
+      conditional: and(not(flag('vc-issued')), status('REGISTERED'))
     }
   ],
   form: [
