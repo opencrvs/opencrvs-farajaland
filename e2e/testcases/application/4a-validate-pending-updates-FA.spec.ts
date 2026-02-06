@@ -1,29 +1,39 @@
 import { expect, test, type Page } from '@playwright/test'
 
-import { login, getToken, selectDeclarationAction } from '../../helpers'
+import {
+  login,
+  getToken,
+  selectDeclarationAction,
+  formatName
+} from '../../helpers'
 import { CREDENTIALS, SAFE_WORKQUEUE_TIMEOUT_MS } from '../../constants'
 import { createDeclaration, Declaration } from '../test-data/birth-declaration'
 import { ActionType } from '@opencrvs/toolkit/events'
 import { formatV2ChildName } from '../birth/helpers'
-import { ensureAssigned, expectInUrl, selectAction } from '../../utils'
+import {
+  ensureAssigned,
+  expectInUrl,
+  navigateToWorkqueue,
+  selectAction
+} from '../../utils'
 import { getRowByTitle } from '../print-certificate/birth/helpers'
 import { faker } from '@faker-js/faker'
 
-test.describe
-  .serial('4(a) Validate "Pending updates"-workqueue for field agent', () => {
+test.describe.serial('4(a) Validate "Pending updates"-workqueue for HO', () => {
   let page: Page
   let declaration: Declaration
   let eventId: string
+  let formattedChildName: string
 
   test.beforeAll(async ({ browser }) => {
     const token = await getToken(
-      CREDENTIALS.FIELD_AGENT.USERNAME,
-      CREDENTIALS.FIELD_AGENT.PASSWORD
+      CREDENTIALS.HOSPITAL_OFFICIAL.USERNAME,
+      CREDENTIALS.HOSPITAL_OFFICIAL.PASSWORD
     )
     const res = await createDeclaration(token, undefined, ActionType.DECLARE)
     declaration = res.declaration
     eventId = res.eventId
-
+    formattedChildName = formatV2ChildName(declaration)
     page = await browser.newPage()
   })
 
@@ -38,9 +48,7 @@ test.describe
   test('4.0.2 Navigate to record audit', async () => {
     await page.getByText('Pending validation').click()
 
-    await page
-      .getByRole('button', { name: formatV2ChildName(declaration) })
-      .click()
+    await page.getByRole('button', { name: formattedChildName }).click()
   })
 
   test('4.0.3 Reject a declaration', async () => {
@@ -52,11 +60,11 @@ test.describe
   })
 
   test('4.1 Go to "Pending updates"-workqueue', async () => {
-    await login(page, CREDENTIALS.FIELD_AGENT)
+    await login(page, CREDENTIALS.HOSPITAL_OFFICIAL)
     await page.waitForTimeout(SAFE_WORKQUEUE_TIMEOUT_MS) // wait for the event to be in the workqueue.
     await page.getByText('Pending updates').click()
     await expect(
-      page.getByRole('button', { name: formatV2ChildName(declaration) })
+      page.getByRole('button', { name: formattedChildName })
     ).toBeVisible()
     await expect(page.getByTestId('search-result')).toContainText(
       'Pending updates'
@@ -74,19 +82,17 @@ test.describe
       ''
     ])
 
-    const row = getRowByTitle(page, formatV2ChildName(declaration))
+    const row = getRowByTitle(page, formattedChildName)
 
     const cells = row.locator(':scope > div')
 
-    expect(cells.nth(0)).toHaveText(formatV2ChildName(declaration))
+    expect(cells.nth(0)).toHaveText(formattedChildName)
     expect(cells.nth(1)).toHaveText('Birth')
     expect(cells.nth(2)).toHaveText(declaration['child.dob'].split('T')[0])
   })
 
   test('4.4 Click a name', async () => {
-    await page
-      .getByRole('button', { name: formatV2ChildName(declaration) })
-      .click()
+    await page.getByRole('button', { name: formattedChildName }).click()
 
     // User should navigate to record audit page
     await expectInUrl(page, `events/${eventId}?workqueue=pending-updates`)
@@ -96,20 +102,32 @@ test.describe
     await ensureAssigned(page)
     await page.goBack()
 
-    const row = getRowByTitle(page, formatV2ChildName(declaration))
+    const row = getRowByTitle(page, formattedChildName)
 
     await row.getByRole('button', { name: 'Review' }).click()
     await selectAction(page, 'Edit')
 
+    const newSurname = faker.person.lastName('female')
+
     await page.getByTestId('change-button-child.name').click()
-    await page
-      .getByTestId('text__surname')
-      .fill(faker.person.lastName('female'))
+    await page.getByTestId('text__surname').fill(newSurname)
+
+    formattedChildName = formatName({
+      firstNames: declaration['child.name'].firstname,
+      familyName: newSurname
+    })
+
     await page.getByRole('button', { name: 'Back to review' }).click()
 
     await selectDeclarationAction(page, 'Declare with edits')
 
     // Should redirect back to "Pending updates"-workqueue
     await expect(page.locator('#content-name')).toHaveText('Pending updates')
+  })
+
+  test('4.6 Assert record does not have "Edit in progress" flag', async () => {
+    await navigateToWorkqueue(page, 'Recent')
+    await page.getByRole('button', { name: formattedChildName }).click()
+    await expect(page.getByText('Edit in progress')).not.toBeVisible()
   })
 })

@@ -36,7 +36,9 @@ describe('Roles config', () => {
 
         const validV2 = scope.startsWith('type=')
         if (!validV1 && !validV2) {
-          throw new Error(`Invalid scope "${scope}" found in role ${role.id}`)
+          throw new Error(
+            `${role.id}: Invalid scope "${scope}" found in role ${role.id}`
+          )
         }
       }
     }
@@ -52,11 +54,8 @@ describe('Roles config', () => {
     // Update this list if requirements change
     expect(rolesWithAudit.sort()).toEqual([
       'COMMUNITY_LEADER',
-      'FIELD_AGENT',
-      'HOSPITAL_CLERK',
-      'LOCAL_REGISTRAR',
-      'NATIONAL_REGISTRAR',
-      'REGISTRATION_AGENT'
+      'EMBASSY_OFFICIAL',
+      'HOSPITAL_CLERK'
     ])
 
     const createRecordScope =
@@ -70,8 +69,7 @@ describe('Roles config', () => {
     expect(rolesWithCreateRecord.sort()).toEqual([
       'COMMUNITY_LEADER',
       'EMBASSY_OFFICIAL',
-      'FIELD_AGENT',
-      'HEALTHCARE_WORKER',
+      'EMBASSY_OFFICIAL',
       'HEALTH_OFFICER',
       'HOSPITAL_CLERK',
       'LOCAL_REGISTRAR',
@@ -89,8 +87,7 @@ describe('Roles config', () => {
     expect(rolesWithWorkqueue.sort()).toEqual([
       'COMMUNITY_LEADER',
       'EMBASSY_OFFICIAL',
-      'FIELD_AGENT',
-      'HEALTHCARE_WORKER',
+      'EMBASSY_OFFICIAL',
       'HEALTH_OFFICER',
       'HOSPITAL_CLERK',
       'LOCAL_REGISTRAR',
