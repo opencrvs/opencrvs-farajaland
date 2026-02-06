@@ -118,7 +118,10 @@ export const issueBirthCredentialAction = {
       conditionals: [
         {
           type: ConditionalType.SHOW,
-          conditional: field('requester.type').isUndefined()
+          conditional: and(
+            field('requester.type').isUndefined(),
+            not(qrGenerated)
+          )
         }
       ]
     },
