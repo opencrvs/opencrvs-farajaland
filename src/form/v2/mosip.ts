@@ -173,7 +173,7 @@ export const getMOSIPIntegrationFields = (
               },
               body: {
                 clientId: OPENID_PROVIDER_CLIENT_ID,
-                redirectUri: window().location.get('href')
+                redirectUri: window().location.get('originPathname')
               },
               params: {
                 code: field(`${page}.query-params`).get('data.code'),
@@ -286,7 +286,7 @@ export const getMOSIPIntegrationFields = (
                 },
                 configuration: {
                   icon: 'Globe',
-                  url: `${ESIGNET_REDIRECT_URL}?client_id=${OPENID_PROVIDER_CLIENT_ID}&response_type=code&scope=openid%20profile&acr_values=mosip:idp:acr:static-code&claims=name,family_name,given_name,middle_name,birthdate,address&state=fetch-on-mount`,
+                  url: `${ESIGNET_REDIRECT_URL}?client_id=${OPENID_PROVIDER_CLIENT_ID}&response_type=code&scope=openid%20profile&acr_values=mosip:idp:acr:generated-code&claims=%7B%22userinfo%22:%7B%22given_name%22:%7B%22essential%22:true%7D,%22birthdate%22:%7B%22essential%22:false%7D,%22address%22:%7B%22essential%22:false%7D%7D,%22id_token%22:%7B%7D%7D&state=fetch-on-mount`,
                   text: {
                     id: 'verify.label',
                     defaultMessage: 'e-Signet',
