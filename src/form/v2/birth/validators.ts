@@ -8,7 +8,7 @@
  *
  * Copyright (C) The OpenCRVS Authors located at https://github.com/opencrvs/opencrvs-core/blob/master/AUTHORS.
  */
-import { and, field } from '@opencrvs/toolkit/events'
+import { and, field, not, or } from '@opencrvs/toolkit/events'
 import { defineFormConditional } from '@opencrvs/toolkit/conditionals'
 
 export const MAX_NAME_LENGTH = 32
@@ -24,6 +24,20 @@ export const invalidNameValidator = (fieldName: string) => ({
     field(fieldName).get('firstname').isValidEnglishName(),
     field(fieldName).get('middlename').isValidEnglishName(),
     field(fieldName).get('surname').isValidEnglishName()
+  )
+})
+
+export const NameRequiredValidator = (fieldName: string) => ({
+  message: {
+    defaultMessage:
+      'At least one of the name fields (first name, middle name, or surname) is required.',
+    description: 'This is the error message for name required',
+    id: 'error.nameRequired'
+  },
+  validator: or(
+    not(field(fieldName).get('firstname').isFalsy()),
+    not(field(fieldName).get('middlename').isFalsy()),
+    not(field(fieldName).get('surname').isFalsy())
   )
 })
 
@@ -48,8 +62,9 @@ export const nationalIdValidator = (fieldId: string) => ({
 
 export const farajalandNameConfig = {
   name: {
-    firstname: { required: true },
-    surname: { required: true }
+    firstname: { required: false },
+    surname: { required: false }
   },
-  maxLength: MAX_NAME_LENGTH
+  maxLength: MAX_NAME_LENGTH,
+  showParentFieldError: true
 }

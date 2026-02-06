@@ -18,6 +18,7 @@ import {
 import {
   farajalandNameConfig,
   invalidNameValidator,
+  NameRequiredValidator,
   nationalIdValidator
 } from '../../validators'
 
@@ -288,7 +289,10 @@ export const printCertificateCollectorOther: FieldConfig[] = [
         conditional: field('collector.requesterId').isEqualTo('SOMEONE_ELSE')
       }
     ],
-    validation: [invalidNameValidator('collector.OTHER.name')]
+    validation: [
+      invalidNameValidator('collector.OTHER.name'),
+      NameRequiredValidator('collector.OTHER.name')
+    ]
   },
   {
     id: 'collector.OTHER.relationshipToChild',

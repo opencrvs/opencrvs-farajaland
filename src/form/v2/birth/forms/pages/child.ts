@@ -29,7 +29,8 @@ import { applicationConfig } from '@countryconfig/api/application/application-co
 import { createSelectOptions, emptyMessage } from '@countryconfig/form/v2/utils'
 import {
   farajalandNameConfig,
-  invalidNameValidator
+  invalidNameValidator,
+  NameRequiredValidator
 } from '@countryconfig/form/v2/birth/validators'
 import {
   defaultStreetAddressConfiguration,
@@ -220,7 +221,10 @@ export const child = defineFormPage({
         description: 'This is the label for the field',
         id: 'event.birth.action.declare.form.section.child.field.name.label'
       },
-      validation: [invalidNameValidator('child.name')]
+      validation: [
+        invalidNameValidator('child.name'),
+        NameRequiredValidator('child.name')
+      ]
     },
     {
       id: 'child.gender',

@@ -26,6 +26,7 @@ import { createSelectOptions, emptyMessage } from '../../../utils'
 import {
   farajalandNameConfig,
   invalidNameValidator,
+  NameRequiredValidator,
   nationalIdValidator
 } from '@countryconfig/form/v2/birth/validators'
 import {
@@ -189,7 +190,10 @@ export const informant = defineFormPage({
             conditional: informantOtherThanSpouse
           }
         ],
-        validation: [invalidNameValidator('informant.name')],
+        validation: [
+          invalidNameValidator('informant.name'),
+          NameRequiredValidator('informant.name')
+        ],
         parent: field('informant.relation')
       },
       {

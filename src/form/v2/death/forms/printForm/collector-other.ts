@@ -18,6 +18,7 @@ import {
 import {
   farajalandNameConfig,
   invalidNameValidator,
+  NameRequiredValidator,
   nationalIdValidator
 } from '@countryconfig/form/v2/birth/validators'
 
@@ -296,7 +297,10 @@ export const printCertificateCollectorOther: FieldConfig[] = [
         )
       }
     ],
-    validation: [invalidNameValidator('collector.OTHER.name')]
+    validation: [
+      invalidNameValidator('collector.OTHER.name'),
+      NameRequiredValidator('collector.OTHER.name')
+    ]
   },
   {
     id: 'collector.OTHER.relationshipToDeceased',

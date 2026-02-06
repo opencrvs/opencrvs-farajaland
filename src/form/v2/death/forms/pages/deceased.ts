@@ -26,6 +26,7 @@ import { createSelectOptions, emptyMessage } from '@countryconfig/form/v2/utils'
 import {
   farajalandNameConfig,
   invalidNameValidator,
+  NameRequiredValidator,
   nationalIdValidator
 } from '@countryconfig/form/v2/birth/validators'
 import {
@@ -97,7 +98,10 @@ export const deceased = defineFormPage({
           description: 'This is the label for the field',
           id: 'event.death.action.declare.form.section.deceased.field.name.label'
         },
-        validation: [invalidNameValidator('deceased.name')]
+        validation: [
+          invalidNameValidator('deceased.name'),
+          NameRequiredValidator('deceased.name')
+        ]
       },
       {
         valuePath: 'data.name',

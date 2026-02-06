@@ -25,6 +25,7 @@ import { emptyMessage } from '../../../utils'
 import {
   farajalandNameConfig,
   invalidNameValidator,
+  NameRequiredValidator,
   nationalIdValidator
 } from '@countryconfig/form/v2/birth/validators'
 import {
@@ -139,7 +140,10 @@ export const spouse = defineFormPage({
             conditional: requireSpouseDetails
           }
         ],
-        validation: [invalidNameValidator('spouse.name')]
+        validation: [
+          invalidNameValidator('spouse.name'),
+          NameRequiredValidator('spouse.name')
+        ]
       },
       {
         valuePath: 'data.name',

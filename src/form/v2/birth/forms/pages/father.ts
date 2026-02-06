@@ -24,6 +24,7 @@ import { emptyMessage } from '@countryconfig/form/v2/utils'
 import {
   farajalandNameConfig,
   invalidNameValidator,
+  NameRequiredValidator,
   nationalIdValidator
 } from '@countryconfig/form/v2/birth/validators'
 import { InformantType } from './informant'
@@ -141,7 +142,10 @@ export const father = defineFormPage({
             conditional: requireFatherDetails
           }
         ],
-        validation: [invalidNameValidator('father.name')]
+        validation: [
+          invalidNameValidator('father.name'),
+          NameRequiredValidator('father.name')
+        ]
       },
       {
         valuePath: 'data.name',
