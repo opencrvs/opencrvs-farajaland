@@ -263,6 +263,15 @@ export const roles: Role[] = [
     scopes: []
   },
   {
+    id: 'FIELD_AGENT',
+    label: {
+      defaultMessage: 'Field Agent',
+      description: 'Name for user role Field Agent',
+      id: 'userRole.fieldAgent'
+    },
+    scopes: []
+  },
+  {
     id: 'LOCAL_LEADER',
     label: {
       defaultMessage: 'Local Leader',
@@ -272,12 +281,41 @@ export const roles: Role[] = [
     scopes: []
   },
   {
-    id: 'FIELD_AGENT',
+    // NOTE: This is 2.0  role configuration. It does not have the finalised scopes since all the features are not ready.
+    id: 'EMBASSY_OFFICIAL',
     label: {
-      defaultMessage: 'Field Agent',
-      description: 'Name for user role Field Agent',
-      id: 'userRole.fieldAgent'
+      defaultMessage: 'Embassy official',
+      description: 'Name for user role Embassy official',
+      id: 'userRole.embassyOfficial'
     },
-    scopes: []
+    scopes: [
+      'workqueue[id=assigned-to-you|recent|requires-updates-self|sent-for-review]',
+      'type=record.search&event=birth,death&declaredIn=location',
+      'record.read[event=birth|death|tennis-club-membership]',
+      `record.create[event=birth|death|tennis-club-membership]`,
+      'record.declare[event=birth|death]',
+      'record.declared.edit[event=birth|death]',
+      'record.custom-action[customActionType=ESCALATE,event=birth|death]',
+      'record.registered.print-certified-copies[event=birth|death]',
+      'record.registered.correct[event=birth|death]'
+    ]
+  },
+  {
+    // NOTE: This is 2.0  role configuration. It does not have the finalised scopes since all the features are not ready.
+    id: 'HEALTH_OFFICER',
+    label: {
+      defaultMessage: 'Health Officer',
+      description: 'Name for user role Health Officer',
+      id: 'userRole.healthOfficer'
+    },
+    scopes: [
+      'workqueue[id=assigned-to-you|recent|requires-updates-self|sent-for-review]',
+      'type=record.search&event=birth,death&declaredIn=location',
+      'record.read[event=birth|death|tennis-club-membership]',
+      `record.create[event=birth|death|tennis-club-membership]`,
+      'record.declare[event=birth|death|tennis-club-membership]',
+      'record.notify[event=birth|death|tennis-club-membership]',
+      'record.declared.edit[event=birth|death]'
+    ]
   }
 ]
