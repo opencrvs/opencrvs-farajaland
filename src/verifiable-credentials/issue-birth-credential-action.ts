@@ -106,6 +106,23 @@ export const issueBirthCredentialAction = {
     },
     {
       parent: field('requester.type'),
+      id: 'padding-for-layout-1',
+      type: FieldType.PARAGRAPH,
+      label: {
+        defaultMessage: '<div style="height:60px"></div>',
+        description: '60px padding for layout',
+        id: 'form.field.label.padding.60px'
+      },
+      configuration: {},
+      conditionals: [
+        {
+          type: ConditionalType.SHOW,
+          conditional: field('requester.type').isUndefined()
+        }
+      ]
+    },
+    {
+      parent: field('requester.type'),
       id: 'requester.data.mother',
       type: FieldType.DATA,
       conditionals: [
