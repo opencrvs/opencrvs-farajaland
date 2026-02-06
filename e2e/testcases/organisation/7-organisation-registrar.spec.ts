@@ -8,7 +8,7 @@ import _, { has, nth, slice } from 'lodash'
 import { isPageHeaderFieldType } from '@opencrvs/toolkit/events'
 import { type } from '../../utils'
 import exp from 'constants'
-test.describe.serial('6. Organisation Page -1', () => {
+test.describe.serial('7. Organisation Page -1', () => {
   let page: Page
 
   test.beforeAll(async ({ browser }) => {
@@ -18,40 +18,44 @@ test.describe.serial('6. Organisation Page -1', () => {
   test.afterAll(async () => {
     await page.close()
   })
-  test.describe.serial('6.1 Basic UI check', async () => {
-    test('6.1.0 Verify UI', async () => {
-      await login(page, CREDENTIALS.REGISTRATION_OFFICER)
+  test.describe.serial('7.1 Basic UI check', async () => {
+    test('7.1.0 Verify UI', async () => {
+      await login(page, CREDENTIALS.REGISTRAR)
       await page.getByRole('button', { name: 'Organisation' }).click()
       await expect(page.locator('#content-name')).toHaveText('Organisation')
       await expect(page.getByText('Farajaland', { exact: true })).toBeVisible()
     })
-    test('6.1.1 Verify Province-> Distric -> Health Facility(No Data)', async () => {
-      await page.getByRole('button', { name: /Central/ }).click()
-      await page.getByRole('button', { name: /Ezhi/ }).click()
-      const pageNavigator = page.getByRole('button', { name: '3', exact: true })
+    test('7.1.1 Verify Province-> Distric -> Health Facility(No Data)', async () => {
+      await page.getByRole('button', { name: /Chuminga/ }).click()
+      await page.getByRole('button', { name: /Soka/ }).click()
+      const pageNavigator = page.getByRole('button', { name: '2', exact: true })
       await pageNavigator.scrollIntoViewIfNeeded()
       await pageNavigator.click()
 
       await expect(
-        page.getByRole('button', { name: /Nthonkho Rural Health Centre/ })
+        page.getByRole('button', { name: /Mulunda Health Post/ })
       ).toBeDisabled()
     })
-    test('6.1.2 Verify Province-> Distric -> District Office(No Data)', async () => {
+    test('7.1.2 Verify Province-> Distric -> District Office', async () => {
       for (let i = 0; i < 3; i++) {
         await page.goBack()
       }
       await page.getByRole('button', { name: /Organisation/ }).click()
       await page.getByRole('button', { name: /Pualula/ }).click()
       await page.getByRole('button', { name: /Funabuli/ }).click()
+      const pageNavigator = page.getByRole('button', { name: '2', exact: true })
+      await pageNavigator.scrollIntoViewIfNeeded()
+      await pageNavigator.click()
 
       await expect(
-        page.getByRole('button', { name: /Chishi Rural Health Centre/ })
+        page.getByRole('button', { name: /Funabuli District Office/ })
       ).toBeDisabled()
     })
-    test('6.1.3 Verify Province-> Distric -> District Office', async () => {
-      for (let i = 0; i < 2; i++) {
+    test('7.1.3 Verify Province-> Distric -> Different District Office', async () => {
+      for (let i = 0; i < 3; i++) {
         await page.goBack()
       }
+      await page.getByRole('button', { name: /Organisation/ }).click()
 
       await page.getByRole('button', { name: /Sulaka/ }).click()
       await page.getByRole('button', { name: /Ilanga/ }).click()
@@ -63,7 +67,8 @@ test.describe.serial('6. Organisation Page -1', () => {
         page.getByRole('button', { name: /Ilanga District Office/ })
       ).toBeDisabled()
     })
-    test('6.1.4 Verify team page member list of District Office', async () => {
+
+    test('7.1.4 Verify team page member list of District Office', async () => {
       for (let i = 0; i < 3; i++) {
         await page.goBack()
       }
@@ -78,30 +83,46 @@ test.describe.serial('6. Organisation Page -1', () => {
       const row1 = page.getByRole('row', { name: /Mitchell Owen/ })
       await expect(row1.getByText('Active')).toBeVisible()
       const button1 = row1.getByRole('button', { name: 'Mitchell Owen' })
-      await expect(button1).toBeDisabled()
+      await button1.click()
+      await expect(page.locator('#content-name')).toHaveText('Mitchell Owen')
+      await page.getByRole('button', { name: 'Ibombo District Office' }).click()
+      await expect(page).toHaveURL(/.*\/team/)
 
       const row2 = page.getByRole('row', { name: /Emmanuel Mayuka/ })
       await expect(row2.getByText('Active')).toBeVisible()
       const button2 = row2.getByRole('button', { name: 'Emmanuel Mayuka' })
-      await expect(button2).toBeDisabled()
+      await button2.click()
+      await expect(page.locator('#content-name')).toHaveText('Emmanuel Mayuka')
+      await page.getByRole('button', { name: 'Ibombo District Office' }).click()
+      await expect(page).toHaveURL(/.*\/team/)
 
       const row3 = page.getByRole('row', { name: /Kennedy Mweene/ })
       await expect(row3.getByText('Active')).toBeVisible()
       const button3 = row3.getByRole('button', { name: 'Kennedy Mweene' })
-      await expect(button3).toBeDisabled()
-
-      const row5 = page.getByRole('row', { name: /Kalusha Bwalya/ })
-      await expect(row5.getByText('Active')).toBeVisible()
-      const button5 = row5.getByRole('button', { name: 'Kalusha Bwalya' })
-      await expect(button5).toBeDisabled()
+      await button3.click()
+      await expect(page.locator('#content-name')).toHaveText('Kennedy Mweene')
+      await page.getByRole('button', { name: 'Ibombo District Office' }).click()
+      await expect(page).toHaveURL(/.*\/team/)
 
       const row4 = page.getByRole('row', { name: /Felix Katongo/ })
       await expect(row4.getByText('Active')).toBeVisible()
-
       await row4.getByRole('button', { name: 'Felix Katongo' }).click()
       await expect(page.locator('#content-name')).toHaveText('Felix Katongo')
       await page.getByRole('button', { name: 'Ibombo District Office' }).click()
       await expect(page).toHaveURL(/.*\/team/)
+
+      const row5 = page.getByRole('row', { name: /Kalusha Bwalya/ })
+      await expect(row5.getByText('Active')).toBeVisible()
+      await row5.getByRole('button', { name: 'Kalusha Bwalya' }).click()
+      await expect(page.locator('#content-name')).toHaveText('Kalusha Bwalya')
+      await page.getByRole('button', { name: 'Ibombo District Office' }).click()
+      await expect(page).toHaveURL(/.*\/team/)
+    })
+    test('7.1.5 Verify Embassy Office', async () => {
+      await page.getByRole('button', { name: 'Organisation' }).click()
+      await expect(
+        page.getByRole('button', { name: 'France Embassy Office' })
+      ).toBeDisabled()
     })
   })
 })
