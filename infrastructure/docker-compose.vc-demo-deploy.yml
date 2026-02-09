@@ -155,7 +155,7 @@ services:
     volumes:
       - /data/sqlite:/data/sqlite
       - /certs:/certs:ro
-    image: ghcr.io/opencrvs/mosip-api:1.9.2-demo.3
+    image: ghcr.io/opencrvs/mosip-api:1.9.2-demo.4
     environment:
       - OIDP_CLIENT_PRIVATE_KEY_PATH=/certs/esignet-jwk.txt
       - DECRYPT_P12_FILE_PATH=/certs/keystore.p12
