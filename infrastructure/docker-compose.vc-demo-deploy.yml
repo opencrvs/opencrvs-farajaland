@@ -53,6 +53,7 @@ services:
       - SMTP_USERNAME=${SMTP_USERNAME}
       - SMTP_PASSWORD=${SMTP_PASSWORD}
       - SMTP_SECURE=${SMTP_SECURE}
+      - OPENID_PROVIDER_CLIENT_ID=${OPENID_PROVIDER_CLIENT_ID}
     deploy:
       replicas: 1
     networks:
@@ -182,7 +183,6 @@ services:
       - MOSIP_VERIFIABLE_CREDENTIAL_ALLOWLIST=https://api.collab.mosip.net/.well-known/public-key.json
       - MOSIP_CENTER_ID=10001
       - MOSIP_MACHINE_ID=20042
-      - OPENID_PROVIDER_CLIENT_ID=${OPENID_PROVIDER_CLIENT_ID}
 
   esignet-mock:
     deploy:
