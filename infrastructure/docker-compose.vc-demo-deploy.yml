@@ -53,6 +53,7 @@ services:
       - SMTP_USERNAME=${SMTP_USERNAME}
       - SMTP_PASSWORD=${SMTP_PASSWORD}
       - SMTP_SECURE=${SMTP_SECURE}
+      - ESIGNET_REDIRECT_URL=https://esignet-mosipid.collab.mosip.net/authorize
       - OPENID_PROVIDER_CLIENT_ID=${OPENID_PROVIDER_CLIENT_ID}
     deploy:
       replicas: 1
