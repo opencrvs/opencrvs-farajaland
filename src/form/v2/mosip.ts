@@ -311,7 +311,7 @@ export const getMOSIPIntegrationFields = (
                 },
                 configuration: {
                   icon: 'Globe',
-                  url: `${ESIGNET_REDIRECT_URL}?client_id=${OPENID_PROVIDER_CLIENT_ID}&response_type=code&scope=openid%20profile&acr_values=mosip:idp:acr:generated-code&claims=%7B%22userinfo%22:%7B%22given_name%22:%7B%22essential%22:true%7D,%22birthdate%22:%7B%22essential%22:true%7D,%22address%22:%7B%22essential%22:true%7D%7D,%22id_token%22:%7B%7D%7D&state=fetch-on-mount`,
+                  url: `${ESIGNET_REDIRECT_URL}?client_id=${OPENID_PROVIDER_CLIENT_ID}&response_type=code&scope=openid%20profile&acr_values=mosip%3Aidp%3Aacr%3Agenerated-code&claims=%7B%22userinfo%22:%7B%22name%22:%7B%22essential%22:true%7D,%22birthdate%22:%7B%22essential%22:true%7D,%22address%22:%7B%22essential%22:true%7D%7D,%22id_token%22:%7B%7D%7D&state=fetch-on-mount`,
                   text: {
                     id: 'verify.label',
                     defaultMessage: 'e-Signet',
