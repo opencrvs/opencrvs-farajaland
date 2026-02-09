@@ -511,7 +511,11 @@
         setIdField(idGivenNameEl, givenName)
         setIdField(idFamilyNameEl, familyName)
         setIdField(idBirthdateEl, birthdate)
-        setIdField(idPlaceOfBirthEl, placeOfBirthName ?? DEFAULT_PLACE_OF_BIRTH)
+        // hardcode default place of birth if not provided
+        setIdField(
+          idPlaceOfBirthEl,
+          placeOfBirthName ?? (givenName ? DEFAULT_PLACE_OF_BIRTH : null)
+        )
         setIdField(idCredentialIdEl, credentialId)
 
         if (data.status === 'SUCCESSFUL') {
