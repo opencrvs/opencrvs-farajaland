@@ -182,6 +182,7 @@ export async function onMosipBirthRegisterHandler(
       `Bearer ${token}`
     )
     const childName = declaration['child.name'] as NameFieldValue | undefined
+    const motherName = declaration['mother.name'] as NameFieldValue | undefined
 
     // @TODO: Check whether this might crash country-config if MOSIP doesn't respond
     mosipInteropClient.register({
@@ -201,7 +202,7 @@ export async function onMosipBirthRegisterHandler(
           capitalize(declaration['child.gender'] as string) +
           '"\n}]',
         postalCode: '14022',
-        email: 'rachik.sharma@gmail.com',
+        email: 'pyry@opencrvs.org',
         phone: '7790075085',
         zone: '[ {\n  "language" : "eng",\n  "value" : "Ben Mansour"\n}]',
         region:
@@ -210,8 +211,14 @@ export async function onMosipBirthRegisterHandler(
         preferredLang: 'English'
       },
       notification: {
-        recipientEmail: 'rachik.sharma@gmail.com',
-        recipientFullName: 'Rachik Sharma',
+        recipientEmail: 'pyry@opencrvs.org',
+        recipientFullName: [
+          motherName?.firstname,
+          motherName?.middlename,
+          motherName?.surname
+        ]
+          .filter(Boolean)
+          .join(' '),
         recipientPhone: '7790075085'
       },
       metaInfo: {
