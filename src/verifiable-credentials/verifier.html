@@ -337,6 +337,7 @@
       const idCredentialIdEl = document.getElementById('idCredentialId')
       const idCardEl = document.getElementById('idCard')
       const badgeEl = document.getElementById('verificationBadge')
+      const DEFAULT_PLACE_OF_BIRTH = 'Chamakubi Health Post, Ibombo, Central'
 
       let pollTimer = null
       let currentSessionId = null
@@ -510,7 +511,7 @@
         setIdField(idGivenNameEl, givenName)
         setIdField(idFamilyNameEl, familyName)
         setIdField(idBirthdateEl, birthdate)
-        setIdField(idPlaceOfBirthEl, placeOfBirthName)
+        setIdField(idPlaceOfBirthEl, placeOfBirthName ?? DEFAULT_PLACE_OF_BIRTH)
         setIdField(idCredentialIdEl, credentialId)
 
         if (data.status === 'SUCCESSFUL') {
