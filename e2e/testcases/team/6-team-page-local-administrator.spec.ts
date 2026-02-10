@@ -15,7 +15,7 @@ test.describe.serial('6. Team Page -1', () => {
     await page.close()
   })
 
-  test.describe('6.1 Basic UI check', async () => {
+  test.describe('6.1 Basic UI check', () => {
     test('6.1.0 Verify UI', async () => {
       await login(page, CREDENTIALS.LOCAL_SYSTEM_ADMIN)
       await page.getByRole('button', { name: 'Team' }).click()
@@ -76,6 +76,7 @@ test.describe.serial('6. Create user -2', () => {
     email: faker.internet.email(),
     role: 'Hospital Clerk'
   }
+  // @TODO?
   const signaturePath = path.resolve(__dirname, '../../assets/sign1.png')
   const username = `${userinfo.firstName[0]}.${userinfo.surname}`.toLowerCase()
   const question00 = 'What city were you born in?'
@@ -90,7 +91,7 @@ test.describe.serial('6. Create user -2', () => {
     await page.close()
   })
 
-  test.describe('6.1 User creation started by Local system admin', async () => {
+  test.describe('6.1 User creation started by Local system admin', () => {
     test.beforeAll(async () => {
       await login(page, CREDENTIALS.LOCAL_SYSTEM_ADMIN)
       await page.getByRole('button', { name: 'Team' }).click()

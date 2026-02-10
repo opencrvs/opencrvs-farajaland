@@ -67,7 +67,7 @@ export async function getPlaceOfBirth(
 
   if (type === 'PRIVATE_HOME') {
     const administrativeAreas = await getAdministrativeAreas(token)
-    const province = getIdByName(administrativeAreas, 'Central')
+
     const district = getIdByName(administrativeAreas, 'Ibombo')
 
     return {
@@ -95,7 +95,7 @@ export async function getDeclaration({
   token: string
 }) {
   const administrativeAreas = await getAdministrativeAreas(token)
-  const province = getIdByName(administrativeAreas, 'Central')
+
   const district = getIdByName(administrativeAreas, 'Ibombo')
 
   const mockDeclaration = {

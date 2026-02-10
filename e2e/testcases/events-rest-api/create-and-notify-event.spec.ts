@@ -704,8 +704,8 @@ test.describe('Events REST API', () => {
       // Open modal by clicking 'Notified' action row
       await page.getByText('Notified').click()
       const modal = await page.getByTestId('event-history-modal')
-      expect(modal).toContainText('Notified')
-      expect(modal).toContainText(clientName)
+      await expect(modal).toContainText('Notified')
+      await expect(modal).toContainText(clientName)
 
       // Close the modal
       await page.locator('#close-btn').click()
