@@ -79,7 +79,7 @@ export const CREDENTIALS = {
     PASSWORD: TEST_USER_PASSWORD
   },
   EMBASSY_OFFICIAL: {
-    USERNAME: 't.laurila',
+    USERNAME: 't.mwila',
     PASSWORD: TEST_USER_PASSWORD
   }
 }

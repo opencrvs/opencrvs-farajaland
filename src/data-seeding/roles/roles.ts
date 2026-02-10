@@ -218,7 +218,7 @@ export const roles: Role[] = [
     label: {
       defaultMessage: 'Embassy Official',
       description: 'Name for user role Embassy Official',
-      id: 'userRole.embassyOffical'
+      id: 'userRole.embassyOfficial'
     },
     scopes: [
       SCOPES.USER_READ_ONLY_MY_AUDIT,
@@ -279,26 +279,6 @@ export const roles: Role[] = [
       id: 'userRole.LocalLeader'
     },
     scopes: []
-  },
-  {
-    // NOTE: This is 2.0  role configuration. It does not have the finalised scopes since all the features are not ready.
-    id: 'EMBASSY_OFFICIAL',
-    label: {
-      defaultMessage: 'Embassy official',
-      description: 'Name for user role Embassy official',
-      id: 'userRole.embassyOfficial'
-    },
-    scopes: [
-      'workqueue[id=assigned-to-you|recent|requires-updates-self|sent-for-review]',
-      'type=record.search&event=birth,death&declaredIn=location',
-      'record.read[event=birth|death|tennis-club-membership]',
-      `record.create[event=birth|death|tennis-club-membership]`,
-      'record.declare[event=birth|death]',
-      'record.declared.edit[event=birth|death]',
-      'record.custom-action[customActionType=ESCALATE,event=birth|death]',
-      'record.registered.print-certified-copies[event=birth|death]',
-      'record.registered.correct[event=birth|death]'
-    ]
   },
   {
     // NOTE: This is 2.0  role configuration. It does not have the finalised scopes since all the features are not ready.
