@@ -201,8 +201,6 @@ export async function createDeclaration(
     annotation
   })
 
-  console.log('it does register it??')
-
   const registerAction = registerRes.actions.find(
     (action: ActionDocument) => action.type === 'REGISTER'
   )
