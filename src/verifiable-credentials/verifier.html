@@ -402,23 +402,11 @@
         })
       }
 
-      function findFirstValue(node, key) {
-        if (!node || typeof node !== 'object') return null
-        if (Array.isArray(node)) {
-          for (const item of node) {
-            const found = findFirstValue(item, key)
-            if (found !== null && found !== undefined) return found
-          }
-          return null
-        }
-        if (Object.prototype.hasOwnProperty.call(node, key)) {
-          return node[key]
-        }
-        for (const value of Object.values(node)) {
-          const found = findFirstValue(value, key)
-          if (found !== null && found !== undefined) return found
-        }
-        return null
+      function getCredentialData(sessionInfo) {
+        return (
+          sessionInfo?.presentedPresentations?.birth_sdjwt?.credential
+            ?.credentialData || null
+        )
       }
 
       function setIdField(element, value) {
@@ -498,15 +486,12 @@
         const data = await response.json()
         console.log('Verification session update:', data)
 
-        const givenName = findFirstValue(data, 'given_name')
-        const familyName = findFirstValue(data, 'family_name')
-        const birthdate = findFirstValue(data, 'birthdate')
-        const placeOfBirth = findFirstValue(data, 'place_of_birth')
-        const placeOfBirthName = placeOfBirth ? placeOfBirth.name : null
-        const credentialId =
-          (findFirstValue(data, 'verified_data') || {}).id ||
-          (findFirstValue(data, 'credentialData') || {}).id ||
-          findFirstValue(data, 'credentialId')
+        const credentialData = getCredentialData(data)
+        const givenName = credentialData?.given_name || null
+        const familyName = credentialData?.family_name || null
+        const birthdate = credentialData?.birthdate || null
+        const placeOfBirthName = credentialData?.place_of_birth?.name || null
+        const credentialId = credentialData?.id || data?.credentialId || null
 
         setIdField(idGivenNameEl, givenName)
         setIdField(idFamilyNameEl, familyName)
