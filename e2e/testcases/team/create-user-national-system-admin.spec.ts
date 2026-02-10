@@ -31,6 +31,14 @@ test.describe.serial('1. Create user -1', () => {
       await login(page, CREDENTIALS.NATIONAL_SYSTEM_ADMIN)
       await page.getByRole('button', { name: 'Team' }).click()
       await expect(page.getByText('HQ Office')).toBeVisible()
+
+      await page
+        .getByRole('button', { name: /HQ Office, Embe, Pualula/ })
+        .click()
+      await page.getByTestId('locationSearchInput').fill('Ibombo')
+
+      await page.getByText(/Ibombo Rural Health Centre/).click()
+
       await page.click('#add-user')
       await expect(page.getByText('User details')).toBeVisible()
     })
@@ -52,8 +60,12 @@ test.describe.serial('1. Create user -1', () => {
     test('1.1.2 Create user', async () => {
       await page.getByRole('button', { name: 'Create user' }).click()
 
+      await expect(page.locator('#header')).toContainText(
+        'Ibombo Rural Health Centre'
+      )
+
       await expect(
-        page.getByText('Embe, Pualula', {
+        page.getByText('Ibombo, Central', {
           exact: true
         })
       ).toBeVisible()

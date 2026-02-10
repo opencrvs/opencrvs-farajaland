@@ -51,7 +51,7 @@ test.describe.serial('1.Farajaland as location parent', () => {
     await createDeclaration(token, undefined, ActionType.NOTIFY)
   })
 
-  test('1.2.1 Local Registrar in another administrative area should not find the declaration', async () => {
+  test('1.2.1 Registrar in another administrative area should not find the declaration', async () => {
     await login(page, CREDENTIALS.REGISTRAR)
     // Try to search for the declaration with name. It should not be found.
 

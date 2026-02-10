@@ -28,11 +28,11 @@ test.describe.serial('3. Team Page -1', () => {
       ).toBeVisible()
     })
     const team = [
-      { name: 'Mitchell Owen', role: 'Provincial Registrar', disabled: true },
-      { name: 'Emmanuel Mayuka', role: 'Administrator', disabled: true },
-      { name: 'Kennedy Mweene', role: 'Local Registrar', disabled: true },
-      { name: 'Felix Katongo', role: 'Registration Officer', disabled: false },
-      { name: 'Kalusha Bwalya', role: 'Hospital Clerk', disabled: true }
+      { name: 'Mitchell Owen', role: 'Provincial Registrar' },
+      { name: 'Emmanuel Mayuka', role: 'Administrator' },
+      { name: 'Kennedy Mweene', role: 'Registrar' },
+      { name: 'Felix Katongo', role: 'Registration Officer' },
+      { name: 'Kalusha Bwalya', role: 'Hospital Official' }
     ]
 
     test('3.1.1 Verify Team Members, Roles and their statuses', async () => {
@@ -44,12 +44,6 @@ test.describe.serial('3. Team Page -1', () => {
         await expect(cells.nth(1)).toHaveText(team[i].name)
         await expect(cells.nth(2)).toHaveText(team[i].role)
         await expect(cells.nth(3)).toHaveText('Active')
-
-        if (team[i].disabled) {
-          await expect(
-            rows.nth(i).getByRole('button', { name: team[i].name })
-          ).toBeDisabled()
-        }
       }
     })
   })

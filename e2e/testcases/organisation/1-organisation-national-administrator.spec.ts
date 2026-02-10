@@ -112,7 +112,7 @@ test.describe.serial('1. Organisation Page -1', () => {
       firstName: faker.person.firstName('male'),
       surname: faker.person.lastName('male'),
       email: faker.internet.email(),
-      role: 'Hospital Clerk'
+      role: 'Hospital Official'
     }
 
     test('1.2.1 Prerequisite of user creation', async () => {

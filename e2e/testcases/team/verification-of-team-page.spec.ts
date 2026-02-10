@@ -29,7 +29,6 @@ test.describe.serial('1. Team Page -1', () => {
     })
 
     const team = [
-      { name: 'Tiwonge Mwila', role: 'Embassy Official' },
       { name: 'Mitchell Owen', role: 'Provincial Registrar' },
       { name: 'Emmanuel Mayuka', role: 'Administrator' },
       { name: 'Kennedy Mweene', role: 'Registrar' },
