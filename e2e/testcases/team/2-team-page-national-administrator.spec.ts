@@ -17,9 +17,12 @@ test.describe('2. Team Page', () => {
       await login(page, CREDENTIALS.NATIONAL_SYSTEM_ADMIN)
       await page.getByRole('button', { name: 'Team' }).click()
       await expect(page.locator('#content-name')).toHaveText('HQ Office')
-      await expect(
-        page.locator('.LocationInfoValue-sc-1ou3q8c-5.cCnjTR')
-      ).toHaveText('Embe, Pualula')
+
+      expect(
+        page.getByText('Embe, Pualula', {
+          exact: true
+        })
+      ).toBeVisible()
     })
     test('2.1.1 Verify Team Members Status', async () => {
       const row1 = page.getByRole('row', { name: /Joseph Musonda/ })

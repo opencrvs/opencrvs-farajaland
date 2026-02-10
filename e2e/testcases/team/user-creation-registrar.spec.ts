@@ -52,7 +52,11 @@ test.describe.serial('1. Create user -1', () => {
     test('1.1.2 Create user', async () => {
       await page.getByRole('button', { name: 'Create user' }).click()
 
-      await expect(page.getByText('Embe, Pualula')).toBeVisible()
+      await expect(
+        page.getByText('Embe, Pualula', {
+          exact: true
+        })
+      ).toBeVisible()
     })
   })
 
@@ -64,6 +68,8 @@ test.describe.serial('1. Create user -1', () => {
       await page.fill('#password', 'test')
       await page.click('#login-mobile-submit')
 
+      const password = 'Bangladesh23'
+
       await expect(page.getByText('Welcome to Farajaland CRS')).toBeVisible({
         timeout: 30000
       })
@@ -71,8 +77,8 @@ test.describe.serial('1. Create user -1', () => {
       await page.getByRole('button', { name: 'Start' }).click()
 
       //set up password
-      await page.fill('#NewPassword', 'Bangladesh23')
-      await page.fill('#ConfirmPassword', 'Bangladesh23')
+      await page.fill('#NewPassword', password)
+      await page.fill('#ConfirmPassword', password)
       await expect(page.getByText('Passwords match')).toBeVisible()
       await page.getByRole('button', { name: 'Continue' }).click()
 
