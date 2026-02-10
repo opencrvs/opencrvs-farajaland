@@ -1,13 +1,6 @@
 import { test, expect, type Page } from '@playwright/test'
-import path from 'path'
-import { ensureLoginPageReady, continueForm, login } from '../../helpers'
-import { faker } from '@faker-js/faker'
-import { CREDENTIALS, LOGIN_URL } from '../../constants'
-import { getUserByRole } from '@countryconfig/data-generator/users'
-import _, { has, nth, slice } from 'lodash'
-import { isPageHeaderFieldType } from '@opencrvs/toolkit/events'
-import { type } from '../../utils'
-import exp from 'constants'
+import { login } from '../../helpers'
+import { CREDENTIALS } from '../../constants'
 test.describe.serial('6. Organisation Page -1', () => {
   let page: Page
 
@@ -25,7 +18,7 @@ test.describe.serial('6. Organisation Page -1', () => {
       await expect(page.locator('#content-name')).toHaveText('Organisation')
       await expect(page.getByText('Farajaland', { exact: true })).toBeVisible()
     })
-    test('6.1.1 Verify Province-> Distric -> Health Facility(No Data)', async () => {
+    test('6.1.1 Verify Province -> District -> Health Facility(No Data)', async () => {
       await page.getByRole('button', { name: /Central/ }).click()
       await page.getByRole('button', { name: /Ezhi/ }).click()
       const pageNavigator = page.getByRole('button', { name: '3', exact: true })
@@ -36,7 +29,7 @@ test.describe.serial('6. Organisation Page -1', () => {
         page.getByRole('button', { name: /Nthonkho Rural Health Centre/ })
       ).toBeDisabled()
     })
-    test('6.1.2 Verify Province-> Distric -> District Office(No Data)', async () => {
+    test('6.1.2 Verify Province -> District -> District Office(No Data)', async () => {
       for (let i = 0; i < 3; i++) {
         await page.goBack()
       }
@@ -48,7 +41,7 @@ test.describe.serial('6. Organisation Page -1', () => {
         page.getByRole('button', { name: /Chishi Rural Health Centre/ })
       ).toBeDisabled()
     })
-    test('6.1.3 Verify Province-> Distric -> District Office', async () => {
+    test('6.1.3 Verify Province -> District -> District Office', async () => {
       for (let i = 0; i < 2; i++) {
         await page.goBack()
       }

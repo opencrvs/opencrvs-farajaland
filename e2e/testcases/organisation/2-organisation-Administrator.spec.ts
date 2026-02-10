@@ -1,13 +1,7 @@
 import { test, expect, type Page } from '@playwright/test'
-import path from 'path'
-import { ensureLoginPageReady, continueForm, login } from '../../helpers'
+import { continueForm, login } from '../../helpers'
 import { faker } from '@faker-js/faker'
-import { CREDENTIALS, LOGIN_URL } from '../../constants'
-import { getUserByRole } from '@countryconfig/data-generator/users'
-import _, { has, nth, slice } from 'lodash'
-import { isPageHeaderFieldType } from '@opencrvs/toolkit/events'
-import { type } from '../../utils'
-import exp from 'constants'
+import { CREDENTIALS } from '../../constants'
 test.describe.serial('2. Organisation Page -1', () => {
   let page: Page
 
@@ -29,7 +23,7 @@ test.describe.serial('2. Organisation Page -1', () => {
       await expect(page.locator('#content-name')).toHaveText('Organisation')
       await expect(page.getByText('Farajaland', { exact: true })).toBeVisible()
     })
-    test('2.1.1 Verify Province-> Distric -> Health Facility(No Data)', async () => {
+    test('2.1.1 Verify Province -> District -> Health Facility(No Data)', async () => {
       await page.getByRole('button', { name: /Central/ }).click()
       await page.getByRole('button', { name: /Ibombo/ }).click()
       const pageNavigator = page.getByRole('button', { name: '2' })
@@ -45,7 +39,7 @@ test.describe.serial('2. Organisation Page -1', () => {
       ).toBeVisible()
       await expect(page.getByText('No result')).toBeVisible()
     })
-    test('2.1.2 Verify Province-> Distric -> District Office', async () => {
+    test('2.1.2 Verify Province -> District -> District Office', async () => {
       for (let i = 0; i < 3; i++) {
         await page.goBack()
       }
@@ -153,7 +147,7 @@ test.describe.serial('2. Organisation Page -1', () => {
     })
   })
   test.describe.serial('2.3 Out of Scope Access', async () => {
-    test('2.3.1 Verify Province-> Distric -> Health Facility', async () => {
+    test('2.3.1 Verify Province -> District -> Health Facility', async () => {
       for (let i = 0; i < 3; i++) {
         await page.goBack()
       }
@@ -164,7 +158,7 @@ test.describe.serial('2. Organisation Page -1', () => {
         page.getByRole('button', { name: /KundamfumuRural Health Centre/ })
       ).toBeDisabled()
     })
-    test('2.3.2 Verify Province-> Distric -> District Office', async () => {
+    test('2.3.2 Verify Province -> District -> District Office', async () => {
       for (let i = 0; i < 2; i++) {
         await page.goBack()
       }

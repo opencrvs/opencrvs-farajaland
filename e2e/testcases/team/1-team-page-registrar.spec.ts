@@ -1,10 +1,6 @@
 import { test, expect, type Page } from '@playwright/test'
-import path from 'path'
-import { ensureLoginPageReady, continueForm, login } from '../../helpers'
-import { faker } from '@faker-js/faker'
-import { CREDENTIALS, LOGIN_URL } from '../../constants'
-import { getUserByRole } from '@countryconfig/data-generator/users'
-import _, { has, nth } from 'lodash'
+import { login } from '../../helpers'
+import { CREDENTIALS } from '../../constants'
 
 test.describe.serial('1. Team Page -1', () => {
   let page: Page
