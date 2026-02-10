@@ -99,10 +99,10 @@ test.describe.serial('5. Organisation Page -1', () => {
       await expect(page.locator('#content-name')).toHaveText(
         'France Embassy Office'
       )
-      const row1 = page.getByRole('row', { name: /Taohid Laurila/ })
+      const row1 = page.getByRole('row', { name: /Tiwonge Mwila/ })
       await expect(row1.getByText('Active')).toBeVisible()
       await expect(row1.getByText('Embassy Official')).toBeVisible()
-      const button1 = row1.getByRole('button', { name: 'Taohid Laurila' })
+      const button1 = row1.getByRole('button', { name: 'Tiwonge Mwila' })
       await expect(button1).toBeDisabled()
     })
   })

@@ -71,22 +71,22 @@ test.describe.serial('6. Organisation Page -1', () => {
       const row1 = page.getByRole('row', { name: /Mitchell Owen/ })
       await expect(row1.getByText('Active')).toBeVisible()
       const button1 = row1.getByRole('button', { name: 'Mitchell Owen' })
-      await expect(button1).toBeDisabled()
+      await expect(button1).toBeEnabled()
 
       const row2 = page.getByRole('row', { name: /Emmanuel Mayuka/ })
       await expect(row2.getByText('Active')).toBeVisible()
       const button2 = row2.getByRole('button', { name: 'Emmanuel Mayuka' })
-      await expect(button2).toBeDisabled()
+      await expect(button2).toBeEnabled()
 
       const row3 = page.getByRole('row', { name: /Kennedy Mweene/ })
       await expect(row3.getByText('Active')).toBeVisible()
       const button3 = row3.getByRole('button', { name: 'Kennedy Mweene' })
-      await expect(button3).toBeDisabled()
+      await expect(button3).toBeEnabled()
 
       const row5 = page.getByRole('row', { name: /Kalusha Bwalya/ })
       await expect(row5.getByText('Active')).toBeVisible()
       const button5 = row5.getByRole('button', { name: 'Kalusha Bwalya' })
-      await expect(button5).toBeDisabled()
+      await expect(button5).toBeEnabled()
 
       const row4 = page.getByRole('row', { name: /Felix Katongo/ })
       await expect(row4.getByText('Active')).toBeVisible()

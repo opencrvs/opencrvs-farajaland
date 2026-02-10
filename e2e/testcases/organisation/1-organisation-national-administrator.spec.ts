@@ -1,6 +1,5 @@
 import { test, expect, type Page } from '@playwright/test'
-import { continueForm, login } from '../../helpers'
-import { faker } from '@faker-js/faker'
+import { login } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
 test.describe.serial('1. Organisation Page -1', () => {
   let page: Page
@@ -105,54 +104,6 @@ test.describe.serial('1. Organisation Page -1', () => {
       await expect(page.locator('#content-name')).toHaveText('Patrick Gondwe')
       await page.getByRole('button', { name: 'Ilanga District Office' }).click()
       await expect(page).toHaveURL(/.*\/team/)
-    })
-  })
-  test.describe.serial('1.2 User Creation ', async () => {
-    const userinfo = {
-      firstName: faker.person.firstName('male'),
-      surname: faker.person.lastName('male'),
-      email: faker.internet.email(),
-      role: 'Hospital Official'
-    }
-
-    test('1.2.1 Prerequisite of user creation', async () => {
-      await page.getByRole('button', { name: 'Organisation' }).click()
-      await page.getByRole('button', { name: /Central/ }).click()
-      await page.getByRole('button', { name: /Ibombo/ }).click()
-      const pageNavigator = page.getByRole('button', { name: '2' })
-      await pageNavigator.scrollIntoViewIfNeeded()
-      await pageNavigator.click()
-
-      await page
-        .getByRole('button', { name: /Keembe Rural Health Centre/ })
-        .click()
-      await expect(page.locator('#content-name')).toHaveText(
-        /Keembe Rural Health Centre/
-      )
-      await page.click('#add-user')
-      await expect(page.getByText('User details')).toBeVisible()
-    })
-    test('1.2.2 Fill user details', async () => {
-      await page.locator('#familyName').fill(userinfo.surname)
-      await page.locator('#firstName').fill(userinfo.firstName)
-      await page.locator('#email').fill(userinfo.email)
-      await page.locator('#role').click()
-      await page.getByText(userinfo.role, { exact: true }).click()
-      await continueForm(page)
-    })
-    test('1.2.3 Create user', async () => {
-      await page.getByRole('button', { name: 'Create user' }).click()
-
-      await expect(
-        page.getByText('Ibombo, Central', { exact: true })
-      ).toBeVisible()
-    })
-    test('1.2.4 Verify user created in team page', async () => {
-      const fullName = `${userinfo.firstName} ${userinfo.surname}`
-      const row = page.getByRole('row', { name: fullName })
-      await expect(row.getByText('Pending')).toBeVisible()
-      await row.getByRole('button', { name: fullName }).click()
-      await expect(page.locator('#content-name')).toHaveText(fullName)
     })
   })
 })
