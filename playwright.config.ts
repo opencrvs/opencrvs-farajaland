@@ -8,7 +8,7 @@ const insecureOrigins = subdomains.map(
     `--unsafely-treat-insecure-origin-as-secure=https://${subdomain}.${process.env.DOMAIN}`
 )
 
-const ignoreHTTPSErrors = true
+const ignoreHTTPSErrors = process.env.CI ? true : false
 /**
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
@@ -55,13 +55,15 @@ export default defineConfig({
         ...devices['Desktop Chrome'],
         ignoreHTTPSErrors,
         launchOptions: {
-          args: [
-            '--ignore-certificate-errors',
-            '--ignore-ssl-errors',
-            '--allow-running-insecure-content',
-            '--disable-web-security',
-            ...insecureOrigins
-          ]
+          args: process.env.CI
+            ? [
+                '--ignore-certificate-errors',
+                '--ignore-ssl-errors',
+                '--allow-running-insecure-content',
+                '--disable-web-security',
+                ...insecureOrigins
+              ]
+            : []
         }
       }
     }
