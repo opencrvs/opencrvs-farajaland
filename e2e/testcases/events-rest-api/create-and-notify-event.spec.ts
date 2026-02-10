@@ -25,10 +25,14 @@ import {
   getIdByName,
   getLocations
 } from '../birth/helpers'
+import { createClient } from '@opencrvs/toolkit/api'
 
 import decode from 'jwt-decode'
 import { formatV2ChildName, REQUIRED_VALIDATION_ERROR } from '../birth/helpers'
-import { getDeclaration } from '../test-data/birth-declaration'
+import {
+  createDeclaration,
+  getDeclaration
+} from '../test-data/birth-declaration'
 import {
   printAndExpectPopup,
   selectRequesterType
@@ -42,90 +46,42 @@ async function fetchClientAPI(
 ) {
   const url = new URL(`${CLIENT_URL}${path}`)
 
-  return fetch(url, {
-    method,
-    body: JSON.stringify(body),
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`
-    }
-  })
-}
-
-async function createSystemUser(token: string) {
-  const name = `Health integration ${format(new Date(), 'dd.MM. HH:mm:ss')}`
-  const res = await fetch(`${GATEWAY_HOST}/graphql`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`
-    },
-    body: JSON.stringify({
-      query: `
-      mutation registerSystem($system: SystemInput) {
-        registerSystem(system: $system) {
-          clientSecret
-          system {
-            clientId
-            shaSecret
-          }
-        }
-      }
-    `,
-      variables: {
-        system: {
-          name,
-          type: 'HEALTH'
-        }
-      }
-    })
-  })
-
-  const body = await res.json()
-
-  return {
-    name,
-    clientSecret: body.data.registerSystem.clientSecret as string,
-    system: body.data.registerSystem.system as {
-      clientId: string
-      shaSecret: string
-    }
+  const headers = {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${token}`
   }
-}
 
-async function deleteSystemUser(token: string, clientId: string) {
-  await fetch(`${GATEWAY_HOST}/graphql`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`
-    },
-    body: JSON.stringify({
-      operationName: 'deleteSystem',
-      variables: {
-        clientId
-      },
-      query: `mutation deleteSystem($clientId: ID!) {  deleteSystem(clientId: $clientId) {
-          _id
-          clientId
-          name
-          shaSecret
-          status
-          type
-          __typename
-        }
-      }`
-    })
-  })
+  const options: {
+    method: string
+    headers: Record<string, string>
+    body?: string
+  } = {
+    method,
+    headers
+  }
+
+  if (method !== 'GET' && method !== 'DELETE') {
+    options.body = JSON.stringify(body)
+  }
+
+  return fetch(url, options)
 }
 
 const EVENT_TYPE = 'birth'
 const NON_EXISTING_UUID = 'b3ca0644-ffc4-461f-afe0-5fb84bedfcfd'
+const INTEGRATION_SCOPES = [
+  'record.create[event=birth]',
+  '?type=record.search',
+  'record.read[event=birth]',
+  'record.notify[event=birth]',
+  'record.registered.correct[event=birth]'
+]
 
 test.describe('Events REST API', () => {
   let clientToken: string
   let clientId: string
   let systemAdminToken: string
+  let registrarToken: string
   let clientName: string
   let healthFacilityId: string
 
@@ -134,13 +90,24 @@ test.describe('Events REST API', () => {
       CREDENTIALS.NATIONAL_SYSTEM_ADMIN.USERNAME,
       CREDENTIALS.NATIONAL_SYSTEM_ADMIN.PASSWORD
     )
-    const { system, clientSecret, name } =
-      await createSystemUser(systemAdminToken)
+    registrarToken = await getToken(
+      CREDENTIALS.REGISTRAR.USERNAME,
+      CREDENTIALS.REGISTRAR.PASSWORD
+    )
+    const name = `Health integration ${format(new Date(), 'dd.MM. HH:mm:ss')}`
+    const integrationClient = createClient(
+      `${GATEWAY_HOST}/events`,
+      `Bearer ${systemAdminToken}`
+    )
+    const integration = await integrationClient.integrations.create.mutate({
+      name,
+      scopes: INTEGRATION_SCOPES
+    })
 
     clientName = name
-    clientId = system.clientId
+    clientId = integration.clientId
 
-    clientToken = await getClientToken(clientId, clientSecret)
+    clientToken = await getClientToken(clientId, integration.clientSecret)
 
     const healthFacilities = await getLocations('HEALTH_FACILITY', clientToken)
 
@@ -151,8 +118,94 @@ test.describe('Events REST API', () => {
     healthFacilityId = healthFacilities[0].id
   })
 
-  test.afterAll(async () => {
-    await deleteSystemUser(systemAdminToken, clientId)
+  test.describe('GET /api/events/config', () => {
+    test('HTTP 200 with config payload', async () => {
+      const response = await fetchClientAPI(
+        '/api/events/config',
+        'GET',
+        clientToken
+      )
+
+      expect(response.status).toBe(200)
+      const body = await response.json()
+
+      if (Array.isArray(body)) {
+        expect(body.length).toBeGreaterThan(0)
+        expect(body[0]).toHaveProperty('id')
+      } else {
+        expect(body).toHaveProperty('id')
+      }
+    })
+  })
+
+  test.describe('GET /api/events/locations', () => {
+    test('HTTP 200 with locations payload', async () => {
+      const response = await fetchClientAPI(
+        '/api/events/locations',
+        'GET',
+        clientToken
+      )
+
+      expect(response.status).toBe(200)
+      const body = await response.json()
+      expect(Array.isArray(body)).toBe(true)
+      expect(body.length).toBeGreaterThan(0)
+    })
+  })
+
+  test.describe('GET /api/events/events/{eventId}', () => {
+    test('HTTP 200 with event payload', async () => {
+      const createEventResponse = await fetchClientAPI(
+        '/api/events/events',
+        'POST',
+        clientToken,
+        {
+          type: EVENT_TYPE,
+          transactionId: uuidv4(),
+          createdAtLocation: healthFacilityId
+        }
+      )
+
+      const createEventBody = await createEventResponse.json()
+      const eventId = createEventBody.id
+
+      const response = await fetchClientAPI(
+        `/api/events/events/${eventId}`,
+        'GET',
+        clientToken
+      )
+
+      expect(response.status).toBe(200)
+      const body = await response.json()
+      expect(body.id).toBe(eventId)
+    })
+  })
+
+  test.describe('POST /api/events/events/search', () => {
+    test('HTTP 200 with search results', async () => {
+      const response = await fetchClientAPI(
+        '/api/events/events/search',
+        'POST',
+        clientToken,
+        {
+          query: {
+            type: 'and',
+            clauses: [
+              {
+                eventType: EVENT_TYPE
+              }
+            ]
+          },
+          limit: 5,
+          offset: 0
+        }
+      )
+
+      expect(response.status).toBe(200)
+      const body = await response.json()
+      expect(body).toHaveProperty('results')
+      expect(Array.isArray(body.results)).toBe(true)
+    })
   })
 
   test.describe('POST /api/events/events', () => {
@@ -774,6 +827,169 @@ test.describe('Events REST API', () => {
       expect(response1.status).toBe(200)
       expect(response2.status).toBe(200)
       expect(body1).toEqual(body2)
+    })
+  })
+
+  test.describe('POST /api/events/events/{eventId}/correction/*', () => {
+    const createRegisteredEvent = async () => {
+      const { eventId } = await createDeclaration(registrarToken)
+      // const client = createClient(
+      //   GATEWAY_HOST + '/events',
+      //   `Bearer ${registrarToken}`
+      // )
+      // await client.event.actions.assignment.unassign.mutate({
+      //   eventId,
+      //   transactionId: uuidv4()
+      // })
+      return eventId
+    }
+
+    test('HTTP 200 for correction request', async () => {
+      const eventId = await createRegisteredEvent()
+
+      console.log(1)
+      const response = await fetchClientAPI(
+        `/api/events/events/${eventId}/correction/request`,
+        'POST',
+        clientToken,
+        {
+          eventId,
+          transactionId: uuidv4(),
+          type: 'REQUEST_CORRECTION',
+          declaration: {
+            'child.name': {
+              firstname: faker.person.firstName(),
+              surname: faker.person.lastName()
+            }
+          },
+          annotation: {},
+          createdAtLocation: healthFacilityId
+        }
+      )
+      console.log(2)
+
+      const body = await response.json()
+      expect(response.status).toBe(200)
+      const requestAction = body.actions.find(
+        (action: { type: string }) => action.type === 'REQUEST_CORRECTION'
+      )
+      expect(requestAction).toBeDefined()
+    })
+
+    test('HTTP 200 for correction approve with updated state', async () => {
+      const eventId = await createRegisteredEvent()
+
+      const requestResponse = await fetchClientAPI(
+        `/api/events/events/${eventId}/correction/request`,
+        'POST',
+        clientToken,
+        {
+          eventId,
+          transactionId: uuidv4(),
+          type: 'REQUEST_CORRECTION',
+          declaration: {},
+          annotation: {},
+          createdAtLocation: healthFacilityId
+        }
+      )
+
+      expect(requestResponse.status).toBe(200)
+      const requestBody = await requestResponse.json()
+      const requestAction = requestBody.actions.find(
+        (action: { type: string }) => action.type === 'REQUEST_CORRECTION'
+      )
+
+      if (!requestAction?.id) {
+        throw new Error('Correction request action not found')
+      }
+
+      const response = await fetchClientAPI(
+        `/api/events/events/${eventId}/correction/approve`,
+        'POST',
+        clientToken,
+        {
+          eventId,
+          transactionId: uuidv4(),
+          requestId: requestAction.id,
+          type: 'APPROVE_CORRECTION',
+          declaration: {},
+          annotation: {},
+          createdAtLocation: healthFacilityId
+        }
+      )
+
+      expect(response.status).toBe(200)
+
+      const getResponse = await fetchClientAPI(
+        `/api/events/events/${eventId}`,
+        'GET',
+        clientToken
+      )
+      const getBody = await getResponse.json()
+
+      const approveAction = getBody.actions.find(
+        (action: { type: string }) => action.type === 'APPROVE_CORRECTION'
+      )
+      expect(approveAction).toBeDefined()
+    })
+
+    test('HTTP 200 for correction reject with updated state', async () => {
+      const eventId = await createRegisteredEvent()
+
+      const requestResponse = await fetchClientAPI(
+        `/api/events/events/${eventId}/correction/request`,
+        'POST',
+        clientToken,
+        {
+          eventId,
+          transactionId: uuidv4(),
+          type: 'REQUEST_CORRECTION',
+          declaration: {},
+          annotation: {},
+          createdAtLocation: healthFacilityId
+        }
+      )
+
+      expect(requestResponse.status).toBe(200)
+      const requestBody = await requestResponse.json()
+      const requestAction = requestBody.actions.find(
+        (action: { type: string }) => action.type === 'REQUEST_CORRECTION'
+      )
+
+      if (!requestAction?.id) {
+        throw new Error('Correction request action not found')
+      }
+
+      const response = await fetchClientAPI(
+        `/api/events/events/${eventId}/correction/reject`,
+        'POST',
+        clientToken,
+        {
+          eventId,
+          transactionId: uuidv4(),
+          requestId: requestAction.id,
+          type: 'REJECT_CORRECTION',
+          content: {
+            reason: faker.lorem.sentence()
+          },
+          declaration: {},
+          annotation: {},
+          createdAtLocation: healthFacilityId
+        }
+      )
+
+      expect(response.status).toBe(200)
+
+      const getResponse = await fetchClientAPI(
+        `/api/events/events/${eventId}`,
+        'GET',
+        clientToken
+      )
+      const getBody = await getResponse.json()
+      const rejectAction = getBody.actions.find(
+        (action: { type: string }) => action.type === 'REJECT_CORRECTION'
+      )
+      expect(rejectAction).toBeDefined()
     })
   })
 
