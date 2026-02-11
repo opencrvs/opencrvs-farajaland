@@ -413,8 +413,9 @@
     </clipPath>
   </defs>
   {{#if $review}}
-    <image width="36" height="36" xlink:href="{{qrCode}}" x="500" y="770"></image>
+    <image width="300" height="300" xlink:href="{{ $lookup ($action "PRINT_CERTIFICATE") "annotation.verifiable-credential" }}" x="240" y="530"></image>
   {{/if}}
+
   <!-- #ifCond printInAdvance '!==' true}} -->
   <image width="140" height="70"
     xlink:href="{{$lookup $metadata 'legalStatuses.REGISTERED.createdBySignature'}}"

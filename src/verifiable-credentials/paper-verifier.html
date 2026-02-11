@@ -1,0 +1,582 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Paper VC Verifier</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;700&family=Space+Grotesk:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f7f6f1;
+        --card: #ffffff;
+        --ink: #1f2b24;
+        --muted: #54655a;
+        --brand: #2f7b46;
+        --brand-dark: #215534;
+        --warn: #b5521c;
+        --border: #d8dfd4;
+        --shadow: 0 16px 40px rgba(21, 38, 25, 0.12);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: 'Space Grotesk', 'Segoe UI', sans-serif;
+        color: var(--ink);
+        background: radial-gradient(
+            circle at 20% 20%,
+            #ffffff 0%,
+            transparent 45%
+          ),
+          linear-gradient(140deg, #faf8f2 0%, var(--bg) 100%);
+        min-height: 100vh;
+      }
+
+      header {
+        padding: 36px 24px 18px;
+        text-align: center;
+      }
+
+      header h1 {
+        margin: 0 0 8px;
+        font-family: 'Fraunces', serif;
+        font-size: clamp(28px, 3vw, 40px);
+      }
+
+      header p {
+        margin: 0;
+        color: var(--muted);
+      }
+
+      main {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 24px;
+        display: grid;
+        gap: 24px;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      }
+
+      .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 20px 22px;
+        box-shadow: var(--shadow);
+      }
+
+      .card h2 {
+        font-family: 'Fraunces', serif;
+        font-size: 20px;
+        margin: 0 0 12px;
+      }
+
+      .muted {
+        color: var(--muted);
+        font-size: 14px;
+      }
+
+      button {
+        border: none;
+        background: var(--brand);
+        color: #fff;
+        border-radius: 999px;
+        padding: 10px 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition:
+          transform 0.2s ease,
+          box-shadow 0.2s ease;
+      }
+
+      button:hover:not(:disabled) {
+        transform: translateY(-1px);
+        box-shadow: 0 8px 20px rgba(47, 123, 70, 0.25);
+      }
+
+      button:disabled {
+        background: #8aa393;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+      }
+
+      .actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 10px;
+      }
+
+      .status {
+        font-weight: 600;
+        color: var(--brand-dark);
+        margin: 0;
+      }
+
+      .warning {
+        color: var(--warn);
+      }
+
+      video {
+        display: none;
+        width: 100%;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+      }
+
+      .id-card-wrapper {
+        display: grid;
+        place-items: center;
+      }
+
+      .id-card {
+        width: 100%;
+        display: grid;
+        gap: 12px;
+        padding: 18px;
+        border-radius: 16px;
+        background: linear-gradient(135deg, #fdfbf7 0%, #eef6ec 100%);
+        border: 1px solid var(--border);
+        box-shadow: 0 10px 24px rgba(32, 74, 48, 0.08);
+      }
+
+      .id-card.highlight {
+        border-color: #86c79b;
+        box-shadow: 0 18px 40px rgba(33, 85, 52, 0.22);
+      }
+
+      .id-card h3 {
+        margin: 0;
+        font-size: 16px;
+        letter-spacing: 0.4px;
+        text-transform: uppercase;
+        color: var(--brand-dark);
+      }
+
+      .verification-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 12px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.4px;
+        text-transform: uppercase;
+        background: #e6f6eb;
+        color: var(--brand-dark);
+        border: 1px solid #9dd7b0;
+        justify-self: start;
+      }
+
+      .verification-badge svg {
+        width: 14px;
+        height: 14px;
+      }
+
+      .verification-badge.hidden {
+        display: none;
+      }
+
+      .id-grid {
+        display: grid;
+        gap: 12px;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      }
+
+      .id-field span {
+        display: block;
+        font-size: 12px;
+        color: var(--muted);
+        margin-bottom: 4px;
+      }
+
+      .id-field strong {
+        font-size: 16px;
+        font-weight: 600;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Farajaland Health Services</h1>
+      <p>Verify printed birth credentials by scanning the QR code.</p>
+    </header>
+
+    <main>
+      <section class="card">
+        <h2>Camera Scanner</h2>
+        <p class="muted">
+          Start camera and point it at the certificate QR. Verification runs
+          automatically.
+        </p>
+        <p id="cameraStatus" class="status">Camera idle.</p>
+        <p id="error" class="warning"></p>
+        <div class="actions">
+          <button id="startCamera">Start Camera Scan</button>
+          <button id="stopCamera" style="background: #6f7f74" disabled>
+            Stop Camera
+          </button>
+        </div>
+        <video id="camera" playsinline muted></video>
+      </section>
+
+      <section class="card" style="grid-column: 1 / 3">
+        <h2>Verified ID Card</h2>
+        <div class="id-card-wrapper">
+          <div class="id-card" id="idCard">
+            <h3>Farajaland Health Services</h3>
+            <div id="verificationBadge" class="verification-badge hidden">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path
+                  d="M20 7.5L10.75 18 4 11.5"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              Verified
+            </div>
+            <div class="id-grid">
+              <div class="id-field">
+                <span>Given name</span>
+                <strong id="idGivenName">-</strong>
+              </div>
+              <div class="id-field">
+                <span>Family name</span>
+                <strong id="idFamilyName">-</strong>
+              </div>
+              <div class="id-field">
+                <span>Date of birth</span>
+                <strong id="idBirthdate">-</strong>
+              </div>
+              <div class="id-field">
+                <span>Registration number</span>
+                <strong id="idRegistrationNumber">-</strong>
+              </div>
+              <div class="id-field">
+                <span>Credential ID</span>
+                <strong id="idCredentialId">-</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+    <script>
+      const publicJwk = {
+        kty: 'EC',
+        crv: 'P-256',
+        x: 'AaHi6zid20drjPgMtiwnluW5Dt2wZK25QqFgpgcKYOo',
+        y: 'Ar7ijcnX1Z2jujYP_zTFeZizO5rLLsNPHQ_UAzVy5eg',
+        ext: true,
+        key_ops: ['verify']
+      }
+
+      function base64urlToBytes(input) {
+        const base64 = input.replace(/-/g, '+').replace(/_/g, '/')
+        const pad = '='.repeat((4 - (base64.length % 4)) % 4)
+        const decoded = atob(base64 + pad)
+        const bytes = new Uint8Array(decoded.length)
+
+        for (let i = 0; i < decoded.length; i += 1) {
+          bytes[i] = decoded.charCodeAt(i)
+        }
+
+        return bytes
+      }
+
+      function base64urlToJson(input) {
+        const bytes = base64urlToBytes(input)
+        const text = new TextDecoder().decode(bytes)
+        return JSON.parse(text)
+      }
+
+      function setIdField(element, value) {
+        element.textContent = value && String(value).trim() ? value : '-'
+      }
+
+      function formatBirthDate(value) {
+        if (!value || !String(value).trim()) {
+          return null
+        }
+
+        const text = String(value).trim()
+
+        if (/^\d{4}-\d{2}-\d{2}$/.test(text)) {
+          return text
+        }
+
+        const parsed = new Date(text)
+
+        if (Number.isNaN(parsed.getTime())) {
+          return text
+        }
+
+        return parsed.toISOString().slice(0, 10)
+      }
+
+      function setVerifiedState(valid) {
+        if (valid) {
+          idCardEl.classList.add('highlight')
+          badgeEl.classList.remove('hidden')
+          return
+        }
+
+        idCardEl.classList.remove('highlight')
+        badgeEl.classList.add('hidden')
+      }
+
+      function clearCard() {
+        setIdField(idGivenNameEl, null)
+        setIdField(idFamilyNameEl, null)
+        setIdField(idBirthdateEl, null)
+        setIdField(idRegistrationNumberEl, null)
+        setIdField(idCredentialIdEl, null)
+        setVerifiedState(false)
+      }
+
+      async function verifyJwt(token) {
+        const parts = token.trim().replace(/^"|"$/g, '').split('.')
+
+        if (parts.length !== 3) {
+          throw new Error('Expected JWT with 3 parts')
+        }
+
+        const [header, payload, signature] = parts
+        const parsedHeader = base64urlToJson(header)
+        const parsedPayload = base64urlToJson(payload)
+
+        if (parsedHeader.alg !== 'ES256') {
+          throw new Error(`Unsupported alg: ${parsedHeader.alg || 'unknown'}`)
+        }
+
+        const key = await crypto.subtle.importKey(
+          'jwk',
+          publicJwk,
+          {
+            name: 'ECDSA',
+            namedCurve: 'P-256'
+          },
+          false,
+          ['verify']
+        )
+
+        const encoder = new TextEncoder()
+        const signingInput = encoder.encode(`${header}.${payload}`)
+        const signatureBytes = base64urlToBytes(signature)
+
+        const valid = await crypto.subtle.verify(
+          {
+            name: 'ECDSA',
+            hash: 'SHA-256'
+          },
+          key,
+          signatureBytes,
+          signingInput
+        )
+
+        return {
+          valid,
+          header: parsedHeader,
+          payload: parsedPayload
+        }
+      }
+
+      const startCameraBtn = document.getElementById('startCamera')
+      const stopCameraBtn = document.getElementById('stopCamera')
+      const cameraStatusEl = document.getElementById('cameraStatus')
+      const cameraVideoEl = document.getElementById('camera')
+      const errorEl = document.getElementById('error')
+      const idGivenNameEl = document.getElementById('idGivenName')
+      const idFamilyNameEl = document.getElementById('idFamilyName')
+      const idBirthdateEl = document.getElementById('idBirthdate')
+      const idRegistrationNumberEl = document.getElementById(
+        'idRegistrationNumber'
+      )
+      const idCredentialIdEl = document.getElementById('idCredentialId')
+      const idCardEl = document.getElementById('idCard')
+      const badgeEl = document.getElementById('verificationBadge')
+
+      let mediaStream = null
+      let scanFrame = null
+      const scanCanvas = document.createElement('canvas')
+      const scanContext = scanCanvas.getContext('2d', {
+        willReadFrequently: true
+      })
+
+      function setCameraStatus(text) {
+        cameraStatusEl.textContent = text
+      }
+
+      function setError(text) {
+        errorEl.textContent = text || ''
+      }
+
+      function stopCameraScan() {
+        if (scanFrame) {
+          cancelAnimationFrame(scanFrame)
+          scanFrame = null
+        }
+
+        if (mediaStream) {
+          mediaStream.getTracks().forEach((track) => track.stop())
+          mediaStream = null
+        }
+
+        cameraVideoEl.srcObject = null
+        cameraVideoEl.style.display = 'none'
+        startCameraBtn.disabled = false
+        stopCameraBtn.disabled = true
+      }
+
+      async function verifyAndRender(scannedToken) {
+        setError('')
+        setCameraStatus('Verifying credential...')
+
+        try {
+          const result = await verifyJwt(scannedToken)
+
+          if (!result.valid) {
+            clearCard()
+            setError('Invalid signature')
+            setCameraStatus('Invalid credential')
+            return
+          }
+
+          const payload = result.payload || {}
+          const vc = payload.vc || {}
+          const credentialTypes = [
+            ...(Array.isArray(vc.type) ? vc.type : []),
+            ...(Array.isArray(payload.type) ? payload.type : [])
+          ]
+
+          if (!credentialTypes.includes('birth_paper_v1')) {
+            throw new Error('Unsupported credential profile')
+          }
+
+          const subject =
+            vc.credentialSubject || payload.credentialSubject || {}
+
+          setIdField(idGivenNameEl, subject.given_name || subject.givenName)
+          setIdField(idFamilyNameEl, subject.family_name || subject.familyName)
+          setIdField(
+            idBirthdateEl,
+            formatBirthDate(subject.birthdate || subject.birth_date)
+          )
+          setIdField(
+            idRegistrationNumberEl,
+            subject.registration_number || subject.brn
+          )
+          setIdField(idCredentialIdEl, vc.id || payload.jti || payload.id)
+
+          setVerifiedState(true)
+          setCameraStatus('Credential verified')
+        } catch (error) {
+          clearCard()
+          setError(error.message || 'Verification failed')
+          setCameraStatus('Verification failed')
+        }
+      }
+
+      function looksLikeJwt(text) {
+        return text.split('.').length === 3
+      }
+
+      function scanLoop() {
+        if (
+          !mediaStream ||
+          !cameraVideoEl.videoWidth ||
+          !cameraVideoEl.videoHeight
+        ) {
+          scanFrame = requestAnimationFrame(scanLoop)
+          return
+        }
+
+        scanCanvas.width = cameraVideoEl.videoWidth
+        scanCanvas.height = cameraVideoEl.videoHeight
+        scanContext.drawImage(
+          cameraVideoEl,
+          0,
+          0,
+          scanCanvas.width,
+          scanCanvas.height
+        )
+
+        const imageData = scanContext.getImageData(
+          0,
+          0,
+          scanCanvas.width,
+          scanCanvas.height
+        )
+
+        const result = jsQR(imageData.data, imageData.width, imageData.height)
+
+        if (result?.data) {
+          const scannedText = result.data.trim().replace(/^"|"$/g, '')
+
+          if (looksLikeJwt(scannedText)) {
+            setCameraStatus('QR detected. Token captured.')
+            stopCameraScan()
+            verifyAndRender(scannedText)
+            return
+          }
+
+          setCameraStatus('QR detected, but it is not a JWT token.')
+        }
+
+        scanFrame = requestAnimationFrame(scanLoop)
+      }
+
+      async function startCameraScan() {
+        if (!navigator.mediaDevices?.getUserMedia) {
+          setCameraStatus('Camera API not supported in this browser.')
+          return
+        }
+
+        try {
+          setError('')
+          setCameraStatus('Starting camera...')
+          mediaStream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: 'environment' },
+            audio: false
+          })
+
+          cameraVideoEl.srcObject = mediaStream
+          cameraVideoEl.style.display = 'block'
+          await cameraVideoEl.play()
+
+          startCameraBtn.disabled = true
+          stopCameraBtn.disabled = false
+          setCameraStatus('Scanning for QR code...')
+          scanLoop()
+        } catch (error) {
+          clearCard()
+          setCameraStatus(error.message || 'Unable to start camera.')
+          stopCameraScan()
+        }
+      }
+
+      startCameraBtn.addEventListener('click', startCameraScan)
+      stopCameraBtn.addEventListener('click', () => {
+        stopCameraScan()
+        setCameraStatus('Camera stopped.')
+      })
+
+      window.addEventListener('beforeunload', stopCameraScan)
+    </script>
+  </body>
+</html>

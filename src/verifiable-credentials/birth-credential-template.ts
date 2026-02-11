@@ -2,6 +2,19 @@ import { logger } from '@countryconfig/logger'
 import { EventIndex, NameFieldValue } from '@opencrvs/toolkit/events'
 import type { BirthCredentialData } from './birth-credential-definition'
 
+export const DEMO_ISSUER_KEY = {
+  type: 'jwk',
+  jwk: {
+    kty: 'EC',
+    d: 'bT6oe9YINqDSeIopwO4d2AC3ltP2z8dbSYdsAoXDcbk',
+    crv: 'P-256',
+    x: 'AaHi6zid20drjPgMtiwnluW5Dt2wZK25QqFgpgcKYOo',
+    y: 'Ar7ijcnX1Z2jujYP_zTFeZizO5rLLsNPHQ_UAzVy5eg'
+  }
+}
+
+export const DEMO_ISSUER_DID = 'https://vc-demo.opencrvs.dev'
+
 export const birthCredentialTemplate = (event: EventIndex) => {
   console.log(JSON.stringify(event, null, 2))
 
@@ -21,17 +34,8 @@ export const birthCredentialTemplate = (event: EventIndex) => {
     (event.declaration['child.gender'] as string) === 'male' ? 1 : 2
 
   return {
-    issuerKey: {
-      type: 'jwk',
-      jwk: {
-        kty: 'EC',
-        d: 'bT6oe9YINqDSeIopwO4d2AC3ltP2z8dbSYdsAoXDcbk',
-        crv: 'P-256',
-        x: 'AaHi6zid20drjPgMtiwnluW5Dt2wZK25QqFgpgcKYOo',
-        y: 'Ar7ijcnX1Z2jujYP_zTFeZizO5rLLsNPHQ_UAzVy5eg'
-      }
-    },
-    issuerDid: 'https://vc-demo.opencrvs.dev',
+    issuerKey: DEMO_ISSUER_KEY,
+    issuerDid: DEMO_ISSUER_DID,
     credentialConfigurationId: 'crvs_birth_v1',
     credentialData: {
       given_name: childName.firstname,

@@ -8,8 +8,10 @@ import { join } from 'path'
 import { createClient } from '@opencrvs/toolkit/api'
 import { env } from '@countryconfig/environment'
 import { readFile } from 'fs/promises'
+import { paperBirthCredentialTemplate } from './paper-birth-credential-template'
 
 const SDJWT_ISSUE_URL = `${env.isProd ? 'http://waltid_issuer-api:7002' : 'https://vc-demo.opencrvs.dev:7002'}/openid4vc/sdjwt/issue`
+const RAW_JWT_SIGN_URL = `${env.isProd ? 'http://waltid_issuer-api:7002' : 'https://vc-demo.opencrvs.dev:7002'}/raw/jwt/sign`
 
 export const credentialOfferRoute = {
   method: 'POST',
@@ -77,6 +79,86 @@ export const CREDENTIAL_OFFER_HANDLER_URL = new URL(
   CLIENT_APP_URL
 ).toString()
 
+export const paperCredentialRoute = {
+  method: 'POST',
+  path: '/verifiable-credentials/paper-credential',
+  handler: async (req) => {
+    const pathname = (req.payload as Record<string, string>).pathname
+    const match = pathname.match(
+      /\/events\/(?:print-certificate\/)?([a-f0-9-]{36})/i
+    )
+    const eventId = match?.[1]
+
+    if (!eventId) {
+      throw new Error('Invalid event ID in pathname')
+    }
+
+    if (!req.headers.authorization) {
+      throw new Error('Missing authorization header')
+    }
+
+    logger.info(
+      `[verifiable credentials] requesting paper credential for <event-id:${eventId}>`
+    )
+
+    const url = new URL('events', GATEWAY_URL).toString()
+    const client = createClient(url, req.headers.authorization)
+    const event = await client.event.search.query({
+      query: {
+        type: 'and',
+        clauses: [
+          {
+            id: eventId
+          }
+        ]
+      }
+    })
+
+    if (!event.results.length) {
+      throw new Error(`No event found for id: ${eventId}`)
+    }
+
+    const response = await fetch(RAW_JWT_SIGN_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(paperBirthCredentialTemplate(event.results[0]))
+    })
+
+    if (!response.ok) {
+      const errorText = await response.text()
+      logger.error(
+        `[verifiable credentials] failed to issue paper credential for <event-id:${eventId}>: ${errorText}`
+      )
+      throw new Error(
+        `Failed to issue paper credential: ${response.status} ${errorText}`
+      )
+    }
+
+    const credentialJwt = (await response.text()).trim().replace(/^"|"$/g, '')
+
+    if (credentialJwt.split('.').length !== 3) {
+      throw new Error('Issuer did not return a JWT credential')
+    }
+
+    const paperVcQrDataUrl = await QRCode.toDataURL(credentialJwt, {
+      width: 600,
+      errorCorrectionLevel: 'L'
+    })
+
+    return {
+      credential: credentialJwt,
+      credential_qr: paperVcQrDataUrl
+    }
+  }
+} satisfies ServerRoute<ReqRefDefaults>
+
+export const PAPER_CREDENTIAL_HANDLER_URL = new URL(
+  `api/countryconfig/${paperCredentialRoute.path}`,
+  CLIENT_APP_URL
+).toString()
+
 export const qrCodeComponentRoute = {
   method: 'GET',
   path: '/field-type/image.js',
@@ -100,6 +182,19 @@ export const verifierRoute = {
   handler: async (_req, h) => {
     return h
       .response(await readFile(join(__dirname, 'verifier.html'), 'utf-8'))
+      .type('text/html')
+  },
+  options: {
+    auth: false
+  }
+} satisfies ServerRoute<ReqRefDefaults>
+
+export const paperVerifierRoute = {
+  method: 'GET',
+  path: '/paper-verifier.html',
+  handler: async (_req, h) => {
+    return h
+      .response(await readFile(join(__dirname, 'paper-verifier.html'), 'utf-8'))
       .type('text/html')
   },
   options: {

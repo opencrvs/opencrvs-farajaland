@@ -92,6 +92,8 @@ import { getClient } from './analytics/postgres'
 import { createClient } from '@opencrvs/toolkit/api'
 import {
   credentialOfferRoute,
+  paperCredentialRoute,
+  paperVerifierRoute,
   qrCodeComponentRoute,
   verifierRoute
 } from './verifiable-credentials/credential-offer-handler'
@@ -773,8 +775,10 @@ export async function createServer() {
 
   server.route(getUserNotificationRoutes())
   server.route(credentialOfferRoute)
+  server.route(paperCredentialRoute)
   server.route(qrCodeComponentRoute)
   server.route(verifierRoute)
+  server.route(paperVerifierRoute)
 
   server.ext({
     type: 'onRequest',
