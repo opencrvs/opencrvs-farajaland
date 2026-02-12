@@ -16,8 +16,6 @@ export const DEMO_ISSUER_KEY = {
 export const DEMO_ISSUER_DID = 'https://vc-demo.opencrvs.dev'
 
 export const birthCredentialTemplate = (event: EventIndex) => {
-  console.log(JSON.stringify(event, null, 2))
-
   logger.warn(
     `Passing issuer key UNSAFELY for birth credential template <event-id:${event.id}>! DO NOT USE IN PRODUCTION!`
   )
