@@ -219,6 +219,12 @@ export async function createServer() {
     }
   })
 
+
+  // If these are not here, the streaming pipeline for /reindex
+  // will be killed after 30 seconds, which is the default timeout for node.js HTTP server.
+  server.listener.requestTimeout = 0
+  server.listener.headersTimeout = 0
+
   await server.register(getPlugins())
 
   let publicKey = await getPublicKey()
@@ -622,7 +628,9 @@ export async function createServer() {
       auth: false,
       payload: {
         output: 'stream',
-        parse: false
+        parse: false,
+        maxBytes: Number.MAX_SAFE_INTEGER,
+        timeout: false
       }
     },
     handler: async (req, h) => {
@@ -649,12 +657,14 @@ export async function createServer() {
             queue.push(value)
 
             if (queue.length >= BATCH_SIZE) {
+              logger.info(`Importing batch of ${queue.length} events...`)
               const batch = queue.splice(0, queue.length)
               await importEvents(batch, trx)
             }
           }
 
           if (queue.length > 0) {
+            logger.info(`Importing remaining ${queue.length} events...`)
             await importEvents(queue, trx)
           }
 
