@@ -155,7 +155,7 @@ test.describe.serial(' Correct record - 3', () => {
         name: `${formatV2ChildName(declaration)}`,
         trackingId
       })
-      await page.getByText(formatV2ChildName(declaration)).click()
+
       await ensureAssigned(page)
 
       await page.getByRole('button', { name: 'Action' }).click()
@@ -945,7 +945,9 @@ test.describe.serial(' Correct record - 3', () => {
       })
       await ensureAssigned(page)
 
-      await expect(page.getByText(formatV2ChildName(declaration))).toBeVisible()
+      await expect(page.locator('#content-name')).toHaveText(
+        formatV2ChildName(declaration)
+      )
       await expect(
         page.locator('#summary').getByText('Registered')
       ).toBeVisible()
