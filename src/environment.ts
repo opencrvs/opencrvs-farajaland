@@ -15,7 +15,6 @@ export const env = cleanEnv(process.env, {
   GATEWAY_URL: url({ devDefault: 'http://localhost:7070' }),
   LOGIN_URL: url({ devDefault: 'http://localhost:3020/' }),
   CLIENT_APP_URL: url({ devDefault: 'http://localhost:3000/' }),
-  FHIR_URL: url({ devDefault: 'http://localhost:3447/fhir' }),
   COUNTRY_CONFIG_HOST: str({ default: '0.0.0.0' }),
   COUNTRY_CONFIG_PORT: port({ default: 3040 }),
   AUTH_URL: url({ devDefault: 'http://localhost:4040' }),
@@ -54,5 +53,15 @@ export const env = cleanEnv(process.env, {
     default: '',
     devDefault: '',
     desc: 'Comma separated list of URLs to forward action events to'
+  }),
+  SYSTEM_CLIENT_ID: str({
+    default: undefined,
+    devDefault: undefined,
+    desc: 'Client ID for system-to-system authentication on /api/ proxy endpoints'
+  }),
+  SYSTEM_CLIENT_SECRET: str({
+    default: undefined,
+    devDefault: undefined,
+    desc: 'Client secret for system-to-system authentication on /api/ proxy endpoints'
   })
 })

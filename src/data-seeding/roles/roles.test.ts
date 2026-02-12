@@ -31,7 +31,9 @@ describe('Roles config', () => {
           // Profile scopes
           scope.startsWith('profile.') ||
           // Config scopes
-          scope.startsWith('config.')
+          scope.startsWith('config.') ||
+          // Integration scopes
+          scope.startsWith('integration.')
         // Any other scopes should be manually added here
 
         if (!valid) {
@@ -51,10 +53,8 @@ describe('Roles config', () => {
     // Update this list if requirements change
     expect(rolesWithAudit.sort()).toEqual([
       'COMMUNITY_LEADER',
-      'HOSPITAL_CLERK',
-      'LOCAL_REGISTRAR',
-      'NATIONAL_REGISTRAR',
-      'REGISTRATION_AGENT'
+      'EMBASSY_OFFICIAL',
+      'HOSPITAL_CLERK'
     ])
 
     const createRecordScope =

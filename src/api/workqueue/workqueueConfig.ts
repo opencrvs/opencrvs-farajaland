@@ -113,13 +113,7 @@ export const Workqueues = defineWorkqueues([
     query: {
       ...declaredInMyAdminArea,
       status: { type: 'exact', term: EventStatus.enum.DECLARED },
-      flags: {
-        noneOf: [
-          InherentFlags.REJECTED,
-          'validated',
-          'approval-required-for-late-registration'
-        ]
-      }
+      flags: { noneOf: [InherentFlags.REJECTED, 'validated'] }
     },
     actions: [{ type: ActionType.READ }],
     columns: [
@@ -208,7 +202,10 @@ export const Workqueues = defineWorkqueues([
     query: {
       ...declaredInMyAdminArea,
       status: { type: 'exact', term: EventStatus.enum.DECLARED },
-      flags: { anyOf: ['approval-required-for-late-registration'] }
+      flags: {
+        anyOf: ['approval-required-for-late-registration'],
+        noneOf: [InherentFlags.POTENTIAL_DUPLICATE]
+      }
     },
     actions: [{ type: ActionType.READ }]
   },
@@ -225,7 +222,10 @@ export const Workqueues = defineWorkqueues([
       status: { type: 'exact', term: EventStatus.enum.DECLARED },
       flags: {
         anyOf: ['validated'],
-        noneOf: ['approval-required-for-late-registration']
+        noneOf: [
+          'approval-required-for-late-registration',
+          InherentFlags.POTENTIAL_DUPLICATE
+        ]
       }
     },
     actions: [{ type: ActionType.READ }],
