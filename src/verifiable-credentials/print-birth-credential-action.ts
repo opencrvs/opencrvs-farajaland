@@ -6,7 +6,7 @@ import {
   never,
   FieldConfig
 } from '@opencrvs/toolkit/events'
-import { PAPER_CREDENTIAL_HANDLER_URL } from './credential-offer-handler'
+import { PAPER_CREDENTIAL_HANDLER_URL } from '../config/routes/verifiableCredentialRoutes'
 
 /**
  * These fields will be included in print certificate action form as hidden. The credential will be minted before printing.

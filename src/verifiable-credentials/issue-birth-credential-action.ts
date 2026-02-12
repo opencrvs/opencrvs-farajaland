@@ -10,7 +10,7 @@ import {
   window,
   status
 } from '@opencrvs/toolkit/events'
-import { CREDENTIAL_OFFER_HANDLER_URL } from './credential-offer-handler'
+import { CREDENTIAL_OFFER_HANDLER_URL } from '../config/routes/verifiableCredentialRoutes'
 import { COUNTRY_CONFIG_URL } from '@countryconfig/constants'
 
 const qrGenerated = not(

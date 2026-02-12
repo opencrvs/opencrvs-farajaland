@@ -80,6 +80,7 @@ import {
 import { env } from './environment'
 import { workqueueconfigHandler } from './api/workqueue/handler'
 import getUserNotificationRoutes from './config/routes/userNotificationRoutes'
+import getVerifiableCredentialRoutes from './config/routes/verifiableCredentialRoutes'
 import {
   importAdministrativeAreas,
   importEvent,
@@ -90,13 +91,6 @@ import {
 } from './analytics/analytics'
 import { getClient } from './analytics/postgres'
 import { createClient } from '@opencrvs/toolkit/api'
-import {
-  credentialOfferRoute,
-  paperCredentialRoute,
-  paperVerifierRoute,
-  qrCodeComponentRoute,
-  verifierRoute
-} from './verifiable-credentials/credential-offer-handler'
 
 export interface ITokenPayload {
   sub: string
@@ -774,11 +768,7 @@ export async function createServer() {
   })
 
   server.route(getUserNotificationRoutes())
-  server.route(credentialOfferRoute)
-  server.route(paperCredentialRoute)
-  server.route(qrCodeComponentRoute)
-  server.route(verifierRoute)
-  server.route(paperVerifierRoute)
+  server.route(getVerifiableCredentialRoutes())
 
   server.ext({
     type: 'onRequest',

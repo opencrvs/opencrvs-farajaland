@@ -1,14 +1,14 @@
 import { CLIENT_APP_URL, GATEWAY_URL } from '@countryconfig/constants'
-import { logger } from '@countryconfig/logger'
-import { ServerRoute, ReqRefDefaults } from '@hapi/hapi'
-import { birthCredentialTemplate } from './birth-credential-template'
-import QRCode from 'qrcode'
-import { buildTypeScriptToJavaScript } from '@countryconfig/utils'
-import { join } from 'path'
-import { createClient } from '@opencrvs/toolkit/api'
 import { env } from '@countryconfig/environment'
+import { logger } from '@countryconfig/logger'
+import { buildTypeScriptToJavaScript } from '@countryconfig/utils'
+import { ServerRoute, ReqRefDefaults } from '@hapi/hapi'
+import { createClient } from '@opencrvs/toolkit/api'
+import QRCode from 'qrcode'
+import { join } from 'path'
 import { readFile } from 'fs/promises'
-import { paperBirthCredentialTemplate } from './paper-birth-credential-template'
+import { birthCredentialTemplate } from '../../verifiable-credentials/birth-credential-template'
+import { paperBirthCredentialTemplate } from '../../verifiable-credentials/paper-birth-credential-template'
 
 const SDJWT_ISSUE_URL = `${env.isProd ? 'http://waltid_issuer-api:7002' : 'https://vc-demo.opencrvs.dev:7002'}/openid4vc/sdjwt/issue`
 const RAW_JWT_SIGN_URL = `${env.isProd ? 'http://waltid_issuer-api:7002' : 'https://vc-demo.opencrvs.dev:7002'}/raw/jwt/sign`
@@ -72,12 +72,6 @@ export const credentialOfferRoute = {
     }
   }
 } satisfies ServerRoute<ReqRefDefaults>
-
-/** The url to the above handler. FieldType.HTTP uses to fetch the credential offer from here in the form */
-export const CREDENTIAL_OFFER_HANDLER_URL = new URL(
-  `api/countryconfig/${credentialOfferRoute.path}`,
-  CLIENT_APP_URL
-).toString()
 
 export const paperCredentialRoute = {
   method: 'POST',
@@ -154,11 +148,6 @@ export const paperCredentialRoute = {
   }
 } satisfies ServerRoute<ReqRefDefaults>
 
-export const PAPER_CREDENTIAL_HANDLER_URL = new URL(
-  `api/countryconfig/${paperCredentialRoute.path}`,
-  CLIENT_APP_URL
-).toString()
-
 export const qrCodeComponentRoute = {
   method: 'GET',
   path: '/field-type/image.js',
@@ -166,7 +155,7 @@ export const qrCodeComponentRoute = {
     return h
       .response(
         await buildTypeScriptToJavaScript(
-          join(__dirname, 'field-type-image.tsx')
+          join(__dirname, '../../verifiable-credentials/field-type-image.tsx')
         )
       )
       .type('text/javascript')
@@ -181,7 +170,12 @@ export const verifierRoute = {
   path: '/verifier.html',
   handler: async (_req, h) => {
     return h
-      .response(await readFile(join(__dirname, 'verifier.html'), 'utf-8'))
+      .response(
+        await readFile(
+          join(__dirname, '../../verifiable-credentials/verifier.html'),
+          'utf-8'
+        )
+      )
       .type('text/html')
   },
   options: {
@@ -194,10 +188,36 @@ export const paperVerifierRoute = {
   path: '/paper-verifier.html',
   handler: async (_req, h) => {
     return h
-      .response(await readFile(join(__dirname, 'paper-verifier.html'), 'utf-8'))
+      .response(
+        await readFile(
+          join(__dirname, '../../verifiable-credentials/paper-verifier.html'),
+          'utf-8'
+        )
+      )
       .type('text/html')
   },
   options: {
     auth: false
   }
 } satisfies ServerRoute<ReqRefDefaults>
+
+/** FieldType.HTTP uses this URL to fetch the credential offer from the form */
+export const CREDENTIAL_OFFER_HANDLER_URL = new URL(
+  `api/countryconfig/${credentialOfferRoute.path}`,
+  CLIENT_APP_URL
+).toString()
+
+export const PAPER_CREDENTIAL_HANDLER_URL = new URL(
+  `api/countryconfig/${paperCredentialRoute.path}`,
+  CLIENT_APP_URL
+).toString()
+
+export default function getVerifiableCredentialRoutes(): ServerRoute<ReqRefDefaults>[] {
+  return [
+    credentialOfferRoute,
+    paperCredentialRoute,
+    qrCodeComponentRoute,
+    verifierRoute,
+    paperVerifierRoute
+  ]
+}
