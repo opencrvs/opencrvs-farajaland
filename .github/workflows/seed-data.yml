@@ -27,6 +27,7 @@ on:
           - fix-analytics
           - mosip
           - openfn
+          - swarm-to-k8s
       core-image-tag:
         description: Core DockerHub image tag
         required: true
