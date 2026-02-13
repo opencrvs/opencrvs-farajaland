@@ -70,6 +70,7 @@ jobs:
         with:
           push: true
           context: .
+          sbom: false
           tags: |
             ${{ secrets.DOCKERHUB_ACCOUNT}}/${{ secrets.DOCKERHUB_REPO }}:${{ steps.country_config.outputs.version }}
 
