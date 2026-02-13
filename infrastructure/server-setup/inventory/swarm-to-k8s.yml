@@ -15,7 +15,7 @@ all:
         ssh_keys:
           - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJBcrSLLdrkLrhqNQi7Uo/ZIWXb1y4kc0vGb16e2s0Jq pyry@opencrvs.org
         state: present
-        sudoer: true
+        sudoer: false
       - name: tameem
         ssh_keys:
           - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGUprcQyUFYwRto0aRpgriR95C1pgNxrQ0lEWEe1D8he haidertameem@gmail.com
@@ -74,4 +74,21 @@ docker-manager-first:
       ansible_host: '46.224.251.95'
       data_label: data1
 
-docker-workers: {}
+docker-workers:
+  hosts:
+    farajaland-prod-2:
+      ansible_host: '49.13.124.87'
+      data_label: data2
+    farajaland-prod-3:
+      ansible_host: '149.13.124.87'
+      data_label: data3
+    farajaland-prod-4:
+      ansible_host: '249.13.124.87'
+      data_label: data4
+backups:
+  hosts:
+    farajaland-backup:
+      ansible_host: '188.245.61.69'
+      # Written by provision pipeline. Assumes "backup" environment
+      # exists in Github environments
+      ansible_ssh_private_key_file: /tmp/backup_ssh_private_key
