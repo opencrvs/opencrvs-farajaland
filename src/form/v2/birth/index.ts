@@ -31,8 +31,8 @@ import { Event } from '@countryconfig/form/types/types'
 import { BIRTH_CERTIFICATE_COLLECTOR_FORM } from './forms/printForm'
 import { PlaceOfBirth } from './forms/pages/child'
 import { CORRECTION_FORM } from './forms/correctionForm'
-import { dedupConfig } from './dedupConfig'
 import { applicationConfig } from '@countryconfig/api/application/application-config'
+import * as verifiableCredentialActions from '@countryconfig/verifiable-credentials/issue-birth-credential-action'
 
 export const birthEvent = defineConfig({
   id: Event.Birth,
@@ -119,6 +119,15 @@ export const birthEvent = defineConfig({
         description: 'Flag label for revoked'
       },
       requiresAction: true
+    },
+    {
+      id: 'vc-issued',
+      label: {
+        defaultMessage: 'Verifiable Credential issued',
+        description: 'Flag label for verifiable credential issued',
+        id: 'event.birth.flag.vc-issued'
+      },
+      requiresAction: false
     }
   ],
   summary: {
@@ -254,7 +263,8 @@ export const birthEvent = defineConfig({
     ActionType.REQUEST_CORRECTION,
     'REVOKE_REGISTRATION',
     'REINSTATE_REVOKE_REGISTRATION',
-    ActionType.UNASSIGN
+    ActionType.UNASSIGN,
+    'ISSUE_VERIFIABLE_CREDENTIAL'
   ],
   actions: [
     {
@@ -276,16 +286,16 @@ export const birthEvent = defineConfig({
         id: 'event.birth.action.declare.label'
       },
       review: BIRTH_DECLARATION_REVIEW,
-      deduplication: {
-        id: 'birth-deduplication',
-        label: {
-          defaultMessage: 'Detect duplicate',
-          description:
-            'This is shown as the action name anywhere the user can trigger the action from',
-          id: 'event.birth.action.detect-duplicate.label'
-        },
-        query: dedupConfig
-      },
+      // deduplication: {
+      //   id: 'birth-deduplication',
+      //   label: {
+      //     defaultMessage: 'Detect duplicate',
+      //     description:
+      //       'This is shown as the action name anywhere the user can trigger the action from',
+      //     id: 'event.birth.action.detect-duplicate.label'
+      //   },
+      //   query: dedupConfig
+      // },
       flags: [
         {
           id: 'approval-required-for-late-registration',
@@ -867,17 +877,17 @@ export const birthEvent = defineConfig({
             not(flag('escalated-to-registrar-general'))
           )
         }
-      ],
-      deduplication: {
-        id: 'birth-deduplication',
-        label: {
-          defaultMessage: 'Detect duplicate',
-          description:
-            'This is shown as the action name anywhere the user can trigger the action from',
-          id: 'event.birth.action.detect-duplicate.label'
-        },
-        query: dedupConfig
-      }
+      ]
+      // deduplication: {
+      //   id: 'birth-deduplication',
+      //   label: {
+      //     defaultMessage: 'Detect duplicate',
+      //     description:
+      //       'This is shown as the action name anywhere the user can trigger the action from',
+      //     id: 'event.birth.action.detect-duplicate.label'
+      //   },
+      //   query: dedupConfig
+      // }
     },
     {
       type: ActionType.PRINT_CERTIFICATE,
@@ -929,7 +939,8 @@ export const birthEvent = defineConfig({
           'Archiving will remove this declaration from active processing while retaining it for record purposes. Archived declarations cannot be modified unless reinstated.',
         description: 'Confirmation body for archiving a declaration'
       }
-    }
+    },
+    verifiableCredentialActions.issueBirthCredentialAction
   ],
   advancedSearch: advancedSearchBirth
 })

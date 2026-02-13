@@ -22,6 +22,7 @@ import { applicationConfig } from '@countryconfig/api/application/application-co
 import { printCertificateCollectors } from './collectors'
 import { printCertificateCollectorOther } from './collector-other'
 import { printCertificateCollectorIdentityVerify } from './collector-identity-verify'
+import { printBirthCredentialActionFields } from '@countryconfig/verifiable-credentials/print-birth-credential-action'
 
 export const BIRTH_CERTIFICATE_COLLECTOR_FORM = defineActionForm({
   label: {
@@ -253,7 +254,8 @@ export const BIRTH_CERTIFICATE_COLLECTOR_FORM = defineActionForm({
               }
             ]
           }
-        }
+        },
+        ...printBirthCredentialActionFields
       ]
     }
   ]
