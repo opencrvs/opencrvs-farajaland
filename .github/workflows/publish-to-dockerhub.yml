@@ -68,9 +68,9 @@ jobs:
       - name: Build and push countryconfig image
         uses: docker/build-push-action@v6
         with:
+          provenance: false
           push: true
           context: .
-          sbom: false
           tags: |
             ${{ secrets.DOCKERHUB_ACCOUNT}}/${{ secrets.DOCKERHUB_REPO }}:${{ steps.country_config.outputs.version }}
 
