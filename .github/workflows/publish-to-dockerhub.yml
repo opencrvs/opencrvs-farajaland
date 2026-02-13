@@ -77,6 +77,7 @@ jobs:
       - name: Build and push assets image
         uses: docker/build-push-action@v6
         with:
+          provenance: false
           push: true
           context: .
           file: ./Dockerfile.assets
