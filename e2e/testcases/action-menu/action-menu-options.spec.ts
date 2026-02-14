@@ -27,7 +27,7 @@ test.describe('Action menu options', () => {
     await page.close()
   })
 
-  test.describe('Event status: DECLARED', async () => {
+  test.describe('Event status: DECLARED', () => {
     let declaration: Declaration
 
     test.beforeAll(async () => {
@@ -66,7 +66,7 @@ test.describe('Action menu options', () => {
     })
   })
 
-  test.describe('Event status: DECLARED and flag: validated', async () => {
+  test.describe('Event status: DECLARED and flag: validated', () => {
     let declaration: Declaration
 
     test.beforeAll(async () => {
@@ -92,7 +92,7 @@ test.describe('Action menu options', () => {
     })
   })
 
-  test.describe('Event status: REGISTERED', async () => {
+  test.describe('Event status: REGISTERED', () => {
     let declaration: Declaration
 
     test.beforeAll(async () => {

@@ -11,7 +11,7 @@ describe('Roles config', () => {
       for (const scope of role.scopes) {
         expect(typeof scope).toBe('string')
 
-        const valid =
+        const validV1 =
           // Configurable search scopes
           scope.startsWith('type=record.search') ||
           // Legacyt search scopes
@@ -36,8 +36,11 @@ describe('Roles config', () => {
           scope.startsWith('integration.')
         // Any other scopes should be manually added here
 
-        if (!valid) {
-          throw new Error(`Invalid scope "${scope}" found in role ${role.id}`)
+        const validV2 = scope.startsWith('type=')
+        if (!validV1 && !validV2) {
+          throw new Error(
+            `${role.id}: Invalid scope "${scope}" found in role ${role.id}`
+          )
         }
       }
     }
@@ -68,6 +71,7 @@ describe('Roles config', () => {
     expect(rolesWithCreateRecord.sort()).toEqual([
       'COMMUNITY_LEADER',
       'EMBASSY_OFFICIAL',
+      'HEALTH_OFFICER',
       'HOSPITAL_CLERK',
       'LOCAL_REGISTRAR',
       'NATIONAL_REGISTRAR',
@@ -84,6 +88,7 @@ describe('Roles config', () => {
     expect(rolesWithWorkqueue.sort()).toEqual([
       'COMMUNITY_LEADER',
       'EMBASSY_OFFICIAL',
+      'HEALTH_OFFICER',
       'HOSPITAL_CLERK',
       'LOCAL_REGISTRAR',
       'NATIONAL_REGISTRAR',
