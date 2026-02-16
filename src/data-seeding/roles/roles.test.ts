@@ -31,7 +31,9 @@ describe('Roles config', () => {
           // Profile scopes
           scope.startsWith('profile.') ||
           // Config scopes
-          scope.startsWith('config.')
+          scope.startsWith('config.') ||
+          // Integration scopes
+          scope.startsWith('integration.')
         // Any other scopes should be manually added here
 
         const validV2 = scope.startsWith('type=')
@@ -69,7 +71,6 @@ describe('Roles config', () => {
     expect(rolesWithCreateRecord.sort()).toEqual([
       'COMMUNITY_LEADER',
       'EMBASSY_OFFICIAL',
-      'EMBASSY_OFFICIAL',
       'HEALTH_OFFICER',
       'HOSPITAL_CLERK',
       'LOCAL_REGISTRAR',
@@ -86,7 +87,6 @@ describe('Roles config', () => {
     // Update this list if requirements change
     expect(rolesWithWorkqueue.sort()).toEqual([
       'COMMUNITY_LEADER',
-      'EMBASSY_OFFICIAL',
       'EMBASSY_OFFICIAL',
       'HEALTH_OFFICER',
       'HOSPITAL_CLERK',

@@ -31,7 +31,6 @@ export const roles: Role[] = [
       'record.declared.edit[event=birth|death|tennis-club-membership]',
       'record.declared.reject[event=birth|death|tennis-club-membership]',
       'record.declared.archive[event=birth|death|tennis-club-membership]',
-      'record.declared.review-duplicates[event=birth|death|tennis-club-membership]',
       'record.registered.print-certified-copies[event=birth|death|tennis-club-membership]',
       'record.registered.request-correction[event=birth|death|tennis-club-membership]',
       'record.custom-action[event=birth,customActionType=VALIDATE_DECLARATION|ISSUE_CERTIFIED_COPY|ESCALATE]',
@@ -80,9 +79,9 @@ export const roles: Role[] = [
     scopes: [
       SCOPES.ORGANISATION_READ_LOCATIONS_MY_JURISDICTION,
       SCOPES.USER_CREATE_MY_JURISDICTION,
-      'user.create[role=HOSPITAL_CLERK|COMMUNITY_LEADER|REGISTRATION_AGENT|LOCAL_REGISTRAR]',
+      'user.create[role=HOSPITAL_CLERK|COMMUNITY_LEADER|REGISTRATION_AGENT|LOCAL_REGISTRAR|PROVINCIAL_REGISTRAR]',
+      'user.edit[role=HOSPITAL_CLERK|COMMUNITY_LEADER|REGISTRATION_AGENT|LOCAL_REGISTRAR|PROVINCIAL_REGISTRAR]',
       SCOPES.USER_UPDATE_MY_JURISDICTION,
-      'user.edit[role=HOSPITAL_CLERK|COMMUNITY_LEADER|REGISTRATION_AGENT|LOCAL_REGISTRAR]',
       SCOPES.USER_READ_MY_JURISDICTION
     ]
   },
@@ -97,13 +96,14 @@ export const roles: Role[] = [
       SCOPES.CONFIG_UPDATE_ALL,
       SCOPES.ORGANISATION_READ_LOCATIONS,
       SCOPES.USER_CREATE,
-      'user.create[role=HOSPITAL_CLERK|COMMUNITY_LEADER|REGISTRATION_AGENT|LOCAL_REGISTRAR|NATIONAL_REGISTRAR|LOCAL_SYSTEM_ADMIN|NATIONAL_SYSTEM_ADMIN|PERFORMANCE_MANAGER|PROVINCIAL_REGISTRAR]',
-      'user.edit[role=HOSPITAL_CLERK|COMMUNITY_LEADER|REGISTRATION_AGENT|LOCAL_REGISTRAR|NATIONAL_REGISTRAR|LOCAL_SYSTEM_ADMIN|NATIONAL_SYSTEM_ADMIN|PERFORMANCE_MANAGER|PROVINCIAL_REGISTRAR]',
+      'user.create[role=HOSPITAL_CLERK|COMMUNITY_LEADER|REGISTRATION_AGENT|LOCAL_REGISTRAR|NATIONAL_REGISTRAR|LOCAL_SYSTEM_ADMIN|NATIONAL_SYSTEM_ADMIN|PERFORMANCE_MANAGER|PROVINCIAL_REGISTRAR|EMBASSY_OFFICIAL]',
+      'user.edit[role=HOSPITAL_CLERK|COMMUNITY_LEADER|REGISTRATION_AGENT|LOCAL_REGISTRAR|NATIONAL_REGISTRAR|LOCAL_SYSTEM_ADMIN|NATIONAL_SYSTEM_ADMIN|PERFORMANCE_MANAGER|PROVINCIAL_REGISTRAR|EMBASSY_OFFICIAL]',
       SCOPES.USER_READ,
       SCOPES.USER_UPDATE,
       SCOPES.PERFORMANCE_READ,
       SCOPES.RECORD_REINDEX,
-      SCOPES.PERFORMANCE_READ_DASHBOARDS
+      SCOPES.PERFORMANCE_READ_DASHBOARDS,
+      SCOPES.INTEGRATION_CREATE
     ]
   },
   {
@@ -217,7 +217,7 @@ export const roles: Role[] = [
     label: {
       defaultMessage: 'Embassy Official',
       description: 'Name for user role Embassy Official',
-      id: 'userRole.embassyOffical'
+      id: 'userRole.embassyOfficial'
     },
     scopes: [
       SCOPES.USER_READ_ONLY_MY_AUDIT,
@@ -278,26 +278,6 @@ export const roles: Role[] = [
       id: 'userRole.LocalLeader'
     },
     scopes: []
-  },
-  {
-    // NOTE: This is 2.0  role configuration. It does not have the finalised scopes since all the features are not ready.
-    id: 'EMBASSY_OFFICIAL',
-    label: {
-      defaultMessage: 'Embassy official',
-      description: 'Name for user role Embassy official',
-      id: 'userRole.embassyOfficial'
-    },
-    scopes: [
-      'workqueue[id=assigned-to-you|recent|requires-updates-self|sent-for-review]',
-      'type=record.search&event=birth,death&declaredIn=location',
-      'record.read[event=birth|death|tennis-club-membership]',
-      `record.create[event=birth|death|tennis-club-membership]`,
-      'record.declare[event=birth|death]',
-      'record.declared.edit[event=birth|death]',
-      'record.custom-action[customActionType=ESCALATE,event=birth|death]',
-      'record.registered.print-certified-copies[event=birth|death]',
-      'record.registered.correct[event=birth|death]'
-    ]
   },
   {
     // NOTE: This is 2.0  role configuration. It does not have the finalised scopes since all the features are not ready.

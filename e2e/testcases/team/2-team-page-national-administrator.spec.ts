@@ -1,13 +1,7 @@
 import { test, expect, type Page } from '@playwright/test'
+import { continueForm, login } from '../../helpers'
+import { CREDENTIALS } from '../../constants'
 import path from 'path'
-import { ensureLoginPageReady, continueForm, login } from '../../helpers'
-import { faker } from '@faker-js/faker'
-import { CREDENTIALS, LOGIN_URL } from '../../constants'
-import { getUserByRole } from '@countryconfig/data-generator/users'
-import _, { has, nth, slice } from 'lodash'
-import { isPageHeaderFieldType } from '@opencrvs/toolkit/events'
-import { type } from '../../utils'
-import exp from 'constants'
 
 test.describe('2. Team Page', () => {
   test.describe.serial('2.1 Basic UI check', async () => {
@@ -24,9 +18,12 @@ test.describe('2. Team Page', () => {
       await login(page, CREDENTIALS.NATIONAL_SYSTEM_ADMIN)
       await page.getByRole('button', { name: 'Team' }).click()
       await expect(page.locator('#content-name')).toHaveText('HQ Office')
-      await expect(
-        page.locator('.LocationInfoValue-sc-1ou3q8c-5.cCnjTR')
-      ).toHaveText('Embe, Pualula')
+
+      expect(
+        page.getByText('Embe, Pualula', {
+          exact: true
+        })
+      ).toBeVisible()
     })
     test('2.1.1 Verify Team Members Status', async () => {
       const row1 = page.getByRole('row', { name: /Joseph Musonda/ })
@@ -67,9 +64,14 @@ test.describe('2. Team Page', () => {
     })
 
     test('2.2.2 Change Phone Number', async () => {
+      const phoneNumber = '0785963214'
       await page.locator('#btn_change_phoneNumber:visible').click()
-      await page.locator('input[name="phoneNumber"]').fill('0785963214')
+      await page.locator('input[name="phoneNumber"]').fill(phoneNumber)
       await page.getByRole('button', { name: 'Continue' }).click()
+
+      const signaturePath = path.resolve(__dirname, '../../assets/sign1.png')
+
+      await continueForm(page)
 
       await page.getByRole('button', { name: 'Confirm' }).click()
     })

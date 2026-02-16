@@ -49,11 +49,15 @@ function getInformantDetails(
 
 export async function getPlaceOfBirth(
   type: 'PRIVATE_HOME' | 'HEALTH_FACILITY',
-  token: string
+  token: string,
+  name?: string
 ) {
   if (type === 'HEALTH_FACILITY') {
     const locations = await getLocations('HEALTH_FACILITY', token)
-    const locationId = getIdByName(locations, 'Ibombo Rural Health Centre')
+    const locationId = getIdByName(
+      locations,
+      name ?? 'Ibombo Rural Health Centre'
+    )
 
     return {
       'child.placeOfBirth': 'HEALTH_FACILITY',
@@ -63,7 +67,7 @@ export async function getPlaceOfBirth(
 
   if (type === 'PRIVATE_HOME') {
     const administrativeAreas = await getAdministrativeAreas(token)
-    const province = getIdByName(administrativeAreas, 'Central')
+
     const district = getIdByName(administrativeAreas, 'Ibombo')
 
     return {
@@ -91,7 +95,7 @@ export async function getDeclaration({
   token: string
 }) {
   const administrativeAreas = await getAdministrativeAreas(token)
-  const province = getIdByName(administrativeAreas, 'Central')
+
   const district = getIdByName(administrativeAreas, 'Ibombo')
 
   const mockDeclaration = {

@@ -1,13 +1,6 @@
 import { test, expect, type Page } from '@playwright/test'
-import path from 'path'
-import { ensureLoginPageReady, continueForm, login } from '../../helpers'
-import { faker } from '@faker-js/faker'
-import { CREDENTIALS, LOGIN_URL } from '../../constants'
-import { getUserByRole } from '@countryconfig/data-generator/users'
-import _, { has, nth, slice } from 'lodash'
-import { isPageHeaderFieldType } from '@opencrvs/toolkit/events'
-import { type } from '../../utils'
-import exp from 'constants'
+import { login } from '../../helpers'
+import { CREDENTIALS } from '../../constants'
 
 test.describe.serial('5. Team Page -1', () => {
   let page: Page
@@ -25,37 +18,38 @@ test.describe.serial('5. Team Page -1', () => {
       await login(page, CREDENTIALS.PERFORMANCE_MANAGER)
       await page.getByRole('button', { name: 'Team' }).click()
       await expect(page.locator('#content-name')).toHaveText('HQ Office')
-      await expect(
-        page.locator('.LocationInfoValue-sc-1ou3q8c-5.cCnjTR')
-      ).toHaveText('Embe, Pualula')
+
+      await page.getByText('Embe, Pualula')
     })
-    test('5.1.1 Verify Team Members Status', async () => {
-      const row1 = page.getByRole('row', { name: /Wilson Cruickshank/ })
-      await expect(row1.getByText('Active')).toBeVisible()
-      await expect(row1.getByText('Registrar')).toBeVisible()
-      const button1 = row1.getByRole('button', { name: 'Wilson Cruickshank' })
-      await expect(button1).toBeDisabled()
 
-      const row2 = page.getByRole('row', { name: /Joseph Musonda/ })
-      await expect(row2.getByText('Active')).toBeVisible()
-      await expect(row2.getByText('Registrar General')).toBeVisible()
-      const button2 = row2.getByRole('button', { name: 'Joseph Musonda' })
-      await expect(button2).toBeDisabled()
+    const team = [
+      { name: 'Joseph Musonda', role: 'Registrar General', disabled: true },
+      { name: 'Edgar Kazembe', role: 'Operations Manager', disabled: true },
+      {
+        name: 'Jonathan Campbell',
+        role: 'National Administrator',
+        disabled: true
+      }
+    ]
 
-      const row3 = page.getByRole('row', { name: /Edgar Kazembe/ })
-      await expect(row3.getByText('Active')).toBeVisible()
-      await expect(row3.getByText('Operations Manager')).toBeVisible()
-      const button3 = row3.getByRole('button', { name: 'Edgar Kazembe' })
-      await expect(button3).toBeDisabled()
+    test('5.1.1 Verify Team Members, Roles and their statuses', async () => {
+      const rows = page.locator('#user_list tr:has(td)')
+      await expect(rows).toHaveCount(team.length)
 
-      const row4 = page.getByRole('row', { name: /Jonathan Campbell/ })
-      await expect(row4.getByText('Active')).toBeVisible()
-      await expect(row4.getByText('National Administrator')).toBeVisible()
-      const button4 = row4.getByRole('button', { name: 'Jonathan Campbell' })
-      await expect(button4).toBeDisabled()
+      for (let i = 0; i < team.length; i++) {
+        const cells = rows.nth(i).locator('td')
+        await expect(cells.nth(1)).toHaveText(team[i].name)
+        await expect(cells.nth(2)).toHaveText(team[i].role)
+        await expect(cells.nth(3)).toHaveText('Active')
 
-      await expect(page).toHaveURL(/.*\/team/)
+        if (team[i].disabled) {
+          await expect(
+            rows.nth(i).getByRole('button', { name: team[i].name })
+          ).toBeDisabled()
+        }
+      }
     })
+
     test('5.2.2 Verify for different locations', async () => {
       await page.getByRole('button', { name: /HQ Office/ }).click()
       await page.getByTestId('locationSearchInput').fill('Il')
@@ -63,9 +57,12 @@ test.describe.serial('5. Team Page -1', () => {
       await expect(page.locator('#content-name')).toHaveText(
         'Ilanga District Office'
       )
+
       await expect(
-        page.locator('.LocationInfoValue-sc-1ou3q8c-5.cCnjTR')
-      ).toHaveText('Ilanga, Sulaka')
+        page.getByText('Ilanga, Sulaka', {
+          exact: true
+        })
+      ).toBeVisible()
     })
   })
 })

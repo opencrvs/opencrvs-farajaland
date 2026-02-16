@@ -1,13 +1,6 @@
 import { test, expect, type Page } from '@playwright/test'
-import path from 'path'
-import { ensureLoginPageReady, continueForm, login } from '../../helpers'
-import { faker } from '@faker-js/faker'
-import { CREDENTIALS, LOGIN_URL } from '../../constants'
-import { getUserByRole } from '@countryconfig/data-generator/users'
-import _, { has, nth, slice } from 'lodash'
-import { isPageHeaderFieldType } from '@opencrvs/toolkit/events'
-import { type } from '../../utils'
-import exp from 'constants'
+import { login } from '../../helpers'
+import { CREDENTIALS } from '../../constants'
 test.describe.serial('6. Organisation Page -1', () => {
   let page: Page
 
@@ -25,7 +18,7 @@ test.describe.serial('6. Organisation Page -1', () => {
       await expect(page.locator('#content-name')).toHaveText('Organisation')
       await expect(page.getByText('Farajaland', { exact: true })).toBeVisible()
     })
-    test('6.1.1 Verify Province-> Distric -> Health Facility(No Data)', async () => {
+    test('6.1.1 Verify Province -> District -> Health Facility(No Data)', async () => {
       await page.getByRole('button', { name: /Central/ }).click()
       await page.getByRole('button', { name: /Ezhi/ }).click()
       const pageNavigator = page.getByRole('button', { name: '3', exact: true })
@@ -36,7 +29,7 @@ test.describe.serial('6. Organisation Page -1', () => {
         page.getByRole('button', { name: /Nthonkho Rural Health Centre/ })
       ).toBeDisabled()
     })
-    test('6.1.2 Verify Province-> Distric -> District Office(No Data)', async () => {
+    test('6.1.2 Verify Province -> District -> District Office(No Data)', async () => {
       for (let i = 0; i < 3; i++) {
         await page.goBack()
       }
@@ -48,7 +41,7 @@ test.describe.serial('6. Organisation Page -1', () => {
         page.getByRole('button', { name: /Chishi Rural Health Centre/ })
       ).toBeDisabled()
     })
-    test('6.1.3 Verify Province-> Distric -> District Office', async () => {
+    test('6.1.3 Verify Province -> District -> District Office', async () => {
       for (let i = 0; i < 2; i++) {
         await page.goBack()
       }
@@ -78,22 +71,22 @@ test.describe.serial('6. Organisation Page -1', () => {
       const row1 = page.getByRole('row', { name: /Mitchell Owen/ })
       await expect(row1.getByText('Active')).toBeVisible()
       const button1 = row1.getByRole('button', { name: 'Mitchell Owen' })
-      await expect(button1).toBeDisabled()
+      await expect(button1).toBeEnabled()
 
       const row2 = page.getByRole('row', { name: /Emmanuel Mayuka/ })
       await expect(row2.getByText('Active')).toBeVisible()
       const button2 = row2.getByRole('button', { name: 'Emmanuel Mayuka' })
-      await expect(button2).toBeDisabled()
+      await expect(button2).toBeEnabled()
 
       const row3 = page.getByRole('row', { name: /Kennedy Mweene/ })
       await expect(row3.getByText('Active')).toBeVisible()
       const button3 = row3.getByRole('button', { name: 'Kennedy Mweene' })
-      await expect(button3).toBeDisabled()
+      await expect(button3).toBeEnabled()
 
       const row5 = page.getByRole('row', { name: /Kalusha Bwalya/ })
       await expect(row5.getByText('Active')).toBeVisible()
       const button5 = row5.getByRole('button', { name: 'Kalusha Bwalya' })
-      await expect(button5).toBeDisabled()
+      await expect(button5).toBeEnabled()
 
       const row4 = page.getByRole('row', { name: /Felix Katongo/ })
       await expect(row4.getByText('Active')).toBeVisible()

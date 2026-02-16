@@ -20,13 +20,11 @@ export async function validateAddress(
   // selection is not rendered as part of the address.
   const addressWithoutGeographicalArea = omit(address, 'urbanOrRural')
 
-  await Promise.all(
-    Object.values(addressWithoutGeographicalArea).map(
-      (val) =>
-        typeof val === 'string' &&
-        expect(page.getByTestId(elementTestId).getByText(val)).toBeVisible()
-    )
-  )
+  for (const val of Object.values(addressWithoutGeographicalArea)) {
+    if (typeof val === 'string') {
+      await expect(page.getByTestId(elementTestId).getByText(val)).toBeVisible()
+    }
+  }
 }
 
 export async function fillDate(
