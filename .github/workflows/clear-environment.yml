@@ -24,6 +24,7 @@ on:
           - fix-analytics
           - mosip
           - openfn
+          - swarm-to-k8s
 jobs:
   reset-data:
     name: 'Reset data'
