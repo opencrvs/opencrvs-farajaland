@@ -57,7 +57,7 @@ test.describe
       'Title',
       'Event',
       'Date of Event',
-      'Validation requested',
+      'Last updated',
       ''
     ])
 
