@@ -137,6 +137,7 @@ test.describe('Action menu options', () => {
     })
 
     test('Registrar', async () => {
+      await login(page, CREDENTIALS.REGISTRAR)
       const options = await getActionMenuOptions(page, declaration)
       expect(options).toStrictEqual(['Assign', 'Escalate'])
     })
