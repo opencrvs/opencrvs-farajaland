@@ -35,7 +35,9 @@ test.describe.serial('1.Farajaland as location parent', () => {
       },
       token
     })
+
     name = formatV2ChildName(declaration)
+
     page = await browser.newPage()
   })
 
@@ -43,26 +45,24 @@ test.describe.serial('1.Farajaland as location parent', () => {
     await page.close()
   })
 
-  test('1.1. Health officer creates an incomplete declaration', async () => {
+  test('1.1.0 Health officer creates an incomplete declaration', async () => {
     token = await getToken(
       CREDENTIALS.HEALTH_OFFICER.USERNAME,
       CREDENTIALS.HEALTH_OFFICER.PASSWORD
     )
-    await createDeclaration(token, undefined, ActionType.NOTIFY)
+
+    await createDeclaration(token, declaration, ActionType.NOTIFY)
   })
 
-  test('1.2.1 Registrar in another administrative area should not find the declaration', async () => {
-    await login(page, CREDENTIALS.REGISTRAR)
-    // Try to search for the declaration with name. It should not be found.
+  test('1.1.1 Embassy official in another administrative area should not find the declaration', async () => {
+    await login(page, CREDENTIALS.EMBASSY_OFFICIAL)
 
     await searchFromSearchBar(page, name, false)
   })
 
-  test('1.2.2 Registrar general completes and registers', async () => {
+  test('1.1.2 Registrar general completes and registers', async () => {
     await login(page, CREDENTIALS.REGISTRAR_GENERAL)
-    // Try to search for the declaration with name. It should be found.
+
     await searchFromSearchBar(page, name, true)
   })
-
-  test('1.3 Print certified copies', async () => {})
 })
