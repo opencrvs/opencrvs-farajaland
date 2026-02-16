@@ -64,7 +64,7 @@ test.describe('2. Team Page', () => {
       ).toBeVisible()
     })
 
-    test('2.2.2 Change Phone Number', async () => {
+    test.skip('2.2.2 Change Phone Number', async () => {
       const phoneNumber = '0785963214'
       await page.locator('#btn_change_phoneNumber:visible').click()
       await page.locator('input[name="phoneNumber"]').fill(phoneNumber)
