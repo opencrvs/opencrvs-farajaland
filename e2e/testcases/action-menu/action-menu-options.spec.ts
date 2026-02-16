@@ -5,6 +5,7 @@ import { CREDENTIALS } from '../../constants'
 import { createDeclaration, Declaration } from '../test-data/birth-declaration'
 import { ActionType } from '@opencrvs/toolkit/events'
 import { formatV2ChildName } from '../birth/helpers'
+import { selectAction } from '../../utils'
 
 async function getActionMenuOptions(page: Page, declaration: Declaration) {
   await searchFromSearchBar(page, formatV2ChildName(declaration))
@@ -113,6 +114,38 @@ test.describe('Action menu options', () => {
         'Print',
         'Correct record'
       ])
+    })
+  })
+
+  test.describe.serial('Event status: ARCHIVED', async () => {
+    let declaration: Declaration
+
+    test.beforeAll(async () => {
+      const token = await getToken(
+        CREDENTIALS.REGISTRAR.USERNAME,
+        CREDENTIALS.REGISTRAR.PASSWORD
+      )
+      const res = await createDeclaration(token, undefined, ActionType.DECLARE)
+      declaration = res.declaration
+    })
+
+    test('Archive declaration', async () => {
+      await login(page, CREDENTIALS.REGISTRAR)
+      await searchFromSearchBar(page, formatV2ChildName(declaration))
+      await selectAction(page, 'Archive')
+      await page.getByRole('button', { name: 'Archive', exact: true }).click()
+    })
+
+    test('Registrar', async () => {
+      await login(page, CREDENTIALS.REGISTRAR)
+      const options = await getActionMenuOptions(page, declaration)
+      expect(options).toStrictEqual(['Assign', 'Escalate'])
+    })
+
+    test('Registration Officer', async () => {
+      await login(page, CREDENTIALS.REGISTRATION_OFFICER)
+      const options = await getActionMenuOptions(page, declaration)
+      expect(options).toStrictEqual(['Assign', 'Escalate'])
     })
   })
 })
