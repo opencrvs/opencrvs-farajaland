@@ -14,6 +14,7 @@ test.describe('2. Team Page', () => {
     test.afterAll(async () => {
       await page.close()
     })
+
     test('2.1.0 Verify UI', async () => {
       await login(page, CREDENTIALS.NATIONAL_SYSTEM_ADMIN)
       await page.getByRole('button', { name: 'Team' }).click()
@@ -25,6 +26,7 @@ test.describe('2. Team Page', () => {
         })
       ).toBeVisible()
     })
+
     test('2.1.1 Verify Team Members Status', async () => {
       const row1 = page.getByRole('row', { name: /Joseph Musonda/ })
       await expect(row1.getByText('Active')).toBeVisible()
