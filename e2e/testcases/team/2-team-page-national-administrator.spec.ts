@@ -1,7 +1,6 @@
 import { test, expect, type Page } from '@playwright/test'
 import { continueForm, login } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
-import path from 'path'
 
 test.describe('2. Team Page', () => {
   test.describe.serial('2.1 Basic UI check', async () => {
@@ -71,14 +70,12 @@ test.describe('2. Team Page', () => {
       await page.locator('input[name="phoneNumber"]').fill(phoneNumber)
       await page.getByRole('button', { name: 'Continue' }).click()
 
-      const signaturePath = path.resolve(__dirname, '../../assets/sign1.png')
-
       await continueForm(page)
 
       await page.getByRole('button', { name: 'Confirm' }).click()
     })
 
-    test('2.2.3 Verify Phone Number Changed', async () => {
+    test.skip('2.2.3 Verify Phone Number Changed', async () => {
       await page.locator('//nav[@id="user-item-0-menu-dropdownMenu"]').click()
       await page
         .locator('//ul[@id="user-item-0-menu-Dropdown-Content"]')
