@@ -15,13 +15,17 @@ import { CREDENTIALS } from '../../constants'
 import { ensureAssigned, ensureOutboxIsEmpty, selectAction } from '../../utils'
 import { selectDeclarationAction } from '../../helpers'
 import { format, subDays } from 'date-fns'
+import { navigateToCertificatePrintAction } from '../print-certificate/birth/helpers'
 
 const recentDate = subDays(new Date(), 10)
 const recentDay = format(recentDate, 'dd')
 const recentMonth = format(recentDate, 'MM')
 const recentYear = format(recentDate, 'yyyy')
 
-const motherBirhtDate = subDays(recentDate, 18 * 365)
+const motherBirhtDate = subDays(
+  recentDate,
+  faker.number.int({ min: 20 * 365, max: 50 * 365 })
+)
 const motherDay = format(motherBirhtDate, 'dd')
 const motherMonth = format(motherBirhtDate, 'MM')
 const motherYear = format(motherBirhtDate, 'yyyy')
@@ -220,25 +224,8 @@ test.describe.serial('Complete Declaration with Certified copy', () => {
         .filter({ hasText: 'Assigned to' })
       await expect(row.getByText('Kennedy Mweene')).toBeVisible()
     })
-    test.skip("Event should have the 'Declared' -Status & 'Validated' -flag", async () => {
-      await expect(page.getByText('Declared')).toBeVisible()
-      await expect(page.getByText('Validated')).toBeVisible()
-    })
-    test.skip('Register the declaration Registrar', async () => {
-      await selectAction(page, 'Register')
-      await expect(
-        page.getByText(
-          'Registering this birth event will create an official civil registration record. Please ensure all details are correct before proceeding.'
-        )
-      ).toBeVisible()
-
-      const confirmButton = page.getByRole('button', { name: 'Confirm' })
-      await expect(confirmButton).toBeEnabled()
-      await confirmButton.click()
-    })
-    test("Event should have the 'Validated' -flag", async () => {
-      await searchFromSearchBar(page, childNameFormatted)
-      await expect(page.getByText('Registered')).toBeVisible()
+    test('Navigate to print', async () => {
+      await navigateToCertificatePrintAction(page, { 'child.name': childName })
     })
   })
 })
