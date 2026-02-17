@@ -231,7 +231,7 @@
         <video id="camera" playsinline muted></video>
       </section>
 
-      <section class="card" style="grid-column: 1 / 3">
+      <section class="card">
         <h2>Verified ID Card</h2>
         <div class="id-card-wrapper">
           <div class="id-card" id="idCard">
@@ -309,24 +309,12 @@
         element.textContent = value && String(value).trim() ? value : '-'
       }
 
-      function formatBirthDate(value) {
-        if (!value || !String(value).trim()) {
-          return null
+      function requireString(value, fieldName) {
+        if (typeof value !== 'string' || !value.trim()) {
+          throw new Error(`Missing or invalid ${fieldName}`)
         }
 
-        const text = String(value).trim()
-
-        if (/^\d{4}-\d{2}-\d{2}$/.test(text)) {
-          return text
-        }
-
-        const parsed = new Date(text)
-
-        if (Number.isNaN(parsed.getTime())) {
-          return text
-        }
-
-        return parsed.toISOString().slice(0, 10)
+        return value
       }
 
       function setVerifiedState(valid) {
@@ -459,29 +447,24 @@
 
           const payload = result.payload || {}
           const vc = payload.vc || {}
-          const credentialTypes = [
-            ...(Array.isArray(vc.type) ? vc.type : []),
-            ...(Array.isArray(payload.type) ? payload.type : [])
-          ]
+          const credentialTypes = Array.isArray(vc.type) ? vc.type : []
 
           if (!credentialTypes.includes('birth_paper_v1')) {
             throw new Error('Unsupported credential profile')
           }
 
-          const subject =
-            vc.credentialSubject || payload.credentialSubject || {}
+          const subject = vc.credentialSubject || {}
+          const credentialId = requireString(vc.id, 'credential id')
+          const givenName = requireString(subject.given_name, 'given_name')
+          const familyName = requireString(subject.family_name, 'family_name')
+          const birthdate = requireString(subject.birthdate, 'birthdate')
+          const registrationNumber = requireString(subject.brn, 'brn')
 
-          setIdField(idGivenNameEl, subject.given_name || subject.givenName)
-          setIdField(idFamilyNameEl, subject.family_name || subject.familyName)
-          setIdField(
-            idBirthdateEl,
-            formatBirthDate(subject.birthdate || subject.birth_date)
-          )
-          setIdField(
-            idRegistrationNumberEl,
-            subject.registration_number || subject.brn
-          )
-          setIdField(idCredentialIdEl, vc.id || payload.jti || payload.id)
+          setIdField(idGivenNameEl, givenName)
+          setIdField(idFamilyNameEl, familyName)
+          setIdField(idBirthdateEl, birthdate)
+          setIdField(idRegistrationNumberEl, registrationNumber)
+          setIdField(idCredentialIdEl, credentialId)
 
           setVerifiedState(true)
           setCameraStatus('Credential verified')

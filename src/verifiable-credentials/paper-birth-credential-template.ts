@@ -1,6 +1,8 @@
 import { logger } from '@countryconfig/logger'
 import { DEMO_ISSUER_DID, DEMO_ISSUER_KEY } from './birth-credential-template'
 import { EventIndex, NameFieldValue } from '@opencrvs/toolkit/events'
+import type { PaperBirthCredentialData } from './paper-birth-credential-definition'
+import { v4 as uuidv4 } from 'uuid'
 
 function resolveRegistrationNumber(event: EventIndex) {
   const legalStatuses = event.legalStatuses as Record<
@@ -8,7 +10,15 @@ function resolveRegistrationNumber(event: EventIndex) {
     { registrationNumber?: string } | undefined
   >
 
-  return legalStatuses.REGISTERED?.registrationNumber || undefined
+  const registrationNumber = legalStatuses.REGISTERED?.registrationNumber
+
+  if (!registrationNumber) {
+    throw new Error(
+      `Cannot issue paper birth credential without registration number <event-id:${event.id}>`
+    )
+  }
+
+  return registrationNumber
 }
 
 export function paperBirthCredentialTemplate(event: EventIndex) {
@@ -19,25 +29,23 @@ export function paperBirthCredentialTemplate(event: EventIndex) {
   const childName = event.declaration['child.name'] as NameFieldValue
   const registrationNumber = resolveRegistrationNumber(event)
   const dateOfEvent = event.dateOfEvent as string
-  const subjectDid = `${event.id}`
+  const credentialId = uuidv4()
+  const subjectId = event.id
 
   return {
     issuerKey: DEMO_ISSUER_KEY,
     issuerDid: DEMO_ISSUER_DID,
-    subjectDid,
+    subjectDid: subjectId,
     credentialData: {
-      id: event.id,
+      id: credentialId,
       type: ['VerifiableCredential', 'birth_paper_v1'],
       credentialSubject: {
-        id: subjectDid,
-        event_id: event.id,
-        ...(registrationNumber
-          ? { registration_number: registrationNumber }
-          : {}),
+        id: subjectId,
+        brn: registrationNumber,
         given_name: childName.firstname,
         family_name: childName.surname,
         birthdate: dateOfEvent
       }
-    }
+    } satisfies PaperBirthCredentialData
   }
 }
