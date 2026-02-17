@@ -53,9 +53,7 @@ export async function login(
   expect(token).toBeDefined()
   await page.goto(`${CLIENT_URL}?token=${token}`)
 
-  await expect(
-    page.locator('#appSpinner').or(page.locator('#pin-input'))
-  ).toBeVisible()
+  await page.waitForSelector('#pin-input, #appSpinner', { state: 'visible' }) //fix the appspinner issue on playwright ui
 
   if (!skipPin) {
     await createPIN(page)
