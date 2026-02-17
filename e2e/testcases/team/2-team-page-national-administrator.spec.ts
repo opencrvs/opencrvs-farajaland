@@ -64,6 +64,9 @@ test.describe('2. Team Page', () => {
       ).toBeVisible()
     })
 
+    /**
+     * Skip latter part until implementing new user scopes.
+     */
     test.skip('2.2.2 Change Phone Number', async () => {
       const phoneNumber = '0785963214'
       await page.locator('#btn_change_phoneNumber:visible').click()
