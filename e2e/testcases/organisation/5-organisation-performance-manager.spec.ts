@@ -1,7 +1,7 @@
 import { test, expect, type Page } from '@playwright/test'
 import { login } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
-test.describe.serial('5. Organisation Page -1', () => {
+test.describe.serial('5. Organisation Page', () => {
   let page: Page
 
   test.beforeAll(async ({ browser }) => {
@@ -72,27 +72,22 @@ test.describe.serial('5. Organisation Page -1', () => {
         page.getByText('Ilanga, Sulaka', { exact: true })
       ).toBeVisible()
     })
+
     test('5.1.4 Verify team page member list of District Office', async () => {
-      const row1 = page.getByRole('row', { name: /Alex Ngonga/ })
-      await expect(row1.getByText('Active')).toBeVisible()
-      const button1 = row1.getByRole('button', { name: 'Alex Ngonga' })
-      await expect(button1).toBeDisabled()
+      const members = [
+        'Alex Ngonga',
+        'Derrick Bulaya',
+        'Joshua Mutale',
+        'Patrick Gondwe'
+      ]
 
-      const row2 = page.getByRole('row', { name: /Derrick Bulaya/ })
-      await expect(row2.getByText('Active')).toBeVisible()
-      const button2 = row2.getByRole('button', { name: 'Derrick Bulaya' })
-      await expect(button2).toBeDisabled()
-
-      const row3 = page.getByRole('row', { name: /Joshua Mutale/ })
-      await expect(row3.getByText('Active')).toBeVisible()
-      const button3 = row3.getByRole('button', { name: 'Joshua Mutale' })
-      await expect(button3).toBeDisabled()
-
-      const row5 = page.getByRole('row', { name: /Patrick Gondwe/ })
-      await expect(row5.getByText('Active')).toBeVisible()
-      const button5 = row5.getByRole('button', { name: 'Patrick Gondwe' })
-      await expect(button5).toBeDisabled()
+      for (const member of members) {
+        const row = page.getByRole('row', { name: new RegExp(member) })
+        await expect(row.getByText('Active')).toBeVisible()
+        await expect(row.getByRole('button', { name: member })).toBeDisabled()
+      }
     })
+
     test('5.1.5 Verify Embassy Office', async () => {
       await page.getByRole('button', { name: 'Organisation' }).click()
       await page.getByRole('button', { name: 'France Embassy Office' }).click()

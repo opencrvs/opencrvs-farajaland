@@ -60,7 +60,7 @@ test.describe.serial('1.Farajaland as location parent', () => {
     await searchFromSearchBar(page, name, false)
   })
 
-  test('1.1.2 Registrar general completes and registers', async () => {
+  test('1.1.2 Registrar general within the same administrative area should find the declaration', async () => {
     await login(page, CREDENTIALS.REGISTRAR_GENERAL)
 
     await searchFromSearchBar(page, name, true)

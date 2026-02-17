@@ -138,3 +138,26 @@ export function getIdByName(
   }
   return location.id
 }
+
+export async function verifyMembersEnabled(page: Page, members: string[]) {
+  for (const member of members) {
+    const row = page.getByRole('row', { name: new RegExp(member) })
+    await expect(row.getByText('Active')).toBeVisible()
+    await expect(row.getByRole('button', { name: member })).toBeEnabled()
+  }
+}
+
+export async function verifyMembersClickable(
+  page: Page,
+  members: string[],
+  officeButtonName: string
+) {
+  for (const member of members) {
+    const row = page.getByRole('row', { name: new RegExp(member) })
+    await expect(row.getByText('Active')).toBeVisible()
+    await row.getByRole('button', { name: member }).click()
+    await expect(page.locator('#content-name')).toHaveText(member)
+    await page.getByRole('button', { name: officeButtonName }).click()
+    await expect(page).toHaveURL(/.*\/team/)
+  }
+}

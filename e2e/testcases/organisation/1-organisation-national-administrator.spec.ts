@@ -1,7 +1,8 @@
 import { test, expect, type Page } from '@playwright/test'
 import { login } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
-test.describe.serial('1. Organisation Page -1', () => {
+import { verifyMembersClickable } from '../birth/helpers'
+test.describe.serial('1. Organisation Page', () => {
   let page: Page
 
   test.beforeAll(async ({ browser }) => {
@@ -74,36 +75,14 @@ test.describe.serial('1. Organisation Page -1', () => {
       ).toBeVisible()
     })
     test('1.1.3 Verify team page member list', async () => {
-      const row1 = page.getByRole('row', { name: /Alex Ngonga/ })
-      await expect(row1.getByText('Active')).toBeVisible()
-      const button1 = row1.getByRole('button', { name: 'Alex Ngonga' })
-      await button1.click()
-      await expect(page.locator('#content-name')).toHaveText('Alex Ngonga')
-      await page.getByRole('button', { name: 'Ilanga District Office' }).click()
-      await expect(page).toHaveURL(/.*\/team/)
+      const members = [
+        'Alex Ngonga',
+        'Derrick Bulaya',
+        'Joshua Mutale',
+        'Patrick Gondwe'
+      ]
 
-      const row2 = page.getByRole('row', { name: /Derrick Bulaya/ })
-      await expect(row2.getByText('Active')).toBeVisible()
-      const button2 = row2.getByRole('button', { name: 'Derrick Bulaya' })
-      await button2.click()
-      await expect(page.locator('#content-name')).toHaveText('Derrick Bulaya')
-      await page.getByRole('button', { name: 'Ilanga District Office' }).click()
-      await expect(page).toHaveURL(/.*\/team/)
-
-      const row3 = page.getByRole('row', { name: /Joshua Mutale/ })
-      await expect(row3.getByText('Active')).toBeVisible()
-      const button3 = row3.getByRole('button', { name: 'Joshua Mutale' })
-      await button3.click()
-      await expect(page.locator('#content-name')).toHaveText('Joshua Mutale')
-      await page.getByRole('button', { name: 'Ilanga District Office' }).click()
-      await expect(page).toHaveURL(/.*\/team/)
-
-      const row5 = page.getByRole('row', { name: /Patrick Gondwe/ })
-      await expect(row5.getByText('Active')).toBeVisible()
-      await row5.getByRole('button', { name: 'Patrick Gondwe' }).click()
-      await expect(page.locator('#content-name')).toHaveText('Patrick Gondwe')
-      await page.getByRole('button', { name: 'Ilanga District Office' }).click()
-      await expect(page).toHaveURL(/.*\/team/)
+      await verifyMembersClickable(page, members, 'Ilanga District Office')
     })
   })
 })

@@ -1,7 +1,7 @@
 import { test, expect, type Page } from '@playwright/test'
 import { login } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
-test.describe.serial('2. Organisation Page -1', () => {
+test.describe.serial('2. Organisation Page', () => {
   let page: Page
 
   test.beforeAll(async ({ browser }) => {
