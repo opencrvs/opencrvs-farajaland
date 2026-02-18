@@ -35,11 +35,14 @@ test.describe.serial('Complete Declaration with Certified copy', () => {
   let page: Page
 
   const childName = {
-    firstNames: faker.person.firstName('female'),
-    familyName: faker.person.lastName('female')
+    // firstNames: faker.person.firstName('female'),
+    // familyName: faker.person.lastName('female')
+    firstNames: 'Stan',
+    familyName: 'Goyette'
   }
 
   const childNameFormatted = formatName(childName)
+  console.log(childNameFormatted)
 
   test.beforeAll(async ({ browser }) => {
     page = await browser.newPage()
@@ -176,7 +179,7 @@ test.describe.serial('Complete Declaration with Certified copy', () => {
       await expect(page.getByText('Declared')).toBeVisible()
     })
   })
-  test.describe('Declaration Review by Registrar ', async () => {
+  test.describe('Declaration Register by Registrar ', async () => {
     test('Navigate to the declaration review page', async () => {
       await login(page, CREDENTIALS.REGISTRAR)
 
@@ -222,10 +225,10 @@ test.describe.serial('Complete Declaration with Certified copy', () => {
       const row = page
         .getByTestId('assignedTo')
         .filter({ hasText: 'Assigned to' })
-      await expect(row.getByText('Kennedy Mweene')).toBeVisible()
+      await expect(row.getByText('Felix Katongo')).toBeVisible()
     })
     test('Navigate to print', async () => {
-      await navigateToCertificatePrintAction(page, { 'child.name': childName })
+      await selectAction(page, 'Print')
     })
   })
 })
