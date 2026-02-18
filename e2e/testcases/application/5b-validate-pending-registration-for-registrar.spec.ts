@@ -52,7 +52,7 @@ test.describe
       'Title',
       'Event',
       'Date of Event',
-      'Registration requested',
+      'Last updated',
       ''
     ])
 

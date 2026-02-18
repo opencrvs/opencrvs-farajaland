@@ -53,7 +53,7 @@ test.describe.serial('6 Validate "Pending certification"-workqueue', () => {
       'Title',
       'Event',
       'Date of Event',
-      'Registered',
+      'Last updated',
       ''
     ])
 
