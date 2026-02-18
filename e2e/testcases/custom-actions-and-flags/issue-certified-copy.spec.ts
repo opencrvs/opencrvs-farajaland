@@ -4,6 +4,7 @@ import {
   drawSignature,
   formatDateTo_dMMMMyyyy,
   formatName,
+  getToken,
   goToSection,
   login,
   searchFromSearchBar,
@@ -16,6 +17,8 @@ import { ensureAssigned, ensureOutboxIsEmpty, selectAction } from '../../utils'
 import { selectDeclarationAction } from '../../helpers'
 import { format, subDays } from 'date-fns'
 import { navigateToCertificatePrintAction } from '../print-certificate/birth/helpers'
+import { createDeclaration } from '../test-data/birth-declaration'
+import { REQUIRED_VALIDATION_ERROR } from '../birth/helpers'
 
 const recentDate = subDays(new Date(), 10)
 const recentDay = format(recentDate, 'dd')
@@ -219,7 +222,9 @@ test.describe.serial('Complete Declaration with Certified copy', () => {
     test('Navigate to the declaration review page', async () => {
       await login(page, CREDENTIALS.REGISTRATION_OFFICER)
 
-      await searchFromSearchBar(page, childNameFormatted)
+      // await searchFromSearchBar(page, childNameFormatted)
+      await page.getByText('Pending certification').click()
+      await page.getByRole('button', { name: 'Stan Goyette' }).click()
       await expect(page.getByText('Registered')).toBeVisible()
       await ensureAssigned(page)
       const row = page
@@ -229,6 +234,44 @@ test.describe.serial('Complete Declaration with Certified copy', () => {
     })
     test('Navigate to print', async () => {
       await selectAction(page, 'Print')
+    })
+
+    test('Template type should be selected by default', async () => {
+      await expect(
+        page.locator('#certificateTemplateId').getByText('Birth Certificate')
+      ).toBeVisible()
+    })
+
+    test('Click continue without selecting requester type', async () => {
+      await page.getByRole('button', { name: 'Continue' }).click()
+
+      await expect(
+        page
+          .locator('#collector____requesterId_error')
+          .getByText(REQUIRED_VALIDATION_ERROR)
+      ).toBeVisible()
+    })
+
+    test('Click continue after selecting requester type and template type', async () => {
+      await page.reload({ waitUntil: 'networkidle' })
+      await page.locator('#collector____requesterId').click()
+      const selectOptionsLabels = [
+        'Print and issue to Informant (Mother)',
+        'Print and issue to someone else',
+        'Print in advance of issuance'
+      ]
+      for (const label of selectOptionsLabels) {
+        await expect(page.getByText(label, { exact: true })).toBeVisible()
+      }
+
+      await page.getByText(selectOptionsLabels[2], { exact: true }).click()
+
+      await expect(page.getByText('Certify record')).toBeVisible()
+
+      await page.getByRole('button', { name: 'Continue' }).click()
+      await page.getByRole('button', { name: 'Verified' }).click()
+      await page.getByRole('button', { name: 'Continue' }).click()
+      await page.getByRole('button', { name: 'Yes, print certificate' }).click()
     })
   })
 })
