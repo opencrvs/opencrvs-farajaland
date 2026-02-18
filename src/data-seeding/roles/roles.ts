@@ -290,8 +290,8 @@ export const roles: Role[] = [
     scopes: [
       'workqueue[id=assigned-to-you|recent|requires-updates-self|sent-for-review]',
       'type=record.search&event=birth,death&declaredIn=location',
-      'record.read[event=birth|death|tennis-club-membership]',
-      `record.create[event=birth|death|tennis-club-membership]`,
+      'type=record.read&event=birth,death,tennis-club-membership',
+      `type=record.create&event=birth,death,tennis-club-membership`,
       'record.declare[event=birth|death|tennis-club-membership]',
       'record.notify[event=birth|death|tennis-club-membership]',
       'record.declared.edit[event=birth|death]'
