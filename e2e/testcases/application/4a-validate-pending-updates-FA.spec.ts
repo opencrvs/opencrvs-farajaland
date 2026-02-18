@@ -78,7 +78,7 @@ test.describe.serial('4(a) Validate "Pending updates"-workqueue for HO', () => {
       'Title',
       'Event',
       'Date of Event',
-      'Update requested',
+      'Last updated',
       ''
     ])
 
