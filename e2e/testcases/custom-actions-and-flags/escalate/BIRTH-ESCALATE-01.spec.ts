@@ -4,49 +4,23 @@ import {
   drawSignature,
   formatDateTo_dMMMMyyyy,
   formatName,
-  getToken,
   goToSection,
   login,
   searchFromSearchBar,
+  selectDeclarationAction,
   switchEventTab,
   validateActionMenuButton
-} from '../../helpers'
+} from '../../../helpers'
 import { faker } from '@faker-js/faker'
-import { CREDENTIALS } from '../../constants'
-import { ensureAssigned, ensureOutboxIsEmpty, selectAction } from '../../utils'
-import { selectDeclarationAction } from '../../helpers'
-import { format, subDays } from 'date-fns'
-import { navigateToCertificatePrintAction } from '../print-certificate/birth/helpers'
-import { createDeclaration } from '../test-data/birth-declaration'
-import { REQUIRED_VALIDATION_ERROR } from '../birth/helpers'
+import { CREDENTIALS } from '../../../constants'
+import {
+  ensureAssigned,
+  ensureOutboxIsEmpty,
+  selectAction
+} from '../../../utils'
 
-const recentDate = subDays(new Date(), 10)
-const recentDay = format(recentDate, 'dd')
-const recentMonth = format(recentDate, 'MM')
-const recentYear = format(recentDate, 'yyyy')
-
-const motherBirhtDate = subDays(
-  recentDate,
-  faker.number.int({ min: 20 * 365, max: 50 * 365 })
-)
-const motherDay = format(motherBirhtDate, 'dd')
-const motherMonth = format(motherBirhtDate, 'MM')
-const motherYear = format(motherBirhtDate, 'yyyy')
-
-const email = faker.internet.email()
-test.describe.serial('Complete Declaration with Certified copy', () => {
+test.describe.serial('Escalate the Declaration By Registrar', () => {
   let page: Page
-
-  const childName = {
-    //Debugging purpose
-    // firstNames: faker.person.firstName('female'),
-    // familyName: faker.person.lastName('female')
-    firstNames: 'Stan',
-    familyName: 'Goyette'
-  }
-
-  const childNameFormatted = formatName(childName)
-  console.log(childNameFormatted)
 
   test.beforeAll(async ({ browser }) => {
     page = await browser.newPage()
@@ -58,7 +32,7 @@ test.describe.serial('Complete Declaration with Certified copy', () => {
 
   test.describe('Declaration started by HO', async () => {
     test.beforeAll(async () => {
-      await login(page, CREDENTIALS.HOSPITAL_OFFICIAL)
+      await login(page, CREDENTIALS.REGISTRAR)
       await page.click('#header-new-event')
       await page.getByLabel('Birth').click()
       await page.getByRole('button', { name: 'Continue' }).click()
