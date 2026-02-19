@@ -222,15 +222,19 @@ test.describe.serial('Complete Declaration with Certified copy', () => {
     test('Navigate to the declaration review page', async () => {
       await login(page, CREDENTIALS.REGISTRATION_OFFICER)
 
-      // await searchFromSearchBar(page, childNameFormatted)
       await page.getByText('Pending certification').click()
-      await page.getByRole('button', { name: 'Stan Goyette' }).click()
+      await page.getByRole('button', { name: 'Stan Goyette' }).click() //Debugging purpose hardcoded Name has been used
+      // await searchFromSearchBar(page, childNameFormatted)
       await expect(page.getByText('Registered')).toBeVisible()
       await ensureAssigned(page)
-      const row = page
+      const assignedTo = page
         .getByTestId('assignedTo')
         .filter({ hasText: 'Assigned to' })
-      await expect(row.getByText('Felix Katongo')).toBeVisible()
+      await expect(assignedTo.getByText('Felix Katongo')).toBeVisible()
+      const Flags = page.getByTestId('flags').filter({ hasText: 'Flags' })
+      await expect(
+        Flags.getByText('Pending first certificate issuance')
+      ).toBeVisible()
     })
     test('Navigate to print', async () => {
       await selectAction(page, 'Print')
@@ -272,6 +276,10 @@ test.describe.serial('Complete Declaration with Certified copy', () => {
       await page.getByRole('button', { name: 'Verified' }).click()
       await page.getByRole('button', { name: 'Continue' }).click()
       await page.getByRole('button', { name: 'Yes, print certificate' }).click()
+      await page.getByRole('button', { name: 'Print', exact: true }).click()
+    })
+    test('Issuance Certificate', async () => {
+      //BLOCKER
     })
   })
 })
