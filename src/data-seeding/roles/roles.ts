@@ -217,7 +217,7 @@ export const roles: Role[] = [
     label: {
       defaultMessage: 'Embassy Official',
       description: 'Name for user role Embassy Official',
-      id: 'userRole.embassyOffical'
+      id: 'userRole.embassyOfficial'
     },
     scopes: [
       SCOPES.USER_READ_ONLY_MY_AUDIT,
@@ -262,6 +262,15 @@ export const roles: Role[] = [
     scopes: []
   },
   {
+    id: 'FIELD_AGENT',
+    label: {
+      defaultMessage: 'Field Agent',
+      description: 'Name for user role Field Agent',
+      id: 'userRole.fieldAgent'
+    },
+    scopes: []
+  },
+  {
     id: 'LOCAL_LEADER',
     label: {
       defaultMessage: 'Local Leader',
@@ -271,12 +280,21 @@ export const roles: Role[] = [
     scopes: []
   },
   {
-    id: 'FIELD_AGENT',
+    // NOTE: This is 2.0  role configuration. It does not have the finalised scopes since all the features are not ready.
+    id: 'HEALTH_OFFICER',
     label: {
-      defaultMessage: 'Field Agent',
-      description: 'Name for user role Field Agent',
-      id: 'userRole.fieldAgent'
+      defaultMessage: 'Health Officer',
+      description: 'Name for user role Health Officer',
+      id: 'userRole.healthOfficer'
     },
-    scopes: []
+    scopes: [
+      'workqueue[id=assigned-to-you|recent|requires-updates-self|sent-for-review]',
+      'type=record.search&event=birth,death&declaredIn=location',
+      'record.read[event=birth|death|tennis-club-membership]',
+      `record.create[event=birth|death|tennis-club-membership]`,
+      'record.declare[event=birth|death|tennis-club-membership]',
+      'record.notify[event=birth|death|tennis-club-membership]',
+      'record.declared.edit[event=birth|death]'
+    ]
   }
 ]
