@@ -185,7 +185,7 @@ test.describe('Events REST API', () => {
 
       expect(response.status).toBe(400)
       const body = await response.json()
-      expect(body.message).toBe('Input validation failed')
+      expect(body.message).toBe('BAD_REQUEST')
     })
 
     test('HTTP 400 without', async () => {
@@ -200,7 +200,7 @@ test.describe('Events REST API', () => {
 
       expect(response.status).toBe(400)
       const body = await response.json()
-      expect(body.message).toBe('Input validation failed')
+      expect(body.message).toBe('BAD_REQUEST')
     })
 
     test('HTTP 400 when createdAtLocation is missing', async () => {
