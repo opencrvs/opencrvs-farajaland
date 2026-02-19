@@ -84,28 +84,6 @@ export const getMOSIPIntegrationFields = (
   const existingShowConditional = existingConditionals.find(
     (c) => c.type === ConditionalType.SHOW
   )
-
-  const idReaderShowConditional = existingShowConditional?.conditional
-    ? and(
-        existingShowConditional.conditional,
-        not(
-          or(
-            field(`${page}.verified`).isEqualTo('pending'),
-            field(`${page}.verified`).isEqualTo('verified'),
-            field(`${page}.verified`).isEqualTo('authenticated'),
-            field(`${page}.verified`).isEqualTo('failed')
-          )
-        )
-      )
-    : not(
-        or(
-          field(`${page}.verified`).isEqualTo('pending'),
-          field(`${page}.verified`).isEqualTo('verified'),
-          field(`${page}.verified`).isEqualTo('authenticated'),
-          field(`${page}.verified`).isEqualTo('failed')
-        )
-      )
-
   return [
     /*
      * @opencrvs/mosip: MOSIP / E-Signet
@@ -195,7 +173,7 @@ export const getMOSIPIntegrationFields = (
               },
               body: {
                 clientId: OPENID_PROVIDER_CLIENT_ID,
-                redirectUri: window().location.get('originPathname')
+                redirectUri: window().location.get('href')
               },
               params: {
                 code: field(`${page}.query-params`).get('data.code'),
@@ -248,28 +226,6 @@ export const getMOSIPIntegrationFields = (
     /*
      * @opencrvs/mosip: MOSIP / E-Signet
      */
-    // {
-    //   id: `${page}.id-reader`,
-    //   type: FieldType.ALPHA_HIDDEN,
-    //   label: {
-    //     id: `event.birth.action.declare.form.section.${page}.field.qr.hidden.label`,
-    //     defaultMessage: 'QR Code (Hidden)',
-    //     description: 'Hidden counterpart for id-reader when it is not shown'
-    //   },
-    //   conditionals: [
-    //     {
-    //       type: ConditionalType.SHOW,
-    //       conditional: not(idReaderShowConditional)
-    //     },
-    //     {
-    //       type: ConditionalType.DISPLAY_ON_REVIEW,
-    //       conditional: never()
-    //     }
-    //   ]
-    // },
-    /*
-     * @opencrvs/mosip: MOSIP / E-Signet
-     */
     {
       id: `${page}.id-reader`,
       type: FieldType.ID_READER,
@@ -282,7 +238,26 @@ export const getMOSIPIntegrationFields = (
       conditionals: [
         {
           type: ConditionalType.SHOW,
-          conditional: idReaderShowConditional
+          conditional: existingShowConditional?.conditional
+            ? and(
+                existingShowConditional?.conditional,
+                not(
+                  or(
+                    field(`${page}.verified`).isEqualTo('pending'),
+                    field(`${page}.verified`).isEqualTo('verified'),
+                    field(`${page}.verified`).isEqualTo('authenticated'),
+                    field(`${page}.verified`).isEqualTo('failed')
+                  )
+                )
+              )
+            : not(
+                or(
+                  field(`${page}.verified`).isEqualTo('pending'),
+                  field(`${page}.verified`).isEqualTo('verified'),
+                  field(`${page}.verified`).isEqualTo('authenticated'),
+                  field(`${page}.verified`).isEqualTo('failed')
+                )
+              )
         },
         {
           type: ConditionalType.DISPLAY_ON_REVIEW,
@@ -311,7 +286,7 @@ export const getMOSIPIntegrationFields = (
                 },
                 configuration: {
                   icon: 'Globe',
-                  url: `${ESIGNET_REDIRECT_URL}?client_id=${OPENID_PROVIDER_CLIENT_ID}&response_type=code&scope=openid%20profile&acr_values=mosip%3Aidp%3Aacr%3Agenerated-code&claims=%7B%22userinfo%22:%7B%22name%22:%7B%22essential%22:true%7D,%22birthdate%22:%7B%22essential%22:true%7D,%22address%22:%7B%22essential%22:true%7D%7D,%22id_token%22:%7B%7D%7D&state=fetch-on-mount`,
+                  url: `${ESIGNET_REDIRECT_URL}?client_id=${OPENID_PROVIDER_CLIENT_ID}&response_type=code&scope=openid%20profile&acr_values=mosip:idp:acr:static-code&claims=name,family_name,given_name,middle_name,birthdate,address&state=fetch-on-mount`,
                   text: {
                     id: 'verify.label',
                     defaultMessage: 'e-Signet',

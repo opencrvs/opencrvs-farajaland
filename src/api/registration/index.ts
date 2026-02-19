@@ -27,7 +27,6 @@ import {
   shouldForwardBirthRegistrationToMosip,
   shouldForwardDeathRegistrationToMosip
 } from '@countryconfig/form/v2/mosip'
-import { capitalize } from 'lodash'
 
 export interface ActionConfirmationRequest extends Hapi.Request {
   payload: EventDocument
@@ -182,74 +181,29 @@ export async function onMosipBirthRegisterHandler(
       `Bearer ${token}`
     )
     const childName = declaration['child.name'] as NameFieldValue | undefined
-    const motherName = declaration['mother.name'] as NameFieldValue | undefined
 
     // @TODO: Check whether this might crash country-config if MOSIP doesn't respond
     mosipInteropClient.register({
       trackingId: event.trackingId,
       requestFields: {
         birthCertificateNumber: registrationNumber,
-        fullName:
-          '[ {\n  "language" : "eng",\n  "value" : "' +
-          [childName?.firstname, childName?.middlename, childName?.surname]
-            .filter(Boolean)
-            .join(' ') +
-          '"\n}]',
-
-        dateOfBirth: declaration['child.dob']?.toString().replaceAll('-', '/'),
-        gender:
-          '[ {\n  "language" : "eng",\n  "value" : "' +
-          capitalize(declaration['child.gender'] as string) +
-          '"\n}]',
-        postalCode: '14022',
-        email: 'pyry@opencrvs.org',
-        phone: '7790075085',
-        zone: '[ {\n  "language" : "eng",\n  "value" : "Ben Mansour"\n}]',
-        region:
-          '[ {\n  "language" : "eng",\n  "value" : "Rabat Sale Kenitra"\n}]',
-        province: '[ {\n  "language" : "eng",\n  "value" : "Kenitra"\n}]',
-        preferredLang: 'English'
-      },
-      notification: {
-        recipientEmail: 'pyry@opencrvs.org',
-        recipientFullName: [
-          motherName?.firstname,
-          motherName?.middlename,
-          motherName?.surname
+        fullName: [
+          childName?.firstname,
+          childName?.middlename,
+          childName?.surname
         ]
           .filter(Boolean)
           .join(' '),
-        recipientPhone: '7790075085'
+        dateOfBirth: declaration['child.dob'],
+        gender: declaration['child.gender']
       },
-      metaInfo: {
-        metaData:
-          '[{\n  "label" : "registrationType",\n  "value" : "NEW"\n}, {\n  "label" : "machineId",\n  "value" : "20042"\n}, {\n  "label" : "centerId",\n  "value" : "10001"\n}]',
-        registrationId: '10001100620007420250522121835',
-        operationsData:
-          '[ {\n  "label" : "officerId",\n  "value" : "crvs1"\n}, {\n  "label" : "officerBiometricFileName",\n  "value" : null\n}, {\n  "label" : "supervisorId",\n  "value" : null\n}, {\n  "label" : "supervisorBiometricFileName",\n  "value" : null\n}, {\n  "label" : "supervisorPassword",\n  "value" : "false"\n}, {\n  "label" : "officerPassword",\n  "value" : "true"\n}, {\n  "label" : "supervisorPIN",\n  "value" : null\n}, {\n  "label" : "officerPIN",\n  "value" : null\n}, {\n  "label" : "supervisorOTPAuthentication",\n  "value" : "false"\n}, {\n  "label" : "officerOTPAuthentication",\n  "value" : "false"\n} ]',
-        capturedRegisteredDevices: '[]',
-        creationDate: '20250225110733'
+      notification: {
+        recipientEmail: '@TODO',
+        recipientFullName: '@TODO',
+        recipientPhone: '@TODO'
       },
-      audit: {
-        uuid: 'c75s4521-87d6-6a4x-balw-2432e2355440',
-        createdAt: '2025-02-25T13:22:49.214Z',
-        eventId: 'REG-EVT-066',
-        eventName: 'PACKET_CREATION_SUCCESS',
-        eventType: 'USER',
-        hostName: 'DESKTOP-JL4BAEV',
-        hostIp: 'localhost',
-        applicationId: 'REG',
-        applicationName: 'REGISTRATION',
-        sessionUserId: 'crvs',
-        sessionUserName: 'crvs',
-        id: '10001100620007420250522121835',
-        idType: 'REGISTRATION_ID',
-        createdBy: 'crvs',
-        moduleName: 'Packet Handler',
-        moduleId: 'REG-MOD-117',
-        description: 'Packet Succesfully Created',
-        actionTimeStamp: '2025-02-25T07:52:49.214Z'
-      }
+      metaInfo: {},
+      audit: {}
     })
 
     return h.response().code(202)
@@ -310,9 +264,9 @@ export async function onMosipDeathRegisterHandler(
         nationalIdNumber: declaration['deceased.nid']
       },
       notification: {
-        recipientEmail: 'rachik.sharma@gmail.com',
-        recipientFullName: 'Rachik Sharma',
-        recipientPhone: '+919999999999'
+        recipientEmail: '@TODO',
+        recipientFullName: '@TODO',
+        recipientPhone: '@TODO'
       },
       metaInfo: {},
       audit: {}

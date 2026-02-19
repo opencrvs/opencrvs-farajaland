@@ -24,7 +24,6 @@ on:
           - fix-analytics
           - mosip
           - openfn
-          - vc-demo
 jobs:
   reset-data:
     name: 'Reset data'
