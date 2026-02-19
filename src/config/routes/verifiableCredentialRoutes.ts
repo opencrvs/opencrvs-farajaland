@@ -10,10 +10,25 @@ import { readFile } from 'fs/promises'
 import { birthCredentialTemplate } from '../../verifiable-credentials/birth-credential-template'
 import { paperBirthCredentialTemplate } from '../../verifiable-credentials/paper-birth-credential-template'
 
-const SDJWT_ISSUE_URL = `${env.isProd ? 'http://waltid_issuer-api:7002' : 'https://vc-demo.opencrvs.dev:7002'}/openid4vc/sdjwt/issue`
-const RAW_JWT_SIGN_URL = `${env.isProd ? 'http://waltid_issuer-api:7002' : 'https://vc-demo.opencrvs.dev:7002'}/raw/jwt/sign`
+/**
+ * Example responses OpenCRVS expects from your credential issuer.
+ * These are used for development and testing, and you can replace them with your actual issuer endpoints. Just make sure to keep the same response format.
+ */
+const exampleOid4vcIssuanceResponse = {
+  method: 'POST',
+  path: '/_demo-issuer/openid4vc/sdjwt/issue',
+  handler: () =>
+    'openid-credential-offer://?credential_offer_uri=https%3A%2F%2Fissuer.example.com%2Foffers%2Fabcde-12345'
+}
 
-export const credentialOfferRoute = {
+const exampleRawJwtSignResponse = {
+  method: 'POST',
+  path: '/_demo-issuer/raw/jwt/sign',
+  handler: () =>
+    'eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvbiBEb2UiLCJpYXQiOjE1MTYyMzkwMjJ9.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c'
+}
+
+const credentialOfferRoute = {
   method: 'POST',
   path: '/verifiable-credentials/credential-offer',
   handler: async (req) => {
@@ -41,10 +56,11 @@ export const credentialOfferRoute = {
         ]
       }
     })
-    const response = await fetch(SDJWT_ISSUE_URL, {
+    const response = await fetch(env.VERIFIABLE_CREDENTIALS_SDJWT_ISSUE_URL, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        Authorization: req.headers.authorization
       },
       body: JSON.stringify(birthCredentialTemplate(event.results[0]))
     })
@@ -73,7 +89,7 @@ export const credentialOfferRoute = {
   }
 } satisfies ServerRoute<ReqRefDefaults>
 
-export const paperCredentialRoute = {
+const paperCredentialRoute = {
   method: 'POST',
   path: '/verifiable-credentials/paper-credential',
   handler: async (req) => {
@@ -112,10 +128,11 @@ export const paperCredentialRoute = {
       throw new Error(`No event found for id: ${eventId}`)
     }
 
-    const response = await fetch(RAW_JWT_SIGN_URL, {
+    const response = await fetch(env.VERIFIABLE_CREDENTIALS_RAW_JWT_SIGN_URL, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        Authorization: req.headers.authorization
       },
       body: JSON.stringify(paperBirthCredentialTemplate(event.results[0]))
     })
@@ -148,7 +165,7 @@ export const paperCredentialRoute = {
   }
 } satisfies ServerRoute<ReqRefDefaults>
 
-export const qrCodeComponentRoute = {
+const qrCodeComponentRoute = {
   method: 'GET',
   path: '/field-type/image.js',
   handler: async (_req, h) => {
@@ -165,7 +182,7 @@ export const qrCodeComponentRoute = {
   }
 } satisfies ServerRoute<ReqRefDefaults>
 
-export const verifierRoute = {
+const verifierRoute = {
   method: 'GET',
   path: '/verifier.html',
   handler: async (_req, h) => {
@@ -183,7 +200,7 @@ export const verifierRoute = {
   }
 } satisfies ServerRoute<ReqRefDefaults>
 
-export const paperVerifierRoute = {
+const paperVerifierRoute = {
   method: 'GET',
   path: '/paper-verifier.html',
   handler: async (_req, h) => {
@@ -214,6 +231,9 @@ export const PAPER_CREDENTIAL_HANDLER_URL = new URL(
 
 export default function getVerifiableCredentialRoutes(): ServerRoute<ReqRefDefaults>[] {
   return [
+    exampleOid4vcIssuanceResponse,
+    exampleRawJwtSignResponse,
+
     credentialOfferRoute,
     paperCredentialRoute,
     qrCodeComponentRoute,

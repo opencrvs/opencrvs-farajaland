@@ -33,7 +33,7 @@ export const issueBirthCredentialAction = {
     id: 'event.birth.action.issue-vc.audit-history-label'
   },
   flags: [
-    // @TODO: This should be added on _issuance_ of the VC, not here
+    // Adding this flag to prevents the action from being shown again after the credential is issued.
     // {
     //   id: 'vc-issued',
     //   operation: 'add'
