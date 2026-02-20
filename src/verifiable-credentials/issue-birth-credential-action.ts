@@ -11,7 +11,6 @@ import {
   status
 } from '@opencrvs/toolkit/events'
 import { CREDENTIAL_OFFER_HANDLER_URL } from '../config/routes/verifiableCredentialRoutes'
-import { COUNTRY_CONFIG_URL } from '@countryconfig/constants'
 
 const qrGenerated = not(
   field('get-credential-offer')
@@ -257,8 +256,7 @@ export const issueBirthCredentialAction = {
     {
       id: 'qr-code',
       parent: field('get-credential-offer'),
-      type: FieldType._EXPERIMENTAL_CUSTOM,
-      src: COUNTRY_CONFIG_URL + '/field-type/image.js',
+      type: FieldType.IMAGE_VIEW,
       label: {
         defaultMessage: 'QR Code',
         description: 'Upload the QR code image for the VC',
@@ -266,6 +264,10 @@ export const issueBirthCredentialAction = {
       },
       hideLabel: true,
       value: field('get-credential-offer').get('data.credential_offer_uri_qr'),
+      configuration: {
+        textAlign: 'center',
+        width: '30%'
+      },
       conditionals: [
         {
           type: ConditionalType.SHOW,
