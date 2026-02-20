@@ -46,7 +46,7 @@ test.describe.serial('Complete Declaration with Certified copy', () => {
   }
 
   const childNameFormatted = formatName(childName)
-  console.log(childNameFormatted)
+  //console.log(childNameFormatted)
 
   test.beforeAll(async ({ browser }) => {
     page = await browser.newPage()
@@ -224,7 +224,7 @@ test.describe.serial('Complete Declaration with Certified copy', () => {
       await login(page, CREDENTIALS.REGISTRATION_OFFICER)
 
       await page.getByText('Pending certification').click()
-      await page.getByRole('button', { name: 'Stan Goyette' }).click() //Debugging purpose hardcoded Name has been used
+      await page.getByRole('button', { name: "Winifred O'Conner" }).click() //Debugging purpose hardcoded Name has been used
       // await searchFromSearchBar(page, childNameFormatted)
       await expect(page.getByText('Registered')).toBeVisible()
       await ensureAssigned(page)

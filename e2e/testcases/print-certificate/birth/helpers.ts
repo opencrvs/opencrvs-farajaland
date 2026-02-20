@@ -20,8 +20,8 @@ export async function navigateToCertificatePrintAction(
   page: Page,
   declaration: {
     'child.name': {
-      firstNames?: string
-      familyName?: string
+      firstname?: string
+      surname?: string
     }
     [key: string]: any
   }
