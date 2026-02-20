@@ -79,6 +79,7 @@ import {
 import { env } from './environment'
 import { workqueueconfigHandler } from './api/workqueue/handler'
 import getUserNotificationRoutes from './config/routes/userNotificationRoutes'
+import getVerifiableCredentialRoutes from './config/routes/verifiableCredentialRoutes'
 import {
   importAdministrativeAreas,
   importEvent,
@@ -758,6 +759,7 @@ export async function createServer() {
   })
 
   server.route(getUserNotificationRoutes())
+  server.route(getVerifiableCredentialRoutes())
 
   server.route({
     method: 'GET',
