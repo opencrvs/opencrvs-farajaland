@@ -46,7 +46,10 @@ import { ErrorContext } from 'hapi-auth-jwt2'
 import { mapGeojsonHandler } from '@countryconfig/api/dashboards/handler'
 import { formHandler } from '@countryconfig/form'
 import { locationsHandler } from './data-seeding/locations/handler'
-import { certificateHandler } from './api/certificates/handler'
+import {
+  certificatesByTemplateHandler,
+  certificateHandler
+} from './api/certificates/handler'
 import { rolesHandler } from './data-seeding/roles/handler'
 import { usersHandler } from './data-seeding/employees/handler'
 import { applicationConfigHandler } from './api/application/handler'
@@ -87,6 +90,7 @@ import {
   syncLocationStatistics
 } from './analytics/analytics'
 import { getClient } from './analytics/postgres'
+import { templateSchema } from './api/certificates/schema'
 import { createClient } from '@opencrvs/toolkit/api'
 
 export interface ITokenPayload {
@@ -266,11 +270,14 @@ export async function createServer() {
   server.auth.default('jwt')
 
   server.route({
-    method: 'GET',
-    path: '/certificates/{id}',
-    handler: certificateHandler,
+    method: 'POST',
+    path: '/certificates',
+    handler: certificatesByTemplateHandler,
     options: {
       tags: ['api', 'certificates'],
+      validate: {
+        payload: templateSchema
+      },
       description: 'Returns only one certificate metadata'
     }
   })
