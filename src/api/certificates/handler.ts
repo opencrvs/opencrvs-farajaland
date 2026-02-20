@@ -362,28 +362,9 @@ const certificateConfigs: ICertificateConfigData[] = [
   }
 ]
 
-interface CertificateRequestPayload {
-  templateIds: string[]
-}
-
 export async function certificateHandler(
   request: Request,
   h: ResponseToolkit
 ): Promise<ICertificateConfigData[]> {
   return certificateConfigs
-}
-
-export async function certificatesByTemplateHandler(
-  request: Request,
-  h: ResponseToolkit
-): Promise<ICertificateConfigData[]> {
-  const { templateIds } = request.payload as CertificateRequestPayload
-
-  if (templateIds && templateIds.length > 0) {
-    return certificateConfigs.filter((config) =>
-      templateIds.includes(config.id)
-    )
-  }
-
-  return [] // Return an empty array if no templateIds are provided
 }
