@@ -385,5 +385,5 @@ export async function certificatesByTemplateHandler(
     )
   }
 
-  return certificateConfigs.filter((config) => config.isDefault)
+  return [] // Return an empty array if no templateIds are provided
 }
