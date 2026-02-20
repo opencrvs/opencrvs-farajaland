@@ -185,7 +185,7 @@ test.describe('Events REST API', () => {
 
       expect(response.status).toBe(400)
       const body = await response.json()
-      expect(body.message).toBe('Input validation failed')
+      expect(body.message).toBe('BAD_REQUEST')
     })
 
     test('HTTP 400 without', async () => {
@@ -200,7 +200,7 @@ test.describe('Events REST API', () => {
 
       expect(response.status).toBe(400)
       const body = await response.json()
-      expect(body.message).toBe('Input validation failed')
+      expect(body.message).toBe('BAD_REQUEST')
     })
 
     test('HTTP 400 when createdAtLocation is missing', async () => {
@@ -706,8 +706,8 @@ test.describe('Events REST API', () => {
       // Open modal by clicking 'Notified' action row
       await page.getByText('Notified').click()
       const modal = await page.getByTestId('event-history-modal')
-      expect(modal).toContainText('Notified')
-      expect(modal).toContainText(clientName)
+      await expect(modal).toContainText('Notified')
+      await expect(modal).toContainText(clientName)
 
       // Close the modal
       await page.locator('#close-btn').click()

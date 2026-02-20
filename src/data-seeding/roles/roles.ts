@@ -25,8 +25,8 @@ export const roles: Role[] = [
       SCOPES.PERFORMANCE_READ_DASHBOARDS,
       'type=record.search&event=birth,death,tennis-club-membership',
       'workqueue[id=assigned-to-you|recent|requires-completion|in-review|in-external-validation|escalated|pending-validation|pending-updates|pending-approval|pending-certification|pending-issuance|correction-requested]',
-      'record.create[event=birth|death|tennis-club-membership]',
-      'record.read[event=birth|death|tennis-club-membership]',
+      'type=record.create&event=birth,death,tennis-club-membership',
+      'type=record.read&event=birth,death,tennis-club-membership',
       'record.declare[event=birth|death|tennis-club-membership]',
       'record.declared.edit[event=birth|death|tennis-club-membership]',
       'record.declared.reject[event=birth|death|tennis-club-membership]',
@@ -55,8 +55,8 @@ export const roles: Role[] = [
       SCOPES.PERFORMANCE_READ_DASHBOARDS,
       'type=record.search&event=birth,death,tennis-club-membership',
       'workqueue[id=assigned-to-you|recent|requires-completion|in-external-validation|escalated|potential-duplicate|pending-updates|pending-registration|pending-approval|pending-certification|pending-issuance|correction-requested]',
-      'record.create[event=birth|death|tennis-club-membership]',
-      'record.read[event=birth|death|tennis-club-membership]',
+      'type=record.create&event=birth,death,tennis-club-membership',
+      'type=record.read&event=birth,death,tennis-club-membership',
       'record.declare[event=birth|death|tennis-club-membership]',
       'record.declared.edit[event=birth|death|tennis-club-membership]',
       'record.declared.reject[event=birth|death|tennis-club-membership]',
@@ -135,8 +135,8 @@ export const roles: Role[] = [
       SCOPES.RECORD_PRINT_ISSUE_CERTIFIED_COPIES,
       'type=record.search&event=birth,death,tennis-club-membership',
       'workqueue[id=assigned-to-you|recent|requires-completion|in-external-validation|pending-feedback-registrar-general|potential-duplicate|registration-registrar-general]',
-      'record.create[event=birth|death|tennis-club-membership]',
-      'record.read[event=birth|death|tennis-club-membership]',
+      'type=record.create&event=birth,death,tennis-club-membership',
+      'type=record.read&event=birth,death,tennis-club-membership',
       'record.declare[event=birth|death|tennis-club-membership]',
       'record.declared.edit[event=birth|death|tennis-club-membership]',
       'record.declared.reject[event=birth|death|tennis-club-membership]',
@@ -166,7 +166,7 @@ export const roles: Role[] = [
       SCOPES.PROFILE_ELECTRONIC_SIGNATURE,
       'type=record.search&event=birth,death,tennis-club-membership',
       'workqueue[id=recent|pending-feedback-provincinal-registrar|pending-approval|correction-requested]',
-      'record.read[event=birth|death|tennis-club-membership]',
+      'type=record.read&event=birth,death,tennis-club-membership',
       'record.declared.reject[event=birth|death|tennis-club-membership]',
       'record.register[event=birth|death|tennis-club-membership]',
       'record.declared.archive[event=birth|death|tennis-club-membership]',
@@ -187,8 +187,8 @@ export const roles: Role[] = [
       SCOPES.USER_READ_ONLY_MY_AUDIT,
       'type=record.search&event=birth,death,tennis-club-membership',
       'workqueue[id=assigned-to-you|recent|pending-updates]',
-      'record.create[event=birth|death|tennis-club-membership]',
-      'record.read[event=birth|death|tennis-club-membership]',
+      'type=record.create&event=birth,death,tennis-club-membership',
+      'type=record.read&event=birth,death,tennis-club-membership',
       'record.declare[event=birth|death|tennis-club-membership]',
       'record.notify[event=birth|death|tennis-club-membership]',
       'record.declared.edit[event=birth|death|tennis-club-membership]'
@@ -206,8 +206,8 @@ export const roles: Role[] = [
       SCOPES.RECORD_PRINT_ISSUE_CERTIFIED_COPIES,
       'type=record.search&event=birth,death,tennis-club-membership',
       'workqueue[id=assigned-to-you|recent]',
-      'record.create[event=birth|death|tennis-club-membership]',
-      'record.read[event=birth|death|tennis-club-membership]',
+      'type=record.create&event=birth,death,tennis-club-membership',
+      'type=record.read&event=birth,death,tennis-club-membership',
       'record.declared.edit[event=birth|death|tennis-club-membership]',
       'record.notify[event=birth|death|tennis-club-membership]'
     ]
@@ -217,15 +217,15 @@ export const roles: Role[] = [
     label: {
       defaultMessage: 'Embassy Official',
       description: 'Name for user role Embassy Official',
-      id: 'userRole.embassyOffical'
+      id: 'userRole.embassyOfficial'
     },
     scopes: [
       SCOPES.USER_READ_ONLY_MY_AUDIT,
       SCOPES.RECORD_PRINT_ISSUE_CERTIFIED_COPIES,
       'workqueue[id=assigned-to-you|recent|escalated|pending-updates|pending-certification|potential-duplicate]',
       'type=record.search&event=birth,death,tennis-club-membership&declaredIn=location',
-      'record.read[event=birth|death|tennis-club-membership]',
-      'record.create[event=birth|death|tennis-club-membership]',
+      'type=record.create&event=birth,death,tennis-club-membership',
+      'type=record.read&event=birth,death,tennis-club-membership',
       'record.declare[event=birth|death|tennis-club-membership]',
       'record.declared.edit[event=birth|death|tennis-club-membership]',
       'record.custom-action[event=birth,customActionType=ESCALATE|ISSUE_CERTIFIED_COPY]',
@@ -262,6 +262,15 @@ export const roles: Role[] = [
     scopes: []
   },
   {
+    id: 'FIELD_AGENT',
+    label: {
+      defaultMessage: 'Field Agent',
+      description: 'Name for user role Field Agent',
+      id: 'userRole.fieldAgent'
+    },
+    scopes: []
+  },
+  {
     id: 'LOCAL_LEADER',
     label: {
       defaultMessage: 'Local Leader',
@@ -271,12 +280,21 @@ export const roles: Role[] = [
     scopes: []
   },
   {
-    id: 'FIELD_AGENT',
+    // NOTE: This is 2.0  role configuration. It does not have the finalised scopes since all the features are not ready.
+    id: 'HEALTH_OFFICER',
     label: {
-      defaultMessage: 'Field Agent',
-      description: 'Name for user role Field Agent',
-      id: 'userRole.fieldAgent'
+      defaultMessage: 'Health Officer',
+      description: 'Name for user role Health Officer',
+      id: 'userRole.healthOfficer'
     },
-    scopes: []
+    scopes: [
+      'workqueue[id=assigned-to-you|recent|requires-updates-self|sent-for-review]',
+      'type=record.search&event=birth,death&declaredIn=location',
+      'type=record.read&event=birth,death,tennis-club-membership',
+      `type=record.create&event=birth,death,tennis-club-membership`,
+      'record.declare[event=birth|death|tennis-club-membership]',
+      'record.notify[event=birth|death|tennis-club-membership]',
+      'record.declared.edit[event=birth|death]'
+    ]
   }
 ]
