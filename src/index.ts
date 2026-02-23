@@ -30,7 +30,8 @@ import {
   COUNTRY_CONFIG_PORT,
   CHECK_INVALID_TOKEN,
   AUTH_URL,
-  DEFAULT_TIMEOUT
+  DEFAULT_TIMEOUT,
+  THIRTY_MINUTES_IN_MILISECOND
 } from '@countryconfig/constants'
 import { statisticsHandler } from '@countryconfig/api/data-generator/handler'
 import {
@@ -215,9 +216,16 @@ export async function createServer() {
     port: COUNTRY_CONFIG_PORT,
     routes: {
       cors: { origin: whitelist },
-      payload: { maxBytes: 52428800, timeout: DEFAULT_TIMEOUT }
+      timeout: {
+        server: DEFAULT_TIMEOUT
+      },
+      payload: {
+        maxBytes: 52428800
+      }
     }
   })
+
+  server.listener.requestTimeout = THIRTY_MINUTES_IN_MILISECOND
 
   await server.register(getPlugins())
 
@@ -623,6 +631,10 @@ export async function createServer() {
       payload: {
         output: 'stream',
         parse: false
+      },
+      timeout: {
+        server: THIRTY_MINUTES_IN_MILISECOND,
+        socket: THIRTY_MINUTES_IN_MILISECOND
       }
     },
     handler: async (req, h) => {
@@ -788,16 +800,16 @@ export async function createServer() {
       actions: event.actions.map((action, index) =>
         index === event.actions.length - 1
           ? {
-              ...action,
-              status: ActionStatus.Accepted,
-              ...(actionType === ActionType.REGISTER
-                ? {
-                    registrationNumber: (
-                      response.source as { registrationNumber: string }
-                    ).registrationNumber
-                  }
-                : {})
-            }
+            ...action,
+            status: ActionStatus.Accepted,
+            ...(actionType === ActionType.REGISTER
+              ? {
+                registrationNumber: (
+                  response.source as { registrationNumber: string }
+                ).registrationNumber
+              }
+              : {})
+          }
           : action
       ) as ActionDocument[]
     }
