@@ -206,9 +206,9 @@ async function upsertAnalyticsEventActions(
 
     const annotation = actionConfig
       ? pickAnnotationAnalyticsFields(
-          getAnnotation(action, event.actions),
-          actionConfig
-        )
+        getAnnotation(action, event.actions),
+        actionConfig
+      )
       : {}
 
     const actions = event.actions
@@ -301,6 +301,7 @@ export async function importLocations(locations: Location[]) {
 
 export async function importEvents(events: EventDocument[], trx: Kysely<any>) {
   for (const event of events) {
+    await new Promise((resolve) => setTimeout(resolve, 60 * 1000))
     await importEvent(event, trx)
   }
 }
