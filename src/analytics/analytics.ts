@@ -301,7 +301,7 @@ export async function importLocations(locations: Location[]) {
 
 export async function importEvents(events: EventDocument[], trx: Kysely<any>) {
   for (const event of events) {
-    await new Promise((resolve) => setTimeout(resolve, 60 * 1000))
+    await new Promise((resolve) => setTimeout(resolve, 20 * 1000))
     await importEvent(event, trx)
   }
 }
