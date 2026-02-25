@@ -50,14 +50,11 @@ test.describe.serial('Issue verifiable credential', () => {
     await page.getByText('Mother', { exact: true }).click()
     await page.getByRole('button', { name: 'Generate', exact: true }).click()
 
-    const actionQrCode = page.locator('#qr-code img')
-    await expect(actionQrCode).toBeVisible({ timeout: 20000 })
+    const actionQrCode = page.getByRole('dialog').locator('img')
+    await expect(actionQrCode).toBeVisible({ timeout: 1000 })
     await expect(actionQrCode).toHaveAttribute(
       'src',
-      /^data:image\/png;base64,/,
-      {
-        timeout: 20000
-      }
+      /^data:image\/png;base64,/
     )
   })
 
