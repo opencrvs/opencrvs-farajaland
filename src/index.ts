@@ -31,7 +31,7 @@ import {
   CHECK_INVALID_TOKEN,
   AUTH_URL,
   DEFAULT_TIMEOUT,
-  THIRTY_MINUTES_IN_MILISECOND
+  THIRTY_MINUTES_IN_MILLISECONDS
 } from '@countryconfig/constants'
 import { statisticsHandler } from '@countryconfig/api/data-generator/handler'
 import {
@@ -225,7 +225,7 @@ export async function createServer() {
     }
   })
 
-  server.listener.requestTimeout = THIRTY_MINUTES_IN_MILISECOND
+  server.listener.requestTimeout = THIRTY_MINUTES_IN_MILLISECONDS
 
   await server.register(getPlugins())
 
@@ -633,8 +633,8 @@ export async function createServer() {
         parse: false
       },
       timeout: {
-        server: THIRTY_MINUTES_IN_MILISECOND,
-        socket: THIRTY_MINUTES_IN_MILISECOND
+        server: THIRTY_MINUTES_IN_MILLISECONDS,
+        socket: THIRTY_MINUTES_IN_MILLISECONDS
       }
     },
     handler: async (req, h) => {
@@ -800,16 +800,16 @@ export async function createServer() {
       actions: event.actions.map((action, index) =>
         index === event.actions.length - 1
           ? {
-            ...action,
-            status: ActionStatus.Accepted,
-            ...(actionType === ActionType.REGISTER
-              ? {
-                registrationNumber: (
-                  response.source as { registrationNumber: string }
-                ).registrationNumber
-              }
-              : {})
-          }
+              ...action,
+              status: ActionStatus.Accepted,
+              ...(actionType === ActionType.REGISTER
+                ? {
+                    registrationNumber: (
+                      response.source as { registrationNumber: string }
+                    ).registrationNumber
+                  }
+                : {})
+            }
           : action
       ) as ActionDocument[]
     }
