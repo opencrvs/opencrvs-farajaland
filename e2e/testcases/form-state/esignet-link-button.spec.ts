@@ -5,9 +5,10 @@ import { openBirthDeclaration } from '../birth/helpers'
 async function authenticateInformantWithESignet(page: Page) {
   await page.locator('#informant____verify').click()
 
-  // https://esignet-mosipid.collab.mosip.net/.well-known/openid-configuration
-  // "authorization_endpoint": "https://esignet-mosipid.collab.mosip.net/authorize",
+  // Only tested with mosip-mock so far
+  // https://github.com/opencrvs/mosip/blob/release-v1.8.0/packages/esignet-mock/src/index.ts#L166
   await expect(page).toHaveURL(/authorize/)
+  // https://github.com/opencrvs/mosip/blob/release-v1.8.0/docs/mock-identities.json#L8
   await page.locator('#id-input').fill('1234567890')
   await page.locator('#authenticate').click()
   await expect(page).not.toHaveURL(/authorize/)
