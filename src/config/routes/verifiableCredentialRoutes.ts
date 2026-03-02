@@ -165,23 +165,6 @@ const paperCredentialRoute = {
   }
 } satisfies ServerRoute<ReqRefDefaults>
 
-const qrCodeComponentRoute = {
-  method: 'GET',
-  path: '/field-type/image.js',
-  handler: async (_req, h) => {
-    return h
-      .response(
-        await buildTypeScriptToJavaScript(
-          join(__dirname, '../../verifiable-credentials/field-type-image.tsx')
-        )
-      )
-      .type('text/javascript')
-  },
-  options: {
-    auth: false
-  }
-} satisfies ServerRoute<ReqRefDefaults>
-
 const verifierRoute = {
   method: 'GET',
   path: '/verifier.html',
@@ -236,7 +219,6 @@ export default function getVerifiableCredentialRoutes(): ServerRoute<ReqRefDefau
 
     credentialOfferRoute,
     paperCredentialRoute,
-    qrCodeComponentRoute,
     verifierRoute,
     paperVerifierRoute
   ]
