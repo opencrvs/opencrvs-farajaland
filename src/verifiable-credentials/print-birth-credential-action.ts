@@ -1,35 +1,10 @@
-import {
-  FieldType,
-  ConditionalType,
-  field,
-  window,
-  never,
-  FieldConfig
-} from '@opencrvs/toolkit/events'
+import { FieldType, field, window, FieldConfig } from '@opencrvs/toolkit/events'
 import { PAPER_CREDENTIAL_HANDLER_URL } from '../config/routes/verifiableCredentialRoutes'
 
 /**
  * These fields will be included in print certificate action form as hidden. The credential will be minted before printing.
  */
 export const printBirthCredentialActionFields = [
-  {
-    id: 'paper-vc.query-params',
-    type: FieldType.QUERY_PARAM_READER,
-    conditionals: [
-      {
-        type: ConditionalType.DISPLAY_ON_REVIEW,
-        conditional: never()
-      }
-    ],
-    label: {
-      id: 'event.birth.action.paper-vc.query-params.label',
-      defaultMessage: 'Query param reader',
-      description: 'Hidden query param trigger for paper VC generation'
-    },
-    configuration: {
-      pickParams: ['workqueue']
-    }
-  },
   {
     id: 'verifiable-credential-creation-http-request',
     type: FieldType.HTTP,
@@ -39,7 +14,6 @@ export const printBirthCredentialActionFields = [
       id: 'event.birth.action.certificate.form.section.collectPayment.createCredential.label'
     },
     configuration: {
-      trigger: field('paper-vc.query-params'),
       url: PAPER_CREDENTIAL_HANDLER_URL,
       method: 'POST',
       headers: {
