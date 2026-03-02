@@ -59,7 +59,6 @@ test.describe
         `mother.name=${encodeURIComponent(
           JSON.stringify({
             firstname: record.declaration['mother.name'].firstname,
-            middlename: '',
             surname: record.declaration['mother.name'].surname
           })
         )}`
@@ -93,8 +92,7 @@ test.describe
 
       expect(name).toEqual({
         firstname: record.declaration['mother.name'].firstname,
-        surname: record.declaration['mother.name'].surname,
-        middlename: ''
+        surname: record.declaration['mother.name'].surname
       })
       await expect(page.locator('#tab_birth')).toHaveText('Birth')
       await expect(page.getByTestId('mother____dob-dd')).toHaveValue(dd)
