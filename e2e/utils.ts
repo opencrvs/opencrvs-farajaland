@@ -55,6 +55,7 @@ export async function selectAction(
     | 'Revoke registration'
     | 'Reinstate registration'
     | 'Update'
+    | 'Issue certified copy'
 ) {
   if (await page.getByRole('button', { name: 'Assign record' }).isVisible()) {
     await ensureAssigned(page)
