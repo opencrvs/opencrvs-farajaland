@@ -44,9 +44,9 @@ test.describe.serial('Approval of late birth registration', () => {
     await page.close()
   })
 
-  test.describe('Declaration started by FA', async () => {
+  test.describe('Declaration started by HO', async () => {
     test.beforeAll(async () => {
-      await login(page, CREDENTIALS.FIELD_AGENT)
+      await login(page, CREDENTIALS.HOSPITAL_OFFICIAL)
       await page.click('#header-new-event')
       await page.getByLabel('Birth').click()
       await page.getByRole('button', { name: 'Continue' }).click()
@@ -230,9 +230,6 @@ test.describe.serial('Approval of late birth registration', () => {
       await expect(
         page.getByText('Approval required for late registration')
       ).not.toBeVisible()
-
-      await page.getByRole('button', { name: 'Action', exact: true }).click()
-      await expect(page.getByText('No actions available')).toBeVisible()
     })
   })
 
@@ -280,9 +277,9 @@ test.describe('Birth with non-late registration will not have flag or Approve-ac
     await page.close()
   })
 
-  test.describe.serial('Declaration started by FA', async () => {
+  test.describe.serial('Declaration started by HO', async () => {
     test.beforeAll(async () => {
-      await login(page, CREDENTIALS.FIELD_AGENT)
+      await login(page, CREDENTIALS.HOSPITAL_OFFICIAL)
       await page.click('#header-new-event')
       await page.getByLabel('Birth').click()
       await page.getByRole('button', { name: 'Continue' }).click()
@@ -527,9 +524,9 @@ test.describe
     await page.close()
   })
 
-  test.describe('Declaration started by FA', async () => {
+  test.describe('Declaration started by HO', async () => {
     test.beforeAll(async () => {
-      await login(page, CREDENTIALS.FIELD_AGENT)
+      await login(page, CREDENTIALS.HOSPITAL_OFFICIAL)
       await page.click('#header-new-event')
       await page.getByLabel('Birth').click()
       await page.getByRole('button', { name: 'Continue' }).click()
@@ -664,9 +661,13 @@ test.describe
     })
 
     test("Event should not have the 'Approval required for late registration' -flag", async () => {
+      await expect(page.getByTestId('flags-value')).toHaveText('Validated')
       await expect(
         page.getByText('Approval required for late registration')
       ).not.toBeVisible()
+      await expect(page.getByTestId('flags-value')).not.toHaveText(
+        'Edit in progress'
+      )
     })
   })
 })
@@ -835,6 +836,10 @@ test.describe
       await expect(
         page.getByText('Approval required for late registration')
       ).toBeVisible()
+      await expect(page.getByTestId('flags-value')).not.toHaveText('Validated')
+      await expect(page.getByTestId('flags-value')).not.toHaveText(
+        'Edit in progress'
+      )
     })
 
     test('Assert audit trail', async () => {

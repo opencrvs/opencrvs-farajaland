@@ -8,15 +8,9 @@ import { formatV2ChildName } from '../birth/helpers'
 
 const testCases = [
   {
-    credential: CREDENTIALS.FIELD_AGENT,
+    credential: CREDENTIALS.HOSPITAL_OFFICIAL,
     action: ActionType.DECLARE,
-    expectedAuditRole: 'Hospital Clerk'
-  },
-
-  {
-    credential: CREDENTIALS.ANOTHER_FIELD_AGENT,
-    action: ActionType.DECLARE,
-    expectedAuditRole: 'Community Leader'
+    expectedAuditRole: 'Hospital Official'
   },
   {
     credential: CREDENTIALS.REGISTRATION_OFFICER,
@@ -26,7 +20,7 @@ const testCases = [
   {
     credential: CREDENTIALS.REGISTRAR,
     action: ActionType.REGISTER,
-    expectedAuditRole: 'Local Registrar'
+    expectedAuditRole: 'Registrar'
   }
 ]
 
@@ -47,7 +41,7 @@ test.describe('Roles in Record Audit', () => {
       )
 
       await page
-        .getByRole('textbox', { name: 'Search for a tracking ID' })
+        .getByRole('textbox', { name: 'Search for a record' })
         .fill(formatV2ChildName(res.declaration))
 
       await page.getByRole('button', { name: 'Search' }).click()

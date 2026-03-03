@@ -53,9 +53,7 @@ export async function login(
   expect(token).toBeDefined()
   await page.goto(`${CLIENT_URL}?token=${token}`)
 
-  await expect(
-    page.locator('#appSpinner').or(page.locator('#pin-input'))
-  ).toBeVisible()
+  await page.waitForSelector('#pin-input, #appSpinner', { state: 'visible' })
 
   if (!skipPin) {
     await createPIN(page)
@@ -99,7 +97,7 @@ export async function getToken(username: string, password: string) {
 }
 
 export async function getClientToken(client_id: string, client_secret: string) {
-  const authUrl = `${AUTH_URL}/token?client_id=${client_id}&client_secret=${client_secret}&grant_type=client_credentials`
+  const authUrl = `${GATEWAY_HOST}/auth/token?client_id=${client_id}&client_secret=${client_secret}&grant_type=client_credentials`
 
   const authResponse = await fetch(authUrl, {
     method: 'POST',
@@ -109,8 +107,13 @@ export async function getClientToken(client_id: string, client_secret: string) {
   })
 
   const authBody = await authResponse.json()
+  const token = authBody.token ?? authBody.access_token
 
-  return authBody.access_token
+  if (!token) {
+    throw new Error('Client token missing from gateway /auth/token response')
+  }
+
+  return token
 }
 
 type DeclarationSection =
@@ -297,6 +300,7 @@ export const getLocationNameFromId = async (id: UUID, token: string) => {
   const [location] = await client.locations.list.query({
     locationIds: [id]
   })
+
   return location.name
 }
 
@@ -491,7 +495,7 @@ export const auditRecord = async ({
 }) => {
   if (trackingId) {
     await page
-      .getByRole('textbox', { name: 'Search for a tracking ID' })
+      .getByRole('textbox', { name: 'Search for a record' })
       .fill(trackingId)
 
     await page.getByRole('button', { name: 'Search' }).click()
@@ -648,11 +652,21 @@ export async function selectDeclarationAction(
   }
 }
 
-export async function searchFromSearchBar(page: Page, searchText: string) {
+export async function searchFromSearchBar(
+  page: Page,
+  searchText: string,
+  expectToBeFound: boolean = true
+) {
   const searchResultRegex = /Search result for “([^”]+)”/
   await page.locator('#searchText').fill(searchText)
   await page.locator('#searchIconButton').click()
   const searchResult = await page.locator('#content-name').textContent()
   expect(searchResult).toMatch(searchResultRegex)
-  await page.getByText(searchText, { exact: true }).click()
+  if (expectToBeFound) {
+    await page.getByText(searchText, { exact: true }).click()
+  } else {
+    await expect(
+      page.getByRole('button', { name: searchText, exact: true })
+    ).not.toBeVisible()
+  }
 }

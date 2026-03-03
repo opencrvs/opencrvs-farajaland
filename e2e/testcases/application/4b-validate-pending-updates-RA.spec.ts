@@ -9,6 +9,7 @@ import {
   ensureAssigned,
   ensureOutboxIsEmpty,
   expectInUrl,
+  navigateToWorkqueue,
   selectAction
 } from '../../utils'
 import { getRowByTitle } from '../print-certificate/birth/helpers'
@@ -75,7 +76,7 @@ test.describe.serial('4(b) Validate "Pending updates"-workqueue for RO', () => {
       'Title',
       'Event',
       'Date of Event',
-      'Update requested',
+      'Last updated',
       ''
     ])
 
@@ -83,9 +84,11 @@ test.describe.serial('4(b) Validate "Pending updates"-workqueue for RO', () => {
 
     const cells = row.locator(':scope > div')
 
-    expect(cells.nth(0)).toHaveText(formatV2ChildName(declaration))
-    expect(cells.nth(1)).toHaveText('Birth')
-    expect(cells.nth(2)).toHaveText(declaration['child.dob'].split('T')[0])
+    await expect(cells.nth(0)).toHaveText(formatV2ChildName(declaration))
+    await expect(cells.nth(1)).toHaveText('Birth')
+    await expect(cells.nth(2)).toHaveText(
+      declaration['child.dob'].split('T')[0]
+    )
   })
 
   test('4.3 Click a name', async () => {
@@ -117,5 +120,16 @@ test.describe.serial('4(b) Validate "Pending updates"-workqueue for RO', () => {
     await expect(
       page.getByRole('button', { name: formatV2ChildName(declaration) })
     ).not.toBeVisible()
+  })
+
+  test('4.6 Assert record has correct flags', async () => {
+    await navigateToWorkqueue(page, 'Recent')
+    await page
+      .getByRole('button', { name: formatV2ChildName(declaration) })
+      .click()
+    await expect(page.getByTestId('flags-value')).toHaveText('Validated')
+    await expect(page.getByTestId('flags-value')).not.toHaveText(
+      'Edit in progress'
+    )
   })
 })

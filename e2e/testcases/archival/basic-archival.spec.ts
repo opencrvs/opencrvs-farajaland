@@ -90,8 +90,8 @@ test.describe.serial('Basic Archival flow', () => {
     await page.close()
   })
 
-  test('Login as FA', async () => {
-    await login(page, CREDENTIALS.FIELD_AGENT)
+  test('Login as HO', async () => {
+    await login(page, CREDENTIALS.HOSPITAL_OFFICIAL)
   })
 
   test('Start creating new birth declaration', async () => {
@@ -264,7 +264,7 @@ test.describe.serial('Basic Archival flow', () => {
     await ensureOutboxIsEmpty(page)
   })
 
-  test('Archival is not available for FA', async () => {
+  test('Archival is not available for HO', async () => {
     await page.getByText('Recent').click()
     await page
       .getByRole('button', {
@@ -338,8 +338,8 @@ test.describe.serial('Archival of declaration pending validation', () => {
 
   test.beforeAll(async ({ browser }) => {
     token = await getToken(
-      CREDENTIALS.FIELD_AGENT.USERNAME,
-      CREDENTIALS.FIELD_AGENT.PASSWORD
+      CREDENTIALS.HOSPITAL_OFFICIAL.USERNAME,
+      CREDENTIALS.HOSPITAL_OFFICIAL.PASSWORD
     )
     const res = await createDeclaration(token, undefined, ActionType.DECLARE)
     declaration = res.declaration

@@ -23,7 +23,7 @@ import {
 } from '../birth/helpers'
 import { getRowByTitle } from '../print-certificate/birth/helpers'
 
-// FA Notifies => RO Rejects => FA Re-notifies with edits => RO declares and validates => Registrar rejects
+// HO Notifies => RO Rejects => HO Re-notifies with edits => RO declares and validates => Registrar rejects
 // => RO validates again => Registrar registers
 test.describe.serial('5. Workqueue flow - 5', () => {
   let page: Page
@@ -89,9 +89,9 @@ test.describe.serial('5. Workqueue flow - 5', () => {
     await page.close()
   })
 
-  test.describe('Notify by FA', async () => {
+  test.describe('Notify by HO', async () => {
     test.beforeAll(async () => {
-      await login(page, CREDENTIALS.FIELD_AGENT)
+      await login(page, CREDENTIALS.HOSPITAL_OFFICIAL)
       await page.click('#header-new-event')
       await page.getByLabel('Birth').click()
       await page.getByRole('button', { name: 'Continue' }).click()
@@ -184,9 +184,9 @@ test.describe.serial('5. Workqueue flow - 5', () => {
     })
   })
 
-  test.describe('Re-notify by FA', async () => {
+  test.describe('Re-notify by HO', async () => {
     test('Login', async () => {
-      await login(page, CREDENTIALS.FIELD_AGENT, true)
+      await login(page, CREDENTIALS.HOSPITAL_OFFICIAL, true)
       await assertRecordInWorkqueue({
         page,
         name: childName,

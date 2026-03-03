@@ -78,7 +78,7 @@ test.describe.serial('8. Validate declaration review page', () => {
   }
   test.beforeAll(async ({ browser }) => {
     page = await browser.newPage()
-    await login(page, CREDENTIALS.FIELD_AGENT)
+    await login(page, CREDENTIALS.HOSPITAL_OFFICIAL)
 
     await page.click('#header-new-event')
     await page.getByLabel('Death').click()
@@ -90,7 +90,7 @@ test.describe.serial('8. Validate declaration review page', () => {
     await page.close()
   })
 
-  test.describe('8.1 Field agent actions', async () => {
+  test.describe('8.1 Hospital Official actions', async () => {
     test.describe('8.1.0 Fill up death registration form', async () => {
       test('8.1.0.1 Fill deceased details', async () => {
         await page

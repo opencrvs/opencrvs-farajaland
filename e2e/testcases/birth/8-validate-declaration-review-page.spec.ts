@@ -71,7 +71,7 @@ test.describe.serial('8. Validate declaration review page', () => {
 
   test.beforeAll(async ({ browser }) => {
     page = await browser.newPage()
-    await login(page, CREDENTIALS.FIELD_AGENT)
+    await login(page, CREDENTIALS.HOSPITAL_OFFICIAL)
     await page.click('#header-new-event')
     await page.getByLabel('Birth').click()
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -82,7 +82,7 @@ test.describe.serial('8. Validate declaration review page', () => {
     await page.close()
   })
 
-  test.describe('8.1 Field agent actions', async () => {
+  test.describe('8.1 Hospital Official actions', async () => {
     test.describe('8.1.0 Fill up birth registration form', async () => {
       test('8.1.0.1 Fill child details', async () => {
         await page.locator('#firstname').fill(declaration.child.name.firstNames)
