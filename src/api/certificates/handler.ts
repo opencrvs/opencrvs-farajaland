@@ -68,6 +68,8 @@ const libreBaskervilleFont: Record<string, FontFamilyTypes> = {
   }
 }
 
+console.log('foo')
+
 export async function certificateHandler(request: Request, h: ResponseToolkit) {
   if (request.params.id) {
     const filePath = `${__dirname}/source/${request.params.id}`
