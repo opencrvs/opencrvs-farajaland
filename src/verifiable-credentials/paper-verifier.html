@@ -277,14 +277,11 @@
 
     <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
     <script>
-      const publicJwk = {
-        kty: 'EC',
-        crv: 'P-256',
-        x: 'AaHi6zid20drjPgMtiwnluW5Dt2wZK25QqFgpgcKYOo',
-        y: 'Ar7ijcnX1Z2jujYP_zTFeZizO5rLLsNPHQ_UAzVy5eg',
-        ext: true,
-        key_ops: ['verify']
-      }
+      const PAPER_PROFILE_TYPE = 'farajaland_birth_paper_v1'
+      const TRUSTED_ISSUER = 'https://vc-demo.opencrvs.dev:7002'
+      const JWKS_URL = `${TRUSTED_ISSUER}/draft13/jwks`
+      const ALLOWED_CLOCK_SKEW_SECONDS = 120
+      let jwksCache = null
 
       function base64urlToBytes(input) {
         const base64 = input.replace(/-/g, '+').replace(/_/g, '/')
@@ -315,6 +312,61 @@
         }
 
         return value
+      }
+
+      function requireNumericDate(value, fieldName) {
+        if (typeof value !== 'number' || !Number.isFinite(value)) {
+          throw new Error(`Missing or invalid ${fieldName}`)
+        }
+
+        return value
+      }
+
+      async function getJwks() {
+        if (jwksCache) {
+          return jwksCache
+        }
+
+        const response = await fetch(JWKS_URL)
+
+        if (!response.ok) {
+          throw new Error('Unable to load JWKS')
+        }
+
+        const jwks = await response.json()
+        const keys = Array.isArray(jwks.keys) ? jwks.keys : null
+
+        if (!keys || keys.length === 0) {
+          throw new Error('JWKS does not contain keys')
+        }
+
+        jwksCache = keys
+        return keys
+      }
+
+      async function getVerificationKey(header) {
+        const kid = requireString(header?.kid, 'header kid')
+        const keys = await getJwks()
+        const matchingJwk = keys.find((candidate) => candidate.kid === kid)
+
+        if (!matchingJwk) {
+          throw new Error(`No matching JWK found for kid: ${kid}`)
+        }
+
+        return crypto.subtle.importKey(
+          'jwk',
+          {
+            ...matchingJwk,
+            ext: true,
+            key_ops: ['verify']
+          },
+          {
+            name: 'ECDSA',
+            namedCurve: 'P-256'
+          },
+          false,
+          ['verify']
+        )
       }
 
       function setVerifiedState(valid) {
@@ -352,16 +404,7 @@
           throw new Error(`Unsupported alg: ${parsedHeader.alg || 'unknown'}`)
         }
 
-        const key = await crypto.subtle.importKey(
-          'jwk',
-          publicJwk,
-          {
-            name: 'ECDSA',
-            namedCurve: 'P-256'
-          },
-          false,
-          ['verify']
-        )
+        const key = await getVerificationKey(parsedHeader)
 
         const encoder = new TextEncoder()
         const signingInput = encoder.encode(`${header}.${payload}`)
@@ -448,17 +491,44 @@
           const payload = result.payload || {}
           const vc = payload.vc || {}
           const credentialTypes = Array.isArray(vc.type) ? vc.type : []
+          const nowSeconds = Math.floor(Date.now() / 1000)
 
-          if (!credentialTypes.includes('birth_paper_v1')) {
+          if (!credentialTypes.includes(PAPER_PROFILE_TYPE)) {
             throw new Error('Unsupported credential profile')
           }
 
+          const issuer = requireString(payload.iss, 'issuer')
+
+          if (issuer !== TRUSTED_ISSUER) {
+            throw new Error(`Unexpected issuer: ${issuer}`)
+          }
+
+          const iat = requireNumericDate(payload.iat, 'iat')
+          const nbf = requireNumericDate(payload.nbf, 'nbf')
+          const exp = requireNumericDate(payload.exp, 'exp')
+          const jti =
+            typeof payload.jti === 'string' && payload.jti.trim()
+              ? payload.jti
+              : null
+
+          if (nowSeconds + ALLOWED_CLOCK_SKEW_SECONDS < nbf) {
+            throw new Error('Credential is not valid yet')
+          }
+
+          if (nowSeconds - ALLOWED_CLOCK_SKEW_SECONDS >= exp) {
+            throw new Error('Credential has expired')
+          }
+
+          if (iat > nowSeconds + ALLOWED_CLOCK_SKEW_SECONDS) {
+            throw new Error('Credential issued in the future')
+          }
+
           const subject = vc.credentialSubject || {}
-          const credentialId = requireString(vc.id, 'credential id')
-          const givenName = requireString(subject.given_name, 'given_name')
-          const familyName = requireString(subject.family_name, 'family_name')
-          const birthdate = requireString(subject.birthdate, 'birthdate')
-          const registrationNumber = requireString(subject.brn, 'brn')
+          const credentialId = requireString(vc.id || jti, 'credential id')
+          const givenName = requireString(subject.gn, 'gn')
+          const familyName = requireString(subject.fn, 'fn')
+          const birthdate = requireString(subject.dob, 'dob')
+          const registrationNumber = requireString(subject.rn, 'rn')
 
           setIdField(idGivenNameEl, givenName)
           setIdField(idFamilyNameEl, familyName)

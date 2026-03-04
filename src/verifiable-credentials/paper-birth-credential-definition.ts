@@ -5,14 +5,12 @@
  * `paperBirthCredentialTemplate` for issuance.
  */
 export interface PaperBirthCredentialData {
-  /** Subject identifier. */
-  id: string
   /** Birth registration number. */
-  brn: string
+  rn: string
   /** Child given name. */
-  given_name: string
+  gn: string
   /** Child family name. */
-  family_name: string
+  fn: string
   /** Birth date in ISO 8601 (YYYY-MM-DD) format. */
-  birthdate: string
+  dob: string
 }
