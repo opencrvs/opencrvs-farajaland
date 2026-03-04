@@ -85,7 +85,7 @@ export const issueBirthCredentialAction = {
           value: 'MOTHER',
           label: {
             defaultMessage: 'Mother',
-            description: '@TODO',
+            description: 'Option label for mother requester type',
             id: 'event.birth.custom.action.issue-vc.field.requester.option.mother'
           }
         },
@@ -93,7 +93,7 @@ export const issueBirthCredentialAction = {
           value: 'FATHER',
           label: {
             defaultMessage: 'Father',
-            description: '@TODO',
+            description: 'Option label for father requester type',
             id: 'event.birth.custom.action.issue-vc.field.requester.option.father'
           }
         }
