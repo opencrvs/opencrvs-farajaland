@@ -116,11 +116,11 @@ test.describe.serial('Navigating in and out of dashboard', () => {
       await page.locator('#page-title button').click()
 
       await page.waitForURL(
-        `**/search-result/birth?child.dob=${declaration['child.dob']}&child.name=%7B%22firstname%22%3A%22${declaration['child.name'].firstname}%22%2C%22middlename%22%3A%22%22%2C%22surname%22%3A%22${declaration['child.name'].surname}%22%7D`
+        `**/search-result/birth?child.dob=${declaration['child.dob']}&child.name=${encodeURIComponent(JSON.stringify({ firstname: declaration['child.name'].firstname, surname: declaration['child.name'].surname }))}`
       )
       await expectInUrl(
         page,
-        `/search-result/birth?child.dob=${declaration['child.dob']}&child.name=%7B%22firstname%22%3A%22${declaration['child.name'].firstname}%22%2C%22middlename%22%3A%22%22%2C%22surname%22%3A%22${declaration['child.name'].surname}%22%7D`
+        `/search-result/birth?child.dob=${declaration['child.dob']}&child.name=${encodeURIComponent(JSON.stringify({ firstname: declaration['child.name'].firstname, surname: declaration['child.name'].surname }))}`
       )
     })
   })
