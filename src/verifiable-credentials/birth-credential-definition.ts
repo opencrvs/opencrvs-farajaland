@@ -18,6 +18,10 @@ export interface BirthCredentialData {
    */
   family_name: string
   /**
+   * Legal birth registration number assigned by CRVS.
+   */
+  registration_number: string
+  /**
    * Birth date in ISO 8601 (YYYY-MM-DD) format.
    */
   birthdate: string

@@ -5,6 +5,7 @@ export const DEMO_ISSUER_DID = 'https://vc-demo.opencrvs.dev'
 
 export const birthCredentialTemplate = (event: EventIndex) => {
   const childName = event.declaration['child.name'] as NameFieldValue
+  const registrationNumber = event.legalStatuses.REGISTERED!.registrationNumber // non-null assertion is safe because this template should only be used for registered events
   const fatherName = event.declaration['father.name'] as
     | NameFieldValue
     | undefined
@@ -21,6 +22,7 @@ export const birthCredentialTemplate = (event: EventIndex) => {
       given_name: childName.firstname,
       middle_name: childName.middlename,
       family_name: childName.surname,
+      registration_number: registrationNumber,
       birthdate: dateOfEvent,
 
       place_of_birth: {
@@ -61,6 +63,7 @@ export const birthCredentialTemplate = (event: EventIndex) => {
         given_name: { sd: true },
         middle_name: { sd: true },
         family_name: { sd: true },
+        registration_number: { sd: true },
         birthdate: {
           sd: true
         },
