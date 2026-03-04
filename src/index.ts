@@ -79,7 +79,7 @@ import {
 import { env } from './environment'
 import { workqueueconfigHandler } from './api/workqueue/handler'
 import getUserNotificationRoutes from './config/routes/userNotificationRoutes'
-import getVerifiableCredentialRoutes from './config/routes/verifiableCredentialRoutes'
+import getVerifiableCredentialRoutes from './verifiable-credentials/routes'
 import {
   importAdministrativeAreas,
   importEvent,

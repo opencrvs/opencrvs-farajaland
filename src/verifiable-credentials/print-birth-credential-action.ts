@@ -1,5 +1,5 @@
 import { FieldType, field, window, FieldConfig } from '@opencrvs/toolkit/events'
-import { PAPER_CREDENTIAL_HANDLER_URL } from '../config/routes/verifiableCredentialRoutes'
+import { PAPER_CREDENTIAL_HANDLER_URL } from './routes'
 
 /**
  * These fields will be included in print certificate action form as hidden. The credential will be minted before printing.

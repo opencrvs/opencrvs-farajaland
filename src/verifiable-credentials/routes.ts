@@ -1,14 +1,11 @@
 import { CLIENT_APP_URL, GATEWAY_URL } from '@countryconfig/constants'
 import { env } from '@countryconfig/environment'
 import { logger } from '@countryconfig/logger'
-import { buildTypeScriptToJavaScript } from '@countryconfig/utils'
 import { ServerRoute, ReqRefDefaults } from '@hapi/hapi'
 import { createClient } from '@opencrvs/toolkit/api'
 import QRCode from 'qrcode'
-import { join } from 'path'
-import { readFile } from 'fs/promises'
-import { birthCredentialTemplate } from '../../verifiable-credentials/birth-credential-template'
-import { paperBirthCredentialTemplate } from '../../verifiable-credentials/paper-birth-credential-template'
+import { birthCredentialTemplate } from './birth-credential-template'
+import { paperBirthCredentialTemplate } from './paper-birth-credential-template'
 
 /**
  * Example responses OpenCRVS expects from your credential issuer.
@@ -165,42 +162,6 @@ const paperCredentialRoute = {
   }
 } satisfies ServerRoute<ReqRefDefaults>
 
-const verifierRoute = {
-  method: 'GET',
-  path: '/verifier.html',
-  handler: async (_req, h) => {
-    return h
-      .response(
-        await readFile(
-          join(__dirname, '../../verifiable-credentials/verifier.html'),
-          'utf-8'
-        )
-      )
-      .type('text/html')
-  },
-  options: {
-    auth: false
-  }
-} satisfies ServerRoute<ReqRefDefaults>
-
-const paperVerifierRoute = {
-  method: 'GET',
-  path: '/paper-verifier.html',
-  handler: async (_req, h) => {
-    return h
-      .response(
-        await readFile(
-          join(__dirname, '../../verifiable-credentials/paper-verifier.html'),
-          'utf-8'
-        )
-      )
-      .type('text/html')
-  },
-  options: {
-    auth: false
-  }
-} satisfies ServerRoute<ReqRefDefaults>
-
 /** FieldType.HTTP uses this URL to fetch the credential offer from the form */
 export const CREDENTIAL_OFFER_HANDLER_URL = new URL(
   `api/countryconfig/${credentialOfferRoute.path}`,
@@ -216,10 +177,7 @@ export default function getVerifiableCredentialRoutes(): ServerRoute<ReqRefDefau
   return [
     exampleOid4vcIssuanceResponse,
     exampleRawJwtSignResponse,
-
     credentialOfferRoute,
-    paperCredentialRoute,
-    verifierRoute,
-    paperVerifierRoute
+    paperCredentialRoute
   ]
 }
