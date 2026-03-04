@@ -1,7 +1,12 @@
 import { expect, test, type Page } from '@playwright/test'
 import { CREDENTIALS } from '../../constants'
 import { getToken, login, searchFromSearchBar } from '../../helpers'
-import { ensureAssigned, selectAction } from '../../utils'
+import {
+  ensureAssigned,
+  ensureOutboxIsEmpty,
+  navigateToWorkqueue,
+  selectAction
+} from '../../utils'
 import {
   createDeclaration,
   type Declaration
@@ -56,19 +61,27 @@ test.describe.serial('Issue verifiable credential', () => {
       'src',
       /^data:image\/png;base64,/
     )
+
+    await page.getByRole('button', { name: 'Confirm' }).click()
+    await ensureOutboxIsEmpty(page)
   })
 
   test('Show verifiable credential QR code in Birth Certificate', async () => {
-    await page.goBack()
-    await expect(
-      page.getByRole('button', { name: 'Action', exact: true })
-    ).toBeVisible()
+    await navigateToWorkqueue(page, 'Pending certification')
+    await searchFromSearchBar(page, childName)
+    await ensureAssigned(page)
 
     await selectAction(page, 'Print')
     await selectCertificationType(page, 'Birth Certificate')
     await selectRequesterType(page, 'Print and issue to Informant (Mother)')
     await page.getByRole('button', { name: 'Continue' }).click()
     await page.getByRole('button', { name: 'Verified' }).click()
+
+    // known UX issue:
+    // there is a background HTTP call to create the verifiable credential. We need to wait for it to succeed.
+    const HTTP_CALL_RESPONSE_WAIT_MS = 500
+    await page.waitForTimeout(HTTP_CALL_RESPONSE_WAIT_MS)
+
     await page.getByRole('button', { name: 'Continue' }).click()
 
     const certificateQrCode = page.locator(
