@@ -1,8 +1,6 @@
 import { EventIndex, NameFieldValue } from '@opencrvs/toolkit/events'
 import type { BirthCredentialData } from './birth-credential-definition'
 
-export const DEMO_ISSUER_DID = 'https://vc-demo.opencrvs.dev'
-
 export const birthCredentialTemplate = (event: EventIndex) => {
   const childName = event.declaration['child.name'] as NameFieldValue
   const registrationNumber = event.legalStatuses.REGISTERED!.registrationNumber // non-null assertion is safe because this template should only be used for registered events
