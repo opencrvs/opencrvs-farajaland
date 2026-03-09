@@ -26,14 +26,6 @@ export function paperBirthCredentialTemplate(event: EventIndex) {
         fn: childName.surname,
         dob: dateOfEvent
       } satisfies PaperBirthCredentialData
-    },
-    mapping: {
-      // Credential ID must be unique per issuance so re-prints/re-issues are independently traceable.
-      id: '<uuid>',
-      // Standard JWT trust claims for verifier time validation and replay resistance.
-      iat: '<timestamp-seconds>',
-      nbf: '<timestamp-seconds>',
-      exp: '<timestamp-in-seconds:365d>'
     }
   }
 }
