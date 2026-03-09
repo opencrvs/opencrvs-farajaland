@@ -2,8 +2,10 @@ import { EventIndex, NameFieldValue } from '@opencrvs/toolkit/events'
 import type { PaperBirthCredentialData } from './paper-birth-credential-definition'
 import { v5 as uuidv5 } from 'uuid'
 
+// Update the following constants with values specific to your country and issuer setup.
 const PAPER_BIRTH_SUBJECT_DID_PREFIX = 'urn:farajaland:paper-birth-subject:'
 const PAPER_BIRTH_SUBJECT_DID_NAMESPACE = 'b8be09fa-a9b9-4b9f-8d15-40f4696e9f8e'
+const PAPER_BIRTH_ISSUER_DID = 'did:web:issuer.opencrvs.dev:issuer'
 
 export function paperBirthCredentialTemplate(event: EventIndex) {
   const childName = event.declaration['child.name'] as NameFieldValue
@@ -15,6 +17,7 @@ export function paperBirthCredentialTemplate(event: EventIndex) {
   )
 
   return {
+    issuerDid: PAPER_BIRTH_ISSUER_DID,
     // `subjectDid` becomes JWT `sub`. Keep it pseudonymous and stable, and do not leak internal DB IDs.
     subjectDid: `${PAPER_BIRTH_SUBJECT_DID_PREFIX}${subjectId}`,
     credentialData: {
