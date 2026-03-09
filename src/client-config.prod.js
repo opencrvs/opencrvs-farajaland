@@ -25,16 +25,6 @@
   const minioBaseUrl = '{{minio_base_url}}'
 
   window.config = {
-    MINIO_URL: `${scheme}//minio.${hostname}/ocrvs/`,
-    /** E2E uses single minio for all the different services. @see start-prod.sh.  */
-    MINIO_BASE_URL: minioBaseUrl.startsWith('http')
-      ? minioBaseUrl
-      : // Resolve the protocol on the same level as the other URLs.
-      `${scheme}${minioBaseUrl}`, // URL without path/bucket information, used for file uploads, v2
-    /** Bucket name is hardcoded as 'ocrvs'. In live system, it cannot be changed without data migration.
-     * In E2E environment, buckets are separated from different PR environments to avoid conflicts. @see start-prod.sh
-     */
-    MINIO_BUCKET: minioBucket,
     // Country code in uppercase ALPHA-3 format
     COUNTRY: 'FAR',
     LANGUAGES: ['en', 'fr'],
