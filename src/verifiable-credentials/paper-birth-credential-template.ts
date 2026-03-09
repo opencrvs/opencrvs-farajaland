@@ -21,7 +21,7 @@ export function paperBirthCredentialTemplate(event: EventIndex) {
     // `subjectDid` becomes JWT `sub`. Keep it pseudonymous and stable, and do not leak internal DB IDs.
     subjectDid: `${PAPER_BIRTH_SUBJECT_DID_PREFIX}${subjectId}`,
     credentialData: {
-      type: ['VerifiableCredential', 'farajaland_birth_paper_v1'],
+      type: ['VerifiableCredential', 'farajaland.birth.paper.v1'],
       credentialSubject: {
         // `rn` is the legal birth registration number (record identifier), not the credential identifier.
         rn: registrationNumber,
@@ -29,6 +29,14 @@ export function paperBirthCredentialTemplate(event: EventIndex) {
         fn: childName.surname,
         dob: dateOfEvent
       } satisfies PaperBirthCredentialData
+    },
+    mapping: {
+      // Credential ID must be unique per issuance so re-prints/re-issues are independently traceable.
+      id: '<uuid>',
+      // Standard JWT trust claims for verifier time validation and replay resistance.
+      iat: '<timestamp-seconds>',
+      nbf: '<timestamp-seconds>',
+      exp: '<timestamp-in-seconds:365d>'
     }
   }
 }
