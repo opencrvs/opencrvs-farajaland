@@ -51,8 +51,8 @@ export const issueBirthCredentialAction = {
   form: [
     {
       id: 'supporting-copy',
-      // NOTE! HACK!
-      // Setting PARAGRAPH to required disables submission, which is what we want.
+      // NOTE!
+      // Setting PARAGRAPH to required disables submission before the VC is issued.
       required: true,
       type: FieldType.PARAGRAPH,
       label: {
