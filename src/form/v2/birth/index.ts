@@ -316,7 +316,8 @@ export const birthEvent = defineConfig({
           operation: 'add',
           conditional: or(
             user.hasRole('REGISTRATION_AGENT'),
-            user.hasRole('LOCAL_REGISTRAR')
+            user.hasRole('LOCAL_REGISTRAR'),
+            user.hasRole('EMBASSY_OFFICIAL')
           )
         }
       ],
@@ -381,7 +382,7 @@ export const birthEvent = defineConfig({
       customActionType: 'VALIDATE_DECLARATION',
       icon: 'Stamp',
       label: {
-        defaultMessage: 'Validate declaration',
+        defaultMessage: 'Validate',
         description:
           'This is shown as the action name anywhere the user can trigger the action from',
         id: 'event.birth.custom.action.validate-declaration.label'
@@ -428,7 +429,7 @@ export const birthEvent = defineConfig({
       customActionType: 'APPROVE_DECLARATION',
       icon: 'Stamp',
       label: {
-        defaultMessage: 'Approve declaration',
+        defaultMessage: 'Approve',
         description:
           'This is shown as the action name anywhere the user can trigger the action from',
         id: 'event.birth.action.approve.label'
@@ -893,13 +894,21 @@ export const birthEvent = defineConfig({
     {
       type: ActionType.PRINT_CERTIFICATE,
       label: {
-        defaultMessage: 'Print certificate',
+        defaultMessage: 'Print certified copy',
         description:
           'This is shown as the action name anywhere the user can trigger the action from',
         id: 'event.birth.action.collect-certificate.label'
       },
       conditionals: [
-        { type: ConditionalType.SHOW, conditional: not(flag('revoked')) }
+        {
+          type: ConditionalType.SHOW,
+          conditional: not(
+            or(
+              flag('revoked'),
+              flag('certified-copy-printed-in-advance-of-issuance')
+            )
+          )
+        }
       ],
       flags: [
         {
