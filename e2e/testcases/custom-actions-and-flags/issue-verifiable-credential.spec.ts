@@ -85,7 +85,7 @@ test.describe.serial('Issue verifiable credential', () => {
     await page.getByRole('button', { name: 'Continue' }).click()
 
     const certificateQrCode = page.locator(
-      '#print image[width="300"][height="300"]'
+      '#print image[data-testid="verifiable-credential-qr-code"]'
     )
     await expect(certificateQrCode).toBeVisible()
 
