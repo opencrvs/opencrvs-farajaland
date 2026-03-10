@@ -1,6 +1,6 @@
 import { Page, expect, test } from '@playwright/test'
-import { goToSection, login } from '../../helpers'
-import { openBirthDeclaration } from '../birth/helpers'
+import { goToSection, login } from '../../../helpers'
+import { openBirthDeclaration } from '../../birth/helpers'
 
 test.describe('Informant details resets when relation is changed', () => {
   test.describe.serial('Birth', async () => {
