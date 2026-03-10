@@ -15,7 +15,7 @@ const exampleOid4vcIssuanceResponse = {
   method: 'POST',
   path: '/_demo-issuer/openid4vc/sdjwt/issue',
   handler: () =>
-    'openid-credential-offer://?credential_offer_uri=https%3A%2F%2Fissuer.example.com%2Foffers%2Fabcde-12345'
+    'openid-credential-offer://?credential_offer_uri=https%3A%2F%2Fissuer.example.com%2Foffers%2F2K5sgesB'
 }
 
 const exampleRawJwtSignResponse = {
