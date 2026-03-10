@@ -112,7 +112,8 @@ test.describe('Action menu options', () => {
         'Assign',
         'Escalate',
         'Print',
-        'Correct record'
+        'Correct record',
+        'Issue a verifiable credential'
       ])
     })
   })
