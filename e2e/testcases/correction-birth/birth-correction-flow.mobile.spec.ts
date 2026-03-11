@@ -106,7 +106,7 @@ test.describe.serial('Birth correction flow - Mobile', () => {
   test('After changing child name, continue button should be enabled', async () => {
     await page.getByTestId('change-button-child.dob').click()
     await page.getByTestId('child____dob-yyyy').fill('2024')
-    await page.getByTestId('child____dob-mm').fill('6')
+    await page.getByTestId('child____dob-mm').fill('06')
     await page.getByTestId('child____dob-dd').fill('24')
     await page
       .getByTestId('text__child____reason')

@@ -72,8 +72,7 @@ test.describe
 
       expect(name).toEqual({
         firstname: record.declaration['child.name'].firstname,
-        surname: record.declaration['child.name'].surname,
-        middlename: ''
+        surname: record.declaration['child.name'].surname
       })
 
       await expect(page.getByText('Search Results')).toBeVisible()
@@ -106,8 +105,7 @@ test.describe
 
       expect(name).toEqual({
         firstname: record.declaration['child.name'].firstname,
-        surname: record.declaration['child.name'].surname,
-        middlename: ''
+        surname: record.declaration['child.name'].surname
       })
 
       await expect(page.locator('#tab_birth')).toHaveText('Birth')
