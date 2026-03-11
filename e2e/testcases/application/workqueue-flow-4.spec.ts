@@ -30,12 +30,7 @@ test.describe.serial('4. Workqueue flow - 4', () => {
       birthDate: getRandomDate(0, 200)
     },
     placeOfBirth: 'Health Institution',
-    birthLocation: {
-      facility: 'Golden Valley Rural Health Centre',
-      district: 'Ibombo',
-      province: 'Central',
-      country: 'Farajaland'
-    },
+    birthLocation: { facility: 'Ibombo District Office' },
     informantType: 'Mother',
     informantEmail: faker.internet.email(),
     mother: {
@@ -276,7 +271,7 @@ test.describe.serial('4. Workqueue flow - 4', () => {
         })
         .click()
 
-      await selectAction(page, 'Validate declaration')
+      await selectAction(page, 'Validate')
 
       await page.getByRole('button', { name: 'Confirm' }).click()
 

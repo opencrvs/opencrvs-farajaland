@@ -4,6 +4,7 @@ import {
   CLIENT_URL,
   CREDENTIALS,
   GATEWAY_HOST,
+  LOGIN_URL,
   SAFE_INPUT_CHANGE_TIMEOUT_MS,
   SAFE_OUTBOX_TIMEOUT_MS
 } from './constants'
@@ -14,7 +15,7 @@ import { isMobile } from './mobile-helpers'
 import { createClient } from '@opencrvs/toolkit/api'
 import { UUID } from 'crypto'
 
-async function createPIN(page: Page) {
+export async function createPIN(page: Page) {
   await page.click('#pin-input')
   for (let i = 1; i <= 8; i++) {
     await page.type('#pin-input', `${i % 2}`)
@@ -42,6 +43,7 @@ export async function logout(page: Page) {
     })
     .click()
   await page.context().clearCookies()
+  await page.waitForURL((url) => url.origin === LOGIN_URL)
 }
 
 export async function login(
@@ -269,7 +271,7 @@ export const expectAddress = async (
 
 /*
   The deletion section is formatted like below:
-  	'-'
+    '-'
     'Farajaland'
     'Central'
     'Ibombo'
@@ -605,7 +607,7 @@ export async function validateActionMenuButton(
   action:
     | 'Declare'
     | 'Notify'
-    | 'Approve declaration'
+    | 'Approve'
     | 'Register'
     | 'Declare with edits'
     | 'Register with edits',
