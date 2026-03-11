@@ -731,7 +731,8 @@ export async function createServer() {
       const url = new URL('events', GATEWAY_URL).toString()
       const apiClient = createClient(url, req.headers.authorization)
       const locations = await apiClient.locations.list.query()
-      const administrativeAreas = await apiClient.administrativeAreas.list.query()
+      const administrativeAreas =
+        await apiClient.administrativeAreas.list.query()
 
       await importAdministrativeAreas(administrativeAreas)
       await importLocations(locations)
