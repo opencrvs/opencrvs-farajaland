@@ -22,7 +22,8 @@ import {
   selectAction
 } from '../../utils'
 
-test.describe.serial('Birth declaration case - Conditional Hidden Fields Removal', () => {
+test.describe
+  .serial('Birth declaration case - Conditional Hidden Fields Removal', () => {
   let page: Page
   const trackingId = ''
 
@@ -132,7 +133,7 @@ test.describe.serial('Birth declaration case - Conditional Hidden Fields Removal
 
   test.describe('Declaration started by RA', async () => {
     test.beforeAll(async () => {
-      await login(page, CREDENTIALS.REGISTRATION_AGENT)
+      await login(page, CREDENTIALS.REGISTRATION_OFFICER)
       await page.click('#header-new-event')
       await page.getByLabel('Birth').click()
       await page.getByRole('button', { name: 'Continue' }).click()
@@ -736,7 +737,7 @@ test.describe.serial('Birth declaration case - Conditional Hidden Fields Removal
 
   test.describe('Review and update declaration by Local Registrar', async () => {
     test.beforeAll(async () => {
-      await login(page, CREDENTIALS.LOCAL_REGISTRAR)
+      await login(page, CREDENTIALS.REGISTRAR)
       await page.getByRole('button', { name: 'Ready for review' }).click()
       await page
         .getByRole('button', {
@@ -780,7 +781,7 @@ test.describe.serial('Birth declaration case - Conditional Hidden Fields Removal
         })
         .click()
       await ensureAssigned(page)
-      await selectAction(page, 'View')
+      await selectAction(page, 'Review')
 
       await expect(page.getByTestId('row-value-mother.occupation')).toHaveText(
         'House Wife'
@@ -822,7 +823,7 @@ test.describe.serial('Birth declaration case - Conditional Hidden Fields Removal
           })
         })
         .click()
-      await selectAction(page, 'Correct record')
+      await selectAction(page, 'Correct')
       await page.locator('#requester____type').click()
       await page.getByText('Informant (Grandfather)', { exact: true }).click()
 
