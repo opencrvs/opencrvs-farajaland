@@ -1,4 +1,11 @@
-import { FieldType, field, window, FieldConfig } from '@opencrvs/toolkit/events'
+import {
+  FieldType,
+  field,
+  window,
+  FieldConfig,
+  ConditionalType,
+  never
+} from '@opencrvs/toolkit/events'
 import { PAPER_CREDENTIAL_HANDLER_URL } from './routes'
 
 /**
@@ -21,7 +28,13 @@ export const printBirthCredentialActionFields = [
       },
       body: { pathname: window().location.get('pathname') },
       timeout: 10000
-    }
+    },
+    conditionals: [
+      {
+        type: ConditionalType.DISPLAY_ON_REVIEW,
+        conditional: never()
+      }
+    ]
   },
   {
     id: 'verifiable-credential',
@@ -35,6 +48,12 @@ export const printBirthCredentialActionFields = [
     },
     value: field('verifiable-credential-creation-http-request').get(
       'data.credential_qr'
-    )
+    ),
+    conditionals: [
+      {
+        type: ConditionalType.DISPLAY_ON_REVIEW,
+        conditional: never()
+      }
+    ]
   }
 ] satisfies FieldConfig[]
