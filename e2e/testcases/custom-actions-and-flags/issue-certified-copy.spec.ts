@@ -47,7 +47,7 @@ test.describe.serial('Issue Certified Copy ', () => {
       ).toBeVisible()
     })
     test('Navigate to print', async () => {
-      await selectAction(page, 'Print certified copy')
+      await selectAction(page, 'Print')
     })
 
     test('Template type should be selected by default', async () => {
@@ -88,6 +88,13 @@ test.describe.serial('Issue Certified Copy ', () => {
     })
     test(' Print', async () => {
       await printAndExpectPopup(page)
+    })
+    test('Flag check', async()=>{
+      await searchFromSearchBar(page, childName)
+      const Flags = page.getByTestId('flags').filter({ hasText: 'Flags' })
+      await expect(Flags.getByText('Certified copy printed in advance of issuance')).toBeVisible()
+      await page.getByTestId('exit-event').click()
+
     })
   })
   test.describe('Print issuance ', async () => {
