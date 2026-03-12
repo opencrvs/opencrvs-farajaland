@@ -45,9 +45,10 @@ test.describe.serial('Correct record - Change ages', () => {
     const administrativeAreas = await getAdministrativeAreas(token)
     const province = getIdByName(administrativeAreas, 'Central')
     const district = getIdByName(administrativeAreas, 'Ibombo')
+    const village = getIdByName(administrativeAreas, 'Klow')
 
-    if (!province || !district) {
-      throw new Error('Province or district not found')
+    if (!province || !district || !village) {
+      throw new Error('Province, district or village not found')
     }
 
     const childDob = new Date(Date.now() - 60 * 60 * 24 * 1000)
@@ -71,7 +72,7 @@ test.describe.serial('Correct record - Change ages', () => {
       'informant.nid': faker.string.numeric(10),
       'informant.address': {
         country: 'FAR',
-        administrativeArea: district,
+        administrativeArea: village,
         addressType: AddressType.DOMESTIC
       },
       'father.detailsNotAvailable': true,
@@ -92,7 +93,7 @@ test.describe.serial('Correct record - Change ages', () => {
       'mother.address': {
         country: 'FAR',
         addressType: AddressType.DOMESTIC,
-        administrativeArea: district
+        administrativeArea: village
       },
       'child.name': {
         firstname: faker.person.firstName(),

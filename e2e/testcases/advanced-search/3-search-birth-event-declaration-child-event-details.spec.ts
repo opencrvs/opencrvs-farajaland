@@ -141,6 +141,7 @@ test.describe
   let fullNameOfChild = ''
   let province = ''
   let district = ''
+  let village = ''
   let record: Awaited<ReturnType<typeof createDeclaration>>
   test.beforeAll(async ({ browser }) => {
     page = await browser.newPage()
@@ -152,9 +153,10 @@ test.describe
     const administrativeAreas = await getAdministrativeAreas(token)
     province = getIdByName(administrativeAreas, 'Central')!
     district = getIdByName(administrativeAreas, 'Ibombo')!
+    village = getIdByName(administrativeAreas, 'Klow')!
 
-    if (!province || !district) {
-      throw new Error('Province or district not found')
+    if (!province || !district || !village) {
+      throw new Error('Province, district or village not found')
     }
 
     record = await createDeclaration(
@@ -168,7 +170,7 @@ test.describe
         'child.birthLocation.privateHome': {
           country: 'FAR',
           addressType: 'DOMESTIC',
-          administrativeArea: district,
+          administrativeArea: village,
           streetLevelDetails: { town: 'Dhaka' }
         },
         'child.gender': 'female'
@@ -225,6 +227,7 @@ test.describe
         await expect(addressObject.addressType).toBe('DOMESTIC')
         await expect(addressObject.province).toBeTruthy()
         await expect(addressObject.district).toBeTruthy()
+        await expect(addressObject.village).toBeTruthy()
       }
 
       await expect(page.getByText('Search results')).toBeVisible()
@@ -259,6 +262,7 @@ test.describe
         await expect(addressObject.addressType).toBe('DOMESTIC')
         await expect(addressObject.province).toBeTruthy()
         await expect(addressObject.district).toBeTruthy()
+        await expect(addressObject.village).toBeTruthy()
       }
       expect(page.url()).toContain(`child.placeOfBirth=PRIVATE_HOME`)
       expect(page.url()).toContain(`eventType=birth`)

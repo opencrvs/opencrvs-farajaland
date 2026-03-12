@@ -49,6 +49,7 @@ test.describe.serial('5. Death declaration case - 5', () => {
         country: 'Farajaland',
         province: 'Chuminga',
         district: 'Nsali',
+        village: 'Oro',
         town: faker.location.city(),
         residentialArea: faker.location.county(),
         street: faker.location.street(),
@@ -178,6 +179,10 @@ test.describe.serial('5. Death declaration case - 5', () => {
         .getByText(declaration.eventDetails.deathLocationOther.district, {
           exact: true
         })
+        .click()
+      await page.locator('#village').click()
+      await page
+        .getByText(declaration.eventDetails.deathLocationOther.village, { exact: true })
         .click()
       await page
         .locator('#town')

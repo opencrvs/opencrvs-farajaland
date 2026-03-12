@@ -11,6 +11,7 @@ test.describe.serial('Advanced Search - Mobile', () => {
   let page: Page
   let province = ''
   let district = ''
+  let village = ''
   test.beforeAll(async ({ browser }) => {
     page = await browser.newPage()
     setMobileViewport(page)
@@ -22,9 +23,10 @@ test.describe.serial('Advanced Search - Mobile', () => {
     const administrativeAreas = await getAdministrativeAreas(token)
     province = getIdByName(administrativeAreas, 'Central')!
     district = getIdByName(administrativeAreas, 'Ibombo')!
+    village = getIdByName(administrativeAreas, 'Klow')!
 
-    if (!province || !district) {
-      throw new Error('Province or district not found')
+    if (!province || !district || !village) {
+      throw new Error('Province, district or village not found')
     }
 
     await createDeclaration(
@@ -38,7 +40,7 @@ test.describe.serial('Advanced Search - Mobile', () => {
         'child.birthLocation.privateHome': {
           country: 'FAR',
           addressType: 'DOMESTIC',
-          administrativeArea: district,
+          administrativeArea: village,
           streetLevelDetails: { town: 'Dhaka' }
         },
         'child.gender': 'female'
@@ -75,6 +77,7 @@ test.describe.serial('Advanced Search - Mobile', () => {
     page.locator('#country').getByText('Farajaland')
     page.locator('#province').getByText('Central')
     page.locator('#district').getByText('Ibombo')
+    page.locator('#village').getByText('Klow')
 
     await page.locator('#town').fill('Dhaka')
     await page.locator('#town').blur()
@@ -93,6 +96,7 @@ test.describe.serial('Advanced Search - Mobile', () => {
       await expect(addressObject.addressType).toBe('DOMESTIC')
       await expect(addressObject.province).toBeTruthy()
       await expect(addressObject.district).toBeTruthy()
+      await expect(addressObject.village).toBeTruthy()
     }
 
     await expect(page.getByText('Search results')).toBeVisible()

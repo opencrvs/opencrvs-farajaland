@@ -32,13 +32,13 @@ async function getPlaceOfDeath(
   if (type === 'DECEASED_USUAL_RESIDENCE') {
     const administrativeAreas = await getAdministrativeAreas(token)
 
-    const district = getIdByName(administrativeAreas, 'Ibombo')
+    const village = getIdByName(administrativeAreas, 'Klow')
 
     return {
       'deceased.address': {
         country: 'FAR',
         addressType: AddressType.DOMESTIC,
-        administrativeArea: district
+        administrativeArea: village
       }
     }
   }

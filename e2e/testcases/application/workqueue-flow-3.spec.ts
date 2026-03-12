@@ -38,7 +38,7 @@ test.describe.serial('3. Workqueue flow - 3', () => {
       birthDate: getRandomDate(0, 200)
     },
     placeOfBirth: 'Health Institution',
-    birthLocation: { facility: 'Ibombo District Office' },
+    birthLocation: { facility: 'Ibombo District Hospital' },
     informantType: 'Mother',
     informantEmail: faker.internet.email(),
     mother: {
@@ -55,7 +55,8 @@ test.describe.serial('3. Workqueue flow - 3', () => {
       address: {
         country: 'Farajaland',
         province: 'Sulaka',
-        district: 'Irundu'
+        district: 'Irundu',
+        village: 'Xhosa'
       }
     },
     father: {
@@ -303,6 +304,10 @@ test.describe.serial('3. Workqueue flow - 3', () => {
       await page.locator('#district').click()
       await page
         .getByText(declaration.mother.address.district, { exact: true })
+        .click()
+      await page.locator('#village').click()
+      await page
+        .getByText(declaration.mother.address.village, { exact: true })
         .click()
 
       await continueForm(page)
