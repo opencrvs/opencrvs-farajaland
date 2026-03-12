@@ -55,8 +55,8 @@ test.describe.serial(' Correct record - 3', () => {
     placeOfBirth: 'Other',
     birthLocation: {
       country: 'Farajaland',
-      province: 'Pualula',
-      district: 'Ienge',
+      province: 'Central',
+      district: 'Ibombo',
       town: faker.location.city(),
       residentialArea: faker.location.county(),
       street: faker.location.street(),
@@ -183,16 +183,7 @@ test.describe.serial(' Correct record - 3', () => {
 
     test('3.1.2 Record audit', async () => {
       await ensureAssigned(page)
-      await page.getByRole('button', { name: 'Action', exact: true }).click()
-
-      /*
-       * Expected result: should show correct record button in action menu
-       */
-      await expect(
-        await page.getByText('Correct record', { exact: true })
-      ).toBeVisible()
-
-      await page.getByText('Correct record', { exact: true }).click()
+      await selectAction(page, 'Correct')
     })
   })
 
@@ -671,11 +662,14 @@ test.describe.serial(' Correct record - 3', () => {
       await page.locator('#child____placeOfBirth').click()
       await page.getByText(updatedChildDetails.placeOfBirth).click()
 
-      await page.getByLabel(/Province/i).click()
-      await page.getByText(updatedChildDetails.birthLocation.province).click()
+      // Province and district are disabled because the user jurisdiction is limited to user's administrative area
+      await expect(
+        page.locator('#child____birthLocation____other-form-input #province')
+      ).toBeDisabled()
 
-      await page.getByLabel(/District/i).click()
-      await page.getByText(updatedChildDetails.birthLocation.district).click()
+      await expect(
+        page.locator('#child____birthLocation____other-form-input #district')
+      ).toBeDisabled()
 
       await page.locator('#town').fill(updatedChildDetails.birthLocation.town)
 
@@ -1104,8 +1098,11 @@ test.describe.serial(' Correct record - 3', () => {
       expect(page.url().includes(`events/${eventId}`)).toBeTruthy()
     })
 
-    test('3.8.4 Validate history in record audit', async () => {
+    test('3.8.4 Assign record', async () => {
       await ensureAssigned(page)
+    })
+
+    test('3.8.5 Validate history in record audit', async () => {
       await page.getByRole('button', { name: 'Audit' }).click()
       await page.getByRole('button', { name: 'Next page' }).click()
 

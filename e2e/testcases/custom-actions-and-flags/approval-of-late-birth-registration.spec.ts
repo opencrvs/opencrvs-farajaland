@@ -68,8 +68,8 @@ test.describe.serial('Approval of late birth registration', () => {
       await page.getByText('Health Institution', { exact: true }).click()
       await page
         .locator('#child____birthLocation')
-        .fill('Golden Valley Rural Health Centre'.slice(0, 3))
-      await page.getByText('Golden Valley Rural Health Centre').click()
+        .fill('Ibombo District Office'.slice(0, 3))
+      await page.getByText('Ibombo District Office').click()
 
       await continueForm(page)
     })
@@ -176,9 +176,7 @@ test.describe.serial('Approval of late birth registration', () => {
 
     test('LR should not have the option to Approve', async () => {
       await page.getByRole('button', { name: 'Action', exact: true }).click()
-      await expect(
-        page.getByText('Approve declaration', { exact: true })
-      ).not.toBeVisible()
+      await expect(page.getByText('Approve', { exact: true })).not.toBeVisible()
     })
   })
 
@@ -190,7 +188,7 @@ test.describe.serial('Approval of late birth registration', () => {
     })
 
     test('Approve action should be disabled before assignment', async () => {
-      await validateActionMenuButton(page, 'Approve declaration', false)
+      await validateActionMenuButton(page, 'Approve', false)
     })
 
     test('Assign', async () => {
@@ -204,7 +202,7 @@ test.describe.serial('Approval of late birth registration', () => {
     })
 
     test('Fill comments field before confirming Approve declaration', async () => {
-      await selectAction(page, 'Approve declaration')
+      await selectAction(page, 'Approve')
       await expect(
         page.getByText(
           'Approving this declaration confirms it as legally accepted and eligible for registration.'
@@ -245,9 +243,7 @@ test.describe.serial('Approval of late birth registration', () => {
 
     test('LR should not have the option to Approve', async () => {
       await page.getByRole('button', { name: 'Action', exact: true }).click()
-      await expect(
-        page.getByText('Approve declaration', { exact: true })
-      ).not.toBeVisible()
+      await expect(page.getByText('Approve', { exact: true })).not.toBeVisible()
     })
 
     test('Validate that action and form field value appearing in audit trail', async () => {
@@ -300,8 +296,8 @@ test.describe('Birth with non-late registration will not have flag or Approve-ac
       await page.getByText('Health Institution', { exact: true }).click()
       await page
         .locator('#child____birthLocation')
-        .fill('Golden Valley Rural Health Centre'.slice(0, 3))
-      await page.getByText('Golden Valley Rural Health Centre').click()
+        .fill('Ibombo District Office'.slice(0, 3))
+      await page.getByText('Ibombo District Office').click()
 
       await continueForm(page)
     })
@@ -548,8 +544,8 @@ test.describe
       await page.getByText('Health Institution', { exact: true }).click()
       await page
         .locator('#child____birthLocation')
-        .fill('Golden Valley Rural Health Centre'.slice(0, 3))
-      await page.getByText('Golden Valley Rural Health Centre').click()
+        .fill('Ibombo District Office'.slice(0, 3))
+      await page.getByText('Ibombo District Office').click()
 
       await continueForm(page)
     })

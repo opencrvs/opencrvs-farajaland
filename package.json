@@ -1,6 +1,6 @@
 {
   "name": "@opencrvs/countryconfig",
-  "version": "1.9.8",
+  "version": "1.9.10",
   "description": "OpenCRVS country configuration for reference data",
   "os": [
     "darwin",
@@ -24,7 +24,7 @@
     "lint": "eslint -c .eslintrc.js",
     "setup-analytics": "docker exec -i -e POSTGRES_HOST=localhost -e POSTGRES_PORT=5432 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e ANALYTICS_POSTGRES_USER=events_analytics -e ANALYTICS_POSTGRES_PASSWORD=analytics_password postgres bash -s < ./infrastructure/postgres/setup-analytics.sh",
     "db:clear:all": "bash infrastructure/clear-all-data-dev.sh && yarn setup-analytics",
-    "start": "yarn setup-analytics && cross-env NODE_ENV=development NODE_OPTIONS=--dns-result-order=ipv4first nodemon --exec ts-node -r tsconfig-paths/register src/index.ts",
+    "start": "yarn setup-analytics && cross-env NODE_ENV=development NODE_OPTIONS=--dns-result-order=ipv4first nodemon --watch src --exec ts-node -r tsconfig-paths/register src/index.ts",
     "start:prod": "ts-node --transpile-only -r tsconfig-paths/register src/index.ts",
     "data-generator": "ts-node -r tsconfig-paths/register -T src/data-generator/index.ts",
     "data-generator:generate-types": "graphql-codegen --config codegen.yml && yarn prettier --write src/data-generator/gateway.ts",
@@ -35,8 +35,7 @@
     "port-forward": "bash infrastructure/port-forward.sh",
     "environment:init": "ts-node infrastructure/environments/setup-environment.ts",
     "environment:upgrade": "yarn environment:init",
-    "sort-translations": "cross-env NODE_ENV=development ts-node -r tsconfig-paths/register src/sort-translations.ts",
-    "prepare": "husky"
+    "sort-translations": "cross-env NODE_ENV=development ts-node -r tsconfig-paths/register src/sort-translations.ts"
   },
   "devDependencies": {
     "@graphql-codegen/add": "^3.1.1",
@@ -61,7 +60,6 @@
     "eslint": "^8.43.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
-    "husky": "^9.1.7",
     "inquirer": "^9.2.12",
     "js-yaml": "^4.1.0",
     "kleur": "^4.1.5",
@@ -83,7 +81,7 @@
     "@hapi/hapi": "^20.0.1",
     "@hapi/inert": "^6.0.3",
     "@opencrvs/mosip": "1.9.0",
-    "@opencrvs/toolkit": "1.9.8-rc.20292e3",
+    "@opencrvs/toolkit": "1.9.10-rc.1d95cf2",
     "@types/chalk": "^2.2.0",
     "@types/code": "^4.0.3",
     "@types/csv2json": "^1.4.0",

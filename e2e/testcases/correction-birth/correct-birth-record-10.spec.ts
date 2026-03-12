@@ -33,7 +33,7 @@ test.describe('10. Correct record', () => {
       subDays(new Date(), Math.ceil(15 * Math.random()) + 5),
       'yyyy-MM-dd'
     ),
-    birthLocation: 'Tembwe Rural Health Centre',
+    birthLocation: 'Golden Valley Rural Health Centre',
     attendantAtBirth: 'Nurse',
     typeOfBirth: 'Twin',
     weightAtBirth: '3.1'
@@ -84,7 +84,7 @@ test.describe('10. Correct record', () => {
         .getByRole('button', { name: formatV2ChildName(declaration) })
         .click()
       await ensureAssigned(page)
-      await selectAction(page, 'Correct record')
+      await selectAction(page, 'Correct')
     })
 
     test('10.1.0 Correction details', async () => {
@@ -316,7 +316,7 @@ test.describe('10. Correct record', () => {
         )
 
         await page
-          .getByTestId('child____birthLocation')
+          .locator('#searchable-select-child____birthLocation input')
           .fill(updatedChildDetails.birthLocation.slice(0, 2))
         await page.getByText(updatedChildDetails.birthLocation).click()
 
@@ -632,8 +632,10 @@ test.describe('10. Correct record', () => {
         await expectInUrl(page, `/events/${eventId}`)
       })
       test.describe('10.1.6.4 Validate history in record audit', async () => {
-        test('10.1.6.4.1 Validate correction requested modal', async () => {
+        test('10.1.6.4.0 Ensure record is assigned', async () => {
           await ensureAssigned(page)
+        })
+        test('10.1.6.4.1 Validate correction requested modal', async () => {
           await page.getByRole('button', { name: 'Audit' }).click()
           await page
             .getByRole('button', { name: 'Correction requested', exact: true })

@@ -38,7 +38,7 @@ test.describe('1. Correct record - 1', () => {
       subDays(new Date(), Math.ceil(15 * Math.random()) + 5),
       'yyyy-MM-dd'
     ),
-    birthLocation: 'Tembwe Rural Health Centre',
+    birthLocation: 'Golden Valley Rural Health Centre',
     attendantAtBirth: 'Nurse',
     typeOfBirth: 'Twin',
     weightAtBirth: '3.1'
@@ -115,11 +115,11 @@ test.describe('1. Correct record - 1', () => {
         page.getByText(`Contact${declaration['informant.email']}`)
       ).toBeVisible()
 
-      await selectAction(page, 'Correct record')
+      await selectAction(page, 'Correct')
     })
 
     test('1.1.2 Validate correction requester page', async ({ page }) => {
-      await selectAction(page, 'Correct record')
+      await selectAction(page, 'Correct')
 
       /*
        * Expected result: should
@@ -138,7 +138,7 @@ test.describe('1. Correct record - 1', () => {
     test('1.1.3 Validate identity verification page for Mother', async ({
       page
     }) => {
-      await selectAction(page, 'Correct record')
+      await selectAction(page, 'Correct')
 
       await page.locator('#requester____type').click()
       await page.getByText('Informant (Mother)', { exact: true }).click()
@@ -198,13 +198,16 @@ test.describe('1. Correct record - 1', () => {
       await page.close()
     })
 
-    test('1.2.0 Navigate to record correction', async () => {
+    test('Navigate to record and assign', async () => {
       await page.getByRole('button', { name: 'Pending certification' }).click()
       await page
         .getByRole('button', { name: formatV2ChildName(declaration) })
         .click()
       await ensureAssigned(page)
-      await selectAction(page, 'Correct record')
+    })
+
+    test('1.2.0 Navigate to record correction', async () => {
+      await selectAction(page, 'Correct')
 
       await page.locator('#requester____type').click()
       await page.getByText('Informant (Mother)', { exact: true }).click()
@@ -403,7 +406,7 @@ test.describe('1. Correct record - 1', () => {
         )
 
         await page
-          .getByTestId('child____birthLocation')
+          .locator('#searchable-select-child____birthLocation input')
           .fill(updatedChildDetails.birthLocation.slice(0, 2))
         await page.getByText(updatedChildDetails.birthLocation).click()
 
