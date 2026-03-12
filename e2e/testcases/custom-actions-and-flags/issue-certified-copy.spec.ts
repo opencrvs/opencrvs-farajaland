@@ -47,7 +47,7 @@ test.describe.serial('Issue Certified Copy ', () => {
       ).toBeVisible()
     })
     test('Navigate to print', async () => {
-      await selectAction(page, 'Print')
+      await selectAction(page, 'Print certified copy')
     })
 
     test('Template type should be selected by default', async () => {
