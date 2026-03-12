@@ -28,7 +28,7 @@ export async function navigateToCertificatePrintAction(
 ) {
   const childName = formatName(declaration['child.name'])
   await page.getByRole('button', { name: childName }).click()
-  await selectAction(page, 'Print certified copy')
+  await selectAction(page, 'Print')
 }
 
 export function getRowByTitle(page: Page, title: string) {
