@@ -111,8 +111,9 @@ test.describe('Action menu options', () => {
       expect(options).toStrictEqual([
         'Assign',
         'Escalate',
-        'Print certified copy',
-        'Correct'
+        'Print',
+        'Correct',
+        'Issue a verifiable credential'
       ])
     })
   })
