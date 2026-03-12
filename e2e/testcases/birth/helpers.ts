@@ -1,0 +1,163 @@
+import { expect, type Page } from '@playwright/test'
+import { omit } from 'lodash'
+import { formatName, joinValuesWith } from '../../helpers'
+import { faker } from '@faker-js/faker'
+import { ensureOutboxIsEmpty } from '../../utils'
+import { getRowByTitle } from '../print-certificate/birth/helpers'
+import { SAFE_OUTBOX_TIMEOUT_MS } from '../../constants'
+import { GATEWAY_HOST } from '../../constants'
+import { createClient } from '@opencrvs/toolkit/api'
+
+export const REQUIRED_VALIDATION_ERROR = 'Required'
+export const NAME_VALIDATION_ERROR =
+  "Input contains invalid characters. Please use only letters (a-z, A-Z), numbers (0-9), hyphens (-) and apostrophes(')"
+
+export async function validateAddress(
+  page: Page,
+  address: Record<string, any>,
+  elementTestId: string
+) {
+  // selection is not rendered as part of the address.
+  const addressWithoutGeographicalArea = omit(address, 'urbanOrRural')
+
+  for (const val of Object.values(addressWithoutGeographicalArea)) {
+    if (typeof val === 'string') {
+      await expect(page.getByTestId(elementTestId).getByText(val)).toBeVisible()
+    }
+  }
+}
+
+export async function fillDate(
+  page: Page,
+  date: { dd: string; mm: string; yyyy: string }
+) {
+  await page.getByPlaceholder('dd').fill(date.dd)
+  await page.getByPlaceholder('mm').fill(date.mm)
+  await page.getByPlaceholder('yyyy').fill(date.yyyy)
+}
+
+export async function fillChildDetails(page: Page) {
+  const firstName = faker.person.firstName('female')
+  const lastName = faker.person.lastName('female')
+  await page.locator('#firstname').fill(firstName)
+  await page.locator('#surname').fill(lastName)
+
+  return formatName({ firstNames: firstName, familyName: lastName })
+}
+
+export async function openBirthDeclaration(page: Page) {
+  await page.click('#header-new-event')
+  await page.getByLabel('Birth').click()
+  await page.getByRole('button', { name: 'Continue' }).click()
+  await page.getByRole('button', { name: 'Continue' }).click()
+
+  return page
+}
+
+export const formatV2ChildName = (obj: {
+  'child.name': { firstname: string; surname: string }
+  [key: string]: any
+}) => {
+  return joinValuesWith([
+    obj['child.name'].firstname,
+    obj['child.name'].surname
+  ])
+}
+
+export const assertRecordInWorkqueue = async ({
+  page,
+  name,
+  workqueues
+}: {
+  page: Page
+  name: string
+  workqueues: { title: string; exists: boolean }[]
+}) => {
+  await page.getByRole('button', { name: 'Outbox' }).click()
+  await ensureOutboxIsEmpty(page)
+
+  for (const { title, exists } of workqueues) {
+    await page
+      .getByRole('button', {
+        name: title
+      })
+      .click()
+
+    await expect(page.getByTestId('search-result')).toContainText(title, {
+      timeout: SAFE_OUTBOX_TIMEOUT_MS
+    })
+
+    if (exists) {
+      await expect(page.getByRole('button', { name })).toBeVisible()
+    } else {
+      await expect(page.getByRole('button', { name })).toBeHidden()
+    }
+  }
+}
+
+export const assignFromWorkqueue = async (page: Page, name: string) => {
+  await getRowByTitle(page, name)
+    .getByRole('button', { name: 'Assign record' })
+    .click()
+  await page.getByRole('button', { name: 'Assign', exact: true }).click()
+
+  await expect(
+    getRowByTitle(page, name)
+      .getByRole('button', { name: 'User avatar' })
+      .locator('img')
+  ).toBeVisible({
+    timeout: SAFE_OUTBOX_TIMEOUT_MS
+  })
+}
+
+export async function getLocations(
+  type: 'HEALTH_FACILITY' | 'CRVS_OFFICE',
+  token: string
+) {
+  const client = createClient(GATEWAY_HOST + '/events', `Bearer ${token}`)
+  const locations = await client.locations.list.query({
+    locationType: type
+  })
+  return locations
+}
+
+export async function getAdministrativeAreas(token: string) {
+  const client = createClient(GATEWAY_HOST + '/events', `Bearer ${token}`)
+  const locations = await client.administrativeAreas.list.query()
+
+  return locations
+}
+
+export function getIdByName(
+  items: { name: string; id: string }[],
+  name: string
+) {
+  const location = items.find((item) => item.name === name)
+  if (!location) {
+    throw new Error(`Location with name ${name} not found`)
+  }
+  return location.id
+}
+
+export async function verifyMembersEnabled(page: Page, members: string[]) {
+  for (const member of members) {
+    const row = page.getByRole('row', { name: new RegExp(member) })
+    await expect(row.getByText('Active')).toBeVisible()
+    await expect(row.getByRole('button', { name: member })).toBeEnabled()
+  }
+}
+
+export async function verifyMembersClickable(
+  page: Page,
+  members: string[],
+  officeButtonName: string
+) {
+  for (const member of members) {
+    const row = page.getByRole('row', { name: new RegExp(member) })
+    await expect(row.getByText('Active')).toBeVisible()
+    await row.getByRole('button', { name: member }).click()
+    await expect(page.locator('#content-name')).toHaveText(member)
+    await page.getByRole('button', { name: officeButtonName }).click()
+    await expect(page).toHaveURL(/.*\/team/)
+  }
+}

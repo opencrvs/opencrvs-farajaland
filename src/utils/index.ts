@@ -11,9 +11,11 @@
 
 import fetch from 'node-fetch'
 import { APPLICATION_CONFIG_URL } from '@countryconfig/constants'
+import { callingCountries } from 'country-data'
 import csv2json from 'csv2json'
 import { createReadStream } from 'fs'
 import fs from 'fs'
+import { PhoneNumberFormat, PhoneNumberUtil } from 'google-libphonenumber'
 import { URL } from 'url'
 import { build } from 'esbuild'
 import { memoize } from 'lodash'
@@ -127,6 +129,21 @@ export function getTrackingIdFromTaskResource(taskResource: fhir.Task) {
   return trackingIdentifier.value
 }
 
+export const convertToMSISDN = (phone: string, countryAlpha3: string) => {
+  const countryCode = callingCountries[countryAlpha3.toUpperCase()].alpha2
+
+  const phoneUtil = PhoneNumberUtil.getInstance()
+  const number = phoneUtil.parse(phone, countryCode)
+
+  return (
+    phoneUtil
+      .format(number, PhoneNumberFormat.INTERNATIONAL)
+      // libphonenumber adds spaces and dashes to phone numbers,
+      // which we do not want to keep for now
+      .replace(/[\s-]/g, '')
+  )
+}
+
 export async function writeJSONToCSV(
   filename: string,
   data: Array<Record<string, any>>
@@ -171,7 +188,6 @@ export const buildTypeScriptToJavaScript = memoize(async (path: string) => {
   const result = await build({
     entryPoints: [path],
     write: false,
-    loader: { '.ts': 'ts' },
     format: 'esm',
     platform: 'browser'
   })
@@ -246,4 +262,52 @@ export function createCustomFieldHandlebarName(fieldId: string) {
 
 export function uppercaseFirstLetter(str: string) {
   return str.charAt(0).toUpperCase() + str.slice(1)
+}
+
+
+function generateRegistrationNumber(trackingId: string): string {
+  /* adding current year */
+  let brn = new Date().getFullYear().toString()
+
+  /* appending tracking id */
+  brn = brn.concat(trackingId)
+
+  return brn
+}
+
+export function createUniqueRegistrationNumberFromBundle(bundle: fhir.Bundle) {
+  const taskResource = getTaskResource(bundle)
+
+  if (!taskResource || !taskResource.extension) {
+    throw new Error(
+      'Failed to validate registration: could not find task resource in bundle or task resource had no extensions'
+    )
+  }
+
+  const trackingId = getTrackingIdFromTaskResource(taskResource)
+  const compositionId = getCompositionId(bundle)
+
+  return {
+    trackingId,
+    compositionId,
+    registrationNumber: generateRegistrationNumber(trackingId),
+    ...(taskResource.code?.coding?.[0].code === 'BIRTH' && {
+      // Some countries desire to create multiple identifiers for citizens at the point of birth registration using external systems.
+      // OpenCRVS supports up to 3 additional, custom identifiers that can be created
+      childIdentifiers: [
+        {
+          type: 'BIRTH_CONFIGURABLE_IDENTIFIER_1',
+          value: ''
+        },
+        {
+          type: 'BIRTH_CONFIGURABLE_IDENTIFIER_2',
+          value: ''
+        },
+        {
+          type: 'BIRTH_CONFIGURABLE_IDENTIFIER_3',
+          value: ''
+        }
+      ]
+    })
+  }
 }

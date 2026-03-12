@@ -102,6 +102,7 @@ export const roles: Role[] = [
       SCOPES.USER_UPDATE,
       SCOPES.PERFORMANCE_READ,
       SCOPES.RECORD_REINDEX,
+      SCOPES.INTEGRATION_CREATE,
       SCOPES.PERFORMANCE_READ_DASHBOARDS
     ]
   },
@@ -231,6 +232,70 @@ export const roles: Role[] = [
       'record.custom-action[event=birth,customActionType=ESCALATE|ISSUE_CERTIFIED_COPY]',
       'type=record.print-certified-copies&event=birth,death,tennis-club-membership',
       'type=record.correct&event=birth,death,tennis-club-membership'
+    ]
+  },
+  // Legacy roles from v1.8 for backwards compatibility
+  {
+    id: 'POLICE_OFFICER',
+    label: {
+      defaultMessage: 'Police Officer',
+      description: 'Name for user role Police Officer',
+      id: 'userRole.policeOfficer'
+    },
+    scopes: []
+  },
+  {
+    id: 'SOCIAL_WORKER',
+    label: {
+      defaultMessage: 'Social Worker',
+      description: 'Name for user role Social Worker',
+      id: 'userRole.socialWorker'
+    },
+    scopes: []
+  },
+  {
+    id: 'HEALTHCARE_WORKER',
+    label: {
+      defaultMessage: 'Healthcare Worker',
+      description: 'Name for user role Healthcare Worker',
+      id: 'userRole.healthcareWorker'
+    },
+    scopes: []
+  },
+  {
+    id: 'FIELD_AGENT',
+    label: {
+      defaultMessage: 'Field Agent',
+      description: 'Name for user role Field Agent',
+      id: 'userRole.fieldAgent'
+    },
+    scopes: []
+  },
+  {
+    id: 'LOCAL_LEADER',
+    label: {
+      defaultMessage: 'Local Leader',
+      description: 'Name for user role Local Leader',
+      id: 'userRole.LocalLeader'
+    },
+    scopes: []
+  },
+  {
+    // NOTE: This is 2.0  role configuration. It does not have the finalised scopes since all the features are not ready.
+    id: 'HEALTH_OFFICER',
+    label: {
+      defaultMessage: 'Health Officer',
+      description: 'Name for user role Health Officer',
+      id: 'userRole.healthOfficer'
+    },
+    scopes: [
+      'workqueue[id=assigned-to-you|recent|requires-updates-self|sent-for-review]',
+      'type=record.search&event=birth,death&declaredIn=location',
+      'type=record.read&event=birth,death,tennis-club-membership',
+      `type=record.create&event=birth,death,tennis-club-membership`,
+      'type=record.declare&event=birth,death,tennis-club-membership',
+      'type=record.notify&event=birth,death,tennis-club-membership',
+      'type=record.edit&event=birth,death'
     ]
   }
 ]

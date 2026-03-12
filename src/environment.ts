@@ -25,9 +25,48 @@ export const env = cleanEnv(process.env, {
     devDefault: 'http://localhost:5050/confirm/registration'
   }),
   QA_ENV: bool({ default: false }),
+  ESIGNET_REDIRECT_URL: url({ devDefault: 'http://localhost:20260/authorize' }),
+  OPENID_PROVIDER_CLIENT_ID: str({ devDefault: 'mock-client_id' }),
+  OPENID_PROVIDER_CLAIMS: str({
+    devDefault: 'name,family_name,given_name,middle_name,birthdate,address'
+  }),
+  MOSIP_API_USERINFO_URL: url({
+    devDefault: 'http://localhost:2024/esignet/get-oidp-user-info'
+  }),
   ANALYTICS_DATABASE_URL: url({
+    default: undefined,
     devDefault:
       'postgres://events_analytics:analytics_password@localhost:5432/events',
     desc: 'The database URL for reads and writes to `analytics.events`. See `/infrastructure/postgres/setup-analytics.sh` for how the default database is set up for your country.'
+  }),
+  MOSIP_INTEROP_URL: url({
+    default: 'http://mosip-api:2024',
+    devDefault: 'http://localhost:2024',
+    desc: 'URL for MOSIP interoperability API'
+  }),
+  FORWARD_ACTIONS_TO: str({
+    default: '',
+    devDefault: '',
+    desc: 'Comma separated list of URLs to forward action events to'
+  }),
+  SYSTEM_CLIENT_ID: str({
+    default: undefined,
+    devDefault: undefined,
+    desc: 'Client ID for system-to-system authentication on /api/ proxy endpoints'
+  }),
+  SYSTEM_CLIENT_SECRET: str({
+    default: undefined,
+    devDefault: undefined,
+    desc: 'Client secret for system-to-system authentication on /api/ proxy endpoints'
+  }),
+  VERIFIABLE_CREDENTIALS_SDJWT_ISSUE_URL: url({
+    default: 'http://countryconfig:3040/_demo-issuer/openid4vc/sdjwt/issue',
+    devDefault: 'http://localhost:3040/_demo-issuer/openid4vc/sdjwt/issue',
+    desc: 'URL for requesting SD-JWT credential offers for verifiable credentials issuance'
+  }),
+  VERIFIABLE_CREDENTIALS_RAW_JWT_SIGN_URL: url({
+    default: 'http://countryconfig:3040/_demo-issuer/raw/jwt/sign',
+    devDefault: 'http://localhost:3040/_demo-issuer/raw/jwt/sign',
+    desc: 'URL for signing raw JWTs for verifiable credentials issuance'
   })
 })

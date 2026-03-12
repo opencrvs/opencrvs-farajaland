@@ -300,6 +300,7 @@ constants.gender,Gender label,Gender,Sexe
 constants.healthDivision,The description for HEALTH_DIVISION type,Health Division,Division de la santé
 constants.healthcareWorker,The description for Healthcare Worker type,Healthcare Worker,Travailleur de la santé
 constants.history,History heading,History,Histoire
+constants.history,History heading,History,Histoire
 constants.humanName,Formatted full name,{firstName} {middleName} {lastName},{firstName} {middleName} {lastName}
 constants.id,ID Label,ID,ID
 constants.idCheckWithoutVerify,Issuance without the confirmation of proof,Continue without proof of ID?,Continuer sans preuve d'identité?
@@ -325,6 +326,7 @@ constants.last30Days,Label for  preset date range Last 30 days,Last 30 days,30 d
 constants.lastEdited,Label for rejection date in work queue list item,Last edited,Dernière édition
 constants.lastUpdated,Label for Last updated in list item,Last update,Dernière mise à jour
 constants.loadMore,A label for load more,Load more,Charger plus
+constants.localLeader,The description for Community Leader type,Community Leader,Leader communautaire
 constants.localRegistrar,The description for LOCAL_REGISTRAR role,Registrar,Officier d'état civil de district
 constants.location,Label for location,Location,Situation géographique
 constants.male,The duplicates text for male,Male,Homme
@@ -385,6 +387,7 @@ constants.sentOn,Label for rejection date in work queue list item,Sent on,Envoy�
 constants.sent_incomplete,Declaration submitted without completing the required fields,Sent incomplete,Envoyé incomplet
 constants.showMore,Label for show more link,Show next {pageSize},Afficher la page suivante {pageSize}
 constants.skipToMainContent,Label for a keyboard accessibility link which skips to the main content,Skip to main content,Sauter au contenu principal
+constants.socialWorker,The description for Hospital Clerk type,Hospital Clerk,Commis d'hôpital
 constants.socialWorker,The description for Hospital Clerk type,Hospital Clerk,Commis d'hôpital
 constants.startedAt,Label for Started At in list item,Started,Initié par
 constants.startedBy,Label for Started by in list item,Started by,Initié par
@@ -814,7 +817,7 @@ event.birth.action.certificate.form.section.collectPayment.service.label.beforeR
 event.birth.action.certificate.form.section.collectPayment.service.label.inBetweenRegistrationTargets,Birth registration after 30 days but before 365 days of date of birth,Birth registration after 30 days but before 365 days of date of birth,Enregistrement de naissance après 30 jours mais avant 365 jours de la date de naissance
 event.birth.action.certificate.form.section.requester.printInAdvance.label,This is the label for the print-in-advance of issuance field,Print in advance of issuance,Imprimer avant la délivrance
 event.birth.action.certificate.form.section.verifyIdentity.data.label,Label for identity verification data block,Identity details,Détails de l'identité
-event.birth.action.collect-certificate.label,This is shown as the action name anywhere the user can trigger the action from,Print certified copy,Imprimer copie certifiée
+event.birth.action.collect-certificate.label,This is shown as the action name anywhere the user can trigger the action from,Print,Imprimer
 event.birth.action.correction.form.section.requester.identity.verify.title,This is the title of the section,Verify their identity,Vérifier l'identité
 event.birth.action.declare.form.label,This is what this form is referred as in the system,Birth decalration form,Birth decalration form
 event.birth.action.declare.form.review.comment.label,Label for the comment field in the review section,Comment,Commentaire
@@ -866,7 +869,10 @@ event.birth.action.declare.form.section.person.field.passport.label,This is the 
 event.birth.action.declare.label,This is shown as the action name anywhere the user can trigger the action from,Declare,Declare
 event.birth.action.delete.label,Label for delete button in dropdown menu,Delete,Supprimer
 event.birth.action.edit.declare.copy,Description for `Declare with edits` in edit action menu,You are about to redeclare this birth event with your edits. This will permanently update the declaration.,Vous êtes sur le point de redéclarer cet événement avec vos modifications. Cela mettra à jour définitivement la déclaration.
+event.birth.action.edit.declare.copy,Description for `Declare with edits` in edit action menu,You are about to redeclare this birth event with your edits. This will permanently update the declaration.,Vous êtes sur le point de redéclarer cet événement avec vos modifications. Cela mettra à jour définitivement la déclaration.
 event.birth.action.edit.notify.copy,Description for `Notify with edits` in edit action menu,Are you sure you want to notify this event with these edits?,Êtes-vous sûr de vouloir notifier cet événement avec ces modifications ?
+event.birth.action.edit.notify.copy,Description for `Notify with edits` in edit action menu,Are you sure you want to notify this event with these edits?,Êtes-vous sûr de vouloir notifier cet événement avec ces modifications ?
+event.birth.action.edit.register.copy,Description for `Register with edits` in edit action menu,You are about to register this birth event with your edits. Registering this event will create an official civil registration record.,Vous êtes sur le point d'enregistrer cet événement avec vos modifications. L'enregistrement de cet événement créera un dossier d'état civil officiel.
 event.birth.action.edit.register.copy,Description for `Register with edits` in edit action menu,You are about to register this birth event with your edits. Registering this event will create an official civil registration record.,Vous êtes sur le point d'enregistrer cet événement avec vos modifications. L'enregistrement de cet événement créera un dossier d'état civil officiel.
 event.birth.action.form.section.collector.other.field.name.label,This is the label for the name field of OTHER collector,Collector's name,Nom du collecteur
 event.birth.action.issued.audit-history-label,The label to show in audit history for the issued action,Issued,Émis
@@ -893,6 +899,7 @@ event.birth.summary.informant.contact.empty,This is shown when there is no infor
 event.birth.summary.informant.contact.label,This is the label for the informant information,Contact,Contact
 event.birth.summary.informant.contact.value,This is the contact value of the informant,{informant.phoneNo} {informant.email},{informant.phoneNo} {informant.email}
 event.birth.title,This is the title of the summary,{child.name.firstname} {child.name.surname},{child.name.firstname} {child.name.surname}
+event.death.custom.action.validate-declaration.label,This is shown as the action name anywhere the user can trigger the action from,Validate,Valider
 event.death.action.Read.label,This is shown as the action name anywhere the user can trigger the action from,Read,Lire
 event.death.action.certificate.form.cancel,This is the label for the verification cancellation button,Identity does not match,L'identité ne correspond pas
 event.death.action.certificate.form.cancel.confirmation.body,This is the body for the verification cancellation modal,"Please be aware that if you proceed, you will be responsible for issuing a certificate without the necessary proof of ID from the collector","Veuillez noter que si vous continuez, vous serez responsable de la délivrance d'un certificat sans la preuve d'identité nécessaire du collecteur."
@@ -910,7 +917,7 @@ event.death.action.certificate.form.section.requester.spouse.label,This is the l
 event.death.action.certificate.form.section.verifyIdentity.data.label,Label for identity verification data block,Identity details,Détails de l'identité
 event.death.action.certificate.form.section.who.title,This is the title of the section,Certify record,Certifier l'enregistrement
 event.death.action.certificate.form.verify,This is the label for the verification button,Verified,Vérifié
-event.death.action.collect-certificate.label,This is shown as the action name anywhere the user can trigger the action from,Print certified copy,Imprimer copie certifiée
+event.death.action.collect-certificate.label,This is shown as the action name anywhere the user can trigger the action from,Print,Imprimer
 event.death.action.correction.documents.supportingDocs.affidavit.label,Label for the affidavit option,Affidavit,Affidavit
 event.death.action.correction.documents.supportingDocs.courtDocument.label,Label for the court document option,Court Document,Document judiciaire
 event.death.action.correction.documents.supportingDocs.label,Label for the supporting documents field,Supporting documents,Documents justificatifs
@@ -1031,7 +1038,10 @@ event.death.action.declare.form.section.spouse.field.passport.label,This is the 
 event.death.action.declare.form.section.spouse.field.reason.label,This is the label for the field,Reason,Raison
 event.death.action.declare.label,This is shown as the action name anywhere the user can trigger the action from,Declare,Déclarer
 event.death.action.edit.declare.copy,Description for `Declare with edits` in edit action menu,You are about to redeclare this death event with your edits. This will permanently update the declaration.,Vous êtes sur le point de redéclarer cet événement avec vos modifications. Cela mettra à jour définitivement la déclaration.
+event.death.action.edit.declare.copy,Description for `Declare with edits` in edit action menu,You are about to redeclare this death event with your edits. This will permanently update the declaration.,Vous êtes sur le point de redéclarer cet événement avec vos modifications. Cela mettra à jour définitivement la déclaration.
 event.death.action.edit.notify.copy,Description for `Notify with edits` in edit action menu,Are you sure you want to notify this event with these edits?,Êtes-vous sûr de vouloir notifier cet événement avec ces modifications ?
+event.death.action.edit.notify.copy,Description for `Notify with edits` in edit action menu,Are you sure you want to notify this event with these edits?,Êtes-vous sûr de vouloir notifier cet événement avec ces modifications ?
+event.death.action.edit.register.copy,Description for `Register with edits` in edit action menu,You are about to register this death event with your edits. Registering this event will create an official civil registration record.,Vous êtes sur le point d'enregistrer cet événement avec vos modifications. L'enregistrement de cet événement créera un dossier d'état civil officiel.
 event.death.action.edit.register.copy,Description for `Register with edits` in edit action menu,You are about to register this death event with your edits. Registering this event will create an official civil registration record.,Vous êtes sur le point d'enregistrer cet événement avec vos modifications. L'enregistrement de cet événement créera un dossier d'état civil officiel.
 event.death.action.form.section.alienNumberDetails.label,Field for entering Alien Number details,Alien Number,Numéro d'étranger
 event.death.action.form.section.brn.label,Field for entering Birth Registration Number,Birth Registration Number,Numéro d'enregistrement de naissance
@@ -1385,6 +1395,7 @@ form.field.label.someoneElse,Other Label,Someone else,Quelqu'un d'autre
 form.field.label.someoneElseCollector,,Print and issue to someone else,Imprimer et remettre à quelqu'un d'autre
 form.field.label.spouseDetailsExist,,Spouse's details are not available,Pas d'information sur le conjoint
 form.field.label.state,Label for State,Province,Province
+form.field.label.typeOfDocument,,Choose type of supporting document,Choisissez le type de document
 form.field.label.typeOfId,,Type of ID,Type d'identification
 form.field.label.typeOfMarriage,,Type of marriage,Type de mariage
 form.field.label.updatingUser,,Updating user,Mise à jour de l'utilisateur
@@ -1403,6 +1414,7 @@ form.field.label.verbalAutopsyReport,,Verbal autopsy report,Rapport d'autopsie v
 form.field.label.weightAtBirth,,Weight at birth,Poids à la naissance
 form.field.nidNotVerified,,Authenticate,Authentifier
 form.field.nidNotVerifiedReviewSection,,Unauthenticated,Non authentifié
+form.field.nidOffline,,National ID authentication is currently not available offline.,L'authentification de la carte d'identité nationale n'est actuellement pas disponible hors ligne.
 form.field.nidVerificationOngoing,Label for indicating offline status for the user. NID verification is not currently available offline.,National ID authentication is currently not available offline.,L'authentification de l'identifiant national n'est actuellement pas disponible hors ligne
 form.field.nidVerified,,Authenticated,Authentifié
 form.field.previewGroups.primaryAddress,,Usual place of residence,Adresse résidentielle
@@ -2109,6 +2121,7 @@ unlockApp.incorrectPin,The message displayed when a user enters an incorrect PIN
 unlockApp.lastTry,The message displayed before the 3rd attempt of an incorrect PIN,Last try,Dernier essai
 unlockApp.locked,The title displayed while creating a PIN,Your account has been locked. Please try again in 1 minute.,Votre compte a été verrouillé. Veuillez réessayer dans 1 minute.
 user.avatar,Aria label for user avatar button,User avatar,Avatar utilisateur
+user.avatar,Aria label for user avatar button,User avatar,Avatar utilisateur
 user.form.buttons.submit,Label for submit button of user creation form,Create user,Créer un utilisateur
 user.form.securityquestion.answer,,Answer,Répondre à
 user.form.securityquestion.description,,"From the drop down lists below, select questions that can be used later to confirm your identity should you forget your password.","Dans les listes déroulantes ci-dessous, sélectionnez des questions qui pourront être utilisées ultérieurement pour confirmer votre identité si vous oubliez votre mot de passe."
@@ -2167,6 +2180,7 @@ user.profile.roleType,Title for roleType field,Role,Rôle/Type
 user.profile.sectionTitle.audit,Title for audit section,History,Historique
 user.profile.startDate,Title for startDate field,Start date,Date de début
 user.profile.userName,Title for userName field,Username,Nom d'utilisateur
+userRole.administrator,Name for user role Administrator,Administrator,Administrateur
 userRole.communityLeader,Name for user role Community Leader,Community Leader,Leader communautaire
 userRole.embassyOffical,Name for the user role Embassy Official,Embassy Official,Officiel d'ambassade
 userRole.fieldAgent,Name for user role Field Agent,Field Agent,Agent de terrain
@@ -2174,12 +2188,16 @@ userRole.healthcareWorker,Name for user role Healthcare Worker,Healthcare Worker
 userRole.hospitalClerk,Name for user role Hospital Clerk,Hospital Official,Officiel de l'hôpital
 userRole.localRegistrar,Name for user role Registrar,Registrar,Registraire
 userRole.localSystemAdmin,Name for user role Local System Admin,Local System Admin,Administrateur système local
+userRole.nationalAdministrator,Name for user role National Administrator,National Administrator,Administrateur national
 userRole.nationalRegistrar,Name for user role National Registrar,National Registrar,Registraire national
 userRole.nationalSystemAdmin,Name for user role National System Admin,National System Admin,Administrateur système national
+userRole.operationsManager,Name for user role Operations Manager,Operations Manager,Responsable des opérations
 userRole.performanceManager,Name for user role Performance Manager,Performance Manager,Gestion des performances
 userRole.policeOfficer,Name for user role Police Officer,Police Officer,Officier de police
 userRole.provincialRegistrar,Name for user role Provincial Registrar,Provincial Registrar,Registraire provincial
+userRole.registrarGeneral, Name for user role Registrar General,Registrar General,Registraire général
 userRole.registrationAgent,Name for user role Registration Agent,Registration Agent,Agent d'enregistrement
+userRole.registrationOfficer,Name for user role Registration Officer,Registration Officer,Agent d'enregistrement
 userSetup.complete.instruction,Instruction for the setup complete,Login to your account with your username and newly created password,Connectez-vous maintenant à votre compte avec votre nom d'utilisateur et votre mot de passe nouvellement créé.
 userSetup.complete.title,Title for the setup complete page,Account setup complete,Configuration du compte terminée
 userSetup.instruction,User setup review page instruction,Check the details below to confirm your account details are correct,Vérifiez les détails ci-dessous pour confirmer que les détails de votre compte sont corrects. et faites les changements nécessaires pour confirmer que les détails de votre compte sont corrects.
@@ -2264,7 +2282,8 @@ verifyCertificate.successTitle,title for success alert,Valid QR code,Code QR val
 verifyCertificate.successUrl,title for success alert for url validation,URL Verification,Vérification des URL
 verifyCertificate.timeOut,message when time out after few minute,You been timed out,Délais expirée
 verifyCertificate.toastMessage,Message for the toast when time spend 1 minute,"After verifying the certificate, please close the browser window","Après avoir vérifié le certificat, veuillez fermer la fenêtre du navigateur."
-views.idReader.label.manualInput,Label that shows below the divider on the id reader component,Complete fields below,Remplissez les champs ci-dessous
+views.idReader.label.eSignet,E-signet button label,Authenticate with e-Signet,S'authentifier avec e-Signet
+views.idReader.label.manualInput,Label that shows below the divider on the id reader component,Complete fields below,Complétez les champs ci-dessous
 views.idReader.label.or,Label that shows on the divider,Or,Ou
 views.idVerification.banner.actions.reset,,Reset,Réinitialiser
 views.idVerification.banner.actions.revoke,,Revoke,Révoquer
@@ -2272,6 +2291,7 @@ views.idVerification.banner.authenticated.description,,"This identity has been s
 views.idVerification.banner.authenticated.resetConfirmation.description,,"By clicking ‘Continue,’ you’ll remove ID Authenticated status and unlock the fields for editing.","En cliquant sur «Continuer», vous supprimerez l'état authentifié de l'ID et déverrouillez les champs pour l'édition."
 views.idVerification.banner.authenticated.resetConfirmation.title,,Revoke authenticated ID?,Révoquer une pièce d'identité authentifiée?
 views.idVerification.banner.authenticated.title,,ID Authenticated,ID authentifié
+views.idVerification.banner.failed.description,,The identity data does not match an entry in Farajaland's National ID System,Les données d'identité ne correspondent pas à une entrée du système national d'identification du Farajaland.
 views.idVerification.banner.failed.description,,The identity data does not match an entry in Farajaland's National ID System,Les données d'identité ne correspondent pas à une entrée du système national d'identification du Farajaland.
 views.idVerification.banner.failed.resetConfirmation.description,,"By clicking ‘Continue,’ you’ll clear all information to it’s default state.","En cliquant sur «Continuer», vous effacerez toutes les informations de son état par défaut."
 views.idVerification.banner.failed.resetConfirmation.title,,Reset information?,Réinitialiser les informations?
