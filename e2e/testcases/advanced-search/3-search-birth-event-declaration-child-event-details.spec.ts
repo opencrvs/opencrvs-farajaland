@@ -80,9 +80,9 @@ test.describe
       ).toBeVisible()
       await page.getByText('Health Institution', { exact: true }).click()
 
-      await page.locator('#child____birthLocation').fill('Ibombo Rural')
-      await expect(page.getByText('Ibombo Rural Health Centre')).toBeVisible()
-      await page.getByText('Ibombo Rural Health Centre').click()
+      await page.locator('#child____birthLocation').fill('Klow Village')
+      await expect(page.getByText('Klow Village Hospital')).toBeVisible()
+      await page.getByText('Klow Village Hospital').click()
     })
 
     test('3.1.2 - Validate search and show results', async () => {
@@ -103,7 +103,7 @@ test.describe
           'Event: Birth',
           `Child's Date of birth: ${yyyy}-${mm}-${dd}`,
           "Child's Sex: Female",
-          `Child's Location of birth: Ibombo Rural Health Centre, Ibombo, Central, Farajaland`,
+          `Child's Location of birth: Klow Village Hospital, Klow, Ibombo, Central, Farajaland`,
           `Child's Name: ${fullNameOfChild}`
         ]
       })
@@ -130,7 +130,7 @@ test.describe
       )
       await expect(
         page.locator('#searchable-select-child____birthLocation')
-      ).toHaveText('Ibombo Rural Health Centre')
+      ).toHaveText('Klow Village Hospital')
     })
   })
 })

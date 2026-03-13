@@ -785,7 +785,7 @@ test.describe.serial(' Correct record - 3', () => {
     await expect(
       page
         .locator('#listTable-corrections-table-child')
-        .getByText('Ibombo Rural Health Centre, Ibombo, Central, Farajaland')
+        .getByText('Klow Village Hospital, Klow, Ibombo, Central, Farajaland')
     ).toBeVisible()
 
     await Promise.all(
@@ -977,7 +977,7 @@ test.describe.serial(' Correct record - 3', () => {
       await expect(
         page
           .locator('#listTable-corrections-table-child')
-          .getByText('Ibombo Rural Health Centre, Ibombo, Central, Farajaland')
+          .getByText('Klow Village Hospital, Klow, Ibombo, Central, Farajaland')
       ).toBeVisible()
 
       const childAddressLines = [

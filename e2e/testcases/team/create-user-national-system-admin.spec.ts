@@ -33,7 +33,7 @@ test.describe.serial('1. Create user -1', () => {
         .click()
       await page.getByTestId('locationSearchInput').fill('Ibombo')
 
-      await page.getByText(/Ibombo Rural Health Centre/).click()
+      await page.getByText(/Klow Village Hospital/).click()
 
       await page.click('#add-user')
       await expect(page.getByText('User details')).toBeVisible()
@@ -57,7 +57,7 @@ test.describe.serial('1. Create user -1', () => {
       await page.getByRole('button', { name: 'Create user' }).click()
 
       await expect(page.locator('#header')).toContainText(
-        'Ibombo Rural Health Centre'
+        'Klow Village Hospital'
       )
 
       await expect(

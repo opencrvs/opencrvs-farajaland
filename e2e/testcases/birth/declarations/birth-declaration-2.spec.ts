@@ -31,7 +31,7 @@ test.describe.serial('2. Birth declaration case - 2', () => {
     attendantAtBirth: 'Nurse',
     birthType: 'Twin',
     placeOfBirth: 'Health Institution',
-    birthLocation: { facility: 'Ibombo District Hospital' },
+    birthLocation: { facility: 'Klow Village Hospital' },
     informantType: 'Father',
     informantEmail: faker.internet.email(),
     mother: {

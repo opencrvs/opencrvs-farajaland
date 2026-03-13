@@ -37,7 +37,7 @@ test.describe.serial('5. Workqueue flow - 5', () => {
       birthDate: getRandomDate(0, 200)
     },
     placeOfBirth: 'Health Institution',
-    birthLocation: { facility: 'Ibombo District Hospital' },
+    birthLocation: { facility: 'Klow Village Hospital' },
     informantType: 'Mother',
     informantEmail: faker.internet.email(),
     mother: {
