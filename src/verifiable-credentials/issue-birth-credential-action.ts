@@ -60,7 +60,7 @@ export const issueBirthCredentialAction = {
           'Check the requesters details and issue the verifiable credential.',
         description:
           'This is the confirmation text for the registrar general feedback action',
-        id: 'event.birth.action.registrar-general-feedback.supportingCopy'
+        id: 'event.birth.custom.action.issue-vc.field.supporting-copy'
       },
       configuration: { styles: { fontVariant: 'reg16', hint: true } },
       conditionals: [
