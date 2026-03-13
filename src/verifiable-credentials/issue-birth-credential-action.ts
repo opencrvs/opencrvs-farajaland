@@ -58,7 +58,7 @@ const fatherOption = {
 const getInformantOption = (informantType: InformantTypeKey) => {
   const defaultMessage =
     informantType === InformantType.OTHER
-      ? '{informant.other.relation} (informant)'
+      ? 'Informant'
       : `${informantMessageDescriptors[informantType].defaultMessage} (informant)`
 
   return {
