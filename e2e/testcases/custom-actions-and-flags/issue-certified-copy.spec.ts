@@ -12,7 +12,7 @@ import { REQUIRED_VALIDATION_ERROR } from '../birth/helpers'
 import { formatV2ChildName } from '../birth/helpers'
 import { printAndExpectPopup } from '../print-certificate/birth/helpers'
 
-test.describe.serial('Issue Certified Copy ', () => {
+test.describe.serial('Issue Certified Copy', () => {
   let page: Page
   let declaration: Declaration
   let childName: string
@@ -37,7 +37,7 @@ test.describe.serial('Issue Certified Copy ', () => {
       await page.getByRole('button', { name: childName }).click()
       await expect(page.getByText('Registered')).toBeVisible()
       await ensureAssigned(page)
-      await expect(page.getByTestId('assignedTo').getByTestId('Felix Katongo')).toBeVisible()
+      await expect(page.getByTestId('assignedTo').getByText('Felix Katongo')).toBeVisible()
       await expect(page.getByTestId('flags').getByText('Pending first certificate issuance')).toBeVisible()
     })
     test('Navigate to print', async () => {
@@ -60,7 +60,7 @@ test.describe.serial('Issue Certified Copy ', () => {
       ).toBeVisible()
     })
 
-    test('Click continue after selecting requester type and template type', async () => {
+    test('Clicking continue after selecting requester type and template type', async () => {
       await page.reload({ waitUntil: 'networkidle' })
       await page.locator('#collector____requesterId').click()
       const selectOptionsLabels = [
@@ -82,6 +82,13 @@ test.describe.serial('Issue Certified Copy ', () => {
     })
     test('Print', async () => {
       await printAndExpectPopup(page)
+    })
+    test('Ensure "Certified copy printed in advance of issuance" flag appears on record', async()=>{
+      await searchFromSearchBar(page, childName)
+      const Flags = page.getByTestId('flags').filter({ hasText: 'Flags' })
+      await expect(Flags.getByText('Certified copy printed in advance of issuance')).toBeVisible()
+      await page.getByTestId('exit-event').click()
+
     })
   })
   test.describe('Print issuance', async () => {
