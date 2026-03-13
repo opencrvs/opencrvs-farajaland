@@ -2343,3 +2343,17 @@ wq.noRecords.readyToPrint,No records messages for ready to print tab,No records 
 wq.noRecords.requiresUpdate,No records messages for require updates tab,No records require updates,Aucun document ne nécessite de mise à jour
 wq.noRecords.sentForApproval,No records messages for sent for approval tab,No records sent for approval,Aucun document envoyé pour approbation
 wq.noRecords.sentForReview,No records messages for sent for review tab,No records sent for review,Aucun document envoyé pour examen
+event.birth.action.issue-vc.label,Label for issue verifiable credential action,Issue a verifiable credential,Délivrer une attestation vérifiable
+event.birth.action.issue-vc.audit-history-label,Audit history label for issued verifiable credential,Verifiable Credential issued,Attestation vérifiable délivrée
+event.birth.action.registrar-general-feedback.supportingCopy,Confirmation text for registrar general feedback action,Your feedback will be officially recorded and may influence the final decision on the declaration.,Votre retour sera officiellement enregistré et pourra influencer la décision finale concernant la déclaration.
+event.birth.custom.action.issue-vc.field.supporting-copy,Supporting copy shown before issuing verifiable credential,Check the requesters details and issue the verifiable credential.,Vérifiez les informations du demandeur et délivrez l'attestation vérifiable.
+event.birth.custom.action.issue-vc.field.requester.label,Label for requester selection in VC action,Requester,Demandeur
+event.birth.custom.action.issue-vc.field.requester.option.mother,Requester option mother in VC action,Mother,Mère
+event.birth.custom.action.issue-vc.field.requester.option.father,Requester option father in VC action,Father,Père
+event.birth.custom.action.issue-vc.field.request-credential-offer-button.label,Label for VC offer generation button section,Verifiable credential offer,Offre d’attestation vérifiable
+event.birth.custom.action.issue-vc.field.request-credential-offer-button.configuration.text,Text for VC offer generation button,Generate,Générer
+event.birth.custom.action.issue-vc.field.get-credential-offer.label,Label for HTTP call to get VC offer,Get Credential Offer,Obtenir l’offre d’attestation vérifiable
+event.birth.custom.action.issue-vc.field.qr-code.configuration.text,Explanation text for VC QR code,Scan the QR code below with your digital wallet to receive your Verifiable Credential.,Scannez le code QR ci-dessous avec votre portefeuille numérique pour recevoir votre attestation vérifiable.
+event.birth.custom.action.issue-vc.field.qr-code.configuration.alt,Alt text for VC QR image,QR Code,Code QR
+event.birth.custom.action.issue-vc.field.accepted-vc-offer.label,Checkbox label to confirm citizen acceptance of VC offer,I confirm that the citizen has accepted the verifiable credential offer,Je confirme que le citoyen a accepté l’offre d’attestation vérifiable
+event.birth.custom.action.issue-vc.field.accepted-vc-offer.error,Validation message for citizen acceptance checkbox,Please confirm that the citizen has accepted the verifiable credential offer,Veuillez confirmer que le citoyen a accepté l’offre d’attestation vérifiable
