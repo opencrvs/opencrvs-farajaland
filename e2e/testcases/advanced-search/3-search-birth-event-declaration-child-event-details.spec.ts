@@ -190,7 +190,7 @@ test.describe
   })
 
   test('3.2 - Validate log in and load search page', async () => {
-    await login(page)
+    await login(page, CREDENTIALS.REGISTRAR_VILLAGE)
     await page.click('#searchType')
     await expect(page).toHaveURL(/.*\/advanced-search/)
     await page.getByText('Birth').click()
@@ -240,7 +240,7 @@ test.describe
         testId: 'search-result',
         texts: [
           'Event: Birth',
-          `Location of birth: Farajaland, Central, Ibombo, Dhaka`,
+          `Location of birth: Farajaland, Central, Ibombo, Klow, Dhaka`,
           'Place of delivery: Residential address',
           fullNameOfChild
         ]

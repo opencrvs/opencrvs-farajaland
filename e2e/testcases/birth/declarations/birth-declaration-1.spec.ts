@@ -290,7 +290,7 @@ test.describe.serial('1. Birth declaration case - 1', () => {
       )
       await expect(
         page.getByTestId('row-value-child.birthLocation')
-      ).toHaveText('Ibombo District Office, Ibombo, Central, Farajaland')
+      ).toHaveText('Klow Village Hospital, Klow, Ibombo, Central, Farajaland')
 
       /*
        * Expected result: should include
@@ -554,7 +554,7 @@ test.describe.serial('1. Birth declaration case - 1', () => {
       await expectRowValue(
         page,
         'child.birthLocation',
-        'Ibombo District Office, Ibombo, Central, Farajaland'
+        'Klow Village Hospital, Klow, Ibombo, Central, Farajaland'
       )
 
       /*

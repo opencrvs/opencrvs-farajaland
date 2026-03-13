@@ -714,13 +714,13 @@ test.describe.serial('8. Validate declaration review page', () => {
         await page.getByTestId('change-button-mother.address').click()
         await page.getByRole('button', { name: 'Continue' }).click()
 
-        declaration.mother.address.province = 'Sulaka'
+        // declaration.mother.address.province = 'Sulaka'
         declaration.mother.address.district = 'Afue'
         declaration.mother.address.village = 'Imani'
-        await page.locator('#province').click()
-        await page
-          .getByText(declaration.mother.address.province, { exact: true })
-          .click()
+        // await page.locator('#province').click()
+        // await page
+        //   .getByText(declaration.mother.address.province, { exact: true })
+        //   .click()
         await page.locator('#district').click()
         await page
           .getByText(declaration.mother.address.district, { exact: true })

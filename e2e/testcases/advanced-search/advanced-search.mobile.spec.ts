@@ -16,8 +16,8 @@ test.describe.serial('Advanced Search - Mobile', () => {
     page = await browser.newPage()
     setMobileViewport(page)
     const token = await getToken(
-      CREDENTIALS.REGISTRAR.USERNAME,
-      CREDENTIALS.REGISTRAR.PASSWORD
+      CREDENTIALS.REGISTRAR_VILLAGE.USERNAME,
+      CREDENTIALS.REGISTRAR_VILLAGE.PASSWORD
     )
 
     const administrativeAreas = await getAdministrativeAreas(token)
@@ -55,7 +55,7 @@ test.describe.serial('Advanced Search - Mobile', () => {
   })
 
   test('Login', async () => {
-    await login(page)
+    await login(page, CREDENTIALS.REGISTRAR_VILLAGE)
   })
 
   test('Navigate to advanced search', async () => {
