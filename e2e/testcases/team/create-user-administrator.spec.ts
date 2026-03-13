@@ -1,6 +1,6 @@
 import { test, expect, type Page } from '@playwright/test'
 import path from 'path'
-import { ensureLoginPageReady, continueForm, login } from '../../helpers'
+import { loginWithNewUser, continueForm, login } from '../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS, LOGIN_URL } from '../../constants'
 
@@ -70,40 +70,7 @@ test.describe.serial('1. Create user -1', () => {
 
   test.describe('2.1 Login with newly created user credentials', () => {
     test('2.1.1 Enter your username and password', async ({ page }) => {
-      await page.goto(LOGIN_URL)
-      await ensureLoginPageReady(page)
-      await page.fill('#username', username)
-      await page.fill('#password', 'test')
-      await page.click('#login-mobile-submit')
-
-      const password = 'Bangladesh23'
-
-      await expect(page.getByText('Welcome to Farajaland CRS')).toBeVisible({
-        timeout: 30000
-      })
-
-      await page.getByRole('button', { name: 'Start' }).click()
-
-      //set up password
-      await page.fill('#NewPassword', password)
-      await page.fill('#ConfirmPassword', password)
-      await expect(page.getByText('Passwords match')).toBeVisible()
-      await page.getByRole('button', { name: 'Continue' }).click()
-
-      //set up security question
-      await page.locator('#question-0').click()
-      await page.getByText(question00, { exact: true }).click()
-      await page.fill('#answer-0', 'Chittagong')
-      await page.locator('#question-1').click()
-      await page.getByText(question01, { exact: true }).click()
-      await page.fill('#answer-1', 'Into the wild')
-      await page.locator('#question-2').click()
-      await page.getByText(question02, { exact: true }).click()
-      await page.fill('#answer-2', 'Burger')
-      await page.getByRole('button', { name: 'Continue' }).click()
-
-      await page.getByRole('button', { name: 'Confirm' }).click()
-      await expect(page.getByText('Account setup complete')).toBeVisible()
+          await loginWithNewUser(page,username)
     })
   })
 })

@@ -672,3 +672,49 @@ export async function searchFromSearchBar(
     ).not.toBeVisible()
   }
 }
+
+
+export async function loginWithNewUser(page: Page,username: string) {
+
+  const password = 'Bangladesh23'
+  const question00 = 'What city were you born in?'
+  const question01 = 'What is your favorite movie?'
+  const question02 = 'What is your favorite food?'
+
+  await page.goto(LOGIN_URL)
+  await ensureLoginPageReady(page)
+
+  await page.fill('#username', username)
+  await page.fill('#password', 'test')
+  await page.click('#login-mobile-submit')
+
+  await expect(page.getByText('Welcome to Farajaland CRS')).toBeVisible({
+    timeout: 30000
+  })
+
+  await page.getByRole('button', { name: 'Start' }).click()
+
+  // set up password
+  await page.fill('#NewPassword', password)
+  await page.fill('#ConfirmPassword', password)
+  await expect(page.getByText('Passwords match')).toBeVisible()
+  await page.getByRole('button', { name: 'Continue' }).click()
+
+  // set up security question
+  await page.locator('#question-0').click()
+  await page.getByText(question00, { exact: true }).click()
+  await page.fill('#answer-0', 'Chittagong')
+
+  await page.locator('#question-1').click()
+  await page.getByText(question01, { exact: true }).click()
+  await page.fill('#answer-1', 'Into the wild')
+
+  await page.locator('#question-2').click()
+  await page.getByText(question02, { exact: true }).click()
+  await page.fill('#answer-2', 'Burger')
+
+  await page.getByRole('button', { name: 'Continue' }).click()
+  await page.getByRole('button', { name: 'Confirm' }).click()
+
+  await expect(page.getByText('Account setup complete')).toBeVisible()
+}
