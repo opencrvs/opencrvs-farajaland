@@ -161,3 +161,20 @@ export async function verifyMembersClickable(
     await expect(page).toHaveURL(/.*\/team/)
   }
 }
+export async function verifyTeamMembers(
+  page: Page,
+  team: { name: string; role: string;disabled?: boolean  }[]
+) {
+  for (const member of team) {
+    const row = page.getByRole('row', { name: new RegExp(member.name) })
+
+    await expect(row.getByText(member.role)).toBeVisible()
+    await expect(row.getByText('Active')).toBeVisible()
+    if (member.disabled) {
+      await expect(row.getByRole('button', { name: member.name })).toBeDisabled()
+    } else {
+      await expect(row.getByRole('button', { name: member.name })).toBeEnabled()
+    }
+  }
+  
+}
