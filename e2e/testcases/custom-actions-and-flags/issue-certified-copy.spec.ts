@@ -30,24 +30,18 @@ test.describe.serial('Issue Certified Copy ', () => {
   test.afterAll(async () => {
     await page.close()
   })
-  test.describe('Print in advance  ', async () => {
+  test.describe('Print in advance', async () => {
     test('Navigate to the declaration review page', async () => {
       await login(page, CREDENTIALS.REGISTRATION_OFFICER)
       await navigateToWorkqueue(page, 'Pending certification')
       await page.getByRole('button', { name: childName }).click()
       await expect(page.getByText('Registered')).toBeVisible()
       await ensureAssigned(page)
-      const assignedTo = page
-        .getByTestId('assignedTo')
-        .filter({ hasText: 'Assigned to' })
-      await expect(assignedTo.getByText('Felix Katongo')).toBeVisible()
-      const Flags = page.getByTestId('flags').filter({ hasText: 'Flags' })
-      await expect(
-        Flags.getByText('Pending first certificate issuance')
-      ).toBeVisible()
+      await expect(page.getByTestId('assignedTo').getByTestId('Felix Katongo')).toBeVisible()
+      await expect(page.getByTestId('flags').getByText('Pending first certificate issuance')).toBeVisible()
     })
     test('Navigate to print', async () => {
-      await selectAction(page, 'Print certified copy')
+      await selectAction(page, 'Print')
     })
 
     test('Template type should be selected by default', async () => {
@@ -56,7 +50,7 @@ test.describe.serial('Issue Certified Copy ', () => {
       ).toBeVisible()
     })
 
-    test('Click continue without selecting requester type', async () => {
+    test('Clicking continue without selecting requester type should display validation error', async () => {
       await page.getByRole('button', { name: 'Continue' }).click()
 
       await expect(
@@ -86,11 +80,11 @@ test.describe.serial('Issue Certified Copy ', () => {
       await page.getByRole('button', { name: 'Verified' }).click()
       await page.getByRole('button', { name: 'Continue' }).click()
     })
-    test(' Print', async () => {
+    test('Print', async () => {
       await printAndExpectPopup(page)
     })
   })
-  test.describe('Print issuance ', async () => {
+  test.describe('Print issuance', async () => {
     test('Navigate to the declaration review page', async () => {
       await navigateToWorkqueue(page, 'Pending issuance')
       await page.getByRole('button', { name: childName }).click()
