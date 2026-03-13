@@ -26,7 +26,7 @@ test.describe.serial('1. Create user -1', () => {
     await page.close()
   })
 
-  test.describe('1.1 User creation started by national system admin', async () => {
+  test.describe('1.1 User creation started by local system admin', async () => {
     test.beforeAll(async () => {
       await login(page, CREDENTIALS.LOCAL_SYSTEM_ADMIN)
       await page.getByRole('button', { name: 'Team' }).click()
