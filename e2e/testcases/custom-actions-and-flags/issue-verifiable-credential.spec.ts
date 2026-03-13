@@ -129,6 +129,10 @@ test.describe.serial('Issue verifiable credential', () => {
       /^data:image\/png;base64,/
     )
 
+    const acceptedOfferCheckbox = page.locator('#requester____acceptedVcOffer')
+    await expect(acceptedOfferCheckbox).toBeVisible()
+    await acceptedOfferCheckbox.check()
+
     await page.getByRole('button', { name: 'Confirm' }).click()
     await ensureOutboxIsEmpty(page)
   })
