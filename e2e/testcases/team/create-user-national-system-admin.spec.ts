@@ -28,9 +28,7 @@ test.describe.serial('1. Create user -1', () => {
       await page.getByRole('button', { name: 'Team' }).click()
       await expect(page.getByText('HQ Office')).toBeVisible()
 
-      await page
-        .getByRole('button', { name: /HQ Office, Embe, Pualula/ })
-        .click()
+      await page.getByRole('button', { name: /HQ Office/ }).click()
       await page.getByTestId('locationSearchInput').fill('Ibombo')
 
       await page.getByText(/Klow Village Hospital/).click()

@@ -55,7 +55,7 @@ export const CREDENTIALS = {
     PASSWORD: TEST_USER_PASSWORD
   },
   REGISTRAR_GENERAL: {
-    USERNAME: 'j.musonda',
+    USERNAME: 'c.lungu',
     PASSWORD: TEST_USER_PASSWORD
   },
   NATIONAL_SYSTEM_ADMIN: {
@@ -67,7 +67,7 @@ export const CREDENTIALS = {
     PASSWORD: TEST_USER_PASSWORD
   },
   PERFORMANCE_MANAGER: {
-    USERNAME: 'e.kazembe',
+    USERNAME: 'm.musonda',
     PASSWORD: TEST_USER_PASSWORD
   },
   PROVINCIAL_REGISTRAR: {
