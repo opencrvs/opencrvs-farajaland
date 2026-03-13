@@ -10,6 +10,11 @@ import {
   window,
   status
 } from '@opencrvs/toolkit/events'
+import {
+  InformantType,
+  InformantTypeKey
+} from '@countryconfig/form/v2/birth/forms/pages/informant'
+import { informantMessageDescriptors } from '@countryconfig/form/common/messages'
 import { CREDENTIAL_OFFER_HANDLER_URL } from './routes'
 
 const qrGenerated = not(
@@ -17,6 +22,131 @@ const qrGenerated = not(
     .get('data.credential_offer_uri_qr')
     .isUndefined()
 )
+
+const motherExists = not(field('mother.name').isFalsy())
+const fatherExists = not(field('father.name').isFalsy())
+
+const motherAndFatherExist = and(motherExists, fatherExists)
+const onlyMotherExists = and(motherExists, not(fatherExists))
+const onlyFatherExists = and(fatherExists, not(motherExists))
+const motherAndFatherMissing = and(not(motherExists), not(fatherExists))
+
+const requesterLabel = {
+  defaultMessage: 'Requester',
+  description: 'Select who is requesting the VC',
+  id: 'event.birth.custom.action.issue-vc.field.requester.label'
+}
+
+const motherOption = {
+  value: 'MOTHER',
+  label: {
+    defaultMessage: 'Mother',
+    description: 'Option label for mother requester type',
+    id: 'event.birth.custom.action.issue-vc.field.requester.option.mother'
+  }
+}
+
+const fatherOption = {
+  value: 'FATHER',
+  label: {
+    defaultMessage: 'Father',
+    description: 'Option label for father requester type',
+    id: 'event.birth.custom.action.issue-vc.field.requester.option.father'
+  }
+}
+
+const getInformantOption = (informantType: InformantTypeKey) => {
+  const defaultMessage =
+    informantType === InformantType.OTHER
+      ? 'Informant'
+      : `${informantMessageDescriptors[informantType].defaultMessage} (informant)`
+
+  return {
+    value: 'INFORMANT',
+    label: {
+      defaultMessage,
+      description: 'Option label for informant requester type',
+      id: `event.birth.custom.action.issue-vc.field.requester.option.informant.${informantType.toLowerCase()}`
+    }
+  }
+}
+
+const getFieldConfigForInformant = (informantType: InformantTypeKey) => {
+  const informantRelationMatch =
+    field('informant.relation').isEqualTo(informantType)
+  const informantOption = getInformantOption(informantType)
+
+  return [
+    {
+      id: 'requester.type',
+      type: FieldType.SELECT,
+      required: true,
+      conditionals: [
+        {
+          type: ConditionalType.SHOW,
+          conditional: and(
+            not(qrGenerated),
+            informantRelationMatch,
+            onlyMotherExists
+          )
+        }
+      ],
+      options: [motherOption, informantOption],
+      label: requesterLabel
+    },
+    {
+      id: 'requester.type',
+      type: FieldType.SELECT,
+      required: true,
+      conditionals: [
+        {
+          type: ConditionalType.SHOW,
+          conditional: and(
+            not(qrGenerated),
+            informantRelationMatch,
+            onlyFatherExists
+          )
+        }
+      ],
+      options: [fatherOption, informantOption],
+      label: requesterLabel
+    },
+    {
+      id: 'requester.type',
+      type: FieldType.SELECT,
+      required: true,
+      conditionals: [
+        {
+          type: ConditionalType.SHOW,
+          conditional: and(
+            not(qrGenerated),
+            informantRelationMatch,
+            motherAndFatherExist
+          )
+        }
+      ],
+      options: [motherOption, fatherOption, informantOption],
+      label: requesterLabel
+    },
+    {
+      id: 'requester.type',
+      type: FieldType.SELECT,
+      required: true,
+      conditionals: [
+        {
+          type: ConditionalType.SHOW,
+          conditional: and(
+            not(qrGenerated),
+            informantRelationMatch,
+            motherAndFatherMissing
+          )
+        }
+      ],
+      options: [informantOption],
+      label: requesterLabel
+    }
+  ]
+}
 
 export const issueBirthCredentialAction = {
   type: ActionType.CUSTOM,
@@ -77,33 +207,73 @@ export const issueBirthCredentialAction = {
       conditionals: [
         {
           type: ConditionalType.SHOW,
-          conditional: not(qrGenerated)
+          conditional: and(
+            not(qrGenerated),
+            field('informant.relation').isEqualTo(InformantType.MOTHER),
+            fatherExists
+          )
         }
       ],
-      options: [
-        {
-          value: 'MOTHER',
-          label: {
-            defaultMessage: 'Mother',
-            description: 'Option label for mother requester type',
-            id: 'event.birth.custom.action.issue-vc.field.requester.option.mother'
-          }
-        },
-        {
-          value: 'FATHER',
-          label: {
-            defaultMessage: 'Father',
-            description: 'Option label for father requester type',
-            id: 'event.birth.custom.action.issue-vc.field.requester.option.father'
-          }
-        }
-      ],
-      label: {
-        defaultMessage: 'Requester',
-        description: 'Select who is requesting the VC',
-        id: 'event.birth.custom.action.issue-vc.field.requester.label'
-      }
+      options: [motherOption, fatherOption],
+      label: requesterLabel
     },
+    {
+      id: 'requester.type',
+      type: FieldType.SELECT,
+      required: true,
+      conditionals: [
+        {
+          type: ConditionalType.SHOW,
+          conditional: and(
+            not(qrGenerated),
+            field('informant.relation').isEqualTo(InformantType.MOTHER),
+            not(fatherExists)
+          )
+        }
+      ],
+      options: [motherOption],
+      label: requesterLabel
+    },
+    {
+      id: 'requester.type',
+      type: FieldType.SELECT,
+      required: true,
+      conditionals: [
+        {
+          type: ConditionalType.SHOW,
+          conditional: and(
+            not(qrGenerated),
+            field('informant.relation').isEqualTo(InformantType.FATHER),
+            motherExists
+          )
+        }
+      ],
+      options: [fatherOption, motherOption],
+      label: requesterLabel
+    },
+    {
+      id: 'requester.type',
+      type: FieldType.SELECT,
+      required: true,
+      conditionals: [
+        {
+          type: ConditionalType.SHOW,
+          conditional: and(
+            not(qrGenerated),
+            field('informant.relation').isEqualTo(InformantType.FATHER),
+            not(motherExists)
+          )
+        }
+      ],
+      options: [fatherOption],
+      label: requesterLabel
+    },
+    ...getFieldConfigForInformant(InformantType.OTHER),
+    ...getFieldConfigForInformant(InformantType.BROTHER),
+    ...getFieldConfigForInformant(InformantType.GRANDFATHER),
+    ...getFieldConfigForInformant(InformantType.GRANDMOTHER),
+    ...getFieldConfigForInformant(InformantType.SISTER),
+    ...getFieldConfigForInformant(InformantType.LEGAL_GUARDIAN),
     {
       parent: field('requester.type'),
       id: 'padding-for-layout-1',
@@ -183,6 +353,40 @@ export const issueBirthCredentialAction = {
           { fieldId: 'father.dob' },
           { fieldId: 'father.age' },
           { fieldId: 'father.nationality' }
+        ]
+      }
+    },
+    {
+      parent: field('requester.type'),
+      id: 'requester.data.informant.other',
+      type: FieldType.DATA,
+      conditionals: [
+        {
+          type: ConditionalType.SHOW,
+          conditional: and(
+            field('requester.type').isEqualTo('INFORMANT'),
+            not(field('informant.relation').isEqualTo('MOTHER')),
+            not(field('informant.relation').isEqualTo('FATHER')),
+            not(qrGenerated)
+          )
+        }
+      ],
+      label: {
+        defaultMessage: 'Details in the birth record',
+        description: 'Title for the data section',
+        id: 'event.birth.custom.action.issue-vc.field.requester.label'
+      },
+      configuration: {
+        data: [
+          { fieldId: 'informant.idType' },
+          { fieldId: 'informant.nid' },
+          { fieldId: 'informant.passport' },
+          { fieldId: 'informant.brn' },
+          { fieldId: 'informant.name' },
+          { fieldId: 'informant.dob' },
+          { fieldId: 'informant.age' },
+          { fieldId: 'informant.other.relation' },
+          { fieldId: 'informant.nationality' }
         ]
       }
     },
@@ -268,6 +472,37 @@ export const issueBirthCredentialAction = {
         textAlign: 'center',
         width: '30%'
       },
+      conditionals: [
+        {
+          type: ConditionalType.SHOW,
+          conditional: qrGenerated
+        }
+      ]
+    },
+    {
+      id: 'requester.acceptedVcOffer',
+      parent: field('get-credential-offer'),
+      type: FieldType.CHECKBOX,
+      required: true,
+      defaultValue: false,
+      label: {
+        defaultMessage:
+          'I confirm that the citizen has accepted the verifiable credential offer',
+        description:
+          'Confirmation checkbox shown before issuing verifiable credential',
+        id: 'event.birth.custom.action.issue-vc.field.accepted-vc-offer.label'
+      },
+      validation: [
+        {
+          message: {
+            defaultMessage:
+              'Please confirm that the citizen has accepted the verifiable credential offer',
+            description: 'Validation for credential offer acceptance checkbox',
+            id: 'event.birth.custom.action.issue-vc.field.accepted-vc-offer.error'
+          },
+          validator: field('requester.acceptedVcOffer').isEqualTo(true)
+        }
+      ],
       conditionals: [
         {
           type: ConditionalType.SHOW,
