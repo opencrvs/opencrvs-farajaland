@@ -8,7 +8,7 @@ import {
   goBackToReview,
   goToSection,
   login,
-  logout,
+  selectDeclarationAction,
   uploadImage,
   uploadImageToSection
 } from '../../helpers'
@@ -25,7 +25,6 @@ import {
 test.describe
   .serial('Birth declaration case - Conditional Hidden Fields Removal', () => {
   let page: Page
-  const trackingId = ''
 
   const declaration = {
     child: {
@@ -41,8 +40,8 @@ test.describe
     placeOfBirth: 'Residential address',
     birthLocation: {
       country: 'Farajaland',
-      province: 'Pualula',
-      district: 'Funabuli',
+      province: 'Central',
+      district: 'Ibombo',
       town: faker.location.city(),
       residentialArea: faker.location.county(),
       street: faker.location.street(),
@@ -156,23 +155,7 @@ test.describe
           exact: true
         })
         .click()
-      await page
-        .locator('#child____birthLocation____privateHome-form-input #province')
-        .click()
-      await page
-        .getByText(declaration.birthLocation.province, {
-          exact: true
-        })
-        .click()
 
-      await page
-        .locator('#child____birthLocation____privateHome-form-input #district')
-        .click()
-      await page
-        .getByText(declaration.birthLocation.district, {
-          exact: true
-        })
-        .click()
       await page.locator('#town').fill(declaration.birthLocation.town)
       await page
         .locator('#residentialArea')
@@ -717,28 +700,12 @@ test.describe
 
       await expect(page.getByRole('dialog')).not.toBeVisible()
     })
-
-    test('Send for approval', async () => {
-      await page.getByRole('button', { name: 'Send for approval' }).click()
-      await expect(page.getByText('Send for approval?')).toBeVisible()
-      await page.getByRole('button', { name: 'Confirm' }).click()
-
-      await ensureOutboxIsEmpty(page)
-
-      await page.getByText('Sent for approval').click()
-
-      await expect(
-        page.getByRole('button', {
-          name: formatName(declaration.child.name)
-        })
-      ).toBeVisible()
-    })
   })
 
   test.describe('Review and update declaration by Local Registrar', async () => {
     test.beforeAll(async () => {
       await login(page, CREDENTIALS.REGISTRAR)
-      await page.getByRole('button', { name: 'Ready for review' }).click()
+      await page.getByRole('button', { name: 'Pending registration' }).click()
       await page
         .getByRole('button', {
           name: formatV2ChildName({
@@ -760,16 +727,16 @@ test.describe
     })
 
     test('Register the birth', async () => {
-      await page.getByRole('button', { name: 'Register' }).click()
-      await expect(page.getByText('Register the birth?')).toBeVisible()
+      await selectDeclarationAction(page, 'Register')
+      await expect(page.getByText('Register?')).toBeVisible()
       await page.locator('#confirm_Register').click()
       // Should redirect back to Ready for review workqueue
-      await page.waitForURL(`**/workqueue/in-review-all`)
-      await expectInUrl(page, '/workqueue/in-review-all')
+      await page.waitForURL(`**/workqueue/pending-registration`)
+      await expectInUrl(page, '/workqueue/pending-registration')
     })
 
     test('Check if mother occupation is updated', async () => {
-      await page.getByRole('button', { name: 'Ready to print' }).click()
+      await page.getByRole('button', { name: 'Pending certification' }).click()
       await page
         .getByRole('button', {
           name: formatV2ChildName({
