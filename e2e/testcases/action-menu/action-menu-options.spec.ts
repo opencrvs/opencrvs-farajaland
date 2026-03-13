@@ -5,7 +5,7 @@ import { CREDENTIALS } from '../../constants'
 import { createDeclaration, Declaration } from '../test-data/birth-declaration'
 import { ActionType } from '@opencrvs/toolkit/events'
 import { formatV2ChildName } from '../birth/helpers'
-import { selectAction } from '../../utils'
+import { ensureAssigned, selectAction } from '../../utils'
 
 async function getActionMenuOptions(page: Page, declaration: Declaration) {
   await searchFromSearchBar(page, formatV2ChildName(declaration))
@@ -114,6 +114,25 @@ test.describe('Action menu options', () => {
         'Print',
         'Correct',
         'Issue a verifiable credential'
+      ])
+    })
+
+    test('Registrar (assigned)', async () => {
+      await login(page, CREDENTIALS.REGISTRAR)
+      await searchFromSearchBar(page, formatV2ChildName(declaration))
+      await ensureAssigned(page)
+
+      await page.getByRole('button', { name: 'Action', exact: true }).click()
+      const options = await page
+        .locator('#action-Dropdown-Content li')
+        .allTextContents()
+
+      expect(options).toStrictEqual([
+        'Escalate',
+        'Print',
+        'Correct',
+        'Issue a verifiable credential',
+        'Unassign'
       ])
     })
   })
