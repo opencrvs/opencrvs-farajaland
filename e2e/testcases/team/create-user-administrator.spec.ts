@@ -1,6 +1,6 @@
 import { test, expect, type Page } from '@playwright/test'
 import path from 'path'
-import { ensureLoginPageReady, continueForm, login, loginWithNewUser } from '../../helpers'
+import { loginWithNewUser, continueForm, login } from '../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS, LOGIN_URL } from '../../constants'
 
@@ -10,10 +10,14 @@ test.describe.serial('1. Create user -1', () => {
     firstName: faker.person.firstName('male'),
     surname: faker.person.lastName('male'),
     email: faker.internet.email(),
-    role: 'Registrar'
+    role: 'Community Leader'
   }
   const signaturePath = path.resolve(__dirname, '../../assets/sign1.png')
   const username = `${userinfo.firstName[0]}.${userinfo.surname}`.toLowerCase()
+  const question00 = 'What city were you born in?'
+  const question01 = 'What is your favorite movie?'
+  const question02 = 'What is your favorite food?'
+
   test.beforeAll(async ({ browser }) => {
     page = await browser.newPage()
   })
@@ -22,18 +26,18 @@ test.describe.serial('1. Create user -1', () => {
     await page.close()
   })
 
-  test.describe('1.1 User creation started by national system admin', async () => {
+  test.describe('1.1 User creation started by local system admin', async () => {
     test.beforeAll(async () => {
-      await login(page, CREDENTIALS.NATIONAL_SYSTEM_ADMIN)
+      await login(page, CREDENTIALS.LOCAL_SYSTEM_ADMIN)
       await page.getByRole('button', { name: 'Team' }).click()
-      await expect(page.getByText('HQ Office')).toBeVisible()
+      await expect(page.getByText('Ibombo District Office')).toBeVisible()
 
       await page
-        .getByRole('button', { name: /HQ Office, Embe, Pualula/ })
+        .getByRole('button', { name: /Ibombo District Office, Ibombo, Central/ })
         .click()
-      await page.getByTestId('locationSearchInput').fill('Ibombo')
+      await page.getByTestId('locationSearchInput').fill('Itumbwe')
 
-      await page.getByText(/Ibombo Rural Health Centre/).click()
+      await page.getByText(/Itumbwe Health Post, Ibombo, Central/).click()
 
       await page.click('#add-user')
       await expect(page.getByText('User details')).toBeVisible()
@@ -48,16 +52,12 @@ test.describe.serial('1. Create user -1', () => {
       await continueForm(page)
     })
 
-    test('1.1.2 Upload Signture', async () => {
-      await page.setInputFiles('input[type="file"]', signaturePath)
-      await continueForm(page)
-    })
-
+    
     test('1.1.2 Create user', async () => {
       await page.getByRole('button', { name: 'Create user' }).click()
 
       await expect(page.locator('#header')).toContainText(
-        'Ibombo Rural Health Centre'
+        'Itumbwe Health Post'
       )
 
       await expect(
@@ -69,9 +69,8 @@ test.describe.serial('1. Create user -1', () => {
   })
 
   test.describe('2.1 Login with newly created user credentials', () => {
-    test('2.1.1 Enter your username and password', async ({page}) => {
-      await loginWithNewUser(page,username)
-        
+    test('2.1.1 Enter your username and password', async ({ page }) => {
+          await loginWithNewUser(page,username)
     })
   })
 })
