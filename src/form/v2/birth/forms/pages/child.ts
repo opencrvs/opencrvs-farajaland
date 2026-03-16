@@ -339,16 +339,6 @@ export const child = defineFormPage({
         }
       ],
       validation: [
-        {
-          message: {
-            defaultMessage: 'Invalid input',
-            description: 'Error message when generic field is invalid',
-            id: 'error.invalidInput'
-          },
-          validator: field(
-            'child.birthLocation.privateHome'
-          ).isValidAdministrativeLeafLevel()
-        },
         ...getNestedFieldValidators(
           'child.birthLocation.privateHome',
           defaultStreetAddressConfiguration
