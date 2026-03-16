@@ -356,10 +356,14 @@ export const child = defineFormPage({
       ],
       defaultValue: {
         country: 'FAR',
-        addressType: AddressType.DOMESTIC,
-        administrativeArea: user('primaryOfficeId').locationLevel('district')
+        addressType: AddressType.DOMESTIC
       },
       configuration: {
+        fields: [
+          { id: 'country' },
+          { id: 'province' },
+          { id: 'district', required: false }
+        ],
         streetAddressForm: defaultStreetAddressConfiguration
       }
     },
