@@ -161,3 +161,24 @@ export async function verifyMembersClickable(
     await expect(page).toHaveURL(/.*\/team/)
   }
 }
+export async function verifyTeamMembers(
+  page: Page,
+  team: { name: string; role: string; disabled?: boolean }[]
+) {
+  const rows = page.locator('#user_list tr:has(td)')
+
+  for (const member of team) {
+    const row = rows.filter({ hasText: member.name })
+    await expect(row).toHaveCount(1)
+
+    await expect(row.getByText(member.role)).toBeVisible()
+    await expect(row.getByText('Active')).toBeVisible()
+
+    const memberButton = row.getByRole('button', { name: member.name })
+    if (member.disabled) {
+      await expect(memberButton).toBeDisabled()
+    } else {
+      await expect(memberButton).toBeEnabled()
+    }
+  }
+}

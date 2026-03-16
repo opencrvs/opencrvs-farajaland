@@ -1,6 +1,7 @@
 import { test, expect, type Page } from '@playwright/test'
 import { continueForm, login } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
+import { verifyTeamMembers } from '../birth/helpers'
 
 test.describe('2. Team Page', () => {
   test.describe.serial('2.1 Basic UI check', async () => {
@@ -25,14 +26,17 @@ test.describe('2. Team Page', () => {
         })
       ).toBeVisible()
     })
+     const team = [
+        { name: 'Joseph Musonda', role: 'Registrar General' },
+        { name: 'Edgar Kazembe', role: 'Operations Manager' },
+        { name: 'Jonathan Campbell' , role: 'National Administrator' }
+      ]
 
     test('2.1.1 Verify Team Members Status', async () => {
-      const row1 = page.getByRole('row', { name: /Joseph Musonda/ })
-      await expect(row1.getByText('Active')).toBeVisible()
-      const row2 = page.getByRole('row', { name: /Edgar Kazembe/ })
-      await expect(row2.getByText('Active')).toBeVisible()
-      const row3 = page.getByRole('row', { name: /Jonathan Campbell/ })
-      await expect(row3.getByText('Active')).toBeVisible()
+      
+
+        await verifyTeamMembers(page, team)
+      
     })
   })
 

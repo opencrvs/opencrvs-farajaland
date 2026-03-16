@@ -1,5 +1,6 @@
 import { test, expect, type Page } from '@playwright/test'
 import { login } from '../../helpers'
+import { verifyTeamMembers } from '../birth/helpers'
 import { CREDENTIALS } from '../../constants'
 
 test.describe.serial('5. Team Page -1', () => {
@@ -33,21 +34,7 @@ test.describe.serial('5. Team Page -1', () => {
     ]
 
     test('5.1.1 Verify Team Members, Roles and their statuses', async () => {
-      const rows = page.locator('#user_list tr:has(td)')
-      await expect(rows).toHaveCount(team.length)
-
-      for (let i = 0; i < team.length; i++) {
-        const cells = rows.nth(i).locator('td')
-        await expect(cells.nth(1)).toHaveText(team[i].name)
-        await expect(cells.nth(2)).toHaveText(team[i].role)
-        await expect(cells.nth(3)).toHaveText('Active')
-
-        if (team[i].disabled) {
-          await expect(
-            rows.nth(i).getByRole('button', { name: team[i].name })
-          ).toBeDisabled()
-        }
-      }
+      await verifyTeamMembers(page, team)
     })
 
     test('5.2.2 Verify for different locations', async () => {
