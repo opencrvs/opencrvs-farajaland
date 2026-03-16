@@ -305,7 +305,7 @@ export const eventDetails = defineFormPage({
     },
     {
       id: 'eventDetails.deathLocation',
-      type: FieldType.FACILITY,
+      type: FieldType.LOCATION,
       required: true,
       secured: true,
       label: {
@@ -320,7 +320,10 @@ export const eventDetails = defineFormPage({
             PlaceOfDeath.HEALTH_FACILITY
           )
         }
-      ]
+      ],
+      configuration: {
+        searchableResource: ['HEALTH_FACILITY']
+      }
     },
     {
       id: 'eventDetails.deathLocationOther',
