@@ -143,8 +143,13 @@ export const roles: Role[] = [
       'type=record.register&event=birth,death,tennis-club-membership',
       'type=record.print-certified-copies&event=birth,death,tennis-club-membership',
       'type=record.correct&event=birth,death,tennis-club-membership',
+<<<<<<< HEAD
       'type=record.custom-action&event=birth&customActionTypes=REGISTRAR_GENERAL_FEEDBACK,REVOKE_REGISTRATION,REINSTATE_REVOKE_REGISTRATION,APPROVE_DECLARATION',
       'type=record.custom-action&event=death&customActionTypes=APPROVE_DECLARATION',
+=======
+      'record.custom-action[event=birth,customActionType=REGISTRAR_GENERAL_FEEDBACK|REVOKE_REGISTRATION|REINSTATE_REVOKE_REGISTRATION|APPROVE_DECLARATION]',
+      'record.custom-action[event=death,customActionType=APPROVE_DECLARATION]',
+>>>>>>> origin/develop
       'type=record.unassign-others&event=birth,death,tennis-club-membership'
     ]
   },
