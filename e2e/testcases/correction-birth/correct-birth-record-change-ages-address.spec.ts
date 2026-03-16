@@ -224,7 +224,7 @@ test.describe.serial('Correct record - Change ages', () => {
       .click()
 
     await expect(page.getByTestId('row-value-mother.address')).toHaveText(
-      'FarajalandCentralIbomboEthiopiaOromiaWoreda'
+      'FarajalandCentralIbomboKlowEthiopiaOromiaWoreda'
     )
   })
 
@@ -268,7 +268,7 @@ test.describe.serial('Correct record - Change ages', () => {
 
     await expect(
       page.getByText(
-        'Usual place of residenceFarajalandCentralIbomboEthiopiaOromiaWoreda'
+        'Usual place of residenceFarajalandCentralIbomboKlowEthiopiaOromiaWoreda'
       )
     ).toBeVisible()
 

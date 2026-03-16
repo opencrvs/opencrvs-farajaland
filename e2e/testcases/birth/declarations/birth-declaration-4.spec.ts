@@ -228,6 +228,15 @@ test.describe.serial('4. Birth declaration case - 4', () => {
         .locator('#informant____passport')
         .fill(declaration.informant.identifier.id)
 
+      await page.locator('#country').click()
+      await page
+        .locator('#country input')
+        .fill(declaration.informant.address.country.slice(0, 3))
+      await page
+        .locator('#country')
+        .getByText(declaration.informant.address.country, { exact: true })
+        .click()
+
       await page.locator('#province').click()
       await page
         .getByText(declaration.informant.address.province, { exact: true })

@@ -43,6 +43,7 @@ test.describe.serial('Correct record - 4', () => {
       country: 'Farajaland',
       province: 'Sulaka',
       district: 'Irundu',
+      village: 'Xhosa',
       town: faker.location.city(),
       residentialArea: faker.location.county(),
       street: faker.location.street(),
@@ -478,6 +479,15 @@ test.describe.serial('Correct record - 4', () => {
         await page
           .locator('#father____address-form-input')
           .getByText(updatedFatherDetails.address.district)
+          .click()
+
+        await page
+          .locator('#father____address-form-input')
+          .locator('#village')
+          .click()
+        await page
+          .locator('#father____address-form-input')
+          .getByText(updatedFatherDetails.address.village)
           .click()
 
         await page

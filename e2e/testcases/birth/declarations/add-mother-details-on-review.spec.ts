@@ -253,7 +253,7 @@ test.describe.serial('Add mother details on review', () => {
       await selectAction(page, 'Edit')
       await expect(
         page.getByText(
-          /You are editing a record declared by Felix Katongo \(Registration (Officer|Agent) at Ibombo District Office\)/
+          /You are editing a record declared by Velix Katongo \(Registration Officer at Klow Village Hospital\)/
         )
       ).toBeVisible()
     })

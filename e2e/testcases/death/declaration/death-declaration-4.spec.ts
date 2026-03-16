@@ -601,6 +601,7 @@ test.describe.serial('4. Death declaration case - 4', () => {
         declaration.informant.address.country +
           declaration.informant.address.province +
           declaration.informant.address.district +
+          declaration.informant.address.village +
           declaration.informant.address.town +
           declaration.informant.address.residentialArea +
           declaration.informant.address.street +
@@ -942,6 +943,7 @@ test.describe.serial('4. Death declaration case - 4', () => {
         declaration.informant.address.country +
           declaration.informant.address.province +
           declaration.informant.address.district +
+          declaration.informant.address.village +
           declaration.informant.address.town +
           declaration.informant.address.residentialArea +
           declaration.informant.address.street +

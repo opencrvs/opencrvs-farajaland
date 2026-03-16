@@ -182,7 +182,9 @@ test.describe.serial('5. Death declaration case - 5', () => {
         .click()
       await page.locator('#village').click()
       await page
-        .getByText(declaration.eventDetails.deathLocationOther.village, { exact: true })
+        .getByText(declaration.eventDetails.deathLocationOther.village, {
+          exact: true
+        })
         .click()
       await page
         .locator('#town')
@@ -410,6 +412,7 @@ test.describe.serial('5. Death declaration case - 5', () => {
         declaration.eventDetails.deathLocationOther.country +
           declaration.eventDetails.deathLocationOther.province +
           declaration.eventDetails.deathLocationOther.district +
+          declaration.eventDetails.deathLocationOther.village +
           declaration.eventDetails.deathLocationOther.town +
           declaration.eventDetails.deathLocationOther.residentialArea +
           declaration.eventDetails.deathLocationOther.street +
@@ -701,6 +704,7 @@ test.describe.serial('5. Death declaration case - 5', () => {
         declaration.eventDetails.deathLocationOther.country +
           declaration.eventDetails.deathLocationOther.province +
           declaration.eventDetails.deathLocationOther.district +
+          declaration.eventDetails.deathLocationOther.village +
           declaration.eventDetails.deathLocationOther.town +
           declaration.eventDetails.deathLocationOther.residentialArea +
           declaration.eventDetails.deathLocationOther.street +

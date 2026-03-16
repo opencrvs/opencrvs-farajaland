@@ -29,7 +29,7 @@ test.describe.serial('1. Create user -1', () => {
       await expect(page.getByText('HQ Office')).toBeVisible()
 
       await page.getByRole('button', { name: /HQ Office/ }).click()
-      await page.getByTestId('locationSearchInput').fill('Ibombo')
+      await page.getByTestId('locationSearchInput').fill('Klow')
 
       await page.getByText(/Klow Village Hospital/).click()
 
@@ -59,7 +59,7 @@ test.describe.serial('1. Create user -1', () => {
       )
 
       await expect(
-        page.getByText('Ibombo, Central', {
+        page.getByText('Klow, Ibombo, Central', {
           exact: true
         })
       ).toBeVisible()

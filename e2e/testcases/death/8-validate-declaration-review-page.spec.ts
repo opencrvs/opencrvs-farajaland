@@ -475,10 +475,6 @@ test.describe.serial('8. Validate declaration review page', () => {
         declaration.deceased.address.district = 'Afue'
         declaration.deceased.address.village = 'Imani'
 
-        await page.locator('#province').click()
-        await page
-          .getByText(declaration.deceased.address.province, { exact: true })
-          .click()
         await page.locator('#district').click()
         await page
           .getByText(declaration.deceased.address.district, { exact: true })

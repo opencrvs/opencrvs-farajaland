@@ -1,10 +1,11 @@
 import { expect, test } from '@playwright/test'
 import { login } from '../../helpers'
 import { assertTexts } from '../../utils'
+import { CREDENTIALS } from '../../constants'
 
 test.describe("Advanced Search 8 - Death - Deceased's place of death", () => {
   test.beforeEach(async ({ page }) => {
-    await login(page)
+    await login(page, CREDENTIALS.REGISTRAR_VILLAGE)
     await page.click('#searchType')
     await expect(page).toHaveURL(/.*\/advanced-search/)
     await page.getByText('Death').click()
@@ -66,7 +67,7 @@ test.describe("Advanced Search 8 - Death - Deceased's place of death", () => {
       root: page,
       texts: [
         'Event: Death',
-        'Usual place of residence: Farajaland, Central, Ibombo',
+        'Usual place of residence: Farajaland, Central, Ibombo, Klow',
         'Place of death: Residential address'
       ],
       testId: 'search-result'
