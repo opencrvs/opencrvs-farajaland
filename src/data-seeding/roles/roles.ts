@@ -65,7 +65,7 @@ export const roles: Role[] = [
       'type=record.register&event=birth,death,tennis-club-membership',
       'type=record.print-certified-copies&event=birth,death,tennis-club-membership',
       'type=record.correct&event=birth,death,tennis-club-membership',
-      'record.unassign-others[event=birth|death|tennis-club-membership]',
+      'type=record.unassign-others&event=birth,death,tennis-club-membership',
       'record.custom-action[event=birth,customActionType=ESCALATE|ISSUE_CERTIFIED_COPY|ISSUE_VERIFIABLE_CREDENTIAL]'
     ]
   },
@@ -145,7 +145,7 @@ export const roles: Role[] = [
       'type=record.correct&event=birth,death,tennis-club-membership',
       'record.custom-action[event=birth,customActionType=REGISTRAR_GENERAL_FEEDBACK|REVOKE_REGISTRATION|REINSTATE_REVOKE_REGISTRATION|APPROVE_DECLARATION]',
       'record.custom-action[event=death,customActionType=APPROVE_DECLARATION]',
-      'record.unassign-others[event=birth|death|tennis-club-membership]'
+      'type=record.unassign-others&event=birth,death,tennis-club-membership'
     ]
   },
   {
