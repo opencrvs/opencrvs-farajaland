@@ -301,7 +301,7 @@ export const child = defineFormPage({
     {
       id: 'child.birthLocation',
       analytics: true,
-      type: FieldType.FACILITY,
+      type: FieldType.LOCATION,
       required: true,
       secured: true,
       label: {
@@ -318,6 +318,7 @@ export const child = defineFormPage({
         }
       ],
       configuration: {
+        searchableResource: ['HEALTH_FACILITY'],
         allowedLocations: user.jurisdiction(
           user.scope('record.create').attribute('placeOfEvent')
         )
