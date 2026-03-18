@@ -100,7 +100,7 @@ test.describe.serial('5. Birth declaration case - 5', () => {
 
   test.describe('5.1 Declaration started by Registrar', async () => {
     test.beforeAll(async () => {
-      await login(page, CREDENTIALS.REGISTRAR)
+      await login(page, CREDENTIALS.REGISTRAR_VILLAGE)
       await page.click('#header-new-event')
       await page.getByLabel('Birth').click()
       await page.getByRole('button', { name: 'Continue' }).click()
@@ -133,6 +133,10 @@ test.describe.serial('5. Birth declaration case - 5', () => {
 
       await expect(
         page.locator('#child____birthLocation____other-form-input #district')
+      ).toBeDisabled()
+
+      await expect(
+        page.locator('#child____birthLocation____other-form-input #village')
       ).toBeDisabled()
 
       await page.locator('#town').fill(declaration.birthLocation.town)

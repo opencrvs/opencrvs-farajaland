@@ -59,7 +59,7 @@ test.describe.serial('Correct record - 2', () => {
   })
 
   test('2.1 Certificate preview', async () => {
-    await login(page, CREDENTIALS.REGISTRATION_OFFICER)
+    await login(page, CREDENTIALS.REGISTRATION_OFFICER_VILLAGE)
     await page.getByRole('button', { name: 'Pending certification' }).click()
     await navigateToCertificatePrintAction(page, declaration)
     await selectCertificationType(page, 'Birth Certificate')

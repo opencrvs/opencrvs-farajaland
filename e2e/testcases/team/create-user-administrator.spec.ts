@@ -30,10 +30,14 @@ test.describe.serial('1. Create user -1', () => {
     test.beforeAll(async () => {
       await login(page, CREDENTIALS.LOCAL_SYSTEM_ADMIN)
       await page.getByRole('button', { name: 'Team' }).click()
-      await expect(page.getByText('Ibombo District Office')).toBeVisible()
+      await expect(page.locator('#content-name')).toHaveText(
+        'Central Province Office'
+      )
 
       await page
-        .getByRole('button', { name: /Ibombo District Office, Ibombo, Central/ })
+        .getByRole('button', {
+          name: /Central Province Office, Central/
+        })
         .click()
       await page.getByTestId('locationSearchInput').fill('Itumbwe')
 
@@ -52,13 +56,10 @@ test.describe.serial('1. Create user -1', () => {
       await continueForm(page)
     })
 
-    
     test('1.1.2 Create user', async () => {
       await page.getByRole('button', { name: 'Create user' }).click()
 
-      await expect(page.locator('#header')).toContainText(
-        'Itumbwe Health Post'
-      )
+      await expect(page.locator('#header')).toContainText('Itumbwe Health Post')
 
       await expect(
         page.getByText('Ibombo, Central', {
@@ -70,7 +71,7 @@ test.describe.serial('1. Create user -1', () => {
 
   test.describe('2.1 Login with newly created user credentials', () => {
     test('2.1.1 Enter your username and password', async ({ page }) => {
-          await loginWithNewUser(page,username)
+      await loginWithNewUser(page, username)
     })
   })
 })

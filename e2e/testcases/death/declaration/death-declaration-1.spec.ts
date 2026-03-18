@@ -34,6 +34,7 @@ test.describe.serial('1. Death declaration case - 1', () => {
         country: 'Farajaland',
         province: 'Sulaka',
         district: 'Zobwe',
+        village: 'Chuma',
         town: faker.location.city(),
         residentialArea: faker.location.county(),
         street: faker.location.street(),
@@ -117,6 +118,10 @@ test.describe.serial('1. Death declaration case - 1', () => {
       await page.locator('#district').click()
       await page
         .getByText(declaration.deceased.address.district, { exact: true })
+        .click()
+      await page.locator('#village').click()
+      await page
+        .getByText(declaration.deceased.address.village, { exact: true })
         .click()
       await page.locator('#town').fill(declaration.deceased.address.town)
       await page
@@ -291,6 +296,7 @@ test.describe.serial('1. Death declaration case - 1', () => {
         declaration.deceased.address.country +
           declaration.deceased.address.province +
           declaration.deceased.address.district +
+          declaration.deceased.address.village +
           declaration.deceased.address.town +
           declaration.deceased.address.residentialArea +
           declaration.deceased.address.street +
@@ -573,6 +579,7 @@ test.describe.serial('1. Death declaration case - 1', () => {
         declaration.deceased.address.country +
           declaration.deceased.address.province +
           declaration.deceased.address.district +
+          declaration.deceased.address.village +
           declaration.deceased.address.town +
           declaration.deceased.address.residentialArea +
           declaration.deceased.address.street +

@@ -28,12 +28,10 @@ test.describe.serial('1. Create user -1', () => {
       await page.getByRole('button', { name: 'Team' }).click()
       await expect(page.getByText('HQ Office')).toBeVisible()
 
-      await page
-        .getByRole('button', { name: /HQ Office, Embe, Pualula/ })
-        .click()
-      await page.getByTestId('locationSearchInput').fill('Ibombo')
+      await page.getByRole('button', { name: /HQ Office/ }).click()
+      await page.getByTestId('locationSearchInput').fill('Klow')
 
-      await page.getByText(/Ibombo Rural Health Centre/).click()
+      await page.getByText(/Klow Village Hospital/).click()
 
       await page.click('#add-user')
       await expect(page.getByText('User details')).toBeVisible()
@@ -57,11 +55,11 @@ test.describe.serial('1. Create user -1', () => {
       await page.getByRole('button', { name: 'Create user' }).click()
 
       await expect(page.locator('#header')).toContainText(
-        'Ibombo Rural Health Centre'
+        'Klow Village Hospital'
       )
 
       await expect(
-        page.getByText('Ibombo, Central', {
+        page.getByText('Klow, Ibombo, Central', {
           exact: true
         })
       ).toBeVisible()

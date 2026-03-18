@@ -30,9 +30,11 @@ test.describe.serial('2. Organisation Page', () => {
       await pageNavigator.scrollIntoViewIfNeeded()
       await pageNavigator.click()
 
-      await page.getByRole('button', { name: /Kapila Health Post/ }).click()
+      await page
+        .getByRole('button', { name: /Golden Valley Rural Health Centre/ })
+        .click()
       await expect(page.locator('#content-name')).toHaveText(
-        /Kapila Health Post/
+        /Golden Valley Rural Health Centre/
       )
       await expect(
         page.getByText('Ibombo, Central', { exact: true })
@@ -46,9 +48,6 @@ test.describe.serial('2. Organisation Page', () => {
 
       await page.getByRole('button', { name: /Central/ }).click()
       await page.getByRole('button', { name: /Ibombo/ }).click()
-      const pageNavigator = page.getByRole('button', { name: '4' })
-      await pageNavigator.scrollIntoViewIfNeeded()
-      await pageNavigator.click()
 
       await page.getByRole('button', { name: /Ibombo District Office/ }).click()
       await expect(page.locator('#content-name')).toHaveText(
@@ -59,13 +58,7 @@ test.describe.serial('2. Organisation Page', () => {
       ).toBeVisible()
     })
     test('2.1.3 Verify Team Members Status', async () => {
-      const ibomboMembers = [
-        'Mitchell Owen',
-        'Emmanuel Mayuka',
-        'Kennedy Mweene',
-        'Felix Katongo',
-        'Kalusha Bwalya'
-      ]
+      const ibomboMembers = ['Felix Katongo', 'Kennedy Mweene']
       await verifyMembersClickable(
         page,
         ibomboMembers,
@@ -80,10 +73,10 @@ test.describe.serial('2. Organisation Page', () => {
         await page.goBack()
       }
       await page.getByRole('button', { name: /Organisation/ }).click()
-      await page.getByRole('button', { name: /Central/ }).click()
-      await page.getByRole('button', { name: /Itambo/ }).click()
+      await page.getByRole('button', { name: /Sulaka/ }).click()
+      await page.getByRole('button', { name: /Ilanga/ }).click()
       await expect(
-        page.getByRole('button', { name: /KundamfumuRural Health Centre/ })
+        page.getByRole('button', { name: /Ilanga District Hospital/ })
       ).toBeDisabled()
     })
     test('2.2.2 Verify Province -> District -> District Office', async () => {
@@ -91,22 +84,19 @@ test.describe.serial('2. Organisation Page', () => {
         await page.goBack()
       }
 
-      await page.getByRole('button', { name: /Pualula/ }).click()
-      await page.getByRole('button', { name: /Funabuli/ }).click()
-      const pageNavigator = page.getByRole('button', { name: '2' })
-      await pageNavigator.scrollIntoViewIfNeeded()
-      await pageNavigator.click()
+      await page.getByRole('button', { name: /Chuminga/ }).click()
+      await page.getByRole('button', { name: /Ama/ }).click()
+
       await expect(
-        page.getByRole('button', { name: /Funabuli District Office/ })
+        page.getByRole('button', { name: /Ama District Office/ })
       ).toBeDisabled()
     })
 
-    //@TODO: https://github.com/opencrvs/opencrvs-core/issues/11756
-    test.fail('2.2.3 Verify Embassy', async () => {
+    test('2.2.3 Verify Embassy', async () => {
       await page.getByRole('button', { name: /Organisation/ }).click()
 
       await expect(
-        page.getByRole('button', { name: /Farajaland Embassy/ })
+        page.getByRole('button', { name: /UK Embassy Office/ })
       ).toBeDisabled()
     })
   })

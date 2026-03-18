@@ -18,18 +18,12 @@ test.describe('2. Team Page', () => {
       await login(page, CREDENTIALS.NATIONAL_SYSTEM_ADMIN)
       await page.getByRole('button', { name: 'Team' }).click()
       await expect(page.locator('#content-name')).toHaveText('HQ Office')
-
-      expect(
-        page.getByText('Embe, Pualula', {
-          exact: true
-        })
-      ).toBeVisible()
     })
 
     test('2.1.1 Verify Team Members Status', async () => {
-      const row1 = page.getByRole('row', { name: /Joseph Musonda/ })
+      const row1 = page.getByRole('row', { name: /Mutale Musonda/ })
       await expect(row1.getByText('Active')).toBeVisible()
-      const row2 = page.getByRole('row', { name: /Edgar Kazembe/ })
+      const row2 = page.getByRole('row', { name: /Chipo Lungu/ })
       await expect(row2.getByText('Active')).toBeVisible()
       const row3 = page.getByRole('row', { name: /Jonathan Campbell/ })
       await expect(row3.getByText('Active')).toBeVisible()

@@ -68,8 +68,8 @@ test.describe.serial('Approval of late birth registration', () => {
       await page.getByText('Health Institution', { exact: true }).click()
       await page
         .locator('#child____birthLocation')
-        .fill('Ibombo District Office'.slice(0, 3))
-      await page.getByText('Ibombo District Office').click()
+        .fill('Klow Village Hospital'.slice(0, 3))
+      await page.getByText('Klow Village Hospital').click()
 
       await continueForm(page)
     })
@@ -93,6 +93,22 @@ test.describe.serial('Approval of late birth registration', () => {
 
       await page.locator('#mother____idType').click()
       await page.getByText('None', { exact: true }).click()
+
+      await page.locator('#country').click()
+      await page.locator('#country input').fill('Far')
+      await page
+        .locator('#country')
+        .getByText('Farajaland', { exact: true })
+        .click()
+
+      await page.locator('#province').click()
+      await page.getByText('Central', { exact: true }).click()
+
+      await page.locator('#district').click()
+      await page.getByText('Ibombo', { exact: true }).click()
+
+      await page.locator('#village').click()
+      await page.getByText('Klow', { exact: true }).click()
 
       await continueForm(page)
     })
@@ -296,8 +312,8 @@ test.describe('Birth with non-late registration will not have flag or Approve-ac
       await page.getByText('Health Institution', { exact: true }).click()
       await page
         .locator('#child____birthLocation')
-        .fill('Ibombo District Office'.slice(0, 3))
-      await page.getByText('Ibombo District Office').click()
+        .fill('Klow Village Hospital'.slice(0, 3))
+      await page.getByText('Klow Village Hospital').click()
 
       await continueForm(page)
     })
@@ -321,6 +337,22 @@ test.describe('Birth with non-late registration will not have flag or Approve-ac
 
       await page.locator('#mother____idType').click()
       await page.getByText('None', { exact: true }).click()
+
+      await page.locator('#country').click()
+      await page.locator('#country input').fill('Far')
+      await page
+        .locator('#country')
+        .getByText('Farajaland', { exact: true })
+        .click()
+
+      await page.locator('#province').click()
+      await page.getByText('Central', { exact: true }).click()
+
+      await page.locator('#district').click()
+      await page.getByText('Ibombo', { exact: true }).click()
+
+      await page.locator('#village').click()
+      await page.getByText('Klow', { exact: true }).click()
 
       await continueForm(page)
     })
@@ -440,6 +472,22 @@ test.describe
       await page.getByPlaceholder('mm').fill('05')
       await page.getByPlaceholder('yyyy').fill('1980')
 
+      await page.locator('#country').click()
+      await page.locator('#country input').fill('Far')
+      await page
+        .locator('#country')
+        .getByText('Farajaland', { exact: true })
+        .click()
+
+      await page.locator('#province').click()
+      await page.getByText('Central', { exact: true }).click()
+
+      await page.locator('#district').click()
+      await page.getByText('Ibombo', { exact: true }).click()
+
+      await page.locator('#village').click()
+      await page.getByText('Klow', { exact: true }).click()
+
       await page.locator('#mother____idType').click()
       await page.getByText('None', { exact: true }).click()
 
@@ -544,8 +592,8 @@ test.describe
       await page.getByText('Health Institution', { exact: true }).click()
       await page
         .locator('#child____birthLocation')
-        .fill('Ibombo District Office'.slice(0, 3))
-      await page.getByText('Ibombo District Office').click()
+        .fill('Klow Village Hospital'.slice(0, 3))
+      await page.getByText('Klow Village Hospital').click()
 
       await continueForm(page)
     })
@@ -735,6 +783,22 @@ test.describe
 
       await page.locator('#mother____idType').click()
       await page.getByText('None', { exact: true }).click()
+
+      await page.locator('#country').click()
+      await page.locator('#country input').fill('Far')
+      await page
+        .locator('#country')
+        .getByText('Farajaland', { exact: true })
+        .click()
+
+      await page.locator('#province').click()
+      await page.getByText('Central', { exact: true }).click()
+
+      await page.locator('#district').click()
+      await page.getByText('Ibombo', { exact: true }).click()
+
+      await page.locator('#village').click()
+      await page.getByText('Klow', { exact: true }).click()
 
       await continueForm(page)
     })

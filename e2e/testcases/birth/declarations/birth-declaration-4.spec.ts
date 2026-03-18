@@ -57,6 +57,7 @@ test.describe.serial('4. Birth declaration case - 4', () => {
         country: 'Farajaland',
         province: 'Chuminga',
         district: 'Ama',
+        village: 'Kitu',
         town: faker.location.city(),
         residentialArea: faker.location.county(),
         street: faker.location.street(),
@@ -122,7 +123,7 @@ test.describe.serial('4. Birth declaration case - 4', () => {
 
   test.describe('4.1 Declaration started by RO', async () => {
     test.beforeAll(async () => {
-      await login(page, CREDENTIALS.REGISTRATION_OFFICER)
+      await login(page, CREDENTIALS.REGISTRATION_OFFICER_VILLAGE)
       await page.click('#header-new-event')
       await page.getByLabel('Birth').click()
       await page.getByRole('button', { name: 'Continue' }).click()
@@ -227,6 +228,15 @@ test.describe.serial('4. Birth declaration case - 4', () => {
         .locator('#informant____passport')
         .fill(declaration.informant.identifier.id)
 
+      await page.locator('#country').click()
+      await page
+        .locator('#country input')
+        .fill(declaration.informant.address.country.slice(0, 3))
+      await page
+        .locator('#country')
+        .getByText(declaration.informant.address.country, { exact: true })
+        .click()
+
       await page.locator('#province').click()
       await page
         .getByText(declaration.informant.address.province, { exact: true })
@@ -234,6 +244,10 @@ test.describe.serial('4. Birth declaration case - 4', () => {
       await page.locator('#district').click()
       await page
         .getByText(declaration.informant.address.district, { exact: true })
+        .click()
+      await page.locator('#village').click()
+      await page
+        .getByText(declaration.informant.address.village, { exact: true })
         .click()
 
       await page.locator('#town').fill(declaration.informant.address.town)
@@ -637,7 +651,7 @@ test.describe.serial('4. Birth declaration case - 4', () => {
   test.describe('4.2 Declaration Review by Registrar', async () => {
     test('4.2.1 Navigate to the declaration "Record" -tab', async () => {
       await logout(page)
-      await login(page, CREDENTIALS.REGISTRAR)
+      await login(page, CREDENTIALS.REGISTRAR_VILLAGE)
 
       await page.getByText('Pending registration').click()
 
