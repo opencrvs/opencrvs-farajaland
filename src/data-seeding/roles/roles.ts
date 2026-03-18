@@ -190,8 +190,7 @@ export const roles: Role[] = [
       'type=record.declare&event=birth,death,tennis-club-membership',
       'type=record.notify&event=birth,death,tennis-club-membership',
       'type=record.edit&event=birth,death,tennis-club-membership',
-      'type=record.print-certified-copies&event=birth,death,tennis-club-membership'
-      // 'record.registered.print-certified-copies[event=tennis-club-membership,templates=v2.tennis-club-membership-certificate-alpha]'
+      'type=record.print-certified-copies&event=birth,death,tennis-club-membership&templates=v2.tennis-club-membership-certificate-alpha'
     ]
   },
   {
