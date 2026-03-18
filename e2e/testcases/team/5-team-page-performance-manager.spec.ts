@@ -21,13 +21,13 @@ test.describe.serial('5. Team Page -1', () => {
     })
 
     const team = [
+      { name: 'Chipo Lungu', role: 'Registrar General', disabled: true },
       {
         name: 'Jonathan Campbell',
         role: 'National Administrator',
         disabled: true
       },
-      { name: 'Mutale Musonda', role: 'Operations Manager', disabled: true },
-      { name: 'Chipo Lungu', role: 'Registrar General', disabled: true }
+      { name: 'Mutale Musonda', role: 'Operations Manager', disabled: true }
     ]
 
     test('5.1.1 Verify Team Members, Roles and their statuses', async () => {
