@@ -318,7 +318,7 @@ export const child = defineFormPage({
         }
       ],
       configuration: {
-        searchableResource: ['HEALTH_FACILITY'],
+        locationTypes: ['HEALTH_FACILITY'],
         allowedLocations: user.jurisdiction(
           user.scope('record.create').attribute('placeOfEvent')
         )

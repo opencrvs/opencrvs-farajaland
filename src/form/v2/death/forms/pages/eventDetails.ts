@@ -321,9 +321,7 @@ export const eventDetails = defineFormPage({
           )
         }
       ],
-      configuration: {
-        searchableResource: ['HEALTH_FACILITY']
-      }
+      configuration: { locationTypes: ['HEALTH_FACILITY'] }
     },
     {
       id: 'eventDetails.deathLocationOther',
