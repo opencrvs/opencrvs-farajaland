@@ -511,34 +511,6 @@ export const auditRecord = async ({
   }
 }
 
-const post = async <T = any>({
-  query,
-  variables,
-  headers
-}: {
-  query: string
-  variables: Record<string, any>
-  headers: Record<string, any>
-}) => {
-  const response = await fetch(`${GATEWAY_HOST}/graphql`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      ...headers
-    },
-    body: JSON.stringify({
-      variables,
-      query
-    })
-  })
-
-  if (!response.ok) {
-    throw new Error(`not ok: ${await response.text()}`)
-  }
-
-  return response.json() as Promise<{ data: T }>
-}
-
 type GetUser = {
   getUser: {
     primaryOffice: {
@@ -556,21 +528,9 @@ export const fetchUserLocationHierarchy = async (
   }
   const client = createClient(GATEWAY_HOST + '/events', headers.Authorization)
 
-  const res = await post<GetUser>({
-    query: /* GraphQL */ `
-      query fetchUser($userId: String!) {
-        getUser(userId: $userId) {
-          primaryOffice {
-            id
-          }
-        }
-      }
-    `,
-    variables: { userId },
-    headers
-  })
+  const user = await client.user.get.query(userId)
   return await client.locations.getLocationHierarchy.query({
-    locationId: res.data.getUser.primaryOffice.id
+    locationId: user.primaryOfficeId!
   })
 }
 
@@ -673,7 +633,9 @@ export async function searchFromSearchBar(
   }
 }
 
-export async function loginWithNewUser(page: Page, username: string) {
+
+export async function loginWithNewUser(page: Page,username: string) {
+
   const password = 'Bangladesh23'
   const question00 = 'What city were you born in?'
   const question01 = 'What is your favorite movie?'
