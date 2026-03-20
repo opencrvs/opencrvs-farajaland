@@ -1010,29 +1010,6 @@ services:
       options:
         gelf-address: 'udp://127.0.0.1:12201'
         tag: 'legacy-user-migration'
-  # Configure other dependencies with deployment specifc details
-  hearth:
-    environment:
-      - mongodb__url=mongodb://hearth:${HEARTH_MONGODB_PASSWORD}@mongo1/hearth-dev?replicaSet=rs0
-      - logger__level=warn
-    deploy:
-      labels:
-        - 'traefik.enable=false'
-      replicas: 1
-    secrets:
-      - jwt-public-key.{{ts}}
-    configs:
-      - source: hearth-check-dupe-plugin.{{ts}}
-        target: /src/hearth/lib/plugins/checkDuplicateTask.js
-      - source: hearth-queryparam-extensions-conf.{{ts}}
-        target: /src/hearth/config/queryparam-extensions.json
-    networks:
-      - overlay_net
-    logging:
-      driver: gelf
-      options:
-        gelf-address: 'udp://127.0.0.1:12201'
-        tag: 'hearth'
 
   postgres:
     image: docker.io/chumaky/postgres_mongo_fdw:17.6_fdw5.5.2
