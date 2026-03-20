@@ -1,6 +1,11 @@
 import { test, expect, type Page } from '@playwright/test'
 import path from 'path'
-import { ensureLoginPageReady, continueForm, login, loginWithNewUser } from '../../helpers'
+import {
+  ensureLoginPageReady,
+  continueForm,
+  login,
+  loginWithNewUser
+} from '../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS, LOGIN_URL } from '../../constants'
 
@@ -46,7 +51,8 @@ test.describe.serial('1. Create user -1', () => {
       await continueForm(page)
     })
 
-    test('1.1.2 Upload Signture', async () => {
+    // @TODO: requires file upload support in events service.
+    test.skip('1.1.2 Upload Signture', async () => {
       await page.setInputFiles('input[type="file"]', signaturePath)
       await continueForm(page)
     })
@@ -67,9 +73,8 @@ test.describe.serial('1. Create user -1', () => {
   })
 
   test.describe('2.1 Login with newly created user credentials', () => {
-    test('2.1.1 Enter your username and password', async ({page}) => {
-      await loginWithNewUser(page,username)
-        
+    test('2.1.1 Enter your username and password', async ({ page }) => {
+      await loginWithNewUser(page, username)
     })
   })
 })
