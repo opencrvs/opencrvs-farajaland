@@ -39,7 +39,7 @@ const TEST_USER_PASSWORD = 'test'
 
 export const CREDENTIALS = {
   HOSPITAL_OFFICIAL: {
-    USERNAME: 'k.bwalya',
+    USERNAME: 'k.cwalya',
     PASSWORD: TEST_USER_PASSWORD
   },
   COMMUNITY_LEADER: {
