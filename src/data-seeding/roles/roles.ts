@@ -1,10 +1,10 @@
-import { SCOPES, Scope } from '@opencrvs/toolkit/scopes'
+import { SCOPES } from '@opencrvs/toolkit/scopes'
 import { MessageDescriptor } from 'react-intl'
 
 type Role = {
   id: string
   label: MessageDescriptor
-  scopes: Scope[]
+  scopes: string[]
 }
 
 export const roles: Role[] = [
