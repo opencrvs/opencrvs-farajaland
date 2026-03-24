@@ -3,12 +3,12 @@ import {
   continueForm,
   drawSignature,
   formatDateObjectTo_dMMMMyyyy,
-  formatName,
   getRandomDate,
   goBackToReview,
   goToSection,
   login,
   selectDeclarationAction,
+  switchEventTab,
   uploadImage,
   uploadImageToSection
 } from '../../helpers'
@@ -37,16 +37,12 @@ test.describe
     },
     attendantAtBirth: 'Midwife',
     birthType: 'Triplet',
-    placeOfBirth: 'Residential address',
+    placeOfBirth: 'Health Institution',
     birthLocation: {
-      country: 'Farajaland',
-      province: 'Central',
+      facility: 'Ibombo Rural Health Centre',
       district: 'Ibombo',
-      town: faker.location.city(),
-      residentialArea: faker.location.county(),
-      street: faker.location.street(),
-      number: faker.location.buildingNumber(),
-      postcodeOrZip: faker.location.zipCode()
+      province: 'Central',
+      country: 'Farajaland'
     },
     informantType: 'Grandfather',
     informantEmail: faker.internet.email(),
@@ -84,14 +80,9 @@ test.describe
         type: 'Birth Registration Number'
       },
       address: {
-        country: 'Djibouti',
-        state: faker.location.state(),
-        district: faker.location.county(),
-        town: faker.location.city(),
-        addressLine1: faker.location.county(),
-        addressLine2: faker.location.street(),
-        addressLine3: faker.location.buildingNumber(),
-        postcodeOrZip: faker.location.zipCode()
+        country: 'Farajaland',
+        province: 'Sulaka',
+        district: 'Irundu'
       },
       maritalStatus: 'Widowed',
       levelOfEducation: 'Secondary'
@@ -110,15 +101,7 @@ test.describe
       maritalStatus: 'Widowed',
       levelOfEducation: 'Secondary',
       address: {
-        sameAsMother: false,
-        country: 'Farajaland',
-        province: 'Chuminga',
-        district: 'Nsali',
-        town: faker.location.city(),
-        residentialArea: faker.location.county(),
-        street: faker.location.street(),
-        number: faker.location.buildingNumber(),
-        postcodeOrZip: faker.location.zipCode()
+        sameAsMother: true
       }
     }
   }
@@ -155,16 +138,10 @@ test.describe
           exact: true
         })
         .click()
-
-      await page.locator('#town').fill(declaration.birthLocation.town)
       await page
-        .locator('#residentialArea')
-        .fill(declaration.birthLocation.residentialArea)
-      await page.locator('#street').fill(declaration.birthLocation.street)
-      await page.locator('#number').fill(declaration.birthLocation.number)
-      await page
-        .locator('#zipCode')
-        .fill(declaration.birthLocation.postcodeOrZip)
+        .locator('#child____birthLocation')
+        .fill(declaration.birthLocation.facility.slice(0, 3))
+      await page.getByText(declaration.birthLocation.facility).click()
 
       await page.locator('#child____attendantAtBirth').click()
       await page
@@ -270,21 +247,14 @@ test.describe
         .getByText(declaration.mother.address.country, { exact: true })
         .click()
 
-      await page.locator('#state').fill(declaration.mother.address.state)
-      await page.locator('#district2').fill(declaration.mother.address.district)
-      await page.locator('#cityOrTown').fill(declaration.mother.address.town)
+      await page.locator('#province').click()
       await page
-        .locator('#addressLine1')
-        .fill(declaration.mother.address.addressLine1)
+        .getByText(declaration.mother.address.province, { exact: true })
+        .click()
+      await page.locator('#district').click()
       await page
-        .locator('#addressLine2')
-        .fill(declaration.mother.address.addressLine2)
-      await page
-        .locator('#addressLine3')
-        .fill(declaration.mother.address.addressLine3)
-      await page
-        .locator('#postcodeOrZip')
-        .fill(declaration.mother.address.postcodeOrZip)
+        .getByText(declaration.mother.address.district, { exact: true })
+        .click()
 
       await page.locator('#mother____maritalStatus').click()
       await page
@@ -319,24 +289,7 @@ test.describe
         .getByText(declaration.father.nationality, { exact: true })
         .click()
 
-      await page.getByLabel('No', { exact: true }).check()
-      await page.locator('#province').click()
-      await page
-        .getByText(declaration.father.address.province, { exact: true })
-        .click()
-      await page.locator('#district').click()
-      await page
-        .getByText(declaration.father.address.district, { exact: true })
-        .click()
-      await page.locator('#town').fill(declaration.father.address.town)
-      await page
-        .locator('#residentialArea')
-        .fill(declaration.father.address.residentialArea)
-      await page.locator('#street').fill(declaration.father.address.street)
-      await page.locator('#number').fill(declaration.father.address.number)
-      await page
-        .locator('#zipCode')
-        .fill(declaration.father.address.postcodeOrZip)
+      await page.locator('#father____addressSameAs_YES').click()
 
       await page.locator('#father____maritalStatus').click()
       await page
@@ -483,10 +436,15 @@ test.describe
         declaration.placeOfBirth
       )
 
-      await validateAddress(
-        page,
-        declaration.birthLocation,
-        'row-value-child.birthLocation.privateHome'
+      await expect(
+        page.getByTestId('row-value-child.birthLocation')
+      ).toHaveText(
+        [
+          declaration.birthLocation.facility,
+          declaration.birthLocation.district,
+          declaration.birthLocation.province,
+          declaration.birthLocation.country
+        ].join(', ')
       )
 
       /*
@@ -677,16 +635,6 @@ test.describe
       await expect(
         page.getByTestId('row-value-father.educationalAttainment')
       ).toHaveText(declaration.father.levelOfEducation)
-
-      /*
-       * Expected result: should include
-       * - Father's address
-       */
-      await validateAddress(
-        page,
-        declaration.father.address,
-        'row-value-father.address'
-      )
     })
 
     test('Fill up informant comment and signature', async () => {
@@ -699,6 +647,11 @@ test.describe
         .click()
 
       await expect(page.getByRole('dialog')).not.toBeVisible()
+    })
+
+    test('Declare', async () => {
+      await selectDeclarationAction(page, 'Declare')
+      await ensureOutboxIsEmpty(page)
     })
   })
 
@@ -719,17 +672,14 @@ test.describe
       await ensureAssigned(page)
     })
     test("update mother's profession", async () => {
-      await selectAction(page, 'Review')
+      await selectAction(page, 'Edit')
       await page.getByTestId('change-button-mother.occupation').click()
-      await page.getByRole('button', { name: 'Continue' }).click()
       await page.locator('#mother____occupation').fill('House Wife')
       await goBackToReview(page)
     })
 
     test('Register the birth', async () => {
-      await selectDeclarationAction(page, 'Register')
-      await expect(page.getByText('Register?')).toBeVisible()
-      await page.locator('#confirm_Register').click()
+      await selectDeclarationAction(page, 'Register with edits')
       // Should redirect back to Ready for review workqueue
       await page.waitForURL(`**/workqueue/pending-registration`)
       await expectInUrl(page, '/workqueue/pending-registration')
@@ -747,26 +697,24 @@ test.describe
           })
         })
         .click()
-      await ensureAssigned(page)
-      await selectAction(page, 'Review')
-
+      await switchEventTab(page, 'Record')
       await expect(page.getByTestId('row-value-mother.occupation')).toHaveText(
         'House Wife'
       )
 
-      await page.getByTestId('exit-button').click()
+      await page.getByTestId('exit-event').click()
     })
 
     test('Search by informant name', async () => {
       await page
-        .getByRole('textbox', { name: 'Search for a tracking ID' })
+        .locator('#searchText')
         .fill(
           declaration.informant.name.firstNames +
             ' ' +
             declaration.informant.name.familyName
         )
 
-      await page.getByRole('button', { name: 'Search' }).click()
+      await page.locator('#searchIconButton').click()
       await expect(
         page.getByRole('button', {
           name: formatV2ChildName({
@@ -804,14 +752,16 @@ test.describe
       await page.getByRole('button', { name: 'Continue' }).click()
       await page.getByRole('button', { name: 'Verified' }).click()
       await page.getByRole('button', { name: 'Continue' }).click()
+    })
 
+    test('Fill in the fees form', async () => {
       const fee = faker.number.int({ min: 1, max: 10 })
       await page.locator('#fees____amount').fill(fee.toString())
 
       await page.getByRole('button', { name: 'Continue' }).click()
     })
 
-    test('change informant to mother', async () => {
+    test('Change informant to mother', async () => {
       await page.getByTestId('change-button-informant.relation').click()
       await page.locator('#informant____relation').click()
       await page
@@ -820,12 +770,18 @@ test.describe
         })
         .click()
       await page.locator('#informant____email').fill(declaration.informantEmail)
-      await goBackToReview(page)
+      await page.getByRole('button', { name: 'Back to review' }).click()
+    })
+
+    test('Submit correction', async () => {
       await page.getByRole('button', { name: 'Continue' }).click()
-      await page.getByRole('button', { name: 'Correct record' }).click()
-      await page.getByRole('button', { name: 'Confirm' }).click()
-      await ensureOutboxIsEmpty(page)
-      await page.getByRole('button', { name: 'Ready to print' }).click()
+      await page.getByTestId('make-correction').click()
+
+      await expect(page.getByText('Correct record?')).toBeVisible()
+
+      await page.getByRole('button', { name: 'Confirm', exact: true }).click()
+      await page.getByTestId('exit-event').click()
+      await page.getByRole('button', { name: 'Pending certification' }).click()
       await expect(
         page.getByRole('button', {
           name: formatV2ChildName({
@@ -840,14 +796,14 @@ test.describe
 
     test('Search by informant name should not get any result', async () => {
       await page
-        .getByRole('textbox', { name: 'Search for a tracking ID' })
+        .locator('#searchText')
         .fill(
           declaration.informant.name.firstNames +
             ' ' +
             declaration.informant.name.familyName
         )
 
-      await page.getByRole('button', { name: 'Search' }).click()
+      await page.locator('#searchIconButton').click()
       await expect(
         page.getByRole('button', {
           name: formatV2ChildName({
