@@ -590,12 +590,16 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
         }
       })
 
+      const locationId = location[location.length - 1]
+
       const declaration = {
         ...(await getDeclaration({ token })),
         'child.name': childName,
-        'child.dob': undefined
+        'child.dob': undefined,
+        'child.birthLocation': locationId,
+        'child.birthLocationId': locationId,
+        'child.placeOfBirth': 'HEALTH_FACILITY'
       }
-
       const response = await fetchClientAPI(
         `/api/events/events/${eventId}/notify`,
         'POST',
@@ -606,7 +610,7 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
           type: 'NOTIFY',
           declaration,
           annotation: {},
-          createdAtLocation: location[location.length - 1]
+          createdAtLocation: locationId
         }
       )
       expect(response.status).toBe(200)
@@ -752,10 +756,15 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
         }
       })
 
+      const locationId = location[location.length - 1]
+
       const declaration = {
         ...(await getDeclaration({ token })),
         'child.name': childName,
-        'child.dob': undefined
+        'child.dob': undefined,
+        'child.birthLocation': locationId,
+        'child.birthLocationId': locationId,
+        'child.placeOfBirth': 'HEALTH_FACILITY'
       }
 
       const res = await fetchClientAPI(
@@ -768,7 +777,7 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
           type: 'NOTIFY',
           declaration,
           annotation: {},
-          createdAtLocation: location[location.length - 1]
+          createdAtLocation: locationId
         }
       )
 
