@@ -42,7 +42,8 @@ test.describe.serial('8. Validate declaration review page', () => {
     eventDetails: {
       date: getRandomDate(0, 20),
       causeOfDeathEstablished: false,
-      placeOfDeath: "Deceased's usual place of residence"
+      placeOfDeath: 'Health Institution',
+      deathLocation: 'Klow Village Hospital'
     },
     informant: {
       relation: 'Spouse',
@@ -124,10 +125,14 @@ test.describe.serial('8. Validate declaration review page', () => {
           .getByPlaceholder('yyyy')
           .fill(declaration.eventDetails.date.yyyy)
 
-        await page.locator('#eventDetails____placeOfDeath').click()
+        // Place of death must be users own location for HO
+        await page.getByTestId('select__eventDetails____placeOfDeath').click()
         await page
           .getByText(declaration.eventDetails.placeOfDeath, { exact: true })
           .click()
+
+        await page.locator('#eventDetails____deathLocation').fill('Klo')
+        await page.getByText(declaration.eventDetails.deathLocation).click()
 
         await continueForm(page)
       })
