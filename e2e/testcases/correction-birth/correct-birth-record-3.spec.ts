@@ -58,6 +58,7 @@ test.describe.serial(' Correct record - 3', () => {
       country: 'Farajaland',
       province: 'Central',
       district: 'Ibombo',
+      village: 'Klow',
       town: faker.location.city(),
       residentialArea: faker.location.county(),
       street: faker.location.street(),
@@ -686,14 +687,14 @@ test.describe.serial(' Correct record - 3', () => {
       await page.locator('#child____placeOfBirth').click()
       await page.getByText(updatedChildDetails.placeOfBirth).click()
 
-      // Province and district are disabled because the user jurisdiction is limited to user's administrative area
-      await expect(
-        page.locator('#child____birthLocation____other-form-input #province')
-      ).toBeDisabled()
+      await page.locator('#province').click()
+      await page.getByText(updatedChildDetails.birthLocation.province).click()
 
-      await expect(
-        page.locator('#child____birthLocation____other-form-input #district')
-      ).toBeDisabled()
+      await page.locator('#district').click()
+      await page.getByText(updatedChildDetails.birthLocation.district).click()
+
+      await page.locator('#village').click()
+      await page.getByText(updatedChildDetails.birthLocation.village).click()
 
       await page.locator('#town').fill(updatedChildDetails.birthLocation.town)
 
