@@ -37,8 +37,11 @@ import {
   countryLogoHandler
 } from '@countryconfig/api/content/handler'
 import decode from 'jwt-decode'
-import { join } from 'path'
 import { logger } from '@countryconfig/logger'
+import clientConfig from './client-config'
+import clientConfigProd from './client-config.prod'
+import loginConfig from './login-config'
+import loginConfigProd from './login-config.prod'
 import { emailHandler, emailSchema } from './api/notification/handler'
 import { ErrorContext } from 'hapi-auth-jwt2'
 import { mapGeojsonHandler } from '@countryconfig/api/dashboards/handler'
@@ -295,13 +298,12 @@ export async function createServer() {
   server.route({
     method: 'GET',
     path: '/client-config.js',
-    handler: async (request, h) => {
-      const file =
-        process.env.NODE_ENV === 'production'
-          ? '/client-config.prod.js'
-          : '/client-config.js'
-
-      return h.file(join(__dirname, file))
+    handler: (_request, h) => {
+      const config =
+        process.env.NODE_ENV === 'production' ? clientConfigProd : clientConfig
+      return h
+        .response(`window.config = ${JSON.stringify(config)}`)
+        .type('application/javascript')
     },
     options: {
       auth: false,
@@ -313,12 +315,12 @@ export async function createServer() {
   server.route({
     method: 'GET',
     path: '/login-config.js',
-    handler: (request, h) => {
-      const file =
-        process.env.NODE_ENV === 'production'
-          ? '/login-config.prod.js'
-          : '/login-config.js'
-      return h.file(join(__dirname, file))
+    handler: (_request, h) => {
+      const config =
+        process.env.NODE_ENV === 'production' ? loginConfigProd : loginConfig
+      return h
+        .response(`window.config = ${JSON.stringify(config)}`)
+        .type('application/javascript')
     },
     options: {
       auth: false,
@@ -667,16 +669,16 @@ export async function createServer() {
       actions: event.actions.map((action, index) =>
         index === event.actions.length - 1
           ? {
-              ...action,
-              status: ActionStatus.Accepted,
-              ...(actionType === ActionType.REGISTER && response.source
-                ? {
-                    registrationNumber: (
-                      response.source as { registrationNumber: string }
-                    ).registrationNumber
-                  }
-                : {})
-            }
+            ...action,
+            status: ActionStatus.Accepted,
+            ...(actionType === ActionType.REGISTER && response.source
+              ? {
+                registrationNumber: (
+                  response.source as { registrationNumber: string }
+                ).registrationNumber
+              }
+              : {})
+          }
           : action
       ) as ActionDocument[]
     }
