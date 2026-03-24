@@ -179,6 +179,8 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
 
     const fakeSurname = faker.person.lastName()
 
+    const locationId = location[location.length - 1]
+
     const response = await fetchClientAPI(
       `/api/events/events/${eventId}/notify`,
       'POST',
@@ -187,10 +189,13 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
         eventId,
         transactionId: uuidv4(),
         type: 'NOTIFY',
-        createdAtLocation: location[location.length - 1],
+        createdAtLocation: locationId,
         declaration: {
           'child.name': { surname: fakeSurname },
-          'child.dob': format(addDays(new Date(), 10), 'yyyy-MM-dd')
+          'child.dob': format(addDays(new Date(), 10), 'yyyy-MM-dd'),
+          'child.placeOfBirth': 'Health Institution',
+          'child.birthLocation': locationId,
+          'child.birthLocationId': locationId
         },
         annotation: {}
       }
