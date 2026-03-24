@@ -305,7 +305,7 @@ export const eventDetails = defineFormPage({
     },
     {
       id: 'eventDetails.deathLocation',
-      type: FieldType.FACILITY,
+      type: FieldType.LOCATION,
       required: true,
       secured: true,
       label: {
@@ -320,7 +320,8 @@ export const eventDetails = defineFormPage({
             PlaceOfDeath.HEALTH_FACILITY
           )
         }
-      ]
+      ],
+      configuration: { locationTypes: ['HEALTH_FACILITY'] }
     },
     {
       id: 'eventDetails.deathLocationOther',
@@ -360,7 +361,7 @@ export const eventDetails = defineFormPage({
       defaultValue: {
         country: 'FAR',
         addressType: AddressType.DOMESTIC,
-        administrativeArea: user('primaryOfficeId').locationLevel('district')
+        administrativeArea: user('primaryOfficeId').locationLevel('village')
       },
       configuration: {
         streetAddressForm: defaultStreetAddressConfiguration

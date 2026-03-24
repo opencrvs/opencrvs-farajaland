@@ -34,8 +34,9 @@ test.describe.serial('8. Validate declaration review page', () => {
       brn: '',
       address: {
         country: 'Farajaland',
-        province: 'Pualula',
-        district: 'Pili'
+        province: 'Sulaka',
+        district: 'Irundu',
+        village: 'Xhosa'
       }
     },
     eventDetails: {
@@ -120,6 +121,10 @@ test.describe.serial('8. Validate declaration review page', () => {
         await page.locator('#district').click()
         await page
           .getByText(declaration.deceased.address.district, { exact: true })
+          .click()
+        await page.locator('#village').click()
+        await page
+          .getByText(declaration.deceased.address.village, { exact: true })
           .click()
         await continueForm(page)
       })
@@ -468,14 +473,15 @@ test.describe.serial('8. Validate declaration review page', () => {
 
         declaration.deceased.address.province = 'Sulaka'
         declaration.deceased.address.district = 'Afue'
+        declaration.deceased.address.village = 'Imani'
 
-        await page.locator('#province').click()
-        await page
-          .getByText(declaration.deceased.address.province, { exact: true })
-          .click()
         await page.locator('#district').click()
         await page
           .getByText(declaration.deceased.address.district, { exact: true })
+          .click()
+        await page.locator('#village').click()
+        await page
+          .getByText(declaration.deceased.address.village, { exact: true })
           .click()
         await page.getByRole('button', { name: 'Back to review' }).click()
         /*
@@ -1016,6 +1022,7 @@ test.describe.serial('8. Validate declaration review page', () => {
 
         declaration.deceased.address.province = 'Central'
         declaration.deceased.address.district = 'Itambo'
+        declaration.deceased.address.village = 'Felani'
 
         await page.locator('#province').click()
         await page
@@ -1024,6 +1031,10 @@ test.describe.serial('8. Validate declaration review page', () => {
         await page.locator('#district').click()
         await page
           .getByText(declaration.deceased.address.district, { exact: true })
+          .click()
+        await page.locator('#village').click()
+        await page
+          .getByText(declaration.deceased.address.village, { exact: true })
           .click()
         await page.getByRole('button', { name: 'Back to review' }).click()
         /*
@@ -1450,6 +1461,7 @@ test.describe.serial('8. Validate declaration review page', () => {
 
         declaration.deceased.address.province = 'Sulaka'
         declaration.deceased.address.district = 'Afue'
+        declaration.deceased.address.village = 'Imani'
 
         await page.locator('#province').click()
         await page
@@ -1458,6 +1470,10 @@ test.describe.serial('8. Validate declaration review page', () => {
         await page.locator('#district').click()
         await page
           .getByText(declaration.deceased.address.district, { exact: true })
+          .click()
+        await page.locator('#village').click()
+        await page
+          .getByText(declaration.deceased.address.village, { exact: true })
           .click()
         await page.getByRole('button', { name: 'Back to review' }).click()
         /*

@@ -161,6 +161,7 @@ export const issueBirthCredentialAction = {
     description: '',
     id: 'event.birth.action.issue-vc.audit-history-label'
   },
+  icon: 'QrCode',
   flags: [
     // Adding this flag to prevents the action from being shown again after the credential is issued.
     // {

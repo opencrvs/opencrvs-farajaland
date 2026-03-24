@@ -30,10 +30,10 @@ test.describe('Birth form - child place of birth jurisdiction restrictions', () 
     )
     await expect(dropdown).toBeVisible()
 
-    // Make sure select menu only has one visible option and that it contains "Ibombo District Office"
+    // Make sure select menu only has one visible option and that it contains "Klow Village Hospital"
     const options = await dropdown.locator('[role="list"] > li')
     await expect(options).toHaveCount(1)
-    await expect(options.first()).toHaveText('Ibombo District Office')
+    await expect(options.first()).toHaveText('Klow Village Hospital')
   })
 
   // @TODO: This limitation is not properly implemented yet, will be implemented after:
@@ -57,8 +57,8 @@ test.describe('Birth form - child place of birth jurisdiction restrictions', () 
 
     // Make sure select menu only has one visible option and that it contains locations in user's administrative area
     const options = await dropdown.locator('[role="list"] > li')
-    await expect(options).toHaveCount(39)
-    await expect(options.first()).toHaveText('Chamakubi Health Post')
+    await expect(options).toHaveCount(41)
+    await expect(options.nth(1)).toHaveText('Chamakubi Health Post')
   })
 
   test('Registrar should be able to only choose an address in their own administrative area as Residential Address', async () => {
@@ -67,6 +67,12 @@ test.describe('Birth form - child place of birth jurisdiction restrictions', () 
 
     await page.locator('#child____placeOfBirth').click()
     await page.getByText('Residential address', { exact: true }).click()
+
+    await page.locator('#province').click()
+    await page.getByText('Central', { exact: true }).click()
+
+    await page.locator('#district').click()
+    await page.getByText('Ibombo', { exact: true }).click()
 
     await expect(
       page.locator(
@@ -95,6 +101,12 @@ test.describe('Birth form - child place of birth jurisdiction restrictions', () 
 
     await page.locator('#child____placeOfBirth').click()
     await page.getByText('Other', { exact: true }).click()
+
+    await page.locator('#province').click()
+    await page.getByText('Central', { exact: true }).click()
+
+    await page.locator('#district').click()
+    await page.getByText('Ibombo', { exact: true }).click()
 
     await expect(
       page.locator('#child____birthLocation____other-form-input #province')

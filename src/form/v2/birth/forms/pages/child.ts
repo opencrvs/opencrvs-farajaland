@@ -301,7 +301,7 @@ export const child = defineFormPage({
     {
       id: 'child.birthLocation',
       analytics: true,
-      type: FieldType.FACILITY,
+      type: FieldType.LOCATION,
       required: true,
       secured: true,
       label: {
@@ -318,6 +318,7 @@ export const child = defineFormPage({
         }
       ],
       configuration: {
+        locationTypes: ['HEALTH_FACILITY'],
         allowedLocations: user.jurisdiction(
           user.scope('record.create').attribute('placeOfEvent')
         )
@@ -362,7 +363,7 @@ export const child = defineFormPage({
       defaultValue: {
         country: 'FAR',
         addressType: AddressType.DOMESTIC,
-        administrativeArea: user('primaryOfficeId').locationLevel('district')
+        administrativeArea: user('primaryOfficeId').locationLevel('village')
       },
       configuration: {
         streetAddressForm: defaultStreetAddressConfiguration,
@@ -409,7 +410,7 @@ export const child = defineFormPage({
       defaultValue: {
         country: 'FAR',
         addressType: AddressType.DOMESTIC,
-        administrativeArea: user('primaryOfficeId').locationLevel('district')
+        administrativeArea: user('primaryOfficeId').locationLevel('village')
       },
       configuration: {
         streetAddressForm: defaultStreetAddressConfiguration,

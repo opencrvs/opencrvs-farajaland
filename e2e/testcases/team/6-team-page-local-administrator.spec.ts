@@ -18,22 +18,19 @@ test.describe.serial('6. Team Page -1', () => {
       await login(page, CREDENTIALS.LOCAL_SYSTEM_ADMIN)
       await page.getByRole('button', { name: 'Team' }).click()
       await expect(page.locator('#content-name')).toHaveText(
-        'Ibombo District Office'
+        'Central Province Office'
       )
 
       await expect(
-        page.getByText('Ibombo, Central', {
+        page.getByText('Central', {
           exact: true
         })
       ).toBeVisible()
     })
 
     const team = [
-      { name: 'Mitchell Owen', role: 'Provincial Registrar' },
       { name: 'Emmanuel Mayuka', role: 'Administrator' },
-      { name: 'Kennedy Mweene', role: 'Registrar' },
-      { name: 'Felix Katongo', role: 'Registration Officer' },
-      { name: 'Kalusha Bwalya', role: 'Hospital Official' }
+      { name: 'Mitchel Owen', role: 'Provincial Registrar' }
     ]
 
     test('6.1.1 Verify Team Members, Roles and their statuses', async () => {
@@ -57,7 +54,7 @@ test.describe.serial('6. Team Page -1', () => {
         await expect(page).toHaveURL(/.*\/userProfile/)
 
         await page
-          .getByRole('button', { name: 'Ibombo District Office' })
+          .getByRole('button', { name: 'Central Province Office' })
           .click()
         await expect(page).toHaveURL(/.*\/team\/users/)
       }

@@ -18,18 +18,16 @@ test.describe.serial('5. Team Page -1', () => {
       await login(page, CREDENTIALS.PERFORMANCE_MANAGER)
       await page.getByRole('button', { name: 'Team' }).click()
       await expect(page.locator('#content-name')).toHaveText('HQ Office')
-
-      await page.getByText('Embe, Pualula')
     })
 
     const team = [
-      { name: 'Joseph Musonda', role: 'Registrar General', disabled: true },
-      { name: 'Edgar Kazembe', role: 'Operations Manager', disabled: true },
+      { name: 'Chipo Lungu', role: 'Registrar General', disabled: true },
       {
         name: 'Jonathan Campbell',
         role: 'National Administrator',
         disabled: true
-      }
+      },
+      { name: 'Mutale Musonda', role: 'Operations Manager', disabled: true }
     ]
 
     test('5.1.1 Verify Team Members, Roles and their statuses', async () => {

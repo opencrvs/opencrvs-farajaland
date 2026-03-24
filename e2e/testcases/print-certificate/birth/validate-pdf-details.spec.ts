@@ -76,9 +76,7 @@ test.describe
   })
 
   test('Validate child place of birth', async () => {
-    await expect(page.locator('#print')).toContainText(
-      'Ibombo Rural Health Centre'
-    )
+    await expect(page.locator('#print')).toContainText('Klow Village Hospital')
     await expect(page.locator('#print')).toContainText(
       'Ibombo, Central, Farajaland'
     )
@@ -126,9 +124,7 @@ test.describe.serial("Validate 'Birth Certificate' PDF details", () => {
   })
 
   test('Validate child place of birth', async () => {
-    await expect(page.locator('#print')).toContainText(
-      'Ibombo Rural Health Centre'
-    )
+    await expect(page.locator('#print')).toContainText('Klow Village Hospital')
     await expect(page.locator('#print')).toContainText(
       'Ibombo, Central, Farajaland'
     )

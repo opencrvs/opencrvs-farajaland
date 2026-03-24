@@ -209,6 +209,7 @@ export async function sendInformantNotification({
 
     await notify(notificationParams)
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.log(error)
   }
 }

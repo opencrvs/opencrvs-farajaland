@@ -103,7 +103,7 @@ test.describe.serial('Change informant on review', () => {
 
   test.describe('Declaration started by RO', async () => {
     test.beforeAll(async () => {
-      await login(page, CREDENTIALS.REGISTRATION_OFFICER)
+      await login(page, CREDENTIALS.REGISTRATION_OFFICER_VILLAGE)
       await page.click('#header-new-event')
       await page.getByLabel('Birth').click()
       await page.getByRole('button', { name: 'Continue' }).click()
@@ -261,7 +261,7 @@ test.describe.serial('Change informant on review', () => {
   test.describe('Declaration Review by Registrar', async () => {
     test('Navigate to the declaration Edit-action', async () => {
       await logout(page)
-      await login(page, CREDENTIALS.REGISTRAR)
+      await login(page, CREDENTIALS.REGISTRAR_VILLAGE)
 
       await page.getByText('Pending registration').click()
 
@@ -276,7 +276,7 @@ test.describe.serial('Change informant on review', () => {
       await selectAction(page, 'Edit')
       await expect(
         page.getByText(
-          /You are editing a record declared by Felix Katongo \(Registration (Officer|Agent) at Ibombo District Office\)/
+          /You are editing a record declared by Velix Katongo \(Registration Officer at Klow Village Hospital\)/
         )
       ).toBeVisible()
     })

@@ -59,6 +59,7 @@ test.describe.serial('3. Birth declaration case - 3', () => {
         country: 'Farajaland',
         province: 'Chuminga',
         district: 'Ama',
+        village: 'Kitu',
         town: faker.location.city(),
         residentialArea: faker.location.county(),
         street: faker.location.street(),
@@ -108,6 +109,7 @@ test.describe.serial('3. Birth declaration case - 3', () => {
         country: 'Farajaland',
         province: 'Chuminga',
         district: 'Nsali',
+        village: 'Oro',
         town: faker.location.city(),
         residentialArea: faker.location.county(),
         street: faker.location.street(),
@@ -126,7 +128,7 @@ test.describe.serial('3. Birth declaration case - 3', () => {
 
   test.describe('3.1 Declaration started by RO', async () => {
     test.beforeAll(async () => {
-      await login(page, CREDENTIALS.REGISTRATION_OFFICER)
+      await login(page, CREDENTIALS.REGISTRATION_OFFICER_VILLAGE)
       await page.click('#header-new-event')
       await page.getByLabel('Birth').click()
       await page.getByRole('button', { name: 'Continue' }).click()
@@ -228,6 +230,15 @@ test.describe.serial('3. Birth declaration case - 3', () => {
         .locator('#informant____nid')
         .fill(declaration.informant.identifier.id)
 
+      await page.locator('#country').click()
+      await page
+        .locator('#country input')
+        .fill(declaration.informant.address.country.slice(0, 3))
+      await page
+        .locator('#country')
+        .getByText(declaration.informant.address.country, { exact: true })
+        .click()
+
       await page.locator('#province').click()
       await page
         .getByText(declaration.informant.address.province, { exact: true })
@@ -235,6 +246,10 @@ test.describe.serial('3. Birth declaration case - 3', () => {
       await page.locator('#district').click()
       await page
         .getByText(declaration.informant.address.district, { exact: true })
+        .click()
+      await page.locator('#village').click()
+      await page
+        .getByText(declaration.informant.address.village, { exact: true })
         .click()
 
       await page.locator('#town').fill(declaration.informant.address.town)
@@ -334,6 +349,10 @@ test.describe.serial('3. Birth declaration case - 3', () => {
       await page.locator('#district').click()
       await page
         .getByText(declaration.father.address.district, { exact: true })
+        .click()
+      await page.locator('#village').click()
+      await page
+        .getByText(declaration.father.address.village, { exact: true })
         .click()
       await page.locator('#town').fill(declaration.father.address.town)
       await page
