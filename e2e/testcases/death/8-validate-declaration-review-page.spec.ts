@@ -114,18 +114,6 @@ test.describe.serial('8. Validate declaration review page', () => {
 
         await page.locator('#deceased____nid').fill(declaration.deceased.nid)
 
-        await page.locator('#province').click()
-        await page
-          .getByText(declaration.deceased.address.province, { exact: true })
-          .click()
-        await page.locator('#district').click()
-        await page
-          .getByText(declaration.deceased.address.district, { exact: true })
-          .click()
-        await page.locator('#village').click()
-        await page
-          .getByText(declaration.deceased.address.village, { exact: true })
-          .click()
         await continueForm(page)
       })
 
