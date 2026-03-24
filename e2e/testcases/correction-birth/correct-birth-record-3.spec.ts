@@ -101,7 +101,6 @@ test.describe.serial(' Correct record - 3', () => {
         },
         'child.gender': 'male',
         'child.dob': format(subDays(new Date(), 360), 'yyyy-MM-dd'),
-        'child.placeOfBirth': 'HEALTH_FACILITY',
         'child.attendantAtBirth': 'PHYSICIAN',
         'child.birthType': 'SINGLE',
         'child.weightAtBirth': 3,

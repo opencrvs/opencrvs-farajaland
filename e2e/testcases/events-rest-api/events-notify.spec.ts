@@ -179,8 +179,6 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
 
     const fakeSurname = faker.person.lastName()
 
-    const locationId = location[location.length - 1]
-
     const response = await fetchClientAPI(
       `/api/events/events/${eventId}/notify`,
       'POST',
@@ -189,13 +187,10 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
         eventId,
         transactionId: uuidv4(),
         type: 'NOTIFY',
-        createdAtLocation: locationId,
+        createdAtLocation: location[location.length - 1],
         declaration: {
           'child.name': { surname: fakeSurname },
-          'child.dob': format(addDays(new Date(), 10), 'yyyy-MM-dd'),
-          'child.placeOfBirth': 'Health Institution',
-          'child.birthLocation': locationId,
-          'child.birthLocationId': locationId
+          'child.dob': format(addDays(new Date(), 10), 'yyyy-MM-dd')
         },
         annotation: {}
       }
@@ -437,6 +432,8 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
       }
     })
 
+    const locationId = location[location.length - 1]
+
     const response = await fetchClientAPI(
       `/api/events/events/${eventId}/notify`,
       'POST',
@@ -450,10 +447,13 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
             firstname: childName.firstNames,
             surname: childName.familyName
           },
-          'child.dob': format(subDays(new Date(), 1), 'yyyy-MM-dd')
+          'child.dob': format(subDays(new Date(), 1), 'yyyy-MM-dd'),
+          'child.placeOfBirth': 'Health Institution',
+          'child.birthLocation': locationId,
+          'child.birthLocationId': locationId
         },
         annotation: {},
-        createdAtLocation: location[location.length - 1]
+        createdAtLocation: locationId
       }
     )
 
@@ -615,7 +615,7 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
           type: 'NOTIFY',
           declaration,
           annotation: {},
-          createdAtLocation: locationId
+          createdAtLocation: location[location.length - 1]
         }
       )
       expect(response.status).toBe(200)
