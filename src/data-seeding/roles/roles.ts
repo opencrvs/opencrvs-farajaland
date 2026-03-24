@@ -187,14 +187,14 @@ export const roles: Role[] = [
     },
     scopes: [
       SCOPES.USER_READ_ONLY_MY_AUDIT,
-      'type=record.search',
+      'type=record.search&placeOfEvent=location',
       'workqueue[id=assigned-to-you|recent|pending-updates]',
       'type=record.create&placeOfEvent=location',
-      'type=record.read',
-      'type=record.declare',
-      'type=record.notify',
-      'type=record.edit',
-      'type=record.print-certified-copies&templates=v2.tennis-club-membership-certificate-alpha'
+      'type=record.read&placeOfEvent=location',
+      'type=record.declare&placeOfEvent=location',
+      'type=record.notify&placeOfEvent=location',
+      'type=record.edit&placeOfEvent=location',
+      'type=record.print-certified-copies&templates=v2.tennis-club-membership-certificate-alpha&registeredIn=location'
     ]
   },
   {
@@ -207,12 +207,12 @@ export const roles: Role[] = [
     scopes: [
       SCOPES.USER_READ_ONLY_MY_AUDIT,
       SCOPES.RECORD_PRINT_ISSUE_CERTIFIED_COPIES,
-      'type=record.search',
+      'type=record.search&placeOfEvent=location',
       'workqueue[id=assigned-to-you|recent]',
       'type=record.create&placeOfEvent=location',
-      'type=record.read',
-      'type=record.edit',
-      'type=record.notify'
+      'type=record.read&placeOfEvent=location',
+      'type=record.edit&placeOfEvent=location',
+      'type=record.notify&placeOfEvent=location'
     ]
   },
   {
@@ -226,14 +226,15 @@ export const roles: Role[] = [
       SCOPES.USER_READ_ONLY_MY_AUDIT,
       SCOPES.RECORD_PRINT_ISSUE_CERTIFIED_COPIES,
       'workqueue[id=assigned-to-you|recent|escalated|pending-updates|pending-certification|potential-duplicate]',
-      'type=record.search&declaredIn=location',
+      'type=record.search&placeOfEvent=location',
       'type=record.create&placeOfEvent=location',
-      'type=record.read',
-      'type=record.declare',
-      'type=record.edit',
-      'type=record.custom-action&event=birth&customActionTypes=ESCALATE,ISSUE_CERTIFIED_COPY',
-      'type=record.print-certified-copies',
-      'type=record.correct'
+      'type=record.read&placeOfEvent=location',
+      'type=record.declare&placeOfEvent=location',
+      'type=record.edit&placeOfEvent=location',
+      'type=record.custom-action&event=birth&customActionTypes=ESCALATE&placeOfEvent=location',
+      'type=record.custom-action&event=birth&customActionTypes=ISSUE_CERTIFIED_COPY&registeredIn=location',
+      'type=record.print-certified-copies&registeredIn=location',
+      'type=record.correct&registeredIn=location'
     ]
   },
   // Legacy roles from v1.8 for backwards compatibility
