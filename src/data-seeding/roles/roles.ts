@@ -188,8 +188,8 @@ export const roles: Role[] = [
       'workqueue[id=assigned-to-you|recent|pending-updates]',
       'type=record.create&placeOfEvent=location',
       'type=record.read&placeOfEvent=location',
-      'type=record.declare&placeOfEvent=location',
-      'type=record.notify&placeOfEvent=location',
+      'type=record.declare',
+      'type=record.notify',
       'type=record.edit&placeOfEvent=location',
       'type=record.print-certified-copies&templates=v2.tennis-club-membership-certificate-alpha&registeredIn=location'
     ]
@@ -209,7 +209,7 @@ export const roles: Role[] = [
       'type=record.create&placeOfEvent=location',
       'type=record.read&placeOfEvent=location',
       'type=record.edit&placeOfEvent=location',
-      'type=record.notify&placeOfEvent=location'
+      'type=record.notify'
     ]
   },
   {
@@ -226,7 +226,7 @@ export const roles: Role[] = [
       'type=record.search&placeOfEvent=location',
       'type=record.create&placeOfEvent=location',
       'type=record.read&placeOfEvent=location',
-      'type=record.declare&placeOfEvent=location',
+      'type=record.declare',
       'type=record.edit&placeOfEvent=location',
       'type=record.custom-action&event=birth&customActionTypes=ESCALATE&placeOfEvent=location',
       'type=record.custom-action&event=birth&customActionTypes=ISSUE_CERTIFIED_COPY&registeredIn=location',
