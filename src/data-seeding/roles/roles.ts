@@ -1,10 +1,10 @@
-import { SCOPES, Scope } from '@opencrvs/toolkit/scopes'
+import { SCOPES } from '@opencrvs/toolkit/scopes'
 import { MessageDescriptor } from 'react-intl'
 
 type Role = {
   id: string
   label: MessageDescriptor
-  scopes: Scope[]
+  scopes: string[]
 }
 
 export const roles: Role[] = [
@@ -16,7 +16,6 @@ export const roles: Role[] = [
       id: 'userRole.registrationOfficer'
     },
     scopes: [
-      SCOPES.RECORD_READ,
       SCOPES.PERFORMANCE_READ,
       SCOPES.ORGANISATION_READ_LOCATIONS_MY_OFFICE,
       SCOPES.USER_READ_MY_JURISDICTION,
@@ -46,7 +45,6 @@ export const roles: Role[] = [
       id: 'userRole.localRegistrar'
     },
     scopes: [
-      SCOPES.RECORD_READ,
       SCOPES.PROFILE_ELECTRONIC_SIGNATURE,
       SCOPES.PERFORMANCE_READ,
       SCOPES.ORGANISATION_READ_LOCATIONS_MY_OFFICE,
@@ -129,7 +127,6 @@ export const roles: Role[] = [
       id: 'userRole.registrarGeneral'
     },
     scopes: [
-      SCOPES.RECORD_READ,
       SCOPES.PROFILE_ELECTRONIC_SIGNATURE,
       SCOPES.PERFORMANCE_READ,
       SCOPES.ORGANISATION_READ_LOCATIONS,
@@ -282,23 +279,5 @@ export const roles: Role[] = [
       id: 'userRole.LocalLeader'
     },
     scopes: []
-  },
-  {
-    // NOTE: This is 2.0  role configuration. It does not have the finalised scopes since all the features are not ready.
-    id: 'HEALTH_OFFICER',
-    label: {
-      defaultMessage: 'Health Officer',
-      description: 'Name for user role Health Officer',
-      id: 'userRole.healthOfficer'
-    },
-    scopes: [
-      'workqueue[id=assigned-to-you|recent|requires-updates-self|sent-for-review]',
-      'type=record.search&event=birth,death&declaredIn=location',
-      'type=record.read&event=birth,death,tennis-club-membership',
-      `type=record.create&event=birth,death,tennis-club-membership`,
-      'type=record.declare&event=birth,death,tennis-club-membership',
-      'type=record.notify&event=birth,death,tennis-club-membership',
-      'type=record.edit&event=birth,death'
-    ]
   }
 ]
