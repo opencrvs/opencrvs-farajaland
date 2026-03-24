@@ -135,19 +135,19 @@ export const roles: Role[] = [
       SCOPES.ORGANISATION_READ_LOCATIONS,
       SCOPES.USER_READ,
       SCOPES.RECORD_PRINT_ISSUE_CERTIFIED_COPIES,
-      'type=record.search&event=birth,death,tennis-club-membership',
+      'type=record.search',
       'workqueue[id=assigned-to-you|recent|pending-feedback-registrar-general|potential-duplicate|registration-registrar-general]',
-      'type=record.read&event=birth,death,tennis-club-membership',
-      'type=record.declare&event=birth,death,tennis-club-membership',
-      'type=record.reject&event=birth,death,tennis-club-membership',
-      'type=record.archive&event=birth,death,tennis-club-membership',
-      'type=record.review-duplicates&event=birth,death,tennis-club-membership',
-      'type=record.register&event=birth,death,tennis-club-membership',
-      'type=record.print-certified-copies&event=birth,death,tennis-club-membership',
-      'type=record.correct&event=birth,death,tennis-club-membership',
+      'type=record.read',
+      'type=record.declare',
+      'type=record.reject',
+      'type=record.archive',
+      'type=record.review-duplicates',
+      'type=record.register',
+      'type=record.print-certified-copies',
+      'type=record.correct',
       'type=record.custom-action&event=birth&customActionTypes=REGISTRAR_GENERAL_FEEDBACK,REVOKE_REGISTRATION,REINSTATE_REVOKE_REGISTRATION,APPROVE_DECLARATION',
       'type=record.custom-action&event=death&customActionTypes=APPROVE_DECLARATION',
-      'type=record.unassign-others&event=birth,death,tennis-club-membership'
+      'type=record.unassign-others'
     ]
   },
   {
@@ -164,18 +164,18 @@ export const roles: Role[] = [
       SCOPES.PERFORMANCE_READ_DASHBOARDS,
       SCOPES.RECORD_PRINT_ISSUE_CERTIFIED_COPIES,
       SCOPES.PROFILE_ELECTRONIC_SIGNATURE,
-      'type=record.search&event=birth,death,tennis-club-membership',
+      'type=record.search',
       'workqueue[id=recent|pending-feedback-provincinal-registrar|pending-approval|correction-requested]',
-      'type=record.read&event=birth,death,tennis-club-membership',
-      'type=record.reject&event=birth,death,tennis-club-membership',
-      'type=record.edit&event=birth,death,tennis-club-membership',
-      'type=record.register&event=birth,death,tennis-club-membership',
-      'type=record.archive&event=birth,death,tennis-club-membership',
+      'type=record.read',
+      'type=record.reject',
+      'type=record.edit',
+      'type=record.register',
+      'type=record.archive',
       'type=record.custom-action&event=birth&customActionTypes=APPROVE_DECLARATION,PROVINCIAL_REGISTER_FEEDBACK,REINSTATE_REVOKE_REGISTRATION,ESCALATE',
       'type=record.custom-action&event=death&customActionTypes=APPROVE_DECLARATION',
-      'type=record.print-certified-copies&event=birth,death,tennis-club-membership',
-      'type=record.correct&event=birth,death,tennis-club-membership',
-      'type=record.unassign-others&event=birth,death,tennis-club-membership'
+      'type=record.print-certified-copies',
+      'type=record.correct',
+      'type=record.unassign-others'
     ]
   },
   {
@@ -187,14 +187,14 @@ export const roles: Role[] = [
     },
     scopes: [
       SCOPES.USER_READ_ONLY_MY_AUDIT,
-      'type=record.search&event=birth,death,tennis-club-membership',
+      'type=record.search',
       'workqueue[id=assigned-to-you|recent|pending-updates]',
-      'type=record.create&event=birth,death,tennis-club-membership&placeOfEvent=location',
-      'type=record.read&event=birth,death,tennis-club-membership',
-      'type=record.declare&event=birth,death,tennis-club-membership',
-      'type=record.notify&event=birth,death,tennis-club-membership',
-      'type=record.edit&event=birth,death,tennis-club-membership',
-      'type=record.print-certified-copies&event=birth,death,tennis-club-membership&templates=v2.tennis-club-membership-certificate-alpha'
+      'type=record.create&placeOfEvent=location',
+      'type=record.read',
+      'type=record.declare',
+      'type=record.notify',
+      'type=record.edit',
+      'type=record.print-certified-copies&templates=v2.tennis-club-membership-certificate-alpha'
     ]
   },
   {
@@ -207,12 +207,12 @@ export const roles: Role[] = [
     scopes: [
       SCOPES.USER_READ_ONLY_MY_AUDIT,
       SCOPES.RECORD_PRINT_ISSUE_CERTIFIED_COPIES,
-      'type=record.search&event=birth,death,tennis-club-membership',
+      'type=record.search',
       'workqueue[id=assigned-to-you|recent]',
-      'type=record.create&event=birth,death,tennis-club-membership&placeOfEvent=location',
-      'type=record.read&event=birth,death,tennis-club-membership',
-      'type=record.edit&event=birth,death,tennis-club-membership',
-      'type=record.notify&event=birth,death,tennis-club-membership'
+      'type=record.create&placeOfEvent=location',
+      'type=record.read',
+      'type=record.edit',
+      'type=record.notify'
     ]
   },
   {
@@ -226,14 +226,14 @@ export const roles: Role[] = [
       SCOPES.USER_READ_ONLY_MY_AUDIT,
       SCOPES.RECORD_PRINT_ISSUE_CERTIFIED_COPIES,
       'workqueue[id=assigned-to-you|recent|escalated|pending-updates|pending-certification|potential-duplicate]',
-      'type=record.search&event=birth,death,tennis-club-membership&declaredIn=location',
-      'type=record.create&event=birth,death,tennis-club-membership&placeOfEvent=location',
-      'type=record.read&event=birth,death,tennis-club-membership',
-      'type=record.declare&event=birth,death,tennis-club-membership',
-      'type=record.edit&event=birth,death,tennis-club-membership',
+      'type=record.search&declaredIn=location',
+      'type=record.create&placeOfEvent=location',
+      'type=record.read',
+      'type=record.declare',
+      'type=record.edit',
       'type=record.custom-action&event=birth&customActionTypes=ESCALATE,ISSUE_CERTIFIED_COPY',
-      'type=record.print-certified-copies&event=birth,death,tennis-club-membership',
-      'type=record.correct&event=birth,death,tennis-club-membership'
+      'type=record.print-certified-copies',
+      'type=record.correct'
     ]
   },
   // Legacy roles from v1.8 for backwards compatibility
