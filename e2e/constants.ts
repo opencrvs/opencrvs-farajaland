@@ -82,10 +82,6 @@ export const CREDENTIALS = {
     USERNAME: 'm.owen',
     PASSWORD: TEST_USER_PASSWORD
   },
-  HEALTH_OFFICER: {
-    USERNAME: 't.rahman',
-    PASSWORD: TEST_USER_PASSWORD
-  },
   EMBASSY_OFFICIAL: {
     USERNAME: 't.mwila',
     PASSWORD: TEST_USER_PASSWORD
