@@ -401,14 +401,12 @@ test.describe
 
     test('Verify information on review page', async () => {
       /*
-       * Wait for the review page to fully render before asserting.
-       * The review page resolves location names asynchronously and renders
-       * conditional informant fields — in CI this can exceed the default 5s
-       * assertion timeout if we start asserting immediately after URL changes.
+       * Wait for all async data to finish loading before asserting.
+       * The review page resolves location names (province, district, facility)
+       * via API calls after navigation — assertions on those fields fail in CI
+       * if we start before the network settles.
        */
-      await expect(page.getByTestId('row-value-child.name')).toBeVisible({
-        timeout: 30_000
-      })
+      await page.waitForLoadState('networkidle')
 
       /*
        * Expected result: should include
