@@ -14,7 +14,7 @@ import {
 } from '../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../constants'
-import { fillDate, formatV2ChildName } from '../birth/helpers'
+import { fillDate, formatV2ChildName, validateAddress } from '../birth/helpers'
 import {
   ensureAssigned,
   ensureOutboxIsEmpty,
@@ -514,6 +514,16 @@ test.describe
 
       /*
        * Expected result: should include
+       * - Informant's address
+       */
+      await validateAddress(
+        page,
+        declaration.informant.address,
+        'row-value-informant.address'
+      )
+
+      /*
+       * Expected result: should include
        * - Mother's First Name
        * - Mother's Family Name
        */
@@ -566,6 +576,16 @@ test.describe
 
       await expect(page.getByTestId('row-value-mother.brn')).toHaveText(
         declaration.mother.identifier.id
+      )
+
+      /*
+       * Expected result: should include
+       * - Mother's address
+       */
+      await validateAddress(
+        page,
+        declaration.mother.address,
+        'row-value-mother.address'
       )
 
       /*
