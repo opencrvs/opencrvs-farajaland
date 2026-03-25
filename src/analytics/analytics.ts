@@ -303,9 +303,10 @@ export async function importAdministrativeAreas(
   administrativeAreas: AdministrativeArea[]
 ) {
   const client = getClient()
+  const sortedAreas = sortAdministrativeAreasByParentFirst(administrativeAreas)
   await client.transaction().execute(async (trx) => {
     for (const [index, batch] of chunk(
-      administrativeAreas,
+      sortedAreas,
       INSERT_MAX_CHUNK_SIZE
     ).entries()) {
       logger.info(
@@ -338,28 +339,30 @@ export async function importAdministrativeAreas(
   })
 }
 
-function sortLocationsByParentFirst(locations: Location[]): Location[] {
-  const locationMap = new Map(locations.map((loc) => [loc.id, loc]))
-  const result: Location[] = []
+export function sortAdministrativeAreasByParentFirst(
+  areas: AdministrativeArea[]
+): AdministrativeArea[] {
+  const areaMap = new Map(areas.map((area) => [area.id, area]))
+  const result: AdministrativeArea[] = []
   const visited = new Set<string>()
 
-  function addWithAncestors(loc: Location) {
-    if (visited.has(loc.id)) return
+  for (const area of areas) {
+    if (visited.has(area.id)) continue
 
-    if (
-      loc.parentId &&
-      locationMap.has(loc.parentId) &&
-      !visited.has(loc.parentId)
-    ) {
-      addWithAncestors(locationMap.get(loc.parentId)!)
+    const ancestors: AdministrativeArea[] = []
+    let current: AdministrativeArea | undefined = area
+
+    while (current && !visited.has(current.id)) {
+      ancestors.unshift(current)
+      current = current.parentId ? areaMap.get(current.parentId) : undefined
     }
 
-    visited.add(loc.id)
-    result.push(loc)
-  }
-
-  for (const loc of locations) {
-    addWithAncestors(loc)
+    for (const ancestor of ancestors) {
+      if (!visited.has(ancestor.id)) {
+        visited.add(ancestor.id)
+        result.push(ancestor)
+      }
+    }
   }
 
   return result
@@ -368,16 +371,13 @@ function sortLocationsByParentFirst(locations: Location[]): Location[] {
 export async function importLocations(locations: Location[]) {
   const client = getClient()
 
-  // Sort locations so that parent locations appear before their children
-  const sortedLocations = sortLocationsByParentFirst(locations)
-
   await client.transaction().execute(async (trx) => {
     for (const [index, batch] of chunk(
-      sortedLocations,
+      locations,
       INSERT_MAX_CHUNK_SIZE
     ).entries()) {
       logger.info(
-        `Importing ${Math.min((index + 1) * INSERT_MAX_CHUNK_SIZE, sortedLocations.length)}/${sortedLocations.length} locations`
+        `Importing ${Math.min((index + 1) * INSERT_MAX_CHUNK_SIZE, locations.length)}/${locations.length} locations`
       )
 
       await trx
