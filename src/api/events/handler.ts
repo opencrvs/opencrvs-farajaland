@@ -55,7 +55,7 @@ export async function onBirthActionHandler(
   h: Hapi.ResponseToolkit
 ) {
   // Used in local development to disable MOSIP registration dependency
-  if (process.env.NO_MOSIP) {
+  if (process.env.NO_MOSIP === 'true') {
     return h.response({}).code(200)
   }
 
