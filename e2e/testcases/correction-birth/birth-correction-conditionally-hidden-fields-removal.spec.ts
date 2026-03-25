@@ -61,6 +61,7 @@ test.describe
         country: 'Farajaland',
         province: 'Chuminga',
         district: 'Ama',
+        village: 'Kitu',
         town: faker.location.city(),
         residentialArea: faker.location.county(),
         street: faker.location.street(),
@@ -82,7 +83,8 @@ test.describe
       address: {
         country: 'Farajaland',
         province: 'Sulaka',
-        district: 'Irundu'
+        district: 'Irundu',
+        village: 'Xhosa'
       },
       maritalStatus: 'Widowed',
       levelOfEducation: 'Secondary'
@@ -206,6 +208,10 @@ test.describe
       await page
         .getByText(declaration.informant.address.district, { exact: true })
         .click()
+      await page.locator('#village').click()
+      await page
+        .getByText(declaration.informant.address.village, { exact: true })
+        .click()
 
       await page.locator('#town').fill(declaration.informant.address.town)
       await page
@@ -254,6 +260,10 @@ test.describe
       await page.locator('#district').click()
       await page
         .getByText(declaration.mother.address.district, { exact: true })
+        .click()
+      await page.locator('#village').click()
+      await page
+        .getByText(declaration.mother.address.village, { exact: true })
         .click()
 
       await page.locator('#mother____maritalStatus').click()
