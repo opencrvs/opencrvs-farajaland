@@ -39,7 +39,7 @@ import {
   emptyMessage
 } from '@countryconfig/events/utils'
 
-export const requireSpouseDetails = or(
+const requireSpouseDetails = or(
   field('spouse.detailsNotAvailable').isFalsy(),
   field('informant.relation').isEqualTo(InformantType.SPOUSE)
 )

@@ -30,14 +30,13 @@ import {
   emptyMessage
 } from '@countryconfig/events/utils'
 
-export const MannerDeathType = {
+const MannerDeathType = {
   MANNER_NATURAL: 'MANNER_NATURAL',
   MANNER_ACCIDENT: 'MANNER_ACCIDENT',
   MANNER_SUICIDE: 'MANNER_SUICIDE',
   MANNER_HOMICIDE: 'MANNER_HOMICIDE',
   MANNER_UNDETERMINED: 'MANNER_UNDETERMINED'
 } as const
-export type MannerDeathTypeKey = keyof typeof MannerDeathType
 
 const mannerDeathMessageDescriptors = {
   MANNER_NATURAL: {
@@ -72,13 +71,12 @@ const mannerDeathTypeOptions = createSelectOptions(
   mannerDeathMessageDescriptors
 )
 
-export const SourceCauseDeathType = {
+const SourceCauseDeathType = {
   PHYSICIAN: 'PHYSICIAN',
   LAY_REPORTED: 'LAY_REPORTED',
   VERBAL_AUTOPSY: 'VERBAL_AUTOPSY',
   MEDICALLY_CERTIFIED: 'MEDICALLY_CERTIFIED'
 } as const
-export type SourceCauseDeathTypeKey = keyof typeof SourceCauseDeathType
 
 const sourceCauseDeathMessageDescriptors = {
   PHYSICIAN: {

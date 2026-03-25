@@ -96,7 +96,7 @@ const birthInformantTypeOptions = createSelectOptions(
   informantMessageDescriptors
 )
 
-export const informantOtherThanParent = and(
+const informantOtherThanParent = and(
   not(
     field('informant.relation').inArray([
       InformantType.MOTHER,

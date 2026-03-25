@@ -17,25 +17,8 @@ import fs from 'fs'
 import { URL } from 'url'
 import { build } from 'esbuild'
 import { memoize } from 'lodash'
-export const GENERATE_TYPE_RN = 'registrationNumber'
-export const CHILD_CODE = 'child-details'
-export const DECEASED_CODE = 'deceased-details'
-export const OPENCRVS_SPECIFICATION_URL = 'http://opencrvs.org/specs/'
 import { join } from 'path'
 import { stringify } from 'csv-stringify/sync'
-
-export interface ILocation {
-  id?: string
-  name?: string
-  alias?: string
-  status?: string
-  address?: string
-  physicalType?: string
-  jurisdictionType?: string
-  type?: string
-  partOf?: string
-  statistics: Array<{ name: string; year: number; value: number }>
-}
 
 interface ILoginBackground {
   backgroundColor: string

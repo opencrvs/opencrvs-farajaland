@@ -114,7 +114,7 @@ const deathInformantTypeOptions = createSelectOptions(
   informantMessageDescriptors
 )
 
-export const informantOtherThanSpouse = and(
+const informantOtherThanSpouse = and(
   not(field('informant.relation').inArray([InformantType.SPOUSE])),
   not(field('informant.relation').isFalsy())
 )
