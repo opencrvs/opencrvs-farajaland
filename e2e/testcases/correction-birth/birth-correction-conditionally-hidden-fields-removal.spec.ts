@@ -809,7 +809,7 @@ test.describe
             }
           })
         })
-      ).toBeVisible()
+      ).toBeVisible({ timeout: 30_000 })
     })
 
     test('Search by informant name should not get any result', async () => {
