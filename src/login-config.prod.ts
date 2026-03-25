@@ -8,10 +8,19 @@
  *
  * Copyright (C) The OpenCRVS Authors located at https://github.com/opencrvs/opencrvs-core/blob/master/AUTHORS.
  */
-window.config = {
+import { defineLoginConfig } from '@opencrvs/toolkit/application-config'
+import { applicationConfig } from '@countryconfig/api/application/application-config'
+import { env } from './environment'
+
+export default defineLoginConfig({
   // Country code in uppercase ALPHA-3 format
   COUNTRY: 'FAR',
   LANGUAGES: ['en', 'fr'],
   LOGIN_BACKGROUND: { backgroundColor: '36304E' },
-  SENTRY: ''
-}
+  SENTRY: env.SENTRY_DSN ?? '',
+  USER_NOTIFICATION_DELIVERY_METHOD:
+    applicationConfig.USER_NOTIFICATION_DELIVERY_METHOD,
+  INFORMANT_NOTIFICATION_DELIVERY_METHOD:
+    applicationConfig.INFORMANT_NOTIFICATION_DELIVERY_METHOD,
+  PHONE_NUMBER_PATTERN: applicationConfig.PHONE_NUMBER_PATTERN
+})
