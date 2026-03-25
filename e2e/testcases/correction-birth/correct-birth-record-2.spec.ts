@@ -59,7 +59,7 @@ test.describe.serial('Correct record - 2', () => {
   })
 
   test('2.1 Certificate preview', async () => {
-    await login(page, CREDENTIALS.REGISTRATION_OFFICER_VILLAGE)
+    await login(page, CREDENTIALS.REGISTRATION_OFFICER)
     await page.getByRole('button', { name: 'Pending certification' }).click()
     await navigateToCertificatePrintAction(page, declaration)
     await selectCertificationType(page, 'Birth Certificate')
@@ -168,6 +168,13 @@ test.describe.serial('Correct record - 2', () => {
 
       await page.locator('#informant____brn').fill(updatedInformantDetails.brn)
 
+      await page.locator('#province').click()
+      await page.getByText('Sulaka', { exact: true }).click()
+      await page.locator('#district').click()
+      await page.getByText('Irundu', { exact: true }).click()
+      await page.locator('#village').click()
+      await page.getByText('Xhosa', { exact: true }).click()
+
       await page.getByRole('button', { name: 'Back to review' }).click()
 
       await expectInUrl(page, `/events/request-correction/${eventId}/review`)
@@ -208,6 +215,13 @@ test.describe.serial('Correct record - 2', () => {
         )
         .getByText('Farajaland', { exact: true })
         .click()
+
+      await page.locator('#province').click()
+      await page.getByText('Central', { exact: true }).click()
+      await page.locator('#district').click()
+      await page.getByText('Ibombo', { exact: true }).click()
+      await page.locator('#village').click()
+      await page.getByText('Klow', { exact: true }).click()
 
       await page.getByTestId('text__town').fill(faker.location.city())
       await page.getByTestId('text__street').fill(faker.location.street())
