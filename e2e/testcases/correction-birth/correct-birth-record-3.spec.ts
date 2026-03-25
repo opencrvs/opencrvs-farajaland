@@ -58,6 +58,7 @@ test.describe.serial(' Correct record - 3', () => {
       country: 'Farajaland',
       province: 'Central',
       district: 'Ibombo',
+      village: 'Klow',
       town: faker.location.city(),
       residentialArea: faker.location.county(),
       street: faker.location.street(),
@@ -101,7 +102,6 @@ test.describe.serial(' Correct record - 3', () => {
         },
         'child.gender': 'male',
         'child.dob': format(subDays(new Date(), 360), 'yyyy-MM-dd'),
-        'child.placeOfBirth': 'HEALTH_FACILITY',
         'child.attendantAtBirth': 'PHYSICIAN',
         'child.birthType': 'SINGLE',
         'child.weightAtBirth': 3,
@@ -149,7 +149,7 @@ test.describe.serial(' Correct record - 3', () => {
 
   test.describe('3.1 Print > Event overview', async () => {
     test('3.1.1 Print', async () => {
-      await login(page, CREDENTIALS.REGISTRATION_OFFICER_VILLAGE)
+      await login(page, CREDENTIALS.REGISTRATION_OFFICER)
 
       await auditRecord({
         page,
@@ -687,14 +687,14 @@ test.describe.serial(' Correct record - 3', () => {
       await page.locator('#child____placeOfBirth').click()
       await page.getByText(updatedChildDetails.placeOfBirth).click()
 
-      // Province and district are disabled because the user jurisdiction is limited to user's administrative area
-      await expect(
-        page.locator('#child____birthLocation____other-form-input #province')
-      ).toBeDisabled()
+      await page.locator('#province').click()
+      await page.getByText(updatedChildDetails.birthLocation.province).click()
 
-      await expect(
-        page.locator('#child____birthLocation____other-form-input #district')
-      ).toBeDisabled()
+      await page.locator('#district').click()
+      await page.getByText(updatedChildDetails.birthLocation.district).click()
+
+      await page.locator('#village').click()
+      await page.getByText(updatedChildDetails.birthLocation.village).click()
 
       await page.locator('#town').fill(updatedChildDetails.birthLocation.town)
 
@@ -953,7 +953,7 @@ test.describe.serial(' Correct record - 3', () => {
 
       page = await browser.newPage()
 
-      await login(page, CREDENTIALS.REGISTRAR_VILLAGE)
+      await login(page, CREDENTIALS.REGISTRAR)
     })
 
     test('3.8.1 Record audit by Registrar', async () => {

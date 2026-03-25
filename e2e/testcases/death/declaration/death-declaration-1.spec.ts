@@ -47,7 +47,8 @@ test.describe.serial('1. Death declaration case - 1', () => {
       date: getRandomDate(0, 20),
       causeOfDeathEstablished: true,
       sourceCauseDeath: 'Physician',
-      placeOfDeath: "Deceased's usual place of residence"
+      placeOfDeath: 'Health Institution',
+      deathLocation: 'Klow Village Hospital'
     },
     informant: {
       relation: 'Spouse',
@@ -159,6 +160,12 @@ test.describe.serial('1. Death declaration case - 1', () => {
       await page
         .getByText(declaration.eventDetails.placeOfDeath, { exact: true })
         .click()
+
+      await page.locator('#eventDetails____deathLocation').fill('Klow Village')
+      await expect(
+        page.getByText(declaration.eventDetails.deathLocation)
+      ).toBeVisible()
+      await page.getByText(declaration.eventDetails.deathLocation).click()
 
       await continueForm(page)
     })

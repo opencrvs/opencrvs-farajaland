@@ -11,7 +11,6 @@
 require('app-module-path').addPath(require('path').join(__dirname))
 require('dotenv').config()
 
-import StreamArray from 'stream-json/streamers/StreamArray'
 import path from 'path'
 import * as Hapi from '@hapi/hapi'
 import * as Pino from 'hapi-pino'
@@ -50,12 +49,12 @@ import { applicationConfigHandler } from './api/application/handler'
 import { handlebarsHandler } from './form/common/certificate/handlebars/handler'
 import { fontsHandler } from './api/fonts/handler'
 import {
-  getCustomEventsHandler,
+  getEventsHandler,
   onAnyActionHandler,
   onBirthActionHandler,
   onDeathActionHandler,
   onCustomActionHandler
-} from '@countryconfig/api/custom-event/handler'
+} from '@countryconfig/api/events/handler'
 import {
   ActionDocument,
   ActionStatus,
@@ -536,7 +535,7 @@ export async function createServer() {
   server.route({
     method: 'GET',
     path: '/config/events',
-    handler: getCustomEventsHandler,
+    handler: getEventsHandler,
     options: {
       auth: false,
       tags: ['api', 'events'],
