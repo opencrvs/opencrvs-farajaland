@@ -50,6 +50,13 @@ test.describe.serial('10. Death declaration case - 10', () => {
     })
 
     test('10.1.2 Fill event details', async () => {
+      // A place of death is needed, since hospital official may only declare a record in their own location
+      await page.getByTestId('select__eventDetails____placeOfDeath').click()
+      await page.getByText('Health Institution', { exact: true }).click()
+
+      await page.locator('#eventDetails____deathLocation').fill('Klow Village')
+      await page.getByText('Klow Village Hospital').click()
+
       await page.getByRole('button', { name: 'Continue' }).click()
     })
 
@@ -146,17 +153,6 @@ test.describe.serial('10. Death declaration case - 10', () => {
       await expectRowValueWithChangeButton(
         page,
         'eventDetails.date',
-        REQUIRED_VALIDATION_ERROR
-      )
-
-      /*
-       * Expected result: should require
-       * - Place of death
-       * - Change button
-       */
-      await expectRowValueWithChangeButton(
-        page,
-        'eventDetails.placeOfDeath',
         REQUIRED_VALIDATION_ERROR
       )
 
@@ -361,17 +357,6 @@ test.describe.serial('10. Death declaration case - 10', () => {
       await expectRowValueWithChangeButton(
         page,
         'eventDetails.date',
-        REQUIRED_VALIDATION_ERROR
-      )
-
-      /*
-       * Expected result: should require
-       * - Place of death
-       * - Change button
-       */
-      await expectRowValueWithChangeButton(
-        page,
-        'eventDetails.placeOfDeath',
         REQUIRED_VALIDATION_ERROR
       )
 
