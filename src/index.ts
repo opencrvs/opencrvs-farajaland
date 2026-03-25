@@ -11,7 +11,6 @@
 require('app-module-path').addPath(require('path').join(__dirname))
 require('dotenv').config()
 
-import StreamArray from 'stream-json/streamers/StreamArray'
 import path from 'path'
 import * as Hapi from '@hapi/hapi'
 import * as Pino from 'hapi-pino'
@@ -36,8 +35,11 @@ import {
   countryLogoHandler
 } from '@countryconfig/api/content/handler'
 import decode from 'jwt-decode'
-import { join } from 'path'
 import { logger } from '@countryconfig/logger'
+import clientConfig from './client-config'
+import clientConfigProd from './client-config.prod'
+import loginConfig from './login-config'
+import loginConfigProd from './login-config.prod'
 import { emailHandler, emailSchema } from './api/notification/handler'
 import { ErrorContext } from 'hapi-auth-jwt2'
 import { mapGeojsonHandler } from '@countryconfig/api/dashboards/handler'
@@ -49,10 +51,10 @@ import { applicationConfigHandler } from './api/application/handler'
 import { handlebarsHandler } from './events/utils/certificate/handlebars/handler'
 import { fontsHandler } from './api/fonts/handler'
 import {
-  getCustomEventsHandler,
+  getEventsHandler,
   onAnyActionHandler,
   onCustomActionHandler
-} from '@countryconfig/api/custom-event/handler'
+} from '@countryconfig/api/events/handler'
 import {
   ActionDocument,
   ActionStatus,
@@ -287,13 +289,12 @@ export async function createServer() {
   server.route({
     method: 'GET',
     path: '/client-config.js',
-    handler: async (request, h) => {
-      const file =
-        process.env.NODE_ENV === 'production'
-          ? '/client-config.prod.js'
-          : '/client-config.js'
-
-      return h.file(join(__dirname, file))
+    handler: (_request, h) => {
+      const config =
+        process.env.NODE_ENV === 'production' ? clientConfigProd : clientConfig
+      return h
+        .response(`window.config = ${JSON.stringify(config)}`)
+        .type('application/javascript')
     },
     options: {
       auth: false,
@@ -305,12 +306,12 @@ export async function createServer() {
   server.route({
     method: 'GET',
     path: '/login-config.js',
-    handler: (request, h) => {
-      const file =
-        process.env.NODE_ENV === 'production'
-          ? '/login-config.prod.js'
-          : '/login-config.js'
-      return h.file(join(__dirname, file))
+    handler: (_request, h) => {
+      const config =
+        process.env.NODE_ENV === 'production' ? loginConfigProd : loginConfig
+      return h
+        .response(`window.config = ${JSON.stringify(config)}`)
+        .type('application/javascript')
     },
     options: {
       auth: false,
@@ -495,7 +496,7 @@ export async function createServer() {
   server.route({
     method: 'GET',
     path: '/config/events',
-    handler: getCustomEventsHandler,
+    handler: getEventsHandler,
     options: {
       auth: false,
       tags: ['api', 'events'],
@@ -596,16 +597,16 @@ export async function createServer() {
         actions: event.actions.map((action, index) =>
           index === event.actions.length - 1
             ? {
-                ...action,
-                status: ActionStatus.Accepted,
-                ...(actionType === ActionType.REGISTER
-                  ? {
-                      registrationNumber: (
-                        response.source as { registrationNumber: string }
-                      ).registrationNumber
-                    }
-                  : {})
-              }
+              ...action,
+              status: ActionStatus.Accepted,
+              ...(actionType === ActionType.REGISTER
+                ? {
+                  registrationNumber: (
+                    response.source as { registrationNumber: string }
+                  ).registrationNumber
+                }
+                : {})
+            }
             : action
         ) as ActionDocument[]
       }
