@@ -176,13 +176,6 @@ export async function ensureLoginPageReady(page: Page) {
   })
 }
 
-async function validateSectionButtons(page: Page) {
-  await expect(page.getByText('Continue', { exact: true })).toBeVisible()
-  await expect(page.getByText('Exit', { exact: true })).toBeVisible()
-  await expect(page.getByText('Save & Exit', { exact: true })).toBeVisible()
-  await expect(page.locator('#eventToggleMenu-dropdownMenu')).toBeVisible()
-}
-
 export const uploadImage = async (
   page: Page,
   locator: Locator,
@@ -218,85 +211,6 @@ export const uploadImageToSection = async ({
   await uploadImage(page, buttonLocator)
 }
 
-export const expectAddress = async (
-  locator: Locator,
-  address: { [key: string]: any },
-  isDeletion?: boolean
-) => {
-  const addressKeys = [
-    'country',
-
-    'state',
-    'province',
-
-    'district',
-
-    'village',
-    'town',
-    'city',
-
-    'residentialArea',
-    'addressLine1',
-
-    'street',
-    'addressLine2',
-
-    'number',
-    'addressLine3',
-
-    'postcodeOrZip',
-    'postalCode',
-    'zipCode'
-  ]
-
-  if (isArray(address.line)) {
-    address.addressLine1 = address.line[2]
-    address.addressLine2 = address.line[1]
-    address.addressLine3 = address.line[0]
-  }
-
-  const texts = addressKeys
-    .map((key) => address[key])
-    .filter((value) => Boolean(value))
-
-  if (isDeletion) {
-    const deletionLocators = await locator.getByRole('deletion').all()
-    for (let i = 0; i < texts.length; i++) {
-      await expect(deletionLocators[getDeletionPosition(i)]).toContainText(
-        texts[i]
-      )
-    }
-  } else await expectTexts(locator, texts)
-}
-
-/*
-  The deletion section is formatted like below:
-    '-'
-    'Farajaland'
-    'Central'
-    'Ibombo'
-    'Example Town' / 'Example village'
-    'Mitali Residential Area'
-    '4/A'
-    '1324'
-
-*/
-const getDeletionPosition = (i: number) => i + 1 // for the extra '-' at the beginning
-
-export const expectTexts = async (locator: Locator, texts: string[]) => {
-  for (const text of texts) {
-    await expect(locator).toContainText(text)
-  }
-}
-
-export const expectTextWithChangeLink = async (
-  locator: Locator,
-  texts: string[]
-) => {
-  await expectTexts(locator, texts)
-  await expect(locator).toContainText('Change')
-}
-
 export const getLocationNameFromId = async (id: UUID, token: string) => {
   const client = createClient(GATEWAY_HOST + '/events', `Bearer ${token}`)
   const [location] = await client.locations.list.query({
@@ -315,57 +229,6 @@ export async function goBackToReview(page: Page) {
   await page.waitForTimeout(SAFE_INPUT_CHANGE_TIMEOUT_MS)
   await page.getByRole('button', { name: 'Back to review' }).click()
 }
-
-export const formatDateTo_yyyyMMdd = (date: string) =>
-  format(parseISO(date), 'yyyy-MM-dd')
-
-export const formatDateTo_ddMMMMyyyy = (date: string) =>
-  format(parseISO(date), 'dd MMMM yyyy')
-
-export const formatDateTo_dMMMMyyyy = (date: string) =>
-  format(parseISO(date), 'd MMMM yyyy')
-
-/*
-  Date() object takes 0-indexed month,
-  but month coming to the method is 1-indexed
-*/
-export const formatDateObjectTo_ddMMMMyyyy = ({
-  yyyy,
-  mm,
-  dd
-}: {
-  yyyy: string
-  mm: string
-  dd: string
-}) => format(new Date(Number(yyyy), Number(mm) - 1, Number(dd)), 'dd MMMM yyyy')
-
-/*
-  Date() object takes 0-indexed month,
-  but month coming to the method is 1-indexed
-*/
-export const formatDateObjectTo_dMMMMyyyy = ({
-  yyyy,
-  mm,
-  dd
-}: {
-  yyyy: string
-  mm: string
-  dd: string
-}) => format(new Date(Number(yyyy), Number(mm) - 1, Number(dd)), 'd MMMM yyyy')
-
-/*
-  Date() object takes 0-indexed month,
-  but month coming to the method is 1-indexed
-*/
-export const formatDateObjectTo_yyyyMMdd = ({
-  yyyy,
-  mm,
-  dd
-}: {
-  yyyy: string
-  mm: string
-  dd: string
-}) => format(new Date(Number(yyyy), Number(mm) - 1, Number(dd)), 'yyyy-MM-dd')
 
 export const joinValuesWith = (
   values: (string | number | null | undefined)[],
@@ -428,59 +291,6 @@ export const drawSignature = async (
     }
     await page.mouse.up()
   }
-}
-
-export const expectOutboxToBeEmpty = async (page: Page) => {
-  /*
-   * This is to ensure the following condition is asserted
-   * after the outbox has the declaration
-   */
-  await page.waitForTimeout(SAFE_INPUT_CHANGE_TIMEOUT_MS)
-
-  await expect(page.locator('#navigation_outbox')).not.toContainText('1', {
-    timeout: SAFE_OUTBOX_TIMEOUT_MS
-  })
-}
-
-// This suffix increases randomness of a name
-export const generateRandomSuffix = () => {
-  const vowels = 'aeiou'
-  const consonants = 'bcdfghjklmnpqrstvwxyz'
-
-  const randomVowel = vowels.charAt(Math.floor(Math.random() * vowels.length))
-  const randomConsonant = consonants.charAt(
-    Math.floor(Math.random() * consonants.length)
-  )
-
-  return randomConsonant + randomVowel
-}
-
-type ActionMenuOptions =
-  | 'Assign'
-  | 'Correct record'
-  | 'Print'
-  | 'Review declaration'
-  | 'Update declaration'
-  | 'Review correction request'
-  | 'View'
-  | 'Validate'
-  | 'Review'
-
-export const getAction = (page: Page, option: ActionMenuOptions) => {
-  return page
-    .locator('#action-dropdownMenu')
-    .getByRole('listitem')
-    .filter({
-      hasText: new RegExp(option)
-    })
-}
-
-export const assignRecord = async (page: Page) => {
-  await page.getByLabel('Assign record').click()
-  if (
-    await page.getByRole('button', { name: 'Assign', exact: true }).isVisible()
-  )
-    await page.getByRole('button', { name: 'Assign', exact: true }).click()
 }
 
 /**
