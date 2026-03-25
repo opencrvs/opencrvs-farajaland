@@ -9,7 +9,7 @@ import {
   SAFE_OUTBOX_TIMEOUT_MS
 } from './constants'
 import { format, parseISO } from 'date-fns'
-import { isArray, random } from 'lodash'
+import { random } from 'lodash'
 import fetch from 'node-fetch'
 import { isMobile } from './mobile-helpers'
 import { createClient } from '@opencrvs/toolkit/api'
@@ -321,14 +321,6 @@ export const auditRecord = async ({
   }
 }
 
-type GetUser = {
-  getUser: {
-    primaryOffice: {
-      id: string
-    }
-  }
-}
-
 export const fetchUserLocationHierarchy = async (
   userId: string,
   { headers }: { headers: Record<string, any> }
@@ -486,3 +478,20 @@ export async function loginWithNewUser(page: Page, username: string) {
 
   await expect(page.getByText('Account setup complete')).toBeVisible()
 }
+
+export const formatDateTo_dMMMMyyyy = (date: string) =>
+  format(parseISO(date), 'd MMMM yyyy')
+
+/*
+  Date() object takes 0-indexed month,
+  but month coming to the method is 1-indexed
+*/
+export const formatDateObjectTo_dMMMMyyyy = ({
+  yyyy,
+  mm,
+  dd
+}: {
+  yyyy: string
+  mm: string
+  dd: string
+}) => format(new Date(Number(yyyy), Number(mm) - 1, Number(dd)), 'd MMMM yyyy')

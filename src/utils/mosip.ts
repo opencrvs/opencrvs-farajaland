@@ -26,7 +26,11 @@ import {
   findQuestionnaireResponse
 } from './fhir'
 import { fhirBundleToMOSIPPayload } from '@opencrvs/mosip'
-import { getTaskResource, getTrackingIdFromTaskResource, createUniqueRegistrationNumberFromBundle } from '.'
+import {
+  getTaskResource,
+  getTrackingIdFromTaskResource,
+  createUniqueRegistrationNumberFromBundle
+} from '.'
 import { logger } from '@countryconfig/logger'
 
 interface VerificationStatus {
