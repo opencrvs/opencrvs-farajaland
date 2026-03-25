@@ -21,6 +21,7 @@ import {
   getPendingAction
 } from '@opencrvs/toolkit/events'
 import { MOSIP_INTEROP_URL } from '@countryconfig/constants'
+import { NO_MOSIP } from '@countryconfig/constants'
 
 export function getEventsHandler(_: Hapi.Request, h: Hapi.ResponseToolkit) {
   return h
@@ -55,7 +56,7 @@ export async function onBirthActionHandler(
   h: Hapi.ResponseToolkit
 ) {
   // Used in local development to disable MOSIP registration dependency
-  if (process.env.NO_MOSIP === 'true') {
+  if (NO_MOSIP) {
     return h.response({}).code(200)
   }
 
