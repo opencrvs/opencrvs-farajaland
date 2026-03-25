@@ -8,14 +8,18 @@
  *
  * Copyright (C) The OpenCRVS Authors located at https://github.com/opencrvs/opencrvs-core/blob/master/AUTHORS.
  */
+import { defineLoginConfig } from '@opencrvs/toolkit/application-config'
+import { applicationConfig } from '@countryconfig/api/application/application-config'
 
-const scheme = window.location.protocol; // "http:" or "https:"
-const hostname = "{{hostname}}"; // Replace dynamically if needed
-const sentry = "{{sentry}}"; // Replace dynamically if needed
-window.config = {
+export default defineLoginConfig({
   // Country code in uppercase ALPHA-3 format
   COUNTRY: 'FAR',
   LANGUAGES: ['en', 'fr'],
   LOGIN_BACKGROUND: { backgroundColor: '36304E' },
-  SENTRY: sentry
-};
+  SENTRY: '',
+  USER_NOTIFICATION_DELIVERY_METHOD:
+    applicationConfig.USER_NOTIFICATION_DELIVERY_METHOD,
+  INFORMANT_NOTIFICATION_DELIVERY_METHOD:
+    applicationConfig.INFORMANT_NOTIFICATION_DELIVERY_METHOD,
+  PHONE_NUMBER_PATTERN: applicationConfig.PHONE_NUMBER_PATTERN
+})
