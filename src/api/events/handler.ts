@@ -22,30 +22,27 @@ import {
 } from '@opencrvs/toolkit/events'
 import { MOSIP_INTEROP_URL } from '@countryconfig/constants'
 
-export function getCustomEventsHandler(
-  _: Hapi.Request,
-  h: Hapi.ResponseToolkit
-) {
+export function getEventsHandler(_: Hapi.Request, h: Hapi.ResponseToolkit) {
   return h
     .response([tennisClubMembershipEvent, birthEvent, deathEvent])
     .code(200)
 }
 
 export async function onCustomActionHandler(
-  request: ActionConfirmationRequest,
+  _: ActionConfirmationRequest,
   h: Hapi.ResponseToolkit
 ) {
   return h.response().code(200)
 }
 
+/**
+ * This catch-all action route will receive event actions with `Content-Type: application/json`
+ */
 export async function onAnyActionHandler(
   request: ActionConfirmationRequest,
   h: Hapi.ResponseToolkit
 ) {
-  // This catch-all event route will receive v2 events with `Content-Type: application/json`
-
   const token = request.auth.artifacts.token as string
-
   const event = request.payload
 
   await sendInformantNotification({ event, token })
@@ -57,6 +54,11 @@ export async function onBirthActionHandler(
   request: ActionConfirmationRequest,
   h: Hapi.ResponseToolkit
 ) {
+  // Used in local development to disable MOSIP registration dependency
+  if (process.env.NO_MOSIP) {
+    return h.response({}).code(200)
+  }
+
   const token = request.auth.artifacts.token as string
 
   const event = request.payload
