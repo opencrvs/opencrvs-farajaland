@@ -20,7 +20,7 @@ import {
   user
 } from '@opencrvs/toolkit/events'
 import { or, not } from '@opencrvs/toolkit/conditionals'
-import { emptyMessage } from '@countryconfig/events/utils'
+
 import {
   farajalandNameConfig,
   invalidNameValidator,
@@ -36,9 +36,10 @@ import {
   YesNoTypes
 } from '../../../person'
 import {
+  emptyMessage,
   defaultStreetAddressConfiguration,
   getNestedFieldValidators
-} from '@countryconfig/events/street-address-configuration'
+} from '@countryconfig/events/utils'
 
 export const requireFatherDetails = or(
   field('father.detailsNotAvailable').isFalsy(),

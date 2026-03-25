@@ -21,7 +21,6 @@ import {
   user
 } from '@opencrvs/toolkit/events'
 import { not } from '@opencrvs/toolkit/conditionals'
-import { emptyMessage } from '../../../utils'
 import {
   farajalandNameConfig,
   invalidNameValidator,
@@ -36,8 +35,9 @@ import {
 import { InformantType } from './informant'
 import {
   defaultStreetAddressConfiguration,
-  getNestedFieldValidators
-} from '@countryconfig/events/street-address-configuration'
+  getNestedFieldValidators,
+  emptyMessage
+} from '@countryconfig/events/utils'
 
 export const requireSpouseDetails = or(
   field('spouse.detailsNotAvailable').isFalsy(),

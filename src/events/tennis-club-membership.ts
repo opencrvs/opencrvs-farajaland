@@ -29,7 +29,7 @@ import {
 } from '@opencrvs/toolkit/events'
 
 import { MAX_NAME_LENGTH } from './birth/validators'
-import { Event } from './types'
+import { Event } from './utils/types'
 
 const TENNIS_CLUB_DECLARATION_REVIEW = {
   title: {

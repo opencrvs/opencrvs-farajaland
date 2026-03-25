@@ -1,3 +1,5 @@
+import { SelectOption, TranslationConfig } from '@opencrvs/toolkit/events'
+
 export const educationalAttainmentOptions = [
   {
     value: 'NO_SCHOOLING',
@@ -83,3 +85,15 @@ export const maritalStatusOptions = [
     }
   }
 ]
+
+export const createSelectOptions = <
+  T extends Record<string, string>,
+  M extends Record<keyof T, TranslationConfig>
+>(
+  options: T,
+  messageDescriptors: M
+): SelectOption[] =>
+  Object.entries(options).map(([key, value]) => ({
+    value,
+    label: messageDescriptors[key as keyof T]
+  }))

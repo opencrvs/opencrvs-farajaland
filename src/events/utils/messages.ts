@@ -121,3 +121,9 @@ export const informantMessageDescriptors = {
     id: 'form.field.label.informantRelation.bride'
   }
 }
+
+export const emptyMessage = {
+  defaultMessage: '',
+  description: 'empty string',
+  id: 'messages.emptyString'
+}

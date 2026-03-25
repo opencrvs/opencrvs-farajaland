@@ -31,7 +31,7 @@ import { advancedSearchDeath } from './advancedSearch'
 import { PlaceOfDeath } from './forms/pages/eventDetails'
 import { DEATH_CORRECTION_FORM } from './forms/correctionForm'
 import { dedupConfig } from './dedupConfig'
-import { Event } from '@countryconfig/events/types'
+import { Event } from '@countryconfig/events/utils'
 
 export const deathEvent = defineConfig({
   id: Event.Death,

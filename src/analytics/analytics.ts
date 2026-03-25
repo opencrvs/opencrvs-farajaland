@@ -35,7 +35,7 @@ import { chunk, pickBy } from 'lodash'
 import { getClient } from './postgres'
 import { getStatistics } from '@countryconfig/utils'
 import { COUNTRY_NAMES_BY_CODE } from './countries'
-import { Event } from '@countryconfig/events/types'
+import { Event } from '@countryconfig/events/utils'
 
 /**
  * You can control which events you want to track in analytics by adding them here.

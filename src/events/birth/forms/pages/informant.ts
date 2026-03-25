@@ -22,7 +22,6 @@ import {
   user
 } from '@opencrvs/toolkit/events'
 import { not } from '@opencrvs/toolkit/conditionals'
-import { createSelectOptions, emptyMessage } from '../../../utils'
 import {
   farajalandNameConfig,
   invalidNameValidator,
@@ -31,8 +30,10 @@ import {
 import { IdType, idTypeOptions } from '../../../person'
 import {
   defaultStreetAddressConfiguration,
-  getNestedFieldValidators
-} from '@countryconfig/events/street-address-configuration'
+  getNestedFieldValidators,
+  createSelectOptions,
+  emptyMessage
+} from '@countryconfig/events/utils'
 
 export const InformantType = {
   MOTHER: 'MOTHER',

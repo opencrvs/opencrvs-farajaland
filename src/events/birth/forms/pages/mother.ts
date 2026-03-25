@@ -20,7 +20,6 @@ import {
   user
 } from '@opencrvs/toolkit/events'
 import { or, not, never } from '@opencrvs/toolkit/conditionals'
-import { emptyMessage } from '@countryconfig/events/utils'
 import {
   invalidNameValidator,
   nationalIdValidator,
@@ -30,12 +29,11 @@ import { InformantType } from './informant'
 import { IdType, idTypeOptions } from '../../../person'
 import {
   educationalAttainmentOptions,
-  maritalStatusOptions
-} from '../../../common/select-options'
-import {
+  maritalStatusOptions,
+  emptyMessage,
   defaultStreetAddressConfiguration,
   getNestedFieldValidators
-} from '@countryconfig/events/street-address-configuration'
+} from '@countryconfig/events/utils'
 
 export const requireMotherDetails = or(
   field('mother.detailsNotAvailable').isFalsy(),

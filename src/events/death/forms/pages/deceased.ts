@@ -22,7 +22,12 @@ import {
 } from '@opencrvs/toolkit/events'
 import { not, never } from '@opencrvs/toolkit/conditionals'
 
-import { createSelectOptions, emptyMessage } from '@countryconfig/events/utils'
+import {
+  createSelectOptions,
+  emptyMessage,
+  defaultStreetAddressConfiguration,
+  getNestedFieldValidators
+} from '@countryconfig/events/utils'
 import {
   farajalandNameConfig,
   invalidNameValidator,
@@ -33,10 +38,6 @@ import {
   idTypeOptions,
   maritalStatusOptions
 } from '@countryconfig/events/person'
-import {
-  defaultStreetAddressConfiguration,
-  getNestedFieldValidators
-} from '@countryconfig/events/street-address-configuration'
 
 const GenderTypes = {
   MALE: 'male',

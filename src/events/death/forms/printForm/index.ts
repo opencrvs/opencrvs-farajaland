@@ -18,13 +18,14 @@ import {
   not,
   PageTypes
 } from '@opencrvs/toolkit/events'
-import { applicationConfig } from '@countryconfig/api/application/application-config'
+
 import { printCertificateCollectors } from './collectors'
 import { printCertificateCollectorOther } from './collector-other'
 import { printCertificateCollectorIdentityVerify } from './collector-identity-verify'
 
 import { CollectorType } from './collector-other'
-import { DEATH_REGISTRATION_TARGET_DAYS } from '@countryconfig/events/constants'
+import { DEATH_REGISTRATION_TARGET_DAYS } from '@countryconfig/events/utils'
+
 export const DEATH_CERTIFICATE_COLLECTOR_FORM = defineActionForm({
   label: {
     id: 'event.death.action.certificate.form.label',

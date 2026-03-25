@@ -18,7 +18,7 @@ import {
   not
 } from '@opencrvs/toolkit/events'
 import { InformantType, InformantTypeKey } from '../pages/informant'
-import { informantMessageDescriptors } from '@countryconfig/events/common/messages'
+import { informantMessageDescriptors } from '@countryconfig/events/utils'
 import { IdType, idTypeOptions } from '@countryconfig/events/person'
 import { nationalIdValidator } from '../../validators'
 

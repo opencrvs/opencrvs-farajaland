@@ -21,7 +21,7 @@ import {
 import {
   BIRTH_REGISTRATION_TARGET_DAYS,
   BIRTH_LATE_REGISTRATION_TARGET_DAYS
-} from '@countryconfig/events/constants'
+} from '@countryconfig/events/utils'
 import { printCertificateCollectors } from './collectors'
 import { printCertificateCollectorOther } from './collector-other'
 import { printCertificateCollectorIdentityVerify } from './collector-identity-verify'

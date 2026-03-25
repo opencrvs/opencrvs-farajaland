@@ -32,8 +32,10 @@ import { BIRTH_CERTIFICATE_COLLECTOR_FORM } from './forms/printForm'
 import { PlaceOfBirth } from './forms/pages/child'
 import { CORRECTION_FORM } from './forms/correctionForm'
 import { dedupConfig } from './dedupConfig'
-import { BIRTH_LATE_REGISTRATION_TARGET_DAYS } from '@countryconfig/events/constants'
-import { Event } from '@countryconfig/events/types'
+import {
+  Event,
+  BIRTH_LATE_REGISTRATION_TARGET_DAYS
+} from '@countryconfig/events/utils'
 
 export const birthEvent = defineConfig({
   id: Event.Birth,

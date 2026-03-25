@@ -22,13 +22,13 @@ import {
   user
 } from '@opencrvs/toolkit/events'
 
-import { createSelectOptions, emptyMessage } from '@countryconfig/events/utils'
-import { applicationConfig } from '@countryconfig/api/application/application-config'
 import {
   defaultStreetAddressConfiguration,
-  getNestedFieldValidators
-} from '@countryconfig/events/street-address-configuration'
-import { DEATH_REGISTRATION_TARGET_DAYS } from '@countryconfig/events/constants'
+  getNestedFieldValidators,
+  DEATH_REGISTRATION_TARGET_DAYS,
+  createSelectOptions,
+  emptyMessage
+} from '@countryconfig/events/utils'
 
 export const MannerDeathType = {
   MANNER_NATURAL: 'MANNER_NATURAL',
