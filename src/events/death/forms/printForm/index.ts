@@ -24,7 +24,7 @@ import { printCertificateCollectorOther } from './collector-other'
 import { printCertificateCollectorIdentityVerify } from './collector-identity-verify'
 
 import { CollectorType } from './collector-other'
-import { DEATH_REGISTRATION_TARGET_DAYS } from '@countryconfig/form/v2/constants'
+import { DEATH_REGISTRATION_TARGET_DAYS } from '@countryconfig/events/constants'
 export const DEATH_CERTIFICATE_COLLECTOR_FORM = defineActionForm({
   label: {
     id: 'event.death.action.certificate.form.label',

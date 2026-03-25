@@ -22,21 +22,21 @@ import {
 } from '@opencrvs/toolkit/events'
 import { not, never } from '@opencrvs/toolkit/conditionals'
 
-import { createSelectOptions, emptyMessage } from '@countryconfig/form/v2/utils'
+import { createSelectOptions, emptyMessage } from '@countryconfig/events/utils'
 import {
   farajalandNameConfig,
   invalidNameValidator,
   nationalIdValidator
-} from '@countryconfig/form/v2/birth/validators'
+} from '@countryconfig/events/birth/validators'
 import {
   IdType,
   idTypeOptions,
   maritalStatusOptions
-} from '@countryconfig/form/v2/person'
+} from '@countryconfig/events/person'
 import {
   defaultStreetAddressConfiguration,
   getNestedFieldValidators
-} from '@countryconfig/form/street-address-configuration'
+} from '@countryconfig/events/street-address-configuration'
 
 const GenderTypes = {
   MALE: 'male',

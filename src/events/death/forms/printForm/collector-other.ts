@@ -19,7 +19,7 @@ import {
   farajalandNameConfig,
   invalidNameValidator,
   nationalIdValidator
-} from '@countryconfig/form/v2/birth/validators'
+} from '@countryconfig/events/birth/validators'
 
 export const CollectorType = {
   SOMEONE_ELSE: 'SOMEONE_ELSE'

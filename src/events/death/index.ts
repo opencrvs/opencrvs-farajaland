@@ -26,12 +26,12 @@ import {
   DEATH_DECLARATION_FORM
 } from './forms/declaration'
 
-import { DEATH_CERTIFICATE_COLLECTOR_FORM } from '../death/forms/printForm'
+import { DEATH_CERTIFICATE_COLLECTOR_FORM } from './forms/printForm'
 import { advancedSearchDeath } from './advancedSearch'
 import { PlaceOfDeath } from './forms/pages/eventDetails'
 import { DEATH_CORRECTION_FORM } from './forms/correctionForm'
 import { dedupConfig } from './dedupConfig'
-import { Event } from '@countryconfig/form/types'
+import { Event } from '@countryconfig/events/types'
 
 export const deathEvent = defineConfig({
   id: Event.Death,

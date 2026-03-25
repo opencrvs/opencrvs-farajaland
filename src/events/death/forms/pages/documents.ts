@@ -9,7 +9,7 @@
  * Copyright (C) The OpenCRVS Authors located at https://github.com/opencrvs/opencrvs-core/blob/master/AUTHORS.
  */
 
-import { createSelectOptions } from '@countryconfig/form/v2/utils'
+import { createSelectOptions } from '@countryconfig/events/utils'
 import {
   ConditionalType,
   defineFormPage,

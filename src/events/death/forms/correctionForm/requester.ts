@@ -17,9 +17,9 @@ import {
   FieldType
 } from '@opencrvs/toolkit/events'
 import { InformantType, InformantTypeKey } from '../pages/informant'
-import { informantMessageDescriptors } from '@countryconfig/form/common/messages'
-import { IdType, idTypeOptions } from '@countryconfig/form/v2/person'
-import { nationalIdValidator } from '@countryconfig/form/v2/birth/validators'
+import { informantMessageDescriptors } from '@countryconfig/events/common/messages'
+import { IdType, idTypeOptions } from '@countryconfig/events/person'
+import { nationalIdValidator } from '@countryconfig/events/birth/validators'
 
 const commonConfigs = {
   id: 'requester.type',

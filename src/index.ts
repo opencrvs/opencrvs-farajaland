@@ -46,7 +46,7 @@ import { certificateHandler } from './api/certificates/handler'
 import { rolesHandler } from './data-seeding/roles/handler'
 import { usersHandler } from './data-seeding/employees/handler'
 import { applicationConfigHandler } from './api/application/handler'
-import { handlebarsHandler } from './form/common/certificate/handlebars/handler'
+import { handlebarsHandler } from './events/common/certificate/handlebars/handler'
 import { fontsHandler } from './api/fonts/handler'
 import {
   getCustomEventsHandler,
@@ -74,7 +74,7 @@ import {
 import { getClient } from './analytics/postgres'
 import { env } from './environment'
 import { createClient } from '@opencrvs/toolkit/api'
-import { Event } from './form/types'
+import { Event } from './events/types'
 
 export interface ITokenPayload {
   sub: string

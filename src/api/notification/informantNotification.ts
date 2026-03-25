@@ -22,11 +22,11 @@ import { COUNTRY_LOGO_URL } from './constant'
 import { GATEWAY_URL } from '@countryconfig/constants'
 import { createClient } from '@opencrvs/toolkit/api'
 
-import { InformantType as BirthInformantType } from '@countryconfig/form/v2/birth/forms/pages/informant'
+import { InformantType as BirthInformantType } from '@countryconfig/events/birth/forms/pages/informant'
 import { InformantTemplateType } from './sms-service'
 import { generateFailureLog, NotificationParams, notify } from './handler'
-import { InformantType as DeathInformantType } from '@countryconfig/form/v2/death/forms/pages/informant'
-import { Event } from '@countryconfig/form/types'
+import { InformantType as DeathInformantType } from '@countryconfig/events/death/forms/pages/informant'
+import { Event } from '@countryconfig/events/types'
 
 const resolveName = (name: FieldUpdateValue) => {
   const nameObj = {

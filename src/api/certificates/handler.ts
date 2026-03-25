@@ -11,7 +11,7 @@
  */
 
 import { Request, ResponseObject, ResponseToolkit } from '@hapi/hapi'
-import { Event } from '@countryconfig/form/types'
+import { Event } from '@countryconfig/events/types'
 import { ActionType, event, never, not } from '@opencrvs/toolkit/events'
 
 type FontFamilyTypes = {

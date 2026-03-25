@@ -23,17 +23,17 @@ import {
 } from '@opencrvs/toolkit/events'
 import { not } from '@opencrvs/toolkit/conditionals'
 
-import { BIRTH_LATE_REGISTRATION_TARGET_DAYS } from '@countryconfig/form/v2/constants'
+import { BIRTH_LATE_REGISTRATION_TARGET_DAYS } from '@countryconfig/events/constants'
 
-import { createSelectOptions, emptyMessage } from '@countryconfig/form/v2/utils'
+import { createSelectOptions, emptyMessage } from '@countryconfig/events/utils'
 import {
   farajalandNameConfig,
   invalidNameValidator
-} from '@countryconfig/form/v2/birth/validators'
+} from '@countryconfig/events/birth/validators'
 import {
   defaultStreetAddressConfiguration,
   getNestedFieldValidators
-} from '@countryconfig/form/street-address-configuration'
+} from '@countryconfig/events/street-address-configuration'
 
 const GenderTypes = {
   MALE: 'male',
