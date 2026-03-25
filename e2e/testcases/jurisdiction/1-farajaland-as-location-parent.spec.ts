@@ -20,8 +20,8 @@ test.describe.serial('1.Farajaland as location parent', () => {
 
   test.beforeAll(async ({ browser }) => {
     const token = await getToken(
-      CREDENTIALS.HEALTH_OFFICER.USERNAME,
-      CREDENTIALS.HEALTH_OFFICER.PASSWORD
+      CREDENTIALS.HOSPITAL_OFFICIAL.USERNAME,
+      CREDENTIALS.HOSPITAL_OFFICIAL.PASSWORD
     )
     declaration = await getDeclaration({
       partialDeclaration: {
@@ -45,10 +45,10 @@ test.describe.serial('1.Farajaland as location parent', () => {
     await page.close()
   })
 
-  test('1.1.0 Health officer creates an incomplete declaration', async () => {
+  test('1.1.0 Hospital official creates an incomplete declaration', async () => {
     token = await getToken(
-      CREDENTIALS.HEALTH_OFFICER.USERNAME,
-      CREDENTIALS.HEALTH_OFFICER.PASSWORD
+      CREDENTIALS.HOSPITAL_OFFICIAL.USERNAME,
+      CREDENTIALS.HOSPITAL_OFFICIAL.PASSWORD
     )
 
     await createDeclaration(token, declaration, ActionType.NOTIFY)

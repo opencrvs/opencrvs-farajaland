@@ -50,7 +50,7 @@ test.describe.serial('4. Death declaration case - 4', () => {
       causeOfDeathEstablished: true,
       sourceCauseDeath: 'Medically Certified Cause of Death',
       placeOfDeath: 'Health Institution',
-      deathLocation: 'Railway GRZ Urban Health Centre'
+      deathLocation: 'Ibombo District Hospital'
     },
     informant: {
       relation: 'Son in law',

@@ -190,7 +190,7 @@ test.describe
   })
 
   test('3.2 - Validate log in and load search page', async () => {
-    await login(page, CREDENTIALS.REGISTRAR_VILLAGE)
+    await login(page, CREDENTIALS.REGISTRATION_OFFICER)
     await page.click('#searchType')
     await expect(page).toHaveURL(/.*\/advanced-search/)
     await page.getByText('Birth').click()
@@ -210,6 +210,12 @@ test.describe
       page.locator('#searchable-select-province').getByText('Central')
       page.locator('#searchable-select-district').getByText('Ibombo')
 
+      await page.locator('#province').fill('Cent')
+      await page.getByText('Central', { exact: true }).click()
+      await page.locator('#district').fill('Ibo')
+      await page.getByText('Ibombo', { exact: true }).click()
+      await page.locator('#village').fill('Klo')
+      await page.getByText('Klow', { exact: true }).click()
       await page.locator('#town').fill('Dhaka')
       await page.locator('#town').blur()
     })
