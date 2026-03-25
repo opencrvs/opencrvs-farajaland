@@ -124,8 +124,10 @@ async function findLocationAndOffice(
   // Fetch all locations
   const locations = await client.locations.list.query()
 
-  // Find the birth location
-  const birthLocation = locations.find((loc) => loc.id === birthLocationId)
+  // birthLocationId may be the external/short ID rather than the internal UUID
+  const birthLocation = locations.find(
+    (loc) => loc.id === birthLocationId || loc.externalId === birthLocationId
+  )
 
   if (!birthLocation) {
     logger.warn(`Birth location with id ${birthLocationId} not found`)
@@ -199,23 +201,42 @@ export async function notificationsHandler(
     const payload = parseResult.data
     const birthLocationId = payload.declaration['child.birthLocationId']
 
+    logger.info(
+      `notify payload: birthLocationId=${birthLocationId}, createdAtLocation=${payload.createdAtLocation}`
+    )
+
     // Find the CRVS office if birthLocationId is provided
     let modifiedPayload = { ...payload }
     if (birthLocationId) {
       const result = await findLocationAndOffice(birthLocationId)
 
       if (result.crvsOffice) {
+        logger.info(
+          `Found CRVS office ${result.crvsOffice.name} for birth location ${birthLocationId}`
+        )
         modifiedPayload = {
           ...payload,
           createdAtLocation: result.crvsOffice.id
         }
-        logger.info(
-          `Found CRVS office ${result.crvsOffice.name} for birth location ${birthLocationId}`
-        )
-      } else {
+      } else if (result.birthLocation) {
         logger.warn(
-          `No CRVS office found for birth location ${birthLocationId}`
+          `No CRVS office found for birth location ${birthLocationId}, falling back to birth location id`
         )
+        modifiedPayload = {
+          ...payload,
+          createdAtLocation: result.birthLocation.id
+        }
+      } else {
+        logger.error(
+          `No CRVS office or birth location found for birth location id ${birthLocationId}. Cannot resolve a valid createdAtLocation UUID.`
+        )
+        return h
+          .response({
+            statusCode: 500,
+            error: 'Internal Server Error',
+            message: `Could not resolve createdAtLocation: birth location ${birthLocationId} not found`
+          })
+          .code(500)
       }
     }
 
