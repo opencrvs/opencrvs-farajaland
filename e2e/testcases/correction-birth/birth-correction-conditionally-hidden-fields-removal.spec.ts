@@ -705,16 +705,16 @@ test.describe
 
     test('Check if mother occupation is updated', async () => {
       await page.getByRole('button', { name: 'Pending certification' }).click()
-      await page
-        .getByRole('button', {
-          name: formatV2ChildName({
-            'child.name': {
-              firstname: declaration.child.name.firstNames,
-              surname: declaration.child.name.familyName
-            }
-          })
+      const childButton = page.getByRole('button', {
+        name: formatV2ChildName({
+          'child.name': {
+            firstname: declaration.child.name.firstNames,
+            surname: declaration.child.name.familyName
+          }
         })
-        .click()
+      })
+      await expect(childButton).toBeVisible({ timeout: 30_000 })
+      await childButton.click()
       await switchEventTab(page, 'Record')
       await expect(page.getByTestId('row-value-mother.occupation')).toHaveText(
         'House Wife'
