@@ -26,7 +26,7 @@ import { createMosipInteropClient } from '@opencrvs/mosip/api'
 import {
   shouldForwardBirthRegistrationToMosip,
   shouldForwardDeathRegistrationToMosip
-} from '@countryconfig/form/v2/mosip'
+} from '@countryconfig/events/mosip'
 
 export interface ActionConfirmationRequest extends Hapi.Request {
   payload: EventDocument

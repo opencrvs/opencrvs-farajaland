@@ -176,7 +176,7 @@ export async function ensureLoginPageReady(page: Page) {
   })
 }
 
-export async function validateSectionButtons(page: Page) {
+async function validateSectionButtons(page: Page) {
   await expect(page.getByText('Continue', { exact: true })).toBeVisible()
   await expect(page.getByText('Exit', { exact: true })).toBeVisible()
   await expect(page.getByText('Save & Exit', { exact: true })).toBeVisible()
@@ -633,9 +633,7 @@ export async function searchFromSearchBar(
   }
 }
 
-
-export async function loginWithNewUser(page: Page,username: string) {
-
+export async function loginWithNewUser(page: Page, username: string) {
   const password = 'Bangladesh23'
   const question00 = 'What city were you born in?'
   const question01 = 'What is your favorite movie?'

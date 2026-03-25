@@ -13,8 +13,8 @@ import {
 import {
   InformantType,
   InformantTypeKey
-} from '@countryconfig/form/v2/birth/forms/pages/informant'
-import { informantMessageDescriptors } from '@countryconfig/form/common/messages'
+} from '@countryconfig/events/birth/forms/pages/informant'
+import { informantMessageDescriptors } from '@countryconfig/events/utils'
 import { CREDENTIAL_OFFER_HANDLER_URL } from './routes'
 
 const qrGenerated = not(
