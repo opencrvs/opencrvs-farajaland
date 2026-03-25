@@ -59,7 +59,7 @@ import {
   ActionType,
   EventDocument
 } from '@opencrvs/toolkit/events'
-import { Event } from './form/types/types'
+
 import { onRegisterHandler } from './api/registration'
 import { workqueueconfigHandler } from './api/workqueue/handler'
 import getUserNotificationRoutes from './config/routes/userNotificationRoutes'
@@ -74,6 +74,7 @@ import {
 import { getClient } from './analytics/postgres'
 import { env } from './environment'
 import { createClient } from '@opencrvs/toolkit/api'
+import { Event } from './form/types'
 
 export interface ITokenPayload {
   sub: string
@@ -633,7 +634,8 @@ export async function createServer() {
       const url = new URL('events', GATEWAY_URL).toString()
       const apiClient = createClient(url, req.headers.authorization)
       const locations = await apiClient.locations.list.query()
-      const administrativeAreas = await apiClient.administrativeAreas.list.query()
+      const administrativeAreas =
+        await apiClient.administrativeAreas.list.query()
 
       await importAdministrativeAreas(administrativeAreas)
       await importLocations(locations)

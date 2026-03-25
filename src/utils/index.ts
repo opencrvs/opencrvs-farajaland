@@ -60,73 +60,6 @@ export interface IApplicationConfigResponse {
   config: IApplicationConfig
 }
 
-export function getCompositionId(resBody: fhir.Bundle) {
-  const id = resBody.entry
-    ?.map((e) => e.resource)
-    .find((res) => res?.resourceType === 'Composition')?.id
-
-  if (!id) {
-    throw new Error('Could not find composition id in FHIR Bundle')
-  }
-
-  return id
-}
-
-export function getTaskResource(
-  bundle: fhir.Bundle & fhir.BundleEntry
-): fhir.Task | undefined {
-  if (
-    !bundle ||
-    bundle.type !== 'document' ||
-    !bundle.entry ||
-    !bundle.entry[0] ||
-    !bundle.entry[0].resource
-  ) {
-    throw new Error('Invalid FHIR bundle found')
-  }
-
-  if (bundle.entry[0].resource.resourceType === 'Composition') {
-    return getTaskResourceFromFhirBundle(bundle as fhir.Bundle)
-  } else if (bundle.entry[0].resource.resourceType === 'Task') {
-    return bundle.entry[0].resource as fhir.Task
-  } else {
-    throw new Error('Unable to find Task Bundle from the provided data')
-  }
-}
-
-export function getTaskResourceFromFhirBundle(fhirBundle: fhir.Bundle) {
-  const taskEntry =
-    fhirBundle.entry &&
-    fhirBundle.entry.find((entry: fhir.BundleEntry) => {
-      if (entry.resource && entry.resource.resourceType === 'Task') {
-        return true
-      }
-      return false
-    })
-
-  return taskEntry && (taskEntry.resource as fhir.Task)
-}
-
-export function getTrackingIdFromTaskResource(taskResource: fhir.Task) {
-  const trackingIdentifier =
-    taskResource &&
-    taskResource.identifier &&
-    taskResource.identifier.find((identifier) => {
-      return (
-        identifier.system ===
-          `${OPENCRVS_SPECIFICATION_URL}id/birth-tracking-id` ||
-        identifier.system ===
-          `${OPENCRVS_SPECIFICATION_URL}id/death-tracking-id` ||
-        identifier.system ===
-          `${OPENCRVS_SPECIFICATION_URL}id/marriage-tracking-id`
-      )
-    })
-  if (!trackingIdentifier || !trackingIdentifier.value) {
-    throw new Error("Didn't find any identifier for tracking id")
-  }
-  return trackingIdentifier.value
-}
-
 export async function writeJSONToCSV(
   filename: string,
   data: Array<Record<string, any>>
@@ -210,7 +143,7 @@ export async function getStatistics(path?: string) {
       years: Object.keys(yearKeys)
         .map((key) => key.split('_').pop())
         .map(Number)
-        .filter((value, index, list) => list.indexOf(value) == index)
+        .filter((value, index, list) => list.indexOf(value) === index)
         .map((year) => ({
           year,
           male_population: parseFloat(yearKeys[`male_population_${year}`]),
@@ -228,22 +161,4 @@ export const extractStatisticsMap = (statistics: LocationStatistic[]) => {
     statisticsMap.set(stat.id, stat)
   }
   return statisticsMap
-}
-
-export function createCustomFieldHandlebarName(fieldId: string) {
-  const fieldIdNameArray = fieldId.split('.').map((field, index) => {
-    if (index !== 0) {
-      return field.charAt(0).toUpperCase() + field.slice(1)
-    } else {
-      return field
-    }
-  })
-
-  return `${fieldIdNameArray[0]}${fieldIdNameArray[1]}${
-    fieldIdNameArray[fieldIdNameArray.length - 1]
-  }`
-}
-
-export function uppercaseFirstLetter(str: string) {
-  return str.charAt(0).toUpperCase() + str.slice(1)
 }

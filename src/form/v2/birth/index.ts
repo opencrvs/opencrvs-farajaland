@@ -27,12 +27,13 @@ import {
   BIRTH_DECLARATION_REVIEW
 } from './forms/declaration'
 import { advancedSearchBirth } from './advancedSearch'
-import { Event } from '@countryconfig/form/types/types'
+
 import { BIRTH_CERTIFICATE_COLLECTOR_FORM } from './forms/printForm'
 import { PlaceOfBirth } from './forms/pages/child'
 import { CORRECTION_FORM } from './forms/correctionForm'
 import { dedupConfig } from './dedupConfig'
 import { BIRTH_LATE_REGISTRATION_TARGET_DAYS } from '@countryconfig/form/v2/constants'
+import { Event } from '@countryconfig/form/types'
 
 export const birthEvent = defineConfig({
   id: Event.Birth,

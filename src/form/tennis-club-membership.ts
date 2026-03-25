@@ -27,8 +27,9 @@ import {
   never,
   now
 } from '@opencrvs/toolkit/events'
-import { Event } from './types/types'
+
 import { MAX_NAME_LENGTH } from './v2/birth/validators'
+import { Event } from './types'
 
 const TENNIS_CLUB_DECLARATION_REVIEW = {
   title: {
