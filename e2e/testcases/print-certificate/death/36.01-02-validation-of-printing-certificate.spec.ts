@@ -149,7 +149,7 @@ test('Certified copies renders non-spouse informant age correctly', async ({
     CREDENTIALS.REGISTRAR.USERNAME,
     CREDENTIALS.REGISTRAR.PASSWORD
   )
-  const res = await createDeclaration(token, (mockDeclaration) => ({
+  const res = await createDeclaration(token, () => ({
     ...declarationOverrides,
     'informant.age': {
       age: informantAge,
@@ -158,56 +158,49 @@ test('Certified copies renders non-spouse informant age correctly', async ({
   }))
   const declaration: Declaration = res.declaration
   const page: Page = await browser.newPage()
-  try {
-    await test.step('1.0.1 Log in', async () => {
-      await login(page)
+  await test.step('1.0.1 Log in', async () => {
+    await login(page)
+  })
+  await test.step('1.0.2 Click on "Print certificate" from action menu', async () => {
+    await page.getByRole('button', { name: 'Pending certification' }).click()
+    await navigateToCertificatePrintAction(page, declaration)
+  })
+  await test.step('2.0 Validate "Certify record" page', async () => {
+    await test.step('2.1 Ensure data content is visible for informant', async () => {
+      await page.reload({ waitUntil: 'networkidle' })
+      await page.locator('#collector____requesterId').click()
+      const selectOptionsLabels = [
+        'Print and issue to Informant (Son)',
+        'Print and issue to someone else'
+      ]
+      for (const label of selectOptionsLabels) {
+        await expect(page.getByText(label, { exact: true })).toBeVisible()
+      }
+      await page.getByText(selectOptionsLabels[0], { exact: true }).click()
+      await expect(page.getByText('Certify record')).toBeVisible()
+      await page.getByRole('button', { name: 'Continue' }).click()
+      await expectInUrl(page, '/pages/collector.identity.verify')
+      await page.getByText('Verify their identity').isVisible()
+      await page.getByText('Type of ID').isVisible()
+      await page.getByText(declarationOverrides['informant.idType']).isVisible()
+      await page.getByText(declarationOverrides['informant.nid']).isVisible()
+      await page.getByText("Son's name").isVisible()
+      await page
+        .getByText(
+          joinValuesWith([
+            ...Object.values(declarationOverrides['informant.name'])
+          ])
+        )
+        .isVisible()
+      await page
+        .getByText('Age of informant (at the time of event)')
+        .isVisible()
+      await page.getByText(joinValuesWith([informantAge, 'years'])).isVisible()
+      await page.getByText('Nationality').isVisible()
+      await page
+        .getByText(declarationOverrides['informant.nationality'])
+        .isVisible()
     })
-    await test.step('1.0.2 Click on "Print certificate" from action menu', async () => {
-      await page.getByRole('button', { name: 'Pending certification' }).click()
-      await navigateToCertificatePrintAction(page, declaration)
-    })
-    await test.step('2.0 Validate "Certify record" page', async () => {
-      await test.step('2.1 Ensure data content is visible for informant', async () => {
-        await page.reload({ waitUntil: 'networkidle' })
-        await page.locator('#collector____requesterId').click()
-        const selectOptionsLabels = [
-          'Print and issue to Informant (Son)',
-          'Print and issue to someone else'
-        ]
-        for (const label of selectOptionsLabels) {
-          await expect(page.getByText(label, { exact: true })).toBeVisible()
-        }
-        await page.getByText(selectOptionsLabels[0], { exact: true }).click()
-        await expect(page.getByText('Certify record')).toBeVisible()
-        await page.getByRole('button', { name: 'Continue' }).click()
-        await expectInUrl(page, '/pages/collector.identity.verify')
-        await page.getByText('Verify their identity').isVisible()
-        await page.getByText('Type of ID').isVisible()
-        await page
-          .getByText(declarationOverrides['informant.idType'])
-          .isVisible()
-        await page.getByText(declarationOverrides['informant.nid']).isVisible()
-        await page.getByText("Son's name").isVisible()
-        await page
-          .getByText(
-            joinValuesWith([
-              ...Object.values(declarationOverrides['informant.name'])
-            ])
-          )
-          .isVisible()
-        await page
-          .getByText('Age of informant (at the time of event)')
-          .isVisible()
-        await page
-          .getByText(joinValuesWith([informantAge, 'years']))
-          .isVisible()
-        await page.getByText('Nationality').isVisible()
-        await page
-          .getByText(declarationOverrides['informant.nationality'])
-          .isVisible()
-      })
-    })
-  } finally {
-    await page.close()
-  }
+  })
+  await page.close()
 })

@@ -492,132 +492,127 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
     const page: Page = await browser.newPage()
     let eventId: string
 
-    try {
-      await test.step('Login', async () => {
-        token = await login(page)
-      })
-      await test.step('Notify an event via integration', async () => {
-        const createEventResponse = await fetchClientAPI(
-          '/api/events/events',
-          'POST',
-          clientToken,
-          {
-            type: EVENT_TYPE,
-            transactionId: uuidv4(),
-            createdAtLocation: healthFacilityId
-          }
-        )
-        const createEventResponseBody = await createEventResponse.json()
-        eventId = createEventResponseBody.id
-        const { sub } = decode<{
-          sub: string
-        }>(token)
-        const location = await fetchUserLocationHierarchy(sub, {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        })
-        const locationId = location[location.length - 1]
-        const declaration = {
-          ...(await getDeclaration({ token })),
-          'child.name': childName,
-          'child.dob': undefined,
-          'child.birthLocation': locationId,
-          'child.birthLocationId': locationId,
-          'child.placeOfBirth': 'HEALTH_FACILITY'
+    await test.step('Login', async () => {
+      token = await login(page)
+    })
+    await test.step('Notify an event via integration', async () => {
+      const createEventResponse = await fetchClientAPI(
+        '/api/events/events',
+        'POST',
+        clientToken,
+        {
+          type: EVENT_TYPE,
+          transactionId: uuidv4(),
+          createdAtLocation: healthFacilityId
         }
-        const response = await fetchClientAPI(
-          `/api/events/events/${eventId}/notify`,
-          'POST',
-          clientToken,
-          {
-            eventId,
-            transactionId: uuidv4(),
-            type: 'NOTIFY',
-            declaration,
-            annotation: {},
-            createdAtLocation: location[location.length - 1]
-          }
-        )
-        expect(response.status).toBe(200)
+      )
+      const createEventResponseBody = await createEventResponse.json()
+      eventId = createEventResponseBody.id
+      const { sub } = decode<{
+        sub: string
+      }>(token)
+      const location = await fetchUserLocationHierarchy(sub, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
       })
-      await test.step("Navigate to event via 'Notifications' -workqueue", async () => {
-        await page.getByRole('button', { name: 'Notifications' }).click()
-        await page
-          .getByText(await formatV2ChildName({ 'child.name': childName }))
-          .click()
-      })
-      await test.step('Edit event', async () => {
-        await selectAction(page, 'Edit')
-        await expect(page.getByTestId('row-value-child.name')).toHaveText(
-          formatV2ChildName({ 'child.name': childName })
-        )
-        await expect(page.getByTestId('row-value-child.dob')).toHaveText(
-          REQUIRED_VALIDATION_ERROR
-        )
-        await validateActionMenuButton(page, 'Register with edits', false)
-      })
-      await test.step('Fill missing child dob field', async () => {
-        await page.getByTestId('change-button-child.dob').click()
-        const yesterday = new Date()
-        yesterday.setDate(new Date().getDate() - 1)
-        const [yyyy, mm, dd] = yesterday.toISOString().split('T')[0].split('-')
-        await page.getByPlaceholder('dd').fill(dd)
-        await page.getByPlaceholder('mm').fill(mm)
-        await page.getByPlaceholder('yyyy').fill(yyyy)
-      })
-      const newChildName = {
-        firstname: childName.firstname,
-        surname: `Laurila-${childName.surname}`
+      const locationId = location[location.length - 1]
+      const declaration = {
+        ...(await getDeclaration({ token })),
+        'child.name': childName,
+        'child.dob': undefined,
+        'child.birthLocation': locationId,
+        'child.birthLocationId': locationId,
+        'child.placeOfBirth': 'HEALTH_FACILITY'
       }
-      await test.step('Change child surname', async () => {
-        await page.getByTestId('text__surname').fill(newChildName.surname)
-        await page.getByRole('button', { name: 'Back to review' }).click()
-        await expect(page.getByTestId('row-value-child.dob')).not.toHaveText(
-          REQUIRED_VALIDATION_ERROR
-        )
-      })
-      await test.step('Fill comment & signature', async () => {
-        await page.locator('#review____comment').fill(faker.lorem.sentence())
-        await page.getByRole('button', { name: 'Sign', exact: true }).click()
-        await drawSignature(page, 'review____signature_canvas_element', false)
-        await page
-          .locator('#review____signature_modal')
-          .getByRole('button', { name: 'Apply' })
-          .click()
-      })
-      await test.step('Register event', async () => {
-        await selectDeclarationAction(page, 'Register with edits')
-      })
-      await test.step("Navigate to event via 'Pending certification' -workqueue", async () => {
-        await page
-          .getByRole('button', { name: 'Pending certification' })
-          .click()
-        await page
-          .getByText(await formatV2ChildName({ 'child.name': newChildName }))
-          .click()
-      })
-      await test.step('Print certificate', async () => {
-        await selectAction(page, 'Print')
-        await selectRequesterType(page, 'Print and issue to Informant (Mother)')
-        await page.getByRole('button', { name: 'Continue' }).click()
-        await page.getByRole('button', { name: 'Verified' }).click()
-        await page.getByRole('button', { name: 'Continue' }).click()
-        await expect(page.locator('#print')).toContainText(
-          formatV2ChildName({ 'child.name': newChildName })
-        )
-        await expect(page.locator('#print')).toContainText(
-          'Ibombo District Office'
-        )
-        await expect(page.locator('#print')).toContainText(
-          'Ibombo, Central, Farajaland'
-        )
-        await printAndExpectPopup(page)
-        await expectInUrl(page, `/workqueue/pending-certification`)
-      })
-    } finally {
-      await page.close()
+      const response = await fetchClientAPI(
+        `/api/events/events/${eventId}/notify`,
+        'POST',
+        clientToken,
+        {
+          eventId,
+          transactionId: uuidv4(),
+          type: 'NOTIFY',
+          declaration,
+          annotation: {},
+          createdAtLocation: location[location.length - 1]
+        }
+      )
+      expect(response.status).toBe(200)
+    })
+    await test.step("Navigate to event via 'Notifications' -workqueue", async () => {
+      await page.getByRole('button', { name: 'Notifications' }).click()
+      await page
+        .getByText(await formatV2ChildName({ 'child.name': childName }))
+        .click()
+    })
+    await test.step('Edit event', async () => {
+      await selectAction(page, 'Edit')
+      await expect(page.getByTestId('row-value-child.name')).toHaveText(
+        formatV2ChildName({ 'child.name': childName })
+      )
+      await expect(page.getByTestId('row-value-child.dob')).toHaveText(
+        REQUIRED_VALIDATION_ERROR
+      )
+      await validateActionMenuButton(page, 'Register with edits', false)
+    })
+    await test.step('Fill missing child dob field', async () => {
+      await page.getByTestId('change-button-child.dob').click()
+      const yesterday = new Date()
+      yesterday.setDate(new Date().getDate() - 1)
+      const [yyyy, mm, dd] = yesterday.toISOString().split('T')[0].split('-')
+      await page.getByPlaceholder('dd').fill(dd)
+      await page.getByPlaceholder('mm').fill(mm)
+      await page.getByPlaceholder('yyyy').fill(yyyy)
+    })
+    const newChildName = {
+      firstname: childName.firstname,
+      surname: `Laurila-${childName.surname}`
     }
+    await test.step('Change child surname', async () => {
+      await page.getByTestId('text__surname').fill(newChildName.surname)
+      await page.getByRole('button', { name: 'Back to review' }).click()
+      await expect(page.getByTestId('row-value-child.dob')).not.toHaveText(
+        REQUIRED_VALIDATION_ERROR
+      )
+    })
+    await test.step('Fill comment & signature', async () => {
+      await page.locator('#review____comment').fill(faker.lorem.sentence())
+      await page.getByRole('button', { name: 'Sign', exact: true }).click()
+      await drawSignature(page, 'review____signature_canvas_element', false)
+      await page
+        .locator('#review____signature_modal')
+        .getByRole('button', { name: 'Apply' })
+        .click()
+    })
+    await test.step('Register event', async () => {
+      await selectDeclarationAction(page, 'Register with edits')
+    })
+    await test.step("Navigate to event via 'Pending certification' -workqueue", async () => {
+      await page.getByRole('button', { name: 'Pending certification' }).click()
+      await page
+        .getByText(await formatV2ChildName({ 'child.name': newChildName }))
+        .click()
+    })
+    await test.step('Print certificate', async () => {
+      await selectAction(page, 'Print')
+      await selectRequesterType(page, 'Print and issue to Informant (Mother)')
+      await page.getByRole('button', { name: 'Continue' }).click()
+      await page.getByRole('button', { name: 'Verified' }).click()
+      await page.getByRole('button', { name: 'Continue' }).click()
+      await expect(page.locator('#print')).toContainText(
+        formatV2ChildName({ 'child.name': newChildName })
+      )
+      await expect(page.locator('#print')).toContainText(
+        'Ibombo District Office'
+      )
+      await expect(page.locator('#print')).toContainText(
+        'Ibombo, Central, Farajaland'
+      )
+      await printAndExpectPopup(page)
+      await expectInUrl(page, `/workqueue/pending-certification`)
+    })
+    await page.close()
   })
   test('Registrar can reject an event notified via integration', async ({
     browser
@@ -630,85 +625,82 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
     const page: Page = await browser.newPage()
     let eventId: string
 
-    try {
-      await test.step('Login', async () => {
-        token = await login(page)
-      })
-      let trackingId: string
-      await test.step('Notify event an event via integration', async () => {
-        const createEventResponse = await fetchClientAPI(
-          '/api/events/events',
-          'POST',
-          clientToken,
-          {
-            type: EVENT_TYPE,
-            transactionId: uuidv4(),
-            createdAtLocation: healthFacilityId
-          }
-        )
-        const createEventResponseBody = await createEventResponse.json()
-        eventId = createEventResponseBody.id
-        const { sub } = decode<{
-          sub: string
-        }>(token)
-        const location = await fetchUserLocationHierarchy(sub, {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        })
-        const locationId = location[location.length - 1]
-        const declaration = {
-          ...(await getDeclaration({ token })),
-          'child.name': childName,
-          'child.dob': undefined,
-          'child.birthLocation': locationId,
-          'child.birthLocationId': locationId,
-          'child.placeOfBirth': 'HEALTH_FACILITY'
+    await test.step('Login', async () => {
+      token = await login(page)
+    })
+    let trackingId: string
+    await test.step('Notify event an event via integration', async () => {
+      const createEventResponse = await fetchClientAPI(
+        '/api/events/events',
+        'POST',
+        clientToken,
+        {
+          type: EVENT_TYPE,
+          transactionId: uuidv4(),
+          createdAtLocation: healthFacilityId
         }
-        const res = await fetchClientAPI(
-          `/api/events/events/${eventId}/notify`,
-          'POST',
-          clientToken,
-          {
-            eventId,
-            transactionId: uuidv4(),
-            type: 'NOTIFY',
-            declaration,
-            annotation: {},
-            createdAtLocation: locationId
-          }
-        )
-        trackingId = (await res.json()).trackingId
+      )
+      const createEventResponseBody = await createEventResponse.json()
+      eventId = createEventResponseBody.id
+      const { sub } = decode<{
+        sub: string
+      }>(token)
+      const location = await fetchUserLocationHierarchy(sub, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
       })
-      await test.step("Navigate to event via 'Notifications' -workqueue", async () => {
-        await page.getByRole('button', { name: 'Notifications' }).click()
-        await page
-          .getByText(await formatV2ChildName({ 'child.name': childName }))
-          .click()
-      })
-      await test.step('Reject event', async () => {
-        await selectAction(page, 'Reject')
-        await page.getByTestId('reject-reason').fill(faker.lorem.sentence())
-        await page.getByRole('button', { name: 'Send For Update' }).click()
-      })
-      await test.step('Navigate to event via search', async () => {
-        await page.getByRole('button', { name: 'Search' }).click()
-        await page.getByPlaceholder('Search').fill(trackingId)
-        await page.getByRole('button', { name: 'Search' }).click()
-        await page
-          .getByText(await formatV2ChildName({ 'child.name': childName }))
-          .click()
-        await ensureAssigned(page)
-        await page.waitForTimeout(SAFE_IN_EXTERNAL_VALIDATION_MS)
-      })
-      await test.step('Audit event', async () => {
-        await switchEventTab(page, 'Audit')
-        await expect(page.locator('#row_0')).toContainText('Notified')
-        await expect(page.locator('#row_0')).toContainText(clientName)
-        await expect(page.locator('#row_3')).toContainText('Rejected')
-      })
-    } finally {
-      await page.close()
-    }
+      const locationId = location[location.length - 1]
+      const declaration = {
+        ...(await getDeclaration({ token })),
+        'child.name': childName,
+        'child.dob': undefined,
+        'child.birthLocation': locationId,
+        'child.birthLocationId': locationId,
+        'child.placeOfBirth': 'HEALTH_FACILITY'
+      }
+      const res = await fetchClientAPI(
+        `/api/events/events/${eventId}/notify`,
+        'POST',
+        clientToken,
+        {
+          eventId,
+          transactionId: uuidv4(),
+          type: 'NOTIFY',
+          declaration,
+          annotation: {},
+          createdAtLocation: locationId
+        }
+      )
+      trackingId = (await res.json()).trackingId
+    })
+    await test.step("Navigate to event via 'Notifications' -workqueue", async () => {
+      await page.getByRole('button', { name: 'Notifications' }).click()
+      await page
+        .getByText(await formatV2ChildName({ 'child.name': childName }))
+        .click()
+    })
+    await test.step('Reject event', async () => {
+      await selectAction(page, 'Reject')
+      await page.getByTestId('reject-reason').fill(faker.lorem.sentence())
+      await page.getByRole('button', { name: 'Send For Update' }).click()
+    })
+    await test.step('Navigate to event via search', async () => {
+      await page.getByRole('button', { name: 'Search' }).click()
+      await page.getByPlaceholder('Search').fill(trackingId)
+      await page.getByRole('button', { name: 'Search' }).click()
+      await page
+        .getByText(await formatV2ChildName({ 'child.name': childName }))
+        .click()
+      await ensureAssigned(page)
+      await page.waitForTimeout(SAFE_IN_EXTERNAL_VALIDATION_MS)
+    })
+    await test.step('Audit event', async () => {
+      await switchEventTab(page, 'Audit')
+      await expect(page.locator('#row_0')).toContainText('Notified')
+      await expect(page.locator('#row_0')).toContainText(clientName)
+      await expect(page.locator('#row_3')).toContainText('Rejected')
+    })
+    await page.close()
   })
 })

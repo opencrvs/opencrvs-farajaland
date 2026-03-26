@@ -1,13 +1,8 @@
 import { test, expect, type Page } from '@playwright/test'
 import path from 'path'
-import {
-  ensureLoginPageReady,
-  continueForm,
-  login,
-  loginWithNewUser
-} from '../../helpers'
+import { continueForm, login, loginWithNewUser } from '../../helpers'
 import { faker } from '@faker-js/faker'
-import { CREDENTIALS, LOGIN_URL } from '../../constants'
+import { CREDENTIALS } from '../../constants'
 
 test('1. Create user -1', async ({ browser }) => {
   const page: Page = await browser.newPage()

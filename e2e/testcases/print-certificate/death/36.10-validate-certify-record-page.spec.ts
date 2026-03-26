@@ -24,8 +24,6 @@ test('10.0 Validate "Review" page', async ({ browser }) => {
 
   const declaration: Declaration = res.declaration
 
-  const eventId: string = res.eventId
-
   await test.step('10.0.1 Log in', async () => {
     await login(page)
   })

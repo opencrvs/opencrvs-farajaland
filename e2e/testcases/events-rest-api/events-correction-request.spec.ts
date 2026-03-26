@@ -23,7 +23,6 @@ test('POST /api/events/events/{eventId}/correction/request', async ({
 
   await test.step('HTTP 200 for correction request', async () => {
     eventId = await createRegisteredEvent(registrarToken)
-    console.log('Event ID:', eventId)
     const response = await fetchClientAPI(
       `/api/events/events/${eventId}/correction/request`,
       'POST',
@@ -50,7 +49,6 @@ test('POST /api/events/events/{eventId}/correction/request', async ({
     expect(requestAction).toBeDefined()
   })
   await test.step('Correction review has submitter name as system client', async () => {
-    console.log('Event ID:', eventId, registrarToken)
     page = await browser.newPage()
     await login(page, CREDENTIALS.REGISTRAR)
     const client = createClient(

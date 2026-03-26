@@ -33,149 +33,142 @@ test("Quick Search - Birth Event Declaration - Child's details", async ({
       'REGISTER',
       'HEALTH_FACILITY'
     )
-  try {
-    await test.step('1.1 Should search from home page using informant email and return correct record', async () => {
-      await login(page)
-      await page
-        .locator('#searchText')
-        .fill(recordWithDefaultEmail.declaration['informant.email']) // search by email
-      await page.locator('#searchIconButton').click()
-      const searchResultRegex = /Search result for “([^”]+)”/
-      const searchResult = await page.locator('#content-name').textContent()
-      await expect(searchResult).toMatch(searchResultRegex)
-      await expect(
-        page.getByText(getChildNameFromRecord(recordWithDefaultEmail))
-      ).toBeVisible()
-    })
-    await test.step('1.2 Should display informant email correctly in record details', async () => {
-      await page
-        .getByRole('button', {
-          name: getChildNameFromRecord(recordWithDefaultEmail)
-        })
-        .click()
-      await ensureAssigned(page)
-      await expect(page.getByTestId('assignedTo-value')).toHaveText(
-        'Kennedy Mweene'
-      )
-      await expect(page.getByTestId('informant.contact-value')).toContainText(
-        recordWithDefaultEmail.declaration['informant.email']
-      )
-    })
-    await test.step('1.3 Should perform case-insensitive email search from workqueue and display matching record', async () => {
-      await page.getByTestId('exit-event').click()
-      await page.locator('#navigation_workqueue_assigned-to-you').click()
-      await expect(page.locator('#searchText')).toHaveValue('')
-      await page
-        .locator('#searchText')
-        .fill(
-          recordWithDefaultEmail.declaration['informant.email'].toUpperCase()
-        ) // Search by uppercase email
-      await page.locator('#searchIconButton').click()
-      const searchResultRegex = /Search result for “([^”]+)”/
-      const searchResult = await page.locator('#content-name').textContent()
-      await expect(searchResult).toMatch(searchResultRegex)
-      await expect(
-        page.getByText(getChildNameFromRecord(recordWithDefaultEmail))
-      ).toBeVisible()
-      await page
-        .getByRole('button', {
-          name: getChildNameFromRecord(recordWithDefaultEmail)
-        })
-        .click()
-      await ensureAssigned(page)
-      await expect(page.getByTestId('assignedTo-value')).toHaveText(
-        'Kennedy Mweene'
-      )
-      await expect(page.getByTestId('informant.contact-value')).toContainText(
-        recordWithDefaultEmail.declaration['informant.email']
-      )
-    })
-    await test.step('1.4 Should search from workqueue using a different email and return the correct record', async () => {
-      await page.getByTestId('exit-event').click()
-      await page.locator('#navigation_workqueue_assigned-to-you').click()
-      await expect(page.locator('#searchText')).toHaveValue('')
-      await page
-        .locator('#searchText')
-        .fill(record.declaration['informant.email']) // search by different email
-      await page.locator('#searchIconButton').click()
-      const searchResultRegex = /Search result for “([^”]+)”/
-      const searchResult = await page.locator('#content-name').textContent()
-      await expect(searchResult).toMatch(searchResultRegex)
-      await expect(page.getByText(getChildNameFromRecord(record))).toBeVisible()
-      await page
-        .getByRole('button', {
-          name: getChildNameFromRecord(record)
-        })
-        .click()
-      await ensureAssigned(page)
-      await expect(page.getByTestId('assignedTo-value')).toHaveText(
-        'Kennedy Mweene'
-      )
-      await expect(page.getByTestId('informant.contact-value')).toContainText(
-        record.declaration['informant.email']
-      )
-    })
-    await test.step('1.5 Should search from workqueue using informant phone number and return the correct record', async () => {
-      await page.getByTestId('exit-event').click()
-      await page.locator('#navigation_workqueue_assigned-to-you').click()
-      await expect(page.locator('#searchText')).toHaveValue('')
-      await page
-        .locator('#searchText')
-        .fill(record.declaration['informant.phoneNo']) // search by phone
-      await page.locator('#searchIconButton').click()
-      const searchResultRegex = /Search result for “([^”]+)”/
-      const searchResult = await page.locator('#content-name').textContent()
-      await expect(searchResult).toMatch(searchResultRegex)
-      await expect(page.getByText(getChildNameFromRecord(record))).toBeVisible()
-      await page
-        .getByRole('button', {
-          name: getChildNameFromRecord(record)
-        })
-        .click()
-      await ensureAssigned(page)
-      await expect(page.getByTestId('assignedTo-value')).toHaveText(
-        'Kennedy Mweene'
-      )
-      await expect(page.getByTestId('informant.contact-value')).toContainText(
-        record.declaration['informant.phoneNo']
-      )
-    })
-    await test.step('1.6 Should search from workqueue using informant national ID and return the correct record', async () => {
-      await page.getByTestId('exit-event').click()
-      await page.locator('#navigation_workqueue_assigned-to-you').click()
-      await expect(page.locator('#searchText')).toHaveValue('')
-      await page
-        .locator('#searchText')
-        .fill(record.declaration['informant.nid']) // search by id
-      await page.locator('#searchIconButton').click()
-      const searchResultRegex = /Search result for “([^”]+)”/
-      const searchResult = await page.locator('#content-name').textContent()
-      await expect(searchResult).toMatch(searchResultRegex)
-      await expect(page.getByText(getChildNameFromRecord(record))).toBeVisible()
-    })
-    await test.step('1.7 Should search from workqueue using tracking ID and return the correct record with tracking ID visible', async () => {
-      await page.locator('#navigation_workqueue_assigned-to-you').click()
-      await expect(page.locator('#searchText')).toHaveValue('')
-      await page.locator('#searchText').fill(record.trackingId) // search by tracking id
-      await page.locator('#searchIconButton').click()
-      const searchResultRegex = /Search result for “([^”]+)”/
-      const searchResult = await page.locator('#content-name').textContent()
-      await expect(searchResult).toMatch(searchResultRegex)
-      await expect(page.getByText(getChildNameFromRecord(record))).toBeVisible()
-      await page
-        .getByRole('button', {
-          name: getChildNameFromRecord(record)
-        })
-        .click()
-      await ensureAssigned(page)
-      await expect(page.getByTestId('assignedTo-value')).toHaveText(
-        'Kennedy Mweene'
-      )
-      await expect(page.getByTestId('tracking-id-value')).toContainText(
-        record.trackingId
-      )
-    })
-  } finally {
-    await page.close()
-  }
+  await test.step('1.1 Should search from home page using informant email and return correct record', async () => {
+    await login(page)
+    await page
+      .locator('#searchText')
+      .fill(recordWithDefaultEmail.declaration['informant.email']) // search by email
+    await page.locator('#searchIconButton').click()
+    const searchResultRegex = /Search result for “([^”]+)”/
+    const searchResult = await page.locator('#content-name').textContent()
+    await expect(searchResult).toMatch(searchResultRegex)
+    await expect(
+      page.getByText(getChildNameFromRecord(recordWithDefaultEmail))
+    ).toBeVisible()
+  })
+  await test.step('1.2 Should display informant email correctly in record details', async () => {
+    await page
+      .getByRole('button', {
+        name: getChildNameFromRecord(recordWithDefaultEmail)
+      })
+      .click()
+    await ensureAssigned(page)
+    await expect(page.getByTestId('assignedTo-value')).toHaveText(
+      'Kennedy Mweene'
+    )
+    await expect(page.getByTestId('informant.contact-value')).toContainText(
+      recordWithDefaultEmail.declaration['informant.email']
+    )
+  })
+  await test.step('1.3 Should perform case-insensitive email search from workqueue and display matching record', async () => {
+    await page.getByTestId('exit-event').click()
+    await page.locator('#navigation_workqueue_assigned-to-you').click()
+    await expect(page.locator('#searchText')).toHaveValue('')
+    await page
+      .locator('#searchText')
+      .fill(recordWithDefaultEmail.declaration['informant.email'].toUpperCase()) // Search by uppercase email
+    await page.locator('#searchIconButton').click()
+    const searchResultRegex = /Search result for “([^”]+)”/
+    const searchResult = await page.locator('#content-name').textContent()
+    await expect(searchResult).toMatch(searchResultRegex)
+    await expect(
+      page.getByText(getChildNameFromRecord(recordWithDefaultEmail))
+    ).toBeVisible()
+    await page
+      .getByRole('button', {
+        name: getChildNameFromRecord(recordWithDefaultEmail)
+      })
+      .click()
+    await ensureAssigned(page)
+    await expect(page.getByTestId('assignedTo-value')).toHaveText(
+      'Kennedy Mweene'
+    )
+    await expect(page.getByTestId('informant.contact-value')).toContainText(
+      recordWithDefaultEmail.declaration['informant.email']
+    )
+  })
+  await test.step('1.4 Should search from workqueue using a different email and return the correct record', async () => {
+    await page.getByTestId('exit-event').click()
+    await page.locator('#navigation_workqueue_assigned-to-you').click()
+    await expect(page.locator('#searchText')).toHaveValue('')
+    await page
+      .locator('#searchText')
+      .fill(record.declaration['informant.email']) // search by different email
+    await page.locator('#searchIconButton').click()
+    const searchResultRegex = /Search result for “([^”]+)”/
+    const searchResult = await page.locator('#content-name').textContent()
+    await expect(searchResult).toMatch(searchResultRegex)
+    await expect(page.getByText(getChildNameFromRecord(record))).toBeVisible()
+    await page
+      .getByRole('button', {
+        name: getChildNameFromRecord(record)
+      })
+      .click()
+    await ensureAssigned(page)
+    await expect(page.getByTestId('assignedTo-value')).toHaveText(
+      'Kennedy Mweene'
+    )
+    await expect(page.getByTestId('informant.contact-value')).toContainText(
+      record.declaration['informant.email']
+    )
+  })
+  await test.step('1.5 Should search from workqueue using informant phone number and return the correct record', async () => {
+    await page.getByTestId('exit-event').click()
+    await page.locator('#navigation_workqueue_assigned-to-you').click()
+    await expect(page.locator('#searchText')).toHaveValue('')
+    await page
+      .locator('#searchText')
+      .fill(record.declaration['informant.phoneNo']) // search by phone
+    await page.locator('#searchIconButton').click()
+    const searchResultRegex = /Search result for “([^”]+)”/
+    const searchResult = await page.locator('#content-name').textContent()
+    await expect(searchResult).toMatch(searchResultRegex)
+    await expect(page.getByText(getChildNameFromRecord(record))).toBeVisible()
+    await page
+      .getByRole('button', {
+        name: getChildNameFromRecord(record)
+      })
+      .click()
+    await ensureAssigned(page)
+    await expect(page.getByTestId('assignedTo-value')).toHaveText(
+      'Kennedy Mweene'
+    )
+    await expect(page.getByTestId('informant.contact-value')).toContainText(
+      record.declaration['informant.phoneNo']
+    )
+  })
+  await test.step('1.6 Should search from workqueue using informant national ID and return the correct record', async () => {
+    await page.getByTestId('exit-event').click()
+    await page.locator('#navigation_workqueue_assigned-to-you').click()
+    await expect(page.locator('#searchText')).toHaveValue('')
+    await page.locator('#searchText').fill(record.declaration['informant.nid']) // search by id
+    await page.locator('#searchIconButton').click()
+    const searchResultRegex = /Search result for “([^”]+)”/
+    const searchResult = await page.locator('#content-name').textContent()
+    await expect(searchResult).toMatch(searchResultRegex)
+    await expect(page.getByText(getChildNameFromRecord(record))).toBeVisible()
+  })
+  await test.step('1.7 Should search from workqueue using tracking ID and return the correct record with tracking ID visible', async () => {
+    await page.locator('#navigation_workqueue_assigned-to-you').click()
+    await expect(page.locator('#searchText')).toHaveValue('')
+    await page.locator('#searchText').fill(record.trackingId) // search by tracking id
+    await page.locator('#searchIconButton').click()
+    const searchResultRegex = /Search result for “([^”]+)”/
+    const searchResult = await page.locator('#content-name').textContent()
+    await expect(searchResult).toMatch(searchResultRegex)
+    await expect(page.getByText(getChildNameFromRecord(record))).toBeVisible()
+    await page
+      .getByRole('button', {
+        name: getChildNameFromRecord(record)
+      })
+      .click()
+    await ensureAssigned(page)
+    await expect(page.getByTestId('assignedTo-value')).toHaveText(
+      'Kennedy Mweene'
+    )
+    await expect(page.getByTestId('tracking-id-value')).toContainText(
+      record.trackingId
+    )
+  })
+  await page.close()
 })

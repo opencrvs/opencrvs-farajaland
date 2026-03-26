@@ -1,8 +1,7 @@
 import { test, expect, type Page } from '@playwright/test'
-import path from 'path'
 import { loginWithNewUser, continueForm, login } from '../../helpers'
 import { faker } from '@faker-js/faker'
-import { CREDENTIALS, LOGIN_URL } from '../../constants'
+import { CREDENTIALS } from '../../constants'
 
 test('1. Create user -1', async ({ browser }) => {
   const page: Page = await browser.newPage()
@@ -14,15 +13,7 @@ test('1. Create user -1', async ({ browser }) => {
     role: 'Community Leader'
   }
 
-  const signaturePath = path.resolve(__dirname, '../../assets/sign1.png')
-
   const username = `${userinfo.firstName[0]}.${userinfo.surname}`.toLowerCase()
-
-  const question00 = 'What city were you born in?'
-
-  const question01 = 'What is your favorite movie?'
-
-  const question02 = 'What is your favorite food?'
 
   await test.step('1.1 User creation started by local system admin', async () => {
     await login(page, CREDENTIALS.LOCAL_SYSTEM_ADMIN)
