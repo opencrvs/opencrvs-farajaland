@@ -5,7 +5,7 @@ import { ensureAssigned, ensureOutboxIsEmpty, selectAction } from '../../utils'
 import { createDeclaration, Declaration } from '../test-data/birth-declaration'
 import { formatV2ChildName } from '../birth/helpers'
 
-test.describe('Revoke and reinstate record', () => {
+test('Revoke and reinstate record', () => {
   let page: Page
   let declaration: Declaration
   let childName: string
