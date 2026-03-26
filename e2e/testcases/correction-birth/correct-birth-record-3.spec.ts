@@ -20,7 +20,7 @@ import {
 } from '../test-data/birth-declaration-with-mother-father'
 import { format, subDays, subYears } from 'date-fns'
 import { formatV2ChildName } from '../birth/helpers'
-import { IdType } from '@countryconfig/events/person'
+import { IdType } from '@countryconfig/events/utils'
 import { ensureAssigned, expectInUrl, selectAction } from '../../utils'
 
 test.describe.serial(' Correct record - 3', () => {

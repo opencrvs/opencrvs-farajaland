@@ -18,7 +18,7 @@ import {
   SAFE_INPUT_CHANGE_TIMEOUT_MS,
   SAFE_OUTBOX_TIMEOUT_MS
 } from '../../constants'
-import { IdType } from '@countryconfig/events/person'
+import { IdType } from '@countryconfig/events/utils'
 import { random } from 'lodash'
 import { formatV2ChildName, REQUIRED_VALIDATION_ERROR } from '../birth/helpers'
 import { ensureAssigned, selectAction } from '../../utils'
