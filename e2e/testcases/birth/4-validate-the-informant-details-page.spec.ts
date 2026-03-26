@@ -18,7 +18,7 @@ test.describe('4. Validate the informants details pages', () => {
 
   trackAndDeleteCreatedEvents()
 
-  test.describe.serial('4.1 Validate "Phone number" text field', async () => {
+  test.describe('4.1 Validate "Phone number" text field', async () => {
     test('4.1.1 Enter Non-valid phone number', async () => {
       await page.locator('#informant____phoneNo').fill('1234567890')
       await page.getByRole('heading', { name: 'Birth', exact: true }).click()

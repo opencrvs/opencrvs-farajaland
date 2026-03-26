@@ -15,53 +15,78 @@ async function expectInPdf(page: Page, text: string) {
   await expect(page.locator('#print')).toContainText(text)
 }
 
-test.describe.serial("Validate 'Death Certificate' PDF details", () => {
+test("Validate 'Death Certificate' PDF details", async ({ browser }) => {
+  const token = await getToken(
+        CREDENTIALS.REGISTRAR.USERNAME,
+        CREDENTIALS.REGISTRAR.PASSWORD
+      )
+      const res = await createDeclaration(token)
+
+  
   let page: Page
+
+  
   let declaration: Declaration
+      declaration = res.declaration
+      page = await browser.newPage()
 
-  test.beforeAll(async ({ browser }) => {
-    const token = await getToken(
-      CREDENTIALS.REGISTRAR.USERNAME,
-      CREDENTIALS.REGISTRAR.PASSWORD
-    )
-    const res = await createDeclaration(token)
-    declaration = res.declaration
-    page = await browser.newPage()
-  })
+  await test.step('Log in', async () => {
 
-  test.afterAll(async () => {
-    await page.close()
-  })
-
-  test('Log in', async () => {
+    
     await login(page)
+
   })
 
-  test('Go to review', async () => {
+  await test.step('Go to review', async () => {
+
+    
     await page.getByRole('button', { name: 'Pending certification' }).click()
+
+    
     await navigateToCertificatePrintAction(page, declaration)
+
+    
     await selectCertificationType(page, 'Death Certificate')
+
+    
     await selectRequesterType(page, 'Print and issue to Informant (Spouse)')
+
+    
     await page.getByRole('button', { name: 'Continue' }).click()
+
+    
     await page.getByRole('button', { name: 'Verified' }).click()
+
+    
     await page.getByRole('button', { name: 'Continue' }).click()
+
   })
 
-  test('Validate deceased name', async () => {
+  await test.step('Validate deceased name', async () => {
+
+    
     await expectInPdf(
       page,
       `${declaration['deceased.name'].firstname} ${declaration['deceased.name'].surname}`
     )
+
   })
 
-  test('Validate deceased place of death', async () => {
+  await test.step('Validate deceased place of death', async () => {
+
+    
     await expectInPdf(page, 'Ibombo, Central, Farajaland')
+
   })
 
-  test('Validate registrar name', async () => {
+  await test.step('Validate registrar name', async () => {
+
+    
     await expectInPdf(page, 'Kennedy Mweene')
+
   })
-})
+
+  await page.close()})
 
 test.describe
   .serial("Validate 'Death Certificate Certified Copy' PDF details", () => {

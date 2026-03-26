@@ -1,21 +1,18 @@
 import { test, expect, type Page } from '@playwright/test'
 import { login } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
-test.describe.serial('3. Organisation Page', () => {
+test('3. Organisation Page', async ({ browser }) => {
+
+  
   let page: Page
+  page = await browser.newPage()
 
-  test.beforeAll(async ({ browser }) => {
-    page = await browser.newPage()
-  })
-
-  test.afterAll(async () => {
-    await page.close()
-  })
+  
 
   //User: Registrar General(c.lungu)
   //WIP: https://github.com/opencrvs/opencrvs-core/issues/11697 , This ticket is to be resolved to have complete test case.
 
-  test.describe.serial('3.1 UI check', async () => {
+  test.describe('3.1 UI check', async () => {
     test('3.1.0 Verify Province -> District -> District Office', async () => {
       await login(page, CREDENTIALS.REGISTRAR_GENERAL)
       await page.getByRole('button', { name: 'Organisation' }).click()
@@ -33,4 +30,5 @@ test.describe.serial('3. Organisation Page', () => {
       ).toBeVisible()
     })
   })
-})
+
+  await page.close()})

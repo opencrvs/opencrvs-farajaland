@@ -15,8 +15,13 @@ import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../../constants'
 import { ensureAssigned, ensureOutboxIsEmpty } from '../../../utils'
 
-test.describe.serial('5. Death declaration case - 5', () => {
+test('5. Death declaration case - 5', async ({ browser }) => {
+
+  
   let page: Page
+  page = await browser.newPage()
+
+  
 
   const declaration = {
     deceased: {
@@ -84,203 +89,337 @@ test.describe.serial('5. Death declaration case - 5', () => {
       reason: 'Spouse ran away'
     }
   }
+
+  
   const annotation = {
     review: {
       comment: "He was a great person, we'll miss him"
     }
   }
-  test.beforeAll(async ({ browser }) => {
-    page = await browser.newPage()
-  })
 
-  test.afterAll(async () => {
-    await page.close()
-  })
+  await test.step('5.1 Declaration started by RO', async () => {
 
-  test.describe('5.1 Declaration started by RO', async () => {
-    test.beforeAll(async () => {
-      await login(page, CREDENTIALS.REGISTRATION_OFFICER)
+    await login(page, CREDENTIALS.REGISTRATION_OFFICER)
+    
+          await page.click('#header-new-event')
+          await page.getByLabel('Death').click()
+          await page.getByRole('button', { name: 'Continue' }).click()
+          await page.getByRole('button', { name: 'Continue' }).click()
 
-      await page.click('#header-new-event')
-      await page.getByLabel('Death').click()
-      await page.getByRole('button', { name: 'Continue' }).click()
-      await page.getByRole('button', { name: 'Continue' }).click()
-    })
-    test('5.1.1 Fill deceased details', async () => {
+    await test.step('5.1.1 Fill deceased details', async () => {
+
+      
       await page.locator('#firstname').fill(declaration.deceased.name.firstname)
+
+      
       await page.locator('#surname').fill(declaration.deceased.name.surname)
+
+      
       await page.locator('#deceased____gender').click()
+
+      
       await page.getByText(declaration.deceased.gender, { exact: true }).click()
 
+      
+
       await page.getByLabel('Exact date of birth unknown').check()
+
+      
 
       await page
         .locator('#deceased____age')
         .fill(declaration.deceased.age.toString())
 
+      
+
       await page.locator('#deceased____idType').click()
+
+      
       await page.getByText(declaration.deceased.idType, { exact: true }).click()
 
+      
+
       await page.locator('#deceased____maritalStatus').click()
+
+      
       await page
         .getByText(declaration.deceased.maritalStatus, { exact: true })
         .click()
 
+      
+
       await page.locator('#country').click()
+
+      
       await page
         .getByText(declaration.deceased.address.country, { exact: true })
         .click()
 
+      
+
       await page.locator('#state').fill(declaration.deceased.address.state)
+
+      
       await page
         .locator('#district2')
         .fill(declaration.deceased.address.district)
+
+      
       await page.locator('#cityOrTown').fill(declaration.deceased.address.town)
+
+      
       await page
         .locator('#addressLine1')
         .fill(declaration.deceased.address.addressLine1)
+
+      
       await page
         .locator('#addressLine2')
         .fill(declaration.deceased.address.addressLine2)
+
+      
       await page
         .locator('#addressLine3')
         .fill(declaration.deceased.address.addressLine3)
+
+      
       await page
         .locator('#postcodeOrZip')
         .fill(declaration.deceased.address.postcodeOrZip)
+
+      
       await continueForm(page)
+
     })
 
-    test('5.1.2 Fill event details', async () => {
+    await test.step('5.1.2 Fill event details', async () => {
+
+      
       await page.getByPlaceholder('dd').fill(declaration.eventDetails.date.dd)
+
+      
       await page.getByPlaceholder('mm').fill(declaration.eventDetails.date.mm)
+
+      
       await page
         .getByPlaceholder('yyyy')
         .fill(declaration.eventDetails.date.yyyy)
 
+      
+
       await page.locator('#eventDetails____mannerOfDeath').click()
+
+      
       await page
         .getByText(declaration.eventDetails.mannerOfDeath, { exact: true })
         .click()
 
+      
+
       await page.locator('#eventDetails____placeOfDeath').click()
+
+      
       await page
         .getByText(declaration.eventDetails.placeOfDeath, { exact: true })
         .click()
 
+      
+
       await page.locator('#province').click()
+
+      
       await page
         .getByText(declaration.eventDetails.deathLocationOther.province, {
           exact: true
         })
         .click()
+
+      
       await page.locator('#district').click()
+
+      
       await page
         .getByText(declaration.eventDetails.deathLocationOther.district, {
           exact: true
         })
         .click()
+
+      
       await page.locator('#village').click()
+
+      
       await page
         .getByText(declaration.eventDetails.deathLocationOther.village, {
           exact: true
         })
         .click()
+
+      
       await page
         .locator('#town')
         .fill(declaration.eventDetails.deathLocationOther.town)
+
+      
       await page
         .locator('#residentialArea')
         .fill(declaration.eventDetails.deathLocationOther.residentialArea)
+
+      
       await page
         .locator('#street')
         .fill(declaration.eventDetails.deathLocationOther.street)
+
+      
       await page
         .locator('#number')
         .fill(declaration.eventDetails.deathLocationOther.number)
+
+      
       await page
         .locator('#zipCode')
         .fill(declaration.eventDetails.deathLocationOther.postcodeOrZip)
 
+      
+
       await continueForm(page)
+
     })
 
-    test('5.1.3 Fill informant details', async () => {
+    await test.step('5.1.3 Fill informant details', async () => {
+
+      
       await page.locator('#informant____relation').click()
+
+      
       await page
         .getByText(declaration.informant.relation, {
           exact: true
         })
         .click()
 
-      await page.waitForTimeout(500) // Temporary measurement untill the bug is fixed. BUG: rerenders after selecting relation with deceased
+      
+
+      await page.waitForTimeout(500)
+
+       // Temporary measurement untill the bug is fixed. BUG: rerenders after selecting relation with deceased
 
       await page
         .locator('#firstname')
         .fill(declaration.informant.name.firstname)
+
+      
       await page.locator('#surname').fill(declaration.informant.name.surname)
 
+      
+
       await page.getByLabel('Exact date of birth unknown').check()
+
+      
 
       await page
         .locator('#informant____age')
         .fill(declaration.informant.age.toString())
 
+      
+
       await page.locator('#informant____nationality').click()
+
+      
       await page
         .getByText(declaration.informant.nationality, { exact: true })
         .click()
 
+      
+
       await page.locator('#informant____idType').click()
+
+      
       await page
         .getByText(declaration.informant.idType, { exact: true })
         .click()
 
+      
+
       await page.locator('#informant____addressSameAs_NO').check()
 
+      
+
       await page.locator('#country').click()
+
+      
       await page
         .getByText(declaration.informant.address.country, { exact: true })
         .click()
 
+      
+
       await page.locator('#state').fill(declaration.informant.address.state)
+
+      
       await page
         .locator('#district2')
         .fill(declaration.informant.address.district)
+
+      
       await page.locator('#cityOrTown').fill(declaration.informant.address.town)
+
+      
       await page
         .locator('#addressLine1')
         .fill(declaration.informant.address.addressLine1)
+
+      
       await page
         .locator('#addressLine2')
         .fill(declaration.informant.address.addressLine2)
+
+      
       await page
         .locator('#addressLine3')
         .fill(declaration.informant.address.addressLine3)
+
+      
       await page
         .locator('#postcodeOrZip')
         .fill(declaration.informant.address.postcodeOrZip)
+
+      
 
       await page
         .locator('#informant____email')
         .fill(declaration.informant.email)
 
+      
+
       await continueForm(page)
+
     })
 
-    test('5.1.4 Fill spouse details', async () => {
+    await test.step('5.1.4 Fill spouse details', async () => {
+
+      
       await page.getByLabel("Spouse's details are not available").check()
+
+      
 
       await page.locator('#spouse____reason').fill(declaration.spouse.reason)
 
+      
+
       await continueForm(page)
+
     })
 
-    test('5.1.5 Go to preview', async () => {
+    await test.step('5.1.5 Go to preview', async () => {
+
+      
       await goToSection(page, 'review')
+
     })
 
-    test('5.1.6 Verify information on preview page', async () => {
+    await test.step('5.1.6 Verify information on preview page', async () => {
+
+      
       /*
        * Expected result: should include
        * - Deceased's First Name
@@ -294,6 +433,8 @@ test.describe.serial('5. Death declaration case - 5', () => {
           ' ' +
           declaration.deceased.name.surname
       )
+
+      
 
       /*
        * Expected result: should include
@@ -306,6 +447,8 @@ test.describe.serial('5. Death declaration case - 5', () => {
         declaration.deceased.gender
       )
 
+      
+
       /*
        * Expected result: should include
        * - Deceased's age
@@ -317,6 +460,8 @@ test.describe.serial('5. Death declaration case - 5', () => {
         declaration.deceased.age.toString()
       )
 
+      
+
       /*
        * Expected result: should include
        * - Deceased's Nationality
@@ -327,6 +472,8 @@ test.describe.serial('5. Death declaration case - 5', () => {
         'deceased.nationality',
         declaration.deceased.nationality
       )
+
+      
       /*
        * Expected result: should include
        * - Deceased's Type of Id
@@ -339,6 +486,8 @@ test.describe.serial('5. Death declaration case - 5', () => {
         declaration.deceased.idType
       )
 
+      
+
       /*
        * Expected result: should include
        * - Deceased's marital status
@@ -349,6 +498,8 @@ test.describe.serial('5. Death declaration case - 5', () => {
         'deceased.maritalStatus',
         declaration.deceased.maritalStatus
       )
+
+      
 
       /*
        * Expected result: should include
@@ -368,6 +519,8 @@ test.describe.serial('5. Death declaration case - 5', () => {
           declaration.deceased.address.postcodeOrZip
       )
 
+      
+
       /*
        * Expected result: should include
        * - Date of death
@@ -378,6 +531,8 @@ test.describe.serial('5. Death declaration case - 5', () => {
         'eventDetails.date',
         formatDateObjectTo_dMMMMyyyy(declaration.eventDetails.date)
       )
+
+      
 
       /*
        * Expected result: should include
@@ -390,6 +545,8 @@ test.describe.serial('5. Death declaration case - 5', () => {
         declaration.eventDetails.mannerOfDeath
       )
 
+      
+
       /*
        * Expected result: should include
        * - Place of death
@@ -400,6 +557,8 @@ test.describe.serial('5. Death declaration case - 5', () => {
         'eventDetails.placeOfDeath',
         declaration.eventDetails.placeOfDeath
       )
+
+      
 
       /*
        * Expected result: should include
@@ -420,6 +579,8 @@ test.describe.serial('5. Death declaration case - 5', () => {
           declaration.eventDetails.deathLocationOther.postcodeOrZip
       )
 
+      
+
       /*
        * Expected result: should include
        * - Informant type
@@ -430,6 +591,8 @@ test.describe.serial('5. Death declaration case - 5', () => {
         'informant.relation',
         declaration.informant.relation
       )
+
+      
 
       /*
        * Expected result: should include
@@ -445,6 +608,8 @@ test.describe.serial('5. Death declaration case - 5', () => {
           declaration.informant.name.surname
       )
 
+      
+
       /*
        * Expected result: should include
        * - informant's age
@@ -455,6 +620,8 @@ test.describe.serial('5. Death declaration case - 5', () => {
         'informant.age',
         declaration.informant.age.toString()
       )
+
+      
 
       /*
        * Expected result: should include
@@ -467,6 +634,8 @@ test.describe.serial('5. Death declaration case - 5', () => {
         declaration.informant.nationality
       )
 
+      
+
       /*
        * Expected result: should include
        * - informant's Type of Id
@@ -477,6 +646,8 @@ test.describe.serial('5. Death declaration case - 5', () => {
         'informant.idType',
         declaration.informant.idType
       )
+
+      
 
       /*
        * Expected result: should include
@@ -496,6 +667,8 @@ test.describe.serial('5. Death declaration case - 5', () => {
           declaration.informant.address.postcodeOrZip
       )
 
+      
+
       /*
        * Expected result: should include
        * - Informant's Email
@@ -506,6 +679,8 @@ test.describe.serial('5. Death declaration case - 5', () => {
         'informant.email',
         declaration.informant.email
       )
+
+      
       /*
        * Expected result: should include
        * - Spouse's details not available
@@ -518,34 +693,58 @@ test.describe.serial('5. Death declaration case - 5', () => {
         'Yes'
       )
 
+      
+
       await expectRowValueWithChangeButton(
         page,
         'spouse.reason',
         declaration.spouse.reason
       )
+
     })
 
-    test('5.1.7 Fill up informant signature', async () => {
+    await test.step('5.1.7 Fill up informant signature', async () => {
+
+      
       await page.locator('#review____comment').fill(annotation.review.comment)
+
+      
       await page.getByRole('button', { name: 'Sign', exact: true }).click()
+
+      
       await drawSignature(page, 'review____signature_canvas_element', false)
+
+      
       await page
         .locator('#review____signature_modal')
         .getByRole('button', { name: 'Apply' })
         .click()
+
     })
 
-    test('5.1.8 Declare and validate', async () => {
+    await test.step('5.1.8 Declare and validate', async () => {
+
+      
       await selectDeclarationAction(page, 'Declare')
+
+      
       await ensureOutboxIsEmpty(page)
+
+      
       await expect(page.getByText('Farajaland CRS')).toBeVisible()
+
+      
 
       /*
        * Expected result: should redirect to assigned to you workqueue
        */
       expect(page.url().includes('assigned-to-you')).toBeTruthy()
 
+      
+
       await page.getByText('Recent').click()
+
+      
 
       /*
        * Expected result: The declaration should be in recent
@@ -558,14 +757,26 @@ test.describe.serial('5. Death declaration case - 5', () => {
             declaration.deceased.name.surname
         })
       ).toBeVisible()
+
     })
+
   })
-  test.describe('5.2 Declaration Review by Registrar', async () => {
-    test('5.2.1 Navigate to the declaration "Record" -tab', async () => {
+
+  await test.step('5.2 Declaration Review by Registrar', async () => {
+
+    await test.step('5.2.1 Navigate to the declaration "Record" -tab', async () => {
+
+      
       await login(page, CREDENTIALS.REGISTRAR)
 
+      
+
       await ensureOutboxIsEmpty(page)
+
+      
       await page.getByText('Pending registration').click()
+
+      
 
       await page
         .getByRole('button', {
@@ -576,11 +787,18 @@ test.describe.serial('5. Death declaration case - 5', () => {
         })
         .click()
 
+      
+
       await ensureAssigned(page)
+
+      
       await switchEventTab(page, 'Record')
+
     })
 
-    test('5.2.2 Verify information on "Record" tab', async () => {
+    await test.step('5.2.2 Verify information on "Record" tab', async () => {
+
+      
       /*
        * Expected result: should include
        * - Deceased's First Name
@@ -595,12 +813,16 @@ test.describe.serial('5. Death declaration case - 5', () => {
           declaration.deceased.name.surname
       )
 
+      
+
       /*
        * Expected result: should include
        * - Deceased's Gender
        * - Change button
        */
       await expectRowValue(page, 'deceased.gender', declaration.deceased.gender)
+
+      
 
       /*
        * Expected result: should include
@@ -613,6 +835,8 @@ test.describe.serial('5. Death declaration case - 5', () => {
         declaration.deceased.age.toString()
       )
 
+      
+
       /*
        * Expected result: should include
        * - Deceased's Nationality
@@ -623,6 +847,8 @@ test.describe.serial('5. Death declaration case - 5', () => {
         'deceased.nationality',
         declaration.deceased.nationality
       )
+
+      
       /*
        * Expected result: should include
        * - Deceased's Type of Id
@@ -630,6 +856,8 @@ test.describe.serial('5. Death declaration case - 5', () => {
        * - Change button
        */
       await expectRowValue(page, 'deceased.idType', declaration.deceased.idType)
+
+      
 
       /*
        * Expected result: should include
@@ -641,6 +869,8 @@ test.describe.serial('5. Death declaration case - 5', () => {
         'deceased.maritalStatus',
         declaration.deceased.maritalStatus
       )
+
+      
 
       /*
        * Expected result: should include
@@ -660,6 +890,8 @@ test.describe.serial('5. Death declaration case - 5', () => {
           declaration.deceased.address.postcodeOrZip
       )
 
+      
+
       /*
        * Expected result: should include
        * - Date of death
@@ -670,6 +902,8 @@ test.describe.serial('5. Death declaration case - 5', () => {
         'eventDetails.date',
         formatDateObjectTo_dMMMMyyyy(declaration.eventDetails.date)
       )
+
+      
 
       /*
        * Expected result: should include
@@ -682,6 +916,8 @@ test.describe.serial('5. Death declaration case - 5', () => {
         declaration.eventDetails.mannerOfDeath
       )
 
+      
+
       /*
        * Expected result: should include
        * - Place of death
@@ -692,6 +928,8 @@ test.describe.serial('5. Death declaration case - 5', () => {
         'eventDetails.placeOfDeath',
         declaration.eventDetails.placeOfDeath
       )
+
+      
 
       /*
        * Expected result: should include
@@ -712,6 +950,8 @@ test.describe.serial('5. Death declaration case - 5', () => {
           declaration.eventDetails.deathLocationOther.postcodeOrZip
       )
 
+      
+
       /*
        * Expected result: should include
        * - Informant type
@@ -722,6 +962,8 @@ test.describe.serial('5. Death declaration case - 5', () => {
         'informant.relation',
         declaration.informant.relation
       )
+
+      
 
       /*
        * Expected result: should include
@@ -737,6 +979,8 @@ test.describe.serial('5. Death declaration case - 5', () => {
           declaration.informant.name.surname
       )
 
+      
+
       /*
        * Expected result: should include
        * - informant's age
@@ -747,6 +991,8 @@ test.describe.serial('5. Death declaration case - 5', () => {
         'informant.age',
         declaration.informant.age.toString()
       )
+
+      
 
       /*
        * Expected result: should include
@@ -759,6 +1005,8 @@ test.describe.serial('5. Death declaration case - 5', () => {
         declaration.informant.nationality
       )
 
+      
+
       /*
        * Expected result: should include
        * - informant's Type of Id
@@ -769,6 +1017,8 @@ test.describe.serial('5. Death declaration case - 5', () => {
         'informant.idType',
         declaration.informant.idType
       )
+
+      
 
       /*
        * Expected result: should include
@@ -788,12 +1038,16 @@ test.describe.serial('5. Death declaration case - 5', () => {
           declaration.informant.address.postcodeOrZip
       )
 
+      
+
       /*
        * Expected result: should include
        * - Informant's Email
        * - Change button
        */
       await expectRowValue(page, 'informant.email', declaration.informant.email)
+
+      
       /*
        * Expected result: should include
        * - Spouse's details not available
@@ -802,7 +1056,12 @@ test.describe.serial('5. Death declaration case - 5', () => {
        */
       await expectRowValue(page, 'spouse.detailsNotAvailable', 'Yes')
 
+      
+
       await expectRowValue(page, 'spouse.reason', declaration.spouse.reason)
+
     })
+
   })
-})
+
+  await page.close()})

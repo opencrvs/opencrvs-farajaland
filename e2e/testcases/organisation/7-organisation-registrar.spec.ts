@@ -2,17 +2,14 @@ import { test, expect, type Page } from '@playwright/test'
 import { login } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
 import { verifyMembersClickable } from '../birth/helpers'
-test.describe.serial('7. Organisation Page', () => {
+test('7. Organisation Page', async ({ browser }) => {
+
+  
   let page: Page
+  page = await browser.newPage()
 
-  test.beforeAll(async ({ browser }) => {
-    page = await browser.newPage()
-  })
-
-  test.afterAll(async () => {
-    await page.close()
-  })
-  test.describe.serial('7.1 Basic UI check', async () => {
+  
+  test.describe('7.1 Basic UI check', async () => {
     test('7.1.0 Verify UI', async () => {
       await login(page, CREDENTIALS.REGISTRAR)
       await page.getByRole('button', { name: 'Organisation' }).click()
@@ -79,4 +76,5 @@ test.describe.serial('7. Organisation Page', () => {
       ).toBeDisabled()
     })
   })
-})
+
+  await page.close()})

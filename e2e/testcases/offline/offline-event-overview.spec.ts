@@ -7,99 +7,132 @@ import { createDeclaration, Declaration } from '../test-data/birth-declaration'
 import { CREDENTIALS } from '../../constants'
 import { formatV2ChildName } from '../birth/helpers'
 
-test.describe.serial('Can view non-downloaded event online', () => {
+test('Can view non-downloaded event online', async ({ browser }) => {
+      const token = await getToken(
+        CREDENTIALS.REGISTRATION_OFFICER.USERNAME,
+        CREDENTIALS.REGISTRATION_OFFICER.PASSWORD
+      )
+      const res = await createDeclaration(token, undefined, ActionType.DECLARE)
+
+  
   let page: Page
+
+  
   let declaration: Declaration
+
+  
   let childName: string
+
+  
   let trackingId: string
+  page = await browser.newPage()
+      declaration = res.declaration
+      childName = formatV2ChildName(declaration)
+      trackingId = res.trackingId!
 
-  test.beforeAll(async ({ browser }) => {
-    page = await browser.newPage()
-    const token = await getToken(
-      CREDENTIALS.REGISTRATION_OFFICER.USERNAME,
-      CREDENTIALS.REGISTRATION_OFFICER.PASSWORD
-    )
-    const res = await createDeclaration(token, undefined, ActionType.DECLARE)
-    declaration = res.declaration
-    childName = formatV2ChildName(declaration)
-    trackingId = res.trackingId!
-  })
+  await test.step('Login', async () => {
 
-  test.afterAll(async () => {
-    await page.close()
-  })
-
-  test('Login', async () => {
+    
     await login(page, CREDENTIALS.REGISTRAR)
+
+    
     await page.getByRole('button', { name: 'Pending registration' }).click()
+
   })
 
-  test('Open the event overview page', async () => {
+  await test.step('Open the event overview page', async () => {
+
+    
     await page.getByRole('button', { name: childName, exact: true }).click()
+
   })
 
-  test('Verify user can only see non-secured details', async () => {
+  await test.step('Verify user can only see non-secured details', async () => {
+
+    
     await expect(page.getByTestId('tracking-id-value')).toHaveText(trackingId)
+
+    
     await expect(page.getByTestId('informant.contact-value')).not.toHaveText(
       'mothers@email.com'
     )
+
   })
 
-  test('Verify that user can see details on "Record"-tab', async () => {
+  await test.step('Verify that user can see details on "Record"-tab', async () => {
+
+    
     await page.getByRole('button', { name: 'Record', exact: true }).click()
+
+    
     await expect(page.getByTestId('row-value-child.name')).toHaveText(childName)
-  })
-})
 
-test.describe.serial('Can partially view non-downloaded event offline', () => {
+  })
+
+  await page.close()})
+
+test('Can partially view non-downloaded event offline', async ({ browser }) => {
+      const token = await getToken(
+        CREDENTIALS.REGISTRATION_OFFICER.USERNAME,
+        CREDENTIALS.REGISTRATION_OFFICER.PASSWORD
+      )
+      const res = await createDeclaration(token, undefined, ActionType.DECLARE)
+
+  
   let page: Page
+
+  
   let declaration: Declaration
+
+  
   let childName: string
+
+  
   let trackingId: string
+  page = await browser.newPage()
+      declaration = res.declaration
+      childName = formatV2ChildName(declaration)
+      trackingId = res.trackingId!
 
-  test.beforeAll(async ({ browser }) => {
-    page = await browser.newPage()
-    const token = await getToken(
-      CREDENTIALS.REGISTRATION_OFFICER.USERNAME,
-      CREDENTIALS.REGISTRATION_OFFICER.PASSWORD
-    )
-    const res = await createDeclaration(token, undefined, ActionType.DECLARE)
-    declaration = res.declaration
-    childName = formatV2ChildName(declaration)
-    trackingId = res.trackingId!
-  })
-
-  test.afterAll(async () => {
-    await page.close()
-  })
-
-  test('Login', async () => {
+  await test.step('Login', async () => {
+    
     await login(page, CREDENTIALS.REGISTRAR)
+
+    
     await page.getByRole('button', { name: 'Pending registration' }).click()
   })
 
-  test('Go offline', async () => {
+  await test.step('Go offline', async () => {
+    
     await mockNetworkConditions(page, 'offline')
   })
 
-  test('Open the event overview page', async () => {
+  await test.step('Open the event overview page', async () => {
+    
     await page.getByRole('button', { name: childName, exact: true }).click()
   })
 
-  test('Verify user can only see non-secured details', async () => {
+  await test.step('Verify user can only see non-secured details', async () => {
+    
     await expect(page.getByTestId('tracking-id-value')).toHaveText(trackingId)
+
+    
     await expect(page.getByTestId('informant.contact-value')).not.toHaveText(
       'mothers@email.com'
     )
   })
 
-  test('Verify user can not access "Record"-tab details', async () => {
+  await test.step('Verify user can not access "Record"-tab details', async () => {
+    
     await page.getByRole('button', { name: 'Record', exact: true }).click()
+
+    
     await expect(page.getByTestId('row-value-child.name')).not.toBeVisible()
   })
-})
 
-test.describe.serial('Can view downloaded event offline', () => {
+  await page.close()})
+
+test.describe('Can view downloaded event offline', () => {
   let page: Page
   let declaration: Declaration
   let childName: string

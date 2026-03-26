@@ -9,7 +9,7 @@ const deceased = {
 }
 
 test.describe('1. Death event declaration', () => {
-  test.describe.serial('Fill all form sections. Save & Exit', () => {
+  test.describe('Fill all form sections. Save & Exit', () => {
     let page: Page
     test.beforeAll(async ({ browser }) => {
       page = await browser.newPage()

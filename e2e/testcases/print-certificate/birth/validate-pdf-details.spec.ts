@@ -83,50 +83,71 @@ test.describe
   })
 })
 
-test.describe.serial("Validate 'Birth Certificate' PDF details", () => {
+test("Validate 'Birth Certificate' PDF details", async ({ browser }) => {
+  const token = await getToken(
+        CREDENTIALS.REGISTRAR.USERNAME,
+        CREDENTIALS.REGISTRAR.PASSWORD
+      )
+  
+      // Create a declaration
+      const res = await createDeclaration(
+        token,
+        undefined,
+        undefined,
+        'HEALTH_FACILITY'
+      )
+
+  
   let declaration: Declaration
+
+  
   let page: Page
+  
+      declaration = res.declaration
+      page = await browser.newPage()
 
-  test.beforeAll(async ({ browser }) => {
-    const token = await getToken(
-      CREDENTIALS.REGISTRAR.USERNAME,
-      CREDENTIALS.REGISTRAR.PASSWORD
-    )
+  await test.step('Log in', async () => {
 
-    // Create a declaration
-    const res = await createDeclaration(
-      token,
-      undefined,
-      undefined,
-      'HEALTH_FACILITY'
-    )
-
-    declaration = res.declaration
-    page = await browser.newPage()
-  })
-
-  test.afterAll(async () => {
-    await page.close()
-  })
-
-  test('Log in', async () => {
+    
     await login(page)
+
   })
 
-  test('Go to review', async () => {
+  await test.step('Go to review', async () => {
+
+    
     await page.getByRole('button', { name: 'Pending certification' }).click()
+
+    
     await navigateToCertificatePrintAction(page, declaration)
+
+    
     await selectCertificationType(page, 'Birth Certificate')
+
+    
     await selectRequesterType(page, 'Print and issue to Informant (Mother)')
+
+    
     await page.getByRole('button', { name: 'Continue' }).click()
+
+    
     await page.getByRole('button', { name: 'Verified' }).click()
+
+    
     await page.getByRole('button', { name: 'Continue' }).click()
+
   })
 
-  test('Validate child place of birth', async () => {
+  await test.step('Validate child place of birth', async () => {
+
+    
     await expect(page.locator('#print')).toContainText('Klow Village Hospital')
+
+    
     await expect(page.locator('#print')).toContainText(
       'Ibombo, Central, Farajaland'
     )
+
   })
-})
+
+  await page.close()})

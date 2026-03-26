@@ -4,7 +4,7 @@ import { openBirthDeclaration } from '../birth/helpers'
 import { CREDENTIALS } from '../../constants'
 
 test.describe('Informant details resets when relation is changed', () => {
-  test.describe.serial('Birth', async () => {
+  test.describe('Birth', async () => {
     let page: Page
 
     test.beforeAll(async ({ browser }) => {
@@ -87,7 +87,7 @@ test.describe('Informant details resets when relation is changed', () => {
       await expect(page.locator('#informant____email')).toHaveValue('')
     })
   })
-  test.describe.serial('Death', async () => {
+  test.describe('Death', async () => {
     let page: Page
 
     test.beforeAll(async ({ browser }) => {

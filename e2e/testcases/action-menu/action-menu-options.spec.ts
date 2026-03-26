@@ -137,7 +137,7 @@ test.describe('Action menu options', () => {
     })
   })
 
-  test.describe.serial('Event status: ARCHIVED', async () => {
+  test.describe('Event status: ARCHIVED', async () => {
     let declaration: Declaration
 
     test.beforeAll(async () => {

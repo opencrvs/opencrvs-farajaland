@@ -12,8 +12,13 @@ import { CREDENTIALS } from '../../../constants'
 import { ensureOutboxIsEmpty, selectAction } from '../../../utils'
 import { REQUIRED_VALIDATION_ERROR } from '../../birth/helpers'
 
-test.describe.serial('9. Death declaration case - 9', () => {
+test('9. Death declaration case - 9', async ({ browser }) => {
+
+  
   let page: Page
+  page = await browser.newPage()
+
+  
 
   const declaration = {
     deceased: {
@@ -32,63 +37,89 @@ test.describe.serial('9. Death declaration case - 9', () => {
       relation: 'Grandson'
     }
   }
+
+  
   const annotation = {
     review: {
       comment: "He was a great person, we'll miss him"
     }
   }
-  test.beforeAll(async ({ browser }) => {
-    page = await browser.newPage()
-  })
 
-  test.afterAll(async () => {
-    await page.close()
-  })
+  await test.step('9.1 Declaration started by HO', async () => {
 
-  test.describe('9.1 Declaration started by HO', async () => {
-    test.beforeAll(async () => {
-      await login(page, CREDENTIALS.HOSPITAL_OFFICIAL)
+    await login(page, CREDENTIALS.HOSPITAL_OFFICIAL)
+    
+          await page.click('#header-new-event')
+          await page.getByLabel('Death').click()
+          await page.getByRole('button', { name: 'Continue' }).click()
+          await page.getByRole('button', { name: 'Continue' }).click()
 
-      await page.click('#header-new-event')
-      await page.getByLabel('Death').click()
-      await page.getByRole('button', { name: 'Continue' }).click()
-      await page.getByRole('button', { name: 'Continue' }).click()
-    })
+    await test.step('9.1.1 Fill deceased details', async () => {
 
-    test('9.1.1 Fill deceased details', async () => {
+      
       await page.locator('#firstname').fill(declaration.deceased.name.firstname)
+
+      
       await page.locator('#surname').fill(declaration.deceased.name.surname)
+
+      
       await continueForm(page)
+
     })
 
-    test('9.1.2 Fill event details', async () => {
+    await test.step('9.1.2 Fill event details', async () => {
+
+      
       // A place of death is needed, since hospital official may only declare a record in their own location
       await page.getByTestId('select__eventDetails____placeOfDeath').click()
+
+      
       await page.getByText('Health Institution', { exact: true }).click()
 
+      
+
       await page.locator('#eventDetails____deathLocation').fill('Klow Village')
+
+      
       await page.getByText('Klow Village Hospital').click()
 
+      
+
       await page.getByRole('button', { name: 'Continue' }).click()
+
     })
 
-    test('9.1.3 Fill informant details', async () => {
+    await test.step('9.1.3 Fill informant details', async () => {
+
+      
       await page.locator('#informant____relation').click()
+
+      
       await page
         .getByText(declaration.informant.relation, {
           exact: true
         })
         .click()
 
-      await page.waitForTimeout(500) // Temporary measurement untill the bug is fixed. BUG: rerenders after selecting relation with deceased
+      
+
+      await page.waitForTimeout(500)
+
+       // Temporary measurement untill the bug is fixed. BUG: rerenders after selecting relation with deceased
       await page.getByRole('button', { name: 'Continue' }).click()
+
     })
 
-    test('9.1.4 Go to preview', async () => {
+    await test.step('9.1.4 Go to preview', async () => {
+
+      
       await goToSection(page, 'review')
+
     })
 
-    test('9.1.5 Verify information on preview page', async () => {
+    await test.step('9.1.5 Verify information on preview page', async () => {
+
+      
       /*
        * Expected result: should include
        * - Deceased's First Name
@@ -103,6 +134,8 @@ test.describe.serial('9. Death declaration case - 9', () => {
           declaration.deceased.name.surname
       )
 
+      
+
       /*
        * Expected result: should require
        * - Deceased's Gender
@@ -113,6 +146,8 @@ test.describe.serial('9. Death declaration case - 9', () => {
         'deceased.gender',
         REQUIRED_VALIDATION_ERROR
       )
+
+      
 
       /*
        * Expected result: should require
@@ -125,6 +160,8 @@ test.describe.serial('9. Death declaration case - 9', () => {
         REQUIRED_VALIDATION_ERROR
       )
 
+      
+
       /*
        * Expected result: should include
        * - Deceased's Nationality
@@ -135,6 +172,8 @@ test.describe.serial('9. Death declaration case - 9', () => {
         'deceased.nationality',
         'Farajaland'
       )
+
+      
       /*
        * Expected result: should require
        * - Deceased's Type of Id
@@ -145,6 +184,8 @@ test.describe.serial('9. Death declaration case - 9', () => {
         'deceased.idType',
         REQUIRED_VALIDATION_ERROR
       )
+
+      
 
       /*
        * Expected result: should include
@@ -159,6 +200,8 @@ test.describe.serial('9. Death declaration case - 9', () => {
           declaration.deceased.address.district
       )
 
+      
+
       /*
        * Expected result: should require
        * - Date of death
@@ -169,6 +212,8 @@ test.describe.serial('9. Death declaration case - 9', () => {
         'eventDetails.date',
         REQUIRED_VALIDATION_ERROR
       )
+
+      
 
       /*
        * Expected result: should include
@@ -181,6 +226,8 @@ test.describe.serial('9. Death declaration case - 9', () => {
         declaration.informant.relation
       )
 
+      
+
       /*
        * Expected result: should require
        * - Informant's Email
@@ -191,6 +238,8 @@ test.describe.serial('9. Death declaration case - 9', () => {
         'informant.email',
         REQUIRED_VALIDATION_ERROR
       )
+
+      
 
       /*
        * Expected result: should require
@@ -205,6 +254,8 @@ test.describe.serial('9. Death declaration case - 9', () => {
         REQUIRED_VALIDATION_ERROR
       )
 
+      
+
       /*
        * Expected result: should require
        * - Spouse's date of birth
@@ -215,6 +266,8 @@ test.describe.serial('9. Death declaration case - 9', () => {
         'spouse.dob',
         REQUIRED_VALIDATION_ERROR
       )
+
+      
 
       /*
        * Expected result: should include
@@ -227,6 +280,8 @@ test.describe.serial('9. Death declaration case - 9', () => {
         'Farajaland'
       )
 
+      
+
       /*
        * Expected result: should require
        * - Spouse's Type of Id
@@ -238,35 +293,59 @@ test.describe.serial('9. Death declaration case - 9', () => {
         REQUIRED_VALIDATION_ERROR
       )
 
+      
+
       /*
        * Expected result: should require
        * - Spouse's address
        * - Change button
        */
       await expectRowValueWithChangeButton(page, 'spouse.addressSameAs', 'Yes')
+
     })
 
-    test('9.1.6 Fill up informant signature', async () => {
+    await test.step('9.1.6 Fill up informant signature', async () => {
+
+      
       await page.locator('#review____comment').fill(annotation.review.comment)
+
+      
       await page.getByRole('button', { name: 'Sign', exact: true }).click()
+
+      
       await drawSignature(page, 'review____signature_canvas_element', false)
+
+      
       await page
         .locator('#review____signature_modal')
         .getByRole('button', { name: 'Apply' })
         .click()
+
     })
 
-    test('9.1.7 Notify', async () => {
+    await test.step('9.1.7 Notify', async () => {
+
+      
       await selectDeclarationAction(page, 'Notify')
+
+      
       await ensureOutboxIsEmpty(page)
+
+      
       await expect(page.getByText('Farajaland CRS')).toBeVisible()
+
+      
 
       /*
        * Expected result: should redirect to assigned to you workqueue
        */
       expect(page.url().includes('assigned-to-you')).toBeTruthy()
 
+      
+
       await page.getByText('Recent').click()
+
+      
 
       await expect(
         page.getByRole('button', {
@@ -276,15 +355,26 @@ test.describe.serial('9. Death declaration case - 9', () => {
             declaration.deceased.name.surname
         })
       ).toBeVisible()
+
     })
+
   })
 
-  test.describe('9.2 Declaration Review by RO', async () => {
-    test('9.2.1 Navigate to the declaration Edit-action', async () => {
+  await test.step('9.2 Declaration Review by RO', async () => {
+
+    await test.step('9.2.1 Navigate to the declaration Edit-action', async () => {
+
+      
       await login(page, CREDENTIALS.REGISTRATION_OFFICER)
 
+      
+
       await ensureOutboxIsEmpty(page)
+
+      
       await page.getByText('Notifications').click()
+
+      
 
       await page
         .getByRole('button', {
@@ -294,10 +384,15 @@ test.describe.serial('9. Death declaration case - 9', () => {
             declaration.deceased.name.surname
         })
         .click()
+
     })
 
-    test('9.2.2 Verify information on review page', async () => {
+    await test.step('9.2.2 Verify information on review page', async () => {
+
+      
       await selectAction(page, 'Edit')
+
+      
       /*
        * Expected result: should include
        * - Deceased's First Name
@@ -310,6 +405,8 @@ test.describe.serial('9. Death declaration case - 9', () => {
         declaration.deceased.name.firstname
       )
 
+      
+
       /*
        * Expected result: should require
        * - Deceased's Gender
@@ -320,6 +417,8 @@ test.describe.serial('9. Death declaration case - 9', () => {
         'deceased.gender',
         REQUIRED_VALIDATION_ERROR
       )
+
+      
 
       /*
        * Expected result: should require
@@ -332,6 +431,8 @@ test.describe.serial('9. Death declaration case - 9', () => {
         REQUIRED_VALIDATION_ERROR
       )
 
+      
+
       /*
        * Expected result: should include
        * - Deceased's Nationality
@@ -342,6 +443,8 @@ test.describe.serial('9. Death declaration case - 9', () => {
         'deceased.nationality',
         'Farajaland'
       )
+
+      
       /*
        * Expected result: should require
        * - Deceased's Type of Id
@@ -352,6 +455,8 @@ test.describe.serial('9. Death declaration case - 9', () => {
         'deceased.idType',
         REQUIRED_VALIDATION_ERROR
       )
+
+      
 
       /*
        * Expected result: should include
@@ -366,6 +471,8 @@ test.describe.serial('9. Death declaration case - 9', () => {
           declaration.deceased.address.district
       )
 
+      
+
       /*
        * Expected result: should require
        * - Date of death
@@ -376,6 +483,8 @@ test.describe.serial('9. Death declaration case - 9', () => {
         'eventDetails.date',
         REQUIRED_VALIDATION_ERROR
       )
+
+      
 
       /*
        * Expected result: should include
@@ -388,6 +497,8 @@ test.describe.serial('9. Death declaration case - 9', () => {
         declaration.informant.relation
       )
 
+      
+
       /*
        * Expected result: should require
        * - Informant's Email
@@ -398,6 +509,8 @@ test.describe.serial('9. Death declaration case - 9', () => {
         'informant.email',
         REQUIRED_VALIDATION_ERROR
       )
+
+      
 
       /*
        * Expected result: should require
@@ -412,6 +525,8 @@ test.describe.serial('9. Death declaration case - 9', () => {
         REQUIRED_VALIDATION_ERROR
       )
 
+      
+
       /*
        * Expected result: should require
        * - Spouse's date of birth
@@ -422,6 +537,8 @@ test.describe.serial('9. Death declaration case - 9', () => {
         'spouse.dob',
         REQUIRED_VALIDATION_ERROR
       )
+
+      
 
       /*
        * Expected result: should include
@@ -434,6 +551,8 @@ test.describe.serial('9. Death declaration case - 9', () => {
         'Farajaland'
       )
 
+      
+
       /*
        * Expected result: should require
        * - Spouse's Type of Id
@@ -445,12 +564,17 @@ test.describe.serial('9. Death declaration case - 9', () => {
         REQUIRED_VALIDATION_ERROR
       )
 
+      
+
       /*
        * Expected result: should require
        * - Spouse's address
        * - Change button
        */
       await expectRowValueWithChangeButton(page, 'spouse.addressSameAs', 'Yes')
+
     })
+
   })
-})
+
+  await page.close()})

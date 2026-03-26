@@ -2,21 +2,18 @@ import { test, expect, type Page } from '@playwright/test'
 import { login } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
 import { verifyMembersClickable } from '../birth/helpers'
-test.describe.serial('2. Organisation Page', () => {
+test('2. Organisation Page', async ({ browser }) => {
+
+  
   let page: Page
+  page = await browser.newPage()
 
-  test.beforeAll(async ({ browser }) => {
-    page = await browser.newPage()
-  })
-
-  test.afterAll(async () => {
-    await page.close()
-  })
+  
 
   //User: Local System Admin(e.mayuka)
   //Scope: Ibombo, Central,Farajaland
 
-  test.describe.serial('2.1 UI check', async () => {
+  test.describe('2.1 UI check', async () => {
     test('2.1.0 Verify UI', async () => {
       await login(page, CREDENTIALS.LOCAL_SYSTEM_ADMIN)
       await page.getByRole('button', { name: 'Organisation' }).click()
@@ -67,7 +64,9 @@ test.describe.serial('2. Organisation Page', () => {
     })
   })
 
-  test.describe.serial('2.2 Out of Scope Access', async () => {
+  
+
+  test.describe('2.2 Out of Scope Access', async () => {
     test('2.2.1 Verify Province -> District -> Health Facility', async () => {
       for (let i = 0; i < 3; i++) {
         await page.goBack()
@@ -100,4 +99,5 @@ test.describe.serial('2. Organisation Page', () => {
       ).toBeDisabled()
     })
   })
-})
+
+  await page.close()})

@@ -2,23 +2,28 @@ import { test, expect, type Page } from '@playwright/test'
 import { login } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
 
-test.describe.serial('5. Team Page -1', () => {
+test('5. Team Page -1', async ({ browser }) => {
+
+  
   let page: Page
+  page = await browser.newPage()
 
-  test.beforeAll(async ({ browser }) => {
-    page = await browser.newPage()
-  })
+  await test.step('5.1 Basic UI check', async () => {
 
-  test.afterAll(async () => {
-    await page.close()
-  })
+    await test.step('5.1.0 Verify UI', async () => {
 
-  test.describe('5.1 Basic UI check', async () => {
-    test('5.1.0 Verify UI', async () => {
+      
       await login(page, CREDENTIALS.PERFORMANCE_MANAGER)
+
+      
       await page.getByRole('button', { name: 'Team' }).click()
+
+      
       await expect(page.locator('#content-name')).toHaveText('HQ Office')
+
     })
+
+    
 
     const team = [
       { name: 'Chipo Lungu', role: 'Registrar General', disabled: true },
@@ -30,9 +35,15 @@ test.describe.serial('5. Team Page -1', () => {
       { name: 'Mutale Musonda', role: 'Operations Manager', disabled: true }
     ]
 
-    test('5.1.1 Verify Team Members, Roles and their statuses', async () => {
+    await test.step('5.1.1 Verify Team Members, Roles and their statuses', async () => {
+
+      
       const rows = page.locator('#user_list tr:has(td)')
+
+      
       await expect(rows).toHaveCount(team.length)
+
+      
 
       for (let i = 0; i < team.length; i++) {
         const cells = rows.nth(i).locator('td')
@@ -46,21 +57,35 @@ test.describe.serial('5. Team Page -1', () => {
           ).toBeDisabled()
         }
       }
+
     })
 
-    test('5.2.2 Verify for different locations', async () => {
+    await test.step('5.2.2 Verify for different locations', async () => {
+
+      
       await page.getByRole('button', { name: /HQ Office/ }).click()
+
+      
       await page.getByTestId('locationSearchInput').fill('Il')
+
+      
       await page.getByText(/Ilanga District Office/).click()
+
+      
       await expect(page.locator('#content-name')).toHaveText(
         'Ilanga District Office'
       )
+
+      
 
       await expect(
         page.getByText('Ilanga, Sulaka', {
           exact: true
         })
       ).toBeVisible()
+
     })
+
   })
-})
+
+  await page.close()})

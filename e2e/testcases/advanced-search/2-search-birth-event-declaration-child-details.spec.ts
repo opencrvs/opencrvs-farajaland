@@ -42,7 +42,7 @@ test.describe
     await page.getByText('Birth').click()
   })
 
-  test.describe.serial("2.5 - Validate search by Child's details", () => {
+  test.describe("2.5 - Validate search by Child's details", () => {
     test('2.5.1 - Validate filling DOB and gender filters', async () => {
       await page.getByText('Child details').click()
 

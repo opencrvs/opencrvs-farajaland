@@ -3,7 +3,7 @@ import { continueForm, login } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
 
 test.describe('2. Team Page', () => {
-  test.describe.serial('2.1 Basic UI check', async () => {
+  test.describe('2.1 Basic UI check', async () => {
     let page: Page
 
     test.beforeAll(async ({ browser }) => {
@@ -30,7 +30,7 @@ test.describe('2. Team Page', () => {
     })
   })
 
-  test.describe.serial('2.2 User Account Actions', () => {
+  test.describe('2.2 User Account Actions', () => {
     let page: Page
 
     test.beforeAll(async ({ browser }) => {

@@ -51,7 +51,7 @@ test.describe
     await page.getByText('Birth').click()
   })
 
-  test.describe.serial("3 - Validate search by Child's DOB & Gender", () => {
+  test.describe("3 - Validate search by Child's DOB & Gender", () => {
     test('3.1.1 - Validate filling DOB and gender filters', async () => {
       await page.getByText('Child details').click()
 
@@ -196,7 +196,7 @@ test.describe
     await page.getByText('Birth').click()
   })
 
-  test.describe.serial("3 - Validate search by Child's Place of Birth", () => {
+  test.describe("3 - Validate search by Child's Place of Birth", () => {
     test('3.2.1 - Validate filling Place of Birth', async () => {
       await page.getByText('Event details').click()
 

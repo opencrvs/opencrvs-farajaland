@@ -13,8 +13,13 @@ import { CREDENTIALS } from '../../../constants'
 import { REQUIRED_VALIDATION_ERROR } from '../helpers'
 import { ensureAssigned, ensureOutboxIsEmpty } from '../../../utils'
 
-test.describe.serial('9. Birth declaration case - 9', () => {
+test('9. Birth declaration case - 9', async ({ browser }) => {
+
+  
   let page: Page
+  page = await browser.newPage()
+
+  
   const declaration = {
     child: {
       name: {
@@ -30,55 +35,74 @@ test.describe.serial('9. Birth declaration case - 9', () => {
       detailsDontExist: true
     }
   }
-  test.beforeAll(async ({ browser }) => {
-    page = await browser.newPage()
-  })
 
-  test.afterAll(async () => {
-    await page.close()
-  })
+  await test.step('9.1 Declaration started by HO', async () => {
 
-  test.describe('9.1 Declaration started by HO', async () => {
-    test.beforeAll(async () => {
-      await login(page, CREDENTIALS.HOSPITAL_OFFICIAL)
-      await page.click('#header-new-event')
-      await page.getByLabel('Birth').click()
-      await page.getByRole('button', { name: 'Continue' }).click()
-      await page.getByRole('button', { name: 'Continue' }).click()
-    })
+    await login(page, CREDENTIALS.HOSPITAL_OFFICIAL)
+          await page.click('#header-new-event')
+          await page.getByLabel('Birth').click()
+          await page.getByRole('button', { name: 'Continue' }).click()
+          await page.getByRole('button', { name: 'Continue' }).click()
 
-    test('9.1.1 Fill child details', async () => {
+    await test.step('9.1.1 Fill child details', async () => {
+
+      
       await page.locator('#firstname').fill(declaration.child.name.firstNames)
+
+      
       await page.locator('#surname').fill(declaration.child.name.familyName)
 
+      
+
       await continueForm(page)
+
     })
 
-    test('9.1.2 Fill informant details', async () => {
+    await test.step('9.1.2 Fill informant details', async () => {
+
+      
       await page.locator('#informant____relation').click()
+
+      
       await page
         .getByText(declaration.informantType, {
           exact: true
         })
         .click()
 
+      
+
       await continueForm(page)
+
     })
 
-    test("9.1.3 Fill mother's details", async () => {
+    await test.step("9.1.3 Fill mother's details", async () => {
+
+      
       await continueForm(page)
+
     })
 
-    test("9.1.4 Fill father's details", async () => {
+    await test.step("9.1.4 Fill father's details", async () => {
+
+      
       await page.getByLabel("Father's details are not available").check()
+
+      
       await continueForm(page)
+
     })
 
-    test('9.1.5 Go to preview', async () => {
+    await test.step('9.1.5 Go to preview', async () => {
+
+      
       await goToSection(page, 'review')
+
     })
 
-    test('9.1.6 Verify information on preview page', async () => {
+    await test.step('9.1.6 Verify information on preview page', async () => {
+
+      
       /*
        * Expected result: should include
        * - Child's Family Name
@@ -91,6 +115,8 @@ test.describe.serial('9. Birth declaration case - 9', () => {
           declaration.child.name.familyName
       )
 
+      
+
       /*
        * Expected result: should require
        * - Child's Gender
@@ -99,6 +125,8 @@ test.describe.serial('9. Birth declaration case - 9', () => {
         REQUIRED_VALIDATION_ERROR
       )
 
+      
+
       /*
        * Expected result: should require
        * - Child's date of birth
@@ -106,6 +134,8 @@ test.describe.serial('9. Birth declaration case - 9', () => {
       await expect(page.getByTestId('row-value-child.dob')).toContainText(
         REQUIRED_VALIDATION_ERROR
       )
+
+      
 
       /*
        * Expected result: should require
@@ -116,6 +146,8 @@ test.describe.serial('9. Birth declaration case - 9', () => {
         page.getByTestId('row-value-child.placeOfBirth')
       ).toContainText(REQUIRED_VALIDATION_ERROR)
 
+      
+
       /*
        * Expected result: should include
        * - Informant's relation to child
@@ -124,6 +156,8 @@ test.describe.serial('9. Birth declaration case - 9', () => {
         page.getByTestId('row-value-informant.relation')
       ).toContainText(declaration.informantType)
 
+      
+
       /*
        * Expected result: should require
        * - Informant's Email
@@ -131,6 +165,8 @@ test.describe.serial('9. Birth declaration case - 9', () => {
       await expect(page.getByTestId('row-value-informant.email')).toContainText(
         REQUIRED_VALIDATION_ERROR
       )
+
+      
 
       /*
        * Expected result: should require
@@ -141,6 +177,8 @@ test.describe.serial('9. Birth declaration case - 9', () => {
         REQUIRED_VALIDATION_ERROR
       )
 
+      
+
       /*
        * Expected result: should require
        * - Mother's date of birth
@@ -148,6 +186,8 @@ test.describe.serial('9. Birth declaration case - 9', () => {
       await expect(page.getByTestId('row-value-mother.dob')).toContainText(
         REQUIRED_VALIDATION_ERROR
       )
+
+      
 
       /*
        * Expected result: should require
@@ -157,6 +197,8 @@ test.describe.serial('9. Birth declaration case - 9', () => {
         REQUIRED_VALIDATION_ERROR
       )
 
+      
+
       /*
        * Expected result: should require
        * - Reason of why father's details not available
@@ -164,50 +206,86 @@ test.describe.serial('9. Birth declaration case - 9', () => {
       await expect(page.getByTestId('row-value-father.reason')).toContainText(
         REQUIRED_VALIDATION_ERROR
       )
+
     })
 
-    test('9.1.7 Fill up informant signature', async () => {
+    await test.step('9.1.7 Fill up informant signature', async () => {
+
+      
       await page.locator('#review____comment').fill(faker.lorem.sentence())
+
+      
       await page.getByRole('button', { name: 'Sign', exact: true }).click()
+
+      
       await drawSignature(page, 'review____signature_canvas_element', false)
+
+      
       await page
         .locator('#review____signature_modal')
         .getByRole('button', { name: 'Apply' })
         .click()
 
+      
+
       await expect(page.getByRole('dialog')).not.toBeVisible()
+
     })
 
-    test('9.1.8 Notify', async () => {
+    await test.step('9.1.8 Notify', async () => {
+
+      
       await selectDeclarationAction(page, 'Notify')
 
+      
+
       await ensureOutboxIsEmpty(page)
+
+      
       await page.getByText('Recent').click()
+
+      
 
       await expect(
         page.getByRole('button', {
           name: formatName(declaration.child.name)
         })
       ).toBeVisible()
+
     })
+
   })
 
-  test.describe('9.2 Declaration Review by RO', async () => {
-    test('9.2.1 Navigate to the declaration review page', async () => {
+  await test.step('9.2 Declaration Review by RO', async () => {
+
+    await test.step('9.2.1 Navigate to the declaration review page', async () => {
+
+      
       await login(page, CREDENTIALS.REGISTRATION_OFFICER)
 
+      
+
       await page.getByText('Notifications').click()
+
+      
 
       await page
         .getByRole('button', {
           name: formatName(declaration.child.name)
         })
         .click()
+
+      
       await ensureAssigned(page)
+
+      
       await switchEventTab(page, 'Record')
+
     })
 
-    test('9.2.2 Verify information on preview page', async () => {
+    await test.step('9.2.2 Verify information on preview page', async () => {
+
+      
       /*
        * Expected result: should include
        * - Child's Family Name
@@ -220,6 +298,8 @@ test.describe.serial('9. Birth declaration case - 9', () => {
           declaration.child.name.familyName
       )
 
+      
+
       /*
        * Expected result: should require
        * - Child's Gender
@@ -228,6 +308,8 @@ test.describe.serial('9. Birth declaration case - 9', () => {
         REQUIRED_VALIDATION_ERROR
       )
 
+      
+
       /*
        * Expected result: should require
        * - Child's date of birth
@@ -235,6 +317,8 @@ test.describe.serial('9. Birth declaration case - 9', () => {
       await expect(page.getByTestId('row-value-child.dob')).toContainText(
         REQUIRED_VALIDATION_ERROR
       )
+
+      
 
       /*
        * Expected result: should require
@@ -245,6 +329,8 @@ test.describe.serial('9. Birth declaration case - 9', () => {
         page.getByTestId('row-value-child.placeOfBirth')
       ).toContainText(REQUIRED_VALIDATION_ERROR)
 
+      
+
       /*
        * Expected result: should include
        * - Informant's relation to child
@@ -253,6 +339,8 @@ test.describe.serial('9. Birth declaration case - 9', () => {
         page.getByTestId('row-value-informant.relation')
       ).toContainText(declaration.informantType)
 
+      
+
       /*
        * Expected result: should require
        * - Informant's Email
@@ -260,6 +348,8 @@ test.describe.serial('9. Birth declaration case - 9', () => {
       await expect(page.getByTestId('row-value-informant.email')).toContainText(
         REQUIRED_VALIDATION_ERROR
       )
+
+      
 
       /*
        * Expected result: should require
@@ -270,6 +360,8 @@ test.describe.serial('9. Birth declaration case - 9', () => {
         REQUIRED_VALIDATION_ERROR
       )
 
+      
+
       /*
        * Expected result: should require
        * - Mother's date of birth
@@ -277,6 +369,8 @@ test.describe.serial('9. Birth declaration case - 9', () => {
       await expect(page.getByTestId('row-value-mother.dob')).toContainText(
         REQUIRED_VALIDATION_ERROR
       )
+
+      
 
       /*
        * Expected result: should require
@@ -286,6 +380,8 @@ test.describe.serial('9. Birth declaration case - 9', () => {
         REQUIRED_VALIDATION_ERROR
       )
 
+      
+
       /*
        * Expected result: should require
        * - Reason of why father's details not available
@@ -293,6 +389,9 @@ test.describe.serial('9. Birth declaration case - 9', () => {
       await expect(page.getByTestId('row-value-father.reason')).toContainText(
         REQUIRED_VALIDATION_ERROR
       )
+
     })
+
   })
-})
+
+  await page.close()})
