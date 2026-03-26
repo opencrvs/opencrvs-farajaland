@@ -22,10 +22,8 @@ test('1. Create user -1', async ({ browser }) => {
     await login(page, CREDENTIALS.NATIONAL_SYSTEM_ADMIN)
     await page.getByRole('button', { name: 'Team' }).click()
     await expect(page.getByText('HQ Office')).toBeVisible()
-
     await page.getByRole('button', { name: /HQ Office/ }).click()
     await page.getByTestId('locationSearchInput').fill('Klow')
-
     await page.getByText(/Klow Village Hospital/).click()
 
     await page.click('#add-user')
@@ -46,7 +44,7 @@ test('1. Create user -1', async ({ browser }) => {
     })
 
     // @TODO: requires file upload support in events service.
-    test.skip('1.1.2 Upload Signture', async () => {
+    await test.step.skip('1.1.2 Upload Signture', async () => {
       await page.setInputFiles('input[type="file"]', signaturePath)
       await continueForm(page)
     })

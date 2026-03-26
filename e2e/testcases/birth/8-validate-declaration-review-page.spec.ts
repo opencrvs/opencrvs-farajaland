@@ -922,17 +922,17 @@ test('8. Validate declaration review page', async ({ browser }) => {
       })
     })
 
-    await test.step('8.1.3 Validate supporting document', async () => {
-      test.skip('Skipped for now', async () => {})
-    })
+    await test.step.skip('8.1.3 Validate supporting document', async () => {})
 
-    await test.step('8.1.4 Validate additional comments box', async () => {
-      test.skip('Skipped for now', async () => {})
-    })
+    await test.step.skip(
+      '8.1.4 Validate additional comments box',
+      async () => {}
+    )
 
-    await test.step('8.1.5 Validate the declaration send button', async () => {
-      test.skip('Skipped for now', async () => {})
-    })
+    await test.step.skip(
+      '8.1.5 Validate the declaration send button',
+      async () => {}
+    )
 
     await test.step('8.1.6 Fill up informant signature', async () => {
       await page.locator('#review____comment').fill(comment)
