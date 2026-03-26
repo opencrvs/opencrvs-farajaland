@@ -13,18 +13,11 @@ import { formatV2ChildName } from '../birth/helpers'
 test('1.Farajaland as location parent', async ({ browser }) => {
   trackAndDeleteCreatedEvents()
 
-  let page: Page
-
-  let declaration: any
-
-  let name: string
-
-  let token: string
-  token = await getToken(
+  const token: string = await getToken(
     CREDENTIALS.HOSPITAL_OFFICIAL.USERNAME,
     CREDENTIALS.HOSPITAL_OFFICIAL.PASSWORD
   )
-  declaration = await getDeclaration({
+  const declaration: any = await getDeclaration({
     partialDeclaration: {
       'mother.nid': null,
       'mother.dob': null,
@@ -36,17 +29,10 @@ test('1.Farajaland as location parent', async ({ browser }) => {
     },
     token
   })
-
-  name = formatV2ChildName(declaration)
-
-  page = await browser.newPage()
+  const name: string = formatV2ChildName(declaration)
+  const page: Page = await browser.newPage()
 
   await test.step('1.1.0 Hospital official creates an incomplete declaration', async () => {
-    token = await getToken(
-      CREDENTIALS.HOSPITAL_OFFICIAL.USERNAME,
-      CREDENTIALS.HOSPITAL_OFFICIAL.PASSWORD
-    )
-
     await createDeclaration(token, declaration, ActionType.NOTIFY)
   })
 

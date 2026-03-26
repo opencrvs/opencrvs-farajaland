@@ -19,8 +19,7 @@ import { selectDeclarationAction } from '../../../helpers'
 import { ensureOutboxIsEmpty } from '../../../utils'
 
 test('3. Birth declaration case - 3', async ({ browser }) => {
-  let page: Page
-  page = await browser.newPage()
+  const page: Page = await browser.newPage()
 
   const declaration = {
     child: {

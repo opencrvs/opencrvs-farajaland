@@ -47,16 +47,14 @@ test('Correct record - 2', async ({ browser }) => {
     'HEALTH_FACILITY'
   )
 
-  let declaration: Declaration
+  const declaration: Declaration = res.declaration
 
-  let trackingId: string | undefined
+  const trackingId: string | undefined = res.trackingId
 
-  let eventId: string
+  const eventId: string = res.eventId
 
   let page: Page
-  declaration = res.declaration
-  trackingId = res.trackingId
-  eventId = res.eventId
+
   page = await browser.newPage()
 
   await test.step('2.1 Certificate preview', async () => {

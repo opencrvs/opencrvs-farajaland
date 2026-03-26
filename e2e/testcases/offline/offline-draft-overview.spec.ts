@@ -6,8 +6,7 @@ import { faker } from '@faker-js/faker'
 import { ensureOutboxIsEmpty } from '../../utils'
 
 test('Can Open Draft offline', async ({ browser }) => {
-  let page: Page
-  page = await browser.newPage()
+  const page: Page = await browser.newPage()
 
   const name = {
     firstNames: faker.person.firstName('male'),

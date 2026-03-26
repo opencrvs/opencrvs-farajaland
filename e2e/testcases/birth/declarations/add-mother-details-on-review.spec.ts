@@ -21,8 +21,7 @@ import { REQUIRED_VALIDATION_ERROR } from '../helpers'
 import { selectDeclarationAction } from '../../../helpers'
 
 test('Add mother details on review', async ({ browser }) => {
-  let page: Page
-  page = await browser.newPage()
+  const page: Page = await browser.newPage()
 
   const declaration = {
     child: {

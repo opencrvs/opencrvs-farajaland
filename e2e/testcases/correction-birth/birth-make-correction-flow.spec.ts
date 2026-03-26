@@ -21,15 +21,12 @@ test('Birth Record correction flow', async ({ browser }) => {
     'HEALTH_FACILITY'
   )
 
-  let declaration: Declaration
+  const declaration: Declaration = res.declaration
 
-  let eventId: string
+  const eventId: string = res.eventId
 
-  let page: Page
-  declaration = res.declaration
-  eventId = res.eventId
+  const page: Page = await browser.newPage()
 
-  page = await browser.newPage()
   await login(page, CREDENTIALS.REGISTRAR)
 
   await test.step('Navigate to the correction form', async () => {

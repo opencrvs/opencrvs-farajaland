@@ -17,8 +17,7 @@ test('Direct correction offline', async ({ browser }) => {
 
   let eventId: string
 
-  let page: Page
-  page = await browser.newPage()
+  const page: Page = await browser.newPage()
 
   const updatedChildDetails = {
     firstname: faker.person.firstName(),

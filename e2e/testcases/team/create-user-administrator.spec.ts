@@ -5,8 +5,7 @@ import { faker } from '@faker-js/faker'
 import { CREDENTIALS, LOGIN_URL } from '../../constants'
 
 test('1. Create user -1', async ({ browser }) => {
-  let page: Page
-  page = await browser.newPage()
+  const page: Page = await browser.newPage()
 
   const userinfo = {
     firstName: faker.person.firstName('male'),

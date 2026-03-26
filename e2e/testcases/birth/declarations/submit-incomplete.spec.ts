@@ -10,8 +10,7 @@ import { CREDENTIALS } from '../../../constants'
 import { ensureOutboxIsEmpty } from '../../../utils'
 
 test('Submit and verify incomplete birth declaration', async ({ browser }) => {
-  let page: Page
-  page = await browser.newPage()
+  const page: Page = await browser.newPage()
 
   const declaration = {
     child: {

@@ -8,8 +8,6 @@ import { expectInUrl } from '../../utils'
 import { setMobileViewport } from '../../mobile-helpers'
 
 test('Advanced Search - Mobile', async ({ browser }) => {
-  let page: Page
-
   let province = ''
 
   let district = ''
@@ -50,7 +48,7 @@ test('Advanced Search - Mobile', async ({ browser }) => {
     'PRIVATE_HOME'
   )
 
-  page = await browser.newPage()
+  const page: Page = await browser.newPage()
   setMobileViewport(page)
 
   await test.step('Login', async () => {

@@ -2,8 +2,7 @@ import { test, expect, type Page } from '@playwright/test'
 import { login } from '../../helpers'
 
 test('Death form - date validations', async ({ browser }) => {
-  let page: Page
-  page = await browser.newPage()
+  const page: Page = await browser.newPage()
 
   await test.step('Log in', async () => {
     await login(page)

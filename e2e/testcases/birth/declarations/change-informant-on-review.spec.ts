@@ -21,8 +21,7 @@ import {
 import { REQUIRED_VALIDATION_ERROR } from '../helpers'
 
 test('Change informant on review', async ({ browser }) => {
-  let page: Page
-  page = await browser.newPage()
+  const page: Page = await browser.newPage()
 
   const declaration = {
     child: {

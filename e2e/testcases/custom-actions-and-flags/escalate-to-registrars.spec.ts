@@ -55,8 +55,8 @@ test('Escalation of birth registration by Registrar', async ({ browser }) => {
     'HEALTH_FACILITY'
   )
 
-  let page: Page
-  page = await browser.newPage()
+  const page: Page = await browser.newPage()
+
   await login(page, CREDENTIALS.REGISTRAR)
 
   await test.step('Escalate to Provincial Registrar', async () => {

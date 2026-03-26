@@ -2,8 +2,7 @@ import { test, expect, type Page } from '@playwright/test'
 import { login } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
 test('5. Organisation Page', async ({ browser }) => {
-  let page: Page
-  page = await browser.newPage()
+  const page: Page = await browser.newPage()
 
   test.describe('5.1 Basic UI check', async () => {
     test('5.1.0 Verify UI', async () => {

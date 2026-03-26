@@ -19,11 +19,9 @@ test('44.14.0 Validate "Certified copy" option', async ({ browser }) => {
   )
   const res = await createDeclaration(token)
 
-  let declaration: Declaration
+  const declaration: Declaration = res.declaration
 
-  let page: Page
-  declaration = res.declaration
-  page = await browser.newPage()
+  const page: Page = await browser.newPage()
 
   await test.step('44.14.0.1 Log in', async () => {
     await login(page)

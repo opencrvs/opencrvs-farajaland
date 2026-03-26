@@ -16,8 +16,7 @@ import { CREDENTIALS } from '../../../constants'
 import { ensureAssigned, ensureOutboxIsEmpty } from '../../../utils'
 
 test('5. Death declaration case - 5', async ({ browser }) => {
-  let page: Page
-  page = await browser.newPage()
+  const page: Page = await browser.newPage()
 
   const declaration = {
     deceased: {

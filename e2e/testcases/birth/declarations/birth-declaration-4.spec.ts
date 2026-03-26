@@ -17,8 +17,7 @@ import { fillDate, validateAddress } from '../helpers'
 import { ensureOutboxIsEmpty } from '../../../utils'
 
 test('4. Birth declaration case - 4', async ({ browser }) => {
-  let page: Page
-  page = await browser.newPage()
+  const page: Page = await browser.newPage()
 
   const declaration = {
     child: {

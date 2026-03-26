@@ -14,17 +14,13 @@ test('Can view non-downloaded event online', async ({ browser }) => {
   )
   const res = await createDeclaration(token, undefined, ActionType.DECLARE)
 
-  let page: Page
+  const page: Page = await browser.newPage()
 
-  let declaration: Declaration
+  const declaration: Declaration = res.declaration
 
-  let childName: string
+  const childName: string = formatV2ChildName(declaration)
 
-  let trackingId: string
-  page = await browser.newPage()
-  declaration = res.declaration
-  childName = formatV2ChildName(declaration)
-  trackingId = res.trackingId!
+  const trackingId: string = res.trackingId!
 
   await test.step('Login', async () => {
     await login(page, CREDENTIALS.REGISTRAR)
@@ -60,17 +56,13 @@ test('Can partially view non-downloaded event offline', async ({ browser }) => {
   )
   const res = await createDeclaration(token, undefined, ActionType.DECLARE)
 
-  let page: Page
+  const page: Page = await browser.newPage()
 
-  let declaration: Declaration
+  const declaration: Declaration = res.declaration
 
-  let childName: string
+  const childName: string = formatV2ChildName(declaration)
 
-  let trackingId: string
-  page = await browser.newPage()
-  declaration = res.declaration
-  childName = formatV2ChildName(declaration)
-  trackingId = res.trackingId!
+  const trackingId: string = res.trackingId!
 
   await test.step('Login', async () => {
     await login(page, CREDENTIALS.REGISTRAR)

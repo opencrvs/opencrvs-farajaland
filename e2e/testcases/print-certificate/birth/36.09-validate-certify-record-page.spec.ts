@@ -18,11 +18,9 @@ test('9.0 Validate "Certify record" page', async ({ browser }) => {
   )
   const res = await createDeclaration(token)
 
-  let declaration: Declaration
+  const declaration: Declaration = res.declaration
 
-  let page: Page
-  declaration = res.declaration
-  page = await browser.newPage()
+  const page: Page = await browser.newPage()
 
   await test.step('9.0.1 Log in', async () => {
     await login(page)

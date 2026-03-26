@@ -28,15 +28,12 @@ test('Birth correction flow - Mobile', async ({ browser }) => {
     'HEALTH_FACILITY'
   )
 
-  let declaration: Declaration
+  const declaration: Declaration = res.declaration
 
-  let eventId: string
+  const eventId: string = res.eventId
 
-  let page: Page
-  declaration = res.declaration
-  eventId = res.eventId
+  const page: Page = await browser.newPage()
 
-  page = await browser.newPage()
   setMobileViewport(page)
 
   await test.step('Login', async () => {

@@ -11,8 +11,7 @@ import { CREDENTIALS } from '../../constants'
 import { ensureOutboxIsEmpty } from '../../utils'
 
 test('1. User conditional form flow', async ({ browser }) => {
-  let page: Page
-  page = await browser.newPage()
+  const page: Page = await browser.newPage()
 
   const declaration = {
     applicant: {

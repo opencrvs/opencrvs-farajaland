@@ -19,8 +19,7 @@ import { assertRecordInWorkqueue, fillDate } from '../birth/helpers'
 
 // HO Declares => RO Validates => Registrar Registers
 test('4. Workqueue flow - 4', async ({ browser }) => {
-  let page: Page
-  page = await browser.newPage()
+  const page: Page = await browser.newPage()
 
   const declaration = {
     child: {

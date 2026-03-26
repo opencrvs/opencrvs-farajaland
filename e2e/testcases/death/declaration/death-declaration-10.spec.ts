@@ -12,8 +12,7 @@ import { ensureOutboxIsEmpty, selectAction } from '../../../utils'
 import { REQUIRED_VALIDATION_ERROR } from '../../birth/helpers'
 
 test('10. Death declaration case - 10', async ({ browser }) => {
-  let page: Page
-  page = await browser.newPage()
+  const page: Page = await browser.newPage()
 
   const declaration = {
     deceased: {

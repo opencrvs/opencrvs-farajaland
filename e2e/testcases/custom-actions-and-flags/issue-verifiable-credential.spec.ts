@@ -36,21 +36,20 @@ test('Issue verifiable credential', async ({ browser }) => {
     nonParentInformantDec
   )
 
-  let page: Page
+  const page: Page = await browser.newPage()
 
-  let motherInformantDeclaration: Declaration
+  const motherInformantDeclaration: Declaration = motherInformantRes.declaration
 
-  let motherInformantChildName: string
+  const motherInformantChildName: string = formatV2ChildName(
+    motherInformantDeclaration
+  )
 
-  let nonParentInformantDeclaration: Declaration
+  const nonParentInformantDeclaration: Declaration =
+    nonParentInformantRes.declaration
 
-  let nonParentInformantChildName: string
-  motherInformantDeclaration = motherInformantRes.declaration
-  motherInformantChildName = formatV2ChildName(motherInformantDeclaration)
-  nonParentInformantDeclaration = nonParentInformantRes.declaration
-  nonParentInformantChildName = formatV2ChildName(nonParentInformantDeclaration)
-
-  page = await browser.newPage()
+  const nonParentInformantChildName: string = formatV2ChildName(
+    nonParentInformantDeclaration
+  )
 
   async function openIssueVerifiableCredentialAction() {
     await page.getByRole('button', { name: 'Action', exact: true }).click()

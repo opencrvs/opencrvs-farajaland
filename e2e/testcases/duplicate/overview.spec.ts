@@ -9,8 +9,7 @@ import { ActionType } from '@opencrvs/toolkit/events'
 test('Duplicate overview', async ({ browser }) => {
   let trackingId: string
 
-  let page: Page
-  page = await browser.newPage()
+  const page: Page = await browser.newPage()
 
   const details = {
     'child.name': {

@@ -3,8 +3,7 @@ import { login } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
 
 test('1. Team Page -1', async ({ browser }) => {
-  let page: Page
-  page = await browser.newPage()
+  const page: Page = await browser.newPage()
 
   await test.step('1.1 Team Page', async () => {
     await test.step('1.1.0 Verify UI', async () => {

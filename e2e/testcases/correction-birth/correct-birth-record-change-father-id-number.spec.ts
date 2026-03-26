@@ -21,8 +21,7 @@ test("Correct record - Change father's ID number", async ({ browser }) => {
 
   let trackingId = ''
 
-  let page: Page
-  page = await browser.newPage()
+  const page: Page = await browser.newPage()
 
   const oldIdNumber = faker.string.numeric(10)
 

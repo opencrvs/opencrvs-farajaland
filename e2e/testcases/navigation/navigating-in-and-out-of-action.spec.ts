@@ -18,14 +18,11 @@ test('Navigating in and out of action', async ({ browser }) => {
   )
   const res = await createDeclaration(token)
 
-  let page: Page
+  const page: Page = await browser.newPage()
 
-  let declaration: Declaration
+  const declaration: Declaration = res.declaration
 
-  let eventId: string
-  declaration = res.declaration
-  eventId = res.eventId
-  page = await browser.newPage()
+  const eventId: string = res.eventId
 
   await test.step('Login', async () => {
     await login(page)

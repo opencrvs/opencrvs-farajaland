@@ -6,8 +6,7 @@ import { ensureOutboxIsEmpty } from '../../../utils'
 import { selectDeclarationAction } from '../../../helpers'
 
 test('Community leader notifies birth', async ({ browser }) => {
-  let page: Page
-  page = await browser.newPage()
+  const page: Page = await browser.newPage()
 
   const childName = {
     firstNames: faker.person.firstName(),

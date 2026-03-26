@@ -18,8 +18,7 @@ import { ActionType } from '@opencrvs/toolkit/events'
 import { createDeclaration, Declaration } from '../test-data/birth-declaration'
 
 test('Basic Archival flow', async ({ browser }) => {
-  let page: Page
-  page = await browser.newPage()
+  const page: Page = await browser.newPage()
 
   const declaration = {
     child: {
@@ -376,19 +375,14 @@ test('Basic Archival flow', async ({ browser }) => {
 })
 
 test('Archival of declaration pending validation', async ({ browser }) => {
-  let page: Page
+  const page: Page = await browser.newPage()
 
-  let token: string
-
-  let declaration: Declaration
-  token = await getToken(
+  const token: string = await getToken(
     CREDENTIALS.HOSPITAL_OFFICIAL.USERNAME,
     CREDENTIALS.HOSPITAL_OFFICIAL.PASSWORD
   )
   const res = await createDeclaration(token, undefined, ActionType.DECLARE)
-  declaration = res.declaration
-
-  page = await browser.newPage()
+  const declaration: Declaration = res.declaration
 
   await test.step('Login as RO', async () => {
     await login(page, CREDENTIALS.REGISTRATION_OFFICER)

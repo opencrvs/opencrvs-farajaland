@@ -24,15 +24,11 @@ test('4(b) Validate "Pending updates"-workqueue for RO', async ({
   )
   const res = await createDeclaration(token, undefined, ActionType.DECLARE)
 
-  let page: Page
+  const page: Page = await browser.newPage()
 
-  let declaration: Declaration
+  const declaration: Declaration = res.declaration
 
-  let eventId: string
-  declaration = res.declaration
-  eventId = res.eventId
-
-  page = await browser.newPage()
+  const eventId: string = res.eventId
 
   await test.step('4.0.1 Login', async () => {
     await login(page, CREDENTIALS.REGISTRAR)

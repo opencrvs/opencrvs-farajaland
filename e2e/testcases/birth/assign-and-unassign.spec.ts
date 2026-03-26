@@ -12,11 +12,9 @@ test('Assign & Unassign', async ({ browser }) => {
   )
   const res = await createDeclaration(token)
 
-  let page: Page
+  const page: Page = await browser.newPage()
 
-  let declaration: Declaration
-  declaration = res.declaration
-  page = await browser.newPage()
+  const declaration: Declaration = res.declaration
 
   await test.step('Login', async () => {
     await login(page)

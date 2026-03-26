@@ -11,8 +11,7 @@ import {
 } from '../../helpers'
 
 test('Death event summary', async ({ browser }) => {
-  let page: Page
-  page = await browser.newPage()
+  const page: Page = await browser.newPage()
 
   const declaration = {
     deceased: {

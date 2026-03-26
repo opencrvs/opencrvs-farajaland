@@ -6,8 +6,7 @@ import { faker } from '@faker-js/faker'
 import { ensureOutboxIsEmpty } from '../../utils'
 
 test('Validate draft with partial name', async ({ browser }) => {
-  let page: Page
-  page = await browser.newPage()
+  const page: Page = await browser.newPage()
 
   const name1 = {
     firstNames: faker.person.firstName('male')

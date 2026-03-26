@@ -27,7 +27,7 @@ test('Correct record - 4', async ({ browser }) => {
   let declaration: DeclarationV2
   let trackingId = ''
   let eventId: string
-  let page: Page
+  const page: Page = await browser.newPage()
 
   const updatedFatherDetails = {
     firstNames: faker.person.firstName('male'),
@@ -90,7 +90,6 @@ test('Correct record - 4', async ({ browser }) => {
     'father.addressSameAs': 'YES'
   }
 
-  page = await browser.newPage()
   await test.step('4.0 Shortcut declaration', async () => {
     let token = await getToken(
       CREDENTIALS.REGISTRAR.USERNAME,

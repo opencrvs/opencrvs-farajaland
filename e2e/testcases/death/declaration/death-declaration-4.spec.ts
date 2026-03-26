@@ -20,8 +20,7 @@ import {
 } from '../../../utils'
 
 test('4. Death declaration case - 4', async ({ browser }) => {
-  let page: Page
-  page = await browser.newPage()
+  const page: Page = await browser.newPage()
 
   const declaration = {
     deceased: {

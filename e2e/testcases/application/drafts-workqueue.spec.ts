@@ -7,8 +7,7 @@ import { getRowByTitle } from '../print-certificate/birth/helpers'
 import { ensureOutboxIsEmpty } from '../../utils'
 
 test('1: Validate my draft tab', async ({ browser }) => {
-  let page: Page
-  page = await browser.newPage()
+  const page: Page = await browser.newPage()
 
   const name = {
     firstNames: faker.person.firstName('male'),

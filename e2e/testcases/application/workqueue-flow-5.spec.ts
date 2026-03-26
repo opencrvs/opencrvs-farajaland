@@ -26,8 +26,7 @@ import { getRowByTitle } from '../print-certificate/birth/helpers'
 // HO Notifies => RO Rejects => HO Re-notifies with edits => RO declares and validates => Registrar rejects
 // => RO validates again => Registrar registers
 test('5. Workqueue flow - 5', async ({ browser }) => {
-  let page: Page
-  page = await browser.newPage()
+  const page: Page = await browser.newPage()
 
   const declaration = {
     child: {

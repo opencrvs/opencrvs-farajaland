@@ -24,14 +24,11 @@ test('7.0 Validate "Certify record" page', async ({ browser }) => {
     await getDeclaration({ informantRelation: 'BROTHER', token })
   )
 
-  let eventId: string
+  const eventId: string = res.eventId
 
-  let declaration: Declaration
+  const declaration: Declaration = res.declaration
 
-  let page: Page
-  eventId = res.eventId
-  declaration = res.declaration
-  page = await browser.newPage()
+  const page: Page = await browser.newPage()
 
   await test.step('7.0.1 Log in', async () => {
     await login(page)

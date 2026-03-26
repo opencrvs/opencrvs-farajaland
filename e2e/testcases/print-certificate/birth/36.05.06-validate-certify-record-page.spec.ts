@@ -28,17 +28,13 @@ test('Validate collect payment page', async ({ browser }) => {
   )
   const res = await createDeclaration(token)
 
-  let eventId: string
+  const eventId: string = res.eventId
 
-  let declaration: Declaration
+  const declaration: Declaration = res.declaration
 
-  let page: Page
+  const page: Page = await browser.newPage()
 
-  let trackingId: string | undefined
-  eventId = res.eventId
-  declaration = res.declaration
-  trackingId = res.trackingId
-  page = await browser.newPage()
+  const trackingId: string | undefined = res.trackingId
 
   await test.step('5.0.1 Log in', async () => {
     await login(page)

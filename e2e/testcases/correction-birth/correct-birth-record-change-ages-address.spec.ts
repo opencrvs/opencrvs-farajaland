@@ -23,8 +23,7 @@ test('Correct record - Change ages', async ({ browser }) => {
 
   let trackingId = ''
 
-  let page: Page
-  page = await browser.newPage()
+  const page: Page = await browser.newPage()
 
   const motherAgeBefore = '28'
 

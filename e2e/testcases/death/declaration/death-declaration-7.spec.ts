@@ -15,8 +15,7 @@ import { CREDENTIALS } from '../../../constants'
 import { ensureAssigned, ensureOutboxIsEmpty } from '../../../utils'
 
 test('7. Death declaration case - 7', async ({ browser }) => {
-  let page: Page
-  page = await browser.newPage()
+  const page: Page = await browser.newPage()
 
   async function expectRowValue(fieldName: string, assertionText: string) {
     await expect(page.getByTestId(`row-value-${fieldName}`)).toContainText(

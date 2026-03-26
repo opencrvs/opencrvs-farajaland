@@ -17,8 +17,8 @@ import { selectDeclarationAction } from '../../helpers'
 import { ensureAssigned, ensureOutboxIsEmpty, selectAction } from '../../utils'
 
 test('8. Validate declaration review page', async ({ browser }) => {
-  let page: Page
-  page = await browser.newPage()
+  const page: Page = await browser.newPage()
+
   await login(page, CREDENTIALS.HOSPITAL_OFFICIAL)
   await page.click('#header-new-event')
   await page.getByLabel('Birth').click()

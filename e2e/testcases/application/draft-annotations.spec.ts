@@ -24,8 +24,7 @@ import { ensureOutboxIsEmpty } from '../../utils'
 const ANNOTATION_COMMENT = 'Test annotation comment'
 
 test('2: Annotations on draft records', async ({ browser }) => {
-  let page: Page
-  page = await browser.newPage()
+  const page: Page = await browser.newPage()
 
   const name = {
     firstNames: faker.person.firstName('male'),

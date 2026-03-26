@@ -25,7 +25,7 @@ test('Correct record - change informant type', async ({ browser }) => {
   let declaration: DeclarationV2
   let trackingId = ''
   let eventId: string
-  let page: Page
+  const page: Page = await browser.newPage()
 
   const updatedFatherDetails = {
     firstNames: faker.person.firstName('male'),
@@ -65,7 +65,6 @@ test('Correct record - change informant type', async ({ browser }) => {
     col3 && (await expect(_page.getByText(col3, { exact: true })).toBeVisible())
   }
 
-  page = await browser.newPage()
   await test.step('Shortcut declaration', async () => {
     let token = await getToken(
       CREDENTIALS.REGISTRAR.USERNAME,
