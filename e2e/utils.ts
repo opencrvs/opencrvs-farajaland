@@ -129,6 +129,9 @@ export async function ensureAssigned(page: Page) {
 }
 
 export async function expectInUrl(page: Page, assertionString: string) {
+  await page.waitForURL((url) => url.toString().includes(assertionString), {
+    timeout: SAFE_OUTBOX_TIMEOUT_MS
+  })
   await expect(page.url().includes(assertionString)).toBeTruthy()
 }
 

@@ -806,9 +806,11 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
       await page.getByRole('button', { name: 'Search' }).click()
       await page.getByPlaceholder('Search').fill(trackingId)
       await page.getByRole('button', { name: 'Search' }).click()
-      await page
-        .getByText(await formatV2ChildName({ 'child.name': childName }))
-        .click()
+      const eventName = await formatV2ChildName({ 'child.name': childName })
+      await expect(page.getByText(eventName)).toBeVisible({
+        timeout: SAFE_IN_EXTERNAL_VALIDATION_MS
+      })
+      await page.getByText(eventName).click()
 
       await ensureAssigned(page)
       await page.waitForTimeout(SAFE_IN_EXTERNAL_VALIDATION_MS)
