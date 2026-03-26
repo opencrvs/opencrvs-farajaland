@@ -5,7 +5,7 @@ import { ensureAssigned, ensureOutboxIsEmpty, selectAction } from '../../utils'
 import { createDeclaration, Declaration } from '../test-data/birth-declaration'
 import { formatV2ChildName } from '../birth/helpers'
 
-test.describe.serial('Revoke and reinstate record', () => {
+test.describe('Revoke and reinstate record', () => {
   let page: Page
   let declaration: Declaration
   let childName: string
@@ -24,15 +24,15 @@ test.describe.serial('Revoke and reinstate record', () => {
     await page.close()
   })
 
-  test('Login as Registrar General', async () => {
+  test.step('Login as Registrar General', async () => {
     await login(page, CREDENTIALS.REGISTRAR_GENERAL)
   })
 
-  test('Navigate to the declaration overview page', async () => {
+  test.step('Navigate to the declaration overview page', async () => {
     await searchFromSearchBar(page, childName)
   })
 
-  test('Revoke record', async () => {
+  test.step('Revoke record', async () => {
     await ensureAssigned(page)
     await selectAction(page, 'Revoke registration')
 
@@ -44,12 +44,12 @@ test.describe.serial('Revoke and reinstate record', () => {
     await ensureOutboxIsEmpty(page)
   })
 
-  test('Assert "Revoked" -flag is present', async () => {
+  test.step('Assert "Revoked" -flag is present', async () => {
     await searchFromSearchBar(page, childName)
     await expect(page.getByText('Revoked')).toBeVisible()
   })
 
-  test('Reinstate record', async () => {
+  test.step('Reinstate record', async () => {
     await selectAction(page, 'Reinstate registration')
     await expect(page.getByRole('button', { name: 'Confirm' })).toBeDisabled()
 
