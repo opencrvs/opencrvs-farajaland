@@ -49,7 +49,7 @@ import { certificateHandler } from './api/certificates/handler'
 import { rolesHandler } from './data-seeding/roles/handler'
 import { usersHandler } from './data-seeding/employees/handler'
 import { applicationConfigHandler } from './api/application/handler'
-import { handlebarsHandler } from './events/utils/certificate/handlebars/handler'
+import { handlebarsHandler } from './certificate/handlebars/handler'
 import { fontsHandler } from './api/fonts/handler'
 import {
   getEventsHandler,
