@@ -12,7 +12,6 @@ import * as Hapi from '@hapi/hapi'
 import { generateRegistrationNumber } from './registrationNumber'
 import { createClient } from '@opencrvs/toolkit/api'
 import {
-  ActionInput,
   aggregateActionDeclarations,
   EventDocument,
   getPendingAction,
