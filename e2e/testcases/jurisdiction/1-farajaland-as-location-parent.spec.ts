@@ -10,9 +10,9 @@ import {
 import { ActionType } from '@opencrvs/toolkit/events'
 import { formatV2ChildName } from '../birth/helpers'
 
-test('1.Farajaland as location parent', async ({ browser }) => {
-  trackAndDeleteCreatedEvents()
+trackAndDeleteCreatedEvents()
 
+test('1.Farajaland as location parent', async ({ browser }) => {
   const token: string = await getToken(
     CREDENTIALS.HOSPITAL_OFFICIAL.USERNAME,
     CREDENTIALS.HOSPITAL_OFFICIAL.PASSWORD

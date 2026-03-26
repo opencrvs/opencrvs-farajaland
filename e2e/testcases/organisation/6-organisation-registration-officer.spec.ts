@@ -5,14 +5,14 @@ import { verifyMembersEnabled } from '../birth/helpers'
 test('6. Organisation Page', async ({ browser }) => {
   const page = await browser.newPage()
 
-  test('6.1.0 Verify UI', async () => {
+  await test.step('6.1.0 Verify UI', async () => {
     await login(page, CREDENTIALS.REGISTRATION_OFFICER)
     await page.getByRole('button', { name: 'Organisation' }).click()
     await expect(page.locator('#content-name')).toHaveText('Organisation')
     await expect(page.getByText('Farajaland', { exact: true })).toBeVisible()
   })
 
-  test('6.1.1 Verify team page member list of District Office', async () => {
+  await test.step('6.1.1 Verify team page member list of District Office', async () => {
     await page.getByRole('button', { name: /Organisation/ }).click()
     await page.getByRole('button', { name: /Central/ }).click()
     await page.getByRole('button', { name: /Ibombo/ }).click()
@@ -24,7 +24,7 @@ test('6. Organisation Page', async ({ browser }) => {
     await verifyMembersEnabled(page, enabledMembers)
   })
 
-  test('6.1.2 Verify Province -> District -> Health Facility(No Data)', async () => {
+  await test.step('6.1.2 Verify Province -> District -> Health Facility(No Data)', async () => {
     for (let i = 0; i < 3; i++) {
       await page.goBack()
     }
@@ -41,7 +41,11 @@ test('6. Organisation Page', async ({ browser }) => {
   })
 
   // @TODO: https://github.com/opencrvs/opencrvs-core/issues/11756
-  test.skip('6.1.3 Verify Province -> District -> District Office', async () => {
+  await test.step('6.1.3 Verify Province -> District -> District Office (skipped)', async () => {
+    test.skip(
+      true,
+      'TODO: https://github.com/opencrvs/opencrvs-core/issues/11756'
+    )
     for (let i = 0; i < 3; i++) {
       await page.goBack()
     }
@@ -53,4 +57,6 @@ test('6. Organisation Page', async ({ browser }) => {
       page.getByRole('button', { name: /Ilanga District Office/ })
     ).toBeDisabled()
   })
+
+  await page.close()
 })

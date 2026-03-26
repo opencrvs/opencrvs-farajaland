@@ -4,14 +4,14 @@ import { CREDENTIALS } from '../../constants'
 test('5. Organisation Page', async ({ browser }) => {
   const page = await browser.newPage()
 
-  test('5.1.0 Verify UI', async () => {
+  await test.step('5.1.0 Verify UI', async () => {
     await login(page, CREDENTIALS.PERFORMANCE_MANAGER)
     await page.getByRole('button', { name: 'Organisation' }).click()
     await expect(page.locator('#content-name')).toHaveText('Organisation')
     await expect(page.getByText('Farajaland', { exact: true })).toBeVisible()
   })
 
-  test('5.1.1 Verify Province -> District -> Health Facility(No Data)', async () => {
+  await test.step('5.1.1 Verify Province -> District -> Health Facility(No Data)', async () => {
     await page.getByRole('button', { name: /Central/ }).click()
     await page.getByRole('button', { name: /Ibombo/ }).click()
     const pageNavigator = page.getByRole('button', { name: '3' })
@@ -30,7 +30,7 @@ test('5. Organisation Page', async ({ browser }) => {
     await expect(page.getByText('No result')).toBeVisible()
   })
 
-  test('5.1.2 Verify Province -> District -> Village -> Village Office(No Data)', async () => {
+  await test.step('5.1.2 Verify Province -> District -> Village -> Village Office(No Data)', async () => {
     for (let i = 0; i < 3; i++) {
       await page.goBack()
     }
@@ -49,7 +49,7 @@ test('5. Organisation Page', async ({ browser }) => {
     await expect(page.getByText('No result')).toBeVisible()
   })
 
-  test('5.1.3 Verify Province -> District -> District Office', async () => {
+  await test.step('5.1.3 Verify Province -> District -> District Office', async () => {
     for (let i = 0; i < 4; i++) {
       await page.goBack()
     }
@@ -66,7 +66,7 @@ test('5. Organisation Page', async ({ browser }) => {
     ).toBeVisible()
   })
 
-  test('5.1.4 Verify team page member list of District Office', async () => {
+  await test.step('5.1.4 Verify team page member list of District Office', async () => {
     const members = ['Chilufya Tayali', 'Kondwani Mwale']
 
     for (const member of members) {
@@ -76,7 +76,7 @@ test('5. Organisation Page', async ({ browser }) => {
     }
   })
 
-  test('5.1.5 Verify Embassy Office', async () => {
+  await test.step('5.1.5 Verify Embassy Office', async () => {
     await page.getByRole('button', { name: 'Organisation' }).click()
     await page.getByRole('button', { name: 'French Embassy Office' }).click()
     await expect(page.locator('#content-name')).toHaveText(
@@ -88,4 +88,6 @@ test('5. Organisation Page', async ({ browser }) => {
     const button1 = row1.getByRole('button', { name: 'Bastien Moreau' })
     await expect(button1).toBeDisabled()
   })
+
+  await page.close()
 })

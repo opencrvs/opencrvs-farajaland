@@ -5,14 +5,14 @@ import { verifyMembersClickable } from '../birth/helpers'
 test('7. Organisation Page', async ({ browser }) => {
   const page = await browser.newPage()
 
-  test('7.1.0 Verify UI', async () => {
+  await test.step('7.1.0 Verify UI', async () => {
     await login(page, CREDENTIALS.REGISTRAR)
     await page.getByRole('button', { name: 'Organisation' }).click()
     await expect(page.locator('#content-name')).toHaveText('Organisation')
     await expect(page.getByText('Farajaland', { exact: true })).toBeVisible()
   })
 
-  test('7.1.1 Verify Province -> District -> Health Facility(No Data)', async () => {
+  await test.step('7.1.1 Verify Province -> District -> Health Facility(No Data)', async () => {
     await page.getByRole('button', { name: /Chuminga/ }).click()
     await page.getByRole('button', { name: /Soka/ }).click()
     const pageNavigator = page.getByRole('button', { name: '2', exact: true })
@@ -24,7 +24,7 @@ test('7. Organisation Page', async ({ browser }) => {
     ).toBeDisabled()
   })
 
-  test('7.1.2 Verify Province -> District -> District Office', async () => {
+  await test.step('7.1.2 Verify Province -> District -> District Office', async () => {
     for (let i = 0; i < 3; i++) {
       await page.goBack()
     }
@@ -37,7 +37,7 @@ test('7. Organisation Page', async ({ browser }) => {
     ).toBeDisabled()
   })
 
-  test('7.1.3 Verify Province -> District -> Different District Office', async () => {
+  await test.step('7.1.3 Verify Province -> District -> Different District Office', async () => {
     for (let i = 0; i < 3; i++) {
       await page.goBack()
     }
@@ -51,7 +51,7 @@ test('7. Organisation Page', async ({ browser }) => {
     ).toBeDisabled()
   })
 
-  test('7.1.4 Verify team page member list of District Office', async () => {
+  await test.step('7.1.4 Verify team page member list of District Office', async () => {
     for (let i = 0; i < 3; i++) {
       await page.goBack()
     }
@@ -67,10 +67,12 @@ test('7. Organisation Page', async ({ browser }) => {
     await verifyMembersClickable(page, members, 'Ibombo District Office')
   })
 
-  test('7.1.5 Verify Embassy Office', async () => {
+  await test.step('7.1.5 Verify Embassy Office', async () => {
     await page.getByRole('button', { name: 'Organisation' }).click()
     await expect(
       page.getByRole('button', { name: 'French Embassy Office' })
     ).toBeDisabled()
   })
+
+  await page.close()
 })

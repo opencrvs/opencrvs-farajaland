@@ -5,14 +5,14 @@ import { verifyMembersClickable } from '../birth/helpers'
 test('1. Organisation Page', async ({ browser }) => {
   const page = await browser.newPage()
 
-  test('1.1.0 Verify UI', async () => {
+  await test.step('1.1.0 Verify UI', async () => {
     await login(page, CREDENTIALS.NATIONAL_SYSTEM_ADMIN)
     await page.getByRole('button', { name: 'Organisation' }).click()
     await expect(page.locator('#content-name')).toHaveText('Organisation')
     await expect(page.getByText('Farajaland', { exact: true })).toBeVisible()
   })
 
-  test('1.1.1 Verify Province -> District -> Health Facility(No Data)', async () => {
+  await test.step('1.1.1 Verify Province -> District -> Health Facility(No Data)', async () => {
     await page.getByRole('button', { name: /Central/ }).click()
     await page.getByRole('button', { name: /Ibombo/ }).click()
     const pageNavigator = page.getByRole('button', { name: '3' })
@@ -27,7 +27,7 @@ test('1. Organisation Page', async ({ browser }) => {
     await expect(page.getByText('No result')).toBeVisible()
   })
 
-  test('1.1.2 Verify Province -> District -> Village -> Village Office(No Data)', async () => {
+  await test.step('1.1.2 Verify Province -> District -> Village -> Village Office(No Data)', async () => {
     for (let i = 0; i < 3; i++) {
       await page.goBack()
     }
@@ -46,7 +46,7 @@ test('1. Organisation Page', async ({ browser }) => {
     await expect(page.getByText('No result')).toBeVisible()
   })
 
-  test('1.1.2 Verify Province -> District -> District Office', async () => {
+  await test.step('1.1.2 Verify Province -> District -> District Office', async () => {
     for (let i = 0; i < 4; i++) {
       await page.goBack()
     }
@@ -63,8 +63,10 @@ test('1. Organisation Page', async ({ browser }) => {
     ).toBeVisible()
   })
 
-  test('1.1.3 Verify team page member list', async () => {
+  await test.step('1.1.3 Verify team page member list', async () => {
     const members = ['Chilufya Tayali', 'Kondwani Mwale']
     await verifyMembersClickable(page, members, 'Ilanga District Office')
   })
+
+  await page.close()
 })

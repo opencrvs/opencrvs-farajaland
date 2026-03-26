@@ -17,14 +17,14 @@ test.describe('2. Organisation Page', () => {
   //User: Local System Admin(e.mayuka)
   //Scope: Ibombo, Central,Farajaland
   test('2.1 UI check', async () => {
-    test.step('2.1.0 Verify UI', async () => {
+    await test.step('2.1.0 Verify UI', async () => {
       await login(page, CREDENTIALS.LOCAL_SYSTEM_ADMIN)
       await page.getByRole('button', { name: 'Organisation' }).click()
       await expect(page.locator('#content-name')).toHaveText('Organisation')
       await expect(page.getByText('Farajaland', { exact: true })).toBeVisible()
     })
 
-    test.step('2.1.1 Verify Province -> District -> Health Facility(No Data)', async () => {
+    await test.step('2.1.1 Verify Province -> District -> Health Facility(No Data)', async () => {
       await page.getByRole('button', { name: /Central/ }).click()
       await page.getByRole('button', { name: /Ibombo/ }).click()
       const pageNavigator = page.getByRole('button', { name: '2' })
@@ -43,7 +43,7 @@ test.describe('2. Organisation Page', () => {
       await expect(page.getByText('No result')).toBeVisible()
     })
 
-    test.step('2.1.2 Verify Province -> District -> District Office', async () => {
+    await test.step('2.1.2 Verify Province -> District -> District Office', async () => {
       for (let i = 0; i < 3; i++) {
         await page.goBack()
       }
@@ -60,7 +60,7 @@ test.describe('2. Organisation Page', () => {
       ).toBeVisible()
     })
 
-    test.step('2.1.3 Verify Team Members Status', async () => {
+    await test.step('2.1.3 Verify Team Members Status', async () => {
       const ibomboMembers = ['Felix Katongo', 'Kennedy Mweene']
       await verifyMembersClickable(
         page,
@@ -71,7 +71,7 @@ test.describe('2. Organisation Page', () => {
   })
 
   test('2.2 Out of Scope Access', async () => {
-    test.step('2.2.1 Verify Province -> District -> Health Facility', async () => {
+    await test.step('2.2.1 Verify Province -> District -> Health Facility', async () => {
       for (let i = 0; i < 3; i++) {
         await page.goBack()
       }
@@ -83,7 +83,7 @@ test.describe('2. Organisation Page', () => {
       ).toBeDisabled()
     })
 
-    test.step('2.2.2 Verify Province -> District -> District Office', async () => {
+    await test.step('2.2.2 Verify Province -> District -> District Office', async () => {
       for (let i = 0; i < 2; i++) {
         await page.goBack()
       }
@@ -96,7 +96,7 @@ test.describe('2. Organisation Page', () => {
       ).toBeDisabled()
     })
 
-    test.step('2.2.3 Verify Embassy', async () => {
+    await test.step('2.2.3 Verify Embassy', async () => {
       await page.getByRole('button', { name: /Organisation/ }).click()
 
       await expect(
