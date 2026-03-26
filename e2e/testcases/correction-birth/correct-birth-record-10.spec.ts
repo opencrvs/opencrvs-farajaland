@@ -55,7 +55,7 @@ test.describe('10. Correct record', () => {
     trackingId = res.trackingId
   })
 
-  test.describe('10.1 Record correction by someone else', async () => {
+  test.describe.serial('10.1 Record correction by someone else', async () => {
     let page: Page
     let childBirthLocationName: string | undefined
 

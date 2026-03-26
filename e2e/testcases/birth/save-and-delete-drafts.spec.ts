@@ -10,7 +10,7 @@ import { ensureOutboxIsEmpty, selectAction } from '../../utils'
  * Develop is already in broken state. We'll revisit this when we have ungloc the pipeline and can dedicate time on which change caused the error.
  */
 test.describe('Save and delete drafts', () => {
-  test.describe('Save draft', () => {
+  test.describe.serial('Save draft', () => {
     let childName = ''
     let page: Page
     test.beforeAll(async ({ browser }) => {
@@ -72,7 +72,7 @@ test.describe('Save and delete drafts', () => {
     })
   })
 
-  test.describe('Exit without saving', () => {
+  test.describe.serial('Exit without saving', () => {
     let page: Page
     test.beforeAll(async ({ browser }) => {
       page = await browser.newPage()
