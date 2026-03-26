@@ -27,13 +27,15 @@ import {
   invalidNameValidator,
   nationalIdValidator
 } from '@countryconfig/events/birth/validators'
-import { IdType, idTypeOptions } from '../../../person'
+
 import {
   getMOSIPIntegrationFields,
   connectToMOSIPIdReader,
   connectToMOSIPVerificationStatus
 } from '@countryconfig/events/mosip'
 import {
+  IdType,
+  idTypeOptions,
   defaultStreetAddressConfiguration,
   getNestedFieldValidators,
   createSelectOptions,

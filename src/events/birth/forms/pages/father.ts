@@ -33,9 +33,7 @@ import {
   idTypeOptions,
   maritalStatusOptions,
   yesNoRadioOptions,
-  YesNoTypes
-} from '../../../person'
-import {
+  YesNoTypes,
   emptyMessage,
   defaultStreetAddressConfiguration,
   getNestedFieldValidators

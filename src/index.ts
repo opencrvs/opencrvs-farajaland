@@ -711,6 +711,27 @@ export async function createServer() {
       /*
        * Store to analytics database
        */
+      const event = request.payload as EventDocument
+
+      const eventWithOptimisticallyApprovedLastAction = {
+        ...event,
+        actions: event.actions.map((action, index) =>
+          index === event.actions.length - 1
+            ? {
+                ...action,
+                status: ActionStatus.Accepted,
+                ...(actionType === ActionType.REGISTER
+                  ? {
+                      registrationNumber: (
+                        response.source as { registrationNumber: string }
+                      ).registrationNumber
+                    }
+                  : {})
+              }
+            : action
+        ) as ActionDocument[]
+      }
+
       const client = getClient()
       try {
         await client.transaction().execute(async (trx) => {

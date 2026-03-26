@@ -26,14 +26,13 @@ import {
   invalidNameValidator,
   nationalIdValidator
 } from '@countryconfig/events/birth/validators'
+
+import { InformantType } from './informant'
 import {
   IdType,
   idTypeOptions,
   yesNoRadioOptions,
-  YesNoTypes
-} from '../../../person'
-import { InformantType } from './informant'
-import {
+  YesNoTypes,
   defaultStreetAddressConfiguration,
   getNestedFieldValidators,
   emptyMessage
