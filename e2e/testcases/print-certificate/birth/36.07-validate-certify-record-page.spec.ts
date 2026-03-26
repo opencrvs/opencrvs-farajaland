@@ -4,8 +4,7 @@ import { getToken } from '../../../helpers'
 import { login } from '../../../helpers'
 import {
   createDeclaration,
-  getDeclaration,
-  Declaration
+  getDeclaration
 } from '../../test-data/birth-declaration'
 import {
   navigateToCertificatePrintAction,
@@ -19,14 +18,14 @@ test('7.0 Validate "Certify record" page', async ({ browser }) => {
     CREDENTIALS.REGISTRAR.USERNAME,
     CREDENTIALS.REGISTRAR.PASSWORD
   )
+
   const res = await createDeclaration(
     token,
     await getDeclaration({ informantRelation: 'BROTHER', token })
   )
 
-  const eventId: string = res.eventId
-
-  const declaration: Declaration = res.declaration
+  const eventId = res.eventId
+  const declaration = res.declaration
 
   const page = await browser.newPage()
 
@@ -36,15 +35,12 @@ test('7.0 Validate "Certify record" page', async ({ browser }) => {
 
   await test.step('7.0.2 Navigate to certificate print action', async () => {
     await page.getByRole('button', { name: 'Pending certification' }).click()
-
     await navigateToCertificatePrintAction(page, declaration)
   })
 
   await test.step('7.1 continue with "Print and issue to Informant (Brother)" redirect to Collector details page', async () => {
     await selectCertificationType(page, 'Birth Certificate')
-
     await selectRequesterType(page, 'Print and issue to Informant (Brother)')
-
     await page.getByRole('button', { name: 'Continue' }).click()
 
     await expectInUrl(
@@ -78,7 +74,8 @@ test('7.0 Validate "Certify record" page', async ({ browser }) => {
   })
 
   // @TODO: this is not implemented in events v2 yet
-  test.skip('7.3 should skip payment page if payment is 0', async () => {})
-
-  await page.close()
+  await test.step.skip(
+    '7.3 should skip payment page if payment is 0',
+    async () => {}
+  )
 })
