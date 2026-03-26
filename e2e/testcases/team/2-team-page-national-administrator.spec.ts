@@ -1,6 +1,6 @@
-import { test, expect, type Page } from '@playwright/test'
-import { continueForm, continueUntilReview, login } from '../../helpers'
+import { expect, test, type Page } from '@playwright/test'
 import { CREDENTIALS } from '../../constants'
+import { continueUntilReview, login } from '../../helpers'
 
 test.describe('2. Team Page', () => {
   test.describe.serial('2.1 Basic UI check', async () => {
@@ -33,7 +33,7 @@ test.describe('2. Team Page', () => {
   test.describe.serial('2.2 User Account Actions', () => {
     let page: Page
 
-    test.beforeAll(async ({ browser }) => {
+    test.beforeEach(async ({ browser }) => {
       page = await browser.newPage()
       await login(page, CREDENTIALS.NATIONAL_SYSTEM_ADMIN)
 
@@ -43,13 +43,13 @@ test.describe('2. Team Page', () => {
         .locator('//ul[@id="user-item-0-menu-Dropdown-Content"]')
         .getByText('Edit details')
         .click()
+      await expect(page.getByText('Confirm details')).toBeVisible()
     })
 
-    test.afterAll(async () => {
+    test.afterEach(async () => {
       await page.close()
     })
     test('2.2.1 Edit User Details', async () => {
-      await expect(page.getByText('Confirm details')).toBeVisible()
       await expect(
         page
           .getByTestId('accordion-Accordion_user.office')
@@ -57,9 +57,6 @@ test.describe('2. Team Page', () => {
       ).toBeVisible()
     })
 
-    /**
-     * Skip latter part until implementing new user scopes.
-     */
     const phoneNumber = '0785963214'
     test('2.2.2 Change Phone Number', async () => {
       await page.getByTestId('change-button-phoneNumber').click()
@@ -70,9 +67,8 @@ test.describe('2. Team Page', () => {
     })
 
     test('2.2.3 Verify Phone Number Changed', async () => {
-      await expect(page.getByTestId('row-value-phoneNumber')).toContainText(
-        phoneNumber
-      )
+      await expect(page.getByText('Confirm details')).toBeVisible()
+      await expect(page.locator('#phoneNumber')).toContainText(phoneNumber)
     })
   })
 })

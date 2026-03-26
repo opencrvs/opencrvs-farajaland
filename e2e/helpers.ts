@@ -311,10 +311,9 @@ export async function continueUntilReview(
 ) {
   //
   // while url doesnt contain review
-
   while (!page.url().includes('review')) {
     await page.waitForTimeout(SAFE_INPUT_CHANGE_TIMEOUT_MS)
-    return page.getByText(label, { exact: true }).click()
+    await page.getByText(label, { exact: true }).click()
   }
 }
 
