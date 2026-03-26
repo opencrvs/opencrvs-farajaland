@@ -57,18 +57,23 @@ test.describe('2. Team Page', () => {
       ).toBeVisible()
     })
 
-    const phoneNumber = '0785963214'
     test('2.2.2 Change Phone Number', async () => {
+      const phoneNumber = '0785963' + Math.floor(Math.random() * 900) + 100
       await page.getByTestId('change-button-phoneNumber').click()
       await page.locator('input[name="phoneNumber"]').fill(phoneNumber)
       await continueUntilReview(page)
       await page.getByRole('button', { name: 'Confirm' }).click()
       expect(page.url()).toContain('view')
-    })
 
-    test('2.2.3 Verify Phone Number Changed', async () => {
-      await expect(page.getByText('Confirm details')).toBeVisible()
-      await expect(page.locator('#phoneNumber')).toContainText(phoneNumber)
+      await test.step('2.2.3 Verify Phone Number Changed', async () => {
+        await page
+          .locator('#sub-page-header-munu-button-dropdownMenu')
+          .getByRole('button')
+          .click()
+        await page.getByText('Edit details').click()
+        await expect(page.getByText('Confirm details')).toBeVisible()
+        await expect(page.locator('#phoneNumber')).toContainText(phoneNumber)
+      })
     })
   })
 })
