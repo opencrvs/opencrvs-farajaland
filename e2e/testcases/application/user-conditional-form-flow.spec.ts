@@ -11,12 +11,9 @@ import { CREDENTIALS } from '../../constants'
 import { ensureOutboxIsEmpty } from '../../utils'
 
 test('1. User conditional form flow', async ({ browser }) => {
-
-  
   let page: Page
   page = await browser.newPage()
 
-  
   const declaration = {
     applicant: {
       name: {
@@ -37,150 +34,96 @@ test('1. User conditional form flow', async ({ browser }) => {
   }
 
   await test.step('1.1 Declaration started by HO', async () => {
-
     await login(page, CREDENTIALS.HOSPITAL_OFFICIAL)
-          await page.click('#header-new-event')
-          await page.getByLabel('Tennis club membership application').click()
-          await page.getByRole('button', { name: 'Continue' }).click()
+    await page.click('#header-new-event')
+    await page.getByLabel('Tennis club membership application').click()
+    await page.getByRole('button', { name: 'Continue' }).click()
 
     await test.step('1.1.0 Go to review page and ensure default values are resolved properly', async () => {
-
-      
       await continueForm(page)
 
-      
       await continueForm(page)
-
-      
 
       await expect(page.getByText('Invalid input')).not.toBeVisible()
-
     })
 
     await test.step('1.1.1 Fill applicant details', async () => {
-
-      
       await page.getByTestId('change-button-applicant.name').click()
 
-      
       await page.getByTestId('confirm_edit').click()
-
-      
 
       await page
         .locator('#firstname')
         .fill(declaration.applicant.name.firstName)
 
-      
       await page.locator('#surname').fill(declaration.applicant.name.familyName)
-
-      
 
       await page.getByPlaceholder('dd').fill(declaration.applicant.birthDate.dd)
 
-      
       await page
         .getByPlaceholder('mm')
         .and(page.locator('[name="applicant____dob"]'))
         .fill(declaration.applicant.birthDate.mm)
 
-      
       await page
         .getByPlaceholder('yyyy')
         .fill(declaration.applicant.birthDate.yyyy)
-
-      
 
       await page
         .getByLabel('Field shown when field agent is submitting application.')
         .click()
 
-      
-
       await continueForm(page)
-
     })
 
     await test.step('1.1.2 Fill senior pass details', async () => {
-
-      
       await page.locator('#senior-pass____id').fill('123123')
 
-      
-
       await continueForm(page)
-
     })
 
     await test.step('1.1.3 Fill recommender details', async () => {
-
-      
       await page
         .locator('#firstname')
         .fill(declaration.applicant.name.firstName)
 
-      
       await page.locator('#surname').fill(declaration.applicant.name.familyName)
 
-      
       await page.locator('#recommender____id').fill(declaration.recommender.id)
 
-      
-
       await continueForm(page)
-
     })
 
     await test.step('1.1.4 Review details', async () => {
-
-      
       await page
         .getByText('Field shown when field agent is submitting application.')
         .isVisible()
 
-      
-
       await expect(
         page.getByTestId('row-value-applicant.isRecommendedByFieldAgent')
       ).toHaveText('Yes')
-
     })
 
     await test.step('1.1.5 Declare', async () => {
-
-      
       await selectDeclarationAction(page, 'Declare')
 
-      
-
       await ensureOutboxIsEmpty(page)
-
     })
-
   })
 
   await test.step('1.2 Declaration Review by Registration Officer', async () => {
-
     await test.step('1.2.1 Navigate to the declaration "Pending validation"-tab', async () => {
-
-      
       await login(page, CREDENTIALS.REGISTRATION_OFFICER)
 
-      
       await page.getByText('Pending validation').click()
 
-      
       await page
         .getByRole('button', {
           name: formatName(declaration.applicant.name)
         })
         .click()
 
-      
-
       await page.getByRole('button', { name: 'Record', exact: true }).click()
-
-      
 
       await expect(
         page.getByText(
@@ -188,12 +131,9 @@ test('1. User conditional form flow', async ({ browser }) => {
         )
       ).not.toBeVisible()
 
-      
-
       await page.getByTestId('exit-event').click()
-
     })
-
   })
 
-  await page.close()})
+  await page.close()
+})

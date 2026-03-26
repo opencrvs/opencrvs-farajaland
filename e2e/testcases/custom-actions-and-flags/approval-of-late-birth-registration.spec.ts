@@ -27,469 +27,292 @@ const lateRegMonth = format(lateRegDate, 'MM')
 const lateRegYear = format(lateRegDate, 'yyyy')
 
 test('Approval of late birth registration', async ({ browser }) => {
-
-  
   let page: Page
   page = await browser.newPage()
-
-  
 
   const childName = {
     firstNames: faker.person.firstName('female'),
     familyName: faker.person.lastName('female')
   }
 
-  
-
   const childNameFormatted = formatName(childName)
 
   await test.step('Declaration started by HO', async () => {
-
     await login(page, CREDENTIALS.HOSPITAL_OFFICIAL)
-          await page.click('#header-new-event')
-          await page.getByLabel('Birth').click()
-          await page.getByRole('button', { name: 'Continue' }).click()
-          await page.getByRole('button', { name: 'Continue' }).click()
+    await page.click('#header-new-event')
+    await page.getByLabel('Birth').click()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.getByRole('button', { name: 'Continue' }).click()
 
     await test.step('Fill child details with birth date from over a year ago', async () => {
-
-      
       await page.locator('#firstname').fill(childName.firstNames)
 
-      
       await page.locator('#surname').fill(childName.familyName)
 
-      
       await page.locator('#child____gender').click()
 
-      
       await page.getByText('Female', { exact: true }).click()
-
-      
 
       await page.getByPlaceholder('dd').fill(lateRegDay)
 
-      
       await page.getByPlaceholder('mm').fill(lateRegMonth)
 
-      
       await page.getByPlaceholder('yyyy').fill(lateRegYear)
 
-      
       await page.locator('#child____reason').fill('Late registration reason')
-
-      
 
       await page.locator('#child____placeOfBirth').click()
 
-      
       await page.getByText('Health Institution', { exact: true }).click()
 
-      
       await page
         .locator('#child____birthLocation')
         .fill('Klow Village Hospital'.slice(0, 3))
 
-      
       await page.getByText('Klow Village Hospital').click()
 
-      
-
       await continueForm(page)
-
     })
 
     await test.step('Fill informant details', async () => {
-
-      
       await page.locator('#informant____relation').click()
 
-      
       await page.getByText('Mother', { exact: true }).click()
-
-      
 
       await page.locator('#informant____email').fill('test@example.com')
 
-      
-
       await continueForm(page)
-
     })
 
     await test.step("Fill mother's details", async () => {
-
-      
       await page.locator('#firstname').fill(faker.person.firstName('female'))
 
-      
       await page.locator('#surname').fill(faker.person.lastName('female'))
-
-      
 
       await page.getByPlaceholder('dd').fill('12')
 
-      
       await page.getByPlaceholder('mm').fill('05')
 
-      
       await page.getByPlaceholder('yyyy').fill('1991')
-
-      
 
       await page.locator('#mother____idType').click()
 
-      
       await page.getByText('None', { exact: true }).click()
-
-      
 
       await page.locator('#country').click()
 
-      
       await page.locator('#country input').fill('Far')
 
-      
       await page
         .locator('#country')
         .getByText('Farajaland', { exact: true })
         .click()
 
-      
-
       await page.locator('#province').click()
 
-      
       await page.getByText('Central', { exact: true }).click()
-
-      
 
       await page.locator('#district').click()
 
-      
       await page.getByText('Ibombo', { exact: true }).click()
-
-      
 
       await page.locator('#village').click()
 
-      
       await page.getByText('Klow', { exact: true }).click()
 
-      
-
       await continueForm(page)
-
     })
 
     await test.step("Fill father's details", async () => {
-
-      
       await page.locator('#firstname').fill(faker.person.firstName('male'))
 
-      
       await page.locator('#surname').fill(faker.person.lastName('male'))
-
-      
 
       await page.getByPlaceholder('dd').fill('12')
 
-      
       await page.getByPlaceholder('mm').fill('05')
 
-      
       await page.getByPlaceholder('yyyy').fill('1980')
-
-      
 
       await page.locator('#father____idType').click()
 
-      
       await page.getByText('None', { exact: true }).click()
-
-      
 
       await page.locator('#father____nationality').click()
 
-      
       await page.getByText('Gabon', { exact: true }).click()
-
-      
 
       await page.locator('#father____addressSameAs_YES').click()
 
-      
-
       await page.getByRole('button', { name: 'Continue' }).click()
-
     })
 
     await test.step('Go to review', async () => {
-
-      
       await goToSection(page, 'review')
-
     })
 
     await test.step('Fill up informant comment & signature', async () => {
-
-      
       await page.locator('#review____comment').fill(faker.lorem.sentence())
 
-      
       await page.getByRole('button', { name: 'Sign', exact: true }).click()
 
-      
       await drawSignature(page, 'review____signature_canvas_element', false)
 
-      
       await page
         .locator('#review____signature_modal')
         .getByRole('button', { name: 'Apply' })
         .click()
-
     })
 
     await test.step('Declare', async () => {
-
-      
       await selectDeclarationAction(page, 'Declare')
 
-      
       await ensureOutboxIsEmpty(page)
 
-      
       await page.getByText('Recent').click()
-
     })
-
   })
 
   await test.step('Declaration Review by RO', async () => {
-
     await test.step('Navigate to the declaration review page', async () => {
-
-      
       await login(page, CREDENTIALS.REGISTRATION_OFFICER)
 
-      
       await page.getByText('Pending approval').click()
 
-      
       await page.getByRole('button', { name: childNameFormatted }).click()
 
-      
-
       await ensureAssigned(page)
-
     })
 
     await test.step("Event should have the 'Approval required for late registration' -flag", async () => {
-
-      
       await expect(
         page.getByText('Approval required for late registration')
       ).toBeVisible()
-
     })
 
     await test.step('RO should not have the option to Approve', async () => {
-
-      
       await page.getByRole('button', { name: 'Action', exact: true }).click()
 
-      
       await expect(page.getByText('Approve', { exact: true })).not.toBeVisible()
-
     })
-
   })
 
   await test.step('Declaration Review by Registrar', async () => {
-
     await test.step('Navigate to the declaration review page', async () => {
-
-      
       await login(page, CREDENTIALS.REGISTRAR)
 
-      
       await page.getByText('Pending approval').click()
 
-      
       await page.getByRole('button', { name: childNameFormatted }).click()
-
     })
 
     await test.step('Unassign', async () => {
-
-      
       await page.getByRole('button', { name: 'Action', exact: true }).click()
 
-      
       await page.getByText('Unassign', { exact: true }).click()
 
-      
       await page.getByRole('button', { name: 'Unassign', exact: true }).click()
 
-      
       await expect(
         page.getByText('Not assigned', { exact: true })
       ).toBeVisible()
-
     })
 
     await test.step('LR should not have the option to Approve', async () => {
-
-      
       await page.getByRole('button', { name: 'Action', exact: true }).click()
 
-      
       await expect(page.getByText('Approve', { exact: true })).not.toBeVisible()
-
     })
-
   })
 
   await test.step('Declaration Review by PR(Provincial Registrar)', async () => {
-
     await test.step('Navigate to the declaration review page', async () => {
-
-      
       await login(page, CREDENTIALS.PROVINCIAL_REGISTRAR)
 
-      
       await page.getByText('Pending approval').first().click()
 
-      
       await page.getByRole('button', { name: childNameFormatted }).click()
-
     })
 
     await test.step('Approve action should be disabled before assignment', async () => {
-
-      
       await validateActionMenuButton(page, 'Approve', false)
-
     })
 
     await test.step('Assign', async () => {
-
-      
       await ensureAssigned(page)
-
     })
 
     await test.step("Event should have the 'Approval required for late registration' -flag", async () => {
-
-      
       await expect(
         page.getByText('Approval required for late registration')
       ).toBeVisible()
-
     })
 
     await test.step('Fill comments field before confirming Approve declaration', async () => {
-
-      
       await selectAction(page, 'Approve')
 
-      
       await expect(
         page.getByText(
           'Approving this declaration confirms it as legally accepted and eligible for registration.'
         )
       ).toBeVisible()
 
-      
-
       const confirmButton = page.getByRole('button', { name: 'Confirm' })
 
-      
       await expect(confirmButton).toBeEnabled()
-
-      
 
       const notesField = page.locator('#notes')
 
-      
       await notesField.fill(
         'Approving after verifying all late submission details.'
       )
 
-      
-
       await expect(confirmButton).toBeEnabled()
 
-      
       await confirmButton.click()
-
     })
 
     await test.step("Validate that the 'Approval required for late registration' -flag is removed after approval", async () => {
-
-      
       await ensureOutboxIsEmpty(page)
 
-      
       await searchFromSearchBar(page, childNameFormatted)
-
-      
 
       await expect(
         page.getByText('Approval required for late registration')
       ).not.toBeVisible()
-
     })
-
   })
 
   await test.step('Audit review by Registrar', async () => {
-
     await test.step('Navigate to the declaration review page', async () => {
-
-      
       await login(page, CREDENTIALS.REGISTRAR, true)
 
-      
       await searchFromSearchBar(page, childNameFormatted)
-
     })
 
     await test.step('Assign', async () => {
-
-      
       await ensureAssigned(page)
-
     })
 
     await test.step('LR should not have the option to Approve', async () => {
-
-      
       await page.getByRole('button', { name: 'Action', exact: true }).click()
 
-      
       await expect(page.getByText('Approve', { exact: true })).not.toBeVisible()
-
     })
 
     await test.step('Validate that action and form field value appearing in audit trail', async () => {
-
-      
       await switchEventTab(page, 'Audit')
 
-      
       await page.getByRole('button', { name: 'Approved', exact: true }).click()
 
-      
       await expect(
         page.getByText('Approving after verifying all late submission details.')
       ).toBeVisible()
-
     })
-
   })
 
-  await page.close()})
+  await page.close()
+})
 
 test.describe('Birth with non-late registration will not have flag or Approve-action available', () => {
   let page: Page

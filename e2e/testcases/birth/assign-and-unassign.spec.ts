@@ -7,65 +7,48 @@ import { ensureAssigned, selectAction } from '../../utils'
 
 test('Assign & Unassign', async ({ browser }) => {
   const token = await getToken(
-        CREDENTIALS.REGISTRAR.USERNAME,
-        CREDENTIALS.REGISTRAR.PASSWORD
-      )
-      const res = await createDeclaration(token)
+    CREDENTIALS.REGISTRAR.USERNAME,
+    CREDENTIALS.REGISTRAR.PASSWORD
+  )
+  const res = await createDeclaration(token)
 
-  
   let page: Page
 
-  
   let declaration: Declaration
-      declaration = res.declaration
-      page = await browser.newPage()
+  declaration = res.declaration
+  page = await browser.newPage()
 
   await test.step('Login', async () => {
-
-    
     await login(page)
-
   })
 
   await test.step('Click on "Assign" from action menu', async () => {
-
-    
     await page.waitForTimeout(SAFE_WORKQUEUE_TIMEOUT_MS)
 
-     // wait for the event to be in the workqueue.
+    // wait for the event to be in the workqueue.
     await page.getByText('Pending certification').click()
-
-    
 
     const childName = `${declaration['child.name'].firstname} ${declaration['child.name'].surname}`
 
-    
     await page.getByRole('button', { name: childName }).click()
 
-    
     await ensureAssigned(page)
 
-    
     await expect(page.getByTestId('assignedTo-value')).toHaveText(
       'Kennedy Mweene'
     )
-
   })
 
   await test.step('Click on "Unassign" from action menu', async () => {
-
-    
     await selectAction(page, 'Unassign')
 
-    
     // Wait for the unassign modal to appear
     await page.getByRole('button', { name: 'Unassign', exact: true }).click()
 
-    
     await expect(page.getByTestId('assignedTo-value')).toHaveText(
       'Not assigned'
     )
-
   })
 
-  await page.close()})
+  await page.close()
+})

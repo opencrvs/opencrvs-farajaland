@@ -2,155 +2,94 @@ import { test, expect, type Page } from '@playwright/test'
 import { login } from '../../helpers'
 
 test('Death form - date validations', async ({ browser }) => {
-
-  
   let page: Page
   page = await browser.newPage()
 
   await test.step('Log in', async () => {
-
-    
     await login(page)
-
   })
 
   await test.step('Start death event declaration', async () => {
-
-    
     await page.click('#header-new-event')
 
-    
     await page.getByLabel('Death').click()
 
-    
     await page.getByRole('button', { name: 'Continue' }).click()
 
-    
     await page.getByRole('button', { name: 'Continue' }).click()
-
   })
 
   await test.step('Input valid deceased date-of-birth', async () => {
-
-    
     await page.getByPlaceholder('dd').fill('22')
 
-    
     await page.getByPlaceholder('mm').fill('09')
 
-    
     await page.getByPlaceholder('yyyy').fill('1993')
-
-    
 
     await page.getByPlaceholder('yyyy').blur()
 
-    
-
     await expect(page.locator('#deceased____dob_error')).not.toBeVisible()
-
   })
 
   await test.step('Navigate to event details section', async () => {
-
-    
     await page.getByRole('button', { name: 'Continue' }).click()
-
   })
 
   await test.step('Input date-of-death which is before date-of-birth, expect to see validation error', async () => {
-
-    
     await page.getByPlaceholder('dd').fill('09')
 
-    
     await page.getByPlaceholder('mm').fill('10')
 
-    
     await page.getByPlaceholder('yyyy').fill('1990')
 
-    
-
     await page.getByPlaceholder('yyyy').blur()
-
-    
 
     await expect(
       page.getByText("Date of death must be after the deceased's birth date")
     ).toBeVisible()
-
   })
 
   await test.step('Input date-of-death which is after date-of-birth, expect to see no validation error', async () => {
-
-    
     await page.getByPlaceholder('dd').fill('09')
 
-    
     await page.getByPlaceholder('mm').fill('10')
 
-    
     await page.getByPlaceholder('yyyy').fill('1995')
-
-    
 
     await page.getByPlaceholder('yyyy').blur()
 
-    
-
     await expect(page.locator('#eventDetails____date_error')).not.toBeVisible()
-
   })
 
   await test.step('Go back to deceased details section', async () => {
-
-    
     await page.getByRole('button', { name: 'Back' }).click()
-
   })
 
   await test.step('Input invalid deceased date-of-birth, expect to see validation error', async () => {
-
-    
     await page.getByPlaceholder('dd').fill('22')
 
-    
     await page.getByPlaceholder('mm').fill('09')
 
-    
     await page.getByPlaceholder('yyyy').fill('1996')
 
-    
-
     await page.getByPlaceholder('yyyy').blur()
-
-    
 
     await expect(page.locator('#deceased____dob_error')).toHaveText(
       'Date of birth must be before the date of death'
     )
-
   })
 
   await test.step('Input valid deceased date-of-birth, expect to see no validation error', async () => {
-
-    
     await page.getByPlaceholder('dd').fill('22')
 
-    
     await page.getByPlaceholder('mm').fill('10')
 
-    
     await page.getByPlaceholder('yyyy').fill('1988')
-
-    
 
     await page.getByPlaceholder('yyyy').blur()
 
-    
-
     await expect(page.locator('#deceased____dob_error')).not.toBeVisible()
-
   })
 
-  await page.close()})
+  await page.close()
+})

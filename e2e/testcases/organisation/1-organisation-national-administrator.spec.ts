@@ -3,12 +3,9 @@ import { login } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
 import { verifyMembersClickable } from '../birth/helpers'
 test('1. Organisation Page', async ({ browser }) => {
-
-  
   let page: Page
   page = await browser.newPage()
 
-  
   test.describe('1.1 Basic UI check', async () => {
     test('1.1.0 Verify UI', async () => {
       await login(page, CREDENTIALS.NATIONAL_SYSTEM_ADMIN)
@@ -74,4 +71,5 @@ test('1. Organisation Page', async ({ browser }) => {
     })
   })
 
-  await page.close()})
+  await page.close()
+})

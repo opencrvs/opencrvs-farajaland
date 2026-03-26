@@ -8,66 +8,49 @@ import { expectInUrl, selectAction } from '../../utils'
 
 test('6 Validate "Pending certification"-workqueue', async ({ browser }) => {
   const token = await getToken(
-        CREDENTIALS.REGISTRAR.USERNAME,
-        CREDENTIALS.REGISTRAR.PASSWORD
-      )
-      const res = await createDeclaration(token)
+    CREDENTIALS.REGISTRAR.USERNAME,
+    CREDENTIALS.REGISTRAR.PASSWORD
+  )
+  const res = await createDeclaration(token)
 
-  
   let page: Page
 
-  
   let declaration: Declaration
 
-  
   let eventId: string
-      declaration = res.declaration
-      eventId = res.eventId
-  
-      page = await browser.newPage()
+  declaration = res.declaration
+  eventId = res.eventId
+
+  page = await browser.newPage()
 
   await test.step('6.0 Login', async () => {
-
-    
     await login(page, CREDENTIALS.REGISTRAR)
-
   })
 
   await test.step('6.1 Go to "Pending certification"-workqueue', async () => {
-
-    
     await page.waitForTimeout(SAFE_WORKQUEUE_TIMEOUT_MS)
 
-     // wait for the event to be in the workqueue.
+    // wait for the event to be in the workqueue.
     await page.getByText('Pending certification').click()
 
-    
     await expect(
       page.getByRole('button', { name: formatV2ChildName(declaration) })
     ).toBeVisible()
 
-    
     await expect(page.getByTestId('search-result')).toContainText(
       'Pending certification'
     )
-
   })
 
   await test.step('6.2 validate the list', async () => {
-
-    
     const button = page.getByRole('button', {
       name: formatV2ChildName(declaration)
     })
 
-    
-
     const header = page.locator('div[class^="TableHeader"]')
 
-    
     const columns = await header.locator(':scope > div').allInnerTexts()
 
-    
     expect(columns).toStrictEqual([
       'Title',
       'Event',
@@ -76,54 +59,37 @@ test('6 Validate "Pending certification"-workqueue', async ({ browser }) => {
       ''
     ])
 
-    
-
     const row = button.locator('xpath=ancestor::*[starts-with(@id, "row_")]')
 
-    
     const cells = row.locator(':scope > div')
-
-    
 
     await expect(cells.nth(0)).toHaveText(formatV2ChildName(declaration))
 
-    
     await expect(cells.nth(1)).toHaveText('Birth')
 
-    
     await expect(cells.nth(2)).toHaveText(
       declaration['child.dob'].split('T')[0]
     )
-
   })
 
   await test.step('6.4 Click a name', async () => {
-
-    
     await page
       .getByRole('button', { name: formatV2ChildName(declaration) })
       .click()
 
-    
-
     await expectInUrl(page, `events/${eventId}?workqueue=pending-certification`)
-
   })
 
   await test.step('6.5 Click Print action', async () => {
-
-    
     await selectAction(page, 'Print')
 
-    
     await expect(page.locator('#content-name')).toHaveText('Certify record')
 
-    
     await expectInUrl(
       page,
       `/events/print-certificate/${eventId}/pages/collector?workqueue=pending-certification`
     )
-
   })
 
-  await page.close()})
+  await page.close()
+})

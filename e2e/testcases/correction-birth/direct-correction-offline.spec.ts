@@ -13,13 +13,10 @@ import { ensureAssigned, selectAction } from '../../utils'
 test('Direct correction offline', async ({ browser }) => {
   let declaration: DeclarationV2
 
-  
   let trackingId = ''
 
-  
   let eventId: string
 
-  
   let page: Page
   page = await browser.newPage()
 
@@ -29,14 +26,10 @@ test('Direct correction offline', async ({ browser }) => {
   }
 
   await test.step('Shortcut declaration', async () => {
-
-    
     let token = await getToken(
       CREDENTIALS.REGISTRAR.USERNAME,
       CREDENTIALS.REGISTRAR.PASSWORD
     )
-
-    
 
     const res = await createDeclarationV2(
       token,
@@ -83,33 +76,23 @@ test('Direct correction offline', async ({ browser }) => {
       'PRIVATE_HOME'
     )
 
-    
     expect(res).toEqual(
       expect.objectContaining({
         trackingId: expect.any(String)
       })
     )
 
-    
     trackingId = res.trackingId!
 
-    
     eventId = res.eventId
 
-    
     token = await getToken('k.mweene', 'test')
 
-    
     declaration = res.declaration
-
   })
 
   await test.step('Navigate to record correction', async () => {
-
-    
     await login(page, CREDENTIALS.REGISTRAR)
-
-    
 
     await auditRecord({
       page,
@@ -117,107 +100,66 @@ test('Direct correction offline', async ({ browser }) => {
       trackingId
     })
 
-    
     await ensureAssigned(page)
 
-    
-
     await selectAction(page, 'Correct')
-
   })
 
   await test.step('Add correction requester', async () => {
-
-    
     await page.locator('#requester____type').click()
 
-    
     await page.getByText('Legal Guardian', { exact: true }).click()
 
-    
     await page.locator('#reason____option').click()
 
-    
     await page
       .getByText('Informant provided incorrect information (Material error)', {
         exact: true
       })
       .click()
 
-    
     await page.getByRole('button', { name: 'Continue' }).click()
-
   })
 
   await test.step('Verify identity', async () => {
-
-    
     await page.getByRole('button', { name: 'Verified' }).click()
-
   })
 
   await test.step('Skip uploading documents', async () => {
-
-    
     await page.getByRole('button', { name: 'Continue' }).click()
-
   })
 
   await test.step('Add correction fee', async () => {
-
-    
     await page
       .locator('#fees____amount')
       .fill(faker.number.int({ min: 1, max: 1000 }).toString())
 
-    
-
     await page.getByRole('button', { name: 'Continue' }).click()
-
   })
 
   await test.step('Change child name', async () => {
-
-    
     await page.getByTestId('change-button-child.name').click()
-
-    
 
     await page
       .getByTestId('text__firstname')
       .fill(updatedChildDetails.firstname)
 
-    
-
     await page.getByTestId('text__surname').fill(updatedChildDetails.surname)
-
-    
 
     await goBackToReview(page)
 
-    
     await page.getByRole('button', { name: 'Continue' }).click()
-
   })
 
   await test.step('Make correction while offline', async () => {
-
-    
     // Go offline
     await page.context().setOffline(true)
 
-    
-
     await page.getByRole('button', { name: 'Correct record' }).click()
 
-    
     await page.getByRole('button', { name: 'Confirm' }).click()
 
-    
-
     expect(page.url().includes(`events/${eventId}`)).toBeTruthy()
-
-    
 
     // We expect to see the optimistically updated new child name instead of the old one
     await expect(
@@ -226,30 +168,18 @@ test('Direct correction offline', async ({ browser }) => {
       })
     ).toBeVisible()
 
-    
-
     await page.getByTestId('exit-event').click()
-
-    
 
     await page.getByRole('button', { name: 'Outbox' }).click()
 
-    
     await expect(page.locator('#wait-connection-text')).toBeVisible()
-
   })
 
   await test.step('Go back online', async () => {
-
-    
     // Go back online
     await page.context().setOffline(false)
 
-    
-
     await expect(page.locator('#wait-connection-text')).not.toBeVisible()
-
-    
 
     await expect(await page.locator('#no-record')).toContainText(
       'No records require processing',
@@ -257,6 +187,5 @@ test('Direct correction offline', async ({ browser }) => {
         timeout: SAFE_OUTBOX_TIMEOUT_MS
       }
     )
-
   })
 })

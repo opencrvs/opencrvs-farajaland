@@ -2,12 +2,8 @@ import { test, type Page } from '@playwright/test'
 import { login } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
 test('3. Organisation Page', async ({ browser }) => {
-
-  
   let page: Page
   page = await browser.newPage()
-
-  
 
   //User: Provincial Registrar(m.owen)
   //WIP: https://github.com/opencrvs/opencrvs-core/issues/11697 , This ticket is to be resolved to have complete test case.
@@ -18,4 +14,5 @@ test('3. Organisation Page', async ({ browser }) => {
     })
   })
 
-  await page.close()})
+  await page.close()
+})

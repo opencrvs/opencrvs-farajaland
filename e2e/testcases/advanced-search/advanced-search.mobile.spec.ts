@@ -16,121 +16,90 @@ test('Advanced Search - Mobile', async ({ browser }) => {
 
   let village = ''
 
-      const token = await getToken(
-        CREDENTIALS.REGISTRAR_VILLAGE.USERNAME,
-        CREDENTIALS.REGISTRAR_VILLAGE.PASSWORD
-      )
-  
-      const administrativeAreas = await getAdministrativeAreas(token)
-      province = getIdByName(administrativeAreas, 'Central')!
-      district = getIdByName(administrativeAreas, 'Ibombo')!
-      village = getIdByName(administrativeAreas, 'Klow')!
-  
-      if (!province || !district || !village) {
-        throw new Error('Province, district or village not found')
-      }
-  
-      await createDeclaration(
-        token,
-        {
-          'child.dob': faker.date
-            .between({ from: '2025-09-10', to: '2025-11-28' })
-            .toISOString()
-            .split('T')[0],
-          'child.placeOfBirth': 'PRIVATE_HOME',
-          'child.birthLocation.privateHome': {
-            country: 'FAR',
-            addressType: 'DOMESTIC',
-            administrativeArea: village,
-            streetLevelDetails: { town: 'Dhaka' }
-          },
-          'child.gender': 'female'
-        },
-        'REGISTER',
-        'PRIVATE_HOME'
-      )
+  const token = await getToken(
+    CREDENTIALS.REGISTRAR_VILLAGE.USERNAME,
+    CREDENTIALS.REGISTRAR_VILLAGE.PASSWORD
+  )
+
+  const administrativeAreas = await getAdministrativeAreas(token)
+  province = getIdByName(administrativeAreas, 'Central')!
+  district = getIdByName(administrativeAreas, 'Ibombo')!
+  village = getIdByName(administrativeAreas, 'Klow')!
+
+  if (!province || !district || !village) {
+    throw new Error('Province, district or village not found')
+  }
+
+  await createDeclaration(
+    token,
+    {
+      'child.dob': faker.date
+        .between({ from: '2025-09-10', to: '2025-11-28' })
+        .toISOString()
+        .split('T')[0],
+      'child.placeOfBirth': 'PRIVATE_HOME',
+      'child.birthLocation.privateHome': {
+        country: 'FAR',
+        addressType: 'DOMESTIC',
+        administrativeArea: village,
+        streetLevelDetails: { town: 'Dhaka' }
+      },
+      'child.gender': 'female'
+    },
+    'REGISTER',
+    'PRIVATE_HOME'
+  )
 
   page = await browser.newPage()
-      setMobileViewport(page)
+  setMobileViewport(page)
 
   await test.step('Login', async () => {
-
-    
     await login(page, CREDENTIALS.REGISTRAR_VILLAGE)
-
   })
 
   await test.step('Navigate to advanced search', async () => {
-
-    
     await page
       .getByRole('button', { name: 'Go to search', exact: true })
       .click()
 
-    
     await expectInUrl(page, '/search')
 
-    
     await page.click('#searchType')
 
-    
     await expectInUrl(page, '/advanced-search')
-
   })
 
   await test.step('Fill search fields', async () => {
-
-    
     await page.getByText('Birth').click()
 
-    
     await page.getByText('Event details').click()
-
-    
 
     await page.locator('#child____placeOfBirth').click()
 
-    
     await page.getByText('Residential address', { exact: true }).click()
-
-    
 
     page.locator('#country').getByText('Farajaland')
 
-    
     page.locator('#province').getByText('Central')
 
-    
     page.locator('#district').getByText('Ibombo')
 
-    
     page.locator('#village').getByText('Klow')
-
-    
 
     await page.locator('#town').fill('Dhaka')
 
-    
     await page.locator('#town').blur()
-
   })
 
   await test.step('Search', async () => {
-
-    
     await page.click('#search')
 
-    
     await expect(page).toHaveURL(/.*\/search-result/)
-
-    
 
     const searchParams = new URLSearchParams(page.url())
 
-    
     const address = searchParams.get('child.birthLocation.privateHome')
 
-    
     if (address !== null) {
       const addressObject = JSON.parse(address)
       await expect(addressObject.country).toBe('FAR')
@@ -141,10 +110,8 @@ test('Advanced Search - Mobile', async ({ browser }) => {
       await expect(addressObject.village).toBeTruthy()
     }
 
-    
-
     await expect(page.getByText('Search results')).toBeVisible()
-
   })
 
-  await page.close()})
+  await page.close()
+})

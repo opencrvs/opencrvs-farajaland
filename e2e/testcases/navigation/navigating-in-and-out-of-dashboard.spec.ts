@@ -8,58 +8,38 @@ import { ActionType } from '@opencrvs/toolkit/events'
 
 test('Navigating in and out of dashboard', async ({ browser }) => {
   const token = await getToken(
-        CREDENTIALS.REGISTRAR.USERNAME,
-        CREDENTIALS.REGISTRAR.PASSWORD
-      )
-      const res = await createDeclaration(token, undefined, ActionType.DECLARE)
+    CREDENTIALS.REGISTRAR.USERNAME,
+    CREDENTIALS.REGISTRAR.PASSWORD
+  )
+  const res = await createDeclaration(token, undefined, ActionType.DECLARE)
 
-  
   let page: Page
 
-  
   let declaration: Declaration
-      declaration = res.declaration
-      page = await browser.newPage()
+  declaration = res.declaration
+  page = await browser.newPage()
 
   await test.step('Login', async () => {
-
-    
     await login(page)
-
   })
 
   await test.step('Navigate to the "Pending registration" -workqueue', async () => {
-
-    
     await page.getByRole('button', { name: 'Pending registration' }).click()
-
   })
 
   await test.step("Enter the 'Registration Dashboard' - from workqueue", async () => {
-
-    
     await page.getByText('Registrations Dashboard').click()
 
-    
     await page.waitForURL(`**/performance/dashboard/registrations`)
 
-    
     await expectInUrl(page, `/performance/dashboard/registrations`)
-
-    
 
     await page.locator('#page-title button').click()
 
-    
-
     await page.waitForURL(`**/workqueue/pending-registration`)
 
-    
     await expectInUrl(page, '/workqueue/pending-registration')
-
   })
-
-  
 
   test.describe
     .serial("Enter the 'Registration Dashboard' - from search result", async () => {
@@ -98,4 +78,5 @@ test('Navigating in and out of dashboard', async ({ browser }) => {
     })
   })
 
-  await page.close()})
+  await page.close()
+})

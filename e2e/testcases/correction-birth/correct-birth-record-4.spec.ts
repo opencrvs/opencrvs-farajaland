@@ -215,9 +215,7 @@ test('Correct record - 4', async ({ browser }) => {
   })
 
   await test.step('4.4 Make correction', async () => {
-    await test.step(
-      'Mark father details as not available to ensure data persists',
-      async () => {
+    await test.step('Mark father details as not available to ensure data persists', async () => {
       await page.getByTestId('change-button-father.name').click()
       await page.getByLabel("Father's details are not available").check()
       await page.getByRole('button', { name: 'Back to review' }).click()
@@ -236,8 +234,7 @@ test('Correct record - 4', async ({ browser }) => {
       )
 
       await page.getByRole('button', { name: 'Back to review' }).click()
-      }
-    )
+    })
 
     await test.step('4.4.1 Make correction on father details page', async () => {
       await test.step('4.4.1.1 Change name', async () => {

@@ -26,12 +26,9 @@ import { getRowByTitle } from '../print-certificate/birth/helpers'
 // HO Notifies => RO Rejects => HO Re-notifies with edits => RO declares and validates => Registrar rejects
 // => RO validates again => Registrar registers
 test('5. Workqueue flow - 5', async ({ browser }) => {
-
-  
   let page: Page
   page = await browser.newPage()
 
-  
   const declaration = {
     child: {
       name: {
@@ -80,195 +77,127 @@ test('5. Workqueue flow - 5', async ({ browser }) => {
     }
   }
 
-  
-
   const childName = formatName(declaration.child.name)
 
   await test.step('Notify by HO', async () => {
-
     await login(page, CREDENTIALS.HOSPITAL_OFFICIAL)
-          await page.click('#header-new-event')
-          await page.getByLabel('Birth').click()
-          await page.getByRole('button', { name: 'Continue' }).click()
-          await page.getByRole('button', { name: 'Continue' }).click()
+    await page.click('#header-new-event')
+    await page.getByLabel('Birth').click()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.getByRole('button', { name: 'Continue' }).click()
 
     await test.step('Fill child details', async () => {
-
-      
       await page.locator('#firstname').fill(declaration.child.name.firstNames)
 
-      
       await page.locator('#surname').fill(declaration.child.name.familyName)
 
-      
       await page.locator('#child____gender').click()
 
-      
       await page.getByText(declaration.child.gender, { exact: true }).click()
-
-      
 
       await page.getByPlaceholder('dd').fill(declaration.child.birthDate.dd)
 
-      
       await page.getByPlaceholder('mm').fill(declaration.child.birthDate.mm)
 
-      
       await page.getByPlaceholder('yyyy').fill(declaration.child.birthDate.yyyy)
-
-      
 
       await page.locator('#child____placeOfBirth').click()
 
-      
       await page
         .getByText(declaration.placeOfBirth, {
           exact: true
         })
         .click()
 
-      
       await page
         .locator('#child____birthLocation')
         .fill(declaration.birthLocation.facility.slice(0, 3))
 
-      
       await page.getByText(declaration.birthLocation.facility).click()
-
     })
 
     await test.step('Go to review', async () => {
-
-      
       await goToSection(page, 'review')
-
     })
 
     await test.step('Fill up informant comment & signature', async () => {
-
-      
       await page.locator('#review____comment').fill(faker.lorem.sentence())
 
-      
       await page.getByRole('button', { name: 'Sign', exact: true }).click()
 
-      
       await drawSignature(page, 'review____signature_canvas_element', false)
 
-      
       await page
         .locator('#review____signature_modal')
         .getByRole('button', { name: 'Apply' })
         .click()
 
-      
-
       await expect(page.getByRole('dialog')).not.toBeVisible()
-
     })
 
     await test.step('Notify', async () => {
-
-      
       await selectDeclarationAction(page, 'Notify')
 
-      
       await ensureOutboxIsEmpty(page)
-
     })
-
   })
 
   await test.step('Reject by RO', async () => {
-
     await test.step('Login', async () => {
-
-      
       await login(page, CREDENTIALS.REGISTRATION_OFFICER)
-
     })
 
     await test.step('Reject', async () => {
-
-      
       await page.getByText('Notifications').click()
 
-      
       await page
         .getByRole('button', {
           name: childName
         })
         .click()
-
-      
 
       await selectAction(page, 'Reject')
 
-      
       await page.getByTestId('reject-reason').fill(faker.lorem.sentence())
 
-      
       await page.getByRole('button', { name: 'Send For Update' }).click()
-
     })
 
     await test.step('Ensure rejection is no longer available', async () => {
-
-      
       await page.getByRole('button', { name: 'Recent' }).click()
 
-      
       await page
         .getByRole('button', {
           name: childName
         })
         .click()
 
-      
-
       await expect(page.getByText('Rejected')).toBeVisible()
-
-      
 
       await ensureAssigned(page)
 
-      
       await page.getByRole('button', { name: 'Action' }).click()
 
-      
       await expect(page.getByText('Reject', { exact: true })).not.toBeVisible()
 
-      
       await expect(page.getByText('Review', { exact: true })).not.toBeVisible()
 
-      
       await page.getByRole('button', { name: 'Action' }).click()
-
     })
 
     await test.step('Unassign', async () => {
-
-      
       await selectAction(page, 'Unassign')
 
-      
       await page.getByRole('button', { name: 'Unassign', exact: true }).click()
 
-      
       await expect(page.getByText('Not assigned')).toBeVisible()
-
     })
-
   })
 
   await test.step('Re-notify by HO', async () => {
-
     await test.step('Login', async () => {
-
-      
       await login(page, CREDENTIALS.HOSPITAL_OFFICIAL, true)
 
-      
       await assertRecordInWorkqueue({
         page,
         name: childName,
@@ -278,70 +207,46 @@ test('5. Workqueue flow - 5', async ({ browser }) => {
           { title: 'Pending updates', exists: true }
         ]
       })
-
     })
 
     await test.step('Go to Edit', async () => {
-
-      
       await assignFromWorkqueue(page, childName)
-
-      
 
       await getRowByTitle(page, childName)
         .getByRole('button', { name: 'Review' })
         .click()
 
-      
-
       await selectAction(page, 'Edit')
-
     })
 
     await test.step('Fill informant details', async () => {
-
-      
       await page
         .getByTestId('accordion-Accordion_informant')
         .getByRole('button', { name: 'Change all' })
         .click()
 
-      
-
       await page.locator('#informant____relation').click()
 
-      
       await page
         .getByText(declaration.informantType, {
           exact: true
         })
         .click()
 
-      
-
       await page.locator('#informant____email').fill(declaration.informantEmail)
-
-      
 
       await page
         .getByRole('button', { name: 'Back to review', exact: true })
         .click()
-
     })
 
     await test.step('Notify with edits', async () => {
-
-      
       await selectDeclarationAction(page, 'Notify with edits')
 
-      
       await ensureOutboxIsEmpty(page)
-
     })
 
     await test.step('Verify workqueue', async () => {
-
-      
       await assertRecordInWorkqueue({
         page,
         name: childName,
@@ -351,19 +256,12 @@ test('5. Workqueue flow - 5', async ({ browser }) => {
           { title: 'Pending updates', exists: false }
         ]
       })
-
     })
-
   })
 
   await test.step('Declare and validate by RO', async () => {
-
     await test.step('Verify workqueue', async () => {
-
-      
       await login(page, CREDENTIALS.REGISTRATION_OFFICER, true)
-
-      
 
       await assertRecordInWorkqueue({
         page,
@@ -381,174 +279,114 @@ test('5. Workqueue flow - 5', async ({ browser }) => {
           { title: 'Pending issuance', exists: false }
         ]
       })
-
     })
 
     await test.step('Go to Edit', async () => {
-
-      
       await page.getByText('Notifications').click()
 
-      
       await page
         .getByRole('button', {
           name: childName
         })
         .click()
 
-      
-
       await selectAction(page, 'Edit')
-
     })
 
     await test.step('Fill missing details', async () => {
-
-      
       await page
         .getByTestId('accordion-Accordion_mother')
         .getByRole('button', { name: 'Change all' })
         .click()
 
-      
-
       await page.locator('#firstname').fill(declaration.mother.name.firstNames)
 
-      
       await page.locator('#surname').fill(declaration.mother.name.familyName)
-
-      
 
       await page.getByPlaceholder('dd').fill(declaration.mother.birthDate.dd)
 
-      
       await page.getByPlaceholder('mm').fill(declaration.mother.birthDate.mm)
 
-      
       await page
         .getByPlaceholder('yyyy')
         .fill(declaration.mother.birthDate.yyyy)
 
-      
-
       await page.locator('#mother____idType').click()
 
-      
       await page
         .getByText(declaration.mother.identifier.type, { exact: true })
         .click()
-
-      
 
       await page
         .locator('#mother____nid')
         .fill(declaration.mother.identifier.id)
 
-      
-
       await page.locator('#country').click()
 
-      
       await page
         .locator('#country input')
         .fill(declaration.mother.address.country.slice(0, 3))
 
-      
       await page
         .locator('#country')
         .getByText(declaration.mother.address.country, { exact: true })
         .click()
 
-      
-
       await page.locator('#province').click()
 
-      
       await page
         .getByText(declaration.mother.address.province, { exact: true })
         .click()
 
-      
       await page.locator('#district').click()
 
-      
       await page
         .getByText(declaration.mother.address.district, { exact: true })
         .click()
 
-      
       await page.locator('#village').click()
 
-      
       await page
         .getByText(declaration.mother.address.village, { exact: true })
         .click()
 
-      
-
       await continueForm(page)
-
-      
 
       await page.locator('#firstname').fill(declaration.father.name.firstNames)
 
-      
       await page.locator('#surname').fill(declaration.father.name.familyName)
-
-      
 
       await fillDate(page, declaration.father.birthDate)
 
-      
-
       await page.locator('#father____idType').click()
 
-      
       await page
         .getByText(declaration.father.identifier.type, { exact: true })
         .click()
-
-      
 
       await page
         .locator('#father____nid')
         .fill(declaration.father.identifier.id)
 
-      
-
       await page.locator('#father____nationality').click()
 
-      
       await page
         .getByText(declaration.father.nationality, { exact: true })
         .click()
 
-      
-
       await page.locator('#father____addressSameAs_YES').click()
 
-      
       await continueForm(page, 'Back to review')
-
     })
 
     await test.step('Declare with edits', async () => {
-
-      
       await selectDeclarationAction(page, 'Declare with edits')
-
     })
-
   })
 
   await test.step('Reject by Registrar', async () => {
-
     await test.step('Login with Registrar', async () => {
-
-      
       await login(page, CREDENTIALS.REGISTRAR)
-
-      
 
       await assertRecordInWorkqueue({
         page,
@@ -569,36 +407,22 @@ test('5. Workqueue flow - 5', async ({ browser }) => {
           { title: 'Pending issuance', exists: false }
         ]
       })
-
     })
 
     await test.step('Reject', async () => {
-
-      
       await page.getByText('Pending registration').click()
-
-      
 
       await assignFromWorkqueue(page, childName)
 
-      
       await getRowByTitle(page, childName)
         .getByRole('button', { name: 'Review' })
         .click()
 
-      
-
       await selectAction(page, 'Reject')
-
-      
 
       await page.getByTestId('reject-reason').fill(faker.lorem.sentence())
 
-      
-
       await page.getByRole('button', { name: 'Send For Update' }).click()
-
-      
 
       await assertRecordInWorkqueue({
         page,
@@ -619,19 +443,12 @@ test('5. Workqueue flow - 5', async ({ browser }) => {
           { title: 'Pending issuance', exists: false }
         ]
       })
-
     })
-
   })
 
   await test.step('Re-declare with edits by RO', async () => {
-
     await test.step('Login with RO', async () => {
-
-      
       await login(page, CREDENTIALS.REGISTRATION_OFFICER, true)
-
-      
 
       await assertRecordInWorkqueue({
         page,
@@ -649,54 +466,35 @@ test('5. Workqueue flow - 5', async ({ browser }) => {
           { title: 'Pending issuance', exists: false }
         ]
       })
-
     })
 
     await test.step('Go to edit', async () => {
-
-      
       await page.getByText('Pending updates').click()
 
-      
       await assignFromWorkqueue(page, childName)
 
-      
       await getRowByTitle(page, childName)
         .getByRole('button', { name: 'Review' })
         .click()
 
-      
-
       await selectAction(page, 'Edit')
-
     })
 
     await test.step('Change informant email', async () => {
-
-      
       await page
         .getByTestId('accordion-Accordion_informant')
         .getByRole('button', { name: 'Change all' })
         .click()
 
-      
-
       await page.locator('#informant____email').fill(faker.internet.email())
-
-      
 
       await page
         .getByRole('button', { name: 'Back to review', exact: true })
         .click()
-
     })
 
     await test.step('Re-declare with edits', async () => {
-
-      
       await selectDeclarationAction(page, 'Declare with edits')
-
-      
 
       await assertRecordInWorkqueue({
         page,
@@ -714,19 +512,12 @@ test('5. Workqueue flow - 5', async ({ browser }) => {
           { title: 'Pending issuance', exists: false }
         ]
       })
-
     })
-
   })
 
   await test.step('Register by Registrar', async () => {
-
     await test.step('Login with Registrar', async () => {
-
-      
       await login(page, CREDENTIALS.REGISTRAR, true)
-
-      
 
       await assertRecordInWorkqueue({
         page,
@@ -747,34 +538,22 @@ test('5. Workqueue flow - 5', async ({ browser }) => {
           { title: 'Pending issuance', exists: false }
         ]
       })
-
     })
 
     await test.step('Register', async () => {
-
-      
       await page.getByText('Pending registration').click()
-
-      
 
       await assignFromWorkqueue(page, childName)
 
-      
       await getRowByTitle(page, childName)
         .getByRole('button', { name: 'Review' })
         .click()
 
-      
-
       await selectAction(page, 'Register')
 
-      
       await page.getByRole('button', { name: 'Confirm' }).click()
 
-      
       await ensureInExternalValidationIsEmpty(page)
-
-      
 
       await assertRecordInWorkqueue({
         page,
@@ -795,9 +574,8 @@ test('5. Workqueue flow - 5', async ({ browser }) => {
           { title: 'Pending issuance', exists: false }
         ]
       })
-
     })
-
   })
 
-  await page.close()})
+  await page.close()
+})

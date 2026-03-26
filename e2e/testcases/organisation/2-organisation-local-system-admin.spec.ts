@@ -3,12 +3,8 @@ import { login } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
 import { verifyMembersClickable } from '../birth/helpers'
 test('2. Organisation Page', async ({ browser }) => {
-
-  
   let page: Page
   page = await browser.newPage()
-
-  
 
   //User: Local System Admin(e.mayuka)
   //Scope: Ibombo, Central,Farajaland
@@ -64,8 +60,6 @@ test('2. Organisation Page', async ({ browser }) => {
     })
   })
 
-  
-
   test.describe('2.2 Out of Scope Access', async () => {
     test('2.2.1 Verify Province -> District -> Health Facility', async () => {
       for (let i = 0; i < 3; i++) {
@@ -100,4 +94,5 @@ test('2. Organisation Page', async ({ browser }) => {
     })
   })
 
-  await page.close()})
+  await page.close()
+})

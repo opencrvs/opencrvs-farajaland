@@ -85,69 +85,52 @@ test.describe
 
 test("Validate 'Birth Certificate' PDF details", async ({ browser }) => {
   const token = await getToken(
-        CREDENTIALS.REGISTRAR.USERNAME,
-        CREDENTIALS.REGISTRAR.PASSWORD
-      )
-  
-      // Create a declaration
-      const res = await createDeclaration(
-        token,
-        undefined,
-        undefined,
-        'HEALTH_FACILITY'
-      )
+    CREDENTIALS.REGISTRAR.USERNAME,
+    CREDENTIALS.REGISTRAR.PASSWORD
+  )
 
-  
+  // Create a declaration
+  const res = await createDeclaration(
+    token,
+    undefined,
+    undefined,
+    'HEALTH_FACILITY'
+  )
+
   let declaration: Declaration
 
-  
   let page: Page
-  
-      declaration = res.declaration
-      page = await browser.newPage()
+
+  declaration = res.declaration
+  page = await browser.newPage()
 
   await test.step('Log in', async () => {
-
-    
     await login(page)
-
   })
 
   await test.step('Go to review', async () => {
-
-    
     await page.getByRole('button', { name: 'Pending certification' }).click()
 
-    
     await navigateToCertificatePrintAction(page, declaration)
 
-    
     await selectCertificationType(page, 'Birth Certificate')
 
-    
     await selectRequesterType(page, 'Print and issue to Informant (Mother)')
 
-    
     await page.getByRole('button', { name: 'Continue' }).click()
 
-    
     await page.getByRole('button', { name: 'Verified' }).click()
 
-    
     await page.getByRole('button', { name: 'Continue' }).click()
-
   })
 
   await test.step('Validate child place of birth', async () => {
-
-    
     await expect(page.locator('#print')).toContainText('Klow Village Hospital')
 
-    
     await expect(page.locator('#print')).toContainText(
       'Ibombo, Central, Farajaland'
     )
-
   })
 
-  await page.close()})
+  await page.close()
+})

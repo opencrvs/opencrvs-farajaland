@@ -18,293 +18,191 @@ import { setMobileViewport } from '../../mobile-helpers'
 
 test('Birth correction flow - Mobile', async ({ browser }) => {
   const token = await getToken(
-        CREDENTIALS.REGISTRAR.USERNAME,
-        CREDENTIALS.REGISTRAR.PASSWORD
-      )
-      const res = await createDeclaration(
-        token,
-        undefined,
-        undefined,
-        'HEALTH_FACILITY'
-      )
+    CREDENTIALS.REGISTRAR.USERNAME,
+    CREDENTIALS.REGISTRAR.PASSWORD
+  )
+  const res = await createDeclaration(
+    token,
+    undefined,
+    undefined,
+    'HEALTH_FACILITY'
+  )
 
-  
   let declaration: Declaration
 
-  
   let eventId: string
 
-  
   let page: Page
-      declaration = res.declaration
-      eventId = res.eventId
-  
-      page = await browser.newPage()
-      setMobileViewport(page)
+  declaration = res.declaration
+  eventId = res.eventId
+
+  page = await browser.newPage()
+  setMobileViewport(page)
 
   await test.step('Login', async () => {
-
-    
     await login(page, CREDENTIALS.REGISTRATION_OFFICER)
-
   })
 
   await test.step('Navigate to the correction form', async () => {
-
-    
     await navigateToWorkqueue(page, 'Pending certification')
 
-    
     await page
       .getByRole('button', { name: formatV2ChildName(declaration) })
       .click()
 
-    
-
     await selectAction(page, 'Correct')
-
   })
 
   await test.step('Fill in the correction details form', async () => {
-
-    
     await page.locator('#requester____type').click()
 
-    
     await page.getByText('Informant (Mother)', { exact: true }).click()
-
-    
 
     await page.locator('#reason____option').click()
 
-    
     await page
       .getByText('Myself or an agent made a mistake (Clerical error)', {
         exact: true
       })
       .click()
 
-    
-
     await page.getByRole('button', { name: 'Continue' }).click()
 
-    
     await page.getByRole('button', { name: 'Verified' }).click()
-
   })
 
   await test.step('Fill in the supporting documents form', async () => {
-
-    
     const path = require('path')
 
-    
     const attachmentPath = path.resolve(__dirname, './image.png')
 
-    
     const inputFile = await page.locator(
       'input[name="documents____supportingDocs"][type="file"]'
     )
 
-    
-
     await page.getByTestId('select__documents____supportingDocs').click()
 
-    
     await page.getByText('Affidavit', { exact: true }).click()
 
-    
-
     await inputFile.setInputFiles(attachmentPath)
-
-    
 
     await page.getByTestId('select__documents____supportingDocs').click()
 
-    
     await page.getByText('Court Document', { exact: true }).click()
 
-    
     await inputFile.setInputFiles(attachmentPath)
 
-    
-
     await page.getByRole('button', { name: 'Continue' }).click()
-
   })
-
-  
 
   const fee = faker.number.int({ min: 1, max: 1000 })
 
   await test.step('Fill in the fees form', async () => {
-
-    
     await page.locator('#fees____amount').fill(fee.toString())
 
-    
-
     await page.getByRole('button', { name: 'Continue' }).click()
-
   })
 
   await test.step('Review page should be displayed and continue button should be disabled', async () => {
-
-    
     await expectInUrl(page, `/events/request-correction/${eventId}/review`)
 
-    
     await expect(page.getByRole('button', { name: 'Continue' })).toBeDisabled()
-
   })
-
-  
 
   const newFirstName = faker.person.firstName()
 
-  
   const reasonForDelayedRegistration = faker.lorem.sentence(4)
 
   await test.step('After changing child name, continue button should be enabled', async () => {
-
-    
     await page.getByTestId('change-button-child.dob').click()
 
-    
     await page.getByTestId('child____dob-yyyy').fill('2024')
 
-    
     await page.getByTestId('child____dob-mm').fill('6')
 
-    
     await page.getByTestId('child____dob-dd').fill('24')
 
-    
     await page
       .getByTestId('text__child____reason')
       .fill(reasonForDelayedRegistration)
 
-    
-
     await type(page, '#firstname', newFirstName)
 
-    
     await page.getByRole('button', { name: 'Back to review' }).click()
 
-    
     await expect(page.getByRole('button', { name: 'Continue' })).toBeEnabled()
-
   })
 
   await test.step('Continue to the summary page', async () => {
-
-    
     await page.getByRole('button', { name: 'Continue' }).click()
 
-    
     await expectInUrl(page, `/events/request-correction/${eventId}/summary`)
 
-    
     await expect(
       page.getByRole('button', { name: 'Back to review' })
     ).toBeEnabled()
 
-    
     await expect(
       page.getByRole('button', { name: 'Submit correction request' })
     ).toBeEnabled()
-
   })
 
   await test.step('Submit correction request', async () => {
-
-    
     await page
       .getByRole('button', { name: 'Submit correction request' })
       .click()
 
-    
-
     await expect(page.getByText('Request record correction?')).toBeVisible()
 
-    
     await page.getByRole('button', { name: 'Confirm', exact: true }).click()
 
-    
     await expectInUrl(page, `/workqueue/pending-certification`)
 
-    
     await ensureOutboxIsEmpty(page)
-
   })
 
   await test.step('Logout', async () => {
-
-    
     await logout(page)
-
   })
 
   await test.step('Approve correction request', async () => {
-
     await test.step('Login as Registrar', async () => {
-
-      
       await login(page, CREDENTIALS.REGISTRAR)
-
     })
 
     await test.step("Find the event in the 'Pending corrections' workflow", async () => {
-
-      
       await navigateToWorkqueue(page, 'Pending corrections')
-
-      
 
       await page
         .getByRole('button', { name: formatV2ChildName(declaration) })
         .click()
-
     })
 
     await test.step('Navigate to correction review', async () => {
-
-      
       await selectAction(page, 'Review correction request')
-
-      
 
       await expect(page.getByText('RequesterInformant (Mother)')).toBeVisible()
 
-      
       await expect(
         page.getByText(
           'Reason for correctionMyself or an agent made a mistake (Clerical error)'
         )
       ).toBeVisible()
 
-      
-
       await expect(
         page.getByRole('heading', { name: "Child's details" })
       ).toBeVisible()
-
     })
 
     await test.step('Validate correction values', async () => {
-
-      
       await expect(page.getByText('Submitter' + 'Felix Katongo')).toBeVisible()
 
-      
       await expect(
         page.getByText('Requester' + 'Informant (Mother)')
       ).toBeVisible()
 
-      
       await expect(page.getByText('Fee total' + `$${fee}`)).toBeVisible()
 
-      
       await expect(
         page
           .locator('#listTable-corrections-table-child')
@@ -314,8 +212,6 @@ test('Birth correction flow - Mobile', async ({ browser }) => {
               `${newFirstName} ${declaration['child.name'].surname}`
           )
       ).toBeVisible()
-
-      
 
       await expect(
         page
@@ -327,36 +223,25 @@ test('Birth correction flow - Mobile', async ({ browser }) => {
           )
       ).toBeVisible()
 
-      
-
       await expect(
         page.getByTestId('row-value-child.name').getByRole('deletion')
       ).toHaveText(
         `${declaration['child.name'].firstname} ${declaration['child.name'].surname}`,
         { ignoreCase: true }
       )
-
     })
 
     await test.step('Approve correction request', async () => {
-
-      
       await page.getByRole('button', { name: 'Approve', exact: true }).click()
 
-      
       await page.getByRole('button', { name: 'Confirm', exact: true }).click()
-
-      
 
       await expectInUrl(page, `/workqueue/correction-requested`)
 
-      
       await ensureOutboxIsEmpty(page)
 
-      
       await navigateToWorkqueue(page, 'Pending certification')
 
-      
       await page
         .getByRole('button', {
           name: formatV2ChildName({
@@ -367,8 +252,6 @@ test('Birth correction flow - Mobile', async ({ browser }) => {
           })
         })
         .click()
-
-      
 
       await expect(
         page.getByRole('heading', {
@@ -382,7 +265,6 @@ test('Birth correction flow - Mobile', async ({ browser }) => {
       ).toBeVisible({
         timeout: 60_000
       })
-
     })
-
-  })})
+  })
+})

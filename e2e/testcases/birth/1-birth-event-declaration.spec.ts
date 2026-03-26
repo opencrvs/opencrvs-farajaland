@@ -13,12 +13,9 @@ const child = {
 }
 
 test('1. Birth event declaration', async ({ browser }) => {
-  
   trackAndDeleteCreatedEvents()
 
   let page!: Page
-
-  
 
   test.describe('Fill all form sections. Save & Exit', () => {
     let page: Page
@@ -484,8 +481,6 @@ test('1. Birth event declaration', async ({ browser }) => {
     await page.getByRole('button', { name: 'Exit', exact: true }).click()
 
     await test.step('1.10.1 Click the "Exit" button from any page', async () => {
-
-      
       /*
        * Expected result: should open modal with:
        * - Title: Exit without saving changes?
@@ -497,27 +492,19 @@ test('1. Birth event declaration', async ({ browser }) => {
         page.getByRole('heading', { name: 'Exit without saving changes?' })
       ).toBeVisible()
 
-      
       await expect(
         page.getByText(
           'You have unsaved changes on your declaration form. Are you sure you want to exit without saving?'
         )
       ).toBeVisible()
 
-      
       await expect(page.getByRole('button', { name: 'Cancel' })).toBeVisible()
 
-      
       await expect(page.getByRole('button', { name: 'Confirm' })).toBeVisible()
-
     })
 
     await test.step('1.10.2 Click Cancel', async () => {
-
-      
       await page.getByRole('button', { name: 'Cancel' }).click()
-
-      
 
       /*
        * Expected result: should close the modal
@@ -525,24 +512,17 @@ test('1. Birth event declaration', async ({ browser }) => {
       await expect(
         page.getByRole('heading', { name: 'Exit without saving changes?' })
       ).toBeHidden()
-
     })
 
     await test.step('1.10.3 Click Confirm', async () => {
-
-      
       await page.getByRole('button', { name: 'Confirm' }).click()
-
-      
 
       await expect(
         page
           .getByTestId('search-result')
           .getByText('Assigned to you', { exact: true })
       ).toBeVisible()
-
     })
-
   })
 
   await test.step('1.11 Validate "Delete Declaration" Button  ', async () => {
@@ -558,8 +538,6 @@ test('1. Birth event declaration', async ({ browser }) => {
       .click()
 
     await test.step('1.11.1 Click the "Delete Declaration" button from any page', async () => {
-
-      
       /*
        * Expected result: should open modal with:
        * - Title: Delete draft?
@@ -571,25 +549,17 @@ test('1. Birth event declaration', async ({ browser }) => {
         page.getByRole('heading', { name: 'Delete draft?' })
       ).toBeVisible()
 
-      
       await expect(
         page.getByText('Are you sure you want to delete this declaration?')
       ).toBeVisible()
 
-      
       await expect(page.getByRole('button', { name: 'Cancel' })).toBeVisible()
 
-      
       await expect(page.getByRole('button', { name: 'Confirm' })).toBeVisible()
-
     })
 
     await test.step('1.11.2 Click Cancel', async () => {
-
-      
       await page.getByRole('button', { name: 'Cancel' }).click()
-
-      
 
       /*
        * Expected result: should close the modal
@@ -597,27 +567,18 @@ test('1. Birth event declaration', async ({ browser }) => {
       await expect(
         page.getByRole('heading', { name: 'Exit without saving changes?' })
       ).toBeHidden()
-
     })
 
     await test.step('1.11.3 Click Confirm', async () => {
-
-      
       await page.getByRole('button', { name: 'Confirm' }).click()
-
-      
 
       await expect(
         page.getByTestId('search-result').getByText('Assigned to you')
       ).toBeVisible()
-
     })
-
   })
 
   await page.close()
-
-  
 
   // @TODO: This test is not implemented in V2 events yet
   test.describe.skip('1.12 Technical test for shortcuts', () => {

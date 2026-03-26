@@ -2,12 +2,9 @@ import { test, expect, type Page } from '@playwright/test'
 import { login } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
 test('5. Organisation Page', async ({ browser }) => {
-
-  
   let page: Page
   page = await browser.newPage()
 
-  
   test.describe('5.1 Basic UI check', async () => {
     test('5.1.0 Verify UI', async () => {
       await login(page, CREDENTIALS.PERFORMANCE_MANAGER)
@@ -92,4 +89,5 @@ test('5. Organisation Page', async ({ browser }) => {
     })
   })
 
-  await page.close()})
+  await page.close()
+})

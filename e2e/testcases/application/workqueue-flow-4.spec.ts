@@ -19,12 +19,9 @@ import { assertRecordInWorkqueue, fillDate } from '../birth/helpers'
 
 // HO Declares => RO Validates => Registrar Registers
 test('4. Workqueue flow - 4', async ({ browser }) => {
-
-  
   let page: Page
   page = await browser.newPage()
 
-  
   const declaration = {
     child: {
       name: {
@@ -74,250 +71,165 @@ test('4. Workqueue flow - 4', async ({ browser }) => {
   }
 
   await test.step('4.1 Declare by HO', async () => {
-
     await login(page, CREDENTIALS.HOSPITAL_OFFICIAL)
-          await page.click('#header-new-event')
-          await page.getByLabel('Birth').click()
-          await page.getByRole('button', { name: 'Continue' }).click()
-          await page.getByRole('button', { name: 'Continue' }).click()
+    await page.click('#header-new-event')
+    await page.getByLabel('Birth').click()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.getByRole('button', { name: 'Continue' }).click()
 
     await test.step('4.1.1 Fill child details', async () => {
-
-      
       await page.locator('#firstname').fill(declaration.child.name.firstNames)
 
-      
       await page.locator('#surname').fill(declaration.child.name.familyName)
 
-      
       await page.locator('#child____gender').click()
 
-      
       await page.getByText(declaration.child.gender, { exact: true }).click()
-
-      
 
       await page.getByPlaceholder('dd').fill(declaration.child.birthDate.dd)
 
-      
       await page.getByPlaceholder('mm').fill(declaration.child.birthDate.mm)
 
-      
       await page.getByPlaceholder('yyyy').fill(declaration.child.birthDate.yyyy)
-
-      
 
       await page.locator('#child____placeOfBirth').click()
 
-      
       await page
         .getByText(declaration.placeOfBirth, {
           exact: true
         })
         .click()
 
-      
       await page
         .locator('#child____birthLocation')
         .fill(declaration.birthLocation.facility.slice(0, 3))
 
-      
       await page.getByText(declaration.birthLocation.facility).click()
 
-      
-
       await continueForm(page)
-
     })
 
     await test.step('4.1.2 Fill informant details', async () => {
-
-      
       await page.locator('#informant____relation').click()
 
-      
       await page
         .getByText(declaration.informantType, {
           exact: true
         })
         .click()
 
-      
-
       await page.locator('#informant____email').fill(declaration.informantEmail)
 
-      
-
       await continueForm(page)
-
     })
 
     await test.step("4.1.3 Fill mother's details", async () => {
-
-      
       await page.locator('#firstname').fill(declaration.mother.name.firstNames)
 
-      
       await page.locator('#surname').fill(declaration.mother.name.familyName)
-
-      
 
       await page.getByPlaceholder('dd').fill(declaration.mother.birthDate.dd)
 
-      
       await page.getByPlaceholder('mm').fill(declaration.mother.birthDate.mm)
 
-      
       await page
         .getByPlaceholder('yyyy')
         .fill(declaration.mother.birthDate.yyyy)
 
-      
-
       await page.locator('#mother____idType').click()
 
-      
       await page
         .getByText(declaration.mother.identifier.type, { exact: true })
         .click()
-
-      
 
       await page
         .locator('#mother____nid')
         .fill(declaration.mother.identifier.id)
 
-      
-
       await page.locator('#country').click()
 
-      
       await page
         .locator('#country input')
         .fill(declaration.mother.address.country.slice(0, 3))
 
-      
       await page
         .locator('#country')
         .getByText(declaration.mother.address.country, { exact: true })
         .click()
 
-      
-
       await page.locator('#province').click()
 
-      
       await page
         .getByText(declaration.mother.address.province, { exact: true })
         .click()
 
-      
       await page.locator('#district').click()
 
-      
       await page
         .getByText(declaration.mother.address.district, { exact: true })
         .click()
 
-      
       await page.locator('#village').click()
 
-      
       await page
         .getByText(declaration.mother.address.village, { exact: true })
         .click()
 
-      
-
       await continueForm(page)
-
     })
 
     await test.step("4.1.4 Fill father's details", async () => {
-
-      
       await page.locator('#firstname').fill(declaration.father.name.firstNames)
 
-      
       await page.locator('#surname').fill(declaration.father.name.familyName)
-
-      
 
       await fillDate(page, declaration.father.birthDate)
 
-      
-
       await page.locator('#father____idType').click()
 
-      
       await page
         .getByText(declaration.father.identifier.type, { exact: true })
         .click()
-
-      
 
       await page
         .locator('#father____nid')
         .fill(declaration.father.identifier.id)
 
-      
-
       await page.locator('#father____nationality').click()
 
-      
       await page
         .getByText(declaration.father.nationality, { exact: true })
         .click()
 
-      
-
       await page.locator('#father____addressSameAs_YES').click()
-
     })
 
     await test.step('4.1.5 Go to review', async () => {
-
-      
       await goToSection(page, 'review')
-
     })
 
     await test.step('4.1.6 Fill up informant comment & signature', async () => {
-
-      
       await page.locator('#review____comment').fill(faker.lorem.sentence())
 
-      
       await page.getByRole('button', { name: 'Sign', exact: true }).click()
 
-      
       await drawSignature(page, 'review____signature_canvas_element', false)
 
-      
       await page
         .locator('#review____signature_modal')
         .getByRole('button', { name: 'Apply' })
         .click()
 
-      
-
       await expect(page.getByRole('dialog')).not.toBeVisible()
-
     })
 
     await test.step('4.1.7 Declare', async () => {
-
-      
       await selectDeclarationAction(page, 'Declare')
 
-      
       await ensureOutboxIsEmpty(page)
-
     })
 
     await test.step('4.1.8 Verify workqueue', async () => {
-
-      
       await assertRecordInWorkqueue({
         page,
         name: formatName(declaration.child.name),
@@ -327,17 +239,11 @@ test('4. Workqueue flow - 4', async ({ browser }) => {
           { title: 'Pending updates', exists: false }
         ]
       })
-
     })
-
   })
 
   await test.step('4.2 Workqueue for Registrar', async () => {
-
-    
     await login(page, CREDENTIALS.REGISTRAR)
-
-    
 
     await assertRecordInWorkqueue({
       page,
@@ -358,17 +264,11 @@ test('4. Workqueue flow - 4', async ({ browser }) => {
         { title: 'Pending issuance', exists: false }
       ]
     })
-
   })
 
   await test.step('4.3 Validate by RO', async () => {
-
     await test.step('4.3.1 Verify workqueue', async () => {
-
-      
       await login(page, CREDENTIALS.REGISTRATION_OFFICER)
-
-      
 
       await assertRecordInWorkqueue({
         page,
@@ -386,34 +286,22 @@ test('4. Workqueue flow - 4', async ({ browser }) => {
           { title: 'Pending issuance', exists: false }
         ]
       })
-
     })
 
     await test.step('4.3.2 Validate', async () => {
-
-      
       await page.getByText('Pending validation').click()
 
-      
       await page
         .getByRole('button', {
           name: formatName(declaration.child.name)
         })
         .click()
 
-      
-
       await selectAction(page, 'Validate')
-
-      
 
       await page.getByRole('button', { name: 'Confirm' }).click()
 
-      
-
       await ensureOutboxIsEmpty(page)
-
-      
 
       await assertRecordInWorkqueue({
         page,
@@ -431,17 +319,11 @@ test('4. Workqueue flow - 4', async ({ browser }) => {
           { title: 'Pending issuance', exists: false }
         ]
       })
-
     })
-
   })
 
   await test.step('4.4 HO can not see the validated record', async () => {
-
-    
     await login(page, CREDENTIALS.HOSPITAL_OFFICIAL, true)
-
-    
 
     await assertRecordInWorkqueue({
       page,
@@ -452,17 +334,11 @@ test('4. Workqueue flow - 4', async ({ browser }) => {
         { title: 'Pending updates', exists: false }
       ]
     })
-
   })
 
   await test.step('4.5 Register by Registrar', async () => {
-
     await test.step('4.5.1 Validate workqueue', async () => {
-
-      
       await login(page, CREDENTIALS.REGISTRAR, true)
-
-      
 
       await assertRecordInWorkqueue({
         page,
@@ -483,36 +359,24 @@ test('4. Workqueue flow - 4', async ({ browser }) => {
           { title: 'Pending issuance', exists: false }
         ]
       })
-
     })
 
     await test.step('4.5.2 Register', async () => {
-
-      
       await page.getByText('Pending registration').click()
 
-      
       await page
         .getByRole('button', {
           name: formatName(declaration.child.name)
         })
         .click()
 
-      
-
       await selectAction(page, 'Register')
 
-      
       await page.getByRole('button', { name: 'Confirm' }).click()
-
-      
 
       await ensureOutboxIsEmpty(page)
 
-      
       await ensureInExternalValidationIsEmpty(page)
-
-      
 
       await assertRecordInWorkqueue({
         page,
@@ -533,17 +397,11 @@ test('4. Workqueue flow - 4', async ({ browser }) => {
           { title: 'Pending issuance', exists: false }
         ]
       })
-
     })
-
   })
 
   await test.step('4.6 HO can not see the registered record', async () => {
-
-    
     await login(page, CREDENTIALS.HOSPITAL_OFFICIAL, true)
-
-    
 
     await assertRecordInWorkqueue({
       page,
@@ -554,15 +412,10 @@ test('4. Workqueue flow - 4', async ({ browser }) => {
         { title: 'Pending updates', exists: false }
       ]
     })
-
   })
 
   await test.step('4.7 Workqueue for RO', async () => {
-
-    
     await login(page, CREDENTIALS.REGISTRATION_OFFICER, true)
-
-    
 
     await assertRecordInWorkqueue({
       page,
@@ -580,7 +433,7 @@ test('4. Workqueue flow - 4', async ({ browser }) => {
         { title: 'Pending issuance', exists: false }
       ]
     })
-
   })
 
-  await page.close()})
+  await page.close()
+})
