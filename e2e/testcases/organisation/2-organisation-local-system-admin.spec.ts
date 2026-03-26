@@ -1,30 +1,29 @@
-import { test, expect, Page } from '@playwright/test'
+import { test, expect, type Page } from '@playwright/test'
 import { login } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
 import { verifyMembersClickable } from '../birth/helpers'
-
-test.describe('2. Organisation Page', () => {
+test.describe.serial('2. Organisation Page', () => {
   let page: Page
 
-  test.beforeEach(async ({ browser }) => {
+  test.beforeAll(async ({ browser }) => {
     page = await browser.newPage()
   })
 
-  test.afterEach(async () => {
+  test.afterAll(async () => {
     await page.close()
   })
 
   //User: Local System Admin(e.mayuka)
   //Scope: Ibombo, Central,Farajaland
-  test('2.1 UI check', async () => {
-    await test.step('2.1.0 Verify UI', async () => {
+
+  test.describe.serial('2.1 UI check', async () => {
+    test('2.1.0 Verify UI', async () => {
       await login(page, CREDENTIALS.LOCAL_SYSTEM_ADMIN)
       await page.getByRole('button', { name: 'Organisation' }).click()
       await expect(page.locator('#content-name')).toHaveText('Organisation')
       await expect(page.getByText('Farajaland', { exact: true })).toBeVisible()
     })
-
-    await test.step('2.1.1 Verify Province -> District -> Health Facility(No Data)', async () => {
+    test('2.1.1 Verify Province -> District -> Health Facility(No Data)', async () => {
       await page.getByRole('button', { name: /Central/ }).click()
       await page.getByRole('button', { name: /Ibombo/ }).click()
       const pageNavigator = page.getByRole('button', { name: '2' })
@@ -42,8 +41,7 @@ test.describe('2. Organisation Page', () => {
       ).toBeVisible()
       await expect(page.getByText('No result')).toBeVisible()
     })
-
-    await test.step('2.1.2 Verify Province -> District -> District Office', async () => {
+    test('2.1.2 Verify Province -> District -> District Office', async () => {
       for (let i = 0; i < 3; i++) {
         await page.goBack()
       }
@@ -59,8 +57,7 @@ test.describe('2. Organisation Page', () => {
         page.getByText('Ibombo, Central', { exact: true })
       ).toBeVisible()
     })
-
-    await test.step('2.1.3 Verify Team Members Status', async () => {
+    test('2.1.3 Verify Team Members Status', async () => {
       const ibomboMembers = ['Felix Katongo', 'Kennedy Mweene']
       await verifyMembersClickable(
         page,
@@ -70,8 +67,8 @@ test.describe('2. Organisation Page', () => {
     })
   })
 
-  test('2.2 Out of Scope Access', async () => {
-    await test.step('2.2.1 Verify Province -> District -> Health Facility', async () => {
+  test.describe.serial('2.2 Out of Scope Access', async () => {
+    test('2.2.1 Verify Province -> District -> Health Facility', async () => {
       for (let i = 0; i < 3; i++) {
         await page.goBack()
       }
@@ -82,8 +79,7 @@ test.describe('2. Organisation Page', () => {
         page.getByRole('button', { name: /Ilanga District Hospital/ })
       ).toBeDisabled()
     })
-
-    await test.step('2.2.2 Verify Province -> District -> District Office', async () => {
+    test('2.2.2 Verify Province -> District -> District Office', async () => {
       for (let i = 0; i < 2; i++) {
         await page.goBack()
       }
@@ -96,7 +92,7 @@ test.describe('2. Organisation Page', () => {
       ).toBeDisabled()
     })
 
-    await test.step('2.2.3 Verify Embassy', async () => {
+    test('2.2.3 Verify Embassy', async () => {
       await page.getByRole('button', { name: /Organisation/ }).click()
 
       await expect(

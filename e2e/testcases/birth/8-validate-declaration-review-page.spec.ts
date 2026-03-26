@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+import { test, expect, type Page } from '@playwright/test'
 import {
   drawSignature,
   continueForm,
@@ -16,14 +16,8 @@ import { fillDate } from './helpers'
 import { selectDeclarationAction } from '../../helpers'
 import { ensureAssigned, ensureOutboxIsEmpty, selectAction } from '../../utils'
 
-test('8. Validate declaration review page', async ({ browser }) => {
-  const page = await browser.newPage()
-
-  await login(page, CREDENTIALS.HOSPITAL_OFFICIAL)
-  await page.click('#header-new-event')
-  await page.getByLabel('Birth').click()
-  await page.getByRole('button', { name: 'Continue' }).click()
-  await page.getByRole('button', { name: 'Continue' }).click()
+test.describe.serial('8. Validate declaration review page', () => {
+  let page: Page
 
   const declaration = {
     child: {
@@ -76,41 +70,45 @@ test('8. Validate declaration review page', async ({ browser }) => {
 
   const comment = faker.lorem.sentence()
 
-  await test.step('8.1 Hospital Official actions', async () => {
-    await test.step('8.1.0 Fill up birth registration form', async () => {
-      await test.step('8.1.0.1 Fill child details', async () => {
+  test.beforeAll(async ({ browser }) => {
+    page = await browser.newPage()
+    await login(page, CREDENTIALS.HOSPITAL_OFFICIAL)
+    await page.click('#header-new-event')
+    await page.getByLabel('Birth').click()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.getByRole('button', { name: 'Continue' }).click()
+  })
+
+  test.afterAll(async () => {
+    await page.close()
+  })
+
+  test.describe('8.1 Hospital Official actions', async () => {
+    test.describe('8.1.0 Fill up birth registration form', async () => {
+      test('8.1.0.1 Fill child details', async () => {
         await page.locator('#firstname').fill(declaration.child.name.firstNames)
-
         await page.locator('#surname').fill(declaration.child.name.familyName)
-
         await page.locator('#child____gender').click()
-
         await page.getByText(declaration.child.gender, { exact: true }).click()
 
         await page.getByPlaceholder('dd').fill(declaration.child.birthDate.dd)
-
         await page.getByPlaceholder('mm').fill(declaration.child.birthDate.mm)
-
         await page
           .getByPlaceholder('yyyy')
           .fill(declaration.child.birthDate.yyyy)
 
         await page.locator('#child____placeOfBirth').click()
-
         await page
           .getByText(declaration.placeOfBirth, {
             exact: true
           })
           .click()
-
         await page
           .locator('#child____birthLocation')
           .fill(declaration.birthLocation.slice(0, 3))
-
         await page.getByText(declaration.birthLocation).click()
 
         await page.locator('#child____attendantAtBirth').click()
-
         await page
           .getByText(declaration.attendantAtBirth, {
             exact: true
@@ -118,7 +116,6 @@ test('8. Validate declaration review page', async ({ browser }) => {
           .click()
 
         await page.locator('#child____birthType').click()
-
         await page
           .getByText(declaration.birthType, {
             exact: true
@@ -132,9 +129,8 @@ test('8. Validate declaration review page', async ({ browser }) => {
         await continueForm(page)
       })
 
-      await test.step('8.1.0.2 Fill informant details', async () => {
+      test('8.1.0.2 Fill informant details', async () => {
         await page.locator('#informant____relation').click()
-
         await page
           .getByText(declaration.informantType, {
             exact: true
@@ -148,23 +144,19 @@ test('8. Validate declaration review page', async ({ browser }) => {
         await continueForm(page)
       })
 
-      await test.step("8.1.0.3 Fill mother's details", async () => {
+      test("8.1.0.3 Fill mother's details", async () => {
         await page
           .locator('#firstname')
           .fill(declaration.mother.name.firstNames)
-
         await page.locator('#surname').fill(declaration.mother.name.familyName)
 
         await page.getByPlaceholder('dd').fill(declaration.mother.birthDate.dd)
-
         await page.getByPlaceholder('mm').fill(declaration.mother.birthDate.mm)
-
         await page
           .getByPlaceholder('yyyy')
           .fill(declaration.mother.birthDate.yyyy)
 
         await page.locator('#mother____idType').click()
-
         await page
           .getByText(declaration.mother.identifier.type, { exact: true })
           .click()
@@ -174,19 +166,14 @@ test('8. Validate declaration review page', async ({ browser }) => {
           .fill(declaration.mother.identifier.id)
 
         await page.locator('#province').click()
-
         await page
           .getByText(declaration.mother.address.province, { exact: true })
           .click()
-
         await page.locator('#district').click()
-
         await page
           .getByText(declaration.mother.address.district, { exact: true })
           .click()
-
         await page.locator('#village').click()
-
         await page
           .getByText(declaration.mother.address.village, { exact: true })
           .click()
@@ -194,17 +181,15 @@ test('8. Validate declaration review page', async ({ browser }) => {
         await continueForm(page)
       })
 
-      await test.step("8.1.0.4 Fill father's details", async () => {
+      test("8.1.0.4 Fill father's details", async () => {
         await page
           .locator('#firstname')
           .fill(declaration.father.name.firstNames)
-
         await page.locator('#surname').fill(declaration.father.name.familyName)
 
         await fillDate(page, declaration.father.birthDate)
 
         await page.locator('#father____idType').click()
-
         await page
           .getByText(declaration.father.identifier.type, { exact: true })
           .click()
@@ -214,13 +199,12 @@ test('8. Validate declaration review page', async ({ browser }) => {
           .fill(declaration.father.identifier.id)
 
         await page.locator('#father____addressSameAs_YES').click()
-
         await continueForm(page)
       })
     })
 
-    await test.step('8.1.1 Navigate to declaration review page', async () => {
-      await test.step('8.1.1.1 Verify information added on previous pages', async () => {
+    test.describe('8.1.1 Navigate to declaration review page', async () => {
+      test('8.1.1.1 Verify information added on previous pages', async () => {
         await goToSection(page, 'review')
 
         /*
@@ -271,7 +255,6 @@ test('8. Validate declaration review page', async ({ browser }) => {
           'child.placeOfBirth',
           declaration.placeOfBirth
         )
-
         await expectRowValueWithChangeButton(
           page,
           'child.birthLocation',
@@ -321,7 +304,6 @@ test('8. Validate declaration review page', async ({ browser }) => {
           'informant.relation',
           declaration.informantType
         )
-
         /*
          * Expected result: should include
          * - Informant's Email
@@ -368,7 +350,6 @@ test('8. Validate declaration review page', async ({ browser }) => {
           'mother.nationality',
           declaration.mother.nationality
         )
-
         /*
          * Expected result: should include
          * - Mother's Type of Id
@@ -380,7 +361,6 @@ test('8. Validate declaration review page', async ({ browser }) => {
           'mother.idType',
           declaration.mother.identifier.type
         )
-
         await expectRowValueWithChangeButton(
           page,
           'mother.nid',
@@ -397,13 +377,11 @@ test('8. Validate declaration review page', async ({ browser }) => {
           'mother.address',
           declaration.mother.address.country
         )
-
         await expectRowValueWithChangeButton(
           page,
           'mother.address',
           declaration.mother.address.district
         )
-
         await expectRowValueWithChangeButton(
           page,
           'mother.address',
@@ -445,7 +423,6 @@ test('8. Validate declaration review page', async ({ browser }) => {
           'father.nationality',
           declaration.father.nationality
         )
-
         /*
          * Expected result: should include
          * - Father's Type of Id
@@ -457,7 +434,6 @@ test('8. Validate declaration review page', async ({ browser }) => {
           'father.idType',
           declaration.father.identifier.type
         )
-
         await expectRowValueWithChangeButton(
           page,
           'father.nid',
@@ -477,19 +453,16 @@ test('8. Validate declaration review page', async ({ browser }) => {
       })
     })
 
-    await test.step('8.1.2 Click any "Change" link', async () => {
-      await test.step("8.1.2.1 Change child's name", async () => {
+    test.describe('8.1.2 Click any "Change" link', async () => {
+      test("8.1.2.1 Change child's name", async () => {
         await page.getByTestId('change-button-child.name').click()
-
         await page.getByRole('button', { name: 'Continue' }).click()
 
         declaration.child.name = {
           firstNames: faker.person.firstName('male'),
           familyName: faker.person.lastName('male')
         }
-
         await page.locator('#firstname').fill(declaration.child.name.firstNames)
-
         await page.locator('#surname').fill(declaration.child.name.familyName)
 
         await page.getByRole('button', { name: 'Back to review' }).click()
@@ -504,17 +477,14 @@ test('8. Validate declaration review page', async ({ browser }) => {
         )
       })
 
-      await test.step("8.1.2.2 Change child's gender", async () => {
+      test("8.1.2.2 Change child's gender", async () => {
         await page.getByTestId('change-button-child.gender').click()
-
         await page.getByRole('button', { name: 'Continue' }).click()
 
         declaration.child.gender = 'Female'
 
         await page.locator('#child____gender').click()
-
         await page.getByText(declaration.child.gender, { exact: true }).click()
-
         await page.getByRole('button', { name: 'Back to review' }).click()
 
         /*
@@ -525,17 +495,13 @@ test('8. Validate declaration review page', async ({ browser }) => {
         )
       })
 
-      await test.step("8.1.2.3 Change child's birthday", async () => {
+      test("8.1.2.3 Change child's birthday", async () => {
         await page.getByTestId('change-button-child.dob').click()
-
         await page.getByRole('button', { name: 'Continue' }).click()
 
         declaration.child.birthDate = getRandomDate(0, 200)
-
         await page.getByPlaceholder('dd').fill(declaration.child.birthDate.dd)
-
         await page.getByPlaceholder('mm').fill(declaration.child.birthDate.mm)
-
         await page
           .getByPlaceholder('yyyy')
           .fill(declaration.child.birthDate.yyyy)
@@ -550,21 +516,16 @@ test('8. Validate declaration review page', async ({ browser }) => {
         )
       })
 
-      await test.step('8.1.2.5 Change attendant at birth', async () => {
+      test('8.1.2.5 Change attendant at birth', async () => {
         await page.getByTestId('change-button-child.attendantAtBirth').click()
-
         await page.getByRole('button', { name: 'Continue' }).click()
-
         declaration.attendantAtBirth = 'Midwife'
-
         await page.locator('#child____attendantAtBirth').click()
-
         await page
           .getByText(declaration.attendantAtBirth, {
             exact: true
           })
           .click()
-
         await page.getByRole('button', { name: 'Back to review' }).click()
 
         /*
@@ -575,21 +536,17 @@ test('8. Validate declaration review page', async ({ browser }) => {
         ).toContainText(declaration.attendantAtBirth)
       })
 
-      await test.step('8.1.2.6 Change type of birth', async () => {
+      test('8.1.2.6 Change type of birth', async () => {
         await page.getByTestId('change-button-child.birthType').click()
-
         await page.getByRole('button', { name: 'Continue' }).click()
 
         declaration.birthType = 'Twin'
-
         await page.locator('#child____birthType').click()
-
         await page
           .getByText(declaration.birthType, {
             exact: true
           })
           .click()
-
         await page.getByRole('button', { name: 'Back to review' }).click()
 
         /*
@@ -600,17 +557,14 @@ test('8. Validate declaration review page', async ({ browser }) => {
         ).toContainText(declaration.birthType)
       })
 
-      await test.step("8.1.2.7 Change child's weight at birth", async () => {
+      test("8.1.2.7 Change child's weight at birth", async () => {
         await page.getByTestId('change-button-child.weightAtBirth').click()
-
         await page.getByRole('button', { name: 'Continue' }).click()
 
         declaration.weightAtBirth = 2.7
-
         await page
           .locator('#child____weightAtBirth')
           .fill(declaration.weightAtBirth.toString())
-
         await page.getByRole('button', { name: 'Back to review' }).click()
 
         /*
@@ -621,21 +575,17 @@ test('8. Validate declaration review page', async ({ browser }) => {
         ).toContainText(declaration.weightAtBirth.toString())
       })
 
-      await test.step('8.1.2.8 Change informant type', async () => {
+      test('8.1.2.8 Change informant type', async () => {
         await page.getByTestId('change-button-informant.relation').click()
-
         await page.getByRole('button', { name: 'Continue' }).click()
 
         declaration.informantType = 'Father'
-
         await page.locator('#informant____relation').click()
-
         await page
           .getByText(declaration.informantType, {
             exact: true
           })
           .click()
-
         await page.getByRole('button', { name: 'Back to review' }).click()
 
         /*
@@ -646,9 +596,8 @@ test('8. Validate declaration review page', async ({ browser }) => {
         ).toContainText(declaration.informantType)
       })
 
-      await test.step('8.1.2.9 Change registration email', async () => {
+      test('8.1.2.9 Change registration email', async () => {
         await page.getByTestId('change-button-informant.email').click()
-
         await page.getByRole('button', { name: 'Continue' }).click()
 
         declaration.informantEmail =
@@ -657,11 +606,9 @@ test('8. Validate declaration review page', async ({ browser }) => {
           declaration.father.name.familyName.toLowerCase() +
           (Math.random() * 1000).toFixed(0) +
           '@opencrvs.dev'
-
         await page
           .locator('#informant____email')
           .fill(declaration.informantEmail)
-
         await page.getByRole('button', { name: 'Back to review' }).click()
 
         /*
@@ -672,21 +619,16 @@ test('8. Validate declaration review page', async ({ browser }) => {
         ).toContainText(declaration.informantEmail)
       })
 
-      await test.step("8.1.2.10 Change mother's name", async () => {
+      test("8.1.2.10 Change mother's name", async () => {
         await page.getByTestId('change-button-mother.name').click()
-
         await page.getByRole('button', { name: 'Continue' }).click()
 
         declaration.mother.name.firstNames = faker.person.firstName('female')
-
         declaration.mother.name.familyName = faker.person.lastName('female')
-
         await page
           .locator('#firstname')
           .fill(declaration.mother.name.firstNames)
-
         await page.locator('#surname').fill(declaration.mother.name.familyName)
-
         await page.getByRole('button', { name: 'Back to review' }).click()
 
         /*
@@ -697,17 +639,13 @@ test('8. Validate declaration review page', async ({ browser }) => {
         )
       })
 
-      await test.step("8.1.2.11 Change mother's birthday", async () => {
+      test("8.1.2.11 Change mother's birthday", async () => {
         await page.getByTestId('change-button-mother.dob').click()
-
         await page.getByRole('button', { name: 'Continue' }).click()
 
         declaration.mother.birthDate = getRandomDate(19, 200)
-
         await page.getByPlaceholder('dd').fill(declaration.mother.birthDate.dd)
-
         await page.getByPlaceholder('mm').fill(declaration.mother.birthDate.mm)
-
         await page
           .getByPlaceholder('yyyy')
           .fill(declaration.mother.birthDate.yyyy)
@@ -722,21 +660,17 @@ test('8. Validate declaration review page', async ({ browser }) => {
         )
       })
 
-      await test.step("8.1.2.12 Change mother's nationality", async () => {
+      test("8.1.2.12 Change mother's nationality", async () => {
         await page.getByTestId('change-button-mother.nationality').click()
-
         await page.getByRole('button', { name: 'Continue' }).click()
 
         declaration.mother.nationality = 'Holy See'
-
         await page.locator('#mother____nationality').click()
-
         await page
           .getByText(declaration.mother.nationality, {
             exact: true
           })
           .click()
-
         await page.getByRole('button', { name: 'Back to review' }).click()
 
         /*
@@ -747,15 +681,12 @@ test('8. Validate declaration review page', async ({ browser }) => {
         ).toContainText(declaration.mother.nationality)
       })
 
-      await test.step("8.1.2.13 & 8.1.2.14 Change mother's ID type and id number", async () => {
+      test("8.1.2.13 & 8.1.2.14 Change mother's ID type and id number", async () => {
         await page.getByTestId('change-button-mother.idType').click()
-
         await page.getByRole('button', { name: 'Continue' }).click()
 
         declaration.mother.identifier.type = 'Passport'
-
         await page.locator('#mother____idType').click()
-
         await page
           .getByText(declaration.mother.identifier.type, {
             exact: true
@@ -763,11 +694,9 @@ test('8. Validate declaration review page', async ({ browser }) => {
           .click()
 
         declaration.mother.identifier.id = faker.string.numeric(10)
-
         await page
           .locator('#mother____passport')
           .fill(declaration.mother.identifier.id)
-
         await page.getByRole('button', { name: 'Back to review' }).click()
 
         /*
@@ -776,33 +705,25 @@ test('8. Validate declaration review page', async ({ browser }) => {
         await expect(page.getByTestId('row-value-mother.idType')).toContainText(
           declaration.mother.identifier.type
         )
-
         await expect(
           page.getByTestId('row-value-mother.passport')
         ).toContainText(declaration.mother.identifier.id)
       })
 
-      await test.step("8.1.2.15 Change mother's address", async () => {
+      test("8.1.2.15 Change mother's address", async () => {
         await page.getByTestId('change-button-mother.address').click()
-
         await page.getByRole('button', { name: 'Continue' }).click()
 
         declaration.mother.address.district = 'Afue'
-
         declaration.mother.address.village = 'Imani'
-
         await page.locator('#district').click()
-
         await page
           .getByText(declaration.mother.address.district, { exact: true })
           .click()
-
         await page.locator('#village').click()
-
         await page
           .getByText(declaration.mother.address.village, { exact: true })
           .click()
-
         await page.getByRole('button', { name: 'Back to review' }).click()
 
         /*
@@ -811,27 +732,21 @@ test('8. Validate declaration review page', async ({ browser }) => {
         await expect(
           page.getByTestId('row-value-mother.address')
         ).toContainText(declaration.mother.address.district)
-
         await expect(
           page.getByTestId('row-value-mother.address')
         ).toContainText(declaration.mother.address.province)
       })
 
-      await test.step("8.1.2.16 Change father's name", async () => {
+      test("8.1.2.16 Change father's name", async () => {
         await page.getByTestId('change-button-father.name').click()
-
         await page.getByRole('button', { name: 'Continue' }).click()
 
         declaration.father.name.firstNames = faker.person.firstName('male')
-
         declaration.father.name.familyName = faker.person.lastName('male')
-
         await page
           .locator('#firstname')
           .fill(declaration.father.name.firstNames)
-
         await page.locator('#surname').fill(declaration.father.name.familyName)
-
         await page.getByRole('button', { name: 'Back to review' }).click()
 
         /*
@@ -842,13 +757,11 @@ test('8. Validate declaration review page', async ({ browser }) => {
         )
       })
 
-      await test.step("8.1.2.17 Change father's birthday", async () => {
+      test("8.1.2.17 Change father's birthday", async () => {
         await page.getByTestId('change-button-father.dob').click()
-
         await page.getByRole('button', { name: 'Continue' }).click()
 
         declaration.father.birthDate = getRandomDate(21, 200)
-
         await fillDate(page, declaration.father.birthDate)
 
         await page.getByRole('button', { name: 'Back to review' }).click()
@@ -861,21 +774,17 @@ test('8. Validate declaration review page', async ({ browser }) => {
         )
       })
 
-      await test.step("8.1.2.18 Change father's nationality", async () => {
+      test("8.1.2.18 Change father's nationality", async () => {
         await page.getByTestId('change-button-father.nationality').click()
-
         await page.getByRole('button', { name: 'Continue' }).click()
 
         declaration.father.nationality = 'Holy See'
-
         await page.locator('#father____nationality').click()
-
         await page
           .getByText(declaration.father.nationality, {
             exact: true
           })
           .click()
-
         await page.getByRole('button', { name: 'Back to review' }).click()
 
         /*
@@ -886,15 +795,12 @@ test('8. Validate declaration review page', async ({ browser }) => {
         ).toContainText(declaration.father.nationality)
       })
 
-      await test.step("8.1.2.19 Change father's ID type", async () => {
+      test("8.1.2.19 Change father's ID type", async () => {
         await page.getByTestId('change-button-father.idType').click()
-
         await page.getByRole('button', { name: 'Continue' }).click()
 
         declaration.father.identifier.type = 'Passport'
-
         await page.locator('#father____idType').click()
-
         await page
           .getByText(declaration.father.identifier.type, {
             exact: true
@@ -902,11 +808,9 @@ test('8. Validate declaration review page', async ({ browser }) => {
           .click()
 
         declaration.father.identifier.id = faker.string.numeric(10)
-
         await page
           .locator('#father____passport')
           .fill(declaration.father.identifier.id)
-
         await page.getByRole('button', { name: 'Back to review' }).click()
 
         /*
@@ -915,32 +819,26 @@ test('8. Validate declaration review page', async ({ browser }) => {
         await expect(page.getByTestId('row-value-father.idType')).toContainText(
           declaration.father.identifier.type
         )
-
         await expect(
           page.getByTestId('row-value-father.passport')
         ).toContainText(declaration.father.identifier.id)
       })
     })
 
-    await test.step.skip('8.1.3 Validate supporting document', async () => {})
+    test.describe('8.1.3 Validate supporting document', async () => {
+      test.skip('Skipped for now', async () => {})
+    })
+    test.describe('8.1.4 Validate additional comments box', async () => {
+      test.skip('Skipped for now', async () => {})
+    })
+    test.describe('8.1.5 Validate the declaration send button', async () => {
+      test.skip('Skipped for now', async () => {})
+    })
 
-    await test.step.skip(
-      '8.1.4 Validate additional comments box',
-      async () => {}
-    )
-
-    await test.step.skip(
-      '8.1.5 Validate the declaration send button',
-      async () => {}
-    )
-
-    await test.step('8.1.6 Fill up informant signature', async () => {
+    test('8.1.6 Fill up informant signature', async () => {
       await page.locator('#review____comment').fill(comment)
-
       await page.getByRole('button', { name: 'Sign', exact: true }).click()
-
       await drawSignature(page, 'review____signature_canvas_element', false)
-
       await page
         .locator('#review____signature_modal')
         .getByRole('button', { name: 'Apply' })
@@ -949,15 +847,14 @@ test('8. Validate declaration review page', async ({ browser }) => {
       await expect(page.getByRole('dialog')).not.toBeVisible()
     })
 
-    await test.step('8.1.7 Declare', async () => {
+    test('8.1.7 Declare', async () => {
       await selectDeclarationAction(page, 'Declare', true)
-
       await ensureOutboxIsEmpty(page)
     })
   })
 
-  await test.step('8.2 Registration Officer actions', async () => {
-    await test.step('8.2.1 Navigate to the declaration preview page', async () => {
+  test.describe('8.2 Registration Officer actions', async () => {
+    test('8.2.1 Navigate to the declaration preview page', async () => {
       await login(page, CREDENTIALS.REGISTRATION_OFFICER)
 
       await page.getByText('Pending validation').click()
@@ -968,16 +865,13 @@ test('8. Validate declaration review page', async ({ browser }) => {
         })
         .click()
     })
-
-    await test.step('8.2.2 Validate', async () => {
+    test('8.2.2 Validate', async () => {
       await selectAction(page, 'Validate')
-
       await page.getByRole('button', { name: 'Confirm' }).click()
     })
 
-    await test.step('8.2.3 Confirm the declaration is in Recent-workqueue', async () => {
+    test('8.2.3 Confirm the declaration is in Recent-workqueue', async () => {
       await ensureOutboxIsEmpty(page)
-
       await page.getByText('Recent').click()
 
       await expect(
@@ -988,8 +882,8 @@ test('8. Validate declaration review page', async ({ browser }) => {
     })
   })
 
-  await test.step('8.3 Registrar actions', async () => {
-    await test.step('8.3.1 Navigate to the declaration preview page', async () => {
+  test.describe('8.3 Registrar actions', async () => {
+    test('8.3.1 Navigate to the declaration preview page', async () => {
       await login(page, CREDENTIALS.REGISTRAR)
 
       await page.getByText('Pending registration').click()
@@ -1001,9 +895,8 @@ test('8. Validate declaration review page', async ({ browser }) => {
         .click()
     })
 
-    await test.step('8.3.1.1 Assert values', async () => {
+    test('8.3.1.1 Assert values', async () => {
       await page.getByRole('button', { name: 'Record', exact: true }).click()
-
       /*
        * Expected result: should include
        * - Child's First Name
@@ -1043,7 +936,6 @@ test('8. Validate declaration review page', async ({ browser }) => {
        * - Change button
        */
       await expectRowValue(page, 'child.placeOfBirth', declaration.placeOfBirth)
-
       await expectRowValue(
         page,
         'child.birthLocation',
@@ -1089,7 +981,6 @@ test('8. Validate declaration review page', async ({ browser }) => {
         'informant.relation',
         declaration.informantType
       )
-
       /*
        * Expected result: should include
        * - Informant's Email
@@ -1142,7 +1033,6 @@ test('8. Validate declaration review page', async ({ browser }) => {
         'mother.idType',
         declaration.mother.identifier.type
       )
-
       await expectRowValue(
         page,
         'mother.passport',
@@ -1159,13 +1049,11 @@ test('8. Validate declaration review page', async ({ browser }) => {
         'mother.address',
         declaration.mother.address.country
       )
-
       await expectRowValue(
         page,
         'mother.address',
         declaration.mother.address.district
       )
-
       await expectRowValue(
         page,
         'mother.address',
@@ -1219,7 +1107,6 @@ test('8. Validate declaration review page', async ({ browser }) => {
         'father.idType',
         declaration.father.identifier.type
       )
-
       await expectRowValue(
         page,
         'father.passport',
@@ -1234,19 +1121,15 @@ test('8. Validate declaration review page', async ({ browser }) => {
       await expectRowValue(page, 'father.addressSameAs', 'Yes')
     })
 
-    await test.step('8.3.1.2 Register', async () => {
+    test('8.3.1.2 Register', async () => {
       await ensureAssigned(page)
-
       await selectAction(page, 'Register')
-
       await page.getByRole('button', { name: 'Confirm' }).click()
     })
 
-    await test.step('8.3.8 Confirm the declaration is in "Pending certification" -workqueue', async () => {
+    test('8.3.8 Confirm the declaration is in "Pending certification" -workqueue', async () => {
       await ensureOutboxIsEmpty(page)
-
       await page.getByText('Pending certification').click()
-
       await expect(
         page.getByRole('button', {
           name: formatName(declaration.child.name)
@@ -1254,6 +1137,4 @@ test('8. Validate declaration review page', async ({ browser }) => {
       ).toBeVisible()
     })
   })
-
-  await page.close()
 })
