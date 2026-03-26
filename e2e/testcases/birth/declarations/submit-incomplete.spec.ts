@@ -1,4 +1,4 @@
-import { test, expect, type Page } from '@playwright/test'
+import { test, expect } from '@playwright/test'
 import {
   formatName,
   goToSection,
@@ -10,7 +10,7 @@ import { CREDENTIALS } from '../../../constants'
 import { ensureOutboxIsEmpty } from '../../../utils'
 
 test('Submit and verify incomplete birth declaration', async ({ browser }) => {
-  const page: Page = await browser.newPage()
+  const page = await browser.newPage()
 
   const declaration = {
     child: {

@@ -14,7 +14,7 @@ async function authenticateInformantWithESignet(page: Page) {
 test('E-Signet LINK_BUTTON inserts and locks informant data', async ({
   browser
 }) => {
-  const page: Page = await browser.newPage()
+  const page = await browser.newPage()
 
   await test.step('Login', async () => {
     await login(page)

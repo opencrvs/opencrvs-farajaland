@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 import {
   auditRecord,
   getToken,
@@ -21,7 +21,7 @@ test("Correct record - Change father's ID number", async ({ browser }) => {
 
   let trackingId = ''
 
-  const page: Page = await browser.newPage()
+  const page = await browser.newPage()
 
   const oldIdNumber = faker.string.numeric(10)
 

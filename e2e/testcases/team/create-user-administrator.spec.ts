@@ -1,10 +1,10 @@
-import { test, expect, type Page } from '@playwright/test'
+import { test, expect } from '@playwright/test'
 import { loginWithNewUser, continueForm, login } from '../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../constants'
 
 test('1. Create user -1', async ({ browser }) => {
-  const page: Page = await browser.newPage()
+  const page = await browser.newPage()
 
   const userinfo = {
     firstName: faker.person.firstName('male'),

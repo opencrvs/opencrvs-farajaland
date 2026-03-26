@@ -1,4 +1,4 @@
-import { test, expect, type Page } from '@playwright/test'
+import { test, expect } from '@playwright/test'
 import {
   continueForm,
   formatName,
@@ -11,7 +11,7 @@ import { CREDENTIALS } from '../../constants'
 import { ensureOutboxIsEmpty } from '../../utils'
 
 test('1. User conditional form flow', async ({ browser }) => {
-  const page: Page = await browser.newPage()
+  const page = await browser.newPage()
 
   const declaration = {
     applicant: {

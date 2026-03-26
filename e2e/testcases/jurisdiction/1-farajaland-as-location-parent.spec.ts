@@ -1,4 +1,4 @@
-import { test, type Page } from '@playwright/test'
+import { test } from '@playwright/test'
 import { getToken, login, searchFromSearchBar } from '../../helpers'
 import { trackAndDeleteCreatedEvents } from '../test-data/eventDeletion'
 import { CREDENTIALS } from '../../constants'
@@ -30,7 +30,7 @@ test('1.Farajaland as location parent', async ({ browser }) => {
     token
   })
   const name: string = formatV2ChildName(declaration)
-  const page: Page = await browser.newPage()
+  const page = await browser.newPage()
 
   await test.step('1.1.0 Hospital official creates an incomplete declaration', async () => {
     await createDeclaration(token, declaration, ActionType.NOTIFY)

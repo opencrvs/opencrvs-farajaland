@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 import { login, getToken } from '../../helpers'
 import { CREDENTIALS, SAFE_WORKQUEUE_TIMEOUT_MS } from '../../constants'
 import { createDeclaration, Declaration } from '../test-data/birth-declaration'
@@ -14,7 +14,7 @@ import { getRowByTitle } from '../print-certificate/birth/helpers'
 test('5(a) Validate "Pending validation"-workqueue for RO', async ({
   browser
 }) => {
-  const page: Page = await browser.newPage()
+  const page = await browser.newPage()
   const token = await getToken(
     CREDENTIALS.HOSPITAL_OFFICIAL.USERNAME,
     CREDENTIALS.HOSPITAL_OFFICIAL.PASSWORD

@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 import { getToken, login } from '../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../constants'
@@ -25,7 +25,7 @@ test('Birth Record correction flow', async ({ browser }) => {
 
   const eventId: string = res.eventId
 
-  const page: Page = await browser.newPage()
+  const page = await browser.newPage()
 
   await login(page, CREDENTIALS.REGISTRAR)
 

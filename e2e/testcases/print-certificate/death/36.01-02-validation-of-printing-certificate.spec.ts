@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 import { getToken, joinValuesWith, login } from '../../../helpers'
 import { CREDENTIALS } from '../../../constants'
 import {
@@ -15,7 +15,7 @@ test('Certified copies', async ({ browser }) => {
     CREDENTIALS.REGISTRAR.PASSWORD
   )
   const res = await createDeclaration(token)
-  const page: Page = await browser.newPage()
+  const page = await browser.newPage()
   const declaration: Declaration = res.declaration
 
   await test.step('1.0.1 Log in', async () => {
@@ -84,7 +84,7 @@ test('Certified copies renders spouse age correctly', async ({ browser }) => {
     },
     'spouse.dob': undefined
   }))
-  const page: Page = await browser.newPage()
+  const page = await browser.newPage()
   const declaration: Declaration = res.declaration
 
   const spouseAge = 25
@@ -157,7 +157,7 @@ test('Certified copies renders non-spouse informant age correctly', async ({
     }
   }))
   const declaration: Declaration = res.declaration
-  const page: Page = await browser.newPage()
+  const page = await browser.newPage()
   await test.step('1.0.1 Log in', async () => {
     await login(page)
   })

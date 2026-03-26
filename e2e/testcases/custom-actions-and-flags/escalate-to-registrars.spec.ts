@@ -1,4 +1,4 @@
-import { test, expect, type Page } from '@playwright/test'
+import { test, expect } from '@playwright/test'
 import {
   formatName,
   getToken,
@@ -55,7 +55,7 @@ test('Escalation of birth registration by Registrar', async ({ browser }) => {
     'HEALTH_FACILITY'
   )
 
-  const page: Page = await browser.newPage()
+  const page = await browser.newPage()
 
   await login(page, CREDENTIALS.REGISTRAR)
 

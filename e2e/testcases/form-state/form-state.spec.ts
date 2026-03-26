@@ -1,4 +1,4 @@
-import { expect, Page, test } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 import {
   continueForm,
   login,
@@ -26,7 +26,7 @@ test.describe('Form state', () => {
     browser
   }) => {
     let childName = ''
-    const page: Page = await browser.newPage()
+    const page = await browser.newPage()
 
     await test.step('Login', async () => {
       await login(page)
@@ -66,7 +66,7 @@ test.describe('Form state', () => {
   test('Declaration form state or annotation is not persisted to another events action', async ({
     browser
   }) => {
-    const page: Page = await browser.newPage()
+    const page = await browser.newPage()
     let actionableEventChildName = ''
 
     await test.step('Login', async () => {
@@ -117,7 +117,7 @@ test.describe('Form state', () => {
     browser
   }) => {
     let declaration: Declaration
-    const page: Page = await browser.newPage()
+    const page = await browser.newPage()
 
     await test.step('Login', async () => {
       await login(page)
@@ -181,7 +181,7 @@ test.describe('Form state', () => {
     await page.close()
   })
   test('Declaration form is populated after refresh', async ({ browser }) => {
-    const page: Page = await browser.newPage()
+    const page = await browser.newPage()
 
     await test.step('Login', async () => {
       await login(page)

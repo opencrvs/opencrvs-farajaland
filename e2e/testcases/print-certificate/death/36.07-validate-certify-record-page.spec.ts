@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 import { getToken, login } from '../../../helpers'
 import { CREDENTIALS } from '../../../constants'
 import {
@@ -21,7 +21,7 @@ test('7.0 Validate "Certify record" page', async ({ browser }) => {
 
   const eventId: string = res.eventId
 
-  const page: Page = await browser.newPage()
+  const page = await browser.newPage()
 
   const declaration: Declaration = res.declaration
 

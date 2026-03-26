@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 import { getToken, login, logout } from '../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../constants'
@@ -32,7 +32,7 @@ test('Birth correction flow - Mobile', async ({ browser }) => {
 
   const eventId: string = res.eventId
 
-  const page: Page = await browser.newPage()
+  const page = await browser.newPage()
 
   setMobileViewport(page)
 

@@ -1,4 +1,4 @@
-import { expect, Page, test } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 import { v4 as uuidv4 } from 'uuid'
 import { addDays, format, subDays } from 'date-fns'
 import { faker } from '@faker-js/faker'
@@ -489,7 +489,7 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
       surname: faker.person.lastName()
     }
     let token: string
-    const page: Page = await browser.newPage()
+    const page = await browser.newPage()
     let eventId: string
 
     await test.step('Login', async () => {
@@ -622,7 +622,7 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
       surname: faker.person.lastName()
     }
     let token: string
-    const page: Page = await browser.newPage()
+    const page = await browser.newPage()
     let eventId: string
 
     await test.step('Login', async () => {

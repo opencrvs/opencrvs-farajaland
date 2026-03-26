@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 import { getToken, login } from '../../helpers'
 import { createDeclaration } from '../test-data/birth-declaration-with-father-brother'
 import { CREDENTIALS } from '../../constants'
@@ -8,7 +8,7 @@ import { assertTexts, type } from '../../utils'
 test("Advanced Search - Birth Event Declaration - Child's details", async ({
   browser
 }) => {
-  const page: Page = await browser.newPage()
+  const page = await browser.newPage()
   let [yyyy, mm, dd] = ['', '', '']
   let fullNameOfChild = ''
   let facilityId = ''
@@ -118,7 +118,7 @@ test("Advanced Search - Birth Event Declaration - Child's details", async ({
 test("Advanced Search - Birth Event Declaration - Child's Residential Address", async ({
   browser
 }) => {
-  const page: Page = await browser.newPage()
+  const page = await browser.newPage()
   let fullNameOfChild = ''
   let province = ''
   let district = ''

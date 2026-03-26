@@ -1,4 +1,4 @@
-import { test, type Page, expect } from '@playwright/test'
+import { test, expect } from '@playwright/test'
 import { Declaration } from '../../test-data/birth-declaration'
 import { login } from '../../../helpers'
 import { createDeclaration } from '../../test-data/birth-declaration'
@@ -26,7 +26,7 @@ test("Validate 'Birth Certificate Certified Copy' PDF details", async ({
     'HEALTH_FACILITY'
   )
   const declaration: Declaration = res.declaration
-  const page: Page = await browser.newPage()
+  const page = await browser.newPage()
 
   await test.step('Log in', async () => {
     await login(page)
@@ -81,7 +81,7 @@ test("Validate 'Birth Certificate' PDF details", async ({ browser }) => {
     'HEALTH_FACILITY'
   )
   const declaration: Declaration = res.declaration
-  const page: Page = await browser.newPage()
+  const page = await browser.newPage()
 
   await test.step('Log in', async () => {
     await login(page)

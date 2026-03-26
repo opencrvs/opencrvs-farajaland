@@ -1,4 +1,4 @@
-import { test, expect, type Page } from '@playwright/test'
+import { test, expect } from '@playwright/test'
 import {
   drawSignature,
   continueForm,
@@ -17,7 +17,7 @@ import { selectDeclarationAction } from '../../helpers'
 import { ensureAssigned, ensureOutboxIsEmpty, selectAction } from '../../utils'
 
 test('8. Validate declaration review page', async ({ browser }) => {
-  const page: Page = await browser.newPage()
+  const page = await browser.newPage()
 
   await login(page, CREDENTIALS.HOSPITAL_OFFICIAL)
   await page.click('#header-new-event')

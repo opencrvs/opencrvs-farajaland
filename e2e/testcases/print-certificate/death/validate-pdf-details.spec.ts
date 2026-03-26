@@ -19,7 +19,7 @@ test("Validate 'Death Certificate' PDF details", async ({ browser }) => {
     CREDENTIALS.REGISTRAR.PASSWORD
   )
   const res = await createDeclaration(token)
-  const page: Page = await browser.newPage()
+  const page = await browser.newPage()
   const declaration: Declaration = res.declaration
 
   await test.step('Log in', async () => {
@@ -51,7 +51,7 @@ test("Validate 'Death Certificate' PDF details", async ({ browser }) => {
 test("Validate 'Death Certificate Certified Copy' PDF details", async ({
   browser
 }) => {
-  const page: Page = await browser.newPage()
+  const page = await browser.newPage()
   const token = await getToken(
     CREDENTIALS.REGISTRAR.USERNAME,
     CREDENTIALS.REGISTRAR.PASSWORD

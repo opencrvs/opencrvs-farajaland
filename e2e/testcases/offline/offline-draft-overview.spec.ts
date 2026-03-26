@@ -1,4 +1,4 @@
-import { expect, Page, test } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 
 import { formatName, login } from '../../helpers'
 import { mockNetworkConditions } from '../../mock-network-conditions'
@@ -6,7 +6,7 @@ import { faker } from '@faker-js/faker'
 import { ensureOutboxIsEmpty } from '../../utils'
 
 test('Can Open Draft offline', async ({ browser }) => {
-  const page: Page = await browser.newPage()
+  const page = await browser.newPage()
 
   const name = {
     firstNames: faker.person.firstName('male'),

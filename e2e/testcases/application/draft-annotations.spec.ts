@@ -8,7 +8,7 @@
  *
  * Copyright (C) The OpenCRVS Authors located at https://github.com/opencrvs/opencrvs-core/blob/master/AUTHORS.
  */
-import { expect, test, type Page } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 
 import {
   formatName,
@@ -24,7 +24,7 @@ import { ensureOutboxIsEmpty } from '../../utils'
 const ANNOTATION_COMMENT = 'Test annotation comment'
 
 test('2: Annotations on draft records', async ({ browser }) => {
-  const page: Page = await browser.newPage()
+  const page = await browser.newPage()
 
   const name = {
     firstNames: faker.person.firstName('male'),

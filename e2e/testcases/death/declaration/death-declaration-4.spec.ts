@@ -1,4 +1,4 @@
-import { test, expect, type Page } from '@playwright/test'
+import { test, expect } from '@playwright/test'
 import {
   continueForm,
   drawSignature,
@@ -20,7 +20,7 @@ import {
 } from '../../../utils'
 
 test('4. Death declaration case - 4', async ({ browser }) => {
-  const page: Page = await browser.newPage()
+  const page = await browser.newPage()
 
   const declaration = {
     deceased: {

@@ -14,7 +14,7 @@ test('Can view non-downloaded event online', async ({ browser }) => {
   )
   const res = await createDeclaration(token, undefined, ActionType.DECLARE)
 
-  const page: Page = await browser.newPage()
+  const page = await browser.newPage()
 
   const declaration: Declaration = res.declaration
 
@@ -56,7 +56,7 @@ test('Can partially view non-downloaded event offline', async ({ browser }) => {
   )
   const res = await createDeclaration(token, undefined, ActionType.DECLARE)
 
-  const page: Page = await browser.newPage()
+  const page = await browser.newPage()
 
   const declaration: Declaration = res.declaration
 

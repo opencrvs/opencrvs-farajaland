@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 import { getToken, login } from '../../helpers'
 import {
   createDeclaration,
@@ -11,7 +11,7 @@ import { assertTexts, type } from '../../utils'
 test("Advanced Search - Birth Event Declaration - Father's details", async ({
   browser
 }) => {
-  const page: Page = await browser.newPage()
+  const page = await browser.newPage()
   let [yyyy, mm, dd] = ['', '', '']
   const token = await getToken(
     CREDENTIALS.REGISTRAR.USERNAME,

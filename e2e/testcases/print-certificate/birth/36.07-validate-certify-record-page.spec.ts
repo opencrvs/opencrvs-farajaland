@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 import { CREDENTIALS } from '../../../constants'
 import { getToken } from '../../../helpers'
 import { login } from '../../../helpers'
@@ -28,7 +28,7 @@ test('7.0 Validate "Certify record" page', async ({ browser }) => {
 
   const declaration: Declaration = res.declaration
 
-  const page: Page = await browser.newPage()
+  const page = await browser.newPage()
 
   await test.step('7.0.1 Log in', async () => {
     await login(page)

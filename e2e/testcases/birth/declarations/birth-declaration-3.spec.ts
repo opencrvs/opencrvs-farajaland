@@ -1,4 +1,4 @@
-import { test, expect, type Page } from '@playwright/test'
+import { test, expect } from '@playwright/test'
 import {
   continueForm,
   drawSignature,
@@ -19,7 +19,7 @@ import { selectDeclarationAction } from '../../../helpers'
 import { ensureOutboxIsEmpty } from '../../../utils'
 
 test('3. Birth declaration case - 3', async ({ browser }) => {
-  const page: Page = await browser.newPage()
+  const page = await browser.newPage()
 
   const declaration = {
     child: {

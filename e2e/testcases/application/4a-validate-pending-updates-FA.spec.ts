@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 
 import {
   login,
@@ -28,7 +28,7 @@ test('4(a) Validate "Pending updates"-workqueue for HO', async ({
   )
   const res = await createDeclaration(token, undefined, ActionType.DECLARE)
 
-  const page: Page = await browser.newPage()
+  const page = await browser.newPage()
 
   const declaration: Declaration = res.declaration
 

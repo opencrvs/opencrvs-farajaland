@@ -24,7 +24,7 @@ const lateRegDay = format(lateRegDate, 'dd')
 const lateRegMonth = format(lateRegDate, 'MM')
 const lateRegYear = format(lateRegDate, 'yyyy')
 test('Approval of late birth registration', async ({ browser }) => {
-  const page: Page = await browser.newPage()
+  const page = await browser.newPage()
 
   const childName = {
     firstNames: faker.person.firstName('female'),
@@ -324,7 +324,7 @@ test.describe('Birth with non-late registration will not have flag or Approve-ac
 test("'Approval required for late registration' -flag blocks direct registration", async ({
   browser
 }) => {
-  const page: Page = await browser.newPage()
+  const page = await browser.newPage()
 
   await test.step('Declaration started by Registrar', async () => {
     await login(page, CREDENTIALS.REGISTRAR)
@@ -423,7 +423,7 @@ test("'Approval required for late registration' -flag blocks direct registration
 test('Approval of late birth registration -flag can be removed during edit and redeclare', async ({
   browser
 }) => {
-  const page: Page = await browser.newPage()
+  const page = await browser.newPage()
   const childName = {
     firstNames: faker.person.firstName('female'),
     familyName: faker.person.lastName('female')
@@ -548,7 +548,7 @@ test('Approval of late birth registration -flag can be removed during edit and r
 test('Approval of late birth registration -flag can be added during edit and redeclare', async ({
   browser
 }) => {
-  const page: Page = await browser.newPage()
+  const page = await browser.newPage()
   const childName = {
     firstNames: faker.person.firstName('female'),
     familyName: faker.person.lastName('female')

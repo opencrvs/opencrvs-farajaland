@@ -1,4 +1,4 @@
-import { test, expect, type Page } from '@playwright/test'
+import { test, expect } from '@playwright/test'
 import { CREDENTIALS } from '../../constants'
 import { formatV2ChildName } from '../birth/helpers'
 import { createDeclaration } from '../test-data/birth-declaration'
@@ -7,7 +7,7 @@ import { ActionType } from '@opencrvs/toolkit/events'
 test("Registar General's 'Pending registration' -workqueue", async ({
   browser
 }) => {
-  const page: Page = await browser.newPage()
+  const page = await browser.newPage()
   let embassyDeclarationChildName: string
   let registrarDeclarationChildName: string
 

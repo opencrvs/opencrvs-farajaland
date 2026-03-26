@@ -1,4 +1,4 @@
-import { test, expect, type Page } from '@playwright/test'
+import { test, expect } from '@playwright/test'
 import { formatName, goToSection, login } from '../../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../../constants'
@@ -6,7 +6,7 @@ import { ensureOutboxIsEmpty } from '../../../utils'
 import { selectDeclarationAction } from '../../../helpers'
 
 test('Community leader notifies birth', async ({ browser }) => {
-  const page: Page = await browser.newPage()
+  const page = await browser.newPage()
 
   const childName = {
     firstNames: faker.person.firstName(),

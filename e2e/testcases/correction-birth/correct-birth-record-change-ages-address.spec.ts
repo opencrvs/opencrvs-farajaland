@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 import {
   auditRecord,
   getToken,
@@ -23,7 +23,7 @@ test('Correct record - Change ages', async ({ browser }) => {
 
   let trackingId = ''
 
-  const page: Page = await browser.newPage()
+  const page = await browser.newPage()
 
   const motherAgeBefore = '28'
 

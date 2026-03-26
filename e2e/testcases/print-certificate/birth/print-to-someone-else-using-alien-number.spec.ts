@@ -28,7 +28,7 @@ test('Print to someone else using Alien Number as ID type', async ({
   const res = await createDeclaration(token)
   const declaration: Declaration = res.declaration
   const trackingId: string | undefined = res.trackingId
-  const page: Page = await browser.newPage()
+  const page = await browser.newPage()
 
   await test.step('Log in', async () => {
     await login(page)

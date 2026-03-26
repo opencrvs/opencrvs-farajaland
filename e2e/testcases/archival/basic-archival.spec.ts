@@ -1,4 +1,4 @@
-import { test, expect, type Page } from '@playwright/test'
+import { test, expect } from '@playwright/test'
 import {
   continueForm,
   drawSignature,
@@ -18,7 +18,7 @@ import { ActionType } from '@opencrvs/toolkit/events'
 import { createDeclaration, Declaration } from '../test-data/birth-declaration'
 
 test('Basic Archival flow', async ({ browser }) => {
-  const page: Page = await browser.newPage()
+  const page = await browser.newPage()
 
   const declaration = {
     child: {
@@ -375,7 +375,7 @@ test('Basic Archival flow', async ({ browser }) => {
 })
 
 test('Archival of declaration pending validation', async ({ browser }) => {
-  const page: Page = await browser.newPage()
+  const page = await browser.newPage()
 
   const token: string = await getToken(
     CREDENTIALS.HOSPITAL_OFFICIAL.USERNAME,

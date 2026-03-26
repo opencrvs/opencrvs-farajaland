@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 import { getToken, login } from '../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../constants'
@@ -9,7 +9,7 @@ import { ActionType } from '@opencrvs/toolkit/events'
 test('Duplicate overview', async ({ browser }) => {
   let trackingId: string
 
-  const page: Page = await browser.newPage()
+  const page = await browser.newPage()
 
   const details = {
     'child.name': {

@@ -1,4 +1,4 @@
-import { test, expect, type Page } from '@playwright/test'
+import { test, expect } from '@playwright/test'
 import { faker } from '@faker-js/faker'
 import {
   continueForm,
@@ -11,7 +11,7 @@ import {
 } from '../../helpers'
 
 test('Death event summary', async ({ browser }) => {
-  const page: Page = await browser.newPage()
+  const page = await browser.newPage()
 
   const declaration = {
     deceased: {

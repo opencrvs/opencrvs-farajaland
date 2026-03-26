@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 import { login, getToken } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
 import { createDeclaration, Declaration } from '../test-data/birth-declaration'
@@ -10,7 +10,7 @@ test('Navigating in and out of dashboard', async ({ browser }) => {
     CREDENTIALS.REGISTRAR.PASSWORD
   )
   const res = await createDeclaration(token, undefined, ActionType.DECLARE)
-  const page: Page = await browser.newPage()
+  const page = await browser.newPage()
   const declaration: Declaration = res.declaration
 
   await test.step('Login', async () => {

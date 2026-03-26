@@ -1,8 +1,8 @@
-import { test, expect, type Page } from '@playwright/test'
+import { test, expect } from '@playwright/test'
 import { login } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
 test('5. Organisation Page', async ({ browser }) => {
-  const page: Page = await browser.newPage()
+  const page = await browser.newPage()
 
   test.describe('5.1 Basic UI check', async () => {
     test('5.1.0 Verify UI', async () => {

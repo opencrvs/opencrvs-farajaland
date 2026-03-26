@@ -1,11 +1,11 @@
-import { expect, test, type Page } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 import { joinValuesWith, login } from '../../helpers'
 import { faker } from '@faker-js/faker'
 import { ensureOutboxIsEmpty, type } from '../../utils'
 test("Advanced Search - Birth Event Declaration - Informant's details", async ({
   browser
 }) => {
-  const page: Page = await browser.newPage()
+  const page = await browser.newPage()
   const firstname: string = faker.person.firstName()
   const surname: string = faker.person.firstName()
 

@@ -27,7 +27,7 @@ test('Validate collect payment page', async ({ browser }) => {
 
   const eventId: string = res.eventId
 
-  const page: Page = await browser.newPage()
+  const page = await browser.newPage()
 
   const declaration: Declaration = res.declaration
 

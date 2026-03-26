@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 import { auditRecord, getToken, goBackToReview, login } from '../../helpers'
 import { faker } from '@faker-js/faker'
 import {
@@ -17,7 +17,7 @@ test('Direct correction offline', async ({ browser }) => {
 
   let eventId: string
 
-  const page: Page = await browser.newPage()
+  const page = await browser.newPage()
 
   const updatedChildDetails = {
     firstname: faker.person.firstName(),

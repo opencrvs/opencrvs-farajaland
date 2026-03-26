@@ -1,4 +1,4 @@
-import { test, expect, type Page } from '@playwright/test'
+import { test, expect } from '@playwright/test'
 import {
   continueForm,
   drawSignature,
@@ -15,7 +15,7 @@ import { ensureOutboxIsEmpty } from '../../utils'
 test('30: Validate user can send multiple complete and incomplete records offline', async ({
   browser
 }) => {
-  const page: Page = await browser.newPage()
+  const page = await browser.newPage()
   const declaration = {
     child: {
       name: {

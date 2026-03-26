@@ -1,4 +1,4 @@
-import { test, type Page, expect } from '@playwright/test'
+import { test, expect } from '@playwright/test'
 import { CREDENTIALS } from '../../../constants'
 import { login } from '../../../helpers'
 import { getToken } from '../../../helpers'
@@ -22,7 +22,7 @@ test('User should not be able to press print button twice', async ({
   )
   const res = await createDeclaration(token)
   const declaration: Declaration = res.declaration
-  const page: Page = await browser.newPage()
+  const page = await browser.newPage()
 
   await test.step('Log in', async () => {
     await login(page)

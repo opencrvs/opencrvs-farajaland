@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 
 import { login, getToken } from '../../helpers'
 import { CREDENTIALS, SAFE_WORKQUEUE_TIMEOUT_MS } from '../../constants'
@@ -12,7 +12,7 @@ test('Assign & Unassign', async ({ browser }) => {
   )
   const res = await createDeclaration(token)
 
-  const page: Page = await browser.newPage()
+  const page = await browser.newPage()
 
   const declaration: Declaration = res.declaration
 

@@ -32,7 +32,7 @@ test('Validate collect payment page', async ({ browser }) => {
 
   const declaration: Declaration = res.declaration
 
-  const page: Page = await browser.newPage()
+  const page = await browser.newPage()
 
   const trackingId: string | undefined = res.trackingId
 

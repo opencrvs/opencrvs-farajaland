@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker'
-import { test, expect, type Page } from '@playwright/test'
+import { test, expect } from '@playwright/test'
 import {
   continueForm,
   drawSignature,
@@ -19,7 +19,7 @@ import { assertRecordInWorkqueue, fillDate } from '../birth/helpers'
 
 // HO Declares => RO Validates => Registrar Registers
 test('4. Workqueue flow - 4', async ({ browser }) => {
-  const page: Page = await browser.newPage()
+  const page = await browser.newPage()
 
   const declaration = {
     child: {

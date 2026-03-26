@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 import { getToken, login } from '../../helpers'
 import {
   createDeclaration,
@@ -10,7 +10,7 @@ import { ensureAssigned } from '../../utils'
 test("Quick Search - Birth Event Declaration - Child's details", async ({
   browser
 }) => {
-  const page: Page = await browser.newPage()
+  const page = await browser.newPage()
   const token = await getToken(
     CREDENTIALS.REGISTRAR.USERNAME,
     CREDENTIALS.REGISTRAR.PASSWORD

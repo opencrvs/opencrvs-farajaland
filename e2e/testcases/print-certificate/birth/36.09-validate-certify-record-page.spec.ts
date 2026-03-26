@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 
 import { Declaration } from '../../test-data/birth-declaration'
 import { getToken } from '../../../helpers'
@@ -20,7 +20,7 @@ test('9.0 Validate "Certify record" page', async ({ browser }) => {
 
   const declaration: Declaration = res.declaration
 
-  const page: Page = await browser.newPage()
+  const page = await browser.newPage()
 
   await test.step('9.0.1 Log in', async () => {
     await login(page)

@@ -25,7 +25,7 @@ test('Correct record - change informant type', async ({ browser }) => {
   let declaration: DeclarationV2
   let trackingId = ''
   let eventId: string
-  const page: Page = await browser.newPage()
+  const page = await browser.newPage()
 
   const updatedFatherDetails = {
     firstNames: faker.person.firstName('male'),

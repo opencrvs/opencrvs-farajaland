@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 import { CREDENTIALS } from '../../constants'
 import { getToken, login, searchFromSearchBar } from '../../helpers'
 import {
@@ -36,7 +36,7 @@ test('Issue verifiable credential', async ({ browser }) => {
     nonParentInformantDec
   )
 
-  const page: Page = await browser.newPage()
+  const page = await browser.newPage()
 
   const motherInformantDeclaration: Declaration = motherInformantRes.declaration
 

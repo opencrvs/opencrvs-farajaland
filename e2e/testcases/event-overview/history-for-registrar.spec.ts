@@ -1,4 +1,4 @@
-import { test, expect, Page } from '@playwright/test'
+import { test, expect } from '@playwright/test'
 import { createDeclaration, Declaration } from '../test-data/birth-declaration'
 import { getToken, login, switchEventTab } from '../../helpers'
 import { CREDENTIALS, SAFE_WORKQUEUE_TIMEOUT_MS } from '../../constants'
@@ -6,7 +6,7 @@ import { ensureAssigned } from '../../utils'
 test('History rows when Registrar registers a birth from scratch', async ({
   browser
 }) => {
-  const page: Page = await browser.newPage()
+  const page = await browser.newPage()
   const token = await getToken(
     CREDENTIALS.REGISTRAR.USERNAME,
     CREDENTIALS.REGISTRAR.PASSWORD

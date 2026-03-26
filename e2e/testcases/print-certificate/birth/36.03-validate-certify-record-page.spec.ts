@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 import { CREDENTIALS } from '../../../constants'
 import { getToken, login } from '../../../helpers'
 import {
@@ -25,7 +25,7 @@ test('3.0 Validate "Certify record" page', async ({ browser }) => {
 
   const declaration: Declaration = res.declaration
 
-  const page: Page = await browser.newPage()
+  const page = await browser.newPage()
 
   const trackingId: string | undefined = res.trackingId
 

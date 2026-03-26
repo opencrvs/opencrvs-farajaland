@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 import { getToken, login } from '../../../helpers'
 import { CREDENTIALS } from '../../../constants'
 import {
@@ -20,7 +20,7 @@ test('10.0 Validate "Review" page', async ({ browser }) => {
   )
   const res = await createDeclaration(token)
 
-  const page: Page = await browser.newPage()
+  const page = await browser.newPage()
 
   const declaration: Declaration = res.declaration
 

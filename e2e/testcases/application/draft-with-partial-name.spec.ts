@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 
 import { formatName, login } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
@@ -6,7 +6,7 @@ import { faker } from '@faker-js/faker'
 import { ensureOutboxIsEmpty } from '../../utils'
 
 test('Validate draft with partial name', async ({ browser }) => {
-  const page: Page = await browser.newPage()
+  const page = await browser.newPage()
 
   const name1 = {
     firstNames: faker.person.firstName('male')

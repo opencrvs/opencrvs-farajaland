@@ -1,4 +1,4 @@
-import { expect, Page, test } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 import { getToken, login } from '../../helpers'
 import { createDeclaration } from '../test-data/birth-declaration-with-father-brother'
 import { CREDENTIALS } from '../../constants'
@@ -48,7 +48,7 @@ test('Advanced Search - Mobile', async ({ browser }) => {
     'PRIVATE_HOME'
   )
 
-  const page: Page = await browser.newPage()
+  const page = await browser.newPage()
   setMobileViewport(page)
 
   await test.step('Login', async () => {

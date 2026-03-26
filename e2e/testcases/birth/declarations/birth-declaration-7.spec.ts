@@ -1,4 +1,4 @@
-import { test, expect, type Page } from '@playwright/test'
+import { test, expect } from '@playwright/test'
 import {
   continueForm,
   drawSignature,
@@ -17,7 +17,7 @@ import { REQUIRED_VALIDATION_ERROR } from '../helpers'
 import { ensureAssigned, ensureOutboxIsEmpty } from '../../../utils'
 
 test('7. Birth declaration case - 7', async ({ browser }) => {
-  const page: Page = await browser.newPage()
+  const page = await browser.newPage()
 
   const declaration = {
     child: {
