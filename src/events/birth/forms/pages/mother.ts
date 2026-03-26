@@ -26,8 +26,10 @@ import {
   farajalandNameConfig
 } from '@countryconfig/events/birth/validators'
 import { InformantType } from './informant'
-import { IdType, idTypeOptions } from '../../../person'
+
 import {
+  IdType,
+  idTypeOptions,
   educationalAttainmentOptions,
   maritalStatusOptions,
   emptyMessage,

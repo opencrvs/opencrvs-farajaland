@@ -28,13 +28,12 @@ import {
   invalidNameValidator,
   nationalIdValidator
 } from '@countryconfig/events/birth/validators'
+
 import {
   IdType,
   idTypeOptions,
   yesNoRadioOptions,
-  YesNoTypes
-} from '../../../person'
-import {
+  YesNoTypes,
   defaultStreetAddressConfiguration,
   getNestedFieldValidators,
   createSelectOptions,

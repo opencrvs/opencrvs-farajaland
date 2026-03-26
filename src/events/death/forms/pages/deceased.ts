@@ -23,6 +23,9 @@ import {
 import { not, never } from '@opencrvs/toolkit/conditionals'
 
 import {
+  IdType,
+  idTypeOptions,
+  maritalStatusOptions,
   createSelectOptions,
   emptyMessage,
   defaultStreetAddressConfiguration,
@@ -33,11 +36,6 @@ import {
   invalidNameValidator,
   nationalIdValidator
 } from '@countryconfig/events/birth/validators'
-import {
-  IdType,
-  idTypeOptions,
-  maritalStatusOptions
-} from '@countryconfig/events/person'
 
 const GenderTypes = {
   MALE: 'male',
