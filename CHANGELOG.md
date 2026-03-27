@@ -22,7 +22,7 @@
   | `GET /users` | `GET /config/users` |
   | `GET /events` | `GET /config/events` |
 - Switch to docker.io/chumaky/postgres_mongo_fdw:17.6_fdw5.5.2 image to support `mongo_fdw`. This is required for the legacy user migrations to work. It will be switched back to the official postgres image in a future release.
-- A new service `legacy-user-migration` which runs the same migration image but with the `migrate-legacy-data` flag and with the following new environment variables:
+- A new service `legacy-data-migration` which runs the same migration image but with the `migrate-legacy-data` flag and with the following new environment variables:
   - EVENTS_SUPERUSER_POSTGRES_URL
   - MONGO_HOST
   - MONGO_PORT
