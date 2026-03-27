@@ -51,7 +51,7 @@ test.describe.serial('6. Team Page -1', () => {
         await page.getByRole('button', { name: member.name }).click()
         await expect(page.locator('#content-name')).toHaveText(member.name)
 
-        await expect(page).toHaveURL(/.*\/userProfile/)
+        await expect(page).toHaveURL(/.*\/view/)
 
         await page
           .getByRole('button', { name: 'Central Province Office' })
