@@ -28,11 +28,8 @@ test.describe.serial('3. Team Page -1', () => {
       ).toBeVisible()
     })
     const team = [
-      { name: 'Mitchell Owen', role: 'Provincial Registrar' },
-      { name: 'Emmanuel Mayuka', role: 'Administrator' },
-      { name: 'Kennedy Mweene', role: 'Registrar' },
       { name: 'Felix Katongo', role: 'Registration Officer' },
-      { name: 'Kalusha Bwalya', role: 'Hospital Official' }
+      { name: 'Kennedy Mweene', role: 'Registrar' }
     ]
 
     test('3.1.1 Verify Team Members, Roles and their statuses', async () => {

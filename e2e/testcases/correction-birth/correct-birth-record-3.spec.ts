@@ -42,6 +42,7 @@ test.describe.serial(' Correct record - 3', () => {
       country: 'Farajaland',
       province: 'Sulaka',
       district: 'Irundu',
+      village: 'Xhosa',
       town: faker.location.city(),
       residentialArea: faker.location.county(),
       street: faker.location.street(),
@@ -57,6 +58,7 @@ test.describe.serial(' Correct record - 3', () => {
       country: 'Farajaland',
       province: 'Central',
       district: 'Ibombo',
+      village: 'Klow',
       town: faker.location.city(),
       residentialArea: faker.location.county(),
       street: faker.location.street(),
@@ -100,7 +102,6 @@ test.describe.serial(' Correct record - 3', () => {
         },
         'child.gender': 'male',
         'child.dob': format(subDays(new Date(), 360), 'yyyy-MM-dd'),
-        'child.placeOfBirth': 'HEALTH_FACILITY',
         'child.attendantAtBirth': 'PHYSICIAN',
         'child.birthType': 'SINGLE',
         'child.weightAtBirth': 3,
@@ -481,11 +482,29 @@ test.describe.serial(' Correct record - 3', () => {
         expect(page.url().includes('mother')).toBeTruthy()
         expect(page.url().includes('#mother____address')).toBeTruthy()
 
-        await page.locator('#searchable-select-province').click()
-        await page.getByText(updatedMotherDetails.address.province).click()
+        await page.locator('#country').click()
+        await page
+          .locator('#country input')
+          .fill(updatedMotherDetails.address.country.slice(0, 3))
+        await page
+          .locator('#country')
+          .getByText(updatedMotherDetails.address.country, { exact: true })
+          .click()
 
-        await page.locator('#searchable-select-district').click()
-        await page.getByText(updatedMotherDetails.address.district).click()
+        await page.locator('#province').click()
+        await page
+          .getByText(updatedMotherDetails.address.province, { exact: true })
+          .click()
+
+        await page.locator('#district').click()
+        await page
+          .getByText(updatedMotherDetails.address.district, { exact: true })
+          .click()
+
+        await page.locator('#village').click()
+        await page
+          .getByText(updatedMotherDetails.address.village, { exact: true })
+          .click()
 
         await page.locator('#town').fill(updatedMotherDetails.address.town)
 
@@ -529,6 +548,12 @@ test.describe.serial(' Correct record - 3', () => {
           await page
             .getByTestId('row-value-mother.address')
             .getByText(updatedMotherDetails.address.district)
+        ).toBeVisible()
+
+        await expect(
+          await page
+            .getByTestId('row-value-mother.address')
+            .getByText(updatedMotherDetails.address.village)
         ).toBeVisible()
 
         await expect(
@@ -662,14 +687,14 @@ test.describe.serial(' Correct record - 3', () => {
       await page.locator('#child____placeOfBirth').click()
       await page.getByText(updatedChildDetails.placeOfBirth).click()
 
-      // Province and district are disabled because the user jurisdiction is limited to user's administrative area
-      await expect(
-        page.locator('#child____birthLocation____other-form-input #province')
-      ).toBeDisabled()
+      await page.locator('#province').click()
+      await page.getByText(updatedChildDetails.birthLocation.province).click()
 
-      await expect(
-        page.locator('#child____birthLocation____other-form-input #district')
-      ).toBeDisabled()
+      await page.locator('#district').click()
+      await page.getByText(updatedChildDetails.birthLocation.district).click()
+
+      await page.locator('#village').click()
+      await page.getByText(updatedChildDetails.birthLocation.village).click()
 
       await page.locator('#town').fill(updatedChildDetails.birthLocation.town)
 
@@ -785,7 +810,7 @@ test.describe.serial(' Correct record - 3', () => {
     await expect(
       page
         .locator('#listTable-corrections-table-child')
-        .getByText('Ibombo Rural Health Centre, Ibombo, Central, Farajaland')
+        .getByText('Klow Village Hospital, Klow, Ibombo, Central, Farajaland')
     ).toBeVisible()
 
     await Promise.all(
@@ -977,7 +1002,7 @@ test.describe.serial(' Correct record - 3', () => {
       await expect(
         page
           .locator('#listTable-corrections-table-child')
-          .getByText('Ibombo Rural Health Centre, Ibombo, Central, Farajaland')
+          .getByText('Klow Village Hospital, Klow, Ibombo, Central, Farajaland')
       ).toBeVisible()
 
       const childAddressLines = [

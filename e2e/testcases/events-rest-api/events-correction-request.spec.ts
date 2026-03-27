@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test'
+import { expect, Page, test } from '@playwright/test'
 import { v4 as uuidv4 } from 'uuid'
 import { faker } from '@faker-js/faker'
 import {
@@ -6,21 +6,31 @@ import {
   createRegisteredEvent,
   fetchClientAPI
 } from './helpers'
+import { CREDENTIALS, GATEWAY_HOST } from '../../constants'
+import { login } from '../../helpers'
+import { createClient } from '@opencrvs/toolkit/api'
+import { ensureAssigned, selectAction, type } from '../../utils'
 
-test.describe('POST /api/events/events/{eventId}/correction/request', () => {
+test.describe
+  .serial('POST /api/events/events/{eventId}/correction/request', () => {
   let clientToken: string
   let registrarToken: string
   let healthFacilityId: string
+  let clientName: string
+  let eventId: string
+  let page: Page
 
   test.beforeAll(async () => {
     const context = await createIntegrationContext()
     clientToken = context.clientToken
     registrarToken = context.registrarToken
     healthFacilityId = context.healthFacilityId
+    clientName = context.clientName
   })
 
   test('HTTP 200 for correction request', async () => {
-    const eventId = await createRegisteredEvent(registrarToken)
+    eventId = await createRegisteredEvent(registrarToken)
+    console.log('Event ID:', eventId)
 
     const response = await fetchClientAPI(
       `/api/events/events/${eventId}/correction/request`,
@@ -47,5 +57,28 @@ test.describe('POST /api/events/events/{eventId}/correction/request', () => {
       (action: { type: string }) => action.type === 'REQUEST_CORRECTION'
     )
     expect(requestAction).toBeDefined()
+  })
+
+  test('Correction review has submitter name as system client', async ({
+    browser
+  }) => {
+    console.log('Event ID:', eventId, registrarToken)
+    page = await browser.newPage()
+    await login(page, CREDENTIALS.REGISTRAR)
+
+    const client = createClient(
+      GATEWAY_HOST + '/events',
+      `Bearer ${registrarToken}`
+    )
+
+    const eventDocument = await client.event.get.query({ eventId })
+    const { trackingId } = eventDocument
+
+    await type(page, '#searchText', trackingId)
+    await page.locator('#searchIconButton').click()
+    await page.getByRole('button', { name: 'Review' }).click()
+    await ensureAssigned(page)
+    await selectAction(page, 'Review correction request')
+    await expect(page.getByText('Submitter' + clientName)).toBeVisible()
   })
 })

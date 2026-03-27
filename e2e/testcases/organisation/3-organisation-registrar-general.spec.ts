@@ -12,7 +12,7 @@ test.describe.serial('3. Organisation Page', () => {
     await page.close()
   })
 
-  //User: Registrar General(j.musonda)
+  //User: Registrar General(c.lungu)
   //WIP: https://github.com/opencrvs/opencrvs-core/issues/11697 , This ticket is to be resolved to have complete test case.
 
   test.describe.serial('3.1 UI check', async () => {
@@ -21,16 +21,15 @@ test.describe.serial('3. Organisation Page', () => {
       await page.getByRole('button', { name: 'Organisation' }).click()
       await expect(page.locator('#content-name')).toHaveText('Organisation')
       await expect(page.getByText('Farajaland', { exact: true })).toBeVisible()
-      await page.getByRole('button', { name: /Pualula/ }).click()
-      await page.getByRole('button', { name: /Embe/ }).click()
-      const pageNavigator = page.getByRole('button', { name: '2', exact: true })
-      await pageNavigator.scrollIntoViewIfNeeded()
-      await pageNavigator.click()
+      await page.getByRole('button', { name: /Chuminga/ }).click()
+      await page.getByRole('button', { name: /Soka/ }).click()
 
-      await page.getByRole('button', { name: /HQ Office/ }).click()
-      await expect(page.locator('#content-name')).toHaveText(/HQ Office/)
+      await page.getByRole('button', { name: /Soka District Office/ }).click()
+      await expect(page.locator('#content-name')).toHaveText(
+        /Soka District Office/
+      )
       await expect(
-        page.getByText('Embe, Pualula', { exact: true })
+        page.getByText('Soka, Chuminga', { exact: true })
       ).toBeVisible()
     })
   })

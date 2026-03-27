@@ -80,9 +80,9 @@ test.describe
       ).toBeVisible()
       await page.getByText('Health Institution', { exact: true }).click()
 
-      await page.locator('#child____birthLocation').fill('Ibombo Rural')
-      await expect(page.getByText('Ibombo Rural Health Centre')).toBeVisible()
-      await page.getByText('Ibombo Rural Health Centre').click()
+      await page.locator('#child____birthLocation').fill('Klow Village')
+      await expect(page.getByText('Klow Village Hospital')).toBeVisible()
+      await page.getByText('Klow Village Hospital').click()
     })
 
     test('3.1.2 - Validate search and show results', async () => {
@@ -103,7 +103,7 @@ test.describe
           'Event: Birth',
           `Child's Date of birth: ${yyyy}-${mm}-${dd}`,
           "Child's Sex: Female",
-          `Child's Location of birth: Ibombo Rural Health Centre, Ibombo, Central, Farajaland`,
+          `Child's Location of birth: Klow Village Hospital, Klow, Ibombo, Central, Farajaland`,
           `Child's Name: ${fullNameOfChild}`
         ]
       })
@@ -130,7 +130,7 @@ test.describe
       )
       await expect(
         page.locator('#searchable-select-child____birthLocation')
-      ).toHaveText('Ibombo Rural Health Centre')
+      ).toHaveText('Klow Village Hospital')
     })
   })
 })
@@ -141,6 +141,7 @@ test.describe
   let fullNameOfChild = ''
   let province = ''
   let district = ''
+  let village = ''
   let record: Awaited<ReturnType<typeof createDeclaration>>
   test.beforeAll(async ({ browser }) => {
     page = await browser.newPage()
@@ -152,9 +153,10 @@ test.describe
     const administrativeAreas = await getAdministrativeAreas(token)
     province = getIdByName(administrativeAreas, 'Central')!
     district = getIdByName(administrativeAreas, 'Ibombo')!
+    village = getIdByName(administrativeAreas, 'Klow')!
 
-    if (!province || !district) {
-      throw new Error('Province or district not found')
+    if (!province || !district || !village) {
+      throw new Error('Province, district or village not found')
     }
 
     record = await createDeclaration(
@@ -168,7 +170,7 @@ test.describe
         'child.birthLocation.privateHome': {
           country: 'FAR',
           addressType: 'DOMESTIC',
-          administrativeArea: district,
+          administrativeArea: village,
           streetLevelDetails: { town: 'Dhaka' }
         },
         'child.gender': 'female'
@@ -188,7 +190,7 @@ test.describe
   })
 
   test('3.2 - Validate log in and load search page', async () => {
-    await login(page)
+    await login(page, CREDENTIALS.REGISTRATION_OFFICER)
     await page.click('#searchType')
     await expect(page).toHaveURL(/.*\/advanced-search/)
     await page.getByText('Birth').click()
@@ -208,6 +210,12 @@ test.describe
       page.locator('#searchable-select-province').getByText('Central')
       page.locator('#searchable-select-district').getByText('Ibombo')
 
+      await page.locator('#province').fill('Cent')
+      await page.getByText('Central', { exact: true }).click()
+      await page.locator('#district').fill('Ibo')
+      await page.getByText('Ibombo', { exact: true }).click()
+      await page.locator('#village').fill('Klo')
+      await page.getByText('Klow', { exact: true }).click()
       await page.locator('#town').fill('Dhaka')
       await page.locator('#town').blur()
     })
@@ -225,6 +233,7 @@ test.describe
         await expect(addressObject.addressType).toBe('DOMESTIC')
         await expect(addressObject.province).toBeTruthy()
         await expect(addressObject.district).toBeTruthy()
+        await expect(addressObject.village).toBeTruthy()
       }
 
       await expect(page.getByText('Search results')).toBeVisible()
@@ -237,7 +246,7 @@ test.describe
         testId: 'search-result',
         texts: [
           'Event: Birth',
-          `Location of birth: Farajaland, Central, Ibombo, Dhaka`,
+          `Location of birth: Farajaland, Central, Ibombo, Klow, Dhaka`,
           'Place of delivery: Residential address',
           fullNameOfChild
         ]
@@ -259,6 +268,7 @@ test.describe
         await expect(addressObject.addressType).toBe('DOMESTIC')
         await expect(addressObject.province).toBeTruthy()
         await expect(addressObject.district).toBeTruthy()
+        await expect(addressObject.village).toBeTruthy()
       }
       expect(page.url()).toContain(`child.placeOfBirth=PRIVATE_HOME`)
       expect(page.url()).toContain(`eventType=birth`)

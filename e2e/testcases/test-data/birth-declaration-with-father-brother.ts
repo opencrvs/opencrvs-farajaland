@@ -21,7 +21,7 @@ async function getPlaceOfBirth(
 ) {
   if (type === 'HEALTH_FACILITY') {
     const locations = await getLocations('HEALTH_FACILITY', token)
-    const locationId = getIdByName(locations, 'Ibombo Rural Health Centre')
+    const locationId = getIdByName(locations, 'Klow Village Hospital')
 
     return {
       'child.placeOfBirth': 'HEALTH_FACILITY',
@@ -32,14 +32,14 @@ async function getPlaceOfBirth(
   if (type === 'PRIVATE_HOME') {
     const administrativeAreas = await getAdministrativeAreas(token)
 
-    const district = getIdByName(administrativeAreas, 'Ibombo')
+    const village = getIdByName(administrativeAreas, 'Klow')
 
     return {
       'child.placeOfBirth': 'PRIVATE_HOME',
       'child.birthLocation.privateHome': {
         country: 'FAR',
         addressType: AddressType.DOMESTIC,
-        administrativeArea: district
+        administrativeArea: village
       }
     }
   }
@@ -70,9 +70,10 @@ export async function getDeclaration({
 }) {
   const administrativeAreas = await getAdministrativeAreas(token)
   const district = getIdByName(administrativeAreas, 'Ibombo')
+  const village = getIdByName(administrativeAreas, 'Klow')
 
-  if (!district) {
-    throw new Error('District not found')
+  if (!district || !village) {
+    throw new Error('District or village not found')
   }
 
   const mockDeclaration = {
@@ -87,7 +88,7 @@ export async function getDeclaration({
     'mother.address': {
       country: 'FAR',
       addressType: AddressType.DOMESTIC,
-      administrativeArea: district,
+      administrativeArea: village,
       streetLevelDetails: { town: 'Dhaka' }
     },
     'father.name': {
@@ -102,7 +103,7 @@ export async function getDeclaration({
     'father.address': {
       country: 'FAR',
       addressType: AddressType.DOMESTIC,
-      administrativeArea: district,
+      administrativeArea: village,
       streetLevelDetails: { town: 'Dhaka' }
     },
     'child.name': {
@@ -127,7 +128,7 @@ export async function getDeclaration({
     'informant.nid': faker.string.numeric(10),
     'informant.address': {
       country: 'FAR',
-      administrativeArea: district,
+      administrativeArea: village,
       addressType: AddressType.DOMESTIC
     }
   }

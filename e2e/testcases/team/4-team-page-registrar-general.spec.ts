@@ -18,18 +18,12 @@ test.describe.serial('4. Team Page -1', () => {
       await login(page, CREDENTIALS.REGISTRAR_GENERAL)
       await page.getByRole('button', { name: 'Team' }).click()
       await expect(page.locator('#content-name')).toHaveText('HQ Office')
-
-      await expect(
-        page.getByText('Embe, Pualula', {
-          exact: true
-        })
-      ).toBeVisible()
     })
 
     const team = [
-      { name: 'Joseph Musonda', role: 'Registrar General' },
-      { name: 'Edgar Kazembe', role: 'Operations Manager' },
-      { name: 'Jonathan Campbell', role: 'National Administrator' }
+      { name: 'Chipo Lungu', role: 'Registrar General' },
+      { name: 'Jonathan Campbell', role: 'National Administrator' },
+      { name: 'Mutale Musonda', role: 'Operations Manager' }
     ]
 
     test('4.1.1 Verify Team Members, Roles and their statuses', async () => {
@@ -45,8 +39,8 @@ test.describe.serial('4. Team Page -1', () => {
     })
 
     test('4.1.2 Clicking member navigates to profile', async () => {
-      await page.getByRole('button', { name: 'Joseph Musonda' }).click()
-      await expect(page.locator('#content-name')).toHaveText('Joseph Musonda')
+      await page.getByRole('button', { name: 'Chipo Lungu' }).click()
+      await expect(page.locator('#content-name')).toHaveText('Chipo Lungu')
     })
   })
 })

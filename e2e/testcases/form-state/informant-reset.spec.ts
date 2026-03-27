@@ -1,6 +1,7 @@
 import { Page, expect, test } from '@playwright/test'
 import { goToSection, login } from '../../helpers'
 import { openBirthDeclaration } from '../birth/helpers'
+import { CREDENTIALS } from '../../constants'
 
 test.describe('Informant details resets when relation is changed', () => {
   test.describe.serial('Birth', async () => {
@@ -15,7 +16,7 @@ test.describe('Informant details resets when relation is changed', () => {
     })
 
     test('Login', async () => {
-      await login(page)
+      await login(page, CREDENTIALS.REGISTRAR_VILLAGE)
     })
 
     test('Fill in informant details', async () => {
