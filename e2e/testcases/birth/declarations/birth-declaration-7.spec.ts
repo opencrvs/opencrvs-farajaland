@@ -47,11 +47,8 @@ test('7. Birth declaration case - 7', async ({ browser }) => {
 
     await test.step('7.1.1 Fill child details', async () => {
       await page.locator('#firstname').fill(declaration.child.name.firstNames)
-
       await page.locator('#surname').fill(declaration.child.name.familyName)
-
       await page.locator('#child____attendantAtBirth').click()
-
       await page
         .getByText(declaration.attendantAtBirth, {
           exact: true
@@ -63,19 +60,16 @@ test('7. Birth declaration case - 7', async ({ browser }) => {
 
     await test.step('7.1.2 Fill informant details', async () => {
       await page.locator('#informant____relation').click()
-
       await page
         .getByText(declaration.informantType, {
           exact: true
         })
         .click()
-
       await page.getByRole('button', { name: 'Continue' }).click()
     })
 
     await test.step("7.1.3 Fill mother's details", async () => {
       await page.getByLabel("Mother's details are not available").check()
-
       await page.locator('#mother____reason').fill(declaration.mother.reason)
 
       await continueForm(page)
@@ -83,7 +77,6 @@ test('7. Birth declaration case - 7', async ({ browser }) => {
 
     await test.step("7.1.4 Fill father's details", async () => {
       await page.getByLabel("Father's details are not available").check()
-
       await page.locator('#father____reason').fill(declaration.father.reason)
 
       await continueForm(page)
@@ -91,7 +84,6 @@ test('7. Birth declaration case - 7', async ({ browser }) => {
 
     await test.step('7.1.5 Add supporting documents', async () => {
       await goToSection(page, 'documents')
-
       await uploadImage(
         page,
         page.locator('button[name="documents____proofOfBirth"]')
@@ -111,7 +103,6 @@ test('7. Birth declaration case - 7', async ({ browser }) => {
           'button[name="documents____proofOfInformant"]'
         )
       })
-
       await uploadImageToSection({
         page,
         sectionLocator: page.locator('#documents____proofOther'),
@@ -221,11 +212,8 @@ test('7. Birth declaration case - 7', async ({ browser }) => {
 
     await test.step('7.1.8 Fill up informant signature', async () => {
       await page.locator('#review____comment').fill(faker.lorem.sentence())
-
       await page.getByRole('button', { name: 'Sign', exact: true }).click()
-
       await drawSignature(page, 'review____signature_canvas_element', false)
-
       await page
         .locator('#review____signature_modal')
         .getByRole('button', { name: 'Apply' })
@@ -236,9 +224,7 @@ test('7. Birth declaration case - 7', async ({ browser }) => {
 
     await test.step('7.1.9 Notify', async () => {
       await selectDeclarationAction(page, 'Notify')
-
       await ensureOutboxIsEmpty(page)
-
       await page.getByText('Recent').click()
 
       await expect(
@@ -252,19 +238,14 @@ test('7. Birth declaration case - 7', async ({ browser }) => {
   await test.step('7.2 Declaration Review by RO', async () => {
     await test.step('7.2.1 Navigate to the declaration "Record" -tab', async () => {
       await logout(page)
-
       await login(page, CREDENTIALS.REGISTRATION_OFFICER)
-
       await page.getByText('Notifications').click()
-
       await page
         .getByRole('button', {
           name: formatName(declaration.child.name)
         })
         .click()
-
       await ensureAssigned(page)
-
       await switchEventTab(page, 'Record')
     })
 

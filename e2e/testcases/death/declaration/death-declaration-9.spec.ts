@@ -49,34 +49,26 @@ test('9. Death declaration case - 9', async ({ browser }) => {
 
     await test.step('9.1.1 Fill deceased details', async () => {
       await page.locator('#firstname').fill(declaration.deceased.name.firstname)
-
       await page.locator('#surname').fill(declaration.deceased.name.surname)
-
       await continueForm(page)
     })
 
     await test.step('9.1.2 Fill event details', async () => {
       // A place of death is needed, since hospital official may only declare a record in their own location
       await page.getByTestId('select__eventDetails____placeOfDeath').click()
-
       await page.getByText('Health Institution', { exact: true }).click()
-
       await page.locator('#eventDetails____deathLocation').fill('Klow Village')
-
       await page.getByText('Klow Village Hospital').click()
-
       await page.getByRole('button', { name: 'Continue' }).click()
     })
 
     await test.step('9.1.3 Fill informant details', async () => {
       await page.locator('#informant____relation').click()
-
       await page
         .getByText(declaration.informant.relation, {
           exact: true
         })
         .click()
-
       await page.waitForTimeout(500)
 
       // Temporary measurement untill the bug is fixed. BUG: rerenders after selecting relation with deceased
@@ -94,7 +86,6 @@ test('9. Death declaration case - 9', async ({ browser }) => {
        * - Deceased's Family Name
        * - Change button
        */
-
       await expectRowValueWithChangeButton(
         page,
         'deceased.name',
@@ -108,7 +99,6 @@ test('9. Death declaration case - 9', async ({ browser }) => {
        * - Deceased's Gender
        * - Change button
        */
-
       await expectRowValueWithChangeButton(
         page,
         'deceased.gender',
@@ -120,7 +110,6 @@ test('9. Death declaration case - 9', async ({ browser }) => {
        * - Deceased's date of birth
        * - Change button
        */
-
       await expectRowValueWithChangeButton(
         page,
         'deceased.dob',
@@ -132,7 +121,6 @@ test('9. Death declaration case - 9', async ({ browser }) => {
        * - Deceased's Nationality
        * - Change button
        */
-
       await expectRowValueWithChangeButton(
         page,
         'deceased.nationality',
@@ -144,7 +132,6 @@ test('9. Death declaration case - 9', async ({ browser }) => {
        * - Deceased's Type of Id
        * - Change button
        */
-
       await expectRowValueWithChangeButton(
         page,
         'deceased.idType',
@@ -156,7 +143,6 @@ test('9. Death declaration case - 9', async ({ browser }) => {
        * - Deceased's address
        * - Change button
        */
-
       await expectRowValueWithChangeButton(
         page,
         'deceased.address',
@@ -170,7 +156,6 @@ test('9. Death declaration case - 9', async ({ browser }) => {
        * - Date of death
        * - Change button
        */
-
       await expectRowValueWithChangeButton(
         page,
         'eventDetails.date',
@@ -182,7 +167,6 @@ test('9. Death declaration case - 9', async ({ browser }) => {
        * - Informant type
        * - Change button
        */
-
       await expectRowValueWithChangeButton(
         page,
         'informant.relation',
@@ -194,7 +178,6 @@ test('9. Death declaration case - 9', async ({ browser }) => {
        * - Informant's Email
        * - Change button
        */
-
       await expectRowValueWithChangeButton(
         page,
         'informant.email',
@@ -207,7 +190,6 @@ test('9. Death declaration case - 9', async ({ browser }) => {
        * - Spouse's Family Name
        * - Change button
        */
-
       await expectRowValueWithChangeButton(
         page,
         'spouse.name',
@@ -219,7 +201,6 @@ test('9. Death declaration case - 9', async ({ browser }) => {
        * - Spouse's date of birth
        * - Change button
        */
-
       await expectRowValueWithChangeButton(
         page,
         'spouse.dob',
@@ -231,7 +212,6 @@ test('9. Death declaration case - 9', async ({ browser }) => {
        * - Spouse's Nationality
        * - Change button
        */
-
       await expectRowValueWithChangeButton(
         page,
         'spouse.nationality',
@@ -243,7 +223,6 @@ test('9. Death declaration case - 9', async ({ browser }) => {
        * - Spouse's Type of Id
        * - Change button
        */
-
       await expectRowValueWithChangeButton(
         page,
         'spouse.idType',
@@ -255,17 +234,13 @@ test('9. Death declaration case - 9', async ({ browser }) => {
        * - Spouse's address
        * - Change button
        */
-
       await expectRowValueWithChangeButton(page, 'spouse.addressSameAs', 'Yes')
     })
 
     await test.step('9.1.6 Fill up informant signature', async () => {
       await page.locator('#review____comment').fill(annotation.review.comment)
-
       await page.getByRole('button', { name: 'Sign', exact: true }).click()
-
       await drawSignature(page, 'review____signature_canvas_element', false)
-
       await page
         .locator('#review____signature_modal')
         .getByRole('button', { name: 'Apply' })
@@ -274,7 +249,6 @@ test('9. Death declaration case - 9', async ({ browser }) => {
 
     await test.step('9.1.7 Notify', async () => {
       await selectDeclarationAction(page, 'Notify')
-
       await ensureOutboxIsEmpty(page)
 
       await expect(page.getByText('Farajaland CRS')).toBeVisible()
@@ -282,7 +256,6 @@ test('9. Death declaration case - 9', async ({ browser }) => {
       /*
        * Expected result: should redirect to assigned to you workqueue
        */
-
       expect(page.url().includes('assigned-to-you')).toBeTruthy()
 
       await page.getByText('Recent').click()
@@ -301,11 +274,8 @@ test('9. Death declaration case - 9', async ({ browser }) => {
   await test.step('9.2 Declaration Review by RO', async () => {
     await test.step('9.2.1 Navigate to the declaration Edit-action', async () => {
       await login(page, CREDENTIALS.REGISTRATION_OFFICER)
-
       await ensureOutboxIsEmpty(page)
-
       await page.getByText('Notifications').click()
-
       await page
         .getByRole('button', {
           name:
@@ -325,7 +295,6 @@ test('9. Death declaration case - 9', async ({ browser }) => {
        * - Deceased's Family Name
        * - Change button
        */
-
       await expectRowValueWithChangeButton(
         page,
         'deceased.name',
@@ -337,7 +306,6 @@ test('9. Death declaration case - 9', async ({ browser }) => {
        * - Deceased's Gender
        * - Change button
        */
-
       await expectRowValueWithChangeButton(
         page,
         'deceased.gender',
@@ -349,7 +317,6 @@ test('9. Death declaration case - 9', async ({ browser }) => {
        * - Deceased's date of birth
        * - Change button
        */
-
       await expectRowValueWithChangeButton(
         page,
         'deceased.dob',
@@ -361,7 +328,6 @@ test('9. Death declaration case - 9', async ({ browser }) => {
        * - Deceased's Nationality
        * - Change button
        */
-
       await expectRowValueWithChangeButton(
         page,
         'deceased.nationality',
@@ -373,7 +339,6 @@ test('9. Death declaration case - 9', async ({ browser }) => {
        * - Deceased's Type of Id
        * - Change button
        */
-
       await expectRowValueWithChangeButton(
         page,
         'deceased.idType',
@@ -385,7 +350,6 @@ test('9. Death declaration case - 9', async ({ browser }) => {
        * - Deceased's address
        * - Change button
        */
-
       await expectRowValueWithChangeButton(
         page,
         'deceased.address',
@@ -399,7 +363,6 @@ test('9. Death declaration case - 9', async ({ browser }) => {
        * - Date of death
        * - Change button
        */
-
       await expectRowValueWithChangeButton(
         page,
         'eventDetails.date',
@@ -411,7 +374,6 @@ test('9. Death declaration case - 9', async ({ browser }) => {
        * - Informant type
        * - Change button
        */
-
       await expectRowValueWithChangeButton(
         page,
         'informant.relation',
@@ -423,7 +385,6 @@ test('9. Death declaration case - 9', async ({ browser }) => {
        * - Informant's Email
        * - Change button
        */
-
       await expectRowValueWithChangeButton(
         page,
         'informant.email',
@@ -436,7 +397,6 @@ test('9. Death declaration case - 9', async ({ browser }) => {
        * - Spouse's Family Name
        * - Change button
        */
-
       await expectRowValueWithChangeButton(
         page,
         'spouse.name',
@@ -448,7 +408,6 @@ test('9. Death declaration case - 9', async ({ browser }) => {
        * - Spouse's date of birth
        * - Change button
        */
-
       await expectRowValueWithChangeButton(
         page,
         'spouse.dob',
@@ -460,7 +419,6 @@ test('9. Death declaration case - 9', async ({ browser }) => {
        * - Spouse's Nationality
        * - Change button
        */
-
       await expectRowValueWithChangeButton(
         page,
         'spouse.nationality',
@@ -472,7 +430,6 @@ test('9. Death declaration case - 9', async ({ browser }) => {
        * - Spouse's Type of Id
        * - Change button
        */
-
       await expectRowValueWithChangeButton(
         page,
         'spouse.idType',
@@ -484,7 +441,6 @@ test('9. Death declaration case - 9', async ({ browser }) => {
        * - Spouse's address
        * - Change button
        */
-
       await expectRowValueWithChangeButton(page, 'spouse.addressSameAs', 'Yes')
     })
   })

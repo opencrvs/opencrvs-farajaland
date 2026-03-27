@@ -19,17 +19,13 @@ test('Community leader notifies birth', async ({ browser }) => {
 
   await test.step('Initiate birth declaration', async () => {
     await page.click('#header-new-event')
-
     await page.getByLabel('Birth').click()
-
     await page.getByRole('button', { name: 'Continue' }).click()
-
     await page.getByRole('button', { name: 'Continue' }).click()
   })
 
   await test.step('Fill child details', async () => {
     await page.locator('#firstname').fill(childName.firstNames)
-
     await page.locator('#surname').fill(childName.familyName)
   })
 
@@ -39,13 +35,11 @@ test('Community leader notifies birth', async ({ browser }) => {
 
   await test.step('Notify', async () => {
     await selectDeclarationAction(page, 'Notify')
-
     await ensureOutboxIsEmpty(page)
   })
 
   await test.step('Open record', async () => {
     await page.getByText('Recent').click()
-
     await page
       .getByRole('button', {
         name: formatName(childName)

@@ -104,21 +104,13 @@ test('Change informant on review', async ({ browser }) => {
 
     await test.step('Fill child details', async () => {
       await page.locator('#firstname').fill(declaration.child.name.firstNames)
-
       await page.locator('#surname').fill(declaration.child.name.familyName)
-
       await page.locator('#child____gender').click()
-
       await page.getByText(declaration.child.gender, { exact: true }).click()
-
       await page.getByPlaceholder('dd').fill(declaration.child.birthDate.dd)
-
       await page.getByPlaceholder('mm').fill(declaration.child.birthDate.mm)
-
       await page.getByPlaceholder('yyyy').fill(declaration.child.birthDate.yyyy)
-
       await page.locator('#child____placeOfBirth').click()
-
       await page
         .getByText(declaration.placeOfBirth, {
           exact: true
@@ -129,35 +121,26 @@ test('Change informant on review', async ({ browser }) => {
       await expect(
         page.locator('#child____birthLocation____other-form-input #province')
       ).toBeDisabled()
-
       await expect(
         page.locator('#child____birthLocation____other-form-input #district')
       ).toBeDisabled()
 
       await page.locator('#town').fill(declaration.birthLocation.town)
-
       await page
         .locator('#residentialArea')
         .fill(declaration.birthLocation.residentialArea)
-
       await page.locator('#street').fill(declaration.birthLocation.street)
-
       await page.locator('#number').fill(declaration.birthLocation.number)
-
       await page
         .locator('#zipCode')
         .fill(declaration.birthLocation.postcodeOrZip)
-
       await page.locator('#child____attendantAtBirth').click()
-
       await page
         .getByText(declaration.attendantAtBirth, {
           exact: true
         })
         .click()
-
       await page.locator('#child____birthType').click()
-
       await page
         .getByText(declaration.birthType, {
           exact: true
@@ -169,9 +152,7 @@ test('Change informant on review', async ({ browser }) => {
 
     await test.step('Select mother as informant', async () => {
       await page.locator('#informant____relation').click()
-
       await page.getByText('Mother', { exact: true }).click()
-
       await page.locator('#informant____email').fill(declaration.informantEmail)
 
       await continueForm(page)
@@ -179,62 +160,43 @@ test('Change informant on review', async ({ browser }) => {
 
     await test.step("Fill mother's details", async () => {
       await page.locator('#firstname').fill(declaration.mother.name.firstNames)
-
       await page.locator('#surname').fill(declaration.mother.name.familyName)
-
       await page.getByLabel('Exact date of birth unknown').check()
-
       await page
         .locator('#mother____age')
         .fill(declaration.mother.age.toString())
-
       await page.locator('#mother____idType').click()
-
       await page
         .getByText(declaration.mother.identifier.type, { exact: true })
         .click()
-
       await page.locator('#country').click()
-
       await page
         .locator('#country input')
         .fill(declaration.mother.address.country.slice(0, 3))
-
       await page
         .locator('#country')
         .getByText(declaration.mother.address.country, { exact: true })
         .click()
-
       await page.locator('#state').fill(declaration.mother.address.state)
-
       await page.locator('#district2').fill(declaration.mother.address.district)
-
       await page.locator('#cityOrTown').fill(declaration.mother.address.town)
-
       await page
         .locator('#addressLine1')
         .fill(declaration.mother.address.addressLine1)
-
       await page
         .locator('#addressLine2')
         .fill(declaration.mother.address.addressLine2)
-
       await page
         .locator('#addressLine3')
         .fill(declaration.mother.address.addressLine3)
-
       await page
         .locator('#postcodeOrZip')
         .fill(declaration.mother.address.postcodeOrZip)
-
       await page.locator('#mother____maritalStatus').click()
-
       await page
         .getByText(declaration.mother.maritalStatus, { exact: true })
         .click()
-
       await page.locator('#mother____educationalAttainment').click()
-
       await page
         .getByText(declaration.mother.levelOfEducation, { exact: true })
         .click()
@@ -244,7 +206,6 @@ test('Change informant on review', async ({ browser }) => {
 
     await test.step('No fathers details available', async () => {
       await page.getByLabel("Father's details are not available").check()
-
       await page.locator('#father____reason').fill(faker.lorem.sentence())
     })
 
@@ -254,11 +215,8 @@ test('Change informant on review', async ({ browser }) => {
 
     await test.step('Fill up signature and comment', async () => {
       await page.locator('#review____comment').fill(faker.lorem.sentence())
-
       await page.getByRole('button', { name: 'Sign', exact: true }).click()
-
       await drawSignature(page, 'review____signature_canvas_element', false)
-
       await page
         .locator('#review____signature_modal')
         .getByRole('button', { name: 'Apply' })
@@ -269,9 +227,7 @@ test('Change informant on review', async ({ browser }) => {
 
     await test.step('Declare', async () => {
       await selectDeclarationAction(page, 'Declare')
-
       await ensureOutboxIsEmpty(page)
-
       await page.getByText('Recent').click()
 
       await expect(
@@ -285,11 +241,8 @@ test('Change informant on review', async ({ browser }) => {
   await test.step('Declaration Review by Registrar', async () => {
     await test.step('Navigate to the declaration Edit-action', async () => {
       await logout(page)
-
       await login(page, CREDENTIALS.REGISTRAR_VILLAGE)
-
       await page.getByText('Pending registration').click()
-
       await page
         .getByRole('button', {
           name: formatName(declaration.child.name)
@@ -309,11 +262,8 @@ test('Change informant on review', async ({ browser }) => {
 
     await test.step('Change informant to father', async () => {
       await page.getByTestId('change-button-informant.relation').click()
-
       await page.locator('#informant____relation').click()
-
       await page.getByText('Father', { exact: true }).click()
-
       await page.locator('#informant____email').fill(faker.internet.email())
     })
 
@@ -323,37 +273,27 @@ test('Change informant on review', async ({ browser }) => {
       await expect(page.getByTestId('row-value-father.name')).toContainText(
         REQUIRED_VALIDATION_ERROR
       )
-
       await expect(page.getByTestId('row-value-father.dob')).toContainText(
         REQUIRED_VALIDATION_ERROR
       )
-
       await expect(page.getByTestId('row-value-father.idType')).toContainText(
         REQUIRED_VALIDATION_ERROR
       )
 
       await validateActionMenuButton(page, 'Register with edits', false)
-
       await validateActionMenuButton(page, 'Declare with edits', false)
     })
 
     await test.step('Fill in father details', async () => {
       await page.getByTestId('change-button-father.name').click()
-
       await page.locator('#firstname').fill(declaration.father.name.firstNames)
-
       await page.locator('#surname').fill(declaration.father.name.familyName)
-
       await page.getByPlaceholder('dd').fill(declaration.father.birthDate.dd)
-
       await page.getByPlaceholder('mm').fill(declaration.father.birthDate.mm)
-
       await page
         .getByPlaceholder('yyyy')
         .fill(declaration.father.birthDate.yyyy)
-
       await page.getByTestId('select__father____idType').click()
-
       await page
         .getByText(declaration.father.identifier.type, { exact: true })
         .click()
@@ -365,7 +305,6 @@ test('Change informant on review', async ({ browser }) => {
       await expect(page.getByText(REQUIRED_VALIDATION_ERROR)).not.toBeVisible()
 
       await validateActionMenuButton(page, 'Register with edits')
-
       await validateActionMenuButton(page, 'Declare with edits')
     })
 
@@ -383,13 +322,10 @@ test('Change informant on review', async ({ browser }) => {
 
     await test.step('Assert event is registered', async () => {
       await ensureOutboxIsEmpty(page)
-
       await page.getByText('Pending certification').click()
-
       await page
         .getByRole('button', { name: formatName(declaration.child.name) })
         .click()
-
       await ensureAssigned(page)
 
       await expect(page.getByTestId('status-value')).toHaveText('Registered')
@@ -407,11 +343,8 @@ test('Change informant on review', async ({ browser }) => {
 
     await test.step('Assert audit trail', async () => {
       await switchEventTab(page, 'Audit')
-
       await page.getByRole('button', { name: 'Edited', exact: true }).click()
-
       await page.locator('#close-btn').click()
-
       await page
         .getByRole('button', { name: 'Registered', exact: true })
         .click()

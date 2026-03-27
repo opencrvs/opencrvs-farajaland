@@ -1,4 +1,4 @@
-import { test, expect, type Page } from '@playwright/test'
+import { test, expect } from '@playwright/test'
 import {
   continueForm,
   drawSignature,
@@ -26,904 +26,631 @@ const lateRegDay = format(lateRegDate, 'dd')
 const lateRegMonth = format(lateRegDate, 'MM')
 const lateRegYear = format(lateRegDate, 'yyyy')
 
-test.describe.serial('Approval of late birth registration', () => {
-  let page: Page
-
+test('Approval of late birth registration', async ({ browser }) => {
+  const page = await browser.newPage()
   const childName = {
     firstNames: faker.person.firstName('female'),
     familyName: faker.person.lastName('female')
   }
-
   const childNameFormatted = formatName(childName)
 
-  test.beforeAll(async ({ browser }) => {
-    page = await browser.newPage()
+  await test.step('Declaration started by HO', async () => {
+    await login(page, CREDENTIALS.HOSPITAL_OFFICIAL)
+    await page.click('#header-new-event')
+    await page.getByLabel('Birth').click()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.getByRole('button', { name: 'Continue' }).click()
+
+    // Fill child details with birth date from over a year ago
+    await page.locator('#firstname').fill(childName.firstNames)
+    await page.locator('#surname').fill(childName.familyName)
+    await page.locator('#child____gender').click()
+    await page.getByText('Female', { exact: true }).click()
+    await page.getByPlaceholder('dd').fill(lateRegDay)
+    await page.getByPlaceholder('mm').fill(lateRegMonth)
+    await page.getByPlaceholder('yyyy').fill(lateRegYear)
+    await page.locator('#child____reason').fill('Late registration reason')
+    await page.locator('#child____placeOfBirth').click()
+    await page.getByText('Health Institution', { exact: true }).click()
+    await page
+      .locator('#child____birthLocation')
+      .fill('Klow Village Hospital'.slice(0, 3))
+    await page.getByText('Klow Village Hospital').click()
+    await continueForm(page)
+
+    // Fill informant details
+    await page.locator('#informant____relation').click()
+    await page.getByText('Mother', { exact: true }).click()
+    await page.locator('#informant____email').fill('test@example.com')
+    await continueForm(page)
+
+    // Fill mother's details
+    await page.locator('#firstname').fill(faker.person.firstName('female'))
+    await page.locator('#surname').fill(faker.person.lastName('female'))
+    await page.getByPlaceholder('dd').fill('12')
+    await page.getByPlaceholder('mm').fill('05')
+    await page.getByPlaceholder('yyyy').fill('1991')
+    await page.locator('#mother____idType').click()
+    await page.getByText('None', { exact: true }).click()
+    await page.locator('#country').click()
+    await page.locator('#country input').fill('Far')
+    await page
+      .locator('#country')
+      .getByText('Farajaland', { exact: true })
+      .click()
+    await page.locator('#province').click()
+    await page.getByText('Central', { exact: true }).click()
+    await page.locator('#district').click()
+    await page.getByText('Ibombo', { exact: true }).click()
+    await page.locator('#village').click()
+    await page.getByText('Klow', { exact: true }).click()
+    await continueForm(page)
+
+    // Fill father's details
+    await page.locator('#firstname').fill(faker.person.firstName('male'))
+    await page.locator('#surname').fill(faker.person.lastName('male'))
+    await page.getByPlaceholder('dd').fill('12')
+    await page.getByPlaceholder('mm').fill('05')
+    await page.getByPlaceholder('yyyy').fill('1980')
+    await page.locator('#father____idType').click()
+    await page.getByText('None', { exact: true }).click()
+    await page.locator('#father____nationality').click()
+    await page.getByText('Gabon', { exact: true }).click()
+    await page.locator('#father____addressSameAs_YES').click()
+    await page.getByRole('button', { name: 'Continue' }).click()
+
+    // Go to review
+    await goToSection(page, 'review')
+
+    // Fill up informant comment & signature
+    await page.locator('#review____comment').fill(faker.lorem.sentence())
+    await page.getByRole('button', { name: 'Sign', exact: true }).click()
+    await drawSignature(page, 'review____signature_canvas_element', false)
+    await page
+      .locator('#review____signature_modal')
+      .getByRole('button', { name: 'Apply' })
+      .click()
+
+    // Declare
+    await selectDeclarationAction(page, 'Declare')
+    await ensureOutboxIsEmpty(page)
+    await page.getByText('Recent').click()
   })
 
-  test.afterAll(async () => {
-    await page.close()
+  await test.step('Declaration Review by RO', async () => {
+    await login(page, CREDENTIALS.REGISTRATION_OFFICER)
+    await page.getByText('Pending approval').click()
+    await page.getByRole('button', { name: childNameFormatted }).click()
+    await ensureAssigned(page)
+
+    await expect(
+      page.getByText('Approval required for late registration')
+    ).toBeVisible()
+
+    await page.getByRole('button', { name: 'Action', exact: true }).click()
+
+    await expect(page.getByText('Approve', { exact: true })).not.toBeVisible()
   })
 
-  test.describe('Declaration started by HO', async () => {
-    test.beforeAll(async () => {
-      await login(page, CREDENTIALS.HOSPITAL_OFFICIAL)
-      await page.click('#header-new-event')
-      await page.getByLabel('Birth').click()
-      await page.getByRole('button', { name: 'Continue' }).click()
-      await page.getByRole('button', { name: 'Continue' }).click()
-    })
+  await test.step('Declaration Review by Registrar', async () => {
+    await login(page, CREDENTIALS.REGISTRAR)
+    await page.getByText('Pending approval').click()
+    await page.getByRole('button', { name: childNameFormatted }).click()
+    await page.getByRole('button', { name: 'Action', exact: true }).click()
+    await page.getByText('Unassign', { exact: true }).click()
+    await page.getByRole('button', { name: 'Unassign', exact: true }).click()
 
-    test('Fill child details with birth date from over a year ago', async () => {
-      await page.locator('#firstname').fill(childName.firstNames)
-      await page.locator('#surname').fill(childName.familyName)
-      await page.locator('#child____gender').click()
-      await page.getByText('Female', { exact: true }).click()
+    await expect(
+      page.getByText('Not assigned', { exact: true })
+    ).toBeVisible()
 
-      await page.getByPlaceholder('dd').fill(lateRegDay)
-      await page.getByPlaceholder('mm').fill(lateRegMonth)
-      await page.getByPlaceholder('yyyy').fill(lateRegYear)
-      await page.locator('#child____reason').fill('Late registration reason')
+    await page.getByRole('button', { name: 'Action', exact: true }).click()
 
-      await page.locator('#child____placeOfBirth').click()
-      await page.getByText('Health Institution', { exact: true }).click()
-      await page
-        .locator('#child____birthLocation')
-        .fill('Klow Village Hospital'.slice(0, 3))
-      await page.getByText('Klow Village Hospital').click()
-
-      await continueForm(page)
-    })
-
-    test('Fill informant details', async () => {
-      await page.locator('#informant____relation').click()
-      await page.getByText('Mother', { exact: true }).click()
-
-      await page.locator('#informant____email').fill('test@example.com')
-
-      await continueForm(page)
-    })
-
-    test("Fill mother's details", async () => {
-      await page.locator('#firstname').fill(faker.person.firstName('female'))
-      await page.locator('#surname').fill(faker.person.lastName('female'))
-
-      await page.getByPlaceholder('dd').fill('12')
-      await page.getByPlaceholder('mm').fill('05')
-      await page.getByPlaceholder('yyyy').fill('1991')
-
-      await page.locator('#mother____idType').click()
-      await page.getByText('None', { exact: true }).click()
-
-      await page.locator('#country').click()
-      await page.locator('#country input').fill('Far')
-      await page
-        .locator('#country')
-        .getByText('Farajaland', { exact: true })
-        .click()
-
-      await page.locator('#province').click()
-      await page.getByText('Central', { exact: true }).click()
-
-      await page.locator('#district').click()
-      await page.getByText('Ibombo', { exact: true }).click()
-
-      await page.locator('#village').click()
-      await page.getByText('Klow', { exact: true }).click()
-
-      await continueForm(page)
-    })
-
-    test("Fill father's details", async () => {
-      await page.locator('#firstname').fill(faker.person.firstName('male'))
-      await page.locator('#surname').fill(faker.person.lastName('male'))
-
-      await page.getByPlaceholder('dd').fill('12')
-      await page.getByPlaceholder('mm').fill('05')
-      await page.getByPlaceholder('yyyy').fill('1980')
-
-      await page.locator('#father____idType').click()
-      await page.getByText('None', { exact: true }).click()
-
-      await page.locator('#father____nationality').click()
-      await page.getByText('Gabon', { exact: true }).click()
-
-      await page.locator('#father____addressSameAs_YES').click()
-
-      await page.getByRole('button', { name: 'Continue' }).click()
-    })
-
-    test('Go to review', async () => {
-      await goToSection(page, 'review')
-    })
-
-    test('Fill up informant comment & signature', async () => {
-      await page.locator('#review____comment').fill(faker.lorem.sentence())
-      await page.getByRole('button', { name: 'Sign', exact: true }).click()
-      await drawSignature(page, 'review____signature_canvas_element', false)
-      await page
-        .locator('#review____signature_modal')
-        .getByRole('button', { name: 'Apply' })
-        .click()
-    })
-
-    test('Declare', async () => {
-      await selectDeclarationAction(page, 'Declare')
-      await ensureOutboxIsEmpty(page)
-      await page.getByText('Recent').click()
-    })
+    await expect(page.getByText('Approve', { exact: true })).not.toBeVisible()
   })
 
-  test.describe('Declaration Review by RO', async () => {
-    test('Navigate to the declaration review page', async () => {
-      await login(page, CREDENTIALS.REGISTRATION_OFFICER)
-      await page.getByText('Pending approval').click()
-      await page.getByRole('button', { name: childNameFormatted }).click()
-      await ensureAssigned(page)
-    })
+  await test.step('Declaration Review by PR(Provincial Registrar)', async () => {
+    await login(page, CREDENTIALS.PROVINCIAL_REGISTRAR)
+    await page.getByText('Pending approval').first().click()
+    await page.getByRole('button', { name: childNameFormatted }).click()
+    await validateActionMenuButton(page, 'Approve', false)
+    await ensureAssigned(page)
 
-    test("Event should have the 'Approval required for late registration' -flag", async () => {
-      await expect(
-        page.getByText('Approval required for late registration')
-      ).toBeVisible()
-    })
+    await expect(
+      page.getByText('Approval required for late registration')
+    ).toBeVisible()
 
-    test('RO should not have the option to Approve', async () => {
-      await page.getByRole('button', { name: 'Action', exact: true }).click()
+    await selectAction(page, 'Approve')
 
-      await expect(page.getByText('Approve', { exact: true })).not.toBeVisible()
-    })
-  })
-
-  test.describe('Declaration Review by Registrar', async () => {
-    test('Navigate to the declaration review page', async () => {
-      await login(page, CREDENTIALS.REGISTRAR)
-      await page.getByText('Pending approval').click()
-      await page.getByRole('button', { name: childNameFormatted }).click()
-    })
-
-    test('Unassign', async () => {
-      await page.getByRole('button', { name: 'Action', exact: true }).click()
-      await page.getByText('Unassign', { exact: true }).click()
-      await page.getByRole('button', { name: 'Unassign', exact: true }).click()
-
-      await expect(
-        page.getByText('Not assigned', { exact: true })
-      ).toBeVisible()
-    })
-
-    test('LR should not have the option to Approve', async () => {
-      await page.getByRole('button', { name: 'Action', exact: true }).click()
-
-      await expect(page.getByText('Approve', { exact: true })).not.toBeVisible()
-    })
-  })
-
-  test.describe('Declaration Review by PR(Provincial Registrar)', async () => {
-    test('Navigate to the declaration review page', async () => {
-      await login(page, CREDENTIALS.PROVINCIAL_REGISTRAR)
-      await page.getByText('Pending approval').first().click()
-      await page.getByRole('button', { name: childNameFormatted }).click()
-    })
-
-    test('Approve action should be disabled before assignment', async () => {
-      await validateActionMenuButton(page, 'Approve', false)
-    })
-
-    test('Assign', async () => {
-      await ensureAssigned(page)
-    })
-
-    test("Event should have the 'Approval required for late registration' -flag", async () => {
-      await expect(
-        page.getByText('Approval required for late registration')
-      ).toBeVisible()
-    })
-
-    test('Fill comments field before confirming Approve declaration', async () => {
-      await selectAction(page, 'Approve')
-
-      await expect(
-        page.getByText(
-          'Approving this declaration confirms it as legally accepted and eligible for registration.'
-        )
-      ).toBeVisible()
-
-      const confirmButton = page.getByRole('button', { name: 'Confirm' })
-      await expect(confirmButton).toBeEnabled()
-
-      const notesField = page.locator('#notes')
-      await notesField.fill(
-        'Approving after verifying all late submission details.'
+    await expect(
+      page.getByText(
+        'Approving this declaration confirms it as legally accepted and eligible for registration.'
       )
+    ).toBeVisible()
 
-      await expect(confirmButton).toBeEnabled()
-      await confirmButton.click()
-    })
+    const confirmButton = page.getByRole('button', { name: 'Confirm' })
 
-    test("Validate that the 'Approval required for late registration' -flag is removed after approval", async () => {
-      await ensureOutboxIsEmpty(page)
-      await searchFromSearchBar(page, childNameFormatted)
+    await expect(confirmButton).toBeEnabled()
 
-      await expect(
-        page.getByText('Approval required for late registration')
-      ).not.toBeVisible()
-    })
+    const notesField = page.locator('#notes')
+    await notesField.fill(
+      'Approving after verifying all late submission details.'
+    )
+
+    await expect(confirmButton).toBeEnabled()
+
+    await confirmButton.click()
+    await ensureOutboxIsEmpty(page)
+    await searchFromSearchBar(page, childNameFormatted)
+
+    await expect(
+      page.getByText('Approval required for late registration')
+    ).not.toBeVisible()
   })
 
-  test.describe('Audit review by Registrar', async () => {
-    test('Navigate to the declaration review page', async () => {
-      await login(page, CREDENTIALS.REGISTRAR, true)
-      await searchFromSearchBar(page, childNameFormatted)
-    })
+  await test.step('Audit review by Registrar', async () => {
+    await login(page, CREDENTIALS.REGISTRAR, true)
+    await searchFromSearchBar(page, childNameFormatted)
+    await ensureAssigned(page)
+    await page.getByRole('button', { name: 'Action', exact: true }).click()
 
-    test('Assign', async () => {
-      await ensureAssigned(page)
-    })
+    await expect(page.getByText('Approve', { exact: true })).not.toBeVisible()
 
-    test('LR should not have the option to Approve', async () => {
-      await page.getByRole('button', { name: 'Action', exact: true }).click()
+    await switchEventTab(page, 'Audit')
+    await page.getByRole('button', { name: 'Approved', exact: true }).click()
 
-      await expect(page.getByText('Approve', { exact: true })).not.toBeVisible()
-    })
-
-    test('Validate that action and form field value appearing in audit trail', async () => {
-      await switchEventTab(page, 'Audit')
-      await page.getByRole('button', { name: 'Approved', exact: true }).click()
-
-      await expect(
-        page.getByText('Approving after verifying all late submission details.')
-      ).toBeVisible()
-    })
+    await expect(
+      page.getByText('Approving after verifying all late submission details.')
+    ).toBeVisible()
   })
 })
 
-test.describe('Birth with non-late registration will not have flag or Approve-action available', () => {
-  let page: Page
+test('Birth with non-late registration will not have flag or Approve-action available', async ({ browser }) => {
+  const page = await browser.newPage()
   const childName = {
     firstNames: faker.person.firstName('female'),
     familyName: faker.person.lastName('female')
   }
-
   const childNameFormatted = formatName(childName)
 
-  test.beforeAll(async ({ browser }) => {
-    page = await browser.newPage()
-  })
+  await test.step('Declaration started by HO', async () => {
+    await login(page, CREDENTIALS.HOSPITAL_OFFICIAL)
+    await page.click('#header-new-event')
+    await page.getByLabel('Birth').click()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.getByRole('button', { name: 'Continue' }).click()
 
-  test.afterAll(async () => {
-    await page.close()
-  })
+    // Fill child details with recent birth date
+    await page.locator('#firstname').fill(childName.firstNames)
+    await page.locator('#surname').fill(childName.familyName)
+    await page.locator('#child____gender').click()
+    await page.getByText('Female', { exact: true }).click()
+    await page.getByPlaceholder('dd').fill(recentDay)
+    await page.getByPlaceholder('mm').fill(recentMonth)
+    await page.getByPlaceholder('yyyy').fill(recentYear)
+    await page.locator('#child____placeOfBirth').click()
+    await page.getByText('Health Institution', { exact: true }).click()
+    await page
+      .locator('#child____birthLocation')
+      .fill('Klow Village Hospital'.slice(0, 3))
+    await page.getByText('Klow Village Hospital').click()
+    await continueForm(page)
 
-  test.describe.serial('Declaration started by HO', async () => {
-    test.beforeAll(async () => {
-      await login(page, CREDENTIALS.HOSPITAL_OFFICIAL)
-      await page.click('#header-new-event')
-      await page.getByLabel('Birth').click()
-      await page.getByRole('button', { name: 'Continue' }).click()
-      await page.getByRole('button', { name: 'Continue' }).click()
-    })
+    // Fill informant details
+    await page.locator('#informant____relation').click()
+    await page.getByText('Mother', { exact: true }).click()
+    await page.locator('#informant____email').fill('test@example.com')
+    await continueForm(page)
 
-    test('Fill child details with recent birth date', async () => {
-      await page.locator('#firstname').fill(childName.firstNames)
-      await page.locator('#surname').fill(childName.familyName)
-      await page.locator('#child____gender').click()
-      await page.getByText('Female', { exact: true }).click()
+    // Fill mother's details
+    await page.locator('#firstname').fill(faker.person.firstName('female'))
+    await page.locator('#surname').fill(faker.person.lastName('female'))
+    await page.getByPlaceholder('dd').fill('25')
+    await page.getByPlaceholder('mm').fill('11')
+    await page.getByPlaceholder('yyyy').fill('1984')
+    await page.locator('#mother____idType').click()
+    await page.getByText('None', { exact: true }).click()
+    await page.locator('#country').click()
+    await page.locator('#country input').fill('Far')
+    await page
+      .locator('#country')
+      .getByText('Farajaland', { exact: true })
+      .click()
+    await page.locator('#province').click()
+    await page.getByText('Central', { exact: true }).click()
+    await page.locator('#district').click()
+    await page.getByText('Ibombo', { exact: true }).click()
+    await page.locator('#village').click()
+    await page.getByText('Klow', { exact: true }).click()
+    await continueForm(page)
 
-      await page.getByPlaceholder('dd').fill(recentDay)
-      await page.getByPlaceholder('mm').fill(recentMonth)
-      await page.getByPlaceholder('yyyy').fill(recentYear)
+    // Fill father's details
+    await page.locator('#firstname').fill(faker.person.firstName('male'))
+    await page.locator('#surname').fill(faker.person.lastName('male'))
+    await page.getByPlaceholder('dd').fill('12')
+    await page.getByPlaceholder('mm').fill('05')
+    await page.getByPlaceholder('yyyy').fill('1985')
+    await page.locator('#father____idType').click()
+    await page.getByText('None', { exact: true }).click()
+    await page.locator('#father____nationality').click()
+    await page.getByText('Gabon', { exact: true }).click()
+    await page.locator('#father____addressSameAs_YES').click()
+    await page.getByRole('button', { name: 'Continue' }).click()
 
-      await page.locator('#child____placeOfBirth').click()
-      await page.getByText('Health Institution', { exact: true }).click()
-      await page
-        .locator('#child____birthLocation')
-        .fill('Klow Village Hospital'.slice(0, 3))
-      await page.getByText('Klow Village Hospital').click()
+    // Go to review
+    await goToSection(page, 'review')
 
-      await continueForm(page)
-    })
+    // Fill up informant comment & signature
+    await page.locator('#review____comment').fill(faker.lorem.sentence())
+    await page.getByRole('button', { name: 'Sign', exact: true }).click()
+    await drawSignature(page, 'review____signature_canvas_element', false)
+    await page
+      .locator('#review____signature_modal')
+      .getByRole('button', { name: 'Apply' })
+      .click()
 
-    test('Fill informant details', async () => {
-      await page.locator('#informant____relation').click()
-      await page.getByText('Mother', { exact: true }).click()
+    // Declare
+    await selectDeclarationAction(page, 'Declare')
+    await ensureOutboxIsEmpty(page)
 
-      await page.locator('#informant____email').fill('test@example.com')
+    // Navigate to the record
+    await page.getByText('Recent').click()
+    await page.getByRole('button', { name: childNameFormatted }).click()
 
-      await continueForm(page)
-    })
+    await expect(
+      page.getByText('Approval required for late registration')
+    ).not.toBeVisible()
 
-    test("Fill mother's details", async () => {
-      await page.locator('#firstname').fill(faker.person.firstName('female'))
-      await page.locator('#surname').fill(faker.person.lastName('female'))
+    await page.getByRole('button', { name: 'Action', exact: true }).click()
 
-      await page.getByPlaceholder('dd').fill('25')
-      await page.getByPlaceholder('mm').fill('11')
-      await page.getByPlaceholder('yyyy').fill('1984')
-
-      await page.locator('#mother____idType').click()
-      await page.getByText('None', { exact: true }).click()
-
-      await page.locator('#country').click()
-      await page.locator('#country input').fill('Far')
-      await page
-        .locator('#country')
-        .getByText('Farajaland', { exact: true })
-        .click()
-
-      await page.locator('#province').click()
-      await page.getByText('Central', { exact: true }).click()
-
-      await page.locator('#district').click()
-      await page.getByText('Ibombo', { exact: true }).click()
-
-      await page.locator('#village').click()
-      await page.getByText('Klow', { exact: true }).click()
-
-      await continueForm(page)
-    })
-
-    test("Fill father's details", async () => {
-      await page.locator('#firstname').fill(faker.person.firstName('male'))
-      await page.locator('#surname').fill(faker.person.lastName('male'))
-
-      await page.getByPlaceholder('dd').fill('12')
-      await page.getByPlaceholder('mm').fill('05')
-      await page.getByPlaceholder('yyyy').fill('1985')
-
-      await page.locator('#father____idType').click()
-      await page.getByText('None', { exact: true }).click()
-
-      await page.locator('#father____nationality').click()
-      await page.getByText('Gabon', { exact: true }).click()
-
-      await page.locator('#father____addressSameAs_YES').click()
-
-      await page.getByRole('button', { name: 'Continue' }).click()
-    })
-
-    test('Go to review', async () => {
-      await goToSection(page, 'review')
-    })
-
-    test('Fill up informant comment & signature', async () => {
-      await page.locator('#review____comment').fill(faker.lorem.sentence())
-      await page.getByRole('button', { name: 'Sign', exact: true }).click()
-      await drawSignature(page, 'review____signature_canvas_element', false)
-      await page
-        .locator('#review____signature_modal')
-        .getByRole('button', { name: 'Apply' })
-        .click()
-    })
-
-    test('Declare', async () => {
-      await selectDeclarationAction(page, 'Declare')
-      await ensureOutboxIsEmpty(page)
-    })
-
-    test('Navigate to the record', async () => {
-      await page.getByText('Recent').click()
-      await page.getByRole('button', { name: childNameFormatted }).click()
-    })
-
-    test("Record should not have the 'Approval required for late registration' -flag", async () => {
-      await expect(
-        page.getByText('Approval required for late registration')
-      ).not.toBeVisible()
-    })
-
-    test('Record should not have the "Approve"-action available', async () => {
-      await page.getByRole('button', { name: 'Action', exact: true }).click()
-
-      await expect(page.getByText('Approve', { exact: true })).not.toBeVisible()
-    })
+    await expect(page.getByText('Approve', { exact: true })).not.toBeVisible()
   })
 })
 
-test.describe
-  .serial("'Approval required for late registration' -flag blocks direct registration", () => {
-  let page: Page
+test("'Approval required for late registration' -flag blocks direct registration", async ({ browser }) => {
+  const page = await browser.newPage()
 
-  test.beforeAll(async ({ browser }) => {
-    page = await browser.newPage()
-  })
+  await test.step('Declaration started by Registrar', async () => {
+    await login(page, CREDENTIALS.REGISTRAR)
+    await page.click('#header-new-event')
+    await page.getByLabel('Birth').click()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.getByRole('button', { name: 'Continue' }).click()
 
-  test.afterAll(async () => {
-    await page.close()
-  })
+    // Fill child details with birth date from over a year ago
+    await page.locator('#firstname').fill(faker.person.firstName())
+    await page.locator('#surname').fill(faker.person.lastName())
+    await page.locator('#child____gender').click()
+    await page.getByText('Female', { exact: true }).click()
+    await page.getByPlaceholder('dd').fill(lateRegDay)
+    await page.getByPlaceholder('mm').fill(lateRegMonth)
+    await page.getByPlaceholder('yyyy').fill(lateRegYear)
+    await page.locator('#child____reason').fill('Late registration reason')
+    await page.locator('#child____placeOfBirth').click()
+    await page.getByText('Health Institution', { exact: true }).click()
+    await page
+      .locator('#child____birthLocation')
+      .fill('Golden Valley Rural Health Centre'.slice(0, 3))
+    await page.getByText('Golden Valley Rural Health Centre').click()
+    await continueForm(page)
 
-  test.describe('Declaration started by Registrar', async () => {
-    test.beforeAll(async () => {
-      await login(page, CREDENTIALS.REGISTRAR)
-      await page.click('#header-new-event')
-      await page.getByLabel('Birth').click()
-      await page.getByRole('button', { name: 'Continue' }).click()
-      await page.getByRole('button', { name: 'Continue' }).click()
-    })
+    // Fill informant details
+    await page.locator('#informant____relation').click()
+    await page.getByText('Mother', { exact: true }).click()
+    await page.locator('#informant____email').fill('test@example.com')
+    await continueForm(page)
 
-    test('Fill child details with birth date from over a year ago', async () => {
-      await page.locator('#firstname').fill(faker.person.firstName())
-      await page.locator('#surname').fill(faker.person.lastName())
-      await page.locator('#child____gender').click()
-      await page.getByText('Female', { exact: true }).click()
+    // Fill mother's details
+    await page.locator('#firstname').fill(faker.person.firstName('female'))
+    await page.locator('#surname').fill(faker.person.lastName('female'))
+    await page.getByPlaceholder('dd').fill('12')
+    await page.getByPlaceholder('mm').fill('05')
+    await page.getByPlaceholder('yyyy').fill('1980')
+    await page.locator('#country').click()
+    await page.locator('#country input').fill('Far')
+    await page
+      .locator('#country')
+      .getByText('Farajaland', { exact: true })
+      .click()
+    await page.locator('#province').click()
+    await page.getByText('Central', { exact: true }).click()
+    await page.locator('#district').click()
+    await page.getByText('Ibombo', { exact: true }).click()
+    await page.locator('#village').click()
+    await page.getByText('Klow', { exact: true }).click()
+    await page.locator('#mother____idType').click()
+    await page.getByText('None', { exact: true }).click()
+    await continueForm(page)
 
-      await page.getByPlaceholder('dd').fill(lateRegDay)
-      await page.getByPlaceholder('mm').fill(lateRegMonth)
-      await page.getByPlaceholder('yyyy').fill(lateRegYear)
-      await page.locator('#child____reason').fill('Late registration reason')
+    // Fill father's details
+    await page.locator('#firstname').fill(faker.person.firstName('male'))
+    await page.locator('#surname').fill(faker.person.lastName('male'))
+    await page.getByPlaceholder('dd').fill('12')
+    await page.getByPlaceholder('mm').fill('05')
+    await page.getByPlaceholder('yyyy').fill('1985')
+    await page.locator('#father____idType').click()
+    await page.getByText('None', { exact: true }).click()
+    await page.locator('#father____nationality').click()
+    await page.getByText('Gabon', { exact: true }).click()
+    await page.locator('#father____addressSameAs_YES').click()
+    await page.getByRole('button', { name: 'Continue' }).click()
 
-      await page.locator('#child____placeOfBirth').click()
-      await page.getByText('Health Institution', { exact: true }).click()
-      await page
-        .locator('#child____birthLocation')
-        .fill('Golden Valley Rural Health Centre'.slice(0, 3))
-      await page.getByText('Golden Valley Rural Health Centre').click()
+    // Go to review
+    await goToSection(page, 'review')
 
-      await continueForm(page)
-    })
+    // Fill up informant comment & signature
+    await page.locator('#review____comment').fill(faker.lorem.sentence())
+    await page.getByRole('button', { name: 'Sign', exact: true }).click()
+    await drawSignature(page, 'review____signature_canvas_element', false)
+    await page
+      .locator('#review____signature_modal')
+      .getByRole('button', { name: 'Apply' })
+      .click()
 
-    test('Fill informant details', async () => {
-      await page.locator('#informant____relation').click()
-      await page.getByText('Mother', { exact: true }).click()
+    // Direct registration should be unavailable
+    await validateActionMenuButton(page, 'Declare')
+    await validateActionMenuButton(page, 'Register', false)
 
-      await page.locator('#informant____email').fill('test@example.com')
+    // Change child dob to recent date
+    await page.getByTestId('change-button-child.dob').click()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.getByPlaceholder('dd').fill(recentDay)
+    await page.getByPlaceholder('mm').fill(recentMonth)
+    await page.getByPlaceholder('yyyy').fill(recentYear)
+    await page.getByRole('button', { name: 'Back to review' }).click()
 
-      await continueForm(page)
-    })
-
-    test("Fill mother's details", async () => {
-      await page.locator('#firstname').fill(faker.person.firstName('female'))
-      await page.locator('#surname').fill(faker.person.lastName('female'))
-
-      await page.getByPlaceholder('dd').fill('12')
-      await page.getByPlaceholder('mm').fill('05')
-      await page.getByPlaceholder('yyyy').fill('1980')
-
-      await page.locator('#country').click()
-      await page.locator('#country input').fill('Far')
-      await page
-        .locator('#country')
-        .getByText('Farajaland', { exact: true })
-        .click()
-
-      await page.locator('#province').click()
-      await page.getByText('Central', { exact: true }).click()
-
-      await page.locator('#district').click()
-      await page.getByText('Ibombo', { exact: true }).click()
-
-      await page.locator('#village').click()
-      await page.getByText('Klow', { exact: true }).click()
-
-      await page.locator('#mother____idType').click()
-      await page.getByText('None', { exact: true }).click()
-
-      await continueForm(page)
-    })
-
-    test("Fill father's details", async () => {
-      await page.locator('#firstname').fill(faker.person.firstName('male'))
-      await page.locator('#surname').fill(faker.person.lastName('male'))
-
-      await page.getByPlaceholder('dd').fill('12')
-      await page.getByPlaceholder('mm').fill('05')
-      await page.getByPlaceholder('yyyy').fill('1985')
-
-      await page.locator('#father____idType').click()
-      await page.getByText('None', { exact: true }).click()
-
-      await page.locator('#father____nationality').click()
-      await page.getByText('Gabon', { exact: true }).click()
-
-      await page.locator('#father____addressSameAs_YES').click()
-
-      await page.getByRole('button', { name: 'Continue' }).click()
-    })
-
-    test('Go to review', async () => {
-      await goToSection(page, 'review')
-    })
-
-    test('Fill up informant comment & signature', async () => {
-      await page.locator('#review____comment').fill(faker.lorem.sentence())
-      await page.getByRole('button', { name: 'Sign', exact: true }).click()
-      await drawSignature(page, 'review____signature_canvas_element', false)
-      await page
-        .locator('#review____signature_modal')
-        .getByRole('button', { name: 'Apply' })
-        .click()
-    })
-
-    test('Direct registration should be unavailable', async () => {
-      await validateActionMenuButton(page, 'Declare')
-      await validateActionMenuButton(page, 'Register', false)
-    })
-
-    test('Change child dob to recent date', async () => {
-      await page.getByTestId('change-button-child.dob').click()
-      await page.getByRole('button', { name: 'Continue' }).click()
-
-      await page.getByPlaceholder('dd').fill(recentDay)
-      await page.getByPlaceholder('mm').fill(recentMonth)
-      await page.getByPlaceholder('yyyy').fill(recentYear)
-
-      await page.getByRole('button', { name: 'Back to review' }).click()
-    })
-
-    test('Direct registration should be available', async () => {
-      await validateActionMenuButton(page, 'Register')
-    })
+    // Direct registration should be available
+    await validateActionMenuButton(page, 'Register')
   })
 })
 
-test.describe
-  .serial('Approval of late birth registration -flag can be removed during edit and redeclare', () => {
-  let page: Page
-
+test('Approval of late birth registration -flag can be removed during edit and redeclare', async ({ browser }) => {
+  const page = await browser.newPage()
   const childName = {
     firstNames: faker.person.firstName('female'),
     familyName: faker.person.lastName('female')
   }
-
   const childNameFormatted = formatName(childName)
 
-  test.beforeAll(async ({ browser }) => {
-    page = await browser.newPage()
+  await test.step('Declaration started by HO', async () => {
+    await login(page, CREDENTIALS.HOSPITAL_OFFICIAL)
+    await page.click('#header-new-event')
+    await page.getByLabel('Birth').click()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.getByRole('button', { name: 'Continue' }).click()
+
+    // Fill child details with birth date from over a year ago
+    await page.locator('#firstname').fill(childName.firstNames)
+    await page.locator('#surname').fill(childName.familyName)
+    await page.locator('#child____gender').click()
+    await page.getByText('Female', { exact: true }).click()
+    await page.getByPlaceholder('dd').fill(lateRegDay)
+    await page.getByPlaceholder('mm').fill(lateRegMonth)
+    await page.getByPlaceholder('yyyy').fill(lateRegYear)
+    await page.locator('#child____reason').fill('Late registration reason')
+    await page.locator('#child____placeOfBirth').click()
+    await page.getByText('Health Institution', { exact: true }).click()
+    await page
+      .locator('#child____birthLocation')
+      .fill('Klow Village Hospital'.slice(0, 3))
+    await page.getByText('Klow Village Hospital').click()
+    await continueForm(page)
+
+    // Fill informant details
+    await page.locator('#informant____relation').click()
+    await page.getByText('Mother', { exact: true }).click()
+    await page.locator('#informant____email').fill('test@example.com')
+    await continueForm(page)
+
+    // Fill mother's details
+    await page.locator('#firstname').fill(faker.person.firstName('female'))
+    await page.locator('#surname').fill(faker.person.lastName('female'))
+    await page.getByPlaceholder('dd').fill('12')
+    await page.getByPlaceholder('mm').fill('05')
+    await page.getByPlaceholder('yyyy').fill('1991')
+    await page.locator('#mother____idType').click()
+    await page.getByText('None', { exact: true }).click()
+    await continueForm(page)
+
+    // Fill father's details
+    await page.locator('#firstname').fill(faker.person.firstName('male'))
+    await page.locator('#surname').fill(faker.person.lastName('male'))
+    await page.getByPlaceholder('dd').fill('12')
+    await page.getByPlaceholder('mm').fill('05')
+    await page.getByPlaceholder('yyyy').fill('1980')
+    await page.locator('#father____idType').click()
+    await page.getByText('None', { exact: true }).click()
+    await page.locator('#father____nationality').click()
+    await page.getByText('Gabon', { exact: true }).click()
+    await page.locator('#father____addressSameAs_YES').click()
+    await page.getByRole('button', { name: 'Continue' }).click()
+
+    // Go to review
+    await goToSection(page, 'review')
+
+    // Fill up informant comment & signature
+    await page.locator('#review____comment').fill(faker.lorem.sentence())
+    await page.getByRole('button', { name: 'Sign', exact: true }).click()
+    await drawSignature(page, 'review____signature_canvas_element', false)
+    await page
+      .locator('#review____signature_modal')
+      .getByRole('button', { name: 'Apply' })
+      .click()
+
+    // Declare
+    await selectDeclarationAction(page, 'Declare')
+    await ensureOutboxIsEmpty(page)
+    await page.getByText('Recent').click()
   })
 
-  test.afterAll(async () => {
-    await page.close()
+  await test.step('Declaration Review by RO', async () => {
+    await login(page, CREDENTIALS.REGISTRATION_OFFICER)
+    await page.getByText('Pending approval').click()
+    await page.getByRole('button', { name: childNameFormatted }).click()
+    await ensureAssigned(page)
+
+    await expect(
+      page.getByText('Approval required for late registration')
+    ).toBeVisible()
+
+    await selectAction(page, 'Edit')
+    await page.getByTestId('change-button-child.dob').click()
+    await page.getByPlaceholder('dd').fill(recentDay)
+    await page.getByPlaceholder('mm').fill(recentMonth)
+    await page.getByPlaceholder('yyyy').fill(recentYear)
+    await page.getByRole('button', { name: 'Back to review' }).click()
+    await selectDeclarationAction(page, 'Declare with edits')
+    await ensureOutboxIsEmpty(page)
+    await page.getByText('Recent').click()
+    await page.getByRole('button', { name: childNameFormatted }).click()
+
+    await expect(page.getByTestId('flags-value')).toHaveText('Validated')
+    await expect(
+      page.getByText('Approval required for late registration')
+    ).not.toBeVisible()
+    await expect(page.getByTestId('flags-value')).not.toHaveText(
+      'Edit in progress'
+    )
+  })
+})
+
+test('Approval of late birth registration -flag can be added during edit and redeclare', async ({ browser }) => {
+  const page = await browser.newPage()
+  const childName = {
+    firstNames: faker.person.firstName('female'),
+    familyName: faker.person.lastName('female')
+  }
+  const childNameFormatted = formatName(childName)
+
+  await test.step('Declaration started by RO', async () => {
+    await login(page, CREDENTIALS.REGISTRATION_OFFICER)
+    await page.click('#header-new-event')
+    await page.getByLabel('Birth').click()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.getByRole('button', { name: 'Continue' }).click()
+
+    // Fill child details with birth date from recent date
+    await page.locator('#firstname').fill(childName.firstNames)
+    await page.locator('#surname').fill(childName.familyName)
+    await page.locator('#child____gender').click()
+    await page.getByText('Female', { exact: true }).click()
+    await page.getByPlaceholder('dd').fill(recentDay)
+    await page.getByPlaceholder('mm').fill(recentMonth)
+    await page.getByPlaceholder('yyyy').fill(recentYear)
+    await page.locator('#child____placeOfBirth').click()
+    await page.getByText('Health Institution', { exact: true }).click()
+    await page
+      .locator('#child____birthLocation')
+      .fill('Golden Valley Rural Health Centre'.slice(0, 3))
+    await page.getByText('Golden Valley Rural Health Centre').click()
+    await continueForm(page)
+
+    // Fill informant details
+    await page.locator('#informant____relation').click()
+    await page.getByText('Mother', { exact: true }).click()
+    await page.locator('#informant____email').fill('test@example.com')
+    await continueForm(page)
+
+    // Fill mother's details
+    await page.locator('#firstname').fill(faker.person.firstName('female'))
+    await page.locator('#surname').fill(faker.person.lastName('female'))
+    await page.getByPlaceholder('dd').fill('12')
+    await page.getByPlaceholder('mm').fill('05')
+    await page.getByPlaceholder('yyyy').fill('1991')
+    await page.locator('#mother____idType').click()
+    await page.getByText('None', { exact: true }).click()
+    await page.locator('#country').click()
+    await page.locator('#country input').fill('Far')
+    await page
+      .locator('#country')
+      .getByText('Farajaland', { exact: true })
+      .click()
+    await page.locator('#province').click()
+    await page.getByText('Central', { exact: true }).click()
+    await page.locator('#district').click()
+    await page.getByText('Ibombo', { exact: true }).click()
+    await page.locator('#village').click()
+    await page.getByText('Klow', { exact: true }).click()
+    await continueForm(page)
+
+    // Fill father's details
+    await page.locator('#firstname').fill(faker.person.firstName('male'))
+    await page.locator('#surname').fill(faker.person.lastName('male'))
+    await page.getByPlaceholder('dd').fill('12')
+    await page.getByPlaceholder('mm').fill('05')
+    await page.getByPlaceholder('yyyy').fill('1980')
+    await page.locator('#father____idType').click()
+    await page.getByText('None', { exact: true }).click()
+    await page.locator('#father____nationality').click()
+    await page.getByText('Gabon', { exact: true }).click()
+    await page.locator('#father____addressSameAs_YES').click()
+    await page.getByRole('button', { name: 'Continue' }).click()
+
+    // Go to review
+    await goToSection(page, 'review')
+
+    // Fill up informant comment & signature
+    await page.locator('#review____comment').fill(faker.lorem.sentence())
+    await page.getByRole('button', { name: 'Sign', exact: true }).click()
+    await drawSignature(page, 'review____signature_canvas_element', false)
+    await page
+      .locator('#review____signature_modal')
+      .getByRole('button', { name: 'Apply' })
+      .click()
+
+    // Declare
+    await selectDeclarationAction(page, 'Declare')
+    await ensureOutboxIsEmpty(page)
+    await page.getByText('Recent').click()
   })
 
-  test.describe('Declaration started by HO', async () => {
-    test.beforeAll(async () => {
-      await login(page, CREDENTIALS.HOSPITAL_OFFICIAL)
-      await page.click('#header-new-event')
-      await page.getByLabel('Birth').click()
-      await page.getByRole('button', { name: 'Continue' }).click()
-      await page.getByRole('button', { name: 'Continue' }).click()
-    })
+  await test.step('Declaration Review by Registrar', async () => {
+    await login(page, CREDENTIALS.REGISTRAR)
+    await page.getByText('Pending registration').click()
+    await page.getByRole('button', { name: childNameFormatted }).click()
+    await ensureAssigned(page)
 
-    test('Fill child details with birth date from over a year ago', async () => {
-      await page.locator('#firstname').fill(childName.firstNames)
-      await page.locator('#surname').fill(childName.familyName)
-      await page.locator('#child____gender').click()
-      await page.getByText('Female', { exact: true }).click()
+    await expect(
+      page.getByText('Approval required for late registration')
+    ).not.toBeVisible()
 
-      await page.getByPlaceholder('dd').fill(lateRegDay)
-      await page.getByPlaceholder('mm').fill(lateRegMonth)
-      await page.getByPlaceholder('yyyy').fill(lateRegYear)
-      await page.locator('#child____reason').fill('Late registration reason')
+    await selectAction(page, 'Edit')
+    await page.getByTestId('change-button-child.dob').click()
+    await page.getByPlaceholder('dd').fill(lateRegDay)
+    await page.getByPlaceholder('mm').fill(lateRegMonth)
+    await page.getByPlaceholder('yyyy').fill(lateRegYear)
+    await page.locator('#child____reason').fill('Late registration reason')
+    await page.getByRole('button', { name: 'Back to review' }).click()
+    await validateActionMenuButton(page, 'Register with edits', false)
+    await selectDeclarationAction(page, 'Declare with edits')
+    await ensureOutboxIsEmpty(page)
+    await page.getByText('Recent').click()
+    await page.getByRole('button', { name: childNameFormatted }).click()
+    await ensureAssigned(page)
 
-      await page.locator('#child____placeOfBirth').click()
-      await page.getByText('Health Institution', { exact: true }).click()
-      await page
-        .locator('#child____birthLocation')
-        .fill('Klow Village Hospital'.slice(0, 3))
-      await page.getByText('Klow Village Hospital').click()
+    await expect(
+      page.getByText('Approval required for late registration')
+    ).toBeVisible()
+    await expect(page.getByTestId('flags-value')).not.toHaveText('Validated')
+    await expect(page.getByTestId('flags-value')).not.toHaveText(
+      'Edit in progress'
+    )
 
-      await continueForm(page)
-    })
+    // Assert audit trail
+    await switchEventTab(page, 'Audit')
+    await page.getByRole('button', { name: 'Edited', exact: true }).click()
 
-    test('Fill informant details', async () => {
-      await page.locator('#informant____relation').click()
-      await page.getByText('Mother', { exact: true }).click()
-
-      await page.locator('#informant____email').fill('test@example.com')
-
-      await continueForm(page)
-    })
-
-    test("Fill mother's details", async () => {
-      await page.locator('#firstname').fill(faker.person.firstName('female'))
-      await page.locator('#surname').fill(faker.person.lastName('female'))
-
-      await page.getByPlaceholder('dd').fill('12')
-      await page.getByPlaceholder('mm').fill('05')
-      await page.getByPlaceholder('yyyy').fill('1991')
-
-      await page.locator('#mother____idType').click()
-      await page.getByText('None', { exact: true }).click()
-
-      await continueForm(page)
-    })
-
-    test("Fill father's details", async () => {
-      await page.locator('#firstname').fill(faker.person.firstName('male'))
-      await page.locator('#surname').fill(faker.person.lastName('male'))
-
-      await page.getByPlaceholder('dd').fill('12')
-      await page.getByPlaceholder('mm').fill('05')
-      await page.getByPlaceholder('yyyy').fill('1980')
-
-      await page.locator('#father____idType').click()
-      await page.getByText('None', { exact: true }).click()
-
-      await page.locator('#father____nationality').click()
-      await page.getByText('Gabon', { exact: true }).click()
-
-      await page.locator('#father____addressSameAs_YES').click()
-
-      await page.getByRole('button', { name: 'Continue' }).click()
-    })
-
-    test('Go to review', async () => {
-      await goToSection(page, 'review')
-    })
-
-    test('Fill up informant comment & signature', async () => {
-      await page.locator('#review____comment').fill(faker.lorem.sentence())
-      await page.getByRole('button', { name: 'Sign', exact: true }).click()
-      await drawSignature(page, 'review____signature_canvas_element', false)
-      await page
-        .locator('#review____signature_modal')
-        .getByRole('button', { name: 'Apply' })
-        .click()
-    })
-
-    test('Declare', async () => {
-      await selectDeclarationAction(page, 'Declare')
-      await ensureOutboxIsEmpty(page)
-      await page.getByText('Recent').click()
-    })
-  })
-
-  test.describe('Declaration Review by RO', async () => {
-    test('Navigate to the declaration review page', async () => {
-      await login(page, CREDENTIALS.REGISTRATION_OFFICER)
-      await page.getByText('Pending approval').click()
-      await page.getByRole('button', { name: childNameFormatted }).click()
-    })
-
-    test('Assign', async () => {
-      await ensureAssigned(page)
-    })
-
-    test("Event should have the 'Approval required for late registration' -flag", async () => {
-      await expect(
-        page.getByText('Approval required for late registration')
-      ).toBeVisible()
-    })
-
-    test('Select Edit-action', async () => {
-      await selectAction(page, 'Edit')
-    })
-
-    test('Change child dob to recent date', async () => {
-      await page.getByTestId('change-button-child.dob').click()
-
-      await page.getByPlaceholder('dd').fill(recentDay)
-      await page.getByPlaceholder('mm').fill(recentMonth)
-      await page.getByPlaceholder('yyyy').fill(recentYear)
-    })
-
-    test('Go back to review', async () => {
-      await page.getByRole('button', { name: 'Back to review' }).click()
-    })
-
-    test('Declare with edits', async () => {
-      await selectDeclarationAction(page, 'Declare with edits')
-      await ensureOutboxIsEmpty(page)
-    })
-
-    test('Go to record', async () => {
-      await page.getByText('Recent').click()
-      await page.getByRole('button', { name: childNameFormatted }).click()
-    })
-
-    test("Event should not have the 'Approval required for late registration' -flag", async () => {
-      await expect(page.getByTestId('flags-value')).toHaveText('Validated')
-      await expect(
-        page.getByText('Approval required for late registration')
-      ).not.toBeVisible()
-      await expect(page.getByTestId('flags-value')).not.toHaveText(
-        'Edit in progress'
+    await expect(
+      page.getByText(
+        'Date of birth' +
+          formatDateTo_dMMMMyyyy(format(recentDate, 'yyyy-MM-dd')) +
+          formatDateTo_dMMMMyyyy(format(lateRegDate, 'yyyy-MM-dd'))
       )
-    })
-  })
-})
-
-test.describe
-  .serial('Approval of late birth registration -flag can be added during edit and redeclare', () => {
-  let page: Page
-
-  const childName = {
-    firstNames: faker.person.firstName('female'),
-    familyName: faker.person.lastName('female')
-  }
-
-  const childNameFormatted = formatName(childName)
-
-  test.beforeAll(async ({ browser }) => {
-    page = await browser.newPage()
-  })
-
-  test.afterAll(async () => {
-    await page.close()
-  })
-
-  test.describe('Declaration started by RO', async () => {
-    test.beforeAll(async () => {
-      await login(page, CREDENTIALS.REGISTRATION_OFFICER)
-      await page.click('#header-new-event')
-      await page.getByLabel('Birth').click()
-      await page.getByRole('button', { name: 'Continue' }).click()
-      await page.getByRole('button', { name: 'Continue' }).click()
-    })
-
-    test('Fill child details with birth date from recent date', async () => {
-      await page.locator('#firstname').fill(childName.firstNames)
-      await page.locator('#surname').fill(childName.familyName)
-      await page.locator('#child____gender').click()
-      await page.getByText('Female', { exact: true }).click()
-
-      await page.getByPlaceholder('dd').fill(recentDay)
-      await page.getByPlaceholder('mm').fill(recentMonth)
-      await page.getByPlaceholder('yyyy').fill(recentYear)
-
-      await page.locator('#child____placeOfBirth').click()
-      await page.getByText('Health Institution', { exact: true }).click()
-      await page
-        .locator('#child____birthLocation')
-        .fill('Golden Valley Rural Health Centre'.slice(0, 3))
-      await page.getByText('Golden Valley Rural Health Centre').click()
-
-      await continueForm(page)
-    })
-
-    test('Fill informant details', async () => {
-      await page.locator('#informant____relation').click()
-      await page.getByText('Mother', { exact: true }).click()
-
-      await page.locator('#informant____email').fill('test@example.com')
-
-      await continueForm(page)
-    })
-
-    test("Fill mother's details", async () => {
-      await page.locator('#firstname').fill(faker.person.firstName('female'))
-      await page.locator('#surname').fill(faker.person.lastName('female'))
-
-      await page.getByPlaceholder('dd').fill('12')
-      await page.getByPlaceholder('mm').fill('05')
-      await page.getByPlaceholder('yyyy').fill('1991')
-
-      await page.locator('#mother____idType').click()
-      await page.getByText('None', { exact: true }).click()
-
-      await page.locator('#country').click()
-      await page.locator('#country input').fill('Far')
-      await page
-        .locator('#country')
-        .getByText('Farajaland', { exact: true })
-        .click()
-
-      await page.locator('#province').click()
-      await page.getByText('Central', { exact: true }).click()
-
-      await page.locator('#district').click()
-      await page.getByText('Ibombo', { exact: true }).click()
-
-      await page.locator('#village').click()
-      await page.getByText('Klow', { exact: true }).click()
-
-      await continueForm(page)
-    })
-
-    test("Fill father's details", async () => {
-      await page.locator('#firstname').fill(faker.person.firstName('male'))
-      await page.locator('#surname').fill(faker.person.lastName('male'))
-
-      await page.getByPlaceholder('dd').fill('12')
-      await page.getByPlaceholder('mm').fill('05')
-      await page.getByPlaceholder('yyyy').fill('1980')
-
-      await page.locator('#father____idType').click()
-      await page.getByText('None', { exact: true }).click()
-
-      await page.locator('#father____nationality').click()
-      await page.getByText('Gabon', { exact: true }).click()
-
-      await page.locator('#father____addressSameAs_YES').click()
-
-      await page.getByRole('button', { name: 'Continue' }).click()
-    })
-
-    test('Go to review', async () => {
-      await goToSection(page, 'review')
-    })
-
-    test('Fill up informant comment & signature', async () => {
-      await page.locator('#review____comment').fill(faker.lorem.sentence())
-      await page.getByRole('button', { name: 'Sign', exact: true }).click()
-      await drawSignature(page, 'review____signature_canvas_element', false)
-      await page
-        .locator('#review____signature_modal')
-        .getByRole('button', { name: 'Apply' })
-        .click()
-    })
-
-    test('Declare', async () => {
-      await selectDeclarationAction(page, 'Declare')
-      await ensureOutboxIsEmpty(page)
-      await page.getByText('Recent').click()
-    })
-  })
-
-  test.describe('Declaration Review by Registrar', async () => {
-    test('Navigate to the declaration review page', async () => {
-      await login(page, CREDENTIALS.REGISTRAR)
-      await page.getByText('Pending registration').click()
-      await page.getByRole('button', { name: childNameFormatted }).click()
-    })
-
-    test('Assign', async () => {
-      await ensureAssigned(page)
-    })
-
-    test("Event should not have the 'Approval required for late registration' -flag", async () => {
-      await expect(
-        page.getByText('Approval required for late registration')
-      ).not.toBeVisible()
-    })
-
-    test('Select Edit-action', async () => {
-      await selectAction(page, 'Edit')
-    })
-
-    test('Change child dob to over a year ago date', async () => {
-      await page.getByTestId('change-button-child.dob').click()
-
-      await page.getByPlaceholder('dd').fill(lateRegDay)
-      await page.getByPlaceholder('mm').fill(lateRegMonth)
-      await page.getByPlaceholder('yyyy').fill(lateRegYear)
-      await page.locator('#child____reason').fill('Late registration reason')
-    })
-
-    test('Go back to review', async () => {
-      await page.getByRole('button', { name: 'Back to review' }).click()
-    })
-
-    test('Register with edits should be unavailable', async () => {
-      await validateActionMenuButton(page, 'Register with edits', false)
-    })
-
-    test('Declare with edits', async () => {
-      await selectDeclarationAction(page, 'Declare with edits')
-      await ensureOutboxIsEmpty(page)
-    })
-
-    test('Go to record', async () => {
-      await page.getByText('Recent').click()
-      await page.getByRole('button', { name: childNameFormatted }).click()
-      await ensureAssigned(page)
-    })
-
-    test("Event should have the 'Approval required for late registration' -flag", async () => {
-      await expect(
-        page.getByText('Approval required for late registration')
-      ).toBeVisible()
-      await expect(page.getByTestId('flags-value')).not.toHaveText('Validated')
-      await expect(page.getByTestId('flags-value')).not.toHaveText(
-        'Edit in progress'
+    ).toBeVisible()
+    await expect(
+      page.getByText(
+        'Reason for delayed registration-Late registration reason'
       )
-    })
-
-    test('Assert audit trail', async () => {
-      await switchEventTab(page, 'Audit')
-      await page.getByRole('button', { name: 'Edited', exact: true }).click()
-
-      await expect(
-        page.getByText(
-          'Date of birth' +
-            formatDateTo_dMMMMyyyy(format(recentDate, 'yyyy-MM-dd')) +
-            formatDateTo_dMMMMyyyy(format(lateRegDate, 'yyyy-MM-dd'))
-        )
-      ).toBeVisible()
-      await expect(
-        page.getByText(
-          'Reason for delayed registration-Late registration reason'
-        )
-      ).toBeVisible()
-    })
+    ).toBeVisible()
   })
 })
