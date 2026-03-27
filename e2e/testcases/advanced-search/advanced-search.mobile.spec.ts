@@ -9,9 +9,7 @@ import { setMobileViewport } from '../../mobile-helpers'
 
 test('Advanced Search - Mobile', async ({ browser }) => {
   let province = ''
-
   let district = ''
-
   let village = ''
 
   const token = await getToken(
@@ -61,31 +59,22 @@ test('Advanced Search - Mobile', async ({ browser }) => {
       .click()
 
     await expectInUrl(page, '/search')
-
     await page.click('#searchType')
-
     await expectInUrl(page, '/advanced-search')
   })
 
   await test.step('Fill search fields', async () => {
     await page.getByText('Birth').click()
-
     await page.getByText('Event details').click()
-
     await page.locator('#child____placeOfBirth').click()
-
     await page.getByText('Residential address', { exact: true }).click()
 
     page.locator('#country').getByText('Farajaland')
-
     page.locator('#province').getByText('Central')
-
     page.locator('#district').getByText('Ibombo')
-
     page.locator('#village').getByText('Klow')
 
     await page.locator('#town').fill('Dhaka')
-
     await page.locator('#town').blur()
   })
 
@@ -95,7 +84,6 @@ test('Advanced Search - Mobile', async ({ browser }) => {
     await expect(page).toHaveURL(/.*\/search-result/)
 
     const searchParams = new URLSearchParams(page.url())
-
     const address = searchParams.get('child.birthLocation.privateHome')
 
     if (address !== null) {

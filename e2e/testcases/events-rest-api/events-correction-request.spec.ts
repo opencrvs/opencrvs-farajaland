@@ -10,6 +10,7 @@ import { CREDENTIALS, GATEWAY_HOST } from '../../constants'
 import { login } from '../../helpers'
 import { createClient } from '@opencrvs/toolkit/api'
 import { ensureAssigned, selectAction, type } from '../../utils'
+
 test('POST /api/events/events/{eventId}/correction/request', async ({
   browser
 }) => {
@@ -41,22 +42,28 @@ test('POST /api/events/events/{eventId}/correction/request', async ({
         createdAtLocation: healthFacilityId
       }
     )
+
     const body = await response.json()
     expect(response.status).toBe(200)
     const requestAction = body.actions.find(
       (action: { type: string }) => action.type === 'REQUEST_CORRECTION'
     )
+
     expect(requestAction).toBeDefined()
   })
+
   await test.step('Correction review has submitter name as system client', async () => {
     page = await browser.newPage()
     await login(page, CREDENTIALS.REGISTRAR)
+
     const client = createClient(
       GATEWAY_HOST + '/events',
       `Bearer ${registrarToken}`
     )
+
     const eventDocument = await client.event.get.query({ eventId })
     const { trackingId } = eventDocument
+
     await type(page, '#searchText', trackingId)
     await page.locator('#searchIconButton').click()
     await page.getByRole('button', { name: 'Review' }).click()

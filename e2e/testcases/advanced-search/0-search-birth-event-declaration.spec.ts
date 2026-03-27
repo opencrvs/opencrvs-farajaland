@@ -6,6 +6,7 @@ test('Advanced Search - Birth Event Declaration', async ({ browser }) => {
 
   await test.step('0.1 - Validate navigating to advanced search', async () => {
     await login(page)
+
     await page.click('#searchType')
     await expect(page).toHaveURL(/.*\/advanced-search/)
     await expect(

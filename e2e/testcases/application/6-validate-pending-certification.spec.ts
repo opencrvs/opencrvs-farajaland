@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test'
 
 import { login, getToken } from '../../helpers'
 import { CREDENTIALS, SAFE_WORKQUEUE_TIMEOUT_MS } from '../../constants'
-import { createDeclaration, Declaration } from '../test-data/birth-declaration'
+import { createDeclaration } from '../test-data/birth-declaration'
 import { formatV2ChildName } from '../birth/helpers'
 import { expectInUrl, selectAction } from '../../utils'
 
@@ -11,13 +11,11 @@ test('6 Validate "Pending certification"-workqueue', async ({ browser }) => {
     CREDENTIALS.REGISTRAR.USERNAME,
     CREDENTIALS.REGISTRAR.PASSWORD
   )
+
   const res = await createDeclaration(token)
-
   const page = await browser.newPage()
-
-  const declaration: Declaration = res.declaration
-
-  const eventId: string = res.eventId
+  const declaration = res.declaration
+  const eventId = res.eventId
 
   await test.step('6.0 Login', async () => {
     await login(page, CREDENTIALS.REGISTRAR)
@@ -44,7 +42,6 @@ test('6 Validate "Pending certification"-workqueue', async ({ browser }) => {
     })
 
     const header = page.locator('div[class^="TableHeader"]')
-
     const columns = await header.locator(':scope > div').allInnerTexts()
 
     expect(columns).toStrictEqual([
@@ -56,13 +53,9 @@ test('6 Validate "Pending certification"-workqueue', async ({ browser }) => {
     ])
 
     const row = button.locator('xpath=ancestor::*[starts-with(@id, "row_")]')
-
     const cells = row.locator(':scope > div')
-
     await expect(cells.nth(0)).toHaveText(formatV2ChildName(declaration))
-
     await expect(cells.nth(1)).toHaveText('Birth')
-
     await expect(cells.nth(2)).toHaveText(
       declaration['child.dob'].split('T')[0]
     )

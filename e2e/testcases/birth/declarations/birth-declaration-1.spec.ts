@@ -283,6 +283,7 @@ test('1. Birth declaration case - 1', async ({ browser }) => {
        * - Child's First Name
        * - Child's Family Name
        */
+
       await expect(page.getByTestId('row-value-child.name')).toHaveText(
         declaration.child.name.firstNames +
           ' ' +
@@ -293,6 +294,7 @@ test('1. Birth declaration case - 1', async ({ browser }) => {
        * Expected result: should include
        * - Child's Gender
        */
+
       await expect(page.getByTestId('row-value-child.gender')).toHaveText(
         declaration.child.gender
       )
@@ -301,6 +303,7 @@ test('1. Birth declaration case - 1', async ({ browser }) => {
        * Expected result: should include
        * - Child's date of birth
        */
+
       await expect(page.getByTestId('row-value-child.dob')).toHaveText(
         formatDateObjectTo_dMMMMyyyy(declaration.child.birthDate)
       )
@@ -310,6 +313,7 @@ test('1. Birth declaration case - 1', async ({ browser }) => {
        * - Child's Place of birth type
        * - Child's Place of birth details
        */
+
       await expect(page.getByTestId('row-value-child.placeOfBirth')).toHaveText(
         declaration.placeOfBirth
       )
@@ -322,6 +326,7 @@ test('1. Birth declaration case - 1', async ({ browser }) => {
        * Expected result: should include
        * - Child's Attendant at birth
        */
+
       await expect(
         page.getByTestId('row-value-child.attendantAtBirth')
       ).toHaveText(declaration.attendantAtBirth)
@@ -330,6 +335,7 @@ test('1. Birth declaration case - 1', async ({ browser }) => {
        * Expected result: should include
        * - Child's Birth type
        */
+
       await expect(page.getByTestId('row-value-child.birthType')).toHaveText(
         declaration.birthType
       )
@@ -338,6 +344,7 @@ test('1. Birth declaration case - 1', async ({ browser }) => {
        * Expected result: should include
        * - Child's Weight at birth
        */
+
       await expect(
         page.getByTestId('row-value-child.weightAtBirth')
       ).toHaveText(declaration.weightAtBirth + 'Kilograms (kg)')
@@ -355,6 +362,7 @@ test('1. Birth declaration case - 1', async ({ browser }) => {
        * Expected result: should include
        * - Informant's Email
        */
+
       await expect(page.getByTestId('row-value-informant.email')).toHaveText(
         declaration.informantEmail
       )
@@ -364,6 +372,7 @@ test('1. Birth declaration case - 1', async ({ browser }) => {
        * - Mother's First Name
        * - Mother's Family Name
        */
+
       await expect(page.getByTestId('row-value-mother.name')).toHaveText(
         declaration.mother.name.firstNames +
           ' ' +
@@ -374,6 +383,7 @@ test('1. Birth declaration case - 1', async ({ browser }) => {
        * Expected result: should include
        * - Mother's date of birth
        */
+
       await expect(page.getByTestId('row-value-mother.dob')).toHaveText(
         formatDateObjectTo_dMMMMyyyy(declaration.mother.birthDate)
       )
@@ -382,6 +392,7 @@ test('1. Birth declaration case - 1', async ({ browser }) => {
        * Expected result: should include
        * - Mother's Nationality
        */
+
       await expect(page.getByTestId('row-value-mother.nationality')).toHaveText(
         declaration.mother.nationality
       )
@@ -390,6 +401,7 @@ test('1. Birth declaration case - 1', async ({ browser }) => {
        * Expected result: should include
        * - Mother's Marital status
        */
+
       await expect(
         page.getByTestId('row-value-mother.maritalStatus')
       ).toHaveText(declaration.mother.maritalStatus)
@@ -398,6 +410,7 @@ test('1. Birth declaration case - 1', async ({ browser }) => {
        * Expected result: should include
        * - Mother's level of education
        */
+
       await expect(
         page.getByTestId('row-value-mother.educationalAttainment')
       ).toHaveText(declaration.mother.levelOfEducation)
@@ -407,6 +420,7 @@ test('1. Birth declaration case - 1', async ({ browser }) => {
        * - Mother's Type of Id
        * - Mother's Id Number
        */
+
       await expect(page.getByTestId('row-value-mother.idType')).toHaveText(
         declaration.mother.identifier.type
       )
@@ -419,6 +433,7 @@ test('1. Birth declaration case - 1', async ({ browser }) => {
        * Expected result: should include
        * - Mother's address
        */
+
       await validateAddress(
         page,
         declaration.mother.address,
@@ -430,6 +445,7 @@ test('1. Birth declaration case - 1', async ({ browser }) => {
        * - Father's First Name
        * - Father's Family Name
        */
+
       await expect(page.getByTestId('row-value-father.name')).toHaveText(
         declaration.father.name.firstNames +
           ' ' +
@@ -440,6 +456,7 @@ test('1. Birth declaration case - 1', async ({ browser }) => {
        * Expected result: should include
        * - Father's date of birth
        */
+
       await expect(page.getByTestId('row-value-father.dob')).toHaveText(
         formatDateObjectTo_dMMMMyyyy(declaration.father.birthDate)
       )
@@ -448,6 +465,7 @@ test('1. Birth declaration case - 1', async ({ browser }) => {
        * Expected result: should include
        * - Father's Nationality
        */
+
       await expect(page.getByTestId('row-value-father.nationality')).toHaveText(
         declaration.father.nationality
       )
@@ -457,6 +475,7 @@ test('1. Birth declaration case - 1', async ({ browser }) => {
        * - Father's Type of Id
        * - Father's Id Number
        */
+
       await expect(page.getByTestId('row-value-father.idType')).toHaveText(
         declaration.father.identifier.type
       )
@@ -469,6 +488,7 @@ test('1. Birth declaration case - 1', async ({ browser }) => {
        * Expected result: should include
        * - Father's Marital status
        */
+
       await expect(
         page.getByTestId('row-value-father.maritalStatus')
       ).toHaveText(declaration.father.maritalStatus)
@@ -477,6 +497,7 @@ test('1. Birth declaration case - 1', async ({ browser }) => {
        * Expected result: should include
        * - Father's level of education
        */
+
       await expect(
         page.getByTestId('row-value-father.educationalAttainment')
       ).toHaveText(declaration.father.levelOfEducation)
@@ -485,6 +506,7 @@ test('1. Birth declaration case - 1', async ({ browser }) => {
        * Expected result: should include
        * - Father's address
        */
+
       await expect(
         page.getByTestId('row-value-father.addressSameAs')
       ).toHaveText('Yes')
@@ -559,6 +581,7 @@ test('1. Birth declaration case - 1', async ({ browser }) => {
        * - Child's First Name
        * - Child's Family Name
        */
+
       await expectRowValue(
         page,
         'child.name',
@@ -571,12 +594,14 @@ test('1. Birth declaration case - 1', async ({ browser }) => {
        * Expected result: should include
        * - Child's Gender
        */
+
       await expectRowValue(page, 'child.gender', declaration.child.gender)
 
       /*
        * Expected result: should include
        * - Child's date of birth
        */
+
       await expectRowValue(
         page,
         'child.dob',
@@ -588,6 +613,7 @@ test('1. Birth declaration case - 1', async ({ browser }) => {
        * - Child's Place of birth type
        * - Child's Place of birth details
        */
+
       await expectRowValue(page, 'child.placeOfBirth', declaration.placeOfBirth)
 
       await expectRowValue(
@@ -600,6 +626,7 @@ test('1. Birth declaration case - 1', async ({ browser }) => {
        * Expected result: should include
        * - Child's Attendant at birth
        */
+
       await expectRowValue(
         page,
         'child.attendantAtBirth',
@@ -610,12 +637,14 @@ test('1. Birth declaration case - 1', async ({ browser }) => {
        * Expected result: should include
        * - Child's Birth type
        */
+
       await expectRowValue(page, 'child.birthType', declaration.birthType)
 
       /*
        * Expected result: should include
        * - Child's Weight at birth
        */
+
       await expectRowValue(
         page,
         'child.weightAtBirth',
@@ -626,6 +655,7 @@ test('1. Birth declaration case - 1', async ({ browser }) => {
        * Expected result: should include
        * - Informant's relation to child
        */
+
       await expectRowValue(
         page,
         'informant.relation',
@@ -636,6 +666,7 @@ test('1. Birth declaration case - 1', async ({ browser }) => {
        * Expected result: should include
        * - Informant's Email
        */
+
       await expectRowValue(page, 'informant.email', declaration.informantEmail)
 
       /*
@@ -643,6 +674,7 @@ test('1. Birth declaration case - 1', async ({ browser }) => {
        * - Mother's First Name
        * - Mother's Family Name
        */
+
       await expectRowValue(
         page,
         'mother.name',
@@ -653,6 +685,7 @@ test('1. Birth declaration case - 1', async ({ browser }) => {
        * Expected result: should include
        * - Mother's date of birth
        */
+
       await expectRowValue(
         page,
         'mother.dob',
@@ -663,6 +696,7 @@ test('1. Birth declaration case - 1', async ({ browser }) => {
        * Expected result: should include
        * - Mother's Nationality
        */
+
       await expectRowValue(
         page,
         'mother.nationality',
@@ -673,6 +707,7 @@ test('1. Birth declaration case - 1', async ({ browser }) => {
        * Expected result: should include
        * - Mother's Marital status
        */
+
       await expectRowValue(
         page,
         'mother.maritalStatus',
@@ -683,6 +718,7 @@ test('1. Birth declaration case - 1', async ({ browser }) => {
        * Expected result: should include
        * - Mother's level of education
        */
+
       await expectRowValue(
         page,
         'mother.educationalAttainment',
@@ -694,6 +730,7 @@ test('1. Birth declaration case - 1', async ({ browser }) => {
        * - Mother's Type of Id
        * - Mother's Id Number
        */
+
       await expectRowValue(
         page,
         'mother.idType',
@@ -706,6 +743,7 @@ test('1. Birth declaration case - 1', async ({ browser }) => {
        * Expected result: should include
        * - Mother's address
        */
+
       await validateAddress(
         page,
         declaration.mother.address,
@@ -717,6 +755,7 @@ test('1. Birth declaration case - 1', async ({ browser }) => {
        * - Father's First Name
        * - Father's Family Name
        */
+
       await expectRowValue(
         page,
         'father.name',
@@ -729,6 +768,7 @@ test('1. Birth declaration case - 1', async ({ browser }) => {
        * Expected result: should include
        * - Father's date of birth
        */
+
       await expectRowValue(
         page,
         'father.dob',
@@ -739,6 +779,7 @@ test('1. Birth declaration case - 1', async ({ browser }) => {
        * Expected result: should include
        * - Father's Nationality
        */
+
       await expectRowValue(
         page,
         'father.nationality',
@@ -750,6 +791,7 @@ test('1. Birth declaration case - 1', async ({ browser }) => {
        * - Father's Type of Id
        * - Father's Id Number
        */
+
       await expectRowValue(
         page,
         'father.idType',
@@ -762,6 +804,7 @@ test('1. Birth declaration case - 1', async ({ browser }) => {
        * Expected result: should include
        * - Father's Marital status
        */
+
       await expectRowValue(
         page,
         'father.maritalStatus',
@@ -772,6 +815,7 @@ test('1. Birth declaration case - 1', async ({ browser }) => {
        * Expected result: should include
        * - Father's level of education
        */
+
       await expectRowValue(
         page,
         'father.educationalAttainment',
@@ -782,6 +826,7 @@ test('1. Birth declaration case - 1', async ({ browser }) => {
        * Expected result: should include
        * - Father's address
        */
+
       await expectRowValue(page, 'father.addressSameAs', 'Yes')
     })
   })

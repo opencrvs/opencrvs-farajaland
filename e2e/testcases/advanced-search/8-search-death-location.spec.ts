@@ -23,6 +23,7 @@ test.describe("Advanced Search 8 - Death - Deceased's place of death", () => {
     ).not.toBeVisible()
     await expect(page.getByText('Country')).not.toBeVisible()
   })
+
   test('8.2 Select Health Institution', async ({ page }) => {
     await page.getByTestId('select__eventDetails____placeOfDeath').click()
     await page.getByText('Health Institution', { exact: true }).click()
@@ -50,6 +51,7 @@ test.describe("Advanced Search 8 - Death - Deceased's place of death", () => {
       testId: 'search-result'
     })
   })
+
   test('8.3 Select Residential address', async ({ page }) => {
     await page.getByTestId('select__eventDetails____placeOfDeath').click()
     await page.getByText('Residential address', { exact: true }).click()
@@ -73,6 +75,7 @@ test.describe("Advanced Search 8 - Death - Deceased's place of death", () => {
       testId: 'search-result'
     })
   })
+
   test('8.4 Select Other', async ({ page }) => {
     await page.getByTestId('select__eventDetails____placeOfDeath').click()
     await page.getByText('Other', { exact: true }).click()

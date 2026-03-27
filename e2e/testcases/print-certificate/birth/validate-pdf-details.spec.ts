@@ -11,6 +11,7 @@ import {
 import { selectCertificationType } from './helpers'
 import { selectAction } from '../../../utils'
 import { formatV2ChildName } from '../../birth/helpers'
+
 test("Validate 'Birth Certificate Certified Copy' PDF details", async ({
   browser
 }) => {
@@ -31,6 +32,7 @@ test("Validate 'Birth Certificate Certified Copy' PDF details", async ({
   await test.step('Log in', async () => {
     await login(page)
   })
+
   await test.step('Print birth certificate once', async () => {
     await page.getByRole('button', { name: 'Pending certification' }).click()
     await navigateToCertificatePrintAction(page, declaration)
@@ -42,10 +44,12 @@ test("Validate 'Birth Certificate Certified Copy' PDF details", async ({
     await page.getByRole('button', { name: 'Yes, print certificate' }).click()
     await page.getByRole('button', { name: 'Print', exact: true }).click()
   })
+
   await test.step('Go to review', async () => {
     await page
       .getByRole('textbox', { name: 'Search for a record' })
       .fill(formatV2ChildName(declaration))
+
     await page.getByRole('button', { name: 'Search' }).click()
     await page
       .getByRole('button', {
@@ -60,14 +64,17 @@ test("Validate 'Birth Certificate Certified Copy' PDF details", async ({
     await page.getByRole('button', { name: 'Verified' }).click()
     await page.getByRole('button', { name: 'Continue' }).click()
   })
+
   await test.step('Validate child place of birth', async () => {
     await expect(page.locator('#print')).toContainText('Klow Village Hospital')
     await expect(page.locator('#print')).toContainText(
       'Ibombo, Central, Farajaland'
     )
   })
+
   await page.close()
 })
+
 test("Validate 'Birth Certificate' PDF details", async ({ browser }) => {
   const token = await getToken(
     CREDENTIALS.REGISTRAR.USERNAME,
@@ -86,6 +93,7 @@ test("Validate 'Birth Certificate' PDF details", async ({ browser }) => {
   await test.step('Log in', async () => {
     await login(page)
   })
+
   await test.step('Go to review', async () => {
     await page.getByRole('button', { name: 'Pending certification' }).click()
     await navigateToCertificatePrintAction(page, declaration)
@@ -95,11 +103,13 @@ test("Validate 'Birth Certificate' PDF details", async ({ browser }) => {
     await page.getByRole('button', { name: 'Verified' }).click()
     await page.getByRole('button', { name: 'Continue' }).click()
   })
+
   await test.step('Validate child place of birth', async () => {
     await expect(page.locator('#print')).toContainText('Klow Village Hospital')
     await expect(page.locator('#print')).toContainText(
       'Ibombo, Central, Farajaland'
     )
   })
+
   await page.close()
 })

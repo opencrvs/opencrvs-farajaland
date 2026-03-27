@@ -16,6 +16,7 @@ test.describe('2. Team Page', () => {
 
     test('2.1.0 Verify UI', async () => {
       await login(page, CREDENTIALS.NATIONAL_SYSTEM_ADMIN)
+
       await page.getByRole('button', { name: 'Team' }).click()
       await expect(page.locator('#content-name')).toHaveText('HQ Office')
     })
@@ -40,6 +41,7 @@ test.describe('2. Team Page', () => {
     test.afterAll(async () => {
       await page.close()
     })
+
     test('2.2.1 Edit User Details', async () => {
       await login(page, CREDENTIALS.NATIONAL_SYSTEM_ADMIN)
 
@@ -78,6 +80,7 @@ test.describe('2. Team Page', () => {
         .locator('//ul[@id="user-item-0-menu-Dropdown-Content"]')
         .getByText('Edit details')
         .click()
+
       await expect(
         page
           .locator('div')

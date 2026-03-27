@@ -36,6 +36,7 @@ test('Revoke and reinstate record', async ({ browser }) => {
     await page.locator('#reason').fill('Revoking record for testing purposes.')
 
     await page.getByRole('button', { name: 'Confirm' }).click()
+
     await ensureOutboxIsEmpty(page)
   })
 

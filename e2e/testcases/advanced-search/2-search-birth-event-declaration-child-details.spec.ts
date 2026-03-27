@@ -19,14 +19,13 @@ test("Advanced Search - Birth Event Declaration - Child's details", async ({
     CREDENTIALS.REGISTRAR.PASSWORD
   )
 
-  const record: Awaited<ReturnType<typeof createDeclaration>> =
-    await createDeclaration(token, {
-      'child.dob': faker.date
-        .between({ from: '2025-09-10', to: '2025-11-28' })
-        .toISOString()
-        .split('T')[0],
-      'child.gender': 'female'
-    })
+  const record = await createDeclaration(token, {
+    'child.dob': faker.date
+      .between({ from: '2025-09-10', to: '2025-11-28' })
+      .toISOString()
+      .split('T')[0],
+    'child.gender': 'female'
+  })
   ;[yyyy, mm, dd] = record.declaration['child.dob'].split('-')
   fullNameOfChild = `${record.declaration['child.name'].firstname} ${record.declaration['child.name'].surname}`
 
@@ -61,12 +60,15 @@ test("Advanced Search - Birth Event Declaration - Child's details", async ({
       const param = new URL(page.url()).searchParams.get('child.name')!
       const decoded = decodeURIComponent(param)
       const name = JSON.parse(decoded)
+
       expect(name).toEqual({
         firstname: record.declaration['child.name'].firstname,
         surname: record.declaration['child.name'].surname,
         middlename: ''
       })
+
       await expect(page.getByText('Search Results')).toBeVisible()
+
       const searchResult = await page.locator('#content-name').textContent()
       const searchResultCountNumberInBracketsRegex = /\((\d+)\)$/
       expect(searchResult).toMatch(searchResultCountNumberInBracketsRegex)
@@ -80,6 +82,7 @@ test("Advanced Search - Birth Event Declaration - Child's details", async ({
           `Child's Name: ${fullNameOfChild}`
         ]
       })
+
       await expect(
         page.getByRole('button', { name: 'Edit', exact: true })
       ).toBeVisible()
@@ -95,6 +98,7 @@ test("Advanced Search - Birth Event Declaration - Child's details", async ({
       const param = new URL(page.url()).searchParams.get('child.name')!
       const decoded = decodeURIComponent(param)
       const name = JSON.parse(decoded)
+
       expect(name).toEqual({
         firstname: record.declaration['child.name'].firstname,
         surname: record.declaration['child.name'].surname,
@@ -102,9 +106,11 @@ test("Advanced Search - Birth Event Declaration - Child's details", async ({
       })
 
       await expect(page.locator('#tab_birth')).toHaveText('Birth')
+
       await expect(page.getByTestId('child____dob-dd')).toHaveValue(dd)
       await expect(page.getByTestId('child____dob-mm')).toHaveValue(mm)
       await expect(page.getByTestId('child____dob-yyyy')).toHaveValue(yyyy)
+
       await expect(page.getByTestId('select__child____gender')).toContainText(
         'Female'
       )
@@ -133,6 +139,7 @@ test("Advanced Search - Birth Event Declaration - Child's details", async ({
         ).toHaveCount(2)
 
         await expect(page.locator('#date-range-confirm-action')).toBeVisible()
+
         await page.locator('#date-range-confirm-action').click()
         await expect(page.locator('#picker-modal')).toBeHidden()
 
@@ -142,6 +149,7 @@ test("Advanced Search - Birth Event Declaration - Child's details", async ({
 
         await expect(checkbox).toBeVisible()
         await expect(checkbox).toBeChecked()
+
         const currentYear = new Date().getFullYear()
         const lastYear = currentYear - 1
 

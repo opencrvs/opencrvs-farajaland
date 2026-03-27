@@ -2,10 +2,7 @@ import { expect, test } from '@playwright/test'
 import { getToken, login, logout } from '../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../constants'
-import {
-  createDeclaration,
-  Declaration
-} from '../test-data/birth-declaration-with-mother-father'
+import { createDeclaration } from '../test-data/birth-declaration-with-mother-father'
 import {
   ensureOutboxIsEmpty,
   expectInUrl,
@@ -28,12 +25,9 @@ test('Birth correction flow - Mobile', async ({ browser }) => {
     'HEALTH_FACILITY'
   )
 
-  const declaration: Declaration = res.declaration
-
-  const eventId: string = res.eventId
-
+  const declaration = res.declaration
+  const eventId = res.eventId
   const page = await browser.newPage()
-
   setMobileViewport(page)
 
   await test.step('Login', async () => {
@@ -52,9 +46,7 @@ test('Birth correction flow - Mobile', async ({ browser }) => {
 
   await test.step('Fill in the correction details form', async () => {
     await page.locator('#requester____type').click()
-
     await page.getByText('Informant (Mother)', { exact: true }).click()
-
     await page.locator('#reason____option').click()
 
     await page
@@ -64,13 +56,11 @@ test('Birth correction flow - Mobile', async ({ browser }) => {
       .click()
 
     await page.getByRole('button', { name: 'Continue' }).click()
-
     await page.getByRole('button', { name: 'Verified' }).click()
   })
 
   await test.step('Fill in the supporting documents form', async () => {
     const path = require('path')
-
     const attachmentPath = path.resolve(__dirname, './image.png')
 
     const inputFile = await page.locator(
@@ -78,17 +68,11 @@ test('Birth correction flow - Mobile', async ({ browser }) => {
     )
 
     await page.getByTestId('select__documents____supportingDocs').click()
-
     await page.getByText('Affidavit', { exact: true }).click()
-
     await inputFile.setInputFiles(attachmentPath)
-
     await page.getByTestId('select__documents____supportingDocs').click()
-
     await page.getByText('Court Document', { exact: true }).click()
-
     await inputFile.setInputFiles(attachmentPath)
-
     await page.getByRole('button', { name: 'Continue' }).click()
   })
 
@@ -96,27 +80,21 @@ test('Birth correction flow - Mobile', async ({ browser }) => {
 
   await test.step('Fill in the fees form', async () => {
     await page.locator('#fees____amount').fill(fee.toString())
-
     await page.getByRole('button', { name: 'Continue' }).click()
   })
 
   await test.step('Review page should be displayed and continue button should be disabled', async () => {
     await expectInUrl(page, `/events/request-correction/${eventId}/review`)
-
     await expect(page.getByRole('button', { name: 'Continue' })).toBeDisabled()
   })
 
   const newFirstName = faker.person.firstName()
-
   const reasonForDelayedRegistration = faker.lorem.sentence(4)
 
   await test.step('After changing child name, continue button should be enabled', async () => {
     await page.getByTestId('change-button-child.dob').click()
-
     await page.getByTestId('child____dob-yyyy').fill('2024')
-
     await page.getByTestId('child____dob-mm').fill('6')
-
     await page.getByTestId('child____dob-dd').fill('24')
 
     await page
@@ -124,15 +102,12 @@ test('Birth correction flow - Mobile', async ({ browser }) => {
       .fill(reasonForDelayedRegistration)
 
     await type(page, '#firstname', newFirstName)
-
     await page.getByRole('button', { name: 'Back to review' }).click()
-
     await expect(page.getByRole('button', { name: 'Continue' })).toBeEnabled()
   })
 
   await test.step('Continue to the summary page', async () => {
     await page.getByRole('button', { name: 'Continue' }).click()
-
     await expectInUrl(page, `/events/request-correction/${eventId}/summary`)
 
     await expect(
@@ -150,11 +125,8 @@ test('Birth correction flow - Mobile', async ({ browser }) => {
       .click()
 
     await expect(page.getByText('Request record correction?')).toBeVisible()
-
     await page.getByRole('button', { name: 'Confirm', exact: true }).click()
-
     await expectInUrl(page, `/workqueue/pending-certification`)
-
     await ensureOutboxIsEmpty(page)
   })
 
@@ -177,9 +149,7 @@ test('Birth correction flow - Mobile', async ({ browser }) => {
 
     await test.step('Navigate to correction review', async () => {
       await selectAction(page, 'Review correction request')
-
       await expect(page.getByText('RequesterInformant (Mother)')).toBeVisible()
-
       await expect(
         page.getByText(
           'Reason for correctionMyself or an agent made a mistake (Clerical error)'
@@ -193,13 +163,11 @@ test('Birth correction flow - Mobile', async ({ browser }) => {
 
     await test.step('Validate correction values', async () => {
       await expect(page.getByText('Submitter' + 'Felix Katongo')).toBeVisible()
-
       await expect(
         page.getByText('Requester' + 'Informant (Mother)')
       ).toBeVisible()
 
       await expect(page.getByText('Fee total' + `$${fee}`)).toBeVisible()
-
       await expect(
         page
           .locator('#listTable-corrections-table-child')
@@ -230,13 +198,9 @@ test('Birth correction flow - Mobile', async ({ browser }) => {
 
     await test.step('Approve correction request', async () => {
       await page.getByRole('button', { name: 'Approve', exact: true }).click()
-
       await page.getByRole('button', { name: 'Confirm', exact: true }).click()
-
       await expectInUrl(page, `/workqueue/correction-requested`)
-
       await ensureOutboxIsEmpty(page)
-
       await navigateToWorkqueue(page, 'Pending certification')
 
       await page

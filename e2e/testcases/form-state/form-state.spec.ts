@@ -21,6 +21,7 @@ import {
   selectRequesterType
 } from '../print-certificate/birth/helpers'
 import { REQUIRED_VALIDATION_ERROR } from '../birth/helpers'
+
 test.describe('Form state', () => {
   test('Declaration form state or annotation is not persisted to a new event', async ({
     browser
@@ -31,38 +32,49 @@ test.describe('Form state', () => {
     await test.step('Login', async () => {
       await login(page)
     })
+
     await test.step('Create a draft', async () => {
       await openBirthDeclaration(page)
       childName = await fillChildDetails(page)
+
       await goToSection(page, 'review')
+
       // Fill annotation
       const sentence = faker.lorem.sentence(5)
       await page.locator('#review____comment').fill(sentence)
       await page.getByRole('button', { name: 'Sign', exact: true }).click()
       await drawSignature(page, 'review____signature_canvas_element', false)
       await page.getByRole('button', { name: 'Apply' }).click()
+
       // Save & Exit draft
       await selectDeclarationAction(page, 'Save & Exit', false)
       await page.getByRole('button', { name: 'Confirm' }).click()
     })
+
     await test.step('Form states and annotations are not persisted', async () => {
       //@todo: The user should be navigated to "my-drafts" tab by default
       await page.getByText('Drafts').click()
+
       await expect(
         page.getByRole('button', { name: childName, exact: true })
       ).toBeVisible()
+
       await openBirthDeclaration(page)
       await goToSection(page, 'review')
+
       // Child name fields should be empty
       await expect(page.getByTestId('row-value-child.name')).toHaveText(
         REQUIRED_VALIDATION_ERROR
       )
+
       // Comment should be empty and sign button should be visible
       await expect(page.locator('#review____comment')).toHaveValue('')
       await expect(page.getByRole('button', { name: 'Sign' })).toBeVisible()
     })
+
     await page.close()
   })
+
   test('Declaration form state or annotation is not persisted to another events action', async ({
     browser
   }) => {
@@ -72,11 +84,14 @@ test.describe('Form state', () => {
     await test.step('Login', async () => {
       await login(page)
     })
+
     await test.step('Create a draft', async () => {
       await openBirthDeclaration(page)
       actionableEventChildName = await fillChildDetails(page)
+
       await page.getByRole('button', { name: 'Save & Exit' }).click()
       await page.getByRole('button', { name: 'Confirm' }).click()
+
       // Now create another draft and fill in more details, incl. annotation
       await openBirthDeclaration(page)
       await fillChildDetails(page)
@@ -84,35 +99,45 @@ test.describe('Form state', () => {
       await page
         .getByTestId('text__informant____email')
         .fill(faker.internet.email())
+
       await goToSection(page, 'review')
+
       // Fill annotation
       const sentence = faker.lorem.sentence(5)
       await page.locator('#review____comment').fill(sentence)
       await page.getByRole('button', { name: 'Sign', exact: true }).click()
       await drawSignature(page, 'review____signature_canvas_element', false)
       await page.getByRole('button', { name: 'Apply' }).click()
+
       // Save & Exit draft
       await selectDeclarationAction(page, 'Save & Exit', false)
       await page.getByRole('button', { name: 'Confirm' }).click()
     })
+
     await test.step('Form states and annotations are not persisted', async () => {
       await page.getByRole('button', { name: 'Drafts' }).click()
       await page
         .getByRole('button', { name: actionableEventChildName, exact: true })
         .click()
+
       await selectAction(page, 'Update')
+
       await expect(page.getByTestId('row-value-child.name')).not.toHaveText(
         REQUIRED_VALIDATION_ERROR
       )
+
       await expect(page.getByTestId('row-value-informant.email')).toHaveText(
         REQUIRED_VALIDATION_ERROR
       )
+
       // Comment should be empty and sign button should be visible
       await expect(page.locator('#review____comment')).toHaveValue('')
       await expect(page.getByRole('button', { name: 'Sign' })).toBeVisible()
     })
+
     await page.close()
   })
+
   test('Action annotation state is not persisted to another action instance', async ({
     browser
   }) => {
@@ -122,20 +147,25 @@ test.describe('Form state', () => {
     await test.step('Login', async () => {
       await login(page)
     })
+
     await test.step('Create a declaration', async () => {
       const token = await getToken(
         CREDENTIALS.REGISTRAR.USERNAME,
         CREDENTIALS.REGISTRAR.PASSWORD
       )
+
       declaration = (await createDeclaration(token)).declaration
       await page.reload()
       await ensureInExternalValidationIsEmpty(page)
     })
+
     await test.step('Form changes in correction are persisted after reload', async () => {
       const updatedMotherName = faker.person.firstName('female')
       expect(declaration).toBeDefined()
+
       await page.getByRole('button', { name: 'Pending certification' }).click()
       await navigateToCertificatePrintAction(page, declaration!)
+
       await selectRequesterType(page, 'Print and issue to Informant (Mother)')
       await continueForm(page)
       await page.getByRole('button', { name: 'Verified' }).click()
@@ -143,6 +173,7 @@ test.describe('Form state', () => {
       await page.getByRole('button', { name: 'No, make correction' }).click()
       await page.locator('#requester____type').click()
       await page.getByText('Informant (Mother)', { exact: true }).click()
+
       await page.locator('#reason____option').click()
       await page
         .getByText(
@@ -152,6 +183,7 @@ test.describe('Form state', () => {
           }
         )
         .click()
+
       await page.getByRole('button', { name: 'Continue', exact: true }).click()
       await page.getByRole('button', { name: 'Verified' }).click()
       await continueForm(page)
@@ -164,45 +196,59 @@ test.describe('Form state', () => {
       await page.reload()
       await expect(page.locator('#firstname')).toHaveValue(updatedMotherName)
     })
+
     await test.step('Form states and annotations are not persisted', async () => {
       expect(declaration).toBeDefined()
+
       await page.goto(CLIENT_URL)
       await page.getByRole('button', { name: 'Pending certification' }).click()
       await navigateToCertificatePrintAction(page, declaration!)
+
       await selectRequesterType(page, 'Print and issue to someone else')
+
       await page.getByTestId('text__firstname').fill(faker.person.firstName())
+
       await page.getByTestId('exit-button').click()
+
       await navigateToCertificatePrintAction(page, declaration!)
+
       await expect(
         page.getByTestId('select__collector____requesterId')
       ).not.toHaveText('Print and issue to someone else')
+
       await expect(page.getByTestId('text__firstname')).not.toBeVisible()
     })
+
     await page.close()
   })
+
   test('Declaration form is populated after refresh', async ({ browser }) => {
     const page = await browser.newPage()
 
     await test.step('Login', async () => {
       await login(page)
     })
+
     await test.step('Move to birth form', async () => {
       await page.click('#header-new-event')
       await page.getByLabel('Birth').click()
       await page.getByRole('button', { name: 'Continue' }).click()
       await page.getByRole('button', { name: 'Continue' }).click()
     })
+
     await test.step('Input child fields', async () => {
       const firstname = 'foo'
       const surname = 'bar'
       await type(page, '#firstname', firstname)
       await type(page, '#surname', surname)
     })
+
     await test.step('refresh the page and verify fields are populated', async () => {
       await page.reload()
       await expect(page.locator('#firstname')).toHaveValue('foo')
       await expect(page.locator('#surname')).toHaveValue('bar')
     })
+
     await page.close()
   })
 })

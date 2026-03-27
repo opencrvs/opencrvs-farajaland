@@ -70,6 +70,7 @@ test('Correct record - change informant type', async ({ browser }) => {
       CREDENTIALS.REGISTRAR.USERNAME,
       CREDENTIALS.REGISTRAR.PASSWORD
     )
+
     const res = await createDeclarationV2(
       token,
       {
@@ -116,6 +117,7 @@ test('Correct record - change informant type', async ({ browser }) => {
       name: formatV2ChildName(declaration),
       trackingId
     })
+
     await ensureAssigned(page)
 
     await selectAction(page, 'Correct')
@@ -195,6 +197,7 @@ test('Correct record - change informant type', async ({ browser }) => {
         .locator('#father____address-form-input')
         .locator('#province')
         .click()
+
       await page
         .locator('#father____address-form-input')
         .getByText(updatedFatherDetails.address.province)
@@ -204,6 +207,7 @@ test('Correct record - change informant type', async ({ browser }) => {
         .locator('#father____address-form-input')
         .locator('#district')
         .click()
+
       await page
         .locator('#father____address-form-input')
         .getByText(updatedFatherDetails.address.district)
@@ -213,6 +217,7 @@ test('Correct record - change informant type', async ({ browser }) => {
         .locator('#father____address-form-input')
         .locator('#village')
         .click()
+
       await page
         .locator('#father____address-form-input')
         .getByText(updatedFatherDetails.address.village)
@@ -263,6 +268,7 @@ test('Correct record - change informant type', async ({ browser }) => {
       'Reason for correction',
       'Informant provided incorrect information (Material error)'
     )
+
     await visible(page, 'Fee total', `$${correctionFee}`)
 
     await visible(page, 'Correction(s)')
@@ -335,6 +341,7 @@ test('Correct record - change informant type', async ({ browser }) => {
     })
 
     await ensureAssigned(page)
+
     await page.getByRole('button', { name: 'Audit' }).click()
 
     await expect(
@@ -343,5 +350,6 @@ test('Correct record - change informant type', async ({ browser }) => {
         .getByRole('button', { name: 'Record corrected' })
     ).toBeVisible()
   })
+
   await page.close()
 })

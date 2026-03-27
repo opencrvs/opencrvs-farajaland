@@ -79,6 +79,7 @@ test.describe('Informant details resets when relation is changed', () => {
       await expect(page.locator('#searchable-select-province')).toHaveText(
         'Central'
       )
+
       await expect(page.locator('#searchable-select-district')).toHaveText(
         'Ibombo'
       )

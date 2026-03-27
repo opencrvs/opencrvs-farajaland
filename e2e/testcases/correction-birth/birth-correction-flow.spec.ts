@@ -2,10 +2,7 @@ import { expect, test } from '@playwright/test'
 import { getToken, login, logout } from '../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../constants'
-import {
-  createDeclaration,
-  Declaration
-} from '../test-data/birth-declaration-with-mother-father'
+import { createDeclaration } from '../test-data/birth-declaration-with-mother-father'
 import {
   ensureAssigned,
   ensureOutboxIsEmpty,
@@ -27,9 +24,8 @@ test('Birth correction flow', async ({ browser }) => {
     'HEALTH_FACILITY'
   )
 
-  const declaration: Declaration = res.declaration
-
-  const eventId: string = res.eventId
+  const declaration = res.declaration
+  const eventId = res.eventId
 
   const page = await browser.newPage()
 
@@ -43,7 +39,6 @@ test('Birth correction flow', async ({ browser }) => {
       .click()
 
     await ensureAssigned(page)
-
     await selectAction(page, 'Correct')
   })
 
@@ -61,9 +56,7 @@ test('Birth correction flow', async ({ browser }) => {
 
   await test.step('Fill in the correction details form', async () => {
     await page.locator('#requester____type').click()
-
     await page.getByText('Informant (Mother)', { exact: true }).click()
-
     await page.locator('#reason____option').click()
 
     await page
@@ -73,31 +66,21 @@ test('Birth correction flow', async ({ browser }) => {
       .click()
 
     await page.getByRole('button', { name: 'Continue' }).click()
-
     await page.getByRole('button', { name: 'Verified' }).click()
   })
 
   await test.step('Fill in the supporting documents form', async () => {
     const path = require('path')
-
     const attachmentPath = path.resolve(__dirname, './image.png')
-
     const inputFile = await page.locator(
       'input[name="documents____supportingDocs"][type="file"]'
     )
-
     await page.getByTestId('select__documents____supportingDocs').click()
-
     await page.getByText('Affidavit', { exact: true }).click()
-
     await inputFile.setInputFiles(attachmentPath)
-
     await page.getByTestId('select__documents____supportingDocs').click()
-
     await page.getByText('Court Document', { exact: true }).click()
-
     await inputFile.setInputFiles(attachmentPath)
-
     await page.getByRole('button', { name: 'Continue' }).click()
   })
 
@@ -111,7 +94,6 @@ test('Birth correction flow', async ({ browser }) => {
 
   await test.step('Review page should be displayed and continue button should be disabled', async () => {
     await expectInUrl(page, `/events/request-correction/${eventId}/review`)
-
     await expect(page.getByRole('button', { name: 'Continue' })).toBeDisabled()
   })
 
@@ -148,7 +130,6 @@ test('Birth correction flow', async ({ browser }) => {
 
   await test.step('When back on review page, continue button should still be disabled', async () => {
     await expectInUrl(page, `/events/request-correction/${eventId}/review`)
-
     await expect(page.getByRole('button', { name: 'Continue' })).toBeDisabled()
   })
 
@@ -166,13 +147,11 @@ test('Birth correction flow', async ({ browser }) => {
 
   await test.step('After changing the value back to the original, continue button should be disabled', async () => {
     await page.getByTestId('change-button-informant.email').click()
-
     await page
       .getByTestId('text__informant____email')
       .fill(declaration['informant.email'])
 
     await page.getByRole('button', { name: 'Back to review' }).click()
-
     await expect(page.getByRole('button', { name: 'Continue' })).toBeDisabled()
   })
 
@@ -181,11 +160,8 @@ test('Birth correction flow', async ({ browser }) => {
 
     // Future date
     await page.getByTestId('child____dob-yyyy').fill('2045')
-
     await page.getByRole('button', { name: 'Back to review' }).click()
-
     await expect(page.getByRole('button', { name: 'Continue' })).toBeDisabled()
-
     await expect(page.getByText('Must be a valid birth date')).toBeVisible()
   })
 
@@ -195,11 +171,8 @@ test('Birth correction flow', async ({ browser }) => {
 
   await test.step('After changing the value to a valid value, continue button should be enabled', async () => {
     await page.getByTestId('change-button-child.dob').click()
-
     await page.getByTestId('child____dob-yyyy').fill('2024')
-
     await page.getByTestId('child____dob-mm').fill('6')
-
     await page.getByTestId('child____dob-dd').fill('24')
 
     await page
@@ -237,7 +210,6 @@ test('Birth correction flow', async ({ browser }) => {
 
   await test.step('Return to summary page', async () => {
     await page.getByRole('button', { name: 'Continue' }).click()
-
     await page.getByRole('button', { name: 'Continue' }).click()
   })
 
@@ -261,11 +233,8 @@ test('Birth correction flow', async ({ browser }) => {
       .click()
 
     await expect(page.getByText('Request record correction?')).toBeVisible()
-
     await page.getByRole('button', { name: 'Confirm', exact: true }).click()
-
     await expectInUrl(page, `/workqueue/pending-certification`)
-
     await ensureOutboxIsEmpty(page)
   })
 
@@ -344,11 +313,8 @@ test('Birth correction flow', async ({ browser }) => {
 
     await test.step('Approve correction request', async () => {
       await page.getByRole('button', { name: 'Approve', exact: true }).click()
-
       await page.getByRole('button', { name: 'Confirm', exact: true }).click()
-
       await expectInUrl(page, `/workqueue/correction-requested`)
-
       await ensureOutboxIsEmpty(page)
 
       await page.getByRole('button', { name: 'Pending certification' }).click()
@@ -377,7 +343,6 @@ test('Birth correction flow', async ({ browser }) => {
 
     await test.step('Correction approved action appears in audit history', async () => {
       await ensureAssigned(page)
-
       await page.getByRole('button', { name: 'Audit' }).click()
 
       // Go to second page of audit history list
@@ -390,11 +355,8 @@ test('Birth correction flow', async ({ browser }) => {
 
     await test.step('Enter the direct correction form to ensure form is reset', async () => {
       await selectAction(page, 'Correct')
-
       await expect(page.locator('#requester____type')).toHaveText('Select...')
-
       await expect(page.locator('#reason____option')).toHaveText('Select...')
-
       await page.locator('#crcl-btn').click()
     })
   })

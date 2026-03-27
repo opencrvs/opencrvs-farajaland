@@ -13,6 +13,7 @@ import {
 } from './helpers'
 import { expectInUrl } from '../../../utils'
 import { mockNetworkConditions } from '../../../mock-network-conditions'
+
 test('User should not be able to press print button twice', async ({
   browser
 }) => {
@@ -27,10 +28,12 @@ test('User should not be able to press print button twice', async ({
   await test.step('Log in', async () => {
     await login(page)
   })
+
   await test.step('Navigate to certificate print action', async () => {
     await page.getByRole('button', { name: 'Pending certification' }).click()
     await navigateToCertificatePrintAction(page, declaration)
   })
+
   await test.step('Fill details', async () => {
     await selectCertificationType(page, 'Birth Certificate')
     await selectRequesterType(page, 'Print and issue to Informant (Mother)')
@@ -38,26 +41,33 @@ test('User should not be able to press print button twice', async ({
     await page.getByRole('button', { name: 'Verified' }).click()
     await page.getByRole('button', { name: 'Continue' }).click()
   })
+
   await test.step('Set slow connection', async () => {
     await mockNetworkConditions(page, 'cellular2G')
   })
+
   await test.step('Print with slow connection', async () => {
     await page.getByRole('button', { name: 'Yes, print certificate' }).click()
+
     const popupPromise = page.waitForEvent('popup')
     await page.getByRole('button', { name: 'Print', exact: true }).click()
+
     await expect(
       page.getByRole('button', {
         name: 'Yes, print certificate',
         exact: true
       })
     ).toBeDisabled()
+
     const popup = await popupPromise
     const downloadPromise = popup.waitForEvent('download')
     const download = await downloadPromise
+
     // Check that the popup URL contains PDF content
     await expect(popup.url()).toBe('about:blank')
     await expect(download.suggestedFilename()).toMatch(/^.*\.pdf$/)
     await expectInUrl(page, `/workqueue/pending-certification`)
   })
+
   await page.close()
 })

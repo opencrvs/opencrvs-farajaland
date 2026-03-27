@@ -170,9 +170,7 @@ test.describe('Side menu navigation', () => {
 
     for (const items of nationalSystemAdminNestedNavItemsWithFrame) {
       await expect(page.locator(items[1])).toBeHidden()
-
       await page.getByRole('button', { name: items[0] }).click()
-
       await page.getByRole('button', { name: items[1] }).click()
     }
 

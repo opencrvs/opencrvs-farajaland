@@ -49,6 +49,7 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
       'POST',
       'foobar'
     )
+
     expect(response.status).toBe(401)
   })
 
@@ -58,6 +59,7 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
       'POST',
       systemAdminToken
     )
+
     expect(response.status).toBe(403)
   })
 
@@ -72,7 +74,9 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
         createdAtLocation: healthFacilityId
       }
     )
+
     const event = await createEventResponse.json()
+
     const response = await fetchClientAPI(
       `/api/events/events/${event.id}/notify`,
       'POST',
@@ -81,6 +85,7 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
 
     expect(response.status).toBe(400)
     const body = await response.json()
+
     expect(body.message).toBe('Input validation failed')
   })
 
@@ -109,6 +114,7 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
 
     expect(response.status).toBe(400)
     const body = await response.json()
+
     expect(body.message).toBe('Input validation failed')
   })
 
@@ -128,6 +134,7 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
     const eventId = createEventResponseBody.id
 
     const fakeSurname = faker.person.lastName()
+
     const response = await fetchClientAPI(
       `/api/events/events/${eventId}/notify`,
       'POST',
@@ -147,6 +154,7 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
 
     expect(response.status).toBe(400)
     const body = await response.json()
+
     expect(body.message).toBe(
       '[{"message":"Unexpected field","id":"foo.bar","value":"this should cause an error"}]'
     )
@@ -157,6 +165,7 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
   }) => {
     const token = await login(page)
     const { sub } = decode<{ sub: string }>(token)
+
     const location = await fetchUserLocationHierarchy(sub, {
       headers: {
         Authorization: `Bearer ${token}`
@@ -231,6 +240,7 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
 
     expect(response.status).toBe(400)
     const body = await response.json()
+
     expect(body.message).toBe(
       '[{"message":"Invalid input","id":"child.name","value":{"surname":12345}}]'
     )
@@ -605,6 +615,7 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
         'child.birthLocationId': locationId,
         'child.placeOfBirth': 'HEALTH_FACILITY'
       }
+
       const response = await fetchClientAPI(
         `/api/events/events/${eventId}/notify`,
         'POST',
@@ -618,6 +629,7 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
           createdAtLocation: location[location.length - 1]
         }
       )
+
       expect(response.status).toBe(200)
     })
 
@@ -693,6 +705,7 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
       await selectAction(page, 'Print')
       await selectRequesterType(page, 'Print and issue to Informant (Mother)')
       await page.getByRole('button', { name: 'Continue' }).click()
+
       await page.getByRole('button', { name: 'Verified' }).click()
       await page.getByRole('button', { name: 'Continue' }).click()
 
@@ -810,6 +823,7 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
       await expect(page.getByText(eventName)).toBeVisible({
         timeout: SAFE_IN_EXTERNAL_VALIDATION_MS
       })
+
       await page.getByText(eventName).click()
 
       await ensureAssigned(page)

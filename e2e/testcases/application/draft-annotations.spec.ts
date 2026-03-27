@@ -39,35 +39,24 @@ test('2: Annotations on draft records', async ({ browser }) => {
 
   await test.step('2.1 Create a birth draft and navigate to review page', async () => {
     await page.click('#header-new-event')
-
     await page.getByLabel('Birth').click()
-
     await page.getByRole('button', { name: 'Continue' }).click()
-
     await page.getByRole('button', { name: 'Continue' }).click()
-
     await page.locator('#firstname').fill(name.firstNames)
-
     await page.locator('#surname').fill(name.familyName)
-
     await goToSection(page, 'review')
   })
 
   await test.step('2.2 Fill annotation comment and Save & Exit', async () => {
     await page.locator('#review____comment').fill(ANNOTATION_COMMENT)
-
     await selectDeclarationAction(page, 'Save & Exit', false)
-
     await page.getByRole('button', { name: 'Confirm' }).click()
   })
 
   await test.step('2.3 Re-open draft — annotation comment is visible in Annotations section', async () => {
     await ensureOutboxIsEmpty(page)
-
     await page.getByRole('button', { name: 'Drafts' }).click()
-
     await page.getByRole('button', { name: formattedName }).click()
-
     await switchEventTab(page, 'Record')
 
     await expect(

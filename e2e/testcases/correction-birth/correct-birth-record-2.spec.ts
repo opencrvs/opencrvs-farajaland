@@ -88,6 +88,7 @@ test('Correct record - 2', async ({ browser }) => {
       .getByText('Informant provided incorrect information (Material error)', {
         exact: true
       })
+
       .click()
 
     await page.getByRole('button', { name: 'Continue', exact: true }).click()

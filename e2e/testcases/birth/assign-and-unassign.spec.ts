@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test'
 
 import { login, getToken } from '../../helpers'
 import { CREDENTIALS, SAFE_WORKQUEUE_TIMEOUT_MS } from '../../constants'
-import { createDeclaration, Declaration } from '../test-data/birth-declaration'
+import { createDeclaration } from '../test-data/birth-declaration'
 import { ensureAssigned, selectAction } from '../../utils'
 
 test('Assign & Unassign', async ({ browser }) => {
@@ -11,10 +11,8 @@ test('Assign & Unassign', async ({ browser }) => {
     CREDENTIALS.REGISTRAR.PASSWORD
   )
   const res = await createDeclaration(token)
-
   const page = await browser.newPage()
-
-  const declaration: Declaration = res.declaration
+  const declaration = res.declaration
 
   await test.step('Login', async () => {
     await login(page)
@@ -25,13 +23,9 @@ test('Assign & Unassign', async ({ browser }) => {
 
     // wait for the event to be in the workqueue.
     await page.getByText('Pending certification').click()
-
     const childName = `${declaration['child.name'].firstname} ${declaration['child.name'].surname}`
-
     await page.getByRole('button', { name: childName }).click()
-
     await ensureAssigned(page)
-
     await expect(page.getByTestId('assignedTo-value')).toHaveText(
       'Kennedy Mweene'
     )

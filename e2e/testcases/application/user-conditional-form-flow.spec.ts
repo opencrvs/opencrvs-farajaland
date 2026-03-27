@@ -40,15 +40,12 @@ test('1. User conditional form flow', async ({ browser }) => {
 
     await test.step('1.1.0 Go to review page and ensure default values are resolved properly', async () => {
       await continueForm(page)
-
       await continueForm(page)
-
       await expect(page.getByText('Invalid input')).not.toBeVisible()
     })
 
     await test.step('1.1.1 Fill applicant details', async () => {
       await page.getByTestId('change-button-applicant.name').click()
-
       await page.getByTestId('confirm_edit').click()
 
       await page
@@ -56,7 +53,6 @@ test('1. User conditional form flow', async ({ browser }) => {
         .fill(declaration.applicant.name.firstName)
 
       await page.locator('#surname').fill(declaration.applicant.name.familyName)
-
       await page.getByPlaceholder('dd').fill(declaration.applicant.birthDate.dd)
 
       await page
@@ -77,7 +73,6 @@ test('1. User conditional form flow', async ({ browser }) => {
 
     await test.step('1.1.2 Fill senior pass details', async () => {
       await page.locator('#senior-pass____id').fill('123123')
-
       await continueForm(page)
     })
 
@@ -87,7 +82,6 @@ test('1. User conditional form flow', async ({ browser }) => {
         .fill(declaration.applicant.name.firstName)
 
       await page.locator('#surname').fill(declaration.applicant.name.familyName)
-
       await page.locator('#recommender____id').fill(declaration.recommender.id)
 
       await continueForm(page)
@@ -105,7 +99,6 @@ test('1. User conditional form flow', async ({ browser }) => {
 
     await test.step('1.1.5 Declare', async () => {
       await selectDeclarationAction(page, 'Declare')
-
       await ensureOutboxIsEmpty(page)
     })
   })
@@ -113,7 +106,6 @@ test('1. User conditional form flow', async ({ browser }) => {
   await test.step('1.2 Declaration Review by Registration Officer', async () => {
     await test.step('1.2.1 Navigate to the declaration "Pending validation"-tab', async () => {
       await login(page, CREDENTIALS.REGISTRATION_OFFICER)
-
       await page.getByText('Pending validation').click()
 
       await page

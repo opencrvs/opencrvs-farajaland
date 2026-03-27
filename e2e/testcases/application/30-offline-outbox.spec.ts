@@ -12,6 +12,7 @@ import { CREDENTIALS } from '../../constants'
 import { faker } from '@faker-js/faker'
 import { fillDate } from '../birth/helpers'
 import { ensureOutboxIsEmpty } from '../../utils'
+
 test('30: Validate user can send multiple complete and incomplete records offline', async ({
   browser
 }) => {
@@ -75,6 +76,7 @@ test('30: Validate user can send multiple complete and incomplete records offlin
       }
     }
   }
+
   const partialDeclaration1 = {
     child: {
       name: {
@@ -83,6 +85,7 @@ test('30: Validate user can send multiple complete and incomplete records offlin
       }
     }
   }
+
   const partialDeclaration2 = {
     child: {
       name: {
@@ -91,16 +94,20 @@ test('30: Validate user can send multiple complete and incomplete records offlin
       }
     }
   }
+
   await test.step('30.0 Login', async () => {
     await login(page, CREDENTIALS.HOSPITAL_OFFICIAL)
+
     // this is needed to get eventConfig before going offline
     await page.click('#header-new-event')
     await page.getByLabel('Birth').click()
     await goToSection(page, 'review')
     await page.getByTestId('exit-button').click()
     await page.getByRole('button', { name: 'Confirm', exact: true }).click()
+
     await page.context().setOffline(true)
   })
+
   await test.step('30.1 Send a complete declaration', async () => {
     await page.click('#header-new-event')
     await page.getByLabel('Birth').click()
@@ -111,36 +118,44 @@ test('30: Validate user can send multiple complete and incomplete records offlin
       await page.locator('#surname').fill(declaration.child.name.familyName)
       await page.locator('#child____gender').click()
       await page.getByText(declaration.child.gender, { exact: true }).click()
+
       await page.getByPlaceholder('dd').fill(declaration.child.birthDate.dd)
       await page.getByPlaceholder('mm').fill(declaration.child.birthDate.mm)
       await page.getByPlaceholder('yyyy').fill(declaration.child.birthDate.yyyy)
+
       await page.locator('#child____placeOfBirth').click()
       await page
         .getByText(declaration.placeOfBirth, {
           exact: true
         })
         .click()
+
       await page
         .locator('#child____birthLocation')
         .fill(declaration.birthLocation.facility.slice(0, 3))
       await page.getByText(declaration.birthLocation.facility).click()
+
       await page.locator('#child____attendantAtBirth').click()
       await page
         .getByText(declaration.attendantAtBirth, {
           exact: true
         })
         .click()
+
       await page.locator('#child____birthType').click()
       await page
         .getByText(declaration.birthType, {
           exact: true
         })
         .click()
+
       await page
         .locator('#child____weightAtBirth')
         .fill(declaration.weightAtBirth.toString())
+
       await continueForm(page)
     })
+
     await test.step('30.1.2 Fill informant details', async () => {
       await page.locator('#informant____relation').click()
       await page
@@ -148,24 +163,31 @@ test('30: Validate user can send multiple complete and incomplete records offlin
           exact: true
         })
         .click()
+
       await page.locator('#informant____email').fill(declaration.informantEmail)
+
       await continueForm(page)
     })
+
     await test.step("30.1.3 Fill mother's details", async () => {
       await page.locator('#firstname').fill(declaration.mother.name.firstNames)
       await page.locator('#surname').fill(declaration.mother.name.familyName)
+
       await page.getByPlaceholder('dd').fill(declaration.mother.birthDate.dd)
       await page.getByPlaceholder('mm').fill(declaration.mother.birthDate.mm)
       await page
         .getByPlaceholder('yyyy')
         .fill(declaration.mother.birthDate.yyyy)
+
       await page.locator('#mother____idType').click()
       await page
         .getByText(declaration.mother.identifier.type, { exact: true })
         .click()
+
       await page
         .locator('#mother____nid')
         .fill(declaration.mother.identifier.id)
+
       await page.locator('#country').click()
       await page
         .locator('#country input')
@@ -174,18 +196,22 @@ test('30: Validate user can send multiple complete and incomplete records offlin
         .locator('#country')
         .getByText(declaration.mother.address.country, { exact: true })
         .click()
+
       await page.locator('#province').click()
       await page
         .getByText(declaration.mother.address.province, { exact: true })
         .click()
+
       await page.locator('#district').click()
       await page
         .getByText(declaration.mother.address.district, { exact: true })
         .click()
+
       await page.locator('#village').click()
       await page
         .getByText(declaration.mother.address.village, { exact: true })
         .click()
+
       await page.locator('#town').fill(declaration.mother.address.town)
       await page
         .locator('#residentialArea')
@@ -195,45 +221,59 @@ test('30: Validate user can send multiple complete and incomplete records offlin
       await page
         .locator('#zipCode')
         .fill(declaration.mother.address.postcodeOrZip)
+
       await page.locator('#mother____maritalStatus').click()
       await page
         .getByText(declaration.mother.maritalStatus, { exact: true })
         .click()
+
       await page.locator('#mother____educationalAttainment').click()
       await page
         .getByText(declaration.mother.levelOfEducation, { exact: true })
         .click()
+
       await continueForm(page)
     })
+
     await test.step("30.1.4 Fill father's details", async () => {
       await page.locator('#firstname').fill(declaration.father.name.firstNames)
       await page.locator('#surname').fill(declaration.father.name.familyName)
+
       await fillDate(page, declaration.father.birthDate)
+
       await page.locator('#father____idType').click()
       await page
         .getByText(declaration.father.identifier.type, { exact: true })
         .click()
+
       await page
         .locator('#father____nid')
         .fill(declaration.father.identifier.id)
+
       await page.locator('#father____nationality').click()
       await page
         .getByText(declaration.father.nationality, { exact: true })
         .click()
+
       await page.locator('#father____addressSameAs_YES').click()
+
       await page.locator('#father____maritalStatus').click()
       await page
         .getByText(declaration.father.maritalStatus, { exact: true })
         .click()
+
       await page.locator('#father____educationalAttainment').click()
       await page
         .getByText(declaration.father.levelOfEducation, { exact: true })
         .click()
+
       await page.getByRole('button', { name: 'Continue' }).click()
     })
+
     await test.step('30.1.5 Go to review', async () => {
       await goToSection(page, 'review')
     })
+
     await test.step('30.1.7 Fill up informant comment & signature', async () => {
       await page.locator('#review____comment').fill(faker.lorem.sentence())
       await page.getByRole('button', { name: 'Sign', exact: true }).click()
@@ -242,12 +282,15 @@ test('30: Validate user can send multiple complete and incomplete records offlin
         .locator('#review____signature_modal')
         .getByRole('button', { name: 'Apply' })
         .click()
+
       await expect(page.getByRole('dialog')).not.toBeVisible()
     })
+
     await test.step('30.1.8 Declare', async () => {
       await selectDeclarationAction(page, 'Declare')
     })
   })
+
   await test.step('30.2 Send an incomplete declaration', async () => {
     await page.click('#header-new-event')
     await page.getByLabel('Birth').click()
@@ -262,10 +305,12 @@ test('30: Validate user can send multiple complete and incomplete records offlin
         .fill(partialDeclaration1.child.name.familyName)
       await goToSection(page, 'review')
     })
+
     await test.step('30.2.2 Notify', async () => {
       await selectDeclarationAction(page, 'Notify')
     })
   })
+
   await test.step('30.3 Send an incomplete declaration', async () => {
     await page.click('#header-new-event')
     await page.getByLabel('Birth').click()
@@ -280,34 +325,45 @@ test('30: Validate user can send multiple complete and incomplete records offlin
         .fill(partialDeclaration2.child.name.familyName)
       await goToSection(page, 'review')
     })
+
     await test.step('30.3.2 Notify', async () => {
       await selectDeclarationAction(page, 'Notify')
     })
   })
+
   await test.step('30.4 Validate outbox', async () => {
     await page.getByText('Outbox').click()
+
     await expect(
       page.getByTestId('search-result').locator('#row_2')
     ).toContainText(formatName(declaration.child.name))
+
     await expect(
       page.getByTestId('search-result').locator('#row_1')
     ).toContainText(formatName(partialDeclaration1.child.name))
+
     await expect(
       page.getByTestId('search-result').locator('#row_0')
     ).toContainText(formatName(partialDeclaration2.child.name))
+
     await expect(
       page.getByTestId('search-result').locator('#row_2')
     ).toContainText('Waiting to send')
+
     await expect(
       page.getByTestId('search-result').locator('#row_1')
     ).toContainText('Waiting to send')
+
     await expect(
       page.getByTestId('search-result').locator('#row_0')
     ).toContainText('Waiting to send')
+
     await page.context().setOffline(false)
+
     await expect(page.getByTestId('search-result')).not.toContainText(
       'Waiting to send'
     )
+
     await expect(
       page.getByTestId('search-result').locator('#row_2')
     ).toContainText('Sending')
@@ -321,15 +377,19 @@ test('30: Validate user can send multiple complete and incomplete records offlin
       formatName(declaration.child.name),
       { timeout: 60000 }
     )
+
     await expect(page.getByTestId('search-result')).not.toContainText(
       formatName(partialDeclaration1.child.name),
       { timeout: 60000 }
     )
+
     await expect(page.getByTestId('search-result')).not.toContainText(
       formatName(partialDeclaration2.child.name),
       { timeout: 60000 }
     )
+
     await ensureOutboxIsEmpty(page)
   })
+
   await page.close()
 })

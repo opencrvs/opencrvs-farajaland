@@ -4,6 +4,7 @@ import { createDeclaration } from '../test-data/birth-declaration-with-father-br
 import { CREDENTIALS } from '../../constants'
 import { getMonthFormatted } from './helper'
 import { assertTexts, type } from '../../utils'
+
 test("Advanced Search - Birth Event Declaration - Informant's details", async ({
   browser
 }) => {
@@ -13,42 +14,54 @@ test("Advanced Search - Birth Event Declaration - Informant's details", async ({
     CREDENTIALS.REGISTRAR.USERNAME,
     CREDENTIALS.REGISTRAR.PASSWORD
   )
-  const record: Awaited<ReturnType<typeof createDeclaration>> =
-    await createDeclaration(token, {}, 'REGISTER', 'HEALTH_FACILITY')
-
+  const record = await createDeclaration(
+    token,
+    {},
+    'REGISTER',
+    'HEALTH_FACILITY'
+  )
   ;[yyyy, mm, dd] = record.declaration['informant.dob'].split('-')
+
   await test.step('2.1 - Validate log in and load search page', async () => {
     await login(page)
     await page.click('#searchType')
     await expect(page).toHaveURL(/.*\/advanced-search/)
     await page.getByText('Birth').click()
   })
+
   await test.step("2.5 - Validate search by Informant's details", async () => {
     await test.step('2.5.1 - Validate filling name and dob filters', async () => {
       await page.getByText('Informant details').click()
+
       await type(
         page,
         '#firstname',
         record.declaration['informant.name'].firstname
       )
       await type(page, '#surname', record.declaration['informant.name'].surname)
+
       await type(page, '[data-testid="informant____dob-dd"]', dd)
       await type(page, '[data-testid="informant____dob-mm"]', mm)
       await type(page, '[data-testid="informant____dob-yyyy"]', yyyy)
     })
+
     await test.step('2.5.2 - Validate search and show results', async () => {
       await page.click('#search')
       await expect(page).toHaveURL(/.*\/search-result/)
       expect(page.url()).toContain(`informant.dob=${yyyy}-${mm}-${dd}`)
+
       const param = new URL(page.url()).searchParams.get('informant.name')!
       const decoded = decodeURIComponent(param)
       const name = JSON.parse(decoded)
+
       expect(name).toEqual({
         firstname: record.declaration['informant.name'].firstname,
         surname: record.declaration['informant.name'].surname,
         middlename: ''
       })
+
       await expect(page.getByText('Search results')).toBeVisible()
+
       const searchResult = await page.locator('#content-name').textContent()
       const searchResultCountNumberInBracketsRegex = /\((\d+)\)$/
       expect(searchResult).toMatch(searchResultCountNumberInBracketsRegex)
@@ -61,22 +74,27 @@ test("Advanced Search - Birth Event Declaration - Informant's details", async ({
           `Informant's Name: ${record.declaration['informant.name'].firstname} ${record.declaration['informant.name'].surname}`
         ]
       })
+
       await expect(
         page.getByRole('button', { name: 'Edit', exact: true })
       ).toBeVisible()
     })
+
     await test.step('2.5.3 - Validate clicking on the search edit button', async () => {
       await page.getByRole('button', { name: 'Edit', exact: true }).click()
       await expect(page).toHaveURL(/.*\/advanced-search/)
       expect(page.url()).toContain(`informant.dob=${yyyy}-${mm}-${dd}`)
+
       const param = new URL(page.url()).searchParams.get('informant.name')!
       const decoded = decodeURIComponent(param)
       const name = JSON.parse(decoded)
+
       expect(name).toEqual({
         firstname: record.declaration['informant.name'].firstname,
         surname: record.declaration['informant.name'].surname,
         middlename: ''
       })
+
       await expect(page.locator('#tab_birth')).toHaveText('Birth')
       await expect(page.getByTestId('informant____dob-dd')).toHaveValue(dd)
       await expect(page.getByTestId('informant____dob-mm')).toHaveValue(mm)
@@ -88,6 +106,7 @@ test("Advanced Search - Birth Event Declaration - Informant's details", async ({
         record.declaration['informant.name'].surname
       )
     })
+
     await test.step('2.5.4 - Validate informant.dob range input', async () => {
       const informantDOBRangeButton = page.locator(
         '#informant____dob-date_range_button'
@@ -95,6 +114,7 @@ test("Advanced Search - Birth Event Declaration - Informant's details", async ({
       if (await informantDOBRangeButton.isVisible()) {
         await page.locator('#informant____dob-date_range_button').click()
         await expect(page.locator('#picker-modal')).toBeVisible()
+
         const currentMonth = new Date().getMonth() + 1
         const shortMonth = getMonthFormatted(currentMonth)
         const month = getMonthFormatted(currentMonth, { month: 'long' })
@@ -102,13 +122,16 @@ test("Advanced Search - Birth Event Declaration - Informant's details", async ({
           page.getByRole('button', { name: shortMonth })
         ).toHaveCount(2)
         await expect(page.locator('#date-range-confirm-action')).toBeVisible()
+
         await page.locator('#date-range-confirm-action').click()
         await expect(page.locator('#picker-modal')).toBeHidden()
+
         const checkbox = page.locator(
           'input[type="checkbox"][name="informant____dobdate_range_toggle"]'
         )
         await expect(checkbox).toBeVisible()
         await expect(checkbox).toBeChecked()
+
         const currentYear = new Date().getFullYear()
         const lastYear = currentYear - 1
         // ex: 'May 2024 to May 2025' is visible after date range selection
@@ -118,5 +141,6 @@ test("Advanced Search - Birth Event Declaration - Informant's details", async ({
       }
     })
   })
+
   await page.close()
 })

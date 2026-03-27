@@ -29,6 +29,7 @@ test('1.Farajaland as location parent', async ({ browser }) => {
     },
     token
   })
+
   const name: string = formatV2ChildName(declaration)
   const page = await browser.newPage()
 

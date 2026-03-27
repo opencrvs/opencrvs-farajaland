@@ -95,6 +95,7 @@ test('Correct record - 4', async ({ browser }) => {
       CREDENTIALS.REGISTRAR.USERNAME,
       CREDENTIALS.REGISTRAR.PASSWORD
     )
+
     const res = await createDeclarationV2(
       token,
       {
@@ -127,11 +128,13 @@ test('Correct record - 4', async ({ browser }) => {
       'REGISTER',
       'PRIVATE_HOME'
     )
+
     expect(res).toEqual(
       expect.objectContaining({
         trackingId: expect.any(String)
       })
     )
+
     trackingId = res.trackingId!
     eventId = res.eventId
     token = await getToken('k.mweene', 'test')
@@ -146,6 +149,7 @@ test('Correct record - 4', async ({ browser }) => {
       name: formatV2ChildName(declaration),
       trackingId
     })
+
     await ensureAssigned(page)
 
     await selectAction(page, 'Correct')
@@ -159,6 +163,7 @@ test('Correct record - 4', async ({ browser }) => {
       .getByText('Informant provided incorrect information (Material error)', {
         exact: true
       })
+
       .click()
     await page.getByRole('button', { name: 'Continue' }).click()
   })
@@ -178,6 +183,7 @@ test('Correct record - 4', async ({ browser }) => {
      * - navigate to supporting document
      * - continue button is disabled
      */
+
     expect(page.url().includes('correction')).toBeTruthy()
 
     expect(page.url().includes('onboarding/documents')).toBeTruthy()
@@ -209,7 +215,9 @@ test('Correct record - 4', async ({ browser }) => {
     /*
      * Expected result: should navigate to review page
      */
+
     expect(page.url().includes('correction')).toBeTruthy()
+
     expect(page.url().includes('review')).toBeTruthy()
   })
 
@@ -218,9 +226,11 @@ test('Correct record - 4', async ({ browser }) => {
       await page.getByTestId('change-button-father.name').click()
       await page.getByLabel("Father's details are not available").check()
       await page.getByRole('button', { name: 'Back to review' }).click()
+
       await expect(page.getByTestId('row-value-father.reason')).toHaveText(
         REQUIRED_VALIDATION_ERROR
       )
+
       await expect(
         page.getByRole('button', { name: 'Continue' })
       ).toBeDisabled()
@@ -286,6 +296,7 @@ test('Correct record - 4', async ({ browser }) => {
          * - redirect to father's details page
          * - focus on father's date of birth
          */
+
         expect(page.url().includes('correction')).toBeTruthy()
         expect(page.url().includes('father')).toBeTruthy()
         expect(page.url().includes('#father____dob')).toBeTruthy()
@@ -459,6 +470,7 @@ test('Correct record - 4', async ({ browser }) => {
           .locator('#father____address-form-input')
           .locator('#province')
           .click()
+
         await page
           .locator('#father____address-form-input')
           .getByText(updatedFatherDetails.address.province)
@@ -468,6 +480,7 @@ test('Correct record - 4', async ({ browser }) => {
           .locator('#father____address-form-input')
           .locator('#district')
           .click()
+
         await page
           .locator('#father____address-form-input')
           .getByText(updatedFatherDetails.address.district)
@@ -477,6 +490,7 @@ test('Correct record - 4', async ({ browser }) => {
           .locator('#father____address-form-input')
           .locator('#village')
           .click()
+
         await page
           .locator('#father____address-form-input')
           .getByText(updatedFatherDetails.address.village)
@@ -733,6 +747,7 @@ test('Correct record - 4', async ({ browser }) => {
      */
 
     expect(page.url().includes('correction')).toBeTruthy()
+
     expect(page.url().includes('summary')).toBeTruthy()
 
     await expect(
@@ -747,12 +762,14 @@ test('Correct record - 4', async ({ browser }) => {
      * - Reason for request
      * - Comments
      */
+
     await visible(page, 'Requester', 'Legal Guardian')
     await visible(
       page,
       'Reason for correction',
       'Informant provided incorrect information (Material error)'
     )
+
     await visible(page, 'Fee total', `$${correctionFee}`)
 
     await visible(page, 'Correction(s)')
@@ -769,6 +786,7 @@ test('Correct record - 4', async ({ browser }) => {
       page.locator('#listTable-corrections-table-child'),
       'Location of birth'
     )
+
     await expect(
       await page
         .locator('#listTable-corrections-table-child')
@@ -869,6 +887,7 @@ test('Correct record - 4', async ({ browser }) => {
     /*
      * Expected result: should enable the Correct record button
      */
+
     await page.getByRole('button', { name: 'Correct record' }).click()
     await page.getByRole('button', { name: 'Confirm' }).click()
 
@@ -880,6 +899,7 @@ test('Correct record - 4', async ({ browser }) => {
      * This is to ensure the following condition is asserted
      * after the outbox has the declaration
      */
+
     await page.waitForTimeout(SAFE_INPUT_CHANGE_TIMEOUT_MS)
 
     await expect(await page.locator('#no-record')).toContainText(
@@ -903,6 +923,7 @@ test('Correct record - 4', async ({ browser }) => {
     })
 
     await ensureAssigned(page)
+
     await page.getByRole('button', { name: 'Audit' }).click()
 
     /*
@@ -916,10 +937,12 @@ test('Correct record - 4', async ({ browser }) => {
         .getByRole('button', { name: 'Record corrected' })
     ).toBeVisible()
   })
+
   await test.step('4.9 Validate record corrected modal', async () => {
     const correctionRequestedRow = page.locator(
       '#listTable-task-history #row_6'
     )
+
     await correctionRequestedRow.getByText('Record corrected').click()
 
     const date = await correctionRequestedRow.locator('span').nth(1).innerText()
@@ -939,6 +962,7 @@ test('Correct record - 4', async ({ browser }) => {
      * - Comment
      * - Original vs Correction
      */
+
     await expect(
       page.getByRole('heading', { name: 'Record corrected' })
     ).toBeVisible()
@@ -966,12 +990,14 @@ test('Correct record - 4', async ({ browser }) => {
      * - Reason for request
      * - Comments
      */
+
     await visible(page, 'Requester', 'Legal Guardian')
     await visible(
       page,
       'Reason for correction',
       'Informant provided incorrect information (Material error)'
     )
+
     await visible(page, 'Fee total', `$${correctionFee}`)
 
     await visible(page, 'Correction(s)')
@@ -988,6 +1014,7 @@ test('Correct record - 4', async ({ browser }) => {
       page.locator('#listTable-corrections-table-child'),
       'Location of birth'
     )
+
     await expect(
       await page
         .locator('#listTable-corrections-table-child')
@@ -1076,5 +1103,6 @@ test('Correct record - 4', async ({ browser }) => {
       .locator('xpath=following-sibling::*[1]')
       .click()
   })
+
   await page.close()
 })

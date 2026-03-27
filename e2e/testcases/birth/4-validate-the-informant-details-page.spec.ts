@@ -22,6 +22,7 @@ test.describe('4. Validate the informants details pages', () => {
     test('4.1.1 Enter Non-valid phone number', async () => {
       await page.locator('#informant____phoneNo').fill('1234567890')
       await page.getByRole('heading', { name: 'Birth', exact: true }).click()
+
       await expect(page.locator('#informant____phoneNo_error')).toHaveText(
         'Must be a valid 10 digit number that starts with 0(7|9)'
       )

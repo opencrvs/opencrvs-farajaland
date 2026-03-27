@@ -18,13 +18,10 @@ test('Validate draft with partial name', async ({ browser }) => {
 
   await test.step('Record does not appear in draft', async () => {
     await login(page, CREDENTIALS.HOSPITAL_OFFICIAL)
-
     await page.getByRole('button', { name: 'Drafts' }).click()
-
     await expect(page.getByTestId('search-result')).not.toContainText(
       formatName(name1)
     )
-
     await expect(page.getByTestId('search-result')).not.toContainText(
       formatName(name2)
     )
@@ -32,37 +29,23 @@ test('Validate draft with partial name', async ({ browser }) => {
 
   await test.step('Create a draft with only firstname', async () => {
     await page.click('#header-new-event')
-
     await page.getByLabel('Birth').click()
-
     await page.getByRole('button', { name: 'Continue' }).click()
-
     await page.getByRole('button', { name: 'Continue' }).click()
-
     await page.locator('#firstname').fill(name1.firstNames)
-
     await page.getByRole('button', { name: 'Save & Exit' }).click()
-
     await page.getByRole('button', { name: 'Confirm' }).click()
-
     await ensureOutboxIsEmpty(page)
   })
 
   await test.step('Create a draft with only lastname', async () => {
     await page.click('#header-new-event')
-
     await page.getByLabel('Birth').click()
-
     await page.getByRole('button', { name: 'Continue' }).click()
-
     await page.getByRole('button', { name: 'Continue' }).click()
-
     await page.locator('#surname').fill(name2.familyName)
-
     await page.getByRole('button', { name: 'Save & Exit' }).click()
-
     await page.getByRole('button', { name: 'Confirm' }).click()
-
     await ensureOutboxIsEmpty(page)
   })
 

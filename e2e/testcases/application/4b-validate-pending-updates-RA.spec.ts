@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test'
 
 import { login, getToken, selectDeclarationAction } from '../../helpers'
 import { CREDENTIALS, SAFE_WORKQUEUE_TIMEOUT_MS } from '../../constants'
-import { createDeclaration, Declaration } from '../test-data/birth-declaration'
+import { createDeclaration } from '../test-data/birth-declaration'
 import { ActionType } from '@opencrvs/toolkit/events'
 import { formatV2ChildName } from '../birth/helpers'
 import {
@@ -22,13 +22,11 @@ test('4(b) Validate "Pending updates"-workqueue for RO', async ({
     CREDENTIALS.REGISTRATION_OFFICER.USERNAME,
     CREDENTIALS.REGISTRATION_OFFICER.PASSWORD
   )
+
   const res = await createDeclaration(token, undefined, ActionType.DECLARE)
-
   const page = await browser.newPage()
-
-  const declaration: Declaration = res.declaration
-
-  const eventId: string = res.eventId
+  const declaration = res.declaration
+  const eventId = res.eventId
 
   await test.step('4.0.1 Login', async () => {
     await login(page, CREDENTIALS.REGISTRAR)
@@ -36,7 +34,6 @@ test('4(b) Validate "Pending updates"-workqueue for RO', async ({
 
   await test.step('4.0.2 Navigate to record audit', async () => {
     await page.getByText('Pending registration').click()
-
     await page
       .getByRole('button', { name: formatV2ChildName(declaration) })
       .click()
@@ -44,17 +41,13 @@ test('4(b) Validate "Pending updates"-workqueue for RO', async ({
 
   await test.step('4.0.3 Reject a declaration', async () => {
     await ensureAssigned(page)
-
     await selectAction(page, 'Reject')
-
     await page.getByTestId('reject-reason').fill(faker.lorem.sentence())
-
     await page.getByRole('button', { name: 'Send For Update' }).click()
   })
 
   await test.step('4.1 Go to "Pending updates"-workqueue', async () => {
     await login(page, CREDENTIALS.REGISTRATION_OFFICER)
-
     await page.waitForTimeout(SAFE_WORKQUEUE_TIMEOUT_MS)
 
     // wait for the event to be in the workqueue.
@@ -71,7 +64,6 @@ test('4(b) Validate "Pending updates"-workqueue for RO', async ({
 
   await test.step('4.2 validate the list', async () => {
     const header = page.locator('div[class^="TableHeader"]')
-
     const columns = await header.locator(':scope > div').allInnerTexts()
 
     expect(columns).toStrictEqual([
@@ -83,13 +75,9 @@ test('4(b) Validate "Pending updates"-workqueue for RO', async ({
     ])
 
     const row = getRowByTitle(page, formatV2ChildName(declaration))
-
     const cells = row.locator(':scope > div')
-
     await expect(cells.nth(0)).toHaveText(formatV2ChildName(declaration))
-
     await expect(cells.nth(1)).toHaveText('Birth')
-
     await expect(cells.nth(2)).toHaveText(
       declaration['child.dob'].split('T')[0]
     )
@@ -106,15 +94,12 @@ test('4(b) Validate "Pending updates"-workqueue for RO', async ({
 
   await test.step('4.4 Click Edit -action', async () => {
     await ensureAssigned(page)
-
     await selectAction(page, 'Edit')
   })
 
   await test.step('4.5 Complete declare with edits action', async () => {
     await page.getByTestId('change-button-child.weightAtBirth').click()
-
     await page.getByTestId('number__child____weightAtBirth').fill('2.6')
-
     await page.getByRole('button', { name: 'Back to review' }).click()
 
     await selectDeclarationAction(page, 'Declare with edits')
@@ -137,7 +122,6 @@ test('4(b) Validate "Pending updates"-workqueue for RO', async ({
       .click()
 
     await expect(page.getByTestId('flags-value')).toHaveText('Validated')
-
     await expect(page.getByTestId('flags-value')).not.toHaveText(
       'Edit in progress'
     )
