@@ -16,11 +16,13 @@ import { sendInformantNotification } from '../notification/informantNotification
 import { ActionConfirmationRequest } from '../registration'
 import { createMosipInteropClient } from '@opencrvs/mosip/api'
 import {
+  ActionType,
   aggregateActionDeclarations,
   deepMerge,
   getPendingAction
 } from '@opencrvs/toolkit/events'
 import { MOSIP_INTEROP_URL } from '@countryconfig/constants'
+import { differenceInYears } from 'date-fns'
 
 export function getCustomEventsHandler(
   _: Hapi.Request,
@@ -119,6 +121,47 @@ export async function onBirthActionHandler(
       transactionId: `informant-${event.id}`
     })
   return h.response({ declaration: updatedFields }).code(200)
+}
+
+export async function onBirthCorrectionActionHandler(
+  request: ActionConfirmationRequest,
+  h: Hapi.ResponseToolkit
+) {
+  const token = request.auth.artifacts.token as string
+
+  const event = request.payload
+  await sendInformantNotification({ event, token })
+
+  const pendingAction = getPendingAction(event.actions)
+
+  if (pendingAction.type !== ActionType.REQUEST_CORRECTION) {
+    return h.response().code(200)
+  }
+
+  const declaration = deepMerge(
+    aggregateActionDeclarations(event),
+    pendingAction.declaration
+  )
+
+  const childNid = declaration['child.nid']
+  const childDob = declaration['child.dob']
+  const childAge =
+    typeof childDob === 'string'
+      ? differenceInYears(new Date(), new Date(childDob))
+      : null
+
+  const childHasNid = Boolean(childNid)
+  const childIsUnder16 =
+    childAge !== null && !Number.isNaN(childAge) && childAge < 16
+
+  if (childHasNid && childIsUnder16) {
+    // eslint-disable-next-line no-console
+    console.log(
+      'Birth correction check passed: child.nid exists and child is under 16'
+    )
+  }
+
+  return h.response().code(200)
 }
 
 export async function onDeathActionHandler(

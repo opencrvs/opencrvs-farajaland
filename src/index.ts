@@ -53,6 +53,7 @@ import {
   getCustomEventsHandler,
   onAnyActionHandler,
   onBirthActionHandler,
+  onBirthCorrectionActionHandler,
   onDeathActionHandler,
   onCustomActionHandler
 } from '@countryconfig/api/custom-event/handler'
@@ -561,6 +562,16 @@ export async function createServer() {
     options: {
       tags: ['api', 'events'],
       description: 'Receives notifications on event actions'
+    }
+  })
+
+  server.route({
+    method: 'POST',
+    path: `/trigger/events/birth/actions/${ActionType.REQUEST_CORRECTION}`,
+    handler: onBirthCorrectionActionHandler,
+    options: {
+      tags: ['api', 'events'],
+      description: 'Receives notifications on birth correction actions'
     }
   })
 
