@@ -80,7 +80,12 @@ const createAuthErrorResponse = (
 }
 
 /**
- * Creates a proxy handler that adds system authentication token to requests
+ * Creates a proxy handler that adds system authentication token to requests.
+ * If the request already carries an Authorization header (e.g. an OpenCRVS user
+ * token from the TRPC client), that token is passed through unchanged so the
+ * events service can correctly identify the acting user. The system token is only
+ * injected for unauthenticated callers such as the Government Portal API.
+ *
  * @param targetUri The URI to proxy to (string or function that takes request)
  * @param passThrough Whether to pass through request headers
  */
@@ -88,6 +93,11 @@ export const createAuthenticatedProxyHandler =
   (targetUri: UriResolver, passThrough: boolean = true) =>
   async (request: Hapi.Request, h: Hapi.ResponseToolkit) => {
     const uri = resolveUri(targetUri, request)
+
+    // If the caller already has a user token, forward it as-is.
+    if (request.headers['authorization']) {
+      return h.proxy({ uri, passThrough })
+    }
 
     if (!isAuthConfigured()) {
       return createUnauthenticatedProxy(uri, passThrough, h)
