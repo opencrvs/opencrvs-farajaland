@@ -73,9 +73,7 @@ test('Certified copies', async ({ browser }) => {
     await page.getByText(declaration?.['spouse.nid']).isVisible()
     await page.getByText("Spouse's name").isVisible()
     await page
-      .getByText(
-        joinValuesWith([...Object.values(declaration['spouse.name'])])
-      )
+      .getByText(joinValuesWith([...Object.values(declaration['spouse.name'])]))
       .isVisible()
     await page.getByText('Date of birth').isVisible()
     await page.getByText(declaration['spouse.dob']).isVisible()
@@ -139,9 +137,7 @@ test('Certified copies renders spouse age correctly', async ({ browser }) => {
     await page.getByText(declaration['spouse.nid']).isVisible()
     await page.getByText("Spouse's name").isVisible()
     await page
-      .getByText(
-        joinValuesWith([...Object.values(declaration['spouse.name'])])
-      )
+      .getByText(joinValuesWith([...Object.values(declaration['spouse.name'])]))
       .isVisible()
     await page.getByText('Age of spouse (at the time of event)').isVisible()
     await page.getByText(joinValuesWith([spouseAge, 'years'])).isVisible()
@@ -229,9 +225,7 @@ test('Certified copies renders non-spouse informant age correctly', async ({
         ])
       )
       .isVisible()
-    await page
-      .getByText('Age of informant (at the time of event)')
-      .isVisible()
+    await page.getByText('Age of informant (at the time of event)').isVisible()
     await page.getByText(joinValuesWith([informantAge, 'years'])).isVisible()
     await page.getByText('Nationality').isVisible()
     await page

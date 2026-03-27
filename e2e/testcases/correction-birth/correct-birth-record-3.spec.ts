@@ -149,9 +149,7 @@ test(' Correct record - 3', async ({ browser }) => {
     await ensureAssigned(page)
     await page.getByRole('button', { name: 'Action' }).click()
     await page.locator('#action-dropdownMenu').getByText('Print').click()
-    await page
-      .locator('#certificateTemplateId')
-      .getByText('Birth Certificate')
+    await page.locator('#certificateTemplateId').getByText('Birth Certificate')
     await page.locator('#collector____requesterId').click()
     await page
       .locator('#collector____requesterId')
@@ -374,9 +372,7 @@ test(' Correct record - 3', async ({ browser }) => {
     expect(page.url().includes('review')).toBeTruthy()
 
     await expect(
-      await page
-        .getByTestId('row-value-mother.idType')
-        .getByRole('deletion')
+      await page.getByTestId('row-value-mother.idType').getByRole('deletion')
     ).toHaveText('National ID')
     await expect(
       await page
@@ -387,9 +383,7 @@ test(' Correct record - 3', async ({ browser }) => {
 
   await test.step('3.4.5 Change passport', async () => {
     await expect(
-      await page
-        .getByTestId('row-value-mother.passport')
-        .getByText('Required')
+      await page.getByTestId('row-value-mother.passport').getByText('Required')
     ).toBeVisible()
     await page.getByTestId('change-button-mother.passport').click()
 
@@ -416,9 +410,7 @@ test(' Correct record - 3', async ({ browser }) => {
     expect(page.url().includes('review')).toBeTruthy()
 
     await expect(
-      await page
-        .getByTestId('row-value-mother.passport')
-        .getByRole('deletion')
+      await page.getByTestId('row-value-mother.passport').getByRole('deletion')
     ).toHaveText('-')
     await expect(
       await page
@@ -464,9 +456,7 @@ test(' Correct record - 3', async ({ browser }) => {
       .fill(updatedMotherDetails.address.residentialArea)
     await page.locator('#street').fill(updatedMotherDetails.address.street)
     await page.locator('#number').fill(updatedMotherDetails.address.number)
-    await page
-      .locator('#zipCode')
-      .fill(updatedMotherDetails.address.zipCode)
+    await page.locator('#zipCode').fill(updatedMotherDetails.address.zipCode)
     await goBackToReview(page)
 
     /*
@@ -479,9 +469,7 @@ test(' Correct record - 3', async ({ browser }) => {
     expect(page.url().includes('review')).toBeTruthy()
 
     await expect(
-      await page
-        .getByTestId('row-value-mother.address')
-        .getByText('Farajaland')
+      await page.getByTestId('row-value-mother.address').getByText('Farajaland')
     ).toBeVisible()
     await expect(
       await page
@@ -564,9 +552,7 @@ test(' Correct record - 3', async ({ browser }) => {
   })
 
   await test.step('3.4.8 Change level of education', async () => {
-    await page
-      .getByTestId('change-button-mother.educationalAttainment')
-      .click()
+    await page.getByTestId('change-button-mother.educationalAttainment').click()
 
     /*
      * Expected result: should
@@ -575,9 +561,7 @@ test(' Correct record - 3', async ({ browser }) => {
      */
     expect(page.url().includes('correction')).toBeTruthy()
     expect(page.url().includes('mother')).toBeTruthy()
-    expect(
-      page.url().includes('#mother____educationalAttainment')
-    ).toBeTruthy()
+    expect(page.url().includes('#mother____educationalAttainment')).toBeTruthy()
     await page.locator('#mother____educationalAttainment').click()
     await page.getByText(updatedMotherDetails.educationLevel).click()
     await page.getByRole('button', { name: 'Back to review' }).click()
@@ -626,12 +610,8 @@ test(' Correct record - 3', async ({ browser }) => {
     await page
       .locator('#residentialArea')
       .fill(updatedChildDetails.birthLocation.residentialArea)
-    await page
-      .locator('#street')
-      .fill(updatedChildDetails.birthLocation.street)
-    await page
-      .locator('#number')
-      .fill(updatedChildDetails.birthLocation.number)
+    await page.locator('#street').fill(updatedChildDetails.birthLocation.street)
+    await page.locator('#number').fill(updatedChildDetails.birthLocation.number)
     await page
       .locator('#zipCode')
       .fill(updatedChildDetails.birthLocation.zipCode)
@@ -678,9 +658,7 @@ test(' Correct record - 3', async ({ browser }) => {
 
     for (const part of addressParts) {
       await expect(
-        page
-          .getByTestId('row-value-child.birthLocation.other')
-          .getByText(part)
+        page.getByTestId('row-value-child.birthLocation.other').getByText(part)
       ).toBeVisible()
     }
 

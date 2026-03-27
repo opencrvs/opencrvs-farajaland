@@ -3,7 +3,11 @@ import { goToSection, login } from '../../helpers'
 import { REQUIRED_VALIDATION_ERROR } from './helpers'
 import { trackAndDeleteCreatedEvents } from '../test-data/eventDeletion'
 
-const loginAndBeginBirthDeclaration = async ({ page }: { page: import('@playwright/test').Page }) => {
+const loginAndBeginBirthDeclaration = async ({
+  page
+}: {
+  page: import('@playwright/test').Page
+}) => {
   await login(page)
   await page.click('#header-new-event')
 
@@ -90,9 +94,7 @@ test('2.1 Validate "First Name(s)" text field', async ({ browser }) => {
     /*
      * Expected result: should clip the name to first 32 character
      */
-    await expect(page.locator('#firstname')).toHaveValue(
-      LONG_NAME.slice(0, 32)
-    )
+    await expect(page.locator('#firstname')).toHaveValue(LONG_NAME.slice(0, 32))
   })
 
   await test.step('2.1.3 Enter Field as NULL', async () => {
@@ -205,9 +207,7 @@ test('2.5 Validate delayed registration', async ({ browser }) => {
      * Expected result: should show field:
      * - Reason for delayed registration
      */
-    await expect(
-      page.getByText('Reason for delayed registration')
-    ).toBeHidden()
+    await expect(page.getByText('Reason for delayed registration')).toBeHidden()
   })
 
   await test.step('2.5.2 Enter date before delayed registration time period', async () => {
@@ -305,9 +305,7 @@ test('2.6 Validate place of delivery field', async ({ browser }) => {
      should select "Other" as place of birth
      * - Should show input field for address
      */
-    await expect(page.locator('#child____placeOfBirth')).toContainText(
-      'Other'
-    )
+    await expect(page.locator('#child____placeOfBirth')).toContainText('Other')
     await expect(
       page.locator('#child____birthLocation____other-form-input')
     ).toBeVisible()

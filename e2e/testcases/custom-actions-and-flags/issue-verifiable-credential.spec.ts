@@ -9,8 +9,7 @@ import {
 } from '../../utils'
 import {
   createDeclaration,
-  getDeclaration,
-  type Declaration
+  getDeclaration
 } from '../test-data/birth-declaration'
 import { formatV2ChildName } from '../birth/helpers'
 import {
@@ -38,16 +37,11 @@ test('Issue verifiable credential', async ({ browser }) => {
 
   const page = await browser.newPage()
 
-  const motherInformantDeclaration: Declaration = motherInformantRes.declaration
+  const motherInformantDeclaration = motherInformantRes.declaration
+  const motherInformantChildName = formatV2ChildName(motherInformantDeclaration)
+  const nonParentInformantDeclaration = nonParentInformantRes.declaration
 
-  const motherInformantChildName: string = formatV2ChildName(
-    motherInformantDeclaration
-  )
-
-  const nonParentInformantDeclaration: Declaration =
-    nonParentInformantRes.declaration
-
-  const nonParentInformantChildName: string = formatV2ChildName(
+  const nonParentInformantChildName = formatV2ChildName(
     nonParentInformantDeclaration
   )
 

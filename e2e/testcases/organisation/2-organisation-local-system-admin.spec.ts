@@ -51,11 +51,7 @@ test('2. Organisation Page', async ({ browser }) => {
 
     // 2.1.3 Verify Team Members Status
     const ibomboMembers = ['Felix Katongo', 'Kennedy Mweene']
-    await verifyMembersClickable(
-      page,
-      ibomboMembers,
-      'Ibombo District Office'
-    )
+    await verifyMembersClickable(page, ibomboMembers, 'Ibombo District Office')
   })
 
   await test.step('2.2 Out of Scope Access', async () => {

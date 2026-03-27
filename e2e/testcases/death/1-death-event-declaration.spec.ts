@@ -32,9 +32,7 @@ test('1. Death event declaration: Fill all form sections. Save & Exit', async ({
      */
     await expect(page.getByLabel('Birth')).toBeVisible()
     await expect(page.getByLabel('Death')).toBeVisible()
-    await expect(
-      page.getByRole('button', { name: 'Continue' })
-    ).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Continue' })).toBeVisible()
     await expect(page.getByRole('button', { name: 'Exit' })).toBeVisible()
   })
 
@@ -74,9 +72,7 @@ test('1. Death event declaration: Fill all form sections. Save & Exit', async ({
         'Introduce the death registration process to the informant'
       )
     ).toBeVisible()
-    await expect(
-      page.getByRole('button', { name: 'Continue' })
-    ).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Continue' })).toBeVisible()
     await expect(
       page.getByRole('button', { name: 'Exit', exact: true })
     ).toBeVisible()
@@ -141,9 +137,7 @@ test('1. Death event declaration: Fill all form sections. Save & Exit', async ({
      * - Save and exit button
      * - 3dot menu (delete option)
      */
-    await expect(
-      page.getByRole('button', { name: 'Continue' })
-    ).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Continue' })).toBeVisible()
     await expect(
       page.getByRole('button', { name: 'Exit', exact: true })
     ).toBeVisible()
@@ -182,9 +176,7 @@ test('1. Death event declaration: Fill all form sections. Save & Exit', async ({
      * - Save and exit button
      * - 3dot menu (delete option)
      */
-    await expect(
-      page.getByRole('button', { name: 'Continue' })
-    ).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Continue' })).toBeVisible()
     await expect(
       page.getByRole('button', { name: 'Exit', exact: true })
     ).toBeVisible()
@@ -226,9 +218,7 @@ test('1. Death event declaration: Fill all form sections. Save & Exit', async ({
     await expect(page.getByText('Informant Type')).toBeVisible()
     await expect(page.getByText('Phone number')).toBeVisible()
     await expect(page.getByText('Email')).toBeVisible()
-    await expect(
-      page.getByRole('button', { name: 'Continue' })
-    ).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Continue' })).toBeVisible()
     await expect(
       page.getByRole('button', { name: 'Exit', exact: true })
     ).toBeVisible()
@@ -281,9 +271,7 @@ test('1. Death event declaration: Fill all form sections. Save & Exit', async ({
     await expect(
       page.getByText('Spouse details', { exact: true })
     ).toBeVisible()
-    await expect(
-      page.getByRole('button', { name: 'Continue' })
-    ).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Continue' })).toBeVisible()
     await expect(
       page.getByRole('button', { name: 'Exit', exact: true })
     ).toBeVisible()
@@ -325,9 +313,7 @@ test('1. Death event declaration: Fill all form sections. Save & Exit', async ({
     await expect(
       page.getByText('Upload supporting documents', { exact: true })
     ).toBeVisible()
-    await expect(
-      page.getByRole('button', { name: 'Continue' })
-    ).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Continue' })).toBeVisible()
     await expect(
       page.getByRole('button', { name: 'Exit', exact: true })
     ).toBeVisible()
@@ -371,9 +357,7 @@ test('1. Death event declaration: Fill all form sections. Save & Exit', async ({
       )
     ).toBeVisible()
     await expect(page.getByRole('button', { name: 'Cancel' })).toBeVisible()
-    await expect(
-      page.getByRole('button', { name: 'Confirm' })
-    ).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Confirm' })).toBeVisible()
   })
 
   await test.step('1.9.2 Click Cancel', async () => {

@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker'
-import { test, expect } from '@playwright/test'
+import { test, expect, type Page } from '@playwright/test'
 import {
   continueForm,
   drawSignature,
@@ -20,8 +20,8 @@ import { assertRecordInWorkqueue, fillDate } from '../birth/helpers'
 import { getRowByTitle } from '../print-certificate/birth/helpers'
 
 // HO Notifies => RO Validates => Registrar Registers => Registrar Prints
-test('1. Workqueue flow - 1', async ({ browser }) => {
-  const page = await browser.newPage()
+test.describe.serial('1. Workqueue flow - 1', () => {
+  let page: Page
   const declaration = {
     child: {
       name: {
@@ -69,9 +69,16 @@ test('1. Workqueue flow - 1', async ({ browser }) => {
       }
     }
   }
+  test.beforeAll(async ({ browser }) => {
+    page = await browser.newPage()
+  })
 
-  await test.step('1.1 Notify by HO', async () => {
-    await test.step('login and create new birth event', async () => {
+  test.afterAll(async () => {
+    await page.close()
+  })
+
+  test.describe('1.1 Notify by HO', async () => {
+    test.beforeAll(async () => {
       await login(page, CREDENTIALS.HOSPITAL_OFFICIAL)
       await page.click('#header-new-event')
       await page.getByLabel('Birth').click()
@@ -79,7 +86,7 @@ test('1. Workqueue flow - 1', async ({ browser }) => {
       await page.getByRole('button', { name: 'Continue' }).click()
     })
 
-    await test.step('1.1.1 Fill child details', async () => {
+    test('1.1.1 Fill child details', async () => {
       await page.locator('#firstname').fill(declaration.child.name.firstNames)
       await page.locator('#surname').fill(declaration.child.name.familyName)
       await page.locator('#child____gender').click()
@@ -101,11 +108,11 @@ test('1. Workqueue flow - 1', async ({ browser }) => {
       await page.getByText(declaration.birthLocation.facility).click()
     })
 
-    await test.step('1.1.2 Go to review', async () => {
+    test('1.1.2 Go to review', async () => {
       await goToSection(page, 'review')
     })
 
-    await test.step('1.1.3 Fill up informant comment & signature', async () => {
+    test('1.1.3 Fill up informant comment & signature', async () => {
       await page.locator('#review____comment').fill(faker.lorem.sentence())
       await page.getByRole('button', { name: 'Sign', exact: true }).click()
       await drawSignature(page, 'review____signature_canvas_element', false)
@@ -117,12 +124,12 @@ test('1. Workqueue flow - 1', async ({ browser }) => {
       await expect(page.getByRole('dialog')).not.toBeVisible()
     })
 
-    await test.step('1.1.4 Notify', async () => {
+    test('1.1.4 Notify', async () => {
       await selectDeclarationAction(page, 'Notify')
       await ensureOutboxIsEmpty(page)
     })
 
-    await test.step('1.1.5 Verify workqueue', async () => {
+    test('1.1.5 Verify workqueue', async () => {
       await assertRecordInWorkqueue({
         page,
         name: formatName(declaration.child.name),
@@ -134,8 +141,8 @@ test('1. Workqueue flow - 1', async ({ browser }) => {
     })
   })
 
-  await test.step('1.2 Declare and validate by Registration Officer', async () => {
-    await test.step('1.2.1 Verify workqueue', async () => {
+  test.describe('1.2 Declare and validate by Registration Officer', async () => {
+    test('1.2.1 Verify workqueue', async () => {
       await login(page, CREDENTIALS.REGISTRATION_OFFICER)
 
       await assertRecordInWorkqueue({
@@ -156,7 +163,7 @@ test('1. Workqueue flow - 1', async ({ browser }) => {
       })
     })
 
-    await test.step('1.2.2 Go to Edit', async () => {
+    test('1.2.2 Go to Edit', async () => {
       await page.getByText('Notifications').click()
       await page
         .getByRole('button', {
@@ -171,8 +178,7 @@ test('1. Workqueue flow - 1', async ({ browser }) => {
         .getByRole('button', { name: 'Change all' })
         .click()
     })
-
-    await test.step('1.2.3 Fill informant details', async () => {
+    test('1.2.3 Fill informant details', async () => {
       await page.locator('#informant____relation').click()
       await page
         .getByText(declaration.informantType, {
@@ -185,7 +191,7 @@ test('1. Workqueue flow - 1', async ({ browser }) => {
       await continueForm(page)
     })
 
-    await test.step("1.2.4 Fill mother's details", async () => {
+    test("1.2.4 Fill mother's details", async () => {
       await page.locator('#firstname').fill(declaration.mother.name.firstNames)
       await page.locator('#surname').fill(declaration.mother.name.familyName)
 
@@ -229,7 +235,7 @@ test('1. Workqueue flow - 1', async ({ browser }) => {
       await continueForm(page)
     })
 
-    await test.step("1.2.5 Fill father's details", async () => {
+    test("1.2.5 Fill father's details", async () => {
       await page.locator('#firstname').fill(declaration.father.name.firstNames)
       await page.locator('#surname').fill(declaration.father.name.familyName)
 
@@ -253,7 +259,7 @@ test('1. Workqueue flow - 1', async ({ browser }) => {
       await page.getByRole('button', { name: 'Back to review' }).click()
     })
 
-    await test.step('1.2.6 Declare with edits', async () => {
+    test('1.2.6 Declare with edits', async () => {
       await selectDeclarationAction(page, 'Declare with edits')
 
       await ensureOutboxIsEmpty(page)
@@ -277,7 +283,7 @@ test('1. Workqueue flow - 1', async ({ browser }) => {
     })
   })
 
-  await test.step('1.3 HO can not see the validated record', async () => {
+  test('1.3 HO can not see the validated record', async () => {
     await login(page, CREDENTIALS.HOSPITAL_OFFICIAL, true)
 
     await assertRecordInWorkqueue({
@@ -291,8 +297,8 @@ test('1. Workqueue flow - 1', async ({ browser }) => {
     })
   })
 
-  await test.step('1.4 Register by Registrar', async () => {
-    await test.step('1.4.1 Validate workqueue', async () => {
+  test.describe('1.4 Register by Registrar', async () => {
+    test('1.4.1 Validate workqueue', async () => {
       await login(page, CREDENTIALS.REGISTRAR)
 
       await assertRecordInWorkqueue({
@@ -316,7 +322,7 @@ test('1. Workqueue flow - 1', async ({ browser }) => {
       })
     })
 
-    await test.step('1.4.2 Register', async () => {
+    test('1.4.2 Register', async () => {
       await page.getByText('Pending registration').click()
       await page
         .getByRole('button', {
@@ -352,7 +358,7 @@ test('1. Workqueue flow - 1', async ({ browser }) => {
     })
   })
 
-  await test.step('1.5 Print by Registrar', async () => {
+  test('1.5 Print by Registrar', async () => {
     await page
       .getByRole('button', {
         name: 'Pending certification'
@@ -369,6 +375,7 @@ test('1. Workqueue flow - 1', async ({ browser }) => {
     await page.goBack()
 
     const row = getRowByTitle(page, formatName(declaration.child.name))
+
     await row.getByRole('button', { name: 'Print' }).click()
 
     await page.locator('#collector____requesterId').click()
@@ -412,7 +419,7 @@ test('1. Workqueue flow - 1', async ({ browser }) => {
     })
   })
 
-  await test.step('1.6 HO can not see the registered record', async () => {
+  test('1.6 HO can not see the registered record', async () => {
     await login(page, CREDENTIALS.HOSPITAL_OFFICIAL, true)
 
     await assertRecordInWorkqueue({
@@ -426,7 +433,7 @@ test('1. Workqueue flow - 1', async ({ browser }) => {
     })
   })
 
-  await test.step("1.7 Registration Officer can't see the record", async () => {
+  test("1.7 Registration Officer can't see the record", async () => {
     await login(page, CREDENTIALS.REGISTRATION_OFFICER, true)
 
     await assertRecordInWorkqueue({
@@ -446,6 +453,4 @@ test('1. Workqueue flow - 1', async ({ browser }) => {
       ]
     })
   })
-
-  await page.close()
 })

@@ -101,9 +101,7 @@ test('10. Correct record', async ({ browser }) => {
     await expect(page.locator('#requester____idType_error')).toBeVisible()
     await expect(page.locator('#firstname_error')).toBeVisible()
     await expect(page.locator('#surname_error')).toBeVisible()
-    await expect(
-      page.locator('#requester____relationship_error')
-    ).toBeVisible()
+    await expect(page.locator('#requester____relationship_error')).toBeVisible()
     await expect(page.locator('#reason____other_error')).toBeVisible()
     await page.locator('#requester____idType').click()
     await page.getByText('National ID', { exact: true }).click()
@@ -170,9 +168,7 @@ test('10. Correct record', async ({ browser }) => {
     await page
       .getByTestId('text__firstname')
       .fill(updatedChildDetails.firstNames)
-    await page
-      .getByTestId('text__surname')
-      .fill(updatedChildDetails.familyName)
+    await page.getByTestId('text__surname').fill(updatedChildDetails.familyName)
     await goBackToReview(page)
 
     /*
@@ -338,9 +334,7 @@ test('10. Correct record', async ({ browser }) => {
     await expectInUrl(page, `/events/request-correction/${eventId}/review`)
 
     await expect(
-      page
-        .getByTestId('row-value-child.attendantAtBirth')
-        .getByRole('deletion')
+      page.getByTestId('row-value-child.attendantAtBirth').getByRole('deletion')
     ).toHaveText('-')
     await expect(
       page
@@ -384,9 +378,7 @@ test('10. Correct record', async ({ browser }) => {
   })
 
   await test.step('10.1.5.1 Go back to review', async () => {
-    await page
-      .getByRole('button', { name: 'Continue', exact: true })
-      .click()
+    await page.getByRole('button', { name: 'Continue', exact: true }).click()
 
     /* Expected result: should
      * - navigate to correction summary
@@ -438,9 +430,7 @@ test('10. Correct record', async ({ browser }) => {
   })
 
   await test.step('10.1.5.3 Validate information in correction summary page', async () => {
-    await page
-      .getByRole('button', { name: 'Continue', exact: true })
-      .click()
+    await page.getByRole('button', { name: 'Continue', exact: true }).click()
 
     /*
      * Expected result: should
@@ -574,9 +564,7 @@ test('10. Correct record', async ({ browser }) => {
       .getByRole('button', { name: 'Correction requested', exact: true })
       .click()
 
-    await expect(
-      page2.getByText('Requester' + 'Someone else')
-    ).toBeVisible()
+    await expect(page2.getByText('Requester' + 'Someone else')).toBeVisible()
     await expect(
       page2
         .locator('#listTable-undefined')
