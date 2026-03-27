@@ -444,12 +444,12 @@ const TENNIS_CLUB_DECLARATION_FORM = defineDeclarationForm({
           ]
         },
         {
-          id: 'recommender1.id.para',
+          id: 'recommender1.heading',
           type: FieldType.HEADING,
           label: {
             defaultMessage: 'Recommender 1',
             description: 'This is the label for the field',
-            id: `recommender1.label`
+            id: `recommender1.heading.label`
           },
           configuration: { styles: { fontVariant: 'h3' } }
         },
@@ -553,12 +553,12 @@ const TENNIS_CLUB_DECLARATION_FORM = defineDeclarationForm({
           }
         },
         {
-          id: 'recommender2.id.para',
+          id: 'recommender2.heading',
           type: FieldType.HEADING,
           label: {
             defaultMessage: 'Recommender 2',
             description: 'This is the label for the field',
-            id: `recommender2.label`
+            id: `recommender2.heading.label`
           },
           configuration: { styles: { fontVariant: 'h3' } }
         },
@@ -578,12 +578,12 @@ const TENNIS_CLUB_DECLARATION_FORM = defineDeclarationForm({
           }
         },
         {
-          id: 'recommender3.id.para',
+          id: 'recommender3.heading',
           type: FieldType.HEADING,
           label: {
             defaultMessage: 'Recommender 3',
             description: 'This is the label for the field',
-            id: `recommender3.label`
+            id: `recommender3.heading.label`
           },
           configuration: { styles: { fontVariant: 'h3' } }
         },
@@ -603,12 +603,12 @@ const TENNIS_CLUB_DECLARATION_FORM = defineDeclarationForm({
           }
         },
         {
-          id: 'recommender4.id.para',
+          id: 'recommender4.heading',
           type: FieldType.HEADING,
           label: {
             defaultMessage: 'Recommender 4',
             description: 'This is the label for the field',
-            id: `recommender4.label`
+            id: `recommender4.heading.label`
           },
           configuration: { styles: { fontVariant: 'h3' } }
         },
@@ -628,12 +628,12 @@ const TENNIS_CLUB_DECLARATION_FORM = defineDeclarationForm({
           }
         },
         {
-          id: 'recommender5.id.para',
+          id: 'recommender5.heading',
           type: FieldType.HEADING,
           label: {
             defaultMessage: 'Recommender 5',
             description: 'This is the label for the field',
-            id: `recommender5.label`
+            id: `recommender5.heading.label`
           },
           configuration: { styles: { fontVariant: 'h3' } }
         },
