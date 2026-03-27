@@ -488,7 +488,9 @@ export const informant = defineFormPage({
         description: 'This is the label for the field',
         id: 'event.death.action.declare.form.section.informant.field.addressHelper.label'
       },
-      configuration: { styles: { fontVariant: 'h3' } },
+      configuration: {
+        styles: { fontVariant: 'h3' }
+      },
       conditionals: [
         {
           type: ConditionalType.DISPLAY_ON_REVIEW,

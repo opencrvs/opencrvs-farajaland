@@ -24,7 +24,6 @@ import {
 } from '@opencrvs/toolkit/events'
 
 import { createSelectOptions, emptyMessage } from '@countryconfig/form/v2/utils'
-import { applicationConfig } from '@countryconfig/api/application/application-config'
 import {
   defaultStreetAddressConfiguration,
   getNestedFieldValidators
