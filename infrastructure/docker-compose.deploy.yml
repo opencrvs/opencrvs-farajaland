@@ -967,7 +967,7 @@ services:
         gelf-address: 'udp://127.0.0.1:12201'
         tag: 'migration'
 
-  legacy-user-migration:
+  legacy-data-migration:
     image: ghcr.io/opencrvs/ocrvs-migration:${VERSION}
     command:
       ['/bin/sh', '-c', '/app/wait && yarn start:prod --migrate-legacy-data']
@@ -1009,7 +1009,7 @@ services:
       driver: gelf
       options:
         gelf-address: 'udp://127.0.0.1:12201'
-        tag: 'legacy-user-migration'
+        tag: 'legacy-data-migration'
 
   postgres:
     image: docker.io/chumaky/postgres_mongo_fdw:17.6_fdw5.5.2
