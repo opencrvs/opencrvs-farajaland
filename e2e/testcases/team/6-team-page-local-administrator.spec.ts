@@ -14,7 +14,6 @@ test('6. Team Page -1', async ({ browser }) => {
       await expect(page.locator('#content-name')).toHaveText(
         'Central Province Office'
       )
-
       await expect(
         page.getByText('Central', {
           exact: true
@@ -44,8 +43,8 @@ test('6. Team Page -1', async ({ browser }) => {
     await test.step('6.1.2 Verify Team Member Details', async () => {
       for (const member of team) {
         await page.getByRole('button', { name: member.name }).click()
-        await expect(page.locator('#content-name')).toHaveText(member.name)
 
+        await expect(page.locator('#content-name')).toHaveText(member.name)
         await expect(page).toHaveURL(/.*\/userProfile/)
 
         await page

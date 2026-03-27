@@ -7,7 +7,9 @@ test.describe("Advanced Search 8 - Death - Deceased's place of death", () => {
   test.beforeEach(async ({ page }) => {
     await login(page, CREDENTIALS.REGISTRAR_VILLAGE)
     await page.click('#searchType')
+
     await expect(page).toHaveURL(/.*\/advanced-search/)
+
     await page.getByText('Death').click()
     await page.getByText('Event details').click()
   })
@@ -27,18 +29,18 @@ test.describe("Advanced Search 8 - Death - Deceased's place of death", () => {
   test('8.2 Select Health Institution', async ({ page }) => {
     await page.getByTestId('select__eventDetails____placeOfDeath').click()
     await page.getByText('Health Institution', { exact: true }).click()
+
     await expect(
       page
         .locator('#eventDetails____deathLocation-form-input')
         .getByText('Health Institution', { exact: true })
     ).toBeVisible()
-
     await expect(page.getByText('Country')).not.toBeVisible()
 
     await page.locator('#eventDetails____deathLocation').fill('Shifwa')
     await page.getByText('Shifwankula Health Post').click()
-
     await page.getByTestId('search').click()
+
     await expect(page.getByText(/Search results\s*\(\d+\)/)).toBeVisible()
 
     await assertTexts({
@@ -55,6 +57,7 @@ test.describe("Advanced Search 8 - Death - Deceased's place of death", () => {
   test('8.3 Select Residential address', async ({ page }) => {
     await page.getByTestId('select__eventDetails____placeOfDeath').click()
     await page.getByText('Residential address', { exact: true }).click()
+
     await expect(
       page
         .locator('#eventDetails____deathLocation-form-input')
@@ -63,6 +66,7 @@ test.describe("Advanced Search 8 - Death - Deceased's place of death", () => {
     await expect(page.getByText('Country')).toBeVisible()
 
     await page.getByTestId('search').click()
+
     await expect(page.getByText(/Search results\s*\(\d+\)/)).toBeVisible()
 
     await assertTexts({
@@ -79,6 +83,7 @@ test.describe("Advanced Search 8 - Death - Deceased's place of death", () => {
   test('8.4 Select Other', async ({ page }) => {
     await page.getByTestId('select__eventDetails____placeOfDeath').click()
     await page.getByText('Other', { exact: true }).click()
+
     await expect(
       page
         .locator('#eventDetails____deathLocation-form-input')
@@ -87,7 +92,9 @@ test.describe("Advanced Search 8 - Death - Deceased's place of death", () => {
     await expect(page.getByText('Country')).toBeVisible()
 
     await page.getByTestId('search').click()
+
     await expect(page.getByText(/Search results\s*\(\d+\)/)).toBeVisible()
+
     await assertTexts({
       root: page,
       texts: [

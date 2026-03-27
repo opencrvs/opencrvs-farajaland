@@ -255,7 +255,6 @@ test('2. Workqueue flow - 2', async ({ browser }) => {
     await test.step('2.2.6 Register with edits', async () => {
       await goToSection(page, 'review')
       await selectDeclarationAction(page, 'Register with edits')
-
       await ensureOutboxIsEmpty(page)
       await ensureInExternalValidationIsEmpty(page)
 

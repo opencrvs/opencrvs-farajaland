@@ -61,7 +61,6 @@ test('4(a) Validate "Pending updates"-workqueue for HO', async ({
     await expect(
       page.getByRole('button', { name: formattedChildName })
     ).toBeVisible()
-
     await expect(page.getByTestId('search-result')).toContainText(
       'Pending updates'
     )
@@ -90,6 +89,7 @@ test('4(a) Validate "Pending updates"-workqueue for HO', async ({
 
   await test.step('4.4 Click a name', async () => {
     await page.getByRole('button', { name: formattedChildName }).click()
+
     // User should navigate to record audit page
     await expectInUrl(page, `events/${eventId}?workqueue=pending-updates`)
   })

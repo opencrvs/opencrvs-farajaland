@@ -32,20 +32,19 @@ test("Advanced Search - Birth Event Declaration - Child's details", async ({
   await test.step('2.1 - Validate log in and load search page', async () => {
     await login(page)
     await page.click('#searchType')
+
     await expect(page).toHaveURL(/.*\/advanced-search/)
+
     await page.getByText('Birth').click()
   })
 
   await test.step("2.5 - Validate search by Child's details", async () => {
     await test.step('2.5.1 - Validate filling DOB and gender filters', async () => {
       await page.getByText('Child details').click()
-
       await type(page, '#firstname', record.declaration['child.name'].firstname)
       await type(page, '#surname', record.declaration['child.name'].surname)
-
       await page.locator('#child____gender').click()
       await page.getByText('Female', { exact: true }).click()
-
       await type(page, '[data-testid="child____dob-dd"]', dd)
       await type(page, '[data-testid="child____dob-mm"]', mm)
       await type(page, '[data-testid="child____dob-yyyy"]', yyyy)
@@ -53,6 +52,7 @@ test("Advanced Search - Birth Event Declaration - Child's details", async ({
 
     await test.step('2.5.2 - Validate search and show results', async () => {
       await page.click('#search')
+
       await expect(page).toHaveURL(/.*\/search-result/)
       expect(page.url()).toContain(`child.dob=${yyyy}-${mm}-${dd}`)
       expect(page.url()).toContain(`child.gender=female`)
@@ -71,6 +71,7 @@ test("Advanced Search - Birth Event Declaration - Child's details", async ({
 
       const searchResult = await page.locator('#content-name').textContent()
       const searchResultCountNumberInBracketsRegex = /\((\d+)\)$/
+
       expect(searchResult).toMatch(searchResultCountNumberInBracketsRegex)
       await assertTexts({
         root: page,
@@ -90,8 +91,8 @@ test("Advanced Search - Birth Event Declaration - Child's details", async ({
 
     await test.step('2.5.3 - Validate clicking on the search edit button', async () => {
       await page.getByRole('button', { name: 'Edit', exact: true }).click()
-      await expect(page).toHaveURL(/.*\/advanced-search/)
 
+      await expect(page).toHaveURL(/.*\/advanced-search/)
       expect(page.url()).toContain(`child.dob=${yyyy}-${mm}-${dd}`)
       expect(page.url()).toContain(`child.gender=female`)
 
@@ -106,11 +107,9 @@ test("Advanced Search - Birth Event Declaration - Child's details", async ({
       })
 
       await expect(page.locator('#tab_birth')).toHaveText('Birth')
-
       await expect(page.getByTestId('child____dob-dd')).toHaveValue(dd)
       await expect(page.getByTestId('child____dob-mm')).toHaveValue(mm)
       await expect(page.getByTestId('child____dob-yyyy')).toHaveValue(yyyy)
-
       await expect(page.getByTestId('select__child____gender')).toContainText(
         'Female'
       )
@@ -128,6 +127,7 @@ test("Advanced Search - Birth Event Declaration - Child's details", async ({
       )
       if (await childDOBRangeButton.isVisible()) {
         await page.locator('#child____dob-date_range_button').click()
+
         await expect(page.locator('#picker-modal')).toBeVisible()
 
         const currentMonth = new Date().getMonth() + 1
@@ -137,10 +137,10 @@ test("Advanced Search - Birth Event Declaration - Child's details", async ({
         await expect(
           page.getByRole('button', { name: shortMonth })
         ).toHaveCount(2)
-
         await expect(page.locator('#date-range-confirm-action')).toBeVisible()
 
         await page.locator('#date-range-confirm-action').click()
+
         await expect(page.locator('#picker-modal')).toBeHidden()
 
         const checkbox = page.locator(

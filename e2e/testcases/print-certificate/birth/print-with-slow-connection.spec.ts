@@ -66,6 +66,7 @@ test('User should not be able to press print button twice', async ({
     // Check that the popup URL contains PDF content
     await expect(popup.url()).toBe('about:blank')
     await expect(download.suggestedFilename()).toMatch(/^.*\.pdf$/)
+
     await expectInUrl(page, `/workqueue/pending-certification`)
   })
 

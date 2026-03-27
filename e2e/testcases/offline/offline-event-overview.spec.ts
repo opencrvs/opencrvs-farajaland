@@ -13,18 +13,13 @@ test('Can view non-downloaded event online', async ({ browser }) => {
     CREDENTIALS.REGISTRATION_OFFICER.PASSWORD
   )
   const res = await createDeclaration(token, undefined, ActionType.DECLARE)
-
   const page = await browser.newPage()
-
   const declaration: Declaration = res.declaration
-
   const childName: string = formatV2ChildName(declaration)
-
   const trackingId: string = res.trackingId!
 
   await test.step('Login', async () => {
     await login(page, CREDENTIALS.REGISTRAR)
-
     await page.getByRole('button', { name: 'Pending registration' }).click()
   })
 
@@ -34,7 +29,6 @@ test('Can view non-downloaded event online', async ({ browser }) => {
 
   await test.step('Verify user can only see non-secured details', async () => {
     await expect(page.getByTestId('tracking-id-value')).toHaveText(trackingId)
-
     await expect(page.getByTestId('informant.contact-value')).not.toHaveText(
       'mothers@email.com'
     )
@@ -55,18 +49,13 @@ test('Can partially view non-downloaded event offline', async ({ browser }) => {
     CREDENTIALS.REGISTRATION_OFFICER.PASSWORD
   )
   const res = await createDeclaration(token, undefined, ActionType.DECLARE)
-
   const page = await browser.newPage()
-
   const declaration: Declaration = res.declaration
-
   const childName: string = formatV2ChildName(declaration)
-
   const trackingId: string = res.trackingId!
 
   await test.step('Login', async () => {
     await login(page, CREDENTIALS.REGISTRAR)
-
     await page.getByRole('button', { name: 'Pending registration' }).click()
   })
 
@@ -80,7 +69,6 @@ test('Can partially view non-downloaded event offline', async ({ browser }) => {
 
   await test.step('Verify user can only see non-secured details', async () => {
     await expect(page.getByTestId('tracking-id-value')).toHaveText(trackingId)
-
     await expect(page.getByTestId('informant.contact-value')).not.toHaveText(
       'mothers@email.com'
     )
@@ -124,11 +112,9 @@ test.describe('Can view downloaded event offline', () => {
 
   test('Download record', async () => {
     const row = page.getByTestId('row-item').filter({ hasText: childName })
-
     await row
       .getByRole('button', { name: 'Assign record', exact: true })
       .click()
-
     await page.getByRole('button', { name: 'Assign', exact: true }).click()
 
     await expect(row.getByLabel('User avatar')).toBeVisible({ timeout: 20000 })
@@ -151,6 +137,7 @@ test.describe('Can view downloaded event offline', () => {
 
   test('Verify that user can see details on "Record"-tab', async () => {
     await page.getByRole('button', { name: 'Record', exact: true }).click()
+
     await expect(page.getByTestId('row-value-child.name')).toHaveText(childName)
   })
 })

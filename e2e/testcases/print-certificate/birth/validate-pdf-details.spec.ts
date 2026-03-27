@@ -49,7 +49,6 @@ test("Validate 'Birth Certificate Certified Copy' PDF details", async ({
     await page
       .getByRole('textbox', { name: 'Search for a record' })
       .fill(formatV2ChildName(declaration))
-
     await page.getByRole('button', { name: 'Search' }).click()
     await page
       .getByRole('button', {

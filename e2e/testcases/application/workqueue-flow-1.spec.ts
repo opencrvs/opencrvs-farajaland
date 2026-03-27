@@ -369,7 +369,6 @@ test('1. Workqueue flow - 1', async ({ browser }) => {
     await page.goBack()
 
     const row = getRowByTitle(page, formatName(declaration.child.name))
-
     await row.getByRole('button', { name: 'Print' }).click()
 
     await page.locator('#collector____requesterId').click()

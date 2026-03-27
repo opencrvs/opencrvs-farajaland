@@ -26,6 +26,7 @@ test('5(b) Validate "Pending registration"-workqueue for Registrar', async ({
   await test.step('5.1 Go to "Pending registration"-workqueue', async () => {
     await page.waitForTimeout(SAFE_WORKQUEUE_TIMEOUT_MS) // wait for the event to be in the workqueue.
     await page.getByText('Pending registration').click()
+
     await expect(
       page.getByRole('button', { name: formatV2ChildName(declaration) })
     ).toBeVisible()

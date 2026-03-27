@@ -18,6 +18,7 @@ test('1. Create user -1', async ({ browser }) => {
   await test.step('1.1 User creation started by local system admin', async () => {
     await login(page, CREDENTIALS.LOCAL_SYSTEM_ADMIN)
     await page.getByRole('button', { name: 'Team' }).click()
+
     await expect(page.locator('#content-name')).toHaveText(
       'Central Province Office'
     )
@@ -32,17 +33,14 @@ test('1. Create user -1', async ({ browser }) => {
     await page.getByText(/Itumbwe Health Post, Ibombo, Central/).click()
 
     await page.click('#add-user')
+
     await expect(page.getByText('User details')).toBeVisible()
 
     await test.step('1.1.1 Fill user details', async () => {
       await page.locator('#familyName').fill(userinfo.surname)
-
       await page.locator('#firstName').fill(userinfo.firstName)
-
       await page.locator('#email').fill(userinfo.email)
-
       await page.locator('#role').click()
-
       await page.getByText(userinfo.role, { exact: true }).click()
 
       await continueForm(page)
@@ -52,7 +50,6 @@ test('1. Create user -1', async ({ browser }) => {
       await page.getByRole('button', { name: 'Create user' }).click()
 
       await expect(page.locator('#header')).toContainText('Itumbwe Health Post')
-
       await expect(
         page.getByText('Ibombo, Central', {
           exact: true

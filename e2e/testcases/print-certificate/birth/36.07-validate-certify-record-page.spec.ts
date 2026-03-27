@@ -26,7 +26,6 @@ test('7.0 Validate "Certify record" page', async ({ browser }) => {
 
   const eventId = res.eventId
   const declaration = res.declaration
-
   const page = await browser.newPage()
 
   await test.step('7.0.1 Log in', async () => {
@@ -56,11 +55,9 @@ test('7.0 Validate "Certify record" page', async ({ browser }) => {
     )
 
     await expect(page.locator('#content-name')).toContainText('Collect Payment')
-
     await expect(
       page.getByText('Birth registration before 30 days of date of birth')
     ).toBeVisible()
-
     await expect(page.getByText('$5.00')).toBeVisible()
   })
 

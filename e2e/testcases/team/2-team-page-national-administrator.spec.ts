@@ -18,6 +18,7 @@ test.describe('2. Team Page', () => {
       await login(page, CREDENTIALS.NATIONAL_SYSTEM_ADMIN)
 
       await page.getByRole('button', { name: 'Team' }).click()
+
       await expect(page.locator('#content-name')).toHaveText('HQ Office')
     })
 

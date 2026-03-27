@@ -44,7 +44,6 @@ test('Print to someone else using Alien Number as ID type', async ({
   await test.step('Fill details, including Alien Number', async () => {
     await selectCertificationType(page, 'Birth Certificate')
     await selectRequesterType(page, 'Print and issue to someone else')
-
     await selectIdType(page, 'Alien Number')
     await page.fill('#collector____ALIEN-NUMBER____details', '1234567')
     await page.getByRole('heading', { name: 'Birth', exact: true }).click()
@@ -77,17 +76,14 @@ test('Print to someone else using Alien Number as ID type', async ({
     await expect(
       page.getByText('Requester' + 'Print and issue to someone else')
     ).toBeVisible()
-
     await expect(page.getByText('Type of ID' + 'Alien Number')).toBeVisible()
     await expect(page.getByText('Alien Number' + '1234567')).toBeVisible()
     await expect(
       page.getByText("Collector's name" + 'Muhammed Tareq Aziz')
     ).toBeVisible()
-
     await expect(
       page.getByText('Relationship to child' + 'Uncle')
     ).toBeVisible()
-
     await expect(page.getByText('Payment details')).toBeVisible()
     await expect(page.getByText('Fee')).toBeVisible()
     await expect(page.getByText('$5.00')).toBeVisible()

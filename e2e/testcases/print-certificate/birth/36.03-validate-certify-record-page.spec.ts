@@ -20,13 +20,9 @@ test('3.0 Validate "Certify record" page', async ({ browser }) => {
     CREDENTIALS.REGISTRAR.PASSWORD
   )
   const res = await createDeclaration(token)
-
   const eventId: string = res.eventId
-
   const declaration: Declaration = res.declaration
-
   const page = await browser.newPage()
-
   const trackingId: string | undefined = res.trackingId
 
   await test.step('3.0.1 Log in', async () => {
@@ -35,17 +31,13 @@ test('3.0 Validate "Certify record" page', async ({ browser }) => {
 
   await test.step('3.0.2 Navigate to certificate print action', async () => {
     await page.getByRole('button', { name: 'Pending certification' }).click()
-
     await navigateToCertificatePrintAction(page, declaration)
   })
 
   await test.step('3.1 should navigate to Verify their identity page', async () => {
     await expectInUrl(page, `/print-certificate/${eventId}/pages/collector`)
-
     await selectCertificationType(page, 'Birth Certificate')
-
     await selectRequesterType(page, 'Print and issue to Informant (Mother)')
-
     await page.getByRole('button', { name: 'Continue' }).click()
 
     await expectInUrl(
@@ -63,23 +55,18 @@ test('3.0 Validate "Certify record" page', async ({ browser }) => {
     await expect(page.locator('#content-name')).toContainText(
       'Verify their identity'
     )
-
     await expect(page.getByText('Verify their identity')).toBeVisible()
-
     await expect(page.locator('#maincontent')).toContainText(
       declaration['mother.nid']
     )
-
     await expect(page.locator('#maincontent')).toContainText(
       declaration['mother.name'].firstname +
         ' ' +
         declaration['mother.name'].surname
     )
-
     await expect(
       page.getByRole('button', { name: 'Identity does not match' })
     ).toBeVisible()
-
     await expect(page.getByRole('button', { name: 'Verified' })).toBeVisible()
   })
 
@@ -87,17 +74,12 @@ test('3.0 Validate "Certify record" page', async ({ browser }) => {
     await page.getByRole('button', { name: 'Verified' }).click()
 
     await expect(page.locator('#content-name')).toContainText('Collect Payment')
-
     await expect(page.locator('#maincontent')).toContainText('Service')
-
     await expect(page.locator('#maincontent')).toContainText(
       'Birth registration before 30 days of date of birth'
     )
-
     await expect(page.locator('#maincontent')).toContainText('Fee')
-
     await expect(page.locator('#maincontent')).toContainText('$5.00')
-
     await expect(page.getByRole('button', { name: 'Continue' })).toBeVisible()
 
     await page.getByRole('button', { name: 'Back' }).click()
@@ -109,7 +91,6 @@ test('3.0 Validate "Certify record" page', async ({ browser }) => {
     await expect(page.getByRole('dialog')).toContainText(
       'Print without proof of ID?'
     )
-
     await expect(page.getByRole('dialog')).toContainText(
       'Please be aware that if you proceed, you will be responsible for issuing a certificate without the necessary proof of ID from the collector'
     )
@@ -119,7 +100,6 @@ test('3.0 Validate "Certify record" page', async ({ browser }) => {
     await page.getByRole('button', { name: 'Cancel' }).click()
 
     await expect(page.getByRole('dialog')).toBeHidden()
-
     await expectInUrl(
       page,
       `/print-certificate/${eventId}/pages/collector.identity.verify`
@@ -128,11 +108,9 @@ test('3.0 Validate "Certify record" page', async ({ browser }) => {
 
   await test.step('3.6 click warning modal confirm button should take to payment page', async () => {
     await page.getByRole('button', { name: 'Identity does not match' }).click()
-
     await page.getByRole('button', { name: 'Confirm' }).click()
 
     await expect(page.locator('#content-name')).toContainText('Collect Payment')
-
     await expect(page.getByRole('button', { name: 'Continue' })).toBeVisible()
 
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -153,51 +131,35 @@ test('3.0 Validate "Certify record" page', async ({ browser }) => {
     }
 
     await type(page, '#searchText', trackingId)
-
     await page.locator('#searchIconButton').click()
-
     await page
       .getByRole('button', { name: formatV2ChildName(declaration) })
       .click()
-
     await ensureAssigned(page)
-
     await page.getByRole('button', { name: 'Audit' }).click()
-
     await page.getByRole('button', { name: 'Certified', exact: true }).click()
 
     const modal = page.getByTestId('event-history-modal')
 
     await expect(modal.getByText('Type' + 'Birth Certificate')).toBeVisible()
-
     await expect(
       modal.getByText('Requester' + 'Print and issue to Informant (Mother)')
     ).toBeVisible()
-
     await expect(modal.getByText('Verified' + 'No')).toBeVisible()
-
     await expect(modal.getByText('Identity details')).toBeVisible()
-
     await expect(modal.getByText('Date of birth:')).toBeVisible()
-
     await expect(
       modal.getByText(`ID Number: ${declaration['mother.nid']}`)
     ).toBeVisible()
-
     await expect(modal.getByText('Type of ID: National ID')).toBeVisible()
-
     await expect(
       modal.getByText(
         `Mother's name: ${declaration['mother.name'].firstname} ${declaration['mother.name'].surname}`
       )
     ).toBeVisible()
-
     await expect(modal.getByText('Nationality: Farajaland')).toBeVisible()
-
     await expect(modal.getByText('Payment details')).toBeVisible()
-
     await expect(modal.getByText('Fee: $5.00')).toBeVisible()
-
     await expect(
       modal.getByText(
         'Service: Birth registration before 30 days of date of birth'
@@ -206,15 +168,10 @@ test('3.0 Validate "Certify record" page', async ({ browser }) => {
 
     // Expect 5 rows
     await expect(modal.locator('#row_0')).toBeVisible()
-
     await expect(modal.locator('#row_1')).toBeVisible()
-
     await expect(modal.locator('#row_2')).toBeVisible()
-
     await expect(modal.locator('#row_3')).toBeVisible()
-
     await expect(modal.locator('#row_4')).toBeVisible()
-
     await expect(modal.locator('#row_5')).not.toBeVisible()
   })
 

@@ -23,7 +23,6 @@ test.describe('GET /api/events/events/{eventId}', () => {
         createdAtLocation: healthFacilityId
       }
     )
-
     const createEventBody = await createEventResponse.json()
     const eventId = createEventBody.id
 

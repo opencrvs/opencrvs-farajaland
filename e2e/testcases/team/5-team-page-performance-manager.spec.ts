@@ -53,7 +53,6 @@ test('5. Team Page -1', async ({ browser }) => {
       await expect(page.locator('#content-name')).toHaveText(
         'Ilanga District Office'
       )
-
       await expect(
         page.getByText('Ilanga, Sulaka', {
           exact: true

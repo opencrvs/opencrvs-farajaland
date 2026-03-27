@@ -85,7 +85,6 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
 
     expect(response.status).toBe(400)
     const body = await response.json()
-
     expect(body.message).toBe('Input validation failed')
   })
 
@@ -114,7 +113,6 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
 
     expect(response.status).toBe(400)
     const body = await response.json()
-
     expect(body.message).toBe('Input validation failed')
   })
 
@@ -154,7 +152,6 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
 
     expect(response.status).toBe(400)
     const body = await response.json()
-
     expect(body.message).toBe(
       '[{"message":"Unexpected field","id":"foo.bar","value":"this should cause an error"}]'
     )
@@ -165,7 +162,6 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
   }) => {
     const token = await login(page)
     const { sub } = decode<{ sub: string }>(token)
-
     const location = await fetchUserLocationHierarchy(sub, {
       headers: {
         Authorization: `Bearer ${token}`
@@ -240,7 +236,6 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
 
     expect(response.status).toBe(400)
     const body = await response.json()
-
     expect(body.message).toBe(
       '[{"message":"Invalid input","id":"child.name","value":{"surname":12345}}]'
     )
@@ -309,7 +304,6 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
     )
 
     const body = await response.json()
-
     expect(response.status).toBe(400)
     expect(body.message).toBe(
       'createdAtLocation is required and must be a valid location id'
@@ -357,7 +351,6 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
     )
 
     const body = await response.json()
-
     expect(response.status).toBe(400)
     expect(body.message).toBe('Input validation failed')
   })
@@ -406,7 +399,6 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
     )
 
     const body = await response.json()
-
     expect(response.status).toBe(400)
     expect(body.message).toBe('createdAtLocation must be a valid location id')
   })
@@ -435,13 +427,11 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
 
     const token = await login(page)
     const { sub } = decode<{ sub: string }>(token)
-
     const location = await fetchUserLocationHierarchy(sub, {
       headers: {
         Authorization: `Bearer ${token}`
       }
     })
-
     const locationId = location[location.length - 1]
 
     const response = await fetchClientAPI(
@@ -479,11 +469,8 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
     expect(body.actions[2].status).toBe('Accepted')
 
     await page.getByRole('button', { name: 'Notifications' }).click()
-
     await page.getByText(await formatName(childName)).click()
-
     await ensureAssigned(page)
-
     await page.getByRole('button', { name: 'Audit' }).click()
 
     await expect(page.locator('#row_0')).toContainText('Notified')
@@ -492,11 +479,11 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
 
     await page.getByText('Notified').click()
     const modal = await page.getByTestId('event-history-modal')
+
     expect(modal).toContainText('Notified')
     expect(modal).toContainText(clientName)
 
     await page.locator('#close-btn').click()
-
     await page.getByRole('button', { name: 'Record', exact: true }).click()
     await expect(page.getByTestId('row-value-child.name')).toHaveText(
       formatName(childName)
@@ -598,13 +585,11 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
       const createEventResponseBody = await createEventResponse.json()
       eventId = createEventResponseBody.id
       const { sub } = decode<{ sub: string }>(token)
-
       const location = await fetchUserLocationHierarchy(sub, {
         headers: {
           Authorization: `Bearer ${token}`
         }
       })
-
       const locationId = location[location.length - 1]
 
       const declaration = {
@@ -767,13 +752,11 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
       const createEventResponseBody = await createEventResponse.json()
       eventId = createEventResponseBody.id
       const { sub } = decode<{ sub: string }>(token)
-
       const location = await fetchUserLocationHierarchy(sub, {
         headers: {
           Authorization: `Bearer ${token}`
         }
       })
-
       const locationId = location[location.length - 1]
 
       const declaration = {
@@ -825,7 +808,6 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
       })
 
       await page.getByText(eventName).click()
-
       await ensureAssigned(page)
       await page.waitForTimeout(SAFE_IN_EXTERNAL_VALIDATION_MS)
     })

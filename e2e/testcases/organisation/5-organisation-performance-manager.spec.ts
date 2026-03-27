@@ -1,12 +1,14 @@
 import { test, expect } from '@playwright/test'
 import { login } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
+
 test('5. Organisation Page', async ({ browser }) => {
   const page = await browser.newPage()
 
   await test.step('5.1.0 Verify UI', async () => {
     await login(page, CREDENTIALS.PERFORMANCE_MANAGER)
     await page.getByRole('button', { name: 'Organisation' }).click()
+
     await expect(page.locator('#content-name')).toHaveText('Organisation')
     await expect(page.getByText('Farajaland', { exact: true })).toBeVisible()
   })
@@ -21,6 +23,7 @@ test('5. Organisation Page', async ({ browser }) => {
     await page
       .getByRole('button', { name: /Kayosha Rural Health Centre/ })
       .click()
+
     await expect(page.locator('#content-name')).toHaveText(
       /Kayosha Rural Health Centre/
     )
@@ -40,6 +43,7 @@ test('5. Organisation Page', async ({ browser }) => {
     await page.getByRole('button', { name: /Watu/ }).click()
 
     await page.getByRole('button', { name: /Watu Village Office/ }).click()
+
     await expect(page.locator('#content-name')).toHaveText(
       /Watu Village Office/
     )
@@ -58,6 +62,7 @@ test('5. Organisation Page', async ({ browser }) => {
     await page.getByRole('button', { name: /Ilanga/ }).click()
 
     await page.getByRole('button', { name: /Ilanga District Office/ }).click()
+
     await expect(page.locator('#content-name')).toHaveText(
       /Ilanga District Office/
     )
@@ -79,9 +84,11 @@ test('5. Organisation Page', async ({ browser }) => {
   await test.step('5.1.5 Verify Embassy Office', async () => {
     await page.getByRole('button', { name: 'Organisation' }).click()
     await page.getByRole('button', { name: 'French Embassy Office' }).click()
+
     await expect(page.locator('#content-name')).toHaveText(
       'French Embassy Office'
     )
+
     const row1 = page.getByRole('row', { name: /Bastien Moreau/ })
     await expect(row1.getByText('Active')).toBeVisible()
     await expect(row1.getByText('Embassy Official')).toBeVisible()

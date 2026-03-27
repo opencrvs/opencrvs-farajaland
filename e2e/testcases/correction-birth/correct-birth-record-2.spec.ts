@@ -98,13 +98,9 @@ test('Correct record - 2', async ({ browser }) => {
 
   await test.step('2.3 Fill correction form', async () => {
     await expect(page.getByText('Type of ID')).toBeVisible()
-
     await expect(page.getByText('National ID')).toBeVisible()
-
     await expect(page.getByText('ID Number')).toBeVisible()
-
     await expect(page.getByText(fatherDetails['father.nid'])).toBeVisible()
-
     await expect(page.getByText("Father's name")).toBeVisible()
 
     await expect(
@@ -114,13 +110,10 @@ test('Correct record - 2', async ({ browser }) => {
     ).toBeVisible()
 
     await expect(page.getByText('Date of birth')).toBeVisible()
-
     await expect(
       page.getByText(formatDateTo_dMMMMyyyy(fatherDetails['father.dob']))
     ).toBeVisible()
-
     await expect(page.getByText('Nationality')).toBeVisible()
-
     await expect(page.getByText('Farajaland')).toBeVisible()
 
     await page.getByRole('button', { name: 'Identity does not match' }).click()
@@ -134,7 +127,6 @@ test('Correct record - 2', async ({ browser }) => {
     ).toBeVisible()
 
     await expect(page.getByRole('button', { name: 'Confirm' })).toBeVisible()
-
     await expect(page.getByRole('button', { name: 'Cancel' })).toBeVisible()
 
     await page.getByRole('button', { name: 'Confirm' }).click()

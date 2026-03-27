@@ -100,17 +100,14 @@ test('Basic Archival flow', async ({ browser }) => {
     await page.getByPlaceholder('mm').fill(declaration.child.birthDate.mm)
     await page.getByPlaceholder('yyyy').fill(declaration.child.birthDate.yyyy)
     await page.locator('#child____placeOfBirth').click()
-
     await page
       .getByText(declaration.placeOfBirth, {
         exact: true
       })
       .click()
-
     await page
       .locator('#child____birthLocation')
       .fill(declaration.birthLocation.facility.slice(0, 3))
-
     await page.getByText(declaration.birthLocation.facility).click()
     await page.locator('#child____attendantAtBirth').click()
     await page
@@ -118,18 +115,15 @@ test('Basic Archival flow', async ({ browser }) => {
         exact: true
       })
       .click()
-
     await page.locator('#child____birthType').click()
     await page
       .getByText(declaration.birthType, {
         exact: true
       })
       .click()
-
     await page
       .locator('#child____weightAtBirth')
       .fill(declaration.weightAtBirth.toString())
-
     await continueForm(page)
   })
 
@@ -140,7 +134,6 @@ test('Basic Archival flow', async ({ browser }) => {
         exact: true
       })
       .click()
-
     await page.locator('#informant____email').fill(declaration.informantEmail)
     await continueForm(page)
   })
@@ -166,28 +159,22 @@ test('Basic Archival flow', async ({ browser }) => {
       .locator('#country')
       .getByText(declaration.mother.address.country, { exact: true })
       .click()
-
     await page.locator('#province').click()
     await page
       .getByText(declaration.mother.address.province, { exact: true })
       .click()
-
     await page.locator('#district').click()
     await page
       .getByText(declaration.mother.address.district, { exact: true })
       .click()
-
     await page.locator('#village').click()
     await page
       .getByText(declaration.mother.address.village, { exact: true })
       .click()
-
     await page.locator('#town').fill(declaration.mother.address.town)
-
     await page
       .locator('#residentialArea')
       .fill(declaration.mother.address.residentialArea)
-
     await page.locator('#street').fill(declaration.mother.address.street)
     await page.locator('#number').fill(declaration.mother.address.number)
     await page
@@ -198,12 +185,10 @@ test('Basic Archival flow', async ({ browser }) => {
     await page
       .getByText(declaration.mother.maritalStatus, { exact: true })
       .click()
-
     await page.locator('#mother____educationalAttainment').click()
     await page
       .getByText(declaration.mother.levelOfEducation, { exact: true })
       .click()
-
     await continueForm(page)
   })
 
@@ -217,26 +202,20 @@ test('Basic Archival flow', async ({ browser }) => {
     await page
       .getByText(declaration.father.identifier.type, { exact: true })
       .click()
-
     await page.locator('#father____nid').fill(declaration.father.identifier.id)
     await page.locator('#father____nationality').click()
-
     await page
       .getByText(declaration.father.nationality, { exact: true })
       .click()
-
     await page.locator('#father____addressSameAs_YES').click()
-
     await page.locator('#father____maritalStatus').click()
     await page
       .getByText(declaration.father.maritalStatus, { exact: true })
       .click()
-
     await page.locator('#father____educationalAttainment').click()
     await page
       .getByText(declaration.father.levelOfEducation, { exact: true })
       .click()
-
     await page.getByRole('button', { name: 'Continue' }).click()
   })
 
@@ -248,7 +227,6 @@ test('Basic Archival flow', async ({ browser }) => {
     await page.locator('#review____comment').fill(faker.lorem.sentence())
     await page.getByRole('button', { name: 'Sign', exact: true }).click()
     await drawSignature(page, 'review____signature_canvas_element', false)
-
     await page
       .locator('#review____signature_modal')
       .getByRole('button', { name: 'Apply' })
@@ -267,7 +245,6 @@ test('Basic Archival flow', async ({ browser }) => {
         name: formatName(declaration.child.name)
       })
       .click()
-
     await page.getByRole('button', { name: 'Action', exact: true }).click()
 
     await expect(
@@ -319,7 +296,6 @@ test('Basic Archival flow', async ({ browser }) => {
   await test.step('Archived declaration can be found via search', async () => {
     await page.locator('#searchText').fill(formatName(declaration.child.name))
     await page.locator('#searchIconButton').click()
-
     await page
       .getByRole('button', {
         name: formatName(declaration.child.name)
@@ -380,6 +356,7 @@ test('Archival of declaration pending validation', async ({ browser }) => {
 
   await test.step('Archived declaration is not visible in workqueues', async () => {
     await page.getByRole('button', { name: 'Pending registration' }).click()
+
     await expect(
       page.getByRole('button', { name: formatV2ChildName(declaration) })
     ).not.toBeVisible()

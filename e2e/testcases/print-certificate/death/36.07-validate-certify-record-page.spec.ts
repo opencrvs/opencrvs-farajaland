@@ -32,12 +32,14 @@ test('7.0 Validate "Certify record" page', async ({ browser }) => {
     await selectCertificationType(page, 'Death Certificate')
     await selectRequesterType(page, 'Print and issue to Informant (Spouse)')
     await page.getByRole('button', { name: 'Continue' }).click()
+
     await expectInUrl(
       page,
       `/print-certificate/${eventId}/pages/collector.identity.verify`
     )
 
     await page.getByRole('button', { name: 'Verified' }).click()
+
     await expectInUrl(
       page,
       `/print-certificate/${eventId}/pages/collector.collect.payment`
@@ -47,12 +49,12 @@ test('7.0 Validate "Certify record" page', async ({ browser }) => {
     await expect(
       page.getByText('Death registration before 45 days of date of death')
     ).toBeVisible()
-
     await expect(page.getByText('$5.00')).toBeVisible()
   })
 
   await test.step('7.2 should navigate to ready to certify page on continue button click', async () => {
     await page.getByRole('button', { name: 'Continue' }).click()
+
     await expectInUrl(
       page,
       `/print-certificate/${eventId}/review?templateId=v2.death-certificate`

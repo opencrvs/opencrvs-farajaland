@@ -29,21 +29,21 @@ test("Advanced Search - Birth Event Declaration - Father's details", async ({
   await test.step('2.1 - Validate log in and load search page', async () => {
     await login(page)
     await page.click('#searchType')
+
     await expect(page).toHaveURL(/.*\/advanced-search/)
+
     await page.getByText('Birth').click()
   })
 
   await test.step("2.5 - Validate search by Father's details", async () => {
     await test.step('2.5.1 - Validate filling name and dob filters', async () => {
       await page.getByText('Father details').click()
-
       await type(
         page,
         '#firstname',
         record.declaration['father.name'].firstname ?? faker.person.firstName
       )
       await type(page, '#surname', record.declaration['father.name'].surname)
-
       await type(page, '[data-testid="father____dob-dd"]', dd)
       await type(page, '[data-testid="father____dob-mm"]', mm)
       await type(page, '[data-testid="father____dob-yyyy"]', yyyy)
@@ -51,6 +51,7 @@ test("Advanced Search - Birth Event Declaration - Father's details", async ({
 
     await test.step('2.5.2 - Validate search and show results', async () => {
       await page.click('#search')
+
       await expect(page).toHaveURL(/.*\/search-result/)
       expect(page.url()).toContain(`father.dob=${yyyy}-${mm}-${dd}`)
 
@@ -68,6 +69,7 @@ test("Advanced Search - Birth Event Declaration - Father's details", async ({
 
       const searchResult = await page.locator('#content-name').textContent()
       const searchResultCountNumberInBracketsRegex = /\((\d+)\)$/
+
       expect(searchResult).toMatch(searchResultCountNumberInBracketsRegex)
       await assertTexts({
         root: page,
@@ -86,6 +88,7 @@ test("Advanced Search - Birth Event Declaration - Father's details", async ({
 
     await test.step('2.5.3 - Validate clicking on the search edit button', async () => {
       await page.getByRole('button', { name: 'Edit', exact: true }).click()
+
       await expect(page).toHaveURL(/.*\/advanced-search/)
       expect(page.url()).toContain(`father.dob=${yyyy}-${mm}-${dd}`)
 
@@ -117,27 +120,32 @@ test("Advanced Search - Birth Event Declaration - Father's details", async ({
       )
       if (await fatherDOBRangeButton.isVisible()) {
         await page.locator('#father____dob-date_range_button').click()
+
         await expect(page.locator('#picker-modal')).toBeVisible()
 
         const currentMonth = new Date().getMonth() + 1
         const shortMonth = getMonthFormatted(currentMonth)
         const month = getMonthFormatted(currentMonth, { month: 'long' })
+
         await expect(
           page.getByRole('button', { name: shortMonth })
         ).toHaveCount(2)
         await expect(page.locator('#date-range-confirm-action')).toBeVisible()
 
         await page.locator('#date-range-confirm-action').click()
+
         await expect(page.locator('#picker-modal')).toBeHidden()
 
         const checkbox = page.locator(
           'input[type="checkbox"][name="father____dobdate_range_toggle"]'
         )
+
         await expect(checkbox).toBeVisible()
         await expect(checkbox).toBeChecked()
 
         const currentYear = new Date().getFullYear()
         const lastYear = currentYear - 1
+
         // ex: 'May 2024 to May 2025' is visible after date range selection
         await expect(
           page.getByText(`${month} ${lastYear} to ${month} ${currentYear}`)

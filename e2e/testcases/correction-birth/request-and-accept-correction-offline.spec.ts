@@ -12,11 +12,8 @@ import { ensureAssigned, selectAction, type } from '../../utils'
 
 test('Request and accept correction (offline)', async ({ browser }) => {
   let declaration: DeclarationV2
-
   let trackingId = ''
-
   let eventId: string
-
   const page = await browser.newPage()
 
   const updatedChildDetails = {
@@ -82,11 +79,8 @@ test('Request and accept correction (offline)', async ({ browser }) => {
     )
 
     trackingId = res.trackingId!
-
     eventId = res.eventId
-
     token = await getToken('k.mweene', 'test')
-
     declaration = res.declaration
   })
 
@@ -103,17 +97,13 @@ test('Request and accept correction (offline)', async ({ browser }) => {
       })
 
       await ensureAssigned(page)
-
       await selectAction(page, 'Correct')
     })
 
     await test.step('Add correction requester', async () => {
       await page.locator('#requester____type').click()
-
       await page.getByText('Legal Guardian', { exact: true }).click()
-
       await page.locator('#reason____option').click()
-
       await page
         .getByText(
           'Informant provided incorrect information (Material error)',
@@ -122,7 +112,6 @@ test('Request and accept correction (offline)', async ({ browser }) => {
           }
         )
         .click()
-
       await page.getByRole('button', { name: 'Continue' }).click()
     })
 
@@ -138,21 +127,16 @@ test('Request and accept correction (offline)', async ({ browser }) => {
       await page
         .locator('#fees____amount')
         .fill(faker.number.int({ min: 1, max: 1000 }).toString())
-
       await page.getByRole('button', { name: 'Continue' }).click()
     })
 
     await test.step('Change child name', async () => {
       await page.getByTestId('change-button-child.name').click()
-
       await page
         .getByTestId('text__firstname')
         .fill(updatedChildDetails.firstname)
-
       await page.getByTestId('text__surname').fill(updatedChildDetails.surname)
-
       await goBackToReview(page)
-
       await page.getByRole('button', { name: 'Continue' }).click()
     })
 
@@ -160,7 +144,6 @@ test('Request and accept correction (offline)', async ({ browser }) => {
       await page
         .getByRole('button', { name: 'Submit correction request' })
         .click()
-
       await page.getByRole('button', { name: 'Confirm' }).click()
 
       expect(page.url().includes(`events/${eventId}`)).toBeTruthy()
@@ -172,7 +155,6 @@ test('Request and accept correction (offline)', async ({ browser }) => {
       ).toBeVisible()
 
       await page.getByTestId('exit-event').click()
-
       await page.getByRole('button', { name: 'Outbox' }).click()
 
       await expect(await page.locator('#no-record')).toContainText(
@@ -191,22 +173,17 @@ test('Request and accept correction (offline)', async ({ browser }) => {
 
     await test.step('Navigate to correction review', async () => {
       await type(page, '#searchText', trackingId)
-
       await page.locator('#searchIconButton').click()
-
       await page
         .getByRole('button', { name: formatV2ChildName(declaration) })
         .click()
-
       await selectAction(page, 'Review correction request')
     })
 
     await test.step('Accept correction offline', async () => {
       // Go offline
       await page.context().setOffline(true)
-
       await page.getByRole('button', { name: 'Approve', exact: true }).click()
-
       await page.getByRole('button', { name: 'Confirm', exact: true }).click()
 
       expect(page.url().includes(`events/${eventId}`)).toBeTruthy()
@@ -219,7 +196,6 @@ test('Request and accept correction (offline)', async ({ browser }) => {
       ).toBeVisible()
 
       await page.getByTestId('exit-event').click()
-
       await page.getByRole('button', { name: 'Outbox' }).click()
 
       await expect(page.locator('#wait-connection-text')).toBeVisible()
@@ -230,7 +206,6 @@ test('Request and accept correction (offline)', async ({ browser }) => {
       await page.context().setOffline(false)
 
       await expect(page.locator('#wait-connection-text')).not.toBeVisible()
-
       await expect(await page.locator('#no-record')).toContainText(
         'No records require processing',
         {

@@ -94,6 +94,7 @@ test('Birth correction flow', async ({ browser }) => {
 
   await test.step('Review page should be displayed and continue button should be disabled', async () => {
     await expectInUrl(page, `/events/request-correction/${eventId}/review`)
+
     await expect(page.getByRole('button', { name: 'Continue' })).toBeDisabled()
   })
 
@@ -130,6 +131,7 @@ test('Birth correction flow', async ({ browser }) => {
 
   await test.step('When back on review page, continue button should still be disabled', async () => {
     await expectInUrl(page, `/events/request-correction/${eventId}/review`)
+
     await expect(page.getByRole('button', { name: 'Continue' })).toBeDisabled()
   })
 
@@ -152,6 +154,7 @@ test('Birth correction flow', async ({ browser }) => {
       .fill(declaration['informant.email'])
 
     await page.getByRole('button', { name: 'Back to review' }).click()
+
     await expect(page.getByRole('button', { name: 'Continue' })).toBeDisabled()
   })
 
@@ -161,6 +164,7 @@ test('Birth correction flow', async ({ browser }) => {
     // Future date
     await page.getByTestId('child____dob-yyyy').fill('2045')
     await page.getByRole('button', { name: 'Back to review' }).click()
+
     await expect(page.getByRole('button', { name: 'Continue' })).toBeDisabled()
     await expect(page.getByText('Must be a valid birth date')).toBeVisible()
   })

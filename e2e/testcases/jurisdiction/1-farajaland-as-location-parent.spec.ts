@@ -39,13 +39,11 @@ test('1.Farajaland as location parent', async ({ browser }) => {
 
   await test.step('1.1.1 Embassy official in another administrative area should not find the declaration', async () => {
     await login(page, CREDENTIALS.EMBASSY_OFFICIAL)
-
     await searchFromSearchBar(page, name, false)
   })
 
   await test.step('1.1.2 Registrar general within the same administrative area should find the declaration', async () => {
     await login(page, CREDENTIALS.REGISTRAR_GENERAL)
-
     await searchFromSearchBar(page, name, true)
   })
 

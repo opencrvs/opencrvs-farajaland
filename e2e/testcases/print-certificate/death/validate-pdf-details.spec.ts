@@ -71,6 +71,7 @@ test("Validate 'Death Certificate Certified Copy' PDF details", async ({
     await test.step('Log in', async () => {
       await login(page)
     })
+
     await test.step('Go to review', async () => {
       await page.getByRole('button', { name: 'Pending certification' }).click()
       await navigateToCertificatePrintAction(page, declaration)
@@ -80,18 +81,22 @@ test("Validate 'Death Certificate Certified Copy' PDF details", async ({
       await page.getByRole('button', { name: 'Verified' }).click()
       await page.getByRole('button', { name: 'Continue' }).click()
     })
+
     await test.step('Validate deceased name', async () => {
       await expectInPdf(
         page,
         `${declaration['deceased.name'].firstname} ${declaration['deceased.name'].surname}`
       )
     })
+
     await test.step('Validate deceased place of death', async () => {
       await expectInPdf(page, 'Ibombo, Central, Farajaland')
     })
+
     await test.step('Validate registrar name', async () => {
       await expectInPdf(page, 'Registrar: Kennedy Mweene')
     })
+
     await test.step('Validate spouse name', async () => {
       await expectInPdf(
         page,

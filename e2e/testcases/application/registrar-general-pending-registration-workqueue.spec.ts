@@ -18,7 +18,6 @@ test("Registar General's 'Pending registration' -workqueue", async ({
       CREDENTIALS.EMBASSY_OFFICIAL.USERNAME,
       CREDENTIALS.EMBASSY_OFFICIAL.PASSWORD
     )
-
     const res = await createDeclaration(token, undefined, ActionType.DECLARE)
     embassyDeclarationChildName = formatV2ChildName(res.declaration)
   })
@@ -28,7 +27,6 @@ test("Registar General's 'Pending registration' -workqueue", async ({
       CREDENTIALS.REGISTRAR.USERNAME,
       CREDENTIALS.REGISTRAR.PASSWORD
     )
-
     const res = await createDeclaration(token, undefined, ActionType.DECLARE)
     registrarDeclarationChildName = formatV2ChildName(res.declaration)
   })

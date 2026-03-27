@@ -23,7 +23,6 @@ test('Navigating between client and login', async ({ page }) => {
 
   await test.step('Logout', async () => {
     await createPIN(page)
-
     await logout(page)
     await page.waitForURL((url) => url.origin === LOGIN_URL)
   })

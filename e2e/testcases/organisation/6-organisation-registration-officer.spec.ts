@@ -2,12 +2,14 @@ import { test, expect } from '@playwright/test'
 import { login } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
 import { verifyMembersEnabled } from '../birth/helpers'
+
 test('6. Organisation Page', async ({ browser }) => {
   const page = await browser.newPage()
 
   await test.step('6.1.0 Verify UI', async () => {
     await login(page, CREDENTIALS.REGISTRATION_OFFICER)
     await page.getByRole('button', { name: 'Organisation' }).click()
+
     await expect(page.locator('#content-name')).toHaveText('Organisation')
     await expect(page.getByText('Farajaland', { exact: true })).toBeVisible()
   })

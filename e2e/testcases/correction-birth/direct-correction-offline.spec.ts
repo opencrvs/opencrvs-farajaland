@@ -12,11 +12,8 @@ import { ensureAssigned, selectAction } from '../../utils'
 
 test('Direct correction offline', async ({ browser }) => {
   let declaration: DeclarationV2
-
   let trackingId = ''
-
   let eventId: string
-
   const page = await browser.newPage()
 
   const updatedChildDetails = {
@@ -82,11 +79,8 @@ test('Direct correction offline', async ({ browser }) => {
     )
 
     trackingId = res.trackingId!
-
     eventId = res.eventId
-
     token = await getToken('k.mweene', 'test')
-
     declaration = res.declaration
   })
 
@@ -100,23 +94,18 @@ test('Direct correction offline', async ({ browser }) => {
     })
 
     await ensureAssigned(page)
-
     await selectAction(page, 'Correct')
   })
 
   await test.step('Add correction requester', async () => {
     await page.locator('#requester____type').click()
-
     await page.getByText('Legal Guardian', { exact: true }).click()
-
     await page.locator('#reason____option').click()
-
     await page
       .getByText('Informant provided incorrect information (Material error)', {
         exact: true
       })
       .click()
-
     await page.getByRole('button', { name: 'Continue' }).click()
   })
 
@@ -132,30 +121,23 @@ test('Direct correction offline', async ({ browser }) => {
     await page
       .locator('#fees____amount')
       .fill(faker.number.int({ min: 1, max: 1000 }).toString())
-
     await page.getByRole('button', { name: 'Continue' }).click()
   })
 
   await test.step('Change child name', async () => {
     await page.getByTestId('change-button-child.name').click()
-
     await page
       .getByTestId('text__firstname')
       .fill(updatedChildDetails.firstname)
-
     await page.getByTestId('text__surname').fill(updatedChildDetails.surname)
-
     await goBackToReview(page)
-
     await page.getByRole('button', { name: 'Continue' }).click()
   })
 
   await test.step('Make correction while offline', async () => {
     // Go offline
     await page.context().setOffline(true)
-
     await page.getByRole('button', { name: 'Correct record' }).click()
-
     await page.getByRole('button', { name: 'Confirm' }).click()
 
     expect(page.url().includes(`events/${eventId}`)).toBeTruthy()
@@ -168,7 +150,6 @@ test('Direct correction offline', async ({ browser }) => {
     ).toBeVisible()
 
     await page.getByTestId('exit-event').click()
-
     await page.getByRole('button', { name: 'Outbox' }).click()
 
     await expect(page.locator('#wait-connection-text')).toBeVisible()
@@ -179,7 +160,6 @@ test('Direct correction offline', async ({ browser }) => {
     await page.context().setOffline(false)
 
     await expect(page.locator('#wait-connection-text')).not.toBeVisible()
-
     await expect(await page.locator('#no-record')).toContainText(
       'No records require processing',
       {

@@ -31,10 +31,10 @@ test('5(a) Validate "Pending validation"-workqueue for RO', async ({
   await test.step('5.1 Go to "Pending validation"-workqueue', async () => {
     await page.waitForTimeout(SAFE_WORKQUEUE_TIMEOUT_MS) // wait for the event to be in the workqueue.
     await page.getByText('Pending validation').click()
+
     await expect(
       page.getByRole('button', { name: formatV2ChildName(declaration) })
     ).toBeVisible()
-
     await expect(page.getByTestId('search-result')).toContainText(
       'Pending validation'
     )
@@ -76,7 +76,6 @@ test('5(a) Validate "Pending validation"-workqueue for RO', async ({
     await expect(
       page.getByRole('heading', { name: 'Validate?', exact: true })
     ).toBeVisible()
-
     await expect(
       page.getByText(
         'Validating this declaration confirms it meets all requirements and is eligible for registration.'

@@ -18,7 +18,6 @@ test('1: Validate my draft tab', async ({ browser }) => {
 
   await test.step('1.1 Record does not appear in draft ', async () => {
     await login(page, CREDENTIALS.HOSPITAL_OFFICIAL)
-
     await page.getByRole('button', { name: 'Drafts' }).click()
 
     await expect(page.getByTestId('search-result')).not.toContainText(
@@ -40,12 +39,14 @@ test('1: Validate my draft tab', async ({ browser }) => {
   await test.step('1.3 Record appears in draft', async () => {
     await ensureOutboxIsEmpty(page)
     await page.getByRole('button', { name: 'Drafts' }).click()
+
     await expect(page.getByTestId('search-result')).toContainText(formattedName)
   })
 
   await test.step('1.4 Record has "Update" -CTA', async () => {
     const row = getRowByTitle(page, formattedName)
     await row.getByRole('button', { name: 'Update' }).click()
+
     await expect(page.getByTestId('row-value-child.name')).toHaveText(
       formattedName
     )
@@ -55,6 +56,7 @@ test('1: Validate my draft tab', async ({ browser }) => {
   await test.step('1.5 Record does not appear in draft for other user: RO', async () => {
     await login(page, CREDENTIALS.REGISTRATION_OFFICER)
     await page.getByRole('button', { name: 'Drafts' }).click()
+
     await expect(page.getByTestId('search-result')).not.toContainText(
       formattedName
     )
@@ -63,6 +65,7 @@ test('1: Validate my draft tab', async ({ browser }) => {
   await test.step('1.6 Record does not appear in draft for other user: LR ', async () => {
     await login(page, CREDENTIALS.REGISTRAR)
     await page.getByRole('button', { name: 'Drafts' }).click()
+
     await expect(page.getByTestId('search-result')).not.toContainText(
       formattedName
     )
@@ -80,6 +83,7 @@ test('1: Validate my draft tab', async ({ browser }) => {
 
     await selectDeclarationAction(page, 'Notify')
     await ensureOutboxIsEmpty(page)
+
     await expect(page.getByTestId('search-result')).toContainText('Drafts')
     await expect(page.getByTestId('search-result')).not.toContainText(
       formattedName

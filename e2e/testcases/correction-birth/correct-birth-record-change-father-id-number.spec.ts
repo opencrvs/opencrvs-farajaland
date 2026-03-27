@@ -18,13 +18,9 @@ import { ensureAssigned, selectAction } from '../../utils'
 
 test("Correct record - Change father's ID number", async ({ browser }) => {
   let declaration: DeclarationV2
-
   let trackingId = ''
-
   const page = await browser.newPage()
-
   const oldIdNumber = faker.string.numeric(10)
-
   const newIdNumber = faker.string.numeric(10)
 
   await test.step('Shortcut declaration', async () => {
@@ -85,9 +81,7 @@ test("Correct record - Change father's ID number", async ({ browser }) => {
     )
 
     trackingId = res.trackingId!
-
     token = await getToken('k.mweene', 'test')
-
     declaration = res.declaration
   })
 
@@ -103,23 +97,18 @@ test("Correct record - Change father's ID number", async ({ browser }) => {
     })
 
     await ensureAssigned(page)
-
     await selectAction(page, 'Correct')
   })
 
   await test.step('Correction requester: legal guardian', async () => {
     await page.locator('#requester____type').click()
-
     await page.getByText('Legal Guardian', { exact: true }).click()
-
     await page.locator('#reason____option').click()
-
     await page
       .getByText('Informant provided incorrect information (Material error)', {
         exact: true
       })
       .click()
-
     await page.getByRole('button', { name: 'Continue' }).click()
   })
 
@@ -129,7 +118,6 @@ test("Correct record - Change father's ID number", async ({ browser }) => {
 
   await test.step('Upload supporting documents', async () => {
     expect(page.url().includes('correction')).toBeTruthy()
-
     expect(page.url().includes('onboarding/documents')).toBeTruthy()
 
     await expect(page.getByRole('button', { name: 'Continue' })).toBeEnabled()
@@ -152,19 +140,15 @@ test("Correct record - Change father's ID number", async ({ browser }) => {
     await page
       .locator('#fees____amount')
       .fill(faker.number.int({ min: 1, max: 1000 }).toString())
-
     await page.getByRole('button', { name: 'Continue' }).click()
 
     expect(page.url().includes('correction')).toBeTruthy()
-
     expect(page.url().includes('review')).toBeTruthy()
   })
 
   await test.step('Change father id number', async () => {
     await page.getByTestId('change-button-father.nid').click()
-
     await page.getByTestId('text__father____nid').fill(newIdNumber)
-
     await page
       .getByRole('button', { name: 'Back to review', exact: true })
       .click()
@@ -172,7 +156,6 @@ test("Correct record - Change father's ID number", async ({ browser }) => {
     await expect(
       page.getByTestId('row-value-father.nid').getByRole('deletion')
     ).toHaveText(oldIdNumber)
-
     await expect(
       page.getByTestId('row-value-father.nid').getByText(newIdNumber)
     ).toBeVisible()
@@ -182,15 +165,11 @@ test("Correct record - Change father's ID number", async ({ browser }) => {
     await page.getByRole('button', { name: 'Continue', exact: true }).click()
 
     expect(page.url().includes('correction')).toBeTruthy()
-
     expect(page.url().includes('summary')).toBeTruthy()
 
     await expect(page.getByText("Child's details")).not.toBeVisible()
-
     await expect(page.getByText("Mother's details")).not.toBeVisible()
-
     await expect(page.getByText("Father's details")).toBeVisible()
-
     await expect(
       page.getByText('ID Number' + oldIdNumber + newIdNumber)
     ).toBeVisible()
@@ -200,7 +179,6 @@ test("Correct record - Change father's ID number", async ({ browser }) => {
     await page
       .getByRole('button', { name: 'Submit correction request' })
       .click()
-
     await page.getByRole('button', { name: 'Confirm' }).click()
   })
 
@@ -214,7 +192,6 @@ test("Correct record - Change father's ID number", async ({ browser }) => {
 
   await test.step('Find the event in the "Pending corrections" workqueue', async () => {
     await page.getByRole('button', { name: 'Pending corrections' }).click()
-
     await page
       .getByRole('button', { name: formatV2ChildName(declaration) })
       .click()
@@ -222,9 +199,7 @@ test("Correct record - Change father's ID number", async ({ browser }) => {
 
   await test.step('Approve correction request', async () => {
     await selectAction(page, 'Review correction request')
-
     await page.getByRole('button', { name: 'Approve', exact: true }).click()
-
     await page.getByRole('button', { name: 'Confirm', exact: true }).click()
   })
 
@@ -236,7 +211,6 @@ test("Correct record - Change father's ID number", async ({ browser }) => {
     })
 
     await ensureAssigned(page)
-
     await page.getByRole('button', { name: 'Record', exact: true }).click()
 
     await expect(

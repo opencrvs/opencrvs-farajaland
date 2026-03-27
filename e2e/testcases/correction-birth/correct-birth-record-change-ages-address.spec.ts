@@ -20,17 +20,11 @@ import { AddressType } from '@opencrvs/toolkit/events'
 
 test('Correct record - Change ages', async ({ browser }) => {
   let declaration: Declaration
-
   let trackingId = ''
-
   const page = await browser.newPage()
-
   const motherAgeBefore = '28'
-
   const motherAgeAfter = '29'
-
   const informantAgeBefore = '16'
-
   const informantAgeAfter = '22'
 
   await test.step('Shortcut declaration', async () => {
@@ -40,11 +34,8 @@ test('Correct record - Change ages', async ({ browser }) => {
     )
 
     const administrativeAreas = await getAdministrativeAreas(token)
-
     const province = getIdByName(administrativeAreas, 'Central')
-
     const district = getIdByName(administrativeAreas, 'Ibombo')
-
     const village = getIdByName(administrativeAreas, 'Klow')
 
     if (!province || !district || !village) {
@@ -112,9 +103,7 @@ test('Correct record - Change ages', async ({ browser }) => {
     )
 
     trackingId = res.trackingId!
-
     token = await getToken('k.mweene', 'test')
-
     declaration = res.declaration
   })
 
@@ -130,23 +119,18 @@ test('Correct record - Change ages', async ({ browser }) => {
     })
 
     await ensureAssigned(page)
-
     await selectAction(page, 'Correct')
   })
 
   await test.step('Correction requester: legal guardian', async () => {
     await page.locator('#requester____type').click()
-
     await page.getByText('Legal Guardian', { exact: true }).click()
-
     await page.locator('#reason____option').click()
-
     await page
       .getByText('Informant provided incorrect information (Material error)', {
         exact: true
       })
       .click()
-
     await page.getByRole('button', { name: 'Continue' }).click()
   })
 
@@ -156,7 +140,6 @@ test('Correct record - Change ages', async ({ browser }) => {
 
   await test.step('Upload supporting documents', async () => {
     expect(page.url().includes('correction')).toBeTruthy()
-
     expect(page.url().includes('onboarding/documents')).toBeTruthy()
 
     await expect(page.getByRole('button', { name: 'Continue' })).toBeEnabled()
@@ -179,19 +162,15 @@ test('Correct record - Change ages', async ({ browser }) => {
     await page
       .locator('#fees____amount')
       .fill(faker.number.int({ min: 1, max: 1000 }).toString())
-
     await page.getByRole('button', { name: 'Continue' }).click()
 
     expect(page.url().includes('correction')).toBeTruthy()
-
     expect(page.url().includes('review')).toBeTruthy()
   })
 
   await test.step('Change informant age', async () => {
     await page.getByTestId('change-button-informant.age').click()
-
     await page.getByTestId('age__informant____age').fill(informantAgeAfter)
-
     await page
       .getByRole('button', { name: 'Back to review', exact: true })
       .click()
@@ -199,7 +178,6 @@ test('Correct record - Change ages', async ({ browser }) => {
     await expect(
       page.getByTestId('row-value-informant.age').getByRole('deletion')
     ).toHaveText(informantAgeBefore)
-
     await expect(
       page.getByTestId('row-value-informant.age').getByText(informantAgeAfter)
     ).toBeVisible()
@@ -207,11 +185,8 @@ test('Correct record - Change ages', async ({ browser }) => {
 
   await test.step('Change mother address to international', async () => {
     await page.getByTestId('change-button-mother.address').click()
-
     await page.getByTestId('location__country').click()
-
     await page.getByText('Ethiopia').click()
-
     await page
       .getByRole('button', { name: 'Back to review', exact: true })
       .click()
@@ -221,9 +196,7 @@ test('Correct record - Change ages', async ({ browser }) => {
     )
 
     await page.getByTestId('change-button-mother.address').click()
-
     await page.getByTestId('text__state').fill('Oromia')
-
     await page
       .getByRole('button', { name: 'Back to review', exact: true })
       .click()
@@ -233,9 +206,7 @@ test('Correct record - Change ages', async ({ browser }) => {
     )
 
     await page.getByTestId('change-button-mother.address').click()
-
     await page.getByTestId('text__district2').fill('Woreda')
-
     await page
       .getByRole('button', { name: 'Back to review', exact: true })
       .click()
@@ -247,9 +218,7 @@ test('Correct record - Change ages', async ({ browser }) => {
 
   await test.step('Change mother age', async () => {
     await page.getByTestId('change-button-mother.age').click()
-
     await page.getByTestId('age__mother____age').fill(motherAgeAfter)
-
     await page
       .getByRole('button', { name: 'Back to review', exact: true })
       .click()
@@ -257,7 +226,6 @@ test('Correct record - Change ages', async ({ browser }) => {
     await expect(
       page.getByTestId('row-value-mother.age').getByRole('deletion')
     ).toHaveText(motherAgeBefore)
-
     await expect(
       page.getByTestId('row-value-mother.age').getByText(motherAgeAfter)
     ).toBeVisible()
@@ -267,13 +235,10 @@ test('Correct record - Change ages', async ({ browser }) => {
     await page.getByRole('button', { name: 'Continue', exact: true }).click()
 
     expect(page.url().includes('correction')).toBeTruthy()
-
     expect(page.url().includes('summary')).toBeTruthy()
 
     await expect(page.getByText("Father's details")).not.toBeVisible()
-
     await expect(page.getByText("Child's details")).not.toBeVisible()
-
     await expect(page.getByText("Mother's details")).toBeVisible()
 
     await page.pause()
@@ -285,15 +250,12 @@ test('Correct record - Change ages', async ({ browser }) => {
           motherAgeAfter
       )
     ).toBeVisible()
-
     await expect(
       page.getByText(
         'Usual place of residenceFarajalandCentralIbomboKlowEthiopiaOromiaWoreda'
       )
     ).toBeVisible()
-
     await expect(page.getByText("Informant's details")).toBeVisible()
-
     await expect(
       page.getByText(
         'Age of informant (at the time of event)' +
@@ -307,7 +269,6 @@ test('Correct record - Change ages', async ({ browser }) => {
     await page
       .getByRole('button', { name: 'Submit correction request' })
       .click()
-
     await page.getByRole('button', { name: 'Confirm' }).click()
   })
 
@@ -321,7 +282,6 @@ test('Correct record - Change ages', async ({ browser }) => {
 
   await test.step('Find the event in the "Pending corrections" workqueue', async () => {
     await page.getByRole('button', { name: 'Pending corrections' }).click()
-
     await page
       .getByRole('button', { name: formatV2ChildName(declaration) })
       .click()
@@ -329,9 +289,7 @@ test('Correct record - Change ages', async ({ browser }) => {
 
   await test.step('Approve correction request', async () => {
     await selectAction(page, 'Review correction request')
-
     await page.getByRole('button', { name: 'Approve', exact: true }).click()
-
     await page.getByRole('button', { name: 'Confirm', exact: true }).click()
   })
 
@@ -343,13 +301,11 @@ test('Correct record - Change ages', async ({ browser }) => {
     })
 
     await ensureAssigned(page)
-
     await page.getByRole('button', { name: 'Record', exact: true }).click()
 
     await expect(
       page.getByTestId('row-value-informant.age').getByText(informantAgeAfter)
     ).toBeVisible()
-
     await expect(
       page.getByTestId('row-value-mother.age').getByText(motherAgeAfter)
     ).toBeVisible()

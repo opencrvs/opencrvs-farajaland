@@ -103,10 +103,12 @@ test('3. Workqueue flow - 3', async ({ browser }) => {
         .fill(declaration.birthLocation.facility.slice(0, 3))
       await page.getByText(declaration.birthLocation.facility).click()
     })
+
     // 3.1.2 Go to review
     await test.step('3.1.2 Go to review', async () => {
       await goToSection(page, 'review')
     })
+
     // 3.1.3 Fill up informant comment & signature
     await test.step('3.1.3 Fill up informant comment & signature', async () => {
       await page.locator('#review____comment').fill(faker.lorem.sentence())
@@ -119,11 +121,13 @@ test('3. Workqueue flow - 3', async ({ browser }) => {
 
       await expect(page.getByRole('dialog')).not.toBeVisible()
     })
+
     // 3.1.4 Notify
     await test.step('3.1.4 Notify', async () => {
       await selectDeclarationAction(page, 'Notify')
       await ensureOutboxIsEmpty(page)
     })
+
     // 3.1.5 Verify workqueue
     await test.step('3.1.5 Verify workqueue', async () => {
       await assertRecordInWorkqueue({
@@ -194,14 +198,17 @@ test('3. Workqueue flow - 3', async ({ browser }) => {
 
       await ensureAssigned(page)
       await page.getByRole('button', { name: 'Action' }).click()
+
       await expect(page.getByText('Reject', { exact: true })).not.toBeVisible()
       await expect(page.getByText('Review', { exact: true })).not.toBeVisible()
+
       await page.getByRole('button', { name: 'Action' }).click()
     })
 
     await test.step('3.2.4 Unassign', async () => {
       await selectAction(page, 'Unassign')
       await page.getByRole('button', { name: 'Unassign', exact: true }).click()
+
       await expect(page.getByText('Not assigned')).toBeVisible()
     })
   })
@@ -342,6 +349,7 @@ test('3. Workqueue flow - 3', async ({ browser }) => {
       await page.getByRole('button', { name: childName }).click()
       await selectAction(page, 'Validate')
       await page.getByRole('button', { name: 'Confirm' }).click()
+
       await assertRecordInWorkqueue({
         page,
         name: childName,
@@ -385,6 +393,7 @@ test('3. Workqueue flow - 3', async ({ browser }) => {
         ]
       })
     })
+
     await test.step('3.5.2 Reject', async () => {
       await page.getByText('Pending registration').click()
       await assignFromWorkqueue(page, childName)
@@ -394,6 +403,7 @@ test('3. Workqueue flow - 3', async ({ browser }) => {
       await selectAction(page, 'Reject')
       await page.getByTestId('reject-reason').fill(faker.lorem.sentence())
       await page.getByRole('button', { name: 'Send For Update' }).click()
+
       await assertRecordInWorkqueue({
         page,
         name: childName,
@@ -437,6 +447,7 @@ test('3. Workqueue flow - 3', async ({ browser }) => {
         ]
       })
     })
+
     await test.step('3.6.2 Go to edit', async () => {
       await page.getByText('Pending updates').click()
       await assignFromWorkqueue(page, childName)
@@ -445,6 +456,7 @@ test('3. Workqueue flow - 3', async ({ browser }) => {
         .click()
       await selectAction(page, 'Edit')
     })
+
     await test.step('3.6.3 Change informant email', async () => {
       await page
         .getByTestId('accordion-Accordion_informant')
@@ -455,8 +467,10 @@ test('3. Workqueue flow - 3', async ({ browser }) => {
         .getByRole('button', { name: 'Back to review', exact: true })
         .click()
     })
+
     await test.step('3.6.4 Re-declare with edits', async () => {
       await selectDeclarationAction(page, 'Declare with edits')
+
       await assertRecordInWorkqueue({
         page,
         name: childName,
@@ -500,6 +514,7 @@ test('3. Workqueue flow - 3', async ({ browser }) => {
         ]
       })
     })
+
     await test.step('3.7.2 Register', async () => {
       await page.getByText('Pending registration').click()
       await assignFromWorkqueue(page, childName)
@@ -509,6 +524,7 @@ test('3. Workqueue flow - 3', async ({ browser }) => {
       await selectAction(page, 'Register')
       await page.getByRole('button', { name: 'Confirm' }).click()
       await ensureInExternalValidationIsEmpty(page)
+
       await assertRecordInWorkqueue({
         page,
         name: childName,

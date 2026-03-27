@@ -36,11 +36,9 @@ test('Duplicate overview', async ({ browser }) => {
         CREDENTIALS.REGISTRAR.USERNAME,
         CREDENTIALS.REGISTRAR.PASSWORD
       )
-
       const res = await createDeclaration(token, details)
 
       expect(res.trackingId).toBeDefined()
-
       trackingId = res.trackingId!
     })
 
@@ -49,22 +47,18 @@ test('Duplicate overview', async ({ browser }) => {
         CREDENTIALS.REGISTRAR.USERNAME,
         CREDENTIALS.REGISTRAR.PASSWORD
       )
-
       await createDeclaration(token, details, ActionType.DECLARE)
     })
   })
 
   await test.step("Navigate to potential duplicate's overview", async () => {
     await login(page, CREDENTIALS.REGISTRAR)
-
     await page.getByRole('button', { name: 'Potential duplicate' }).click()
-
     await page.getByRole('button', { name }).click()
   })
 
   await test.step('Validate duplicate in overview page', async () => {
     await page.getByRole('button', { name: 'Assign record' }).click()
-
     await page.getByRole('button', { name: 'Assign', exact: true }).click()
 
     await expect(
@@ -72,7 +66,6 @@ test('Duplicate overview', async ({ browser }) => {
     ).toBeVisible()
 
     await page.getByRole('button', { name: 'Audit', exact: true }).click()
-
     await page
       .getByRole('button', { name: 'Flagged as potential duplicate' })
       .click()
@@ -80,7 +73,6 @@ test('Duplicate overview', async ({ browser }) => {
     await expect(
       page.locator('#event-history-modal').getByText('Matched to')
     ).toBeVisible()
-
     await expect(
       page.locator('#event-history-modal').getByText(trackingId)
     ).toBeVisible()

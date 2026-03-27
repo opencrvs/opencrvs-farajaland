@@ -119,7 +119,6 @@ test('Correct record - change informant type', async ({ browser }) => {
     })
 
     await ensureAssigned(page)
-
     await selectAction(page, 'Correct')
   })
 
@@ -153,7 +152,6 @@ test('Correct record - change informant type', async ({ browser }) => {
       await page.getByTestId('change-button-informant.relation').click()
       await page.getByTestId('select__informant____relation').click()
       await page.getByText('Father', { exact: true }).click()
-
       await page
         .getByTestId('text__informant____email')
         .fill(updatedFatherDetails.email)
@@ -177,72 +175,57 @@ test('Correct record - change informant type', async ({ browser }) => {
       await page.getByTestId('father____dob-dd').fill(birthDay[2])
       await page.getByTestId('father____dob-mm').fill(birthDay[1])
       await page.getByTestId('father____dob-yyyy').fill(birthDay[0])
-
       await page.locator('#father____nationality').click()
       await page.getByText(updatedFatherDetails.nationality).click()
-
       await page.locator('#father____idType').click()
       await page.getByText(updatedFatherDetails.idType).click()
-
       await page
         .locator('#father____passport')
         .fill(updatedFatherDetails.passport)
-
       await page
         .locator('#father____addressSameAs-form-input')
         .getByLabel('No')
         .click()
-
       await page
         .locator('#father____address-form-input')
         .locator('#province')
         .click()
-
       await page
         .locator('#father____address-form-input')
         .getByText(updatedFatherDetails.address.province)
         .click()
-
       await page
         .locator('#father____address-form-input')
         .locator('#district')
         .click()
-
       await page
         .locator('#father____address-form-input')
         .getByText(updatedFatherDetails.address.district)
         .click()
-
       await page
         .locator('#father____address-form-input')
         .locator('#village')
         .click()
-
       await page
         .locator('#father____address-form-input')
         .getByText(updatedFatherDetails.address.village)
         .click()
-
       await page
         .locator('#father____address-form-input')
         .locator('#town')
         .fill(updatedFatherDetails.address.town)
-
       await page
         .locator('#father____address-form-input')
         .locator('#residentialArea')
         .fill(updatedFatherDetails.address.residentialArea)
-
       await page
         .locator('#father____address-form-input')
         .locator('#street')
         .fill(updatedFatherDetails.address.street)
-
       await page
         .locator('#father____address-form-input')
         .locator('#number')
         .fill(updatedFatherDetails.address.number)
-
       await page
         .locator('#father____address-form-input')
         .locator('#zipCode')
@@ -252,6 +235,7 @@ test('Correct record - change informant type', async ({ browser }) => {
 
   await test.step('Go back to review, expect to not see any validation errors', async () => {
     await page.getByRole('button', { name: 'Back to review' }).click()
+
     await expect(page.getByText(REQUIRED_VALIDATION_ERROR)).not.toBeVisible()
   })
 
@@ -268,9 +252,7 @@ test('Correct record - change informant type', async ({ browser }) => {
       'Reason for correction',
       'Informant provided incorrect information (Material error)'
     )
-
     await visible(page, 'Fee total', `$${correctionFee}`)
-
     await visible(page, 'Correction(s)')
 
     await expect(
@@ -278,23 +260,18 @@ test('Correct record - change informant type', async ({ browser }) => {
         `Father's name-${updatedFatherDetails.firstNames} ${updatedFatherDetails.familyName}`
       )
     ).toBeVisible()
-
     await expect(
       page.getByText(
         `Date of birth-${formatDateTo_dMMMMyyyy(updatedFatherDetails.birthDate)}`
       )
     ).toBeVisible()
-
     await expect(
       page.getByText(`Nationality-${updatedFatherDetails.nationality}`)
     ).toBeVisible()
-
     await expect(page.getByText(`Type of ID-Passport`)).toBeVisible()
-
     await expect(
       page.getByText(`ID Number-${updatedFatherDetails.passport}`)
     ).toBeVisible()
-
     await expect(page.getByText(`Usual place of residence`)).toBeVisible()
 
     await Promise.all(
@@ -341,7 +318,6 @@ test('Correct record - change informant type', async ({ browser }) => {
     })
 
     await ensureAssigned(page)
-
     await page.getByRole('button', { name: 'Audit' }).click()
 
     await expect(

@@ -12,6 +12,7 @@ import { CREDENTIALS } from '../../../constants'
 import { REQUIRED_VALIDATION_ERROR } from '../helpers'
 import { selectDeclarationAction } from '../../../helpers'
 import { ensureOutboxIsEmpty } from '../../../utils'
+
 test('10. Birth declaration case - 10', async ({ browser }) => {
   const page = await browser.newPage()
 

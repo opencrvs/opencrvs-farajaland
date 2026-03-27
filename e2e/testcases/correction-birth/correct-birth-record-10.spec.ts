@@ -631,10 +631,12 @@ test.describe('10. Correct record', () => {
 
         await expectInUrl(page, `/events/${eventId}`)
       })
+
       test.describe('10.1.6.4 Validate history in record audit', async () => {
         test('10.1.6.4.0 Ensure record is assigned', async () => {
           await ensureAssigned(page)
         })
+
         test('10.1.6.4.1 Validate correction requested modal', async () => {
           await page.getByRole('button', { name: 'Audit' }).click()
           await page

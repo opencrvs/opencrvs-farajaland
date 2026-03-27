@@ -18,9 +18,7 @@ test('44.14.0 Validate "Certified copy" option', async ({ browser }) => {
     CREDENTIALS.REGISTRAR.PASSWORD
   )
   const res = await createDeclaration(token)
-
   const declaration: Declaration = res.declaration
-
   const page = await browser.newPage()
 
   await test.step('44.14.0.1 Log in', async () => {
@@ -29,7 +27,6 @@ test('44.14.0 Validate "Certified copy" option', async ({ browser }) => {
 
   await test.step('44.14.0.1 Navigate to certificate print action', async () => {
     await page.getByRole('button', { name: 'Pending certification' }).click()
-
     await navigateToCertificatePrintAction(page, declaration)
   })
 
@@ -50,15 +47,10 @@ test('44.14.0 Validate "Certified copy" option', async ({ browser }) => {
 
   await test.step('44.14.2 Print certificate', async () => {
     await selectRequesterType(page, 'Print and issue to Informant (Mother)')
-
     await page.getByRole('button', { name: 'Continue' }).click()
-
     await page.getByRole('button', { name: 'Verified' }).click()
-
     await page.getByRole('button', { name: 'Continue' }).click()
-
     await page.getByRole('button', { name: 'Yes, print certificate' }).click()
-
     await page.getByRole('button', { name: 'Print', exact: true }).click()
   })
 
@@ -66,24 +58,19 @@ test('44.14.0 Validate "Certified copy" option', async ({ browser }) => {
     await page
       .getByRole('textbox', { name: 'Search for a record' })
       .fill(formatV2ChildName(declaration))
-
     await page.getByRole('button', { name: 'Search' }).click()
-
     await page
       .getByRole('button', {
         name: formatV2ChildName(declaration),
         exact: true
       })
       .click()
-
     await selectAction(page, 'Print')
-
     await page.locator('#certificateTemplateId svg').click()
 
     await expect(
       page.getByText('Birth Certificate Certified Copy', { exact: true })
     ).toBeVisible()
-
     await expect(
       page.getByText('Birth Certificate', { exact: true })
     ).not.toBeVisible()

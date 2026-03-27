@@ -8,7 +8,6 @@ test('4. Team Page -1', async ({ browser }) => {
   await test.step('4.1 Basic UI check', async () => {
     await test.step('4.1.0 Verify UI', async () => {
       await login(page, CREDENTIALS.REGISTRAR_GENERAL)
-
       await page.getByRole('button', { name: 'Team' }).click()
 
       await expect(page.locator('#content-name')).toHaveText('HQ Office')

@@ -44,6 +44,7 @@ test('POST /api/events/events/{eventId}/correction/request', async ({
     )
 
     const body = await response.json()
+
     expect(response.status).toBe(200)
     const requestAction = body.actions.find(
       (action: { type: string }) => action.type === 'REQUEST_CORRECTION'
@@ -63,7 +64,6 @@ test('POST /api/events/events/{eventId}/correction/request', async ({
 
     const eventDocument = await client.event.get.query({ eventId })
     const { trackingId } = eventDocument
-
     await type(page, '#searchText', trackingId)
     await page.locator('#searchIconButton').click()
     await page.getByRole('button', { name: 'Review' }).click()

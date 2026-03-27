@@ -84,147 +84,97 @@ test('1. Death declaration case - 1', async ({ browser }) => {
 
     await test.step('1.1.1 Fill deceased details', async () => {
       await page.locator('#firstname').fill(declaration.deceased.name.firstname)
-
       await page.locator('#surname').fill(declaration.deceased.name.surname)
-
       await page.locator('#deceased____gender').click()
-
       await page.getByText(declaration.deceased.gender, { exact: true }).click()
-
       await page.getByPlaceholder('dd').fill(declaration.deceased.dob.dd)
-
       await page.getByPlaceholder('mm').fill(declaration.deceased.dob.mm)
-
       await page.getByPlaceholder('yyyy').fill(declaration.deceased.dob.yyyy)
-
       await page.locator('#deceased____idType').click()
-
       await page.getByText(declaration.deceased.idType, { exact: true }).click()
-
       await page.locator('#deceased____nid').fill(declaration.deceased.nid)
-
       await page.locator('#deceased____maritalStatus').click()
-
       await page
         .getByText(declaration.deceased.maritalStatus, { exact: true })
         .click()
-
       await page
         .locator('#deceased____numberOfDependants')
         .fill(declaration.deceased.numberOfDependants.toString())
-
       await page.locator('#province').click()
-
       await page
         .getByText(declaration.deceased.address.province, { exact: true })
         .click()
-
       await page.locator('#district').click()
-
       await page
         .getByText(declaration.deceased.address.district, { exact: true })
         .click()
-
       await page.locator('#village').click()
-
       await page
         .getByText(declaration.deceased.address.village, { exact: true })
         .click()
-
       await page.locator('#town').fill(declaration.deceased.address.town)
-
       await page
         .locator('#residentialArea')
         .fill(declaration.deceased.address.residentialArea)
-
       await page.locator('#street').fill(declaration.deceased.address.street)
-
       await page.locator('#number').fill(declaration.deceased.address.number)
-
       await page
         .locator('#zipCode')
         .fill(declaration.deceased.address.postcodeOrZip)
-
       await continueForm(page)
     })
 
     await test.step('1.1.2 Fill event details', async () => {
       await page.getByPlaceholder('dd').fill(declaration.eventDetails.date.dd)
-
       await page.getByPlaceholder('mm').fill(declaration.eventDetails.date.mm)
-
       await page
         .getByPlaceholder('yyyy')
         .fill(declaration.eventDetails.date.yyyy)
-
       await page.getByLabel('Cause of death has been established').check()
-
       await page.locator('#eventDetails____sourceCauseDeath').click()
-
       await page
         .getByText(declaration.eventDetails.sourceCauseDeath, { exact: true })
         .click()
-
       await page.locator('#eventDetails____mannerOfDeath').click()
-
       await page
         .getByText(declaration.eventDetails.mannerOfDeath, { exact: true })
         .click()
-
       await page.locator('#eventDetails____placeOfDeath').click()
-
       await page
         .getByText(declaration.eventDetails.placeOfDeath, { exact: true })
         .click()
-
       await page.locator('#eventDetails____deathLocation').fill('Klow Village')
-
       await expect(
         page.getByText(declaration.eventDetails.deathLocation)
       ).toBeVisible()
-
       await page.getByText(declaration.eventDetails.deathLocation).click()
-
       await continueForm(page)
     })
 
     await test.step('1.1.3 Fill informant details', async () => {
       await page.locator('#informant____relation').click()
-
       await page
         .getByText(declaration.informant.relation, {
           exact: true
         })
         .click()
-
       await page.waitForTimeout(500)
-
       // Temporary measurement untill the bug is fixed. BUG: rerenders after selecting relation with deceased
-
       await page
         .locator('#informant____email')
         .fill(declaration.informant.email)
-
       await continueForm(page)
     })
 
     await test.step('1.1.4 Fill spouse details', async () => {
       await page.locator('#firstname').fill(declaration.spouse.name.firstname)
-
       await page.locator('#surname').fill(declaration.spouse.name.surname)
-
       await page.getByPlaceholder('dd').fill(declaration.spouse.dob.dd)
-
       await page.getByPlaceholder('mm').fill(declaration.spouse.dob.mm)
-
       await page.getByPlaceholder('yyyy').fill(declaration.spouse.dob.yyyy)
-
       await page.locator('#spouse____idType').click()
-
       await page.getByText(declaration.spouse.idType, { exact: true }).click()
-
       await page.locator('#spouse____nid').fill(declaration.spouse.nid)
-
       await continueForm(page)
     })
 
@@ -291,7 +241,6 @@ test('1. Death declaration case - 1', async ({ browser }) => {
         'deceased.idType',
         declaration.deceased.idType
       )
-
       await expectRowValueWithChangeButton(
         page,
         'deceased.nid',
@@ -462,7 +411,6 @@ test('1. Death declaration case - 1', async ({ browser }) => {
         'spouse.idType',
         declaration.spouse.idType
       )
-
       await expectRowValueWithChangeButton(
         page,
         'spouse.nid',
@@ -479,11 +427,8 @@ test('1. Death declaration case - 1', async ({ browser }) => {
 
     await test.step('1.1.7 Fill up informant signature', async () => {
       await page.locator('#review____comment').fill(annotation.review.comment)
-
       await page.getByRole('button', { name: 'Sign', exact: true }).click()
-
       await drawSignature(page, 'review____signature_canvas_element', false)
-
       await page
         .locator('#review____signature_modal')
         .getByRole('button', { name: 'Apply' })
@@ -492,7 +437,6 @@ test('1. Death declaration case - 1', async ({ browser }) => {
 
     await test.step('1.1.8 Declare', async () => {
       await selectDeclarationAction(page, 'Declare')
-
       await ensureOutboxIsEmpty(page)
 
       await expect(page.getByText('Farajaland CRS')).toBeVisible()
@@ -521,7 +465,6 @@ test('1. Death declaration case - 1', async ({ browser }) => {
   await test.step('1.2 Declaration Review by RO', async () => {
     await test.step('1.2.1 Navigate to the declaration "Record" -tab', async () => {
       await login(page, CREDENTIALS.REGISTRATION_OFFICER)
-
       await ensureOutboxIsEmpty(page)
 
       await page.getByText('Pending validation').click()
@@ -591,7 +534,6 @@ test('1. Death declaration case - 1', async ({ browser }) => {
        * - Change button
        */
       await expectRowValue(page, 'deceased.idType', declaration.deceased.idType)
-
       await expectRowValue(page, 'deceased.nid', declaration.deceased.nid)
 
       /*
@@ -746,7 +688,6 @@ test('1. Death declaration case - 1', async ({ browser }) => {
        * - Change button
        */
       await expectRowValue(page, 'spouse.idType', declaration.spouse.idType)
-
       await expectRowValue(page, 'spouse.nid', declaration.spouse.nid)
 
       /*

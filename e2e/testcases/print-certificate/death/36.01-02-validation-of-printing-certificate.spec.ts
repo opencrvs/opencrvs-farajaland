@@ -72,24 +72,21 @@ test.describe.serial('Certified copies', () => {
       await expect(page.getByText('Certify record')).toBeVisible()
 
       await page.getByRole('button', { name: 'Continue' }).click()
+
       await expectInUrl(page, '/pages/collector.identity.verify')
 
       await page.getByText('Verify their identity').isVisible()
-
       await page.getByText('Type of ID').isVisible()
       await page.getByText(declaration?.['spouse.idType']).isVisible()
       await page.getByText(declaration?.['spouse.nid']).isVisible()
-
       await page.getByText("Spouse's name").isVisible()
       await page
         .getByText(
           joinValuesWith([...Object.values(declaration['spouse.name'])])
         )
         .isVisible()
-
       await page.getByText('Date of birth').isVisible()
       await page.getByText(declaration['spouse.dob']).isVisible()
-
       await page.getByText('Nationality').isVisible()
       await page.getByText(declaration['spouse.nationality']).isVisible()
     })
@@ -136,10 +133,12 @@ test.describe.serial('Certified copies renders spouse age correctly', () => {
     test('2.1 Ensure data content is visible for spouse', async () => {
       await page.reload({ waitUntil: 'networkidle' })
       await page.locator('#collector____requesterId').click()
+
       const selectOptionsLabels = [
         'Print and issue to Informant (Spouse)',
         'Print and issue to someone else'
       ]
+
       for (const label of selectOptionsLabels) {
         await expect(page.getByText(label, { exact: true })).toBeVisible()
       }
@@ -149,10 +148,10 @@ test.describe.serial('Certified copies renders spouse age correctly', () => {
       await expect(page.getByText('Certify record')).toBeVisible()
 
       await page.getByRole('button', { name: 'Continue' }).click()
+
       await expectInUrl(page, '/pages/collector.identity.verify')
 
       await page.getByText('Verify their identity').isVisible()
-
       await page.getByText('Type of ID').isVisible()
       await page.getByText(declaration['spouse.idType']).isVisible()
       await page.getByText(declaration['spouse.nid']).isVisible()
@@ -162,10 +161,8 @@ test.describe.serial('Certified copies renders spouse age correctly', () => {
           joinValuesWith([...Object.values(declaration['spouse.name'])])
         )
         .isVisible()
-
       await page.getByText('Age of spouse (at the time of event)').isVisible()
       await page.getByText(joinValuesWith([spouseAge, 'years'])).isVisible()
-
       await page.getByText('Nationality').isVisible()
       await page.getByText(declaration['spouse.nationality']).isVisible()
     })
@@ -228,10 +225,12 @@ test.describe
     test('2.1 Ensure data content is visible for informant', async () => {
       await page.reload({ waitUntil: 'networkidle' })
       await page.locator('#collector____requesterId').click()
+
       const selectOptionsLabels = [
         'Print and issue to Informant (Son)',
         'Print and issue to someone else'
       ]
+
       for (const label of selectOptionsLabels) {
         await expect(page.getByText(label, { exact: true })).toBeVisible()
       }
@@ -241,10 +240,10 @@ test.describe
       await expect(page.getByText('Certify record')).toBeVisible()
 
       await page.getByRole('button', { name: 'Continue' }).click()
+
       await expectInUrl(page, '/pages/collector.identity.verify')
 
       await page.getByText('Verify their identity').isVisible()
-
       await page.getByText('Type of ID').isVisible()
       await page.getByText(declarationOverrides['informant.idType']).isVisible()
       await page.getByText(declarationOverrides['informant.nid']).isVisible()
@@ -256,12 +255,10 @@ test.describe
           ])
         )
         .isVisible()
-
       await page
         .getByText('Age of informant (at the time of event)')
         .isVisible()
       await page.getByText(joinValuesWith([informantAge, 'years'])).isVisible()
-
       await page.getByText('Nationality').isVisible()
       await page
         .getByText(declarationOverrides['informant.nationality'])

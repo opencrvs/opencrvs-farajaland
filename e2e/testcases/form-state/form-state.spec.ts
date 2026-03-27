@@ -119,13 +119,11 @@ test.describe('Form state', () => {
       await page
         .getByRole('button', { name: actionableEventChildName, exact: true })
         .click()
-
       await selectAction(page, 'Update')
 
       await expect(page.getByTestId('row-value-child.name')).not.toHaveText(
         REQUIRED_VALIDATION_ERROR
       )
-
       await expect(page.getByTestId('row-value-informant.email')).toHaveText(
         REQUIRED_VALIDATION_ERROR
       )
@@ -153,7 +151,6 @@ test.describe('Form state', () => {
         CREDENTIALS.REGISTRAR.USERNAME,
         CREDENTIALS.REGISTRAR.PASSWORD
       )
-
       declaration = (await createDeclaration(token)).declaration
       await page.reload()
       await ensureInExternalValidationIsEmpty(page)
@@ -165,7 +162,6 @@ test.describe('Form state', () => {
 
       await page.getByRole('button', { name: 'Pending certification' }).click()
       await navigateToCertificatePrintAction(page, declaration!)
-
       await selectRequesterType(page, 'Print and issue to Informant (Mother)')
       await continueForm(page)
       await page.getByRole('button', { name: 'Verified' }).click()
@@ -173,7 +169,6 @@ test.describe('Form state', () => {
       await page.getByRole('button', { name: 'No, make correction' }).click()
       await page.locator('#requester____type').click()
       await page.getByText('Informant (Mother)', { exact: true }).click()
-
       await page.locator('#reason____option').click()
       await page
         .getByText(
@@ -183,7 +178,6 @@ test.describe('Form state', () => {
           }
         )
         .click()
-
       await page.getByRole('button', { name: 'Continue', exact: true }).click()
       await page.getByRole('button', { name: 'Verified' }).click()
       await continueForm(page)
@@ -203,19 +197,14 @@ test.describe('Form state', () => {
       await page.goto(CLIENT_URL)
       await page.getByRole('button', { name: 'Pending certification' }).click()
       await navigateToCertificatePrintAction(page, declaration!)
-
       await selectRequesterType(page, 'Print and issue to someone else')
-
       await page.getByTestId('text__firstname').fill(faker.person.firstName())
-
       await page.getByTestId('exit-button').click()
-
       await navigateToCertificatePrintAction(page, declaration!)
 
       await expect(
         page.getByTestId('select__collector____requesterId')
       ).not.toHaveText('Print and issue to someone else')
-
       await expect(page.getByTestId('text__firstname')).not.toBeVisible()
     })
 

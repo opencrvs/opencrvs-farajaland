@@ -24,11 +24,8 @@ test('Validate collect payment page', async ({ browser }) => {
     CREDENTIALS.REGISTRAR.PASSWORD
   )
   const res = await createDeclaration(token)
-
   const eventId: string = res.eventId
-
   const page = await browser.newPage()
-
   const declaration: Declaration = res.declaration
 
   await test.step('5.0.1 Log in', async () => {
@@ -37,13 +34,11 @@ test('Validate collect payment page', async ({ browser }) => {
 
   await test.step('5.0.2 Navigate to certificate print action', async () => {
     await page.getByRole('button', { name: 'Pending certification' }).click()
-
     await navigateToCertificatePrintAction(page, declaration)
   })
 
   await test.step('5.1 check collect payment page header', async () => {
     await selectCertificationType(page, 'Death Certificate')
-
     await selectRequesterType(page, 'Print and issue to someone else')
   })
 
@@ -69,9 +64,7 @@ test('Validate collect payment page', async ({ browser }) => {
 
   await test.step('5.2 should be able to select National ID and corresponding id input will be visible with validation rules', async () => {
     await selectIdType(page, 'National ID')
-
     await page.fill('#collector____nid', '1234567')
-
     await page.getByRole('heading', { name: 'Death', exact: true }).click()
 
     await expect(page.locator('#collector____nid_error')).toContainText(
@@ -79,7 +72,6 @@ test('Validate collect payment page', async ({ browser }) => {
     )
 
     await page.fill('#collector____nid', '1235678922')
-
     await page.getByRole('heading', { name: 'Death', exact: true }).click()
 
     await expect(page.locator('#collector____nid_error')).toBeHidden()
@@ -122,19 +114,15 @@ test('Validate collect payment page', async ({ browser }) => {
   await test.step('6.0 Validate "Upload signed affidavit" page:', async () => {
     await test.step('6.1 Should be able to add file and navigate to the "Ready to certify?" page.', async () => {
       const path = require('path')
-
       const attachmentPath = path.resolve(__dirname, './528KB-random.png')
-
       const inputFile = await page.locator(
         'input[name="collector____OTHER____signedAffidavit"][type="file"]'
       )
-
       await inputFile.setInputFiles(attachmentPath)
 
       await expect(
         page.getByRole('button', { name: 'Signed Affidavit' })
       ).toBeVisible()
-
       await expect(page.locator('#preview_delete')).toBeVisible()
 
       await page.getByRole('button', { name: 'Continue' }).click()

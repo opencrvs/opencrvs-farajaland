@@ -277,9 +277,7 @@ test.describe.serial('4. Workqueue flow - 4', () => {
         .click()
 
       await selectAction(page, 'Validate')
-
       await page.getByRole('button', { name: 'Confirm' }).click()
-
       await ensureOutboxIsEmpty(page)
 
       await assertRecordInWorkqueue({
@@ -350,7 +348,6 @@ test.describe.serial('4. Workqueue flow - 4', () => {
 
       await selectAction(page, 'Register')
       await page.getByRole('button', { name: 'Confirm' }).click()
-
       await ensureOutboxIsEmpty(page)
       await ensureInExternalValidationIsEmpty(page)
 

@@ -8,6 +8,7 @@ async function authenticateInformantWithESignet(page: Page) {
   // Only tested with mosip-mock so far
   // https://github.com/opencrvs/mosip/blob/release-v1.8.0/packages/esignet-mock/src/index.ts#L166
   await expect(page).toHaveURL(/authorize/)
+
   // https://github.com/opencrvs/mosip/blob/release-v1.8.0/docs/mock-identities.json#L8
   await page.locator('#id-input').fill('1234567890')
   await page.locator('#authenticate').click()

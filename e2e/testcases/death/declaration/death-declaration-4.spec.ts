@@ -114,225 +114,153 @@ test('4. Death declaration case - 4', async ({ browser }) => {
 
     await test.step('4.1.1 Fill deceased details', async () => {
       await page.locator('#firstname').fill(declaration.deceased.name.firstname)
-
       await page.locator('#surname').fill(declaration.deceased.name.surname)
-
       await page.locator('#deceased____gender').click()
-
       await page.getByText(declaration.deceased.gender, { exact: true }).click()
-
       await page.getByLabel('Exact date of birth unknown').check()
-
       await page
         .locator('#deceased____age')
         .fill(declaration.deceased.age.toString())
-
       await page.locator('#deceased____idType').click()
-
       await page.getByText(declaration.deceased.idType, { exact: true }).click()
-
       await page.locator('#deceased____maritalStatus').click()
-
       await page
         .getByText(declaration.deceased.maritalStatus, { exact: true })
         .click()
-
       await page.locator('#country').click()
-
       await page
         .getByText(declaration.deceased.address.country, { exact: true })
         .click()
-
       await page.locator('#state').fill(declaration.deceased.address.state)
-
       await page
         .locator('#district2')
         .fill(declaration.deceased.address.district)
-
       await page.locator('#cityOrTown').fill(declaration.deceased.address.town)
-
       await page
         .locator('#addressLine1')
         .fill(declaration.deceased.address.addressLine1)
-
       await page
         .locator('#addressLine2')
         .fill(declaration.deceased.address.addressLine2)
-
       await page
         .locator('#addressLine3')
         .fill(declaration.deceased.address.addressLine3)
-
       await page
         .locator('#postcodeOrZip')
         .fill(declaration.deceased.address.postcodeOrZip)
-
       await continueForm(page)
     })
 
     await test.step('4.1.2 Fill event details', async () => {
       await page.getByPlaceholder('dd').fill(declaration.eventDetails.date.dd)
-
       await page.getByPlaceholder('mm').fill(declaration.eventDetails.date.mm)
-
       await page
         .getByPlaceholder('yyyy')
         .fill(declaration.eventDetails.date.yyyy)
-
       await page.locator('#eventDetails____mannerOfDeath').click()
-
       await page
         .getByText(declaration.eventDetails.mannerOfDeath, { exact: true })
         .click()
-
       await page.getByLabel('Cause of death has been established').check()
-
       await page.locator('#eventDetails____sourceCauseDeath').click()
-
       await page
         .getByText(declaration.eventDetails.sourceCauseDeath, { exact: true })
         .click()
-
       await page.locator('#eventDetails____placeOfDeath').click()
-
       await page
         .getByText(declaration.eventDetails.placeOfDeath, { exact: true })
         .click()
-
       await page
         .locator('#eventDetails____deathLocation')
         .fill(declaration.eventDetails.deathLocation.slice(0, 4))
-
       await page.getByText(declaration.eventDetails.deathLocation).click()
-
       await continueForm(page)
     })
 
     await test.step('4.1.3 Fill informant details', async () => {
       await page.locator('#informant____relation').click()
-
       await page
         .getByText(declaration.informant.relation, {
           exact: true
         })
         .click()
-
       await page.waitForTimeout(500)
 
       // Temporary measurement untill the bug is fixed. BUG: rerenders after selecting relation with deceased
-
       await page
         .locator('#firstname')
         .fill(declaration.informant.name.firstname)
-
       await page.locator('#surname').fill(declaration.informant.name.surname)
-
       await page.getByLabel('Exact date of birth unknown').check()
-
       await page
         .locator('#informant____age')
         .fill(declaration.informant.age.toString())
-
       await page.locator('#informant____nationality').click()
-
       await page
         .getByText(declaration.informant.nationality, { exact: true })
         .click()
-
       await page.locator('#informant____idType').click()
-
       await page
         .getByText(declaration.informant.idType, { exact: true })
         .click()
-
       await page.locator('#informant____brn').fill(declaration.informant.brn)
-
       await page.locator('#informant____addressSameAs_NO').check()
-
       await page.locator('#province').click()
-
       await page
         .getByText(declaration.informant.address.province, { exact: true })
         .click()
-
       await page.locator('#district').click()
-
       await page
         .getByText(declaration.informant.address.district, { exact: true })
         .click()
-
       await page.locator('#village').click()
-
       await page
         .getByText(declaration.informant.address.village, { exact: true })
         .click()
-
       await page.locator('#town').fill(declaration.informant.address.town)
-
       await page
         .locator('#residentialArea')
         .fill(declaration.informant.address.residentialArea)
-
       await page.locator('#street').fill(declaration.informant.address.street)
-
       await page.locator('#number').fill(declaration.informant.address.number)
-
       await page
         .locator('#zipCode')
         .fill(declaration.informant.address.postcodeOrZip)
-
       await page
         .locator('#informant____email')
         .fill(declaration.informant.email)
-
       await continueForm(page)
     })
 
     await test.step('4.1.4 Fill spouse details', async () => {
       await page.locator('#firstname').fill(declaration.spouse.name.firstname)
-
       await page.locator('#surname').fill(declaration.spouse.name.surname)
-
       await page.getByLabel('Exact date of birth unknown').check()
-
       await page
         .locator('#spouse____age')
         .fill(declaration.spouse.age.toString())
-
       await page.locator('#spouse____idType').click()
-
       await page.getByText(declaration.spouse.idType, { exact: true }).click()
-
       await page.locator('#spouse____addressSameAs_NO').check()
-
       await page.locator('#country').click()
-
       await page
         .getByText(declaration.spouse.address.country, { exact: true })
         .click()
-
       await page.locator('#state').fill(declaration.spouse.address.state)
-
       await page.locator('#district2').fill(declaration.spouse.address.district)
-
       await page.locator('#cityOrTown').fill(declaration.spouse.address.town)
-
       await page
         .locator('#addressLine1')
         .fill(declaration.spouse.address.addressLine1)
-
       await page
         .locator('#addressLine2')
         .fill(declaration.spouse.address.addressLine2)
-
       await page
         .locator('#addressLine3')
         .fill(declaration.spouse.address.addressLine3)
-
       await page
         .locator('#postcodeOrZip')
         .fill(declaration.spouse.address.postcodeOrZip)
-
       await continueForm(page)
     })
 
@@ -729,11 +657,8 @@ test('4. Death declaration case - 4', async ({ browser }) => {
 
     await test.step('4.1.7 Fill up informant signature', async () => {
       await page.locator('#review____comment').fill(annotation.review.comment)
-
       await page.getByRole('button', { name: 'Sign', exact: true }).click()
-
       await drawSignature(page, 'review____signature_canvas_element', false)
-
       await page
         .locator('#review____signature_modal')
         .getByRole('button', { name: 'Apply' })
@@ -742,7 +667,6 @@ test('4. Death declaration case - 4', async ({ browser }) => {
 
     await test.step('4.1.8 Declare and validate', async () => {
       await selectDeclarationAction(page, 'Declare')
-
       await ensureOutboxIsEmpty(page)
 
       await expect(page.getByText('Farajaland CRS')).toBeVisible()
@@ -771,11 +695,8 @@ test('4. Death declaration case - 4', async ({ browser }) => {
   await test.step('4.2 Declaration Review by Registrar', async () => {
     await test.step('4.2.1 Navigate to the declaration "Record" -tab', async () => {
       await login(page, CREDENTIALS.REGISTRAR)
-
       await ensureOutboxIsEmpty(page)
-
       await page.getByText('Pending registration').click()
-
       await page
         .getByRole('button', {
           name:
@@ -784,9 +705,7 @@ test('4. Death declaration case - 4', async ({ browser }) => {
             declaration.deceased.name.surname
         })
         .click()
-
       await ensureAssigned(page)
-
       await switchEventTab(page, 'Record')
     })
 

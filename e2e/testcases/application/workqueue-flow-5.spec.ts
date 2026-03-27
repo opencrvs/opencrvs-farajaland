@@ -150,7 +150,6 @@ test.describe.serial('5. Workqueue flow - 5', () => {
           name: childName
         })
         .click()
-
       await selectAction(page, 'Reject')
       await page.getByTestId('reject-reason').fill(faker.lorem.sentence())
       await page.getByRole('button', { name: 'Send For Update' }).click()
@@ -168,8 +167,10 @@ test.describe.serial('5. Workqueue flow - 5', () => {
 
       await ensureAssigned(page)
       await page.getByRole('button', { name: 'Action' }).click()
+
       await expect(page.getByText('Reject', { exact: true })).not.toBeVisible()
       await expect(page.getByText('Review', { exact: true })).not.toBeVisible()
+
       await page.getByRole('button', { name: 'Action' }).click()
     })
 
@@ -193,13 +194,12 @@ test.describe.serial('5. Workqueue flow - 5', () => {
         ]
       })
     })
+
     test('Go to Edit', async () => {
       await assignFromWorkqueue(page, childName)
-
       await getRowByTitle(page, childName)
         .getByRole('button', { name: 'Review' })
         .click()
-
       await selectAction(page, 'Edit')
     })
 
@@ -270,7 +270,6 @@ test.describe.serial('5. Workqueue flow - 5', () => {
           name: childName
         })
         .click()
-
       await selectAction(page, 'Edit')
     })
 
@@ -374,6 +373,7 @@ test.describe.serial('5. Workqueue flow - 5', () => {
         ]
       })
     })
+
     test('Reject', async () => {
       await page.getByText('Pending registration').click()
 
@@ -381,11 +381,8 @@ test.describe.serial('5. Workqueue flow - 5', () => {
       await getRowByTitle(page, childName)
         .getByRole('button', { name: 'Review' })
         .click()
-
       await selectAction(page, 'Reject')
-
       await page.getByTestId('reject-reason').fill(faker.lorem.sentence())
-
       await page.getByRole('button', { name: 'Send For Update' }).click()
 
       await assertRecordInWorkqueue({
@@ -409,6 +406,7 @@ test.describe.serial('5. Workqueue flow - 5', () => {
       })
     })
   })
+
   test.describe('Re-declare with edits by RO', async () => {
     test('Login with RO', async () => {
       await login(page, CREDENTIALS.REGISTRATION_OFFICER, true)
@@ -437,7 +435,6 @@ test.describe.serial('5. Workqueue flow - 5', () => {
       await getRowByTitle(page, childName)
         .getByRole('button', { name: 'Review' })
         .click()
-
       await selectAction(page, 'Edit')
     })
 
@@ -500,14 +497,13 @@ test.describe.serial('5. Workqueue flow - 5', () => {
         ]
       })
     })
+
     test('Register', async () => {
       await page.getByText('Pending registration').click()
-
       await assignFromWorkqueue(page, childName)
       await getRowByTitle(page, childName)
         .getByRole('button', { name: 'Review' })
         .click()
-
       await selectAction(page, 'Register')
       await page.getByRole('button', { name: 'Confirm' }).click()
       await ensureInExternalValidationIsEmpty(page)

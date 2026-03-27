@@ -19,27 +19,18 @@ test('Can Open Draft offline', async ({ browser }) => {
     await expect(page.getByText('Farajaland CRS')).toBeVisible({
       timeout: 30000
     })
-
     await expect(page.locator('#content-name')).toHaveText('Assigned to you')
   })
 
   await test.step('Create a draft', async () => {
     await page.click('#header-new-event')
-
     await page.getByLabel('Birth').click()
-
     await page.getByRole('button', { name: 'Continue' }).click()
-
     await page.getByRole('button', { name: 'Continue' }).click()
-
     await page.locator('#firstname').fill(name.firstNames)
-
     await page.locator('#surname').fill(name.familyName)
-
     await page.getByRole('button', { name: 'Save & Exit' }).click()
-
     await page.getByRole('button', { name: 'Confirm' }).click()
-
     await ensureOutboxIsEmpty(page)
   })
 

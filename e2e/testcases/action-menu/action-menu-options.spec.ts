@@ -121,7 +121,6 @@ test.describe('Action menu options', () => {
       await login(page, CREDENTIALS.REGISTRAR)
       await searchFromSearchBar(page, formatV2ChildName(declaration))
       await ensureAssigned(page)
-
       await page.getByRole('button', { name: 'Action', exact: true }).click()
       const options = await page
         .locator('#action-Dropdown-Content li')

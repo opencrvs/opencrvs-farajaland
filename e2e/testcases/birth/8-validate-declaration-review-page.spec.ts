@@ -213,7 +213,6 @@ test.describe.serial('8. Validate declaration review page', () => {
          * - Child's Family Name
          * - Change button
          */
-
         await expectRowValueWithChangeButton(
           page,
           'child.name',
@@ -828,9 +827,11 @@ test.describe.serial('8. Validate declaration review page', () => {
     test.describe('8.1.3 Validate supporting document', async () => {
       test.skip('Skipped for now', async () => {})
     })
+
     test.describe('8.1.4 Validate additional comments box', async () => {
       test.skip('Skipped for now', async () => {})
     })
+
     test.describe('8.1.5 Validate the declaration send button', async () => {
       test.skip('Skipped for now', async () => {})
     })
@@ -856,15 +857,14 @@ test.describe.serial('8. Validate declaration review page', () => {
   test.describe('8.2 Registration Officer actions', async () => {
     test('8.2.1 Navigate to the declaration preview page', async () => {
       await login(page, CREDENTIALS.REGISTRATION_OFFICER)
-
       await page.getByText('Pending validation').click()
-
       await page
         .getByRole('button', {
           name: formatName(declaration.child.name)
         })
         .click()
     })
+
     test('8.2.2 Validate', async () => {
       await selectAction(page, 'Validate')
       await page.getByRole('button', { name: 'Confirm' }).click()
@@ -885,9 +885,7 @@ test.describe.serial('8. Validate declaration review page', () => {
   test.describe('8.3 Registrar actions', async () => {
     test('8.3.1 Navigate to the declaration preview page', async () => {
       await login(page, CREDENTIALS.REGISTRAR)
-
       await page.getByText('Pending registration').click()
-
       await page
         .getByRole('button', {
           name: formatName(declaration.child.name)

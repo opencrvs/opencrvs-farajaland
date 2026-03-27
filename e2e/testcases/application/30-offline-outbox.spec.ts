@@ -113,6 +113,7 @@ test('30: Validate user can send multiple complete and incomplete records offlin
     await page.getByLabel('Birth').click()
     await page.getByRole('button', { name: 'Continue' }).click()
     await page.getByRole('button', { name: 'Continue' }).click()
+
     await test.step('30.1.1 Fill child details', async () => {
       await page.locator('#firstname').fill(declaration.child.name.firstNames)
       await page.locator('#surname').fill(declaration.child.name.familyName)
@@ -296,6 +297,7 @@ test('30: Validate user can send multiple complete and incomplete records offlin
     await page.getByLabel('Birth').click()
     await page.getByRole('button', { name: 'Continue' }).click()
     await page.getByRole('button', { name: 'Continue' }).click()
+
     await test.step('30.2.1 Fill child details', async () => {
       await page
         .locator('#firstname')
@@ -316,6 +318,7 @@ test('30: Validate user can send multiple complete and incomplete records offlin
     await page.getByLabel('Birth').click()
     await page.getByRole('button', { name: 'Continue' }).click()
     await page.getByRole('button', { name: 'Continue' }).click()
+
     await test.step('30.3.1 Fill child details', async () => {
       await page
         .locator('#firstname')
@@ -337,23 +340,18 @@ test('30: Validate user can send multiple complete and incomplete records offlin
     await expect(
       page.getByTestId('search-result').locator('#row_2')
     ).toContainText(formatName(declaration.child.name))
-
     await expect(
       page.getByTestId('search-result').locator('#row_1')
     ).toContainText(formatName(partialDeclaration1.child.name))
-
     await expect(
       page.getByTestId('search-result').locator('#row_0')
     ).toContainText(formatName(partialDeclaration2.child.name))
-
     await expect(
       page.getByTestId('search-result').locator('#row_2')
     ).toContainText('Waiting to send')
-
     await expect(
       page.getByTestId('search-result').locator('#row_1')
     ).toContainText('Waiting to send')
-
     await expect(
       page.getByTestId('search-result').locator('#row_0')
     ).toContainText('Waiting to send')
@@ -363,7 +361,6 @@ test('30: Validate user can send multiple complete and incomplete records offlin
     await expect(page.getByTestId('search-result')).not.toContainText(
       'Waiting to send'
     )
-
     await expect(
       page.getByTestId('search-result').locator('#row_2')
     ).toContainText('Sending')
@@ -377,12 +374,10 @@ test('30: Validate user can send multiple complete and incomplete records offlin
       formatName(declaration.child.name),
       { timeout: 60000 }
     )
-
     await expect(page.getByTestId('search-result')).not.toContainText(
       formatName(partialDeclaration1.child.name),
       { timeout: 60000 }
     )
-
     await expect(page.getByTestId('search-result')).not.toContainText(
       formatName(partialDeclaration2.child.name),
       { timeout: 60000 }

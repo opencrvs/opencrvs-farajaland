@@ -27,13 +27,9 @@ test('Validate collect payment page', async ({ browser }) => {
     CREDENTIALS.REGISTRAR.PASSWORD
   )
   const res = await createDeclaration(token)
-
   const eventId: string = res.eventId
-
   const declaration: Declaration = res.declaration
-
   const page = await browser.newPage()
-
   const trackingId: string | undefined = res.trackingId
 
   await test.step('5.0.1 Log in', async () => {
@@ -42,13 +38,11 @@ test('Validate collect payment page', async ({ browser }) => {
 
   await test.step('5.0.2 Navigate to certificate print action', async () => {
     await page.getByRole('button', { name: 'Pending certification' }).click()
-
     await navigateToCertificatePrintAction(page, declaration)
   })
 
   await test.step('5.1 Select certification and requester type', async () => {
     await selectCertificationType(page, 'Birth Certificate')
-
     await selectRequesterType(page, 'Print and issue to someone else')
   })
 
@@ -74,9 +68,7 @@ test('Validate collect payment page', async ({ browser }) => {
 
   await test.step('5.2 should be able to select National ID and correspondent id input will be visible with validation rules', async () => {
     await selectIdType(page, 'National ID')
-
     await page.fill('#collector____nid', '1234567')
-
     await page.getByRole('heading', { name: 'Birth', exact: true }).click()
 
     await expect(page.locator('#collector____nid_error')).toContainText(
@@ -84,7 +76,6 @@ test('Validate collect payment page', async ({ browser }) => {
     )
 
     await page.fill('#collector____nid', '1235678922')
-
     await page.getByRole('heading', { name: 'Birth', exact: true }).click()
 
     await expect(page.locator('#collector____nid_error')).toBeHidden()
@@ -124,19 +115,15 @@ test('Validate collect payment page', async ({ browser }) => {
 
   await test.step('5.7 Should be able to add file and navigate to the payment page', async () => {
     const path = require('path')
-
     const attachmentPath = path.resolve(__dirname, './528KB-random.png')
-
     const inputFile = await page.locator(
       'input[name="collector____OTHER____signedAffidavit"][type="file"]'
     )
-
     await inputFile.setInputFiles(attachmentPath)
 
     await expect(
       page.getByRole('button', { name: 'Signed Affidavit' })
     ).toBeVisible()
-
     await expect(page.locator('#preview_delete')).toBeVisible()
 
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -151,7 +138,6 @@ test('Validate collect payment page', async ({ browser }) => {
     await expect(
       page.getByText('Birth registration before 30 days of date of birth')
     ).toBeVisible()
-
     await expect(page.getByText('$5.00')).toBeVisible()
 
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -167,57 +153,38 @@ test('Validate collect payment page', async ({ browser }) => {
     }
 
     await type(page, '#searchText', trackingId)
-
     await page.locator('#searchIconButton').click()
-
     await page
       .getByRole('button', { name: formatV2ChildName(declaration) })
       .click()
-
     await ensureAssigned(page)
-
     await page.getByRole('button', { name: 'Audit' }).click()
-
     await page.getByRole('button', { name: 'Certified', exact: true }).click()
 
     await expect(page.getByText('Type' + 'Birth Certificate')).toBeVisible()
-
     await expect(
       page.getByText('Requester' + 'Print and issue to someone else')
     ).toBeVisible()
-
     await expect(page.getByText('Type of ID' + 'National ID')).toBeVisible()
-
     await expect(page.getByText('National ID' + '1235678922')).toBeVisible()
-
     await expect(
       page.getByText("Collector's name" + 'Muhammed Tareq Aziz')
     ).toBeVisible()
-
     await expect(
       page.getByText('Relationship to child' + 'Uncle')
     ).toBeVisible()
-
     await expect(page.getByText('Signed Affidavit (Optional)')).toBeVisible()
-
     await expect(
       page.getByRole('button', { name: 'Signed Affidavit' })
     ).toBeVisible()
-
     await expect(page.getByText('Verified' + 'No')).toBeVisible()
-
     await expect(page.getByText('Payment details')).toBeVisible()
-
     await expect(page.getByText('Fee')).toBeVisible()
-
     await expect(page.getByText('$5.00')).toBeVisible()
-
     await expect(page.getByText('Service')).toBeVisible()
-
     await expect(
       page.getByText('Birth registration before 30 days of date of birth')
     ).toBeVisible()
-
     await expect(page.getByText('Identity details')).not.toBeVisible()
   })
 

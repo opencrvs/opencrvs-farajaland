@@ -10,21 +10,15 @@ test('Death form - date validations', async ({ browser }) => {
 
   await test.step('Start death event declaration', async () => {
     await page.click('#header-new-event')
-
     await page.getByLabel('Death').click()
-
     await page.getByRole('button', { name: 'Continue' }).click()
-
     await page.getByRole('button', { name: 'Continue' }).click()
   })
 
   await test.step('Input valid deceased date-of-birth', async () => {
     await page.getByPlaceholder('dd').fill('22')
-
     await page.getByPlaceholder('mm').fill('09')
-
     await page.getByPlaceholder('yyyy').fill('1993')
-
     await page.getByPlaceholder('yyyy').blur()
 
     await expect(page.locator('#deceased____dob_error')).not.toBeVisible()
@@ -36,11 +30,8 @@ test('Death form - date validations', async ({ browser }) => {
 
   await test.step('Input date-of-death which is before date-of-birth, expect to see validation error', async () => {
     await page.getByPlaceholder('dd').fill('09')
-
     await page.getByPlaceholder('mm').fill('10')
-
     await page.getByPlaceholder('yyyy').fill('1990')
-
     await page.getByPlaceholder('yyyy').blur()
 
     await expect(
@@ -50,11 +41,8 @@ test('Death form - date validations', async ({ browser }) => {
 
   await test.step('Input date-of-death which is after date-of-birth, expect to see no validation error', async () => {
     await page.getByPlaceholder('dd').fill('09')
-
     await page.getByPlaceholder('mm').fill('10')
-
     await page.getByPlaceholder('yyyy').fill('1995')
-
     await page.getByPlaceholder('yyyy').blur()
 
     await expect(page.locator('#eventDetails____date_error')).not.toBeVisible()
@@ -66,11 +54,8 @@ test('Death form - date validations', async ({ browser }) => {
 
   await test.step('Input invalid deceased date-of-birth, expect to see validation error', async () => {
     await page.getByPlaceholder('dd').fill('22')
-
     await page.getByPlaceholder('mm').fill('09')
-
     await page.getByPlaceholder('yyyy').fill('1996')
-
     await page.getByPlaceholder('yyyy').blur()
 
     await expect(page.locator('#deceased____dob_error')).toHaveText(
@@ -80,11 +65,8 @@ test('Death form - date validations', async ({ browser }) => {
 
   await test.step('Input valid deceased date-of-birth, expect to see no validation error', async () => {
     await page.getByPlaceholder('dd').fill('22')
-
     await page.getByPlaceholder('mm').fill('10')
-
     await page.getByPlaceholder('yyyy').fill('1988')
-
     await page.getByPlaceholder('yyyy').blur()
 
     await expect(page.locator('#deceased____dob_error')).not.toBeVisible()

@@ -30,7 +30,6 @@ test('6 Validate "Pending certification"-workqueue', async ({ browser }) => {
     await expect(
       page.getByRole('button', { name: formatV2ChildName(declaration) })
     ).toBeVisible()
-
     await expect(page.getByTestId('search-result')).toContainText(
       'Pending certification'
     )
@@ -73,7 +72,6 @@ test('6 Validate "Pending certification"-workqueue', async ({ browser }) => {
     await selectAction(page, 'Print')
 
     await expect(page.locator('#content-name')).toHaveText('Certify record')
-
     await expectInUrl(
       page,
       `/events/print-certificate/${eventId}/pages/collector?workqueue=pending-certification`

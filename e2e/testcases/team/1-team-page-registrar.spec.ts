@@ -14,7 +14,6 @@ test('1. Team Page -1', async ({ browser }) => {
       await expect(page.locator('#content-name')).toHaveText(
         'Ibombo District Office'
       )
-
       await expect(
         page.getByText('Ibombo, Central', {
           exact: true

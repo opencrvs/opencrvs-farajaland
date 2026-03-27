@@ -79,6 +79,7 @@ test.describe.serial('Escalation of birth registration by Registrar', () => {
 
     test('Escalate to Provincial Registrar', async () => {
       await selectAction(page, 'Escalate')
+
       await expect(page.getByText('Escalate to')).toBeVisible()
       await expect(page.getByText('Reason')).toBeVisible()
 
@@ -118,6 +119,7 @@ test.describe.serial('Escalation of birth registration by Registrar', () => {
 
     test('Escalate to Registrar General', async () => {
       await selectAction(page, 'Escalate')
+
       await expect(page.getByText('Escalate to')).toBeVisible()
       await expect(page.getByText('Reason')).toBeVisible()
 
@@ -237,14 +239,12 @@ test.describe.serial('Escalation of birth registration by Registrar', () => {
         await expect(
           page.getByText('Escalate to', { exact: true })
         ).toBeVisible()
-
         await expect(page.getByText('Reason', { exact: true })).toBeVisible()
-        const modal = page.getByTestId('event-history-modal')
 
+        const modal = page.getByTestId('event-history-modal')
         await expect(
           modal.getByText('Registrar General', { exact: true })
         ).toBeVisible()
-
         await expect(
           page.getByText(
             'Escalating this case to Registrar General for further review.',
@@ -260,6 +260,7 @@ test.describe.serial('Escalation of birth registration by Registrar', () => {
         await page
           .getByRole('button', { name: 'Escalation feedback', exact: true })
           .click()
+
         await expect(
           page.getByText('Approving after verifying record - by RG.')
         ).toBeVisible()

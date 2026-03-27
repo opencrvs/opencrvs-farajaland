@@ -19,6 +19,7 @@ test('Validate draft with partial name', async ({ browser }) => {
   await test.step('Record does not appear in draft', async () => {
     await login(page, CREDENTIALS.HOSPITAL_OFFICIAL)
     await page.getByRole('button', { name: 'Drafts' }).click()
+
     await expect(page.getByTestId('search-result')).not.toContainText(
       formatName(name1)
     )
@@ -55,7 +56,6 @@ test('Validate draft with partial name', async ({ browser }) => {
     await expect(page.getByTestId('search-result')).toContainText(
       formatName(name1)
     )
-
     await expect(page.getByTestId('search-result')).toContainText(
       formatName(name2)
     )
@@ -63,13 +63,11 @@ test('Validate draft with partial name', async ({ browser }) => {
 
   await test.step('Records do not appear in draft for other user: RO', async () => {
     await login(page, CREDENTIALS.REGISTRATION_OFFICER)
-
     await page.getByRole('button', { name: 'Drafts' }).click()
 
     await expect(page.getByTestId('search-result')).not.toContainText(
       formatName(name1)
     )
-
     await expect(page.getByTestId('search-result')).not.toContainText(
       formatName(name2)
     )
@@ -77,13 +75,11 @@ test('Validate draft with partial name', async ({ browser }) => {
 
   await test.step('Records do not appear in draft for other user: LR', async () => {
     await login(page, CREDENTIALS.REGISTRAR)
-
     await page.getByRole('button', { name: 'Drafts' }).click()
 
     await expect(page.getByTestId('search-result')).not.toContainText(
       formatName(name1)
     )
-
     await expect(page.getByTestId('search-result')).not.toContainText(
       formatName(name2)
     )

@@ -18,9 +18,7 @@ test('10.0 Validate "Review" page', async ({ browser }) => {
     CREDENTIALS.REGISTRAR.PASSWORD
   )
   const res = await createDeclaration(token)
-
   const declaration: Declaration = res.declaration
-
   const page = await browser.newPage()
 
   await test.step('10.0.1 Log in', async () => {
@@ -29,29 +27,21 @@ test('10.0 Validate "Review" page', async ({ browser }) => {
 
   await test.step('10.0.2 Navigate to certificate print action', async () => {
     await page.getByRole('button', { name: 'Pending certification' }).click()
-
     await navigateToCertificatePrintAction(page, declaration)
   })
 
   await test.step('10.1 Review page validations', async () => {
     await selectCertificationType(page, 'Birth Certificate')
-
     await selectRequesterType(page, 'Print and issue to Informant (Mother)')
-
     await page.getByRole('button', { name: 'Continue' }).click()
-
     await page.getByRole('button', { name: 'Verified' }).click()
-
     await page.getByRole('button', { name: 'Continue' }).click()
-
     await page.getByRole('button', { name: 'Yes, print certificate' }).click()
 
     await expect(page.locator('#confirm-print-modal')).toBeVisible()
-
     await expect(page.locator('#confirm-print-modal')).toContainText(
       'Print certified copy?'
     )
-
     await expect(page.locator('#confirm-print-modal')).toContainText(
       'This will generate a certified copy of the record for printing.'
     )

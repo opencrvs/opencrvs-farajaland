@@ -85,6 +85,7 @@ test('Birth correction flow - Mobile', async ({ browser }) => {
 
   await test.step('Review page should be displayed and continue button should be disabled', async () => {
     await expectInUrl(page, `/events/request-correction/${eventId}/review`)
+
     await expect(page.getByRole('button', { name: 'Continue' })).toBeDisabled()
   })
 
@@ -103,11 +104,13 @@ test('Birth correction flow - Mobile', async ({ browser }) => {
 
     await type(page, '#firstname', newFirstName)
     await page.getByRole('button', { name: 'Back to review' }).click()
+
     await expect(page.getByRole('button', { name: 'Continue' })).toBeEnabled()
   })
 
   await test.step('Continue to the summary page', async () => {
     await page.getByRole('button', { name: 'Continue' }).click()
+
     await expectInUrl(page, `/events/request-correction/${eventId}/summary`)
 
     await expect(
@@ -149,6 +152,7 @@ test('Birth correction flow - Mobile', async ({ browser }) => {
 
     await test.step('Navigate to correction review', async () => {
       await selectAction(page, 'Review correction request')
+
       await expect(page.getByText('RequesterInformant (Mother)')).toBeVisible()
       await expect(
         page.getByText(

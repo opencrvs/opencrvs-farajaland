@@ -129,21 +129,13 @@ test('3. Birth declaration case - 3', async ({ browser }) => {
 
     await test.step('3.1.1 Fill child details', async () => {
       await page.locator('#firstname').fill(declaration.child.name.firstNames)
-
       await page.locator('#surname').fill(declaration.child.name.familyName)
-
       await page.locator('#child____gender').click()
-
       await page.getByText(declaration.child.gender, { exact: true }).click()
-
       await page.getByPlaceholder('dd').fill(declaration.child.birthDate.dd)
-
       await page.getByPlaceholder('mm').fill(declaration.child.birthDate.mm)
-
       await page.getByPlaceholder('yyyy').fill(declaration.child.birthDate.yyyy)
-
       await page.locator('#child____placeOfBirth').click()
-
       await page
         .getByText(declaration.placeOfBirth, {
           exact: true
@@ -156,7 +148,6 @@ test('3. Birth declaration case - 3', async ({ browser }) => {
           '#child____birthLocation____privateHome-form-input #province'
         )
       ).toBeDisabled()
-
       await expect(
         page.locator(
           '#child____birthLocation____privateHome-form-input #district'
@@ -164,47 +155,36 @@ test('3. Birth declaration case - 3', async ({ browser }) => {
       ).toBeDisabled()
 
       await page.locator('#town').fill(declaration.birthLocation.town)
-
       await page
         .locator('#residentialArea')
         .fill(declaration.birthLocation.residentialArea)
-
       await page.locator('#street').fill(declaration.birthLocation.street)
-
       await page.locator('#number').fill(declaration.birthLocation.number)
-
       await page
         .locator('#zipCode')
         .fill(declaration.birthLocation.postcodeOrZip)
-
       await page.locator('#child____attendantAtBirth').click()
-
       await page
         .getByText(declaration.attendantAtBirth, {
           exact: true
         })
         .click()
-
       await page.locator('#child____birthType').click()
-
       await page
         .getByText(declaration.birthType, {
           exact: true
         })
         .click()
-
       await continueForm(page)
     })
 
     await test.step('3.1.2 Fill informant details', async () => {
       await page.locator('#informant____relation').click()
-
       await page
         .getByText(declaration.informantType, {
           exact: true
         })
         .click()
-
       await page.locator('#informant____email').fill(declaration.informantEmail)
 
       /*
@@ -218,213 +198,145 @@ test('3. Birth declaration case - 3', async ({ browser }) => {
       await page
         .locator('#firstname')
         .fill(declaration.informant.name.firstNames)
-
       await page.locator('#surname').fill(declaration.informant.name.familyName)
-
       await page.getByPlaceholder('dd').fill(declaration.informant.birthDate.dd)
-
       await page.getByPlaceholder('mm').fill(declaration.informant.birthDate.mm)
-
       await page
         .getByPlaceholder('yyyy')
         .fill(declaration.informant.birthDate.yyyy)
-
       await page.locator('#informant____idType').click()
-
       await page
         .getByText(declaration.informant.identifier.type, { exact: true })
         .click()
-
       await page
         .locator('#informant____nid')
         .fill(declaration.informant.identifier.id)
-
       await page.locator('#country').click()
-
       await page
         .locator('#country input')
         .fill(declaration.informant.address.country.slice(0, 3))
-
       await page
         .locator('#country')
         .getByText(declaration.informant.address.country, { exact: true })
         .click()
-
       await page.locator('#province').click()
-
       await page
         .getByText(declaration.informant.address.province, { exact: true })
         .click()
-
       await page.locator('#district').click()
-
       await page
         .getByText(declaration.informant.address.district, { exact: true })
         .click()
-
       await page.locator('#village').click()
-
       await page
         .getByText(declaration.informant.address.village, { exact: true })
         .click()
-
       await page.locator('#town').fill(declaration.informant.address.town)
-
       await page
         .locator('#residentialArea')
         .fill(declaration.informant.address.residentialArea)
-
       await page.locator('#street').fill(declaration.informant.address.street)
-
       await page.locator('#number').fill(declaration.informant.address.number)
-
       await page
         .locator('#zipCode')
         .fill(declaration.informant.address.postcodeOrZip)
-
       await continueForm(page)
     })
 
     await test.step("3.1.3 Fill mother's details", async () => {
       await page.locator('#firstname').fill(declaration.mother.name.firstNames)
-
       await page.locator('#surname').fill(declaration.mother.name.familyName)
-
       await page.getByPlaceholder('dd').fill(declaration.mother.birthDate.dd)
-
       await page.getByPlaceholder('mm').fill(declaration.mother.birthDate.mm)
-
       await page
         .getByPlaceholder('yyyy')
         .fill(declaration.mother.birthDate.yyyy)
-
       await page.locator('#mother____idType').click()
-
       await page
         .getByText(declaration.mother.identifier.type, { exact: true })
         .click()
-
       await page
         .locator('#mother____brn')
         .fill(declaration.mother.identifier.id)
-
       await page.locator('#country').click()
-
       await page
         .locator('#country input')
         .fill(declaration.mother.address.country.slice(0, 3))
-
       await page
         .locator('#country')
         .getByText(declaration.mother.address.country, { exact: true })
         .click()
-
       await page.locator('#state').fill(declaration.mother.address.state)
-
       await page.locator('#district2').fill(declaration.mother.address.district)
-
       await page.locator('#cityOrTown').fill(declaration.mother.address.town)
-
       await page
         .locator('#addressLine1')
         .fill(declaration.mother.address.addressLine1)
-
       await page
         .locator('#addressLine2')
         .fill(declaration.mother.address.addressLine2)
-
       await page
         .locator('#addressLine3')
         .fill(declaration.mother.address.addressLine3)
-
       await page
         .locator('#postcodeOrZip')
         .fill(declaration.mother.address.postcodeOrZip)
-
       await page.locator('#mother____maritalStatus').click()
-
       await page
         .getByText(declaration.mother.maritalStatus, { exact: true })
         .click()
-
       await page.locator('#mother____educationalAttainment').click()
-
       await page
         .getByText(declaration.mother.levelOfEducation, { exact: true })
         .click()
-
       await continueForm(page)
     })
 
     await test.step("3.1.4 Fill father's details", async () => {
       await page.locator('#firstname').fill(declaration.father.name.firstNames)
-
       await page.locator('#surname').fill(declaration.father.name.familyName)
-
       await fillDate(page, declaration.father.birthDate)
-
       await page.locator('#father____idType').click()
-
       await page
         .getByText(declaration.father.identifier.type, { exact: true })
         .click()
-
       await page
         .locator('#father____brn')
         .fill(declaration.father.identifier.id)
-
       await page.locator('#father____nationality').click()
-
       await page
         .getByText(declaration.father.nationality, { exact: true })
         .click()
-
       await page.getByLabel('No', { exact: true }).check()
-
       await page.locator('#province').click()
-
       await page
         .getByText(declaration.father.address.province, { exact: true })
         .click()
-
       await page.locator('#district').click()
-
       await page
         .getByText(declaration.father.address.district, { exact: true })
         .click()
-
       await page.locator('#village').click()
-
       await page
         .getByText(declaration.father.address.village, { exact: true })
         .click()
-
       await page.locator('#town').fill(declaration.father.address.town)
-
       await page
         .locator('#residentialArea')
         .fill(declaration.father.address.residentialArea)
-
       await page.locator('#street').fill(declaration.father.address.street)
-
       await page.locator('#number').fill(declaration.father.address.number)
-
       await page
         .locator('#zipCode')
         .fill(declaration.father.address.postcodeOrZip)
-
       await page.locator('#father____maritalStatus').click()
-
       await page
         .getByText(declaration.father.maritalStatus, { exact: true })
         .click()
-
       await page.locator('#father____educationalAttainment').click()
-
       await page
         .getByText(declaration.father.levelOfEducation, { exact: true })
         .click()
-
       await page.getByRole('button', { name: 'Continue' }).click()
     })
 
@@ -559,7 +471,6 @@ test('3. Birth declaration case - 3', async ({ browser }) => {
       await expect(page.getByTestId('row-value-child.placeOfBirth')).toHaveText(
         declaration.placeOfBirth
       )
-
       await validateAddress(
         page,
         declaration.birthLocation,
@@ -686,7 +597,6 @@ test('3. Birth declaration case - 3', async ({ browser }) => {
       await expect(page.getByTestId('row-value-mother.idType')).toHaveText(
         declaration.mother.identifier.type
       )
-
       await expect(page.getByTestId('row-value-mother.brn')).toHaveText(
         declaration.mother.identifier.id
       )
@@ -736,7 +646,6 @@ test('3. Birth declaration case - 3', async ({ browser }) => {
       await expect(page.getByTestId('row-value-father.idType')).toHaveText(
         declaration.father.identifier.type
       )
-
       await expect(page.getByTestId('row-value-father.brn')).toHaveText(
         declaration.father.identifier.id
       )
@@ -770,11 +679,8 @@ test('3. Birth declaration case - 3', async ({ browser }) => {
 
     await test.step('3.1.8 Fill up informant comment & signature', async () => {
       await page.locator('#review____comment').fill(faker.lorem.sentence())
-
       await page.getByRole('button', { name: 'Sign', exact: true }).click()
-
       await drawSignature(page, 'review____signature_canvas_element', false)
-
       await page
         .locator('#review____signature_modal')
         .getByRole('button', { name: 'Apply' })
@@ -785,9 +691,7 @@ test('3. Birth declaration case - 3', async ({ browser }) => {
 
     await test.step('3.1.9 Declare', async () => {
       await selectDeclarationAction(page, 'Declare')
-
       await ensureOutboxIsEmpty(page)
-
       await page.getByText('Recent').click()
 
       await expect(
@@ -801,17 +705,13 @@ test('3. Birth declaration case - 3', async ({ browser }) => {
   await test.step('3.2 Declaration Review by Registrar', async () => {
     await test.step('3.2.1 Navigate to the declaration "Record" -tab', async () => {
       await logout(page)
-
       await login(page, CREDENTIALS.REGISTRAR)
-
       await page.getByText('Pending registration').click()
-
       await page
         .getByRole('button', {
           name: formatName(declaration.child.name)
         })
         .click()
-
       await switchEventTab(page, 'Record')
     })
 
@@ -851,7 +751,6 @@ test('3. Birth declaration case - 3', async ({ browser }) => {
       await expect(page.getByTestId('row-value-child.placeOfBirth')).toHaveText(
         declaration.placeOfBirth
       )
-
       await validateAddress(
         page,
         declaration.birthLocation,
@@ -978,7 +877,6 @@ test('3. Birth declaration case - 3', async ({ browser }) => {
       await expect(page.getByTestId('row-value-mother.idType')).toHaveText(
         declaration.mother.identifier.type
       )
-
       await expect(page.getByTestId('row-value-mother.brn')).toHaveText(
         declaration.mother.identifier.id
       )
@@ -1028,7 +926,6 @@ test('3. Birth declaration case - 3', async ({ browser }) => {
       await expect(page.getByTestId('row-value-father.idType')).toHaveText(
         declaration.father.identifier.type
       )
-
       await expect(page.getByTestId('row-value-father.brn')).toHaveText(
         declaration.father.identifier.id
       )

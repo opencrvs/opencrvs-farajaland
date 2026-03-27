@@ -124,25 +124,15 @@ test('4. Birth declaration case - 4', async ({ browser }) => {
 
     await test.step('4.1.1 Fill child details', async () => {
       await page.locator('#firstname').fill(declaration.child.name.firstNames)
-
       await page.locator('#firstname').blur()
-
       await page.locator('#surname').fill(declaration.child.name.familyName)
-
       await page.locator('#surname').blur()
-
       await page.locator('#child____gender').click()
-
       await page.getByText(declaration.child.gender, { exact: true }).click()
-
       await page.getByPlaceholder('dd').fill(declaration.child.birthDate.dd)
-
       await page.getByPlaceholder('mm').fill(declaration.child.birthDate.mm)
-
       await page.getByPlaceholder('yyyy').fill(declaration.child.birthDate.yyyy)
-
       await page.locator('#child____placeOfBirth').click()
-
       await page
         .getByText(declaration.placeOfBirth, {
           exact: true
@@ -153,53 +143,41 @@ test('4. Birth declaration case - 4', async ({ browser }) => {
       await expect(
         page.locator('#child____birthLocation____other-form-input #province')
       ).toBeDisabled()
-
       await expect(
         page.locator('#child____birthLocation____other-form-input #district')
       ).toBeDisabled()
 
       await page.locator('#town').fill(declaration.birthLocation.town)
-
       await page
         .locator('#residentialArea')
         .fill(declaration.birthLocation.residentialArea)
-
       await page.locator('#street').fill(declaration.birthLocation.street)
-
       await page.locator('#number').fill(declaration.birthLocation.number)
-
       await page
         .locator('#zipCode')
         .fill(declaration.birthLocation.postcodeOrZip)
-
       await page.locator('#child____attendantAtBirth').click()
-
       await page
         .getByText(declaration.attendantAtBirth, {
           exact: true
         })
         .click()
-
       await page.locator('#child____birthType').click()
-
       await page
         .getByText(declaration.birthType, {
           exact: true
         })
         .click()
-
       await continueForm(page)
     })
 
     await test.step('4.1.2 Fill informant details', async () => {
       await page.locator('#informant____relation').click()
-
       await page
         .getByText(declaration.informantType, {
           exact: true
         })
         .click()
-
       await page.locator('#informant____email').fill(declaration.informantEmail)
 
       /*
@@ -213,76 +191,52 @@ test('4. Birth declaration case - 4', async ({ browser }) => {
       await page
         .locator('#firstname')
         .fill(declaration.informant.name.firstNames)
-
       await page.locator('#surname').fill(declaration.informant.name.familyName)
-
       await page.locator('#surname').blur()
-
       await page.getByLabel('Exact date of birth unknown').check()
-
       await page
         .locator('#informant____age')
         .fill(declaration.informant.age.toString())
-
       await page.locator('#informant____nationality').click()
-
       await page
         .getByText(declaration.informant.nationality, { exact: true })
         .click()
-
       await page.locator('#informant____idType').click()
-
       await page
         .getByText(declaration.informant.identifier.type, { exact: true })
         .click()
-
       await page
         .locator('#informant____passport')
         .fill(declaration.informant.identifier.id)
-
       await page.locator('#country').click()
-
       await page
         .locator('#country input')
         .fill(declaration.informant.address.country.slice(0, 3))
-
       await page
         .locator('#country')
         .getByText(declaration.informant.address.country, { exact: true })
         .click()
-
       await page.locator('#province').click()
-
       await page
         .getByText(declaration.informant.address.province, { exact: true })
         .click()
-
       await page.locator('#district').click()
-
       await page
         .getByText(declaration.informant.address.district, { exact: true })
         .click()
-
       await page.locator('#village').click()
-
       await page
         .getByText(declaration.informant.address.village, { exact: true })
         .click()
-
       await page.locator('#town').fill(declaration.informant.address.town)
-
       await page
         .locator('#residentialArea')
         .fill(declaration.informant.address.residentialArea)
-
       await page.locator('#street').fill(declaration.informant.address.street)
-
       await page.locator('#number').fill(declaration.informant.address.number)
-
       await page
         .locator('#zipCode')
         .fill(declaration.informant.address.postcodeOrZip)
-
       await continueForm(page)
     })
 

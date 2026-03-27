@@ -34,9 +34,7 @@ test('Revoke and reinstate record', async ({ browser }) => {
     await expect(page.getByRole('button', { name: 'Confirm' })).toBeDisabled()
 
     await page.locator('#reason').fill('Revoking record for testing purposes.')
-
     await page.getByRole('button', { name: 'Confirm' }).click()
-
     await ensureOutboxIsEmpty(page)
   })
 
@@ -47,14 +45,13 @@ test('Revoke and reinstate record', async ({ browser }) => {
 
   await test.step('Reinstate record', async () => {
     await selectAction(page, 'Reinstate registration')
+
     await expect(page.getByRole('button', { name: 'Confirm' })).toBeDisabled()
 
     await page
       .locator('#reason')
       .fill('Reinstating record for testing purposes.')
-
     await page.getByRole('button', { name: 'Confirm' }).click()
-
     await ensureOutboxIsEmpty(page)
   })
 })

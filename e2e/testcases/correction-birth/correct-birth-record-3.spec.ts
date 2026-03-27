@@ -211,22 +211,18 @@ test.describe.serial(' Correct record - 3', () => {
      */
     await expect(page.getByText('Type of ID')).toBeVisible()
     await expect(page.getByText('National ID')).toBeVisible()
-
     await expect(page.getByText('ID Number')).toBeVisible()
     await expect(page.getByText(declaration['mother.nid'])).toBeVisible()
-
     await expect(page.getByText("Mother's name")).toBeVisible()
     await expect(
       page.getByText(
         `${declaration['mother.name'].firstname} ${declaration['mother.name'].surname}`
       )
     ).toBeVisible()
-
     await expect(page.getByText('Date of birth')).toBeVisible()
     await expect(
       page.getByText(formatDateTo_dMMMMyyyy(declaration['mother.dob']))
     ).toBeVisible()
-
     await expect(page.getByText('Nationality')).toBeVisible()
     await expect(page.getByText('Farajaland')).toBeVisible()
 
@@ -672,6 +668,7 @@ test.describe.serial(' Correct record - 3', () => {
         ).toBeVisible()
       })
     })
+
     test('3.4.2 Change place of delivery', async () => {
       await page.getByTestId('change-button-child.placeOfBirth').click()
 
@@ -975,6 +972,7 @@ test.describe.serial(' Correct record - 3', () => {
       await selectAction(page, 'Review correction request')
       await visible(page, 'Correction request')
     })
+
     test('3.8.2 Correction request summary screen', async () => {
       // Header assertions
       await visible(page, 'Requester', 'Informant (Mother)')

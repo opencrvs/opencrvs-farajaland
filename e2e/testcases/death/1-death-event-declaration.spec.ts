@@ -292,7 +292,6 @@ test.describe('1. Death event declaration', () => {
          * - Save & exit button
          * - 3dot menu (delete option)
          */
-
         await expect(
           page.getByText('Spouse details', { exact: true })
         ).toBeVisible()
@@ -338,7 +337,6 @@ test.describe('1. Death event declaration', () => {
          * - Save & exit button
          * - 3dot menu (delete option)
          */
-
         await expect(
           page.getByText('Upload supporting documents', { exact: true })
         ).toBeVisible()
@@ -474,7 +472,6 @@ test.describe('1. Death event declaration', () => {
       /*
        * Expected result: should be navigated to "my-drafts" tab but no draft will be saved
        */
-
       await expect(page.locator('#content-name')).toHaveText('Assigned to you')
 
       await ensureOutboxIsEmpty(page)
@@ -537,7 +534,6 @@ test.describe('1. Death event declaration', () => {
       /*
        * Expected result: should be navigated to "my-drafts" tab but no draft will be saved
        */
-
       await expect(page.locator('#content-name')).toHaveText('Assigned to you')
 
       await ensureOutboxIsEmpty(page)

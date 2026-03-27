@@ -2,12 +2,14 @@ import { test, expect } from '@playwright/test'
 import { login } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
 import { verifyMembersClickable } from '../birth/helpers'
+
 test('7. Organisation Page', async ({ browser }) => {
   const page = await browser.newPage()
 
   await test.step('7.1.0 Verify UI', async () => {
     await login(page, CREDENTIALS.REGISTRAR)
     await page.getByRole('button', { name: 'Organisation' }).click()
+
     await expect(page.locator('#content-name')).toHaveText('Organisation')
     await expect(page.getByText('Farajaland', { exact: true })).toBeVisible()
   })
@@ -69,6 +71,7 @@ test('7. Organisation Page', async ({ browser }) => {
 
   await test.step('7.1.5 Verify Embassy Office', async () => {
     await page.getByRole('button', { name: 'Organisation' }).click()
+
     await expect(
       page.getByRole('button', { name: 'French Embassy Office' })
     ).toBeDisabled()

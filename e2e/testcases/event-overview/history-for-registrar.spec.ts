@@ -51,7 +51,6 @@ test('History rows when Registrar registers a birth from scratch', async ({
       await expect(actionCell).toHaveText(expectedActions[i])
 
       await actionCell.getByRole('button').click()
-
       const modal = page.getByTestId('event-history-modal')
 
       await expect(modal.getByRole('heading')).toHaveText(expectedActions[i])

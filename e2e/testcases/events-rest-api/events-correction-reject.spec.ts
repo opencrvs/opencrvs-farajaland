@@ -72,10 +72,10 @@ test.describe('POST /api/events/events/{eventId}/correction/reject', () => {
       clientToken
     )
     const getBody = await getResponse.json()
-
     const rejectAction = getBody.actions.find(
       (action: { type: string }) => action.type === 'REJECT_CORRECTION'
     )
+
     expect(rejectAction).toBeDefined()
   })
 })

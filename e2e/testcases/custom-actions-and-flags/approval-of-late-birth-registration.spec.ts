@@ -158,7 +158,6 @@ test.describe.serial('Approval of late birth registration', () => {
       await login(page, CREDENTIALS.REGISTRATION_OFFICER)
       await page.getByText('Pending approval').click()
       await page.getByRole('button', { name: childNameFormatted }).click()
-
       await ensureAssigned(page)
     })
 
@@ -170,6 +169,7 @@ test.describe.serial('Approval of late birth registration', () => {
 
     test('RO should not have the option to Approve', async () => {
       await page.getByRole('button', { name: 'Action', exact: true }).click()
+
       await expect(page.getByText('Approve', { exact: true })).not.toBeVisible()
     })
   })
@@ -185,6 +185,7 @@ test.describe.serial('Approval of late birth registration', () => {
       await page.getByRole('button', { name: 'Action', exact: true }).click()
       await page.getByText('Unassign', { exact: true }).click()
       await page.getByRole('button', { name: 'Unassign', exact: true }).click()
+
       await expect(
         page.getByText('Not assigned', { exact: true })
       ).toBeVisible()
@@ -192,6 +193,7 @@ test.describe.serial('Approval of late birth registration', () => {
 
     test('LR should not have the option to Approve', async () => {
       await page.getByRole('button', { name: 'Action', exact: true }).click()
+
       await expect(page.getByText('Approve', { exact: true })).not.toBeVisible()
     })
   })
@@ -219,6 +221,7 @@ test.describe.serial('Approval of late birth registration', () => {
 
     test('Fill comments field before confirming Approve declaration', async () => {
       await selectAction(page, 'Approve')
+
       await expect(
         page.getByText(
           'Approving this declaration confirms it as legally accepted and eligible for registration.'
@@ -259,12 +262,14 @@ test.describe.serial('Approval of late birth registration', () => {
 
     test('LR should not have the option to Approve', async () => {
       await page.getByRole('button', { name: 'Action', exact: true }).click()
+
       await expect(page.getByText('Approve', { exact: true })).not.toBeVisible()
     })
 
     test('Validate that action and form field value appearing in audit trail', async () => {
       await switchEventTab(page, 'Audit')
       await page.getByRole('button', { name: 'Approved', exact: true }).click()
+
       await expect(
         page.getByText('Approving after verifying all late submission details.')
       ).toBeVisible()
@@ -408,6 +413,7 @@ test.describe('Birth with non-late registration will not have flag or Approve-ac
 
     test('Record should not have the "Approve"-action available', async () => {
       await page.getByRole('button', { name: 'Action', exact: true }).click()
+
       await expect(page.getByText('Approve', { exact: true })).not.toBeVisible()
     })
   })
@@ -904,8 +910,8 @@ test.describe
 
     test('Assert audit trail', async () => {
       await switchEventTab(page, 'Audit')
-
       await page.getByRole('button', { name: 'Edited', exact: true }).click()
+
       await expect(
         page.getByText(
           'Date of birth' +
@@ -913,7 +919,6 @@ test.describe
             formatDateTo_dMMMMyyyy(format(lateRegDate, 'yyyy-MM-dd'))
         )
       ).toBeVisible()
-
       await expect(
         page.getByText(
           'Reason for delayed registration-Late registration reason'

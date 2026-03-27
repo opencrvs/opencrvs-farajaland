@@ -5,7 +5,6 @@ import { trackAndDeleteCreatedEvents } from '../test-data/eventDeletion'
 
 const loginAndBeginBirthDeclaration = async ({ page }: { page: Page }) => {
   await login(page)
-
   await page.click('#header-new-event')
 
   await expect(page.getByText('New Declaration')).toBeVisible()
@@ -16,7 +15,6 @@ const loginAndBeginBirthDeclaration = async ({ page }: { page: Page }) => {
 
   await page.getByLabel('Birth').click()
   await page.getByRole('button', { name: 'Continue' }).click()
-
   await page.getByRole('button', { name: 'Continue' }).click()
 
   await expect(page.getByText("Child's details")).toBeVisible()
@@ -340,6 +338,7 @@ test.describe.serial("2. Validate the child's details page", () => {
          */
         await expect(page.locator('#child____birthLocation')).toBeVisible()
       })
+
       await test.step('Enter any health institution', async () => {
         await page
           .locator('#searchable-select-child____birthLocation input')
@@ -366,7 +365,6 @@ test.describe.serial("2. Validate the child's details page", () => {
       await expect(page.locator('#child____placeOfBirth')).toContainText(
         'Residential address'
       )
-
       await expect(
         page.locator('#child____birthLocation____privateHome-form-input')
       ).toBeVisible()
@@ -384,7 +382,6 @@ test.describe.serial("2. Validate the child's details page", () => {
       await expect(page.locator('#child____placeOfBirth')).toContainText(
         'Other'
       )
-
       await expect(
         page.locator('#child____birthLocation____other-form-input')
       ).toBeVisible()

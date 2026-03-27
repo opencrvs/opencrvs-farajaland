@@ -192,6 +192,7 @@ test.describe('1. Correct record - 1', () => {
 
     page = await browser.newPage()
     await login(page, CREDENTIALS.REGISTRATION_OFFICER)
+
     await test.step('Navigate to record and assign', async () => {
       await page.getByRole('button', { name: 'Pending certification' }).click()
       await page
@@ -684,6 +685,7 @@ test.describe('1. Correct record - 1', () => {
       await page.close()
       page = await browser.newPage()
       await login(page, CREDENTIALS.REGISTRAR)
+
       await test.step('1.2.6.1 Record audit by Registrar', async () => {
         if (!trackingId) {
           throw new Error('Tracking ID is required')

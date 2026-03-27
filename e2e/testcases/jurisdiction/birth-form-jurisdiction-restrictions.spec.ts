@@ -79,17 +79,14 @@ test.describe('Birth form - child place of birth jurisdiction restrictions', () 
         '#child____birthLocation____privateHome-form-input #province'
       )
     ).toBeDisabled()
-
     await expect(page.locator('#searchable-select-province')).toHaveText(
       'Central'
     )
-
     await expect(
       page.locator(
         '#child____birthLocation____privateHome-form-input #district'
       )
     ).toBeDisabled()
-
     await expect(page.locator('#searchable-select-district')).toHaveText(
       'Ibombo'
     )
@@ -111,15 +108,12 @@ test.describe('Birth form - child place of birth jurisdiction restrictions', () 
     await expect(
       page.locator('#child____birthLocation____other-form-input #province')
     ).toBeDisabled()
-
     await expect(page.locator('#searchable-select-province')).toHaveText(
       'Central'
     )
-
     await expect(
       page.locator('#child____birthLocation____other-form-input #district')
     ).toBeDisabled()
-
     await expect(page.locator('#searchable-select-district')).toHaveText(
       'Ibombo'
     )

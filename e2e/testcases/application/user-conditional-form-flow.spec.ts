@@ -41,6 +41,7 @@ test('1. User conditional form flow', async ({ browser }) => {
     await test.step('1.1.0 Go to review page and ensure default values are resolved properly', async () => {
       await continueForm(page)
       await continueForm(page)
+
       await expect(page.getByText('Invalid input')).not.toBeVisible()
     })
 
@@ -80,7 +81,6 @@ test('1. User conditional form flow', async ({ browser }) => {
       await page
         .locator('#firstname')
         .fill(declaration.applicant.name.firstName)
-
       await page.locator('#surname').fill(declaration.applicant.name.familyName)
       await page.locator('#recommender____id').fill(declaration.recommender.id)
 

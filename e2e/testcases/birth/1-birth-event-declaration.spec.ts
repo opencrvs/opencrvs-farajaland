@@ -46,7 +46,6 @@ test.describe.serial('1. Birth event declaration', () => {
         await expect(
           page.getByLabel('Tennis club membership application')
         ).toBeVisible()
-
         await expect(
           page.getByRole('button', { name: 'Continue' })
         ).toBeVisible()
@@ -251,7 +250,6 @@ test.describe.serial('1. Birth event declaration', () => {
          * - Save & exit button
          * - 3dot menu (delete option)
          */
-
         await expect(
           page.getByText("Mother's details", { exact: true })
         ).toBeVisible()
@@ -297,7 +295,6 @@ test.describe.serial('1. Birth event declaration', () => {
          * - Save & exit button
          * - 3dot menu (delete option)
          */
-
         await expect(
           page.getByText("Father's details", { exact: true })
         ).toBeVisible()
@@ -346,7 +343,6 @@ test.describe.serial('1. Birth event declaration', () => {
         await expect(
           page.getByText('Upload supporting documents', { exact: true })
         ).toBeVisible()
-
         await expect(
           page.getByRole('button', { name: 'Continue' })
         ).toBeVisible()
@@ -403,11 +399,9 @@ test.describe.serial('1. Birth event declaration', () => {
          * - Cancel Button
          * - Confirm Button
          */
-
         await expect(
           page.getByRole('heading', { name: 'Save & exit?' })
         ).toBeVisible()
-
         await expect(
           page.getByText(
             'All inputted data will be kept secure for future editing. Are you ready to save any changes to this declaration form?'
@@ -433,7 +427,6 @@ test.describe.serial('1. Birth event declaration', () => {
       test('1.9.3 Click Confirm', async () => {
         await page.getByRole('button', { name: 'Action' }).click()
         await page.getByText('Save & Exit', { exact: true }).click()
-
         await page.getByRole('button', { name: 'Confirm' }).click()
 
         /*
@@ -457,7 +450,6 @@ test.describe.serial('1. Birth event declaration', () => {
             name: child.name.firstNames + ' ' + child.name.surname
           })
           .click()
-
         await selectAction(page, 'Update')
 
         await expect(page.locator('#select_document')).toContainText(
@@ -473,11 +465,9 @@ test.describe.serial('1. Birth event declaration', () => {
   test.describe('1.10 Validate "Exit" Button', async () => {
     test.beforeEach(async ({ page }) => {
       await login(page)
-
       await page.click('#header-new-event')
       await page.getByLabel('Birth').click()
       await page.getByRole('button', { name: 'Continue' }).click()
-
       await page.getByRole('button', { name: 'Exit', exact: true }).click()
     })
 

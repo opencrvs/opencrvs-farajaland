@@ -2,12 +2,14 @@ import { test, expect } from '@playwright/test'
 import { login } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
 import { verifyMembersClickable } from '../birth/helpers'
+
 test('1. Organisation Page', async ({ browser }) => {
   const page = await browser.newPage()
 
   await test.step('1.1.0 Verify UI', async () => {
     await login(page, CREDENTIALS.NATIONAL_SYSTEM_ADMIN)
     await page.getByRole('button', { name: 'Organisation' }).click()
+
     await expect(page.locator('#content-name')).toHaveText('Organisation')
     await expect(page.getByText('Farajaland', { exact: true })).toBeVisible()
   })
@@ -20,6 +22,7 @@ test('1. Organisation Page', async ({ browser }) => {
     await pageNavigator.click()
 
     await page.getByRole('button', { name: /Kapopo Health Post/ }).click()
+
     await expect(page.locator('#content-name')).toHaveText(/Kapopo Health Post/)
     await expect(
       page.getByText('Ibombo, Central', { exact: true })
@@ -37,6 +40,7 @@ test('1. Organisation Page', async ({ browser }) => {
     await page.getByRole('button', { name: /Laini/ }).click()
 
     await page.getByRole('button', { name: /Laini Village Office/ }).click()
+
     await expect(page.locator('#content-name')).toHaveText(
       /Laini Village Office/
     )
@@ -55,6 +59,7 @@ test('1. Organisation Page', async ({ browser }) => {
     await page.getByRole('button', { name: /Ilanga/ }).click()
 
     await page.getByRole('button', { name: /Ilanga District Office/ }).click()
+
     await expect(page.locator('#content-name')).toHaveText(
       /Ilanga District Office/
     )

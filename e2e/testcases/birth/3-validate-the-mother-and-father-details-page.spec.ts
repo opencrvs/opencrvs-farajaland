@@ -8,7 +8,6 @@ test.describe('3. Validate the mothers and fathers details pages', () => {
 
   test.beforeEach(async ({ page }) => {
     await login(page)
-
     await page.click('#header-new-event')
 
     await expect(page.getByText('New Declaration')).toBeVisible()

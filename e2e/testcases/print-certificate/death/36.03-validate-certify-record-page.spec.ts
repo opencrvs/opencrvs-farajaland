@@ -18,11 +18,8 @@ test('3.0 Validate "Certify record" page', async ({ browser }) => {
     CREDENTIALS.REGISTRAR.PASSWORD
   )
   const res = await createDeclaration(token)
-
   const eventId: string = res.eventId
-
   const page = await browser.newPage()
-
   const declaration: Declaration = res.declaration
 
   await test.step('3.0.1 Log in', async () => {
@@ -31,17 +28,13 @@ test('3.0 Validate "Certify record" page', async ({ browser }) => {
 
   await test.step('3.0.2 Navigate to certificate print action', async () => {
     await page.getByRole('button', { name: 'Pending certification' }).click()
-
     await navigateToCertificatePrintAction(page, declaration)
   })
 
   await test.step('3.1 should navigate to Verify their identity page', async () => {
     await expectInUrl(page, `/print-certificate/${eventId}/pages/collector`)
-
     await selectCertificationType(page, 'Death Certificate')
-
     await selectRequesterType(page, 'Print and issue to Informant (Spouse)')
-
     await page.getByRole('button', { name: 'Continue' }).click()
 
     await expectInUrl(
@@ -55,27 +48,21 @@ test('3.0 Validate "Certify record" page', async ({ browser }) => {
       page,
       `/print-certificate/${eventId}/pages/collector.identity.verify`
     )
-
     await expect(page.locator('#content-name')).toContainText(
       'Verify their identity'
     )
-
     await expect(page.getByText('Verify their identity')).toBeVisible()
-
     await expect(page.locator('#maincontent')).toContainText(
       declaration['spouse.nid']
     )
-
     await expect(page.locator('#maincontent')).toContainText(
       declaration['spouse.name'].firstname +
         ' ' +
         declaration['spouse.name'].surname
     )
-
     await expect(
       page.getByRole('button', { name: 'Identity does not match' })
     ).toBeVisible()
-
     await expect(page.getByRole('button', { name: 'Verified' })).toBeVisible()
   })
 
@@ -83,17 +70,12 @@ test('3.0 Validate "Certify record" page', async ({ browser }) => {
     await page.getByRole('button', { name: 'Verified' }).click()
 
     await expect(page.locator('#content-name')).toContainText('Collect Payment')
-
     await expect(page.locator('#maincontent')).toContainText('Service')
-
     await expect(page.locator('#maincontent')).toContainText(
       'Death registration before 45 days of date of death'
     )
-
     await expect(page.locator('#maincontent')).toContainText('Fee')
-
     await expect(page.locator('#maincontent')).toContainText('$5.00')
-
     await expect(page.getByRole('button', { name: 'Continue' })).toBeVisible()
 
     await page.getByRole('button', { name: 'Back' }).click()
@@ -105,7 +87,6 @@ test('3.0 Validate "Certify record" page', async ({ browser }) => {
     await expect(page.getByRole('dialog')).toContainText(
       'Print without proof of ID?'
     )
-
     await expect(page.getByRole('dialog')).toContainText(
       'Please be aware that if you proceed, you will be responsible for issuing a certificate without the necessary proof of ID from the collector'
     )
@@ -115,7 +96,6 @@ test('3.0 Validate "Certify record" page', async ({ browser }) => {
     await page.getByRole('button', { name: 'Confirm' }).click()
 
     await expect(page.locator('#content-name')).toContainText('Collect Payment')
-
     await expect(page.getByRole('button', { name: 'Continue' })).toBeVisible()
 
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -126,17 +106,14 @@ test('3.0 Validate "Certify record" page', async ({ browser }) => {
     )
 
     await page.goBack()
-
     await page.getByRole('button', { name: 'Back' }).click()
   })
 
   await test.step('3.6 click warning modal cancel button should close the modal', async () => {
     await page.getByRole('button', { name: 'Identity does not match' }).click()
-
     await page.getByRole('button', { name: 'Cancel' }).click()
 
     await expect(page.getByRole('dialog')).toBeHidden()
-
     await expectInUrl(
       page,
       `/print-certificate/${eventId}/pages/collector.identity.verify`

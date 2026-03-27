@@ -55,9 +55,7 @@ test('Birth Record correction flow', async ({ browser }) => {
 
   await test.step('Fill in the correction details form', async () => {
     await page.locator('#requester____type').click()
-
     await page.getByText('Informant (Mother)', { exact: true }).click()
-
     await page.locator('#reason____option').click()
 
     await page
@@ -67,7 +65,6 @@ test('Birth Record correction flow', async ({ browser }) => {
       .click()
 
     await page.getByRole('button', { name: 'Continue' }).click()
-
     await page.getByRole('button', { name: 'Verified' }).click()
   })
 
@@ -81,17 +78,11 @@ test('Birth Record correction flow', async ({ browser }) => {
     )
 
     await page.getByTestId('select__documents____supportingDocs').click()
-
     await page.getByText('Affidavit', { exact: true }).click()
-
     await inputFile.setInputFiles(attachmentPath)
-
     await page.getByTestId('select__documents____supportingDocs').click()
-
     await page.getByText('Court Document', { exact: true }).click()
-
     await inputFile.setInputFiles(attachmentPath)
-
     await page.getByRole('button', { name: 'Continue' }).click()
   })
 
@@ -187,11 +178,8 @@ test('Birth Record correction flow', async ({ browser }) => {
 
   await test.step('After changing the value to a valid value, continue button should be enabled', async () => {
     await page.getByTestId('change-button-child.dob').click()
-
     await page.getByTestId('child____dob-yyyy').fill('2024')
-
     await page.getByTestId('child____dob-mm').fill('6')
-
     await page.getByTestId('child____dob-dd').fill('24')
 
     await page

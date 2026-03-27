@@ -21,23 +21,22 @@ test('1. Create user -1', async ({ browser }) => {
   await test.step('1.1 User creation started by national system admin', async () => {
     await login(page, CREDENTIALS.NATIONAL_SYSTEM_ADMIN)
     await page.getByRole('button', { name: 'Team' }).click()
+
     await expect(page.getByText('HQ Office')).toBeVisible()
+
     await page.getByRole('button', { name: /HQ Office/ }).click()
     await page.getByTestId('locationSearchInput').fill('Klow')
     await page.getByText(/Klow Village Hospital/).click()
 
     await page.click('#add-user')
+
     await expect(page.getByText('User details')).toBeVisible()
 
     await test.step('1.1.1 Fill user details', async () => {
       await page.locator('#familyName').fill(userinfo.surname)
-
       await page.locator('#firstName').fill(userinfo.firstName)
-
       await page.locator('#email').fill(userinfo.email)
-
       await page.locator('#role').click()
-
       await page.getByText(userinfo.role, { exact: true }).click()
 
       await continueForm(page)
@@ -55,7 +54,6 @@ test('1. Create user -1', async ({ browser }) => {
       await expect(page.locator('#header')).toContainText(
         'Klow Village Hospital'
       )
-
       await expect(
         page.getByText('Klow, Ibombo, Central', {
           exact: true

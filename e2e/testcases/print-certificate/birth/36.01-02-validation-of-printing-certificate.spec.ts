@@ -18,7 +18,6 @@ test('Print certificate', async ({ browser }) => {
   const res = await createDeclaration(token)
 
   const page = await browser.newPage()
-
   const declaration: Declaration = res.declaration
 
   await test.step('1.0.1 Log in', async () => {
@@ -27,7 +26,6 @@ test('Print certificate', async ({ browser }) => {
 
   await test.step('1.0.2 Click on "Print certificate" from action menu', async () => {
     await page.getByRole('button', { name: 'Pending certification' }).click()
-
     await navigateToCertificatePrintAction(page, declaration)
   })
 
@@ -50,7 +48,6 @@ test('Print certificate', async ({ browser }) => {
 
     await test.step('2.3 Click continue after selecting requester type and template type', async () => {
       await page.reload({ waitUntil: 'networkidle' })
-
       await page.locator('#collector____requesterId').click()
 
       const selectOptionsLabels = [

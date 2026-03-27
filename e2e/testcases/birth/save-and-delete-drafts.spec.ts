@@ -29,10 +29,8 @@ test.describe('Save and delete drafts', () => {
       ).toBeVisible()
 
       await page.getByRole('button', { name: 'Confirm' }).click()
-
       await ensureOutboxIsEmpty(page)
       await page.getByRole('button', { name: 'Drafts' }).click()
-
       await page.getByRole('button', { name: childName, exact: true }).click()
       await expect(page.locator('#content-name')).toHaveText(childName)
     })
@@ -62,7 +60,6 @@ test.describe('Save and delete drafts', () => {
         page.getByText('Are you sure you want to delete this declaration?')
       ).toBeVisible()
       await page.getByRole('button', { name: 'Confirm' }).click()
-
       await ensureOutboxIsEmpty(page)
       await page.getByText('Drafts').click()
 
@@ -79,6 +76,7 @@ test.describe('Save and delete drafts', () => {
       await login(page, CREDENTIALS.REGISTRATION_OFFICER)
       await openBirthDeclaration(page)
     })
+
     test('Exit without saving', async () => {
       const childName = await fillChildDetails(page)
       await goToSection(page, 'review')
@@ -91,7 +89,6 @@ test.describe('Save and delete drafts', () => {
       ).toBeVisible()
 
       await page.getByRole('button', { name: 'Confirm', exact: true }).click()
-
       await ensureOutboxIsEmpty(page)
       await page.getByRole('button', { name: 'Assigned to you' }).click()
 

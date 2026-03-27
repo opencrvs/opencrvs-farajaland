@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test'
 import { login } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
+
 test('3. Organisation Page', async ({ browser }) => {
   const page = await browser.newPage()
 
@@ -10,12 +11,15 @@ test('3. Organisation Page', async ({ browser }) => {
   await test.step('3.1.0 Verify Province -> District -> District Office', async () => {
     await login(page, CREDENTIALS.REGISTRAR_GENERAL)
     await page.getByRole('button', { name: 'Organisation' }).click()
+
     await expect(page.locator('#content-name')).toHaveText('Organisation')
     await expect(page.getByText('Farajaland', { exact: true })).toBeVisible()
+
     await page.getByRole('button', { name: /Chuminga/ }).click()
     await page.getByRole('button', { name: /Soka/ }).click()
 
     await page.getByRole('button', { name: /Soka District Office/ }).click()
+
     await expect(page.locator('#content-name')).toHaveText(
       /Soka District Office/
     )

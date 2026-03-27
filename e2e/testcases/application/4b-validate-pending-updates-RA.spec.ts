@@ -56,7 +56,6 @@ test('4(b) Validate "Pending updates"-workqueue for RO', async ({
     await expect(
       page.getByRole('button', { name: formatV2ChildName(declaration) })
     ).toBeVisible()
-
     await expect(page.getByTestId('search-result')).toContainText(
       'Pending updates'
     )
@@ -116,7 +115,6 @@ test('4(b) Validate "Pending updates"-workqueue for RO', async ({
 
   await test.step('4.6 Assert record has correct flags', async () => {
     await navigateToWorkqueue(page, 'Recent')
-
     await page
       .getByRole('button', { name: formatV2ChildName(declaration) })
       .click()

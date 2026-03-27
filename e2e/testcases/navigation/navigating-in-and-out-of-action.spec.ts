@@ -34,17 +34,11 @@ test('Navigating in and out of action', async ({ browser }) => {
 
   await test.step('Navigate successfully through the print certificate action flow', async () => {
     await navigateToCertificatePrintAction(page, declaration)
-
     await selectCertificationType(page, 'Birth Certificate')
-
     await selectRequesterType(page, 'Print and issue to Informant (Mother)')
-
     await page.getByRole('button', { name: 'Continue' }).click()
-
     await page.getByRole('button', { name: 'Verified' }).click()
-
     await page.getByRole('button', { name: 'Continue' }).click()
-
     await page.waitForURL(/\/review/)
 
     await expectInUrl(
@@ -55,11 +49,8 @@ test('Navigating in and out of action', async ({ browser }) => {
 
   await test.step('Browser back and forward actions work correctly inside the action flow', async () => {
     await page.goBack()
-
     await page.goBack()
-
     await page.goForward()
-
     await page.goBack()
 
     await expectInUrl(
@@ -68,9 +59,7 @@ test('Navigating in and out of action', async ({ browser }) => {
     )
 
     await page.goForward()
-
     await page.goForward()
-
     await page.waitForURL(/\/review/)
 
     await expectInUrl(
@@ -81,7 +70,6 @@ test('Navigating in and out of action', async ({ browser }) => {
 
   await test.step('After finishing action flow, user should be redirected to the event overview page', async () => {
     await page.getByRole('button', { name: 'Yes, print certificate' }).click()
-
     await page.getByRole('button', { name: 'Print', exact: true }).click()
 
     // Wait for PDF the load and the page to be redirected to the overview page
