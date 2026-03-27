@@ -409,7 +409,7 @@ export const mother = defineFormPage({
     },
     {
       id: 'mother.addressHelper',
-      type: FieldType.PARAGRAPH,
+      type: FieldType.HEADING,
       label: {
         defaultMessage: 'Usual place of residence',
         description: 'This is the label for the field',
@@ -417,6 +417,10 @@ export const mother = defineFormPage({
       },
       configuration: { styles: { fontVariant: 'h3' } },
       conditionals: [
+        {
+          type: ConditionalType.DISPLAY_ON_REVIEW,
+          conditional: never()
+        },
         {
           type: ConditionalType.SHOW,
           conditional: requireMotherDetails

@@ -455,7 +455,7 @@ export const informant = defineFormPage({
     },
     {
       id: 'informant.addressHelper',
-      type: FieldType.PARAGRAPH,
+      type: FieldType.HEADING,
       label: {
         defaultMessage: 'Usual place of residence',
         description: 'This is the label for the field',
@@ -463,6 +463,10 @@ export const informant = defineFormPage({
       },
       configuration: { styles: { fontVariant: 'h3' } },
       conditionals: [
+        {
+          type: ConditionalType.DISPLAY_ON_REVIEW,
+          conditional: never()
+        },
         {
           type: ConditionalType.SHOW,
           conditional: informantOtherThanParent
