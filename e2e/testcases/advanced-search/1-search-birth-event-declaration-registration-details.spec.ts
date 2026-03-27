@@ -37,6 +37,7 @@ test('Advanced Search - Birth Event Declaration - Registration details', async (
   await test.step('1.5 - Validate search by registration details search fields', async () => {
     await test.step('1.5.1 - Validate Place of registration filters, Date of registration Status of Record and Time Period', async () => {
       await page.getByText('Registration details').click()
+
       await page
         .locator('#event____legalStatuses____REGISTERED____createdAtLocation')
         .fill('Ibombo')
@@ -70,6 +71,7 @@ test('Advanced Search - Birth Event Declaration - Registration details', async (
       await expect(page.getByText('Registered')).toBeVisible()
       await page.getByText('Registered').click()
       await expect(page.getByText('Registered')).toHaveCount(2)
+
       await expect(page.locator('#event____updatedAt')).toBeVisible()
       await page.locator('#event____updatedAt').click()
       await expect(page.getByText('Last 7 days', { exact: true })).toBeVisible()
@@ -112,6 +114,7 @@ test('Advanced Search - Birth Event Declaration - Registration details', async (
           'Time period: Last 7 days'
         ]
       })
+
       // Check for Edit button
       await expect(
         page.getByRole('button', { name: 'Edit', exact: true })
@@ -138,6 +141,7 @@ test('Advanced Search - Birth Event Declaration - Registration details', async (
       await expect(page.url()).toContain(`event.updatedAt=`)
 
       await expect(page.locator('#tab_birth')).toHaveText('Birth')
+
       await expect(
         page.locator(
           '#searchable-select-event____legalStatuses____REGISTERED____createdAtLocation'

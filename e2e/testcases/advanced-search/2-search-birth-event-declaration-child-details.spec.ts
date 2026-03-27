@@ -40,10 +40,13 @@ test("Advanced Search - Birth Event Declaration - Child's details", async ({
   await test.step("2.5 - Validate search by Child's details", async () => {
     await test.step('2.5.1 - Validate filling DOB and gender filters', async () => {
       await page.getByText('Child details').click()
+
       await type(page, '#firstname', record.declaration['child.name'].firstname)
       await type(page, '#surname', record.declaration['child.name'].surname)
+
       await page.locator('#child____gender').click()
       await page.getByText('Female', { exact: true }).click()
+
       await type(page, '[data-testid="child____dob-dd"]', dd)
       await type(page, '[data-testid="child____dob-mm"]', mm)
       await type(page, '[data-testid="child____dob-yyyy"]', yyyy)
@@ -54,6 +57,7 @@ test("Advanced Search - Birth Event Declaration - Child's details", async ({
       await expect(page).toHaveURL(/.*\/search-result/)
       expect(page.url()).toContain(`child.dob=${yyyy}-${mm}-${dd}`)
       expect(page.url()).toContain(`child.gender=female`)
+
       const param = new URL(page.url()).searchParams.get('child.name')!
       const decoded = decodeURIComponent(param)
       const name = JSON.parse(decoded)
@@ -96,6 +100,7 @@ test("Advanced Search - Birth Event Declaration - Child's details", async ({
         surname: record.declaration['child.name'].surname,
         middlename: ''
       })
+
       await expect(page.locator('#tab_birth')).toHaveText('Birth')
       await expect(page.getByTestId('child____dob-dd')).toHaveValue(dd)
       await expect(page.getByTestId('child____dob-mm')).toHaveValue(mm)

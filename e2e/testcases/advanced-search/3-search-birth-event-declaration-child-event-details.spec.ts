@@ -5,6 +5,7 @@ import { CREDENTIALS } from '../../constants'
 import { faker } from '@faker-js/faker'
 import { getIdByName, getAdministrativeAreas } from '../birth/helpers'
 import { assertTexts, type } from '../../utils'
+
 test("Advanced Search - Birth Event Declaration - Child's details", async ({
   browser
 }) => {
@@ -44,6 +45,7 @@ test("Advanced Search - Birth Event Declaration - Child's details", async ({
   await test.step("3 - Validate search by Child's DOB & Gender", async () => {
     await test.step('3.1.1 - Validate filling DOB and gender filters', async () => {
       await page.getByText('Child details').click()
+
       await type(
         page,
         '[data-testid="text__firstname"]',
@@ -75,6 +77,7 @@ test("Advanced Search - Birth Event Declaration - Child's details", async ({
       expect(page.url()).toContain(`child.dob=${yyyy}-${mm}-${dd}`)
       expect(page.url()).toContain(`child.gender=female`)
       expect(page.url()).toContain(`child.birthLocation=${facilityId}`)
+
       await expect(page.getByText('Search results')).toBeVisible()
       const searchResult = await page.locator('#content-name').textContent()
       const searchResultCountNumberInBracketsRegex = /\((\d+)\)$/
@@ -101,6 +104,7 @@ test("Advanced Search - Birth Event Declaration - Child's details", async ({
       expect(page.url()).toContain(`child.dob=${yyyy}-${mm}-${dd}`)
       expect(page.url()).toContain(`child.gender=female`)
       expect(page.url()).toContain(`eventType=birth`)
+
       await expect(page.locator('#tab_birth')).toHaveText('Birth')
       await expect(page.getByTestId('child____dob-dd')).toHaveValue(dd)
       await expect(page.getByTestId('child____dob-mm')).toHaveValue(mm)
@@ -132,6 +136,7 @@ test("Advanced Search - Birth Event Declaration - Child's Residential Address", 
   province = getIdByName(administrativeAreas, 'Central')!
   district = getIdByName(administrativeAreas, 'Ibombo')!
   village = getIdByName(administrativeAreas, 'Klow')!
+
   if (!province || !district || !village) {
     throw new Error('Province, district or village not found')
   }
@@ -168,6 +173,7 @@ test("Advanced Search - Birth Event Declaration - Child's Residential Address", 
   await test.step("3 - Validate search by Child's Place of Birth", async () => {
     await test.step('3.2.1 - Validate filling Place of Birth', async () => {
       await page.getByText('Event details').click()
+
       await page.locator('#child____placeOfBirth').click()
       await expect(
         page.getByText('Residential address', { exact: true })
@@ -176,6 +182,7 @@ test("Advanced Search - Birth Event Declaration - Child's Residential Address", 
       page.locator('#country').getByText('Farajaland')
       page.locator('#searchable-select-province').getByText('Central')
       page.locator('#searchable-select-district').getByText('Ibombo')
+
       await page.locator('#province').fill('Cent')
       await page.getByText('Central', { exact: true }).click()
       await page.locator('#district').fill('Ibo')
@@ -188,6 +195,7 @@ test("Advanced Search - Birth Event Declaration - Child's Residential Address", 
     await test.step('3.2.2 - Validate search and show results', async () => {
       await page.click('#search')
       await expect(page).toHaveURL(/.*\/search-result/)
+
       const searchParams = new URLSearchParams(page.url())
       const address = searchParams.get('child.birthLocation.privateHome')
       if (address !== null) {
@@ -199,6 +207,7 @@ test("Advanced Search - Birth Event Declaration - Child's Residential Address", 
         await expect(addressObject.district).toBeTruthy()
         await expect(addressObject.village).toBeTruthy()
       }
+
       await expect(page.getByText('Search results')).toBeVisible()
       const searchResult = await page.locator('#content-name').textContent()
       const searchResultCountNumberInBracketsRegex = /\((\d+)\)$/
@@ -233,6 +242,7 @@ test("Advanced Search - Birth Event Declaration - Child's Residential Address", 
       }
       expect(page.url()).toContain(`child.placeOfBirth=PRIVATE_HOME`)
       expect(page.url()).toContain(`eventType=birth`)
+
       await expect(page.locator('#country')).toHaveText('Farajaland')
       await expect(page.locator('#searchable-select-province')).toHaveText(
         'Central'
