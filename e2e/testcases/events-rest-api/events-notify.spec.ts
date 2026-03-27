@@ -49,7 +49,6 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
       'POST',
       'foobar'
     )
-
     expect(response.status).toBe(401)
   })
 
@@ -59,7 +58,6 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
       'POST',
       systemAdminToken
     )
-
     expect(response.status).toBe(403)
   })
 
@@ -74,9 +72,7 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
         createdAtLocation: healthFacilityId
       }
     )
-
     const event = await createEventResponse.json()
-
     const response = await fetchClientAPI(
       `/api/events/events/${event.id}/notify`,
       'POST',
@@ -132,7 +128,6 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
     const eventId = createEventResponseBody.id
 
     const fakeSurname = faker.person.lastName()
-
     const response = await fetchClientAPI(
       `/api/events/events/${eventId}/notify`,
       'POST',
@@ -304,6 +299,7 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
     )
 
     const body = await response.json()
+
     expect(response.status).toBe(400)
     expect(body.message).toBe(
       'createdAtLocation is required and must be a valid location id'
@@ -351,6 +347,7 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
     )
 
     const body = await response.json()
+
     expect(response.status).toBe(400)
     expect(body.message).toBe('Input validation failed')
   })
@@ -399,6 +396,7 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
     )
 
     const body = await response.json()
+
     expect(response.status).toBe(400)
     expect(body.message).toBe('createdAtLocation must be a valid location id')
   })
@@ -427,11 +425,13 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
 
     const token = await login(page)
     const { sub } = decode<{ sub: string }>(token)
+
     const location = await fetchUserLocationHierarchy(sub, {
       headers: {
         Authorization: `Bearer ${token}`
       }
     })
+
     const locationId = location[location.length - 1]
 
     const response = await fetchClientAPI(
@@ -469,8 +469,11 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
     expect(body.actions[2].status).toBe('Accepted')
 
     await page.getByRole('button', { name: 'Notifications' }).click()
+
     await page.getByText(await formatName(childName)).click()
+
     await ensureAssigned(page)
+
     await page.getByRole('button', { name: 'Audit' }).click()
 
     await expect(page.locator('#row_0')).toContainText('Notified')
@@ -479,11 +482,11 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
 
     await page.getByText('Notified').click()
     const modal = await page.getByTestId('event-history-modal')
-
     expect(modal).toContainText('Notified')
     expect(modal).toContainText(clientName)
 
     await page.locator('#close-btn').click()
+
     await page.getByRole('button', { name: 'Record', exact: true }).click()
     await expect(page.getByTestId('row-value-child.name')).toHaveText(
       formatName(childName)
@@ -585,11 +588,13 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
       const createEventResponseBody = await createEventResponse.json()
       eventId = createEventResponseBody.id
       const { sub } = decode<{ sub: string }>(token)
+
       const location = await fetchUserLocationHierarchy(sub, {
         headers: {
           Authorization: `Bearer ${token}`
         }
       })
+
       const locationId = location[location.length - 1]
 
       const declaration = {
@@ -600,7 +605,6 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
         'child.birthLocationId': locationId,
         'child.placeOfBirth': 'HEALTH_FACILITY'
       }
-
       const response = await fetchClientAPI(
         `/api/events/events/${eventId}/notify`,
         'POST',
@@ -614,7 +618,6 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
           createdAtLocation: location[location.length - 1]
         }
       )
-
       expect(response.status).toBe(200)
     })
 
@@ -690,7 +693,6 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
       await selectAction(page, 'Print')
       await selectRequesterType(page, 'Print and issue to Informant (Mother)')
       await page.getByRole('button', { name: 'Continue' }).click()
-
       await page.getByRole('button', { name: 'Verified' }).click()
       await page.getByRole('button', { name: 'Continue' }).click()
 
@@ -752,11 +754,13 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
       const createEventResponseBody = await createEventResponse.json()
       eventId = createEventResponseBody.id
       const { sub } = decode<{ sub: string }>(token)
+
       const location = await fetchUserLocationHierarchy(sub, {
         headers: {
           Authorization: `Bearer ${token}`
         }
       })
+
       const locationId = location[location.length - 1]
 
       const declaration = {
@@ -802,12 +806,10 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
       await page.getByRole('button', { name: 'Search' }).click()
       await page.getByPlaceholder('Search').fill(trackingId)
       await page.getByRole('button', { name: 'Search' }).click()
-      const eventName = await formatV2ChildName({ 'child.name': childName })
-      await expect(page.getByText(eventName)).toBeVisible({
-        timeout: SAFE_IN_EXTERNAL_VALIDATION_MS
-      })
+      await page
+        .getByText(await formatV2ChildName({ 'child.name': childName }))
+        .click()
 
-      await page.getByText(eventName).click()
       await ensureAssigned(page)
       await page.waitForTimeout(SAFE_IN_EXTERNAL_VALIDATION_MS)
     })
