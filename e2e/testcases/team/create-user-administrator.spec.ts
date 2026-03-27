@@ -37,8 +37,8 @@ test('1. Create user -1', async ({ browser }) => {
     await expect(page.getByText('User details')).toBeVisible()
 
     await test.step('1.1.1 Fill user details', async () => {
-      await page.locator('#familyName').fill(userinfo.surname)
-      await page.locator('#firstName').fill(userinfo.firstName)
+      await page.locator('#surname').fill(userinfo.surname)
+      await page.locator('#firstname').fill(userinfo.firstName)
       await page.locator('#email').fill(userinfo.email)
       await page.locator('#role').click()
       await page.getByText(userinfo.role, { exact: true }).click()

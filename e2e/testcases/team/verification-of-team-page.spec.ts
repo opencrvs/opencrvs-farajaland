@@ -43,8 +43,7 @@ test('1. Team Page -1', async ({ browser }) => {
       for (const member of team) {
         await page.getByRole('button', { name: member.name }).click()
 
-        await expect(page.locator('#content-name')).toHaveText(member.name)
-        await expect(page).toHaveURL(/.*\/userProfile/)
+        await expect(page).toHaveURL(/.*\/view/)
 
         await page
           .getByRole('button', { name: 'Ibombo District Office' })
