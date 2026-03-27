@@ -15,6 +15,7 @@ import * as Hapi from '@hapi/hapi'
 import { sendInformantNotification } from '../notification/informantNotification'
 import { ActionConfirmationRequest } from '../registration'
 import { createMosipInteropClient } from '@opencrvs/mosip/api'
+import { NO_MOSIP } from '@countryconfig/constants'
 import {
   aggregateActionDeclarations,
   deepMerge,
@@ -61,7 +62,6 @@ export async function onBirthActionHandler(
   }
 
   const token = request.auth.artifacts.token as string
-
   const event = request.payload
   await sendInformantNotification({ event, token })
 
@@ -128,8 +128,12 @@ export async function onDeathActionHandler(
   request: ActionConfirmationRequest,
   h: Hapi.ResponseToolkit
 ) {
-  const token = request.auth.artifacts.token as string
+  // Used in local development to disable MOSIP registration dependency
+  if (NO_MOSIP) {
+    return h.response({}).code(200)
+  }
 
+  const token = request.auth.artifacts.token as string
   const event = request.payload
   await sendInformantNotification({ event, token })
 
