@@ -15,7 +15,6 @@ import * as Hapi from '@hapi/hapi'
 import { sendInformantNotification } from '../notification/informantNotification'
 import { ActionConfirmationRequest } from '../registration'
 import { createMosipInteropClient } from '@opencrvs/mosip/api'
-import { NO_MOSIP } from '@countryconfig/constants'
 import {
   aggregateActionDeclarations,
   deepMerge,
