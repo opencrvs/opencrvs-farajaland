@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test'
-import { getToken, login } from '../../helpers'
-import { CREDENTIALS } from '../../constants'
+import { getToken, login, searchFromSearchBar } from '../../helpers'
+import { CLIENT_URL, CREDENTIALS } from '../../constants'
 import { createDeclaration, Declaration } from '../test-data/birth-declaration'
 import { formatV2ChildName } from '../birth/helpers'
 import { ActionType } from '@opencrvs/toolkit/events'
@@ -10,12 +10,14 @@ test('Record declared in one administrative area should not appear for users in 
 }) => {
   let declaration: Declaration
   let childName: string
+  let eventId: string
   const page = await browser.newPage()
 
   await test.step('Register record in Pualula District Office', async () => {
     const token = await getToken(CREDENTIALS.REGISTRATION_OFFICER_PUALULA)
     const res = await createDeclaration(token, undefined, ActionType.DECLARE)
     declaration = res.declaration
+    eventId = res.eventId
     childName = formatV2ChildName(declaration)
   })
 
@@ -29,7 +31,16 @@ test('Record declared in one administrative area should not appear for users in 
       ).not.toBeVisible()
     })
 
-    await test.step('User should not be able to find the record via search', async () => {})
+    await test.step('User should not be able to find the record via search', async () => {
+      await searchFromSearchBar(page, childName, false)
+    })
+
+    await test.step('User should not be able to navigate to record via direct URL', async () => {
+      await page.goto(`${CLIENT_URL}/events/${eventId}`)
+      await expect(
+        page.getByText(`No event or draft found with id: ${eventId}`)
+      ).toBeVisible()
+    })
   })
 
   await test.step('Registrar from Pualula District Office', async () => {
@@ -40,6 +51,13 @@ test('Record declared in one administrative area should not appear for users in 
       await expect(page.getByRole('button', { name: childName })).toBeVisible()
     })
 
-    await test.step('User should be able to find the record via search', async () => {})
+    await test.step('User should be able to find the record via search', async () => {
+      await searchFromSearchBar(page, childName, true)
+    })
+
+    await test.step('User should be able to navigate to record via direct URL', async () => {
+      await page.goto(`${CLIENT_URL}/events/${eventId}`)
+      await expect(page.locator('#content-name')).toHaveText(childName)
+    })
   })
 })
