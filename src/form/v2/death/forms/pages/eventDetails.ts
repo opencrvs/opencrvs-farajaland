@@ -15,6 +15,7 @@ import {
   defineFormPage,
   field,
   FieldType,
+  never,
   not,
   or,
   PageTypes,
@@ -23,7 +24,6 @@ import {
 } from '@opencrvs/toolkit/events'
 
 import { createSelectOptions, emptyMessage } from '@countryconfig/form/v2/utils'
-import { applicationConfig } from '@countryconfig/api/application/application-config'
 import {
   defaultStreetAddressConfiguration,
   getNestedFieldValidators
@@ -278,13 +278,19 @@ export const eventDetails = defineFormPage({
     },
     {
       id: 'eventDetails.addressHelper',
-      type: FieldType.PARAGRAPH,
+      type: FieldType.HEADING,
       label: {
         defaultMessage: 'Place of death',
         description: 'This is the label for the field',
         id: 'event.death.action.declare.form.section.event.field.addressHelper.label'
       },
-      configuration: { styles: { fontVariant: 'h3' } }
+      configuration: { styles: { fontVariant: 'h3' } },
+      conditionals: [
+        {
+          type: ConditionalType.DISPLAY_ON_REVIEW,
+          conditional: never()
+        }
+      ]
     },
     {
       id: 'eventDetails.divider2',

@@ -1488,7 +1488,6 @@ export type Query = {
   fetchLocationWiseEventMetrics?: Maybe<Array<LocationWiseEstimationMetric>>
   fetchMarriageRegistration?: Maybe<MarriageRegistration>
   fetchMonthWiseEventMetrics?: Maybe<Array<MonthWiseEstimationMetric>>
-  fetchRecordDetailsForVerification?: Maybe<RecordDetails>
   fetchRegistration?: Maybe<EventRegistration>
   fetchRegistrationCountByStatus?: Maybe<RegistrationCountResult>
   fetchRegistrationForViewing?: Maybe<EventRegistration>
@@ -1555,10 +1554,6 @@ export type QueryFetchMonthWiseEventMetricsArgs = {
   locationId?: InputMaybe<Scalars['String']>
   timeEnd: Scalars['String']
   timeStart: Scalars['String']
-}
-
-export type QueryFetchRecordDetailsForVerificationArgs = {
-  id: Scalars['String']
 }
 
 export type QueryFetchRegistrationArgs = {
@@ -1782,8 +1777,6 @@ export type QuestionnaireQuestionInput = {
   fieldId?: InputMaybe<Scalars['String']>
   value?: InputMaybe<Scalars['String']>
 }
-
-export type RecordDetails = BirthRegistration | DeathRegistration
 
 export enum RegAction {
   Assigned = 'ASSIGNED',

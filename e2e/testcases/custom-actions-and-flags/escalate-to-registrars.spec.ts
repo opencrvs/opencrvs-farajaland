@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { test, expect, type Page } from '@playwright/test'
 import {
   formatName,
