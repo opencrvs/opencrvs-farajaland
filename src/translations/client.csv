@@ -388,7 +388,6 @@ constants.sent_incomplete,Declaration submitted without completing the required 
 constants.showMore,Label for show more link,Show next {pageSize},Afficher la page suivante {pageSize}
 constants.skipToMainContent,Label for a keyboard accessibility link which skips to the main content,Skip to main content,Sauter au contenu principal
 constants.socialWorker,The description for Hospital Clerk type,Hospital Clerk,Commis d'hôpital
-constants.socialWorker,The description for Hospital Clerk type,Hospital Clerk,Commis d'hôpital
 constants.startedAt,Label for Started At in list item,Started,Initié par
 constants.startedBy,Label for Started by in list item,Started by,Initié par
 constants.stateRegistrar,The description for STATE_REGISTRAR role,State Registrar,Administrateur civil
@@ -2189,8 +2188,6 @@ user.profile.userName,Title for userName field,Username,Nom d'utilisateur
 userRole.administrator,Name for user role Administrator,Administrator,Administrateur
 userRole.communityLeader,Name for user role Community Leader,Community Leader,Leader communautaire
 userRole.embassyOffical,Name for the user role Embassy Official,Embassy Official,Officiel d'ambassade
-userRole.fieldAgent,Name for user role Field Agent,Field Agent,Agent de terrain
-userRole.healthcareWorker,Name for user role Healthcare Worker,Healthcare Worker,Personnel de santé
 userRole.hospitalClerk,Name for user role Hospital Clerk,Hospital Official,Officiel de l'hôpital
 userRole.localRegistrar,Name for user role Registrar,Registrar,Registraire
 userRole.localSystemAdmin,Name for user role Local System Admin,Local System Admin,Administrateur système local
@@ -2199,7 +2196,6 @@ userRole.nationalRegistrar,Name for user role National Registrar,National Regist
 userRole.nationalSystemAdmin,Name for user role National System Admin,National System Admin,Administrateur système national
 userRole.operationsManager,Name for user role Operations Manager,Operations Manager,Responsable des opérations
 userRole.performanceManager,Name for user role Performance Manager,Performance Manager,Gestion des performances
-userRole.policeOfficer,Name for user role Police Officer,Police Officer,Officier de police
 userRole.provincialRegistrar,Name for user role Provincial Registrar,Provincial Registrar,Registraire provincial
 userRole.registrarGeneral, Name for user role Registrar General,Registrar General,Registraire général
 userRole.registrationAgent,Name for user role Registration Agent,Registration Agent,Agent d'enregistrement
