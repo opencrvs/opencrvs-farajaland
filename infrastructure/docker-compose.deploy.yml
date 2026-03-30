@@ -253,7 +253,7 @@ services:
         tag: 'mongo-on-update'
   # Configure redis
   redis:
-    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
+    command: ['redis-server', '/usr/local/etc/redis/redis.conf']
     secrets:
       - source: redis-acl.{{ts}}
         target: /usr/local/etc/redis/users.acl
@@ -811,7 +811,6 @@ services:
       - ES_HOST=search-user:${ROTATING_SEARCH_ELASTIC_PASSWORD}@elasticsearch:9200
       - APN_SERVICE_URL=http://apm-server:8200
       - CERT_PUBLIC_KEY_PATH=/run/secrets/jwt-public-key.{{ts}}
-      - HEARTH_MONGO_URL=mongodb://hearth:${HEARTH_MONGODB_PASSWORD}@mongo1/hearth-dev?replicaSet=rs0
     deploy:
       labels:
         - 'traefik.enable=false'
@@ -834,7 +833,6 @@ services:
       - APN_SERVICE_URL=http://apm-server:8200
       - CERT_PUBLIC_KEY_PATH=/run/secrets/jwt-public-key.{{ts}}
       - MONGO_URL=mongodb://metrics:${METRICS_MONGODB_PASSWORD}@mongo1/metrics?replicaSet=rs0
-      - HEARTH_MONGO_URL=mongodb://hearth:${HEARTH_MONGODB_PASSWORD}@mongo1/hearth-dev?replicaSet=rs0
       - DASHBOARD_MONGO_URL=mongodb://performance:${PERFORMANCE_MONGODB_PASSWORD}@mongo1/performance?replicaSet=rs0
     deploy:
       placement:
@@ -898,7 +896,6 @@ services:
       - APN_SERVICE_URL=http://apm-server:8200
       - CERT_PUBLIC_KEY_PATH=/run/secrets/jwt-public-key.{{ts}}
       - MONGO_URL=mongodb://config:${CONFIG_MONGODB_PASSWORD}@mongo1/application-config?replicaSet=rs0
-      - HEARTH_MONGO_URL=mongodb://hearth:${HEARTH_MONGODB_PASSWORD}@mongo1/hearth-dev?replicaSet=rs0
       - LOGIN_URL=https://login.{{hostname}}
       - CLIENT_APP_URL=https://register.{{hostname}}
       - DOMAIN={{hostname}}
@@ -956,9 +953,10 @@ services:
         gelf-address: 'udp://127.0.0.1:12201'
         tag: 'migration'
 
-  legacy-user-migration:
+  legacy-data-migration:
     image: ghcr.io/opencrvs/ocrvs-migration:${VERSION}
-    command: ["/bin/sh", "-c", "/app/wait && yarn start:prod --migrate-legacy-users"]
+    command:
+      ['/bin/sh', '-c', '/app/wait && yarn start:prod --migrate-legacy-data']
     environment:
       - USER_MGNT_MONGO_URL=mongodb://user-mgnt:${USER_MGNT_MONGODB_PASSWORD}@mongo1/user-mgnt?replicaSet=rs0
       - DASHBOARD_MONGO_URL=mongodb://performance:${PERFORMANCE_MONGODB_PASSWORD}@mongo1/performance?replicaSet=rs0
@@ -997,30 +995,7 @@ services:
       driver: gelf
       options:
         gelf-address: 'udp://127.0.0.1:12201'
-        tag: 'legacy-user-migration'
-  # Configure other dependencies with deployment specifc details
-  hearth:
-    environment:
-      - mongodb__url=mongodb://hearth:${HEARTH_MONGODB_PASSWORD}@mongo1/hearth-dev?replicaSet=rs0
-      - logger__level=warn
-    deploy:
-      labels:
-        - 'traefik.enable=false'
-      replicas: 1
-    secrets:
-      - jwt-public-key.{{ts}}
-    configs:
-      - source: hearth-check-dupe-plugin.{{ts}}
-        target: /src/hearth/lib/plugins/checkDuplicateTask.js
-      - source: hearth-queryparam-extensions-conf.{{ts}}
-        target: /src/hearth/config/queryparam-extensions.json
-    networks:
-      - overlay_net
-    logging:
-      driver: gelf
-      options:
-        gelf-address: 'udp://127.0.0.1:12201'
-        tag: 'hearth'
+        tag: 'legacy-data-migration'
 
   postgres:
     image: docker.io/chumaky/postgres_mongo_fdw:17.6_fdw5.5.2
@@ -1042,7 +1017,7 @@ services:
 
   postgres-on-update:
     image: postgres:17.6
-    command: ["bash", "-c", "bash /on-deploy.sh && bash /setup-analytics.sh"]
+    command: ['bash', '-c', 'bash /on-deploy.sh && bash /setup-analytics.sh']
     configs:
       - source: postgres-on-deploy.{{ts}}
         target: /on-deploy.sh
@@ -1111,7 +1086,7 @@ services:
       - /opt/opencrvs/infrastructure/metabase/initialize-database.sh:/initialize-database.sh
       - /opt/opencrvs/infrastructure/metabase/update-database.sh:/update-database.sh
       - /opt/opencrvs/infrastructure/metabase/environment-configuration.sql:/environment-configuration.sql
-    entrypoint: ["/bin/sh", "/run.sh"]
+    entrypoint: ['/bin/sh', '/run.sh']
     networks:
       - overlay_net
     environment:
