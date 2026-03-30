@@ -48,7 +48,7 @@ import { certificateHandler } from './api/certificates/handler'
 import { rolesHandler } from './data-seeding/roles/handler'
 import { usersHandler } from './data-seeding/employees/handler'
 import { applicationConfigHandler } from './api/application/handler'
-import { handlebarsHandler } from './form/common/certificate/handlebars/handler'
+import { handlebarsHandler } from './certificate/handlebars/handler'
 import { fontsHandler } from './api/fonts/handler'
 import {
   getEventsHandler,
@@ -61,7 +61,7 @@ import {
   ActionType,
   EventDocument
 } from '@opencrvs/toolkit/events'
-import { Event } from './form/types/types'
+
 import { onRegisterHandler } from './api/registration'
 import { workqueueconfigHandler } from './api/workqueue/handler'
 import getUserNotificationRoutes from './config/routes/userNotificationRoutes'
@@ -76,6 +76,7 @@ import {
 import { getClient } from './analytics/postgres'
 import { env } from './environment'
 import { createClient } from '@opencrvs/toolkit/api'
+import { Event } from './events/utils/types'
 
 export interface ITokenPayload {
   sub: string
@@ -596,16 +597,16 @@ export async function createServer() {
         actions: event.actions.map((action, index) =>
           index === event.actions.length - 1
             ? {
-              ...action,
-              status: ActionStatus.Accepted,
-              ...(actionType === ActionType.REGISTER
-                ? {
-                  registrationNumber: (
-                    response.source as { registrationNumber: string }
-                  ).registrationNumber
-                }
-                : {})
-            }
+                ...action,
+                status: ActionStatus.Accepted,
+                ...(actionType === ActionType.REGISTER
+                  ? {
+                      registrationNumber: (
+                        response.source as { registrationNumber: string }
+                      ).registrationNumber
+                    }
+                  : {})
+              }
             : action
         ) as ActionDocument[]
       }

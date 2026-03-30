@@ -8,7 +8,7 @@ import {
   CreatedAction,
   EventDocument
 } from '@opencrvs/toolkit/events'
-import { Event } from '@countryconfig/form/types/types'
+import { Event } from '@countryconfig/events/utils'
 
 const recipient: Recipient = {
   name: {
