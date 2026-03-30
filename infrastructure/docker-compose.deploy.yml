@@ -967,10 +967,10 @@ services:
         gelf-address: 'udp://127.0.0.1:12201'
         tag: 'migration'
 
-  legacy-user-migration:
+  legacy-data-migration:
     image: ghcr.io/opencrvs/ocrvs-migration:${VERSION}
     command:
-      ['/bin/sh', '-c', '/app/wait && yarn start:prod --migrate-legacy-users']
+      ['/bin/sh', '-c', '/app/wait && yarn start:prod --migrate-legacy-data']
     environment:
       - USER_MGNT_MONGO_URL=mongodb://user-mgnt:${USER_MGNT_MONGODB_PASSWORD}@mongo1/user-mgnt?replicaSet=rs0
       - DASHBOARD_MONGO_URL=mongodb://performance:${PERFORMANCE_MONGODB_PASSWORD}@mongo1/performance?replicaSet=rs0
@@ -1009,7 +1009,7 @@ services:
       driver: gelf
       options:
         gelf-address: 'udp://127.0.0.1:12201'
-        tag: 'legacy-user-migration'
+        tag: 'legacy-data-migration'
 
   postgres:
     image: docker.io/chumaky/postgres_mongo_fdw:17.6_fdw5.5.2

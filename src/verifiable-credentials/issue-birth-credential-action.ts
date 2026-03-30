@@ -193,7 +193,7 @@ export const issueBirthCredentialAction = {
           'This is the confirmation text for the registrar general feedback action',
         id: 'event.birth.action.registrar-general-feedback.supportingCopy'
       },
-      configuration: { styles: { fontVariant: 'reg16', hint: true } },
+      configuration: { styles: { hint: true } },
       conditionals: [
         {
           type: ConditionalType.SHOW,
@@ -449,7 +449,7 @@ export const issueBirthCredentialAction = {
         id: 'event.birth.custom.action.issue-vc.field.qr-code.configuration.text'
       },
       configuration: {
-        styles: { fontVariant: 'reg16', hint: true, textAlign: 'center' }
+        styles: { hint: true, textAlign: 'center' }
       },
       conditionals: [
         {

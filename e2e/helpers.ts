@@ -219,6 +219,17 @@ export const getLocationNameFromId = async (id: UUID, token: string) => {
 
   return location.name
 }
+export async function continueUntilReview(
+  page: Page,
+  label: string = 'Continue'
+) {
+  //
+  // while url doesnt contain review
+  while (!page.url().includes('review')) {
+    await page.waitForTimeout(SAFE_INPUT_CHANGE_TIMEOUT_MS)
+    await page.getByText(label, { exact: true }).click()
+  }
+}
 
 export async function continueForm(page: Page, label: string = 'Continue') {
   await page.waitForTimeout(SAFE_INPUT_CHANGE_TIMEOUT_MS)
