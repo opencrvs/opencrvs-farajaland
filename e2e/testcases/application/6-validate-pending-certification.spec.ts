@@ -1,39 +1,32 @@
-import { expect, test, type Page } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 
 import { login, getToken } from '../../helpers'
 import { CREDENTIALS, SAFE_WORKQUEUE_TIMEOUT_MS } from '../../constants'
-import { createDeclaration, Declaration } from '../test-data/birth-declaration'
+import { createDeclaration } from '../test-data/birth-declaration'
 import { formatV2ChildName } from '../birth/helpers'
 import { expectInUrl, selectAction } from '../../utils'
 
-test.describe.serial('6 Validate "Pending certification"-workqueue', () => {
-  let page: Page
-  let declaration: Declaration
-  let eventId: string
+test('6 Validate "Pending certification"-workqueue', async ({ browser }) => {
+  const token = await getToken(
+    CREDENTIALS.REGISTRAR.USERNAME,
+    CREDENTIALS.REGISTRAR.PASSWORD
+  )
 
-  test.beforeAll(async ({ browser }) => {
-    const token = await getToken(
-      CREDENTIALS.REGISTRAR.USERNAME,
-      CREDENTIALS.REGISTRAR.PASSWORD
-    )
-    const res = await createDeclaration(token)
-    declaration = res.declaration
-    eventId = res.eventId
+  const res = await createDeclaration(token)
+  const page = await browser.newPage()
+  const declaration = res.declaration
+  const eventId = res.eventId
 
-    page = await browser.newPage()
-  })
-
-  test.afterAll(async () => {
-    await page.close()
-  })
-
-  test('6.0 Login', async () => {
+  await test.step('6.0 Login', async () => {
     await login(page, CREDENTIALS.REGISTRAR)
   })
 
-  test('6.1 Go to "Pending certification"-workqueue', async () => {
-    await page.waitForTimeout(SAFE_WORKQUEUE_TIMEOUT_MS) // wait for the event to be in the workqueue.
+  await test.step('6.1 Go to "Pending certification"-workqueue', async () => {
+    await page.waitForTimeout(SAFE_WORKQUEUE_TIMEOUT_MS)
+
+    // wait for the event to be in the workqueue.
     await page.getByText('Pending certification').click()
+
     await expect(
       page.getByRole('button', { name: formatV2ChildName(declaration) })
     ).toBeVisible()
@@ -42,13 +35,14 @@ test.describe.serial('6 Validate "Pending certification"-workqueue', () => {
     )
   })
 
-  test('6.2 validate the list', async () => {
+  await test.step('6.2 validate the list', async () => {
     const button = page.getByRole('button', {
       name: formatV2ChildName(declaration)
     })
 
     const header = page.locator('div[class^="TableHeader"]')
     const columns = await header.locator(':scope > div').allInnerTexts()
+
     expect(columns).toStrictEqual([
       'Title',
       'Event',
@@ -59,7 +53,6 @@ test.describe.serial('6 Validate "Pending certification"-workqueue', () => {
 
     const row = button.locator('xpath=ancestor::*[starts-with(@id, "row_")]')
     const cells = row.locator(':scope > div')
-
     await expect(cells.nth(0)).toHaveText(formatV2ChildName(declaration))
     await expect(cells.nth(1)).toHaveText('Birth')
     await expect(cells.nth(2)).toHaveText(
@@ -67,7 +60,7 @@ test.describe.serial('6 Validate "Pending certification"-workqueue', () => {
     )
   })
 
-  test('6.4 Click a name', async () => {
+  await test.step('6.4 Click a name', async () => {
     await page
       .getByRole('button', { name: formatV2ChildName(declaration) })
       .click()
@@ -75,12 +68,15 @@ test.describe.serial('6 Validate "Pending certification"-workqueue', () => {
     await expectInUrl(page, `events/${eventId}?workqueue=pending-certification`)
   })
 
-  test('6.5 Click Print action', async () => {
+  await test.step('6.5 Click Print action', async () => {
     await selectAction(page, 'Print')
+
     await expect(page.locator('#content-name')).toHaveText('Certify record')
     await expectInUrl(
       page,
       `/events/print-certificate/${eventId}/pages/collector?workqueue=pending-certification`
     )
   })
+
+  await page.close()
 })

@@ -91,7 +91,6 @@ test.describe.skip('Navigating in and out of action', () => {
       .getByRole('button', { name: 'Assign record', exact: true })
       .first()
       .click()
-
     await page.getByRole('button', { name: 'Assign', exact: true }).click()
 
     // Click the "Print" button inside that row

@@ -23,11 +23,11 @@ import { random } from 'lodash'
 import { formatV2ChildName, REQUIRED_VALIDATION_ERROR } from '../birth/helpers'
 import { ensureAssigned, selectAction } from '../../utils'
 
-test.describe.serial('Correct record - 4', () => {
+test('Correct record - 4', async ({ browser }) => {
   let declaration: DeclarationV2
   let trackingId = ''
   let eventId: string
-  let page: Page
+  const page = await browser.newPage()
 
   const updatedFatherDetails = {
     firstNames: faker.person.firstName('male'),
@@ -74,14 +74,6 @@ test.describe.serial('Correct record - 4', () => {
     col3 && (await expect(_page.getByText(col3, { exact: true })).toBeVisible())
   }
 
-  test.beforeAll(async ({ browser }) => {
-    page = await browser.newPage()
-  })
-
-  test.afterAll(async () => {
-    await page.close()
-  })
-
   const father = {
     'father.name': {
       firstname: faker.person.firstName('male'),
@@ -98,11 +90,12 @@ test.describe.serial('Correct record - 4', () => {
     'father.addressSameAs': 'YES'
   }
 
-  test('4.0 Shortcut declaration', async () => {
+  await test.step('4.0 Shortcut declaration', async () => {
     let token = await getToken(
       CREDENTIALS.REGISTRAR.USERNAME,
       CREDENTIALS.REGISTRAR.PASSWORD
     )
+
     const res = await createDeclarationV2(
       token,
       {
@@ -135,18 +128,20 @@ test.describe.serial('Correct record - 4', () => {
       'REGISTER',
       'PRIVATE_HOME'
     )
+
     expect(res).toEqual(
       expect.objectContaining({
         trackingId: expect.any(String)
       })
     )
+
     trackingId = res.trackingId!
     eventId = res.eventId
     token = await getToken('k.mweene', 'test')
     declaration = res.declaration
   })
 
-  test('4.1 Ready to correct record > record audit', async () => {
+  await test.step('4.1 Ready to correct record > record audit', async () => {
     await login(page, CREDENTIALS.REGISTRAR)
 
     await auditRecord({
@@ -154,12 +149,12 @@ test.describe.serial('Correct record - 4', () => {
       name: formatV2ChildName(declaration),
       trackingId
     })
-    await ensureAssigned(page)
 
+    await ensureAssigned(page)
     await selectAction(page, 'Correct')
   })
 
-  test('4.2 Correction requester: legal guardian', async () => {
+  await test.step('4.2 Correction requester: legal guardian', async () => {
     await page.locator('#requester____type').click()
     await page.getByText('Legal Guardian', { exact: true }).click()
     await page.locator('#reason____option').click()
@@ -171,23 +166,21 @@ test.describe.serial('Correct record - 4', () => {
     await page.getByRole('button', { name: 'Continue' }).click()
   })
 
-  test('4.3 Verify identity', async () => {
+  await test.step('4.3 Verify identity', async () => {
     /*
      * Expected result: should Confirm
      * nothing
      */
-
     await page.getByRole('button', { name: 'Verified' }).click()
   })
 
-  test('4.4 Upload supporting documents', async () => {
+  await test.step('4.4 Upload supporting documents', async () => {
     /*
      * Expected result: should
      * - navigate to supporting document
      * - continue button is disabled
      */
     expect(page.url().includes('correction')).toBeTruthy()
-
     expect(page.url().includes('onboarding/documents')).toBeTruthy()
 
     await expect(page.getByRole('button', { name: 'Continue' })).toBeEnabled()
@@ -206,14 +199,13 @@ test.describe.serial('Correct record - 4', () => {
     /*
      * Expected result: should enable the continue button
      */
-
     await page.getByRole('button', { name: 'Continue' }).click()
   })
 
-  test('4.5 Correction fee', async () => {
+  await test.step('4.5 Correction fee', async () => {
     await page.locator('#fees____amount').fill(correctionFee)
-
     await page.getByRole('button', { name: 'Continue' }).click()
+
     /*
      * Expected result: should navigate to review page
      */
@@ -221,11 +213,12 @@ test.describe.serial('Correct record - 4', () => {
     expect(page.url().includes('review')).toBeTruthy()
   })
 
-  test.describe('4.4 Make correction', async () => {
-    test('Mark father details as not available to ensure data persists', async () => {
+  await test.step('4.4 Make correction', async () => {
+    await test.step('Mark father details as not available to ensure data persists', async () => {
       await page.getByTestId('change-button-father.name').click()
       await page.getByLabel("Father's details are not available").check()
       await page.getByRole('button', { name: 'Back to review' }).click()
+
       await expect(page.getByTestId('row-value-father.reason')).toHaveText(
         REQUIRED_VALIDATION_ERROR
       )
@@ -243,22 +236,21 @@ test.describe.serial('Correct record - 4', () => {
       await page.getByRole('button', { name: 'Back to review' }).click()
     })
 
-    test.describe('4.4.1 Make correction on father details page', async () => {
-      test('4.4.1.1 Change name', async () => {
+    await test.step('4.4.1 Make correction on father details page', async () => {
+      await test.step('4.4.1.1 Change name', async () => {
         await page.getByTestId('change-button-father.name').click()
+
         /*
          * Expected result: should
          * - redirect to father's details page
          * - focus on father's family name
          */
-
         expect(page.url().includes('correction')).toBeTruthy()
         expect(page.url().includes('father')).toBeTruthy()
         expect(page.url().includes('#father____name')).toBeTruthy()
 
         await page.locator('#firstname').fill(updatedFatherDetails.firstNames)
         await page.locator('#surname').fill(updatedFatherDetails.familyName)
-
         await goBackToReview(page)
 
         /*
@@ -267,7 +259,6 @@ test.describe.serial('Correct record - 4', () => {
          * - show previous name with strikethrough
          * - show updated name
          */
-
         expect(page.url().includes('correction')).toBeTruthy()
         expect(page.url().includes('review')).toBeTruthy()
 
@@ -276,7 +267,6 @@ test.describe.serial('Correct record - 4', () => {
         ).toHaveText(
           `${declaration['father.name']?.firstname} ${declaration['father.name']?.surname}`
         )
-
         await expect(
           await page
             .getByTestId('row-value-father.name')
@@ -286,7 +276,7 @@ test.describe.serial('Correct record - 4', () => {
         ).toBeVisible()
       })
 
-      test('4.4.1.2 Change date of birth', async () => {
+      await test.step('4.4.1.2 Change date of birth', async () => {
         await page.getByTestId('change-button-father.dob').click()
 
         /*
@@ -303,7 +293,6 @@ test.describe.serial('Correct record - 4', () => {
         await page.getByTestId('father____dob-dd').fill(birthDay[2])
         await page.getByTestId('father____dob-mm').fill(birthDay[1])
         await page.getByTestId('father____dob-yyyy').fill(birthDay[0])
-
         await page.getByRole('button', { name: 'Back to review' }).click()
 
         /*
@@ -312,14 +301,12 @@ test.describe.serial('Correct record - 4', () => {
          * - show previous gender with strikethrough
          * - show updated gender
          */
-
         expect(page.url().includes('correction')).toBeTruthy()
         expect(page.url().includes('review')).toBeTruthy()
 
         await expect(
           await page.getByTestId('row-value-father.dob').getByRole('deletion')
         ).toHaveText(formatDateTo_dMMMMyyyy(declaration['father.dob']!))
-
         await expect(
           await page
             .getByTestId('row-value-father.dob')
@@ -327,7 +314,7 @@ test.describe.serial('Correct record - 4', () => {
         ).toBeVisible()
       })
 
-      test('4.4.1.3 Change nationality', async () => {
+      await test.step('4.4.1.3 Change nationality', async () => {
         await page.getByTestId('change-button-father.nationality').click()
 
         /*
@@ -335,14 +322,12 @@ test.describe.serial('Correct record - 4', () => {
          * - redirect to father's details page
          * - focus on father's nationality
          */
-
         expect(page.url().includes('correction')).toBeTruthy()
         expect(page.url().includes('father')).toBeTruthy()
         expect(page.url().includes('#father____nationality')).toBeTruthy()
 
         await page.locator('#father____nationality').click()
         await page.getByText(updatedFatherDetails.nationality).click()
-
         await page.getByRole('button', { name: 'Back to review' }).click()
 
         /*
@@ -351,7 +336,6 @@ test.describe.serial('Correct record - 4', () => {
          * - show previous nationality with strikethrough
          * - show updated nationality
          */
-
         expect(page.url().includes('correction')).toBeTruthy()
         expect(page.url().includes('review')).toBeTruthy()
 
@@ -360,7 +344,6 @@ test.describe.serial('Correct record - 4', () => {
             .getByTestId('row-value-father.nationality')
             .getByRole('deletion')
         ).toHaveText('Farajaland')
-
         await expect(
           await page
             .getByTestId('row-value-father.nationality')
@@ -368,7 +351,7 @@ test.describe.serial('Correct record - 4', () => {
         ).toBeVisible()
       })
 
-      test('4.4.1.4 Change id type', async () => {
+      await test.step('4.4.1.4 Change id type', async () => {
         await page.getByTestId('change-button-father.idType').click()
 
         /*
@@ -376,14 +359,12 @@ test.describe.serial('Correct record - 4', () => {
          * - redirect to father's details page
          * - focus on father's id type
          */
-
         expect(page.url().includes('correction')).toBeTruthy()
         expect(page.url().includes('father')).toBeTruthy()
         expect(page.url().includes('#father____idType')).toBeTruthy()
 
         await page.locator('#father____idType').click()
         await page.getByText(updatedFatherDetails.idType).click()
-
         await page.getByRole('button', { name: 'Back to review' }).click()
 
         /*
@@ -392,7 +373,6 @@ test.describe.serial('Correct record - 4', () => {
          * - show previous id type with strikethrough
          * - show updated id type
          */
-
         expect(page.url().includes('correction')).toBeTruthy()
         expect(page.url().includes('review')).toBeTruthy()
 
@@ -401,7 +381,6 @@ test.describe.serial('Correct record - 4', () => {
             .getByTestId('row-value-father.idType')
             .getByRole('deletion')
         ).toHaveText('National ID')
-
         await expect(
           await page
             .getByTestId('row-value-father.idType')
@@ -409,7 +388,7 @@ test.describe.serial('Correct record - 4', () => {
         ).toBeVisible()
       })
 
-      test('4.4.1.5 Change id', async () => {
+      await test.step('4.4.1.5 Change id', async () => {
         await page.getByTestId('change-button-father.passport').click()
 
         /*
@@ -417,7 +396,6 @@ test.describe.serial('Correct record - 4', () => {
          * - redirect to father's details page
          * - focus on father's id
          */
-
         expect(page.url().includes('correction')).toBeTruthy()
         expect(page.url().includes('father')).toBeTruthy()
         expect(page.url().includes('#father____passport')).toBeTruthy()
@@ -425,7 +403,6 @@ test.describe.serial('Correct record - 4', () => {
         await page
           .locator('#father____passport')
           .fill(updatedFatherDetails.passport)
-
         await page.getByRole('button', { name: 'Back to review' }).click()
 
         /*
@@ -434,7 +411,6 @@ test.describe.serial('Correct record - 4', () => {
          * - show previous id with strikethrough
          * - show updated id
          */
-
         expect(page.url().includes('correction')).toBeTruthy()
         expect(page.url().includes('review')).toBeTruthy()
 
@@ -445,7 +421,7 @@ test.describe.serial('Correct record - 4', () => {
         ).toBeVisible()
       })
 
-      test('4.4.1.6 Change usual place of residence', async () => {
+      await test.step('4.4.1.6 Change usual place of residence', async () => {
         await page.getByTestId('change-button-father.addressSameAs').click()
 
         /*
@@ -453,7 +429,6 @@ test.describe.serial('Correct record - 4', () => {
          * - redirect to father's details page
          * - focus on father's Usual place of resiedence
          */
-
         expect(page.url().includes('correction')).toBeTruthy()
         expect(page.url().includes('father')).toBeTruthy()
         expect(page.url().includes('#father____addressSameAs')).toBeTruthy()
@@ -462,7 +437,6 @@ test.describe.serial('Correct record - 4', () => {
           .locator('#father____addressSameAs-form-input')
           .getByLabel('No')
           .click()
-
         await page
           .locator('#father____address-form-input')
           .locator('#province')
@@ -471,7 +445,6 @@ test.describe.serial('Correct record - 4', () => {
           .locator('#father____address-form-input')
           .getByText(updatedFatherDetails.address.province)
           .click()
-
         await page
           .locator('#father____address-form-input')
           .locator('#district')
@@ -480,7 +453,6 @@ test.describe.serial('Correct record - 4', () => {
           .locator('#father____address-form-input')
           .getByText(updatedFatherDetails.address.district)
           .click()
-
         await page
           .locator('#father____address-form-input')
           .locator('#village')
@@ -489,32 +461,26 @@ test.describe.serial('Correct record - 4', () => {
           .locator('#father____address-form-input')
           .getByText(updatedFatherDetails.address.village)
           .click()
-
         await page
           .locator('#father____address-form-input')
           .locator('#town')
           .fill(updatedFatherDetails.address.town)
-
         await page
           .locator('#father____address-form-input')
           .locator('#residentialArea')
           .fill(updatedFatherDetails.address.residentialArea)
-
         await page
           .locator('#father____address-form-input')
           .locator('#street')
           .fill(updatedFatherDetails.address.street)
-
         await page
           .locator('#father____address-form-input')
           .locator('#number')
           .fill(updatedFatherDetails.address.number)
-
         await page
           .locator('#father____address-form-input')
           .locator('#zipCode')
           .fill(updatedFatherDetails.address.zipCode)
-
         await goBackToReview(page)
 
         /*
@@ -523,7 +489,6 @@ test.describe.serial('Correct record - 4', () => {
          * - show previous Usual place of resiedence with strikethrough
          * - show updated Usual place of resiedence
          */
-
         expect(page.url().includes('correction')).toBeTruthy()
         expect(page.url().includes('review')).toBeTruthy()
 
@@ -532,43 +497,36 @@ test.describe.serial('Correct record - 4', () => {
             .getByTestId('row-value-father.address')
             .getByText(updatedFatherDetails.address.country)
         ).toBeVisible()
-
         await expect(
           await page
             .getByTestId('row-value-father.address')
             .getByText(updatedFatherDetails.address.province)
         ).toBeVisible()
-
         await expect(
           await page
             .getByTestId('row-value-father.address')
             .getByText(updatedFatherDetails.address.district)
         ).toBeVisible()
-
         await expect(
           await page
             .getByTestId('row-value-father.address')
             .getByText(updatedFatherDetails.address.town)
         ).toBeVisible()
-
         await expect(
           await page
             .getByTestId('row-value-father.address')
             .getByText(updatedFatherDetails.address.residentialArea)
         ).toBeVisible()
-
         await expect(
           await page
             .getByTestId('row-value-father.address')
             .getByText(updatedFatherDetails.address.street)
         ).toBeVisible()
-
         await expect(
           await page
             .getByTestId('row-value-father.address')
             .getByText(updatedFatherDetails.address.number)
         ).toBeVisible()
-
         await expect(
           await page
             .getByTestId('row-value-father.address')
@@ -576,7 +534,7 @@ test.describe.serial('Correct record - 4', () => {
         ).toBeVisible()
       })
 
-      test('4.4.1.7 Change marital status', async () => {
+      await test.step('4.4.1.7 Change marital status', async () => {
         await page.getByTestId('change-button-father.maritalStatus').click()
 
         /*
@@ -584,14 +542,12 @@ test.describe.serial('Correct record - 4', () => {
          * - redirect to father's details page
          * - focus on father's marital status
          */
-
         expect(page.url().includes('correction')).toBeTruthy()
         expect(page.url().includes('father')).toBeTruthy()
         expect(page.url().includes('#father____maritalStatus')).toBeTruthy()
 
         await page.locator('#father____maritalStatus').click()
         await page.getByText(updatedFatherDetails.maritalStatus).click()
-
         await page.getByRole('button', { name: 'Back to review' }).click()
 
         /*
@@ -600,7 +556,6 @@ test.describe.serial('Correct record - 4', () => {
          * - show previous marital status with strikethrough
          * - show updated marital status
          */
-
         expect(page.url().includes('correction')).toBeTruthy()
         expect(page.url().includes('review')).toBeTruthy()
 
@@ -609,7 +564,6 @@ test.describe.serial('Correct record - 4', () => {
             .getByTestId('row-value-father.maritalStatus')
             .getByRole('deletion')
         ).toHaveText('Single')
-
         await expect(
           await page
             .getByTestId('row-value-father.maritalStatus')
@@ -617,7 +571,7 @@ test.describe.serial('Correct record - 4', () => {
         ).toBeVisible()
       })
 
-      test('4.4.1.8 Change level of education', async () => {
+      await test.step('4.4.1.8 Change level of education', async () => {
         await page
           .getByTestId('change-button-father.educationalAttainment')
           .click()
@@ -627,7 +581,6 @@ test.describe.serial('Correct record - 4', () => {
          * - redirect to father's details page
          * - focus on father's level of education
          */
-
         expect(page.url().includes('correction')).toBeTruthy()
         expect(page.url().includes('father')).toBeTruthy()
         expect(
@@ -636,7 +589,6 @@ test.describe.serial('Correct record - 4', () => {
 
         await page.locator('#father____educationalAttainment').click()
         await page.getByText(updatedFatherDetails.educationLevel).click()
-
         await page.getByRole('button', { name: 'Back to review' }).click()
 
         /*
@@ -645,7 +597,6 @@ test.describe.serial('Correct record - 4', () => {
          * - show previous level of education with strikethrough
          * - show updated level of education
          */
-
         expect(page.url().includes('correction')).toBeTruthy()
         expect(page.url().includes('review')).toBeTruthy()
 
@@ -654,7 +605,6 @@ test.describe.serial('Correct record - 4', () => {
             .getByTestId('row-value-father.educationalAttainment')
             .getByRole('deletion')
         ).toHaveText('No schooling')
-
         await expect(
           await page
             .getByTestId('row-value-father.educationalAttainment')
@@ -663,7 +613,7 @@ test.describe.serial('Correct record - 4', () => {
       })
     })
 
-    test('4.4.2 Change place of birth', async () => {
+    await test.step('4.4.2 Change place of birth', async () => {
       await page.getByTestId('change-button-child.placeOfBirth').click()
 
       /*
@@ -671,7 +621,6 @@ test.describe.serial('Correct record - 4', () => {
        * - redirect to child's details page
        * - focus on child's placeOfBirth
        */
-
       expect(page.url().includes('correction')).toBeTruthy()
       expect(page.url().includes('child')).toBeTruthy()
       expect(page.url().includes('#child____placeOfBirth')).toBeTruthy()
@@ -680,12 +629,10 @@ test.describe.serial('Correct record - 4', () => {
       await page
         .getByText(updatedChildDetails.placeOfBirth, { exact: true })
         .click()
-
       await page
         .locator('#child____birthLocation')
         .fill(updatedChildDetails.birthFacility.slice(0, 4))
       await page.getByText(updatedChildDetails.birthFacility).click()
-
       await page.getByRole('button', { name: 'Back to review' }).click()
 
       /*
@@ -694,7 +641,6 @@ test.describe.serial('Correct record - 4', () => {
        * - show previous placeOfBirth with strikethrough
        * - show updated placeOfBirth
        */
-
       expect(page.url().includes('correction')).toBeTruthy()
       expect(page.url().includes('review')).toBeTruthy()
 
@@ -703,13 +649,11 @@ test.describe.serial('Correct record - 4', () => {
           .getByTestId('row-value-child.placeOfBirth')
           .getByRole('deletion')
       ).toHaveText('Residential address')
-
       await expect(
         await page
           .getByTestId('row-value-child.placeOfBirth')
           .getByText(updatedChildDetails.placeOfBirth)
       ).toBeVisible()
-
       await expect(
         await page
           .getByTestId('row-value-child.birthLocation')
@@ -717,29 +661,25 @@ test.describe.serial('Correct record - 4', () => {
       ).toBeVisible()
     })
 
-    test('4.4.3 Change child name', async () => {
+    await test.step('4.4.3 Change child name', async () => {
       await page.getByTestId('change-button-child.name').click()
-
       await page
         .getByTestId('text__firstname')
         .fill(updatedChildDetails.firstNames)
-
       await page
         .getByTestId('text__surname')
         .fill(updatedChildDetails.familyName)
-
       await goBackToReview(page)
       await page.getByRole('button', { name: 'Continue' }).click()
     })
   })
 
-  test('3.7 Correction summary', async () => {
+  await test.step('3.7 Correction summary', async () => {
     /*
      * Expected result: should
      * - navigate to correction summary
      * - Send for approval button is disabled
      */
-
     expect(page.url().includes('correction')).toBeTruthy()
     expect(page.url().includes('summary')).toBeTruthy()
 
@@ -762,7 +702,6 @@ test.describe.serial('Correct record - 4', () => {
       'Informant provided incorrect information (Material error)'
     )
     await visible(page, 'Fee total', `$${correctionFee}`)
-
     await visible(page, 'Correction(s)')
     await visible(page, "Child's details")
 
@@ -772,11 +711,11 @@ test.describe.serial('Correct record - 4', () => {
       'Residential address',
       'Health Institution'
     )
-
     await visible(
       page.locator('#listTable-corrections-table-child'),
       'Location of birth'
     )
+
     await expect(
       await page
         .locator('#listTable-corrections-table-child')
@@ -787,41 +726,35 @@ test.describe.serial('Correct record - 4', () => {
       page.locator('#listTable-corrections-table-father'),
       "Father's details"
     )
-
     await visible(
       page.locator('#listTable-corrections-table-father'),
       "Father's name",
       `${declaration['father.name']?.firstname} ${declaration['father.name']?.surname}`,
       `${updatedFatherDetails.firstNames} ${updatedFatherDetails.familyName}`
     )
-
     await visible(
       page.locator('#listTable-corrections-table-father'),
       'Date of birth',
       formatDateTo_dMMMMyyyy(declaration['father.dob']!),
       formatDateTo_dMMMMyyyy(updatedFatherDetails.birthDate)
     )
-
     await visible(
       page.locator('#listTable-corrections-table-father').locator('#row_2'),
       'Nationality',
       'Farajaland',
       updatedFatherDetails.nationality
     )
-
     await visible(
       page.locator('#listTable-corrections-table-father'),
       'Type of ID',
       'National ID',
       'Passport'
     )
-
     await visible(
       page.locator('#listTable-corrections-table-father'),
       'ID Number',
       updatedFatherDetails.passport
     )
-
     await visible(
       page.locator('#listTable-corrections-table-father').locator('#row_5'),
       'Usual place of residence'
@@ -852,7 +785,6 @@ test.describe.serial('Correct record - 4', () => {
       'Single',
       'Widowed'
     )
-
     await visible(
       page.locator('#listTable-corrections-table-father'),
       'Level of education',
@@ -898,7 +830,7 @@ test.describe.serial('Correct record - 4', () => {
     )
   })
 
-  test('4.8 Validate history in record audit', async () => {
+  await test.step('4.8 Validate history in record audit', async () => {
     await auditRecord({
       page,
       name: formatV2ChildName({
@@ -917,21 +849,21 @@ test.describe.serial('Correct record - 4', () => {
      * Expected result: should show in task history
      * - Record corrected
      */
-
     await expect(
       page
         .locator('#listTable-task-history')
         .getByRole('button', { name: 'Record corrected' })
     ).toBeVisible()
   })
-  test('4.9 Validate record corrected modal', async () => {
+
+  await test.step('4.9 Validate record corrected modal', async () => {
     const correctionRequestedRow = page.locator(
       '#listTable-task-history #row_6'
     )
+
     await correctionRequestedRow.getByText('Record corrected').click()
 
     const date = await correctionRequestedRow.locator('span').nth(1).innerText()
-
     const requester = await correctionRequestedRow
       .locator('span')
       .nth(2)
@@ -950,9 +882,7 @@ test.describe.serial('Correct record - 4', () => {
     await expect(
       page.getByRole('heading', { name: 'Record corrected' })
     ).toBeVisible()
-
     await expect(page.getByText(requester + ' — ' + date)).toBeVisible()
-
     await expect(page.getByText('Requester' + 'Legal guardian')).toBeVisible()
     await expect(
       page.getByText(
@@ -960,7 +890,6 @@ test.describe.serial('Correct record - 4', () => {
           'Informant provided incorrect information (Material error)'
       )
     ).toBeVisible()
-
     await expect(page.getByText('Supporting documents')).toBeVisible()
     await expect(page.getByText('Affidavit')).toBeVisible()
     await expect(page.getByText('Court Document')).toBeVisible()
@@ -981,7 +910,6 @@ test.describe.serial('Correct record - 4', () => {
       'Informant provided incorrect information (Material error)'
     )
     await visible(page, 'Fee total', `$${correctionFee}`)
-
     await visible(page, 'Correction(s)')
     await visible(page, "Child's details")
 
@@ -991,11 +919,11 @@ test.describe.serial('Correct record - 4', () => {
       'Residential address',
       'Health Institution'
     )
-
     await visible(
       page.locator('#listTable-corrections-table-child'),
       'Location of birth'
     )
+
     await expect(
       await page
         .locator('#listTable-corrections-table-child')
@@ -1006,41 +934,35 @@ test.describe.serial('Correct record - 4', () => {
       page.locator('#listTable-corrections-table-father'),
       "Father's details"
     )
-
     await visible(
       page.locator('#listTable-corrections-table-father'),
       "Father's name",
       `${declaration['father.name']?.firstname} ${declaration['father.name']?.surname}`,
       `${updatedFatherDetails.firstNames} ${updatedFatherDetails.familyName}`
     )
-
     await visible(
       page.locator('#listTable-corrections-table-father'),
       'Date of birth',
       formatDateTo_dMMMMyyyy(declaration['father.dob']!),
       formatDateTo_dMMMMyyyy(updatedFatherDetails.birthDate)
     )
-
     await visible(
       page.locator('#listTable-corrections-table-father').locator('#row_2'),
       'Nationality',
       'Farajaland',
       updatedFatherDetails.nationality
     )
-
     await visible(
       page.locator('#listTable-corrections-table-father'),
       'Type of ID',
       'National ID',
       'Passport'
     )
-
     await visible(
       page.locator('#listTable-corrections-table-father'),
       'ID Number',
       updatedFatherDetails.passport
     )
-
     await visible(
       page.locator('#listTable-corrections-table-father').locator('#row_5'),
       'Usual place of residence'
@@ -1071,7 +993,6 @@ test.describe.serial('Correct record - 4', () => {
       'Single',
       'Widowed'
     )
-
     await visible(
       page.locator('#listTable-corrections-table-father'),
       'Level of education',
@@ -1084,4 +1005,6 @@ test.describe.serial('Correct record - 4', () => {
       .locator('xpath=following-sibling::*[1]')
       .click()
   })
+
+  await page.close()
 })

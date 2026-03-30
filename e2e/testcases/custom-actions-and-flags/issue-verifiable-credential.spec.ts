@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 import { CREDENTIALS } from '../../constants'
 import { getToken, login, searchFromSearchBar } from '../../helpers'
 import {
@@ -9,8 +9,7 @@ import {
 } from '../../utils'
 import {
   createDeclaration,
-  getDeclaration,
-  type Declaration
+  getDeclaration
 } from '../test-data/birth-declaration'
 import { formatV2ChildName } from '../birth/helpers'
 import {
@@ -18,12 +17,33 @@ import {
   selectRequesterType
 } from '../print-certificate/birth/helpers'
 
-test.describe.serial('Issue verifiable credential', () => {
-  let page: Page
-  let motherInformantDeclaration: Declaration
-  let motherInformantChildName: string
-  let nonParentInformantDeclaration: Declaration
-  let nonParentInformantChildName: string
+test('Issue verifiable credential', async ({ browser }) => {
+  const token = await getToken(
+    CREDENTIALS.REGISTRAR.USERNAME,
+    CREDENTIALS.REGISTRAR.PASSWORD
+  )
+
+  const motherInformantRes = await createDeclaration(token)
+
+  const nonParentInformantDec = await getDeclaration({
+    token,
+    informantRelation: 'BROTHER'
+  })
+
+  const nonParentInformantRes = await createDeclaration(
+    token,
+    nonParentInformantDec
+  )
+
+  const page = await browser.newPage()
+
+  const motherInformantDeclaration = motherInformantRes.declaration
+  const motherInformantChildName = formatV2ChildName(motherInformantDeclaration)
+  const nonParentInformantDeclaration = nonParentInformantRes.declaration
+
+  const nonParentInformantChildName = formatV2ChildName(
+    nonParentInformantDeclaration
+  )
 
   async function openIssueVerifiableCredentialAction() {
     await page.getByRole('button', { name: 'Action', exact: true }).click()
@@ -33,46 +53,14 @@ test.describe.serial('Issue verifiable credential', () => {
       .click()
   }
 
-  test.beforeAll(async ({ browser }) => {
-    const token = await getToken(
-      CREDENTIALS.REGISTRAR.USERNAME,
-      CREDENTIALS.REGISTRAR.PASSWORD
-    )
-
-    const motherInformantRes = await createDeclaration(token)
-    motherInformantDeclaration = motherInformantRes.declaration
-    motherInformantChildName = formatV2ChildName(motherInformantDeclaration)
-
-    const nonParentInformantDec = await getDeclaration({
-      token,
-      informantRelation: 'BROTHER'
-    })
-
-    const nonParentInformantRes = await createDeclaration(
-      token,
-      nonParentInformantDec
-    )
-    nonParentInformantDeclaration = nonParentInformantRes.declaration
-    nonParentInformantChildName = formatV2ChildName(
-      nonParentInformantDeclaration
-    )
-
-    page = await browser.newPage()
-  })
-
-  test.afterAll(async () => {
-    await page?.close()
-  })
-
-  test('Log in and navigate to mother informant record', async () => {
+  await test.step('Log in and navigate to mother informant record', async () => {
     await login(page, CREDENTIALS.REGISTRAR)
     await searchFromSearchBar(page, motherInformantChildName)
     await ensureAssigned(page)
   })
 
-  test('Requester dropdown spec: mother informant only shows mother (and father if available)', async () => {
+  await test.step('Requester dropdown spec: mother informant only shows mother (and father if available)', async () => {
     await openIssueVerifiableCredentialAction()
-
     await page.locator('#requester____type').click()
 
     await expect(page.getByText('Mother', { exact: true })).toBeVisible()
@@ -98,19 +86,18 @@ test.describe.serial('Issue verifiable credential', () => {
     await expect(confirmButton).toBeDisabled()
 
     await acceptedOfferCheckbox.check()
+
     await expect(confirmButton).toBeEnabled()
 
     await confirmButton.click()
     await ensureOutboxIsEmpty(page)
   })
 
-  test('Requester dropdown spec: non-parent informant shows available parent(s) plus informant relation', async () => {
+  await test.step('Requester dropdown spec: non-parent informant shows available parent(s) plus informant relation', async () => {
     await navigateToWorkqueue(page, 'Pending certification')
     await searchFromSearchBar(page, nonParentInformantChildName)
     await ensureAssigned(page)
-
     await openIssueVerifiableCredentialAction()
-
     await page.locator('#requester____type').click()
 
     await expect(page.getByText('Mother', { exact: true })).toBeVisible()
@@ -131,17 +118,16 @@ test.describe.serial('Issue verifiable credential', () => {
 
     const acceptedOfferCheckbox = page.locator('#requester____acceptedVcOffer')
     await expect(acceptedOfferCheckbox).toBeVisible()
-    await acceptedOfferCheckbox.check()
 
+    await acceptedOfferCheckbox.check()
     await page.getByRole('button', { name: 'Confirm' }).click()
     await ensureOutboxIsEmpty(page)
   })
 
-  test('Show verifiable credential QR code in Birth Certificate', async () => {
+  await test.step('Show verifiable credential QR code in Birth Certificate', async () => {
     await navigateToWorkqueue(page, 'Pending certification')
     await searchFromSearchBar(page, motherInformantChildName)
     await ensureAssigned(page)
-
     await selectAction(page, 'Print')
     await selectCertificationType(page, 'Birth Certificate')
     await selectRequesterType(page, 'Print and issue to Informant (Mother)')
@@ -152,12 +138,12 @@ test.describe.serial('Issue verifiable credential', () => {
     // there is a background HTTP call to create the verifiable credential. We need to wait for it to succeed.
     const HTTP_CALL_RESPONSE_WAIT_MS = 500
     await page.waitForTimeout(HTTP_CALL_RESPONSE_WAIT_MS)
-
     await page.getByRole('button', { name: 'Continue' }).click()
 
     const certificateQrCode = page.locator(
       '#print image[data-testid="verifiable-credential-qr-code"]'
     )
+
     await expect(certificateQrCode).toBeVisible()
 
     const qrValue = await certificateQrCode.evaluate((element) => {
@@ -165,7 +151,8 @@ test.describe.serial('Issue verifiable credential', () => {
         element.getAttribute('href') || element.getAttribute('xlink:href') || ''
       )
     })
-
     expect(qrValue).toMatch(/^data:image\/png;base64,/)
   })
+
+  await page?.close()
 })

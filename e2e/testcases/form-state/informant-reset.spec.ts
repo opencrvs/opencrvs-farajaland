@@ -4,7 +4,7 @@ import { openBirthDeclaration } from '../birth/helpers'
 import { CREDENTIALS } from '../../constants'
 
 test.describe('Informant details resets when relation is changed', () => {
-  test.describe.serial('Birth', async () => {
+  test.describe('Birth', async () => {
     let page: Page
 
     test.beforeAll(async ({ browser }) => {
@@ -21,9 +21,7 @@ test.describe('Informant details resets when relation is changed', () => {
 
     test('Fill in informant details', async () => {
       await openBirthDeclaration(page)
-
       await goToSection(page, 'informant')
-
       await page.locator('#informant____relation').click()
       await page
         .getByText('Brother', {
@@ -40,7 +38,6 @@ test.describe('Informant details resets when relation is changed', () => {
 
       await page.locator('#informant____idType').click()
       await page.getByText('National ID', { exact: true }).click()
-
       await page.locator('#informant____nid').fill('1234567890')
 
       await page.locator('#country').click()
@@ -87,7 +84,8 @@ test.describe('Informant details resets when relation is changed', () => {
       await expect(page.locator('#informant____email')).toHaveValue('')
     })
   })
-  test.describe.serial('Death', async () => {
+
+  test.describe('Death', async () => {
     let page: Page
 
     test.beforeAll(async ({ browser }) => {
@@ -107,7 +105,6 @@ test.describe('Informant details resets when relation is changed', () => {
       await page.getByLabel('Death').click()
       await page.getByRole('button', { name: 'Continue' }).click()
       await goToSection(page, 'informant')
-
       await page.locator('#informant____relation').click()
       await page
         .getByText('Son', {
@@ -124,11 +121,9 @@ test.describe('Informant details resets when relation is changed', () => {
 
       await page.locator('#informant____idType').click()
       await page.getByText('National ID', { exact: true }).click()
-
       await page.locator('#informant____nid').fill('1234567890')
 
       await page.locator('#informant____addressSameAs_NO').check()
-
       await page.locator('#country').click()
       await page.getByText('Estonia', { exact: true }).click()
       await page.locator('#state').fill('Springfield')

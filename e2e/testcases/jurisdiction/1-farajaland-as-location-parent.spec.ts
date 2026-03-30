@@ -1,4 +1,4 @@
-import { test, type Page } from '@playwright/test'
+import { test } from '@playwright/test'
 import { getToken, login, searchFromSearchBar } from '../../helpers'
 import { trackAndDeleteCreatedEvents } from '../test-data/eventDeletion'
 import { CREDENTIALS } from '../../constants'
@@ -10,59 +10,42 @@ import {
 import { ActionType } from '@opencrvs/toolkit/events'
 import { formatV2ChildName } from '../birth/helpers'
 
-test.describe.serial('1.Farajaland as location parent', () => {
-  trackAndDeleteCreatedEvents()
+trackAndDeleteCreatedEvents()
 
-  let page: Page
-  let declaration: any
-  let name: string
-  let token: string
-
-  test.beforeAll(async ({ browser }) => {
-    const token = await getToken(
-      CREDENTIALS.HOSPITAL_OFFICIAL.USERNAME,
-      CREDENTIALS.HOSPITAL_OFFICIAL.PASSWORD
-    )
-    declaration = await getDeclaration({
-      partialDeclaration: {
-        'mother.nid': null,
-        'mother.dob': null,
-        ...(await getPlaceOfBirth(
-          'HEALTH_FACILITY',
-          token,
-          'Mpepo Rural Health Centre'
-        ))
-      },
-      token
-    })
-
-    name = formatV2ChildName(declaration)
-
-    page = await browser.newPage()
+test('1.Farajaland as location parent', async ({ browser }) => {
+  const token: string = await getToken(
+    CREDENTIALS.HOSPITAL_OFFICIAL.USERNAME,
+    CREDENTIALS.HOSPITAL_OFFICIAL.PASSWORD
+  )
+  const declaration: any = await getDeclaration({
+    partialDeclaration: {
+      'mother.nid': null,
+      'mother.dob': null,
+      ...(await getPlaceOfBirth(
+        'HEALTH_FACILITY',
+        token,
+        'Mpepo Rural Health Centre'
+      ))
+    },
+    token
   })
 
-  test.afterAll(async () => {
-    await page.close()
-  })
+  const name: string = formatV2ChildName(declaration)
+  const page = await browser.newPage()
 
-  test('1.1.0 Hospital official creates an incomplete declaration', async () => {
-    token = await getToken(
-      CREDENTIALS.HOSPITAL_OFFICIAL.USERNAME,
-      CREDENTIALS.HOSPITAL_OFFICIAL.PASSWORD
-    )
-
+  await test.step('1.1.0 Hospital official creates an incomplete declaration', async () => {
     await createDeclaration(token, declaration, ActionType.NOTIFY)
   })
 
-  test('1.1.1 Embassy official in another administrative area should not find the declaration', async () => {
+  await test.step('1.1.1 Embassy official in another administrative area should not find the declaration', async () => {
     await login(page, CREDENTIALS.EMBASSY_OFFICIAL)
-
     await searchFromSearchBar(page, name, false)
   })
 
-  test('1.1.2 Registrar general within the same administrative area should find the declaration', async () => {
+  await test.step('1.1.2 Registrar general within the same administrative area should find the declaration', async () => {
     await login(page, CREDENTIALS.REGISTRAR_GENERAL)
-
     await searchFromSearchBar(page, name, true)
   })
+
+  await page.close()
 })

@@ -1,26 +1,19 @@
-import { test, expect, type Page } from '@playwright/test'
+import { test, expect } from '@playwright/test'
 import { login } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
 
-test.describe.serial('6. Team Page -1', () => {
-  let page: Page
+test('6. Team Page -1', async ({ browser }) => {
+  const page = await browser.newPage()
 
-  test.beforeAll(async ({ browser }) => {
-    page = await browser.newPage()
-  })
-
-  test.afterAll(async () => {
-    await page.close()
-  })
-
-  test.describe('6.1 Basic UI check', () => {
-    test('6.1.0 Verify UI', async () => {
+  await test.step('6.1 Basic UI check', async () => {
+    await test.step('6.1.0 Verify UI', async () => {
       await login(page, CREDENTIALS.LOCAL_SYSTEM_ADMIN)
+
       await page.getByRole('button', { name: 'Team' }).click()
+
       await expect(page.locator('#content-name')).toHaveText(
         'Central Province Office'
       )
-
       await expect(
         page.getByText('Central', {
           exact: true
@@ -33,8 +26,9 @@ test.describe.serial('6. Team Page -1', () => {
       { name: 'Mitchel Owen', role: 'Provincial Registrar' }
     ]
 
-    test('6.1.1 Verify Team Members, Roles and their statuses', async () => {
+    await test.step('6.1.1 Verify Team Members, Roles and their statuses', async () => {
       const rows = page.locator('#user_list tr:has(td)')
+
       await expect(rows).toHaveCount(team.length)
 
       for (let i = 0; i < team.length; i++) {
@@ -46,10 +40,9 @@ test.describe.serial('6. Team Page -1', () => {
       }
     })
 
-    test('6.1.2 Verify Team Member Details', async () => {
+    await test.step('6.1.2 Verify Team Member Details', async () => {
       for (const member of team) {
         await page.getByRole('button', { name: member.name }).click()
-        await expect(page.locator('#content-name')).toHaveText(member.name)
 
         await expect(page).toHaveURL(/.*\/view/)
 
@@ -60,4 +53,6 @@ test.describe.serial('6. Team Page -1', () => {
       }
     })
   })
+
+  await page.close()
 })

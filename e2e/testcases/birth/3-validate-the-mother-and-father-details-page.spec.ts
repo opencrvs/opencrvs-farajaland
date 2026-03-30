@@ -8,7 +8,6 @@ test.describe('3. Validate the mothers and fathers details pages', () => {
 
   test.beforeEach(async ({ page }) => {
     await login(page)
-
     await page.click('#header-new-event')
 
     await expect(page.getByText('New Declaration')).toBeVisible()
@@ -28,7 +27,7 @@ test.describe('3. Validate the mothers and fathers details pages', () => {
     ).toBeVisible()
   })
 
-  test.describe.serial('3.1 Validate "First Name(s)" text field', async () => {
+  test.describe('3.1 Validate "First Name(s)" text field', async () => {
     test.describe('3.1.1 Enter Non-English characters', async () => {
       test('Using name: Richard the 3rd', async ({ page }) => {
         await page.locator('#firstname').fill('Richard the 3rd')
@@ -109,7 +108,7 @@ test.describe('3. Validate the mothers and fathers details pages', () => {
     })
   })
 
-  test.describe.serial('3.2 Validate the "National ID" field', async () => {
+  test.describe('3.2 Validate the "National ID" field', async () => {
     test.beforeEach(async ({ page }) => {
       await page.locator('#mother____idType').getByText('Select...').click()
       await page.getByText('National ID', { exact: true }).click()
@@ -118,6 +117,7 @@ test.describe('3. Validate the mothers and fathers details pages', () => {
     test('3.2.1 Enter empty National ID', async ({ page }) => {
       await page.locator('#mother____nid-form-input div').nth(1).click()
       await page.getByRole('heading', { name: 'Birth' }).click()
+
       await expect(page.locator('#mother____nid_error')).toContainText(
         REQUIRED_VALIDATION_ERROR
       )
@@ -128,6 +128,7 @@ test.describe('3. Validate the mothers and fathers details pages', () => {
     }) => {
       await page.getByTestId('text__mother____nid').fill('11111asdfg')
       await page.getByRole('heading', { name: 'Birth' }).click()
+
       await expect(
         page.getByText(
           'The national ID can only be numeric and must be 10 digits long',
@@ -139,6 +140,7 @@ test.describe('3. Validate the mothers and fathers details pages', () => {
     test('3.2.3 Enter too short National ID', async ({ page }) => {
       await page.getByTestId('text__mother____nid').fill('123456789')
       await page.getByRole('heading', { name: 'Birth' }).click()
+
       await expect(
         page.getByText(
           'The national ID can only be numeric and must be 10 digits long',
@@ -150,6 +152,7 @@ test.describe('3. Validate the mothers and fathers details pages', () => {
     test('3.2.3 Enter too long National ID', async ({ page }) => {
       await page.getByTestId('text__mother____nid').fill('12345678901')
       await page.getByRole('heading', { name: 'Birth' }).click()
+
       await expect(
         page.getByText(
           'The national ID can only be numeric and must be 10 digits long',
@@ -161,6 +164,7 @@ test.describe('3. Validate the mothers and fathers details pages', () => {
     test('3.2.4 Enter valid National ID', async ({ page }) => {
       await page.getByTestId('text__mother____nid').fill('1234567890')
       await page.getByRole('heading', { name: 'Birth' }).click()
+
       await expect(
         page.getByText(
           'The national ID can only be numeric and must be 10 digits long',
@@ -187,6 +191,7 @@ test.describe('3. Validate the mothers and fathers details pages', () => {
       ).toBeVisible()
       await page.getByTestId('text__father____nid').fill('12345678901')
       await page.getByRole('heading', { name: 'Birth' }).click()
+
       await expect(
         page.getByText('National id must be unique', {
           exact: true

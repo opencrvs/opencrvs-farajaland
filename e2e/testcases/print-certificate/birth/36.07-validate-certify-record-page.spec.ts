@@ -1,11 +1,10 @@
-import { expect, test, type Page } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 import { CREDENTIALS } from '../../../constants'
 import { getToken } from '../../../helpers'
 import { login } from '../../../helpers'
 import {
   createDeclaration,
-  getDeclaration,
-  Declaration
+  getDeclaration
 } from '../../test-data/birth-declaration'
 import {
   navigateToCertificatePrintAction,
@@ -14,47 +13,42 @@ import {
 } from './helpers'
 import { expectInUrl } from '../../../utils'
 
-test.describe.serial('7.0 Validate "Certify record" page', () => {
-  let eventId: string
-  let declaration: Declaration
-  let page: Page
+test('7.0 Validate "Certify record" page', async ({ browser }) => {
+  const token = await getToken(
+    CREDENTIALS.REGISTRAR.USERNAME,
+    CREDENTIALS.REGISTRAR.PASSWORD
+  )
 
-  test.beforeAll(async ({ browser }) => {
-    const token = await getToken(
-      CREDENTIALS.REGISTRAR.USERNAME,
-      CREDENTIALS.REGISTRAR.PASSWORD
-    )
-    const res = await createDeclaration(
-      token,
-      await getDeclaration({ informantRelation: 'BROTHER', token })
-    )
-    eventId = res.eventId
-    declaration = res.declaration
-    page = await browser.newPage()
-  })
+  const res = await createDeclaration(
+    token,
+    await getDeclaration({ informantRelation: 'BROTHER', token })
+  )
 
-  test.afterAll(async () => {
-    await page.close()
-  })
+  const eventId = res.eventId
+  const declaration = res.declaration
+  const page = await browser.newPage()
 
-  test('7.0.1 Log in', async () => {
+  await test.step('7.0.1 Log in', async () => {
     await login(page)
   })
 
-  test('7.0.2 Navigate to certificate print action', async () => {
+  await test.step('7.0.2 Navigate to certificate print action', async () => {
     await page.getByRole('button', { name: 'Pending certification' }).click()
     await navigateToCertificatePrintAction(page, declaration)
   })
 
-  test('7.1 continue with "Print and issue to Informant (Brother)" redirect to Collector details page', async () => {
+  await test.step('7.1 continue with "Print and issue to Informant (Brother)" redirect to Collector details page', async () => {
     await selectCertificationType(page, 'Birth Certificate')
     await selectRequesterType(page, 'Print and issue to Informant (Brother)')
     await page.getByRole('button', { name: 'Continue' }).click()
+
     await expectInUrl(
       page,
       `/print-certificate/${eventId}/pages/collector.identity.verify`
     )
+
     await page.getByRole('button', { name: 'Verified' }).click()
+
     await expectInUrl(
       page,
       `/print-certificate/${eventId}/pages/collector.collect.payment`
@@ -67,8 +61,9 @@ test.describe.serial('7.0 Validate "Certify record" page', () => {
     await expect(page.getByText('$5.00')).toBeVisible()
   })
 
-  test('7.2 should navigate to ready to certify page on continue button click', async () => {
+  await test.step('7.2 should navigate to ready to certify page on continue button click', async () => {
     await page.getByRole('button', { name: 'Continue' }).click()
+
     await expectInUrl(
       page,
       `/print-certificate/${eventId}/review?templateId=v2.birth-certificate`
@@ -76,5 +71,8 @@ test.describe.serial('7.0 Validate "Certify record" page', () => {
   })
 
   // @TODO: this is not implemented in events v2 yet
-  test.skip('7.3 should skip payment page if payment is 0', async () => {})
+  await test.step.skip(
+    '7.3 should skip payment page if payment is 0',
+    async () => {}
+  )
 })

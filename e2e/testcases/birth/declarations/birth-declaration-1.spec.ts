@@ -1,4 +1,4 @@
-import { test, expect, type Page } from '@playwright/test'
+import { test, expect } from '@playwright/test'
 import {
   continueForm,
   drawSignature,
@@ -16,8 +16,9 @@ import { fillDate, validateAddress } from '../helpers'
 import { selectDeclarationAction } from '../../../helpers'
 import { ensureAssigned, ensureOutboxIsEmpty } from '../../../utils'
 
-test.describe.serial('1. Birth declaration case - 1', () => {
-  let page: Page
+test('1. Birth declaration case - 1', async ({ browser }) => {
+  const page = await browser.newPage()
+
   const declaration = {
     child: {
       name: {
@@ -77,33 +78,22 @@ test.describe.serial('1. Birth declaration case - 1', () => {
       }
     }
   }
-  test.beforeAll(async ({ browser }) => {
-    page = await browser.newPage()
-  })
 
-  test.afterAll(async () => {
-    await page.close()
-  })
+  await test.step('1.1 Declaration started by HO', async () => {
+    await login(page, CREDENTIALS.HOSPITAL_OFFICIAL)
+    await page.click('#header-new-event')
+    await page.getByLabel('Birth').click()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.getByRole('button', { name: 'Continue' }).click()
 
-  test.describe('1.1 Declaration started by HO', async () => {
-    test.beforeAll(async () => {
-      await login(page, CREDENTIALS.HOSPITAL_OFFICIAL)
-      await page.click('#header-new-event')
-      await page.getByLabel('Birth').click()
-      await page.getByRole('button', { name: 'Continue' }).click()
-      await page.getByRole('button', { name: 'Continue' }).click()
-    })
-
-    test('1.1.1 Fill child details', async () => {
+    await test.step('1.1.1 Fill child details', async () => {
       await page.locator('#firstname').fill(declaration.child.name.firstNames)
       await page.locator('#surname').fill(declaration.child.name.familyName)
       await page.locator('#child____gender').click()
       await page.getByText(declaration.child.gender, { exact: true }).click()
-
       await page.getByPlaceholder('dd').fill(declaration.child.birthDate.dd)
       await page.getByPlaceholder('mm').fill(declaration.child.birthDate.mm)
       await page.getByPlaceholder('yyyy').fill(declaration.child.birthDate.yyyy)
-
       await page.locator('#child____placeOfBirth').click()
       await page
         .getByText(declaration.placeOfBirth, {
@@ -114,60 +104,50 @@ test.describe.serial('1. Birth declaration case - 1', () => {
         .locator('#child____birthLocation')
         .fill(declaration.birthLocation.facility.slice(0, 3))
       await page.getByText(declaration.birthLocation.facility).click()
-
       await page.locator('#child____attendantAtBirth').click()
       await page
         .getByText(declaration.attendantAtBirth, {
           exact: true
         })
         .click()
-
       await page.locator('#child____birthType').click()
       await page
         .getByText(declaration.birthType, {
           exact: true
         })
         .click()
-
       await page
         .locator('#child____weightAtBirth')
         .fill(declaration.weightAtBirth.toString())
-
       await continueForm(page)
     })
 
-    test('1.1.2 Fill informant details', async () => {
+    await test.step('1.1.2 Fill informant details', async () => {
       await page.locator('#informant____relation').click()
       await page
         .getByText(declaration.informantType, {
           exact: true
         })
         .click()
-
       await page.locator('#informant____email').fill(declaration.informantEmail)
-
       await continueForm(page)
     })
 
-    test("1.1.3 Fill mother's details", async () => {
+    await test.step("1.1.3 Fill mother's details", async () => {
       await page.locator('#firstname').fill(declaration.mother.name.firstNames)
       await page.locator('#surname').fill(declaration.mother.name.familyName)
-
       await page.getByPlaceholder('dd').fill(declaration.mother.birthDate.dd)
       await page.getByPlaceholder('mm').fill(declaration.mother.birthDate.mm)
       await page
         .getByPlaceholder('yyyy')
         .fill(declaration.mother.birthDate.yyyy)
-
       await page.locator('#mother____idType').click()
       await page
         .getByText(declaration.mother.identifier.type, { exact: true })
         .click()
-
       await page
         .locator('#mother____nid')
         .fill(declaration.mother.identifier.id)
-
       await page.locator('#country').click()
       await page
         .locator('#country input')
@@ -176,7 +156,6 @@ test.describe.serial('1. Birth declaration case - 1', () => {
         .locator('#country')
         .getByText(declaration.mother.address.country, { exact: true })
         .click()
-
       await page.locator('#province').click()
       await page
         .getByText(declaration.mother.address.province, { exact: true })
@@ -189,7 +168,6 @@ test.describe.serial('1. Birth declaration case - 1', () => {
       await page
         .getByText(declaration.mother.address.village, { exact: true })
         .click()
-
       await page.locator('#town').fill(declaration.mother.address.town)
       await page
         .locator('#residentialArea')
@@ -199,60 +177,49 @@ test.describe.serial('1. Birth declaration case - 1', () => {
       await page
         .locator('#zipCode')
         .fill(declaration.mother.address.postcodeOrZip)
-
       await page.locator('#mother____maritalStatus').click()
       await page
         .getByText(declaration.mother.maritalStatus, { exact: true })
         .click()
-
       await page.locator('#mother____educationalAttainment').click()
       await page
         .getByText(declaration.mother.levelOfEducation, { exact: true })
         .click()
-
       await continueForm(page)
     })
 
-    test("1.1.4 Fill father's details", async () => {
+    await test.step("1.1.4 Fill father's details", async () => {
       await page.locator('#firstname').fill(declaration.father.name.firstNames)
       await page.locator('#surname').fill(declaration.father.name.familyName)
-
       await fillDate(page, declaration.father.birthDate)
-
       await page.locator('#father____idType').click()
       await page
         .getByText(declaration.father.identifier.type, { exact: true })
         .click()
-
       await page
         .locator('#father____nid')
         .fill(declaration.father.identifier.id)
-
       await page.locator('#father____nationality').click()
       await page
         .getByText(declaration.father.nationality, { exact: true })
         .click()
-
       await page.locator('#father____addressSameAs_YES').click()
-
       await page.locator('#father____maritalStatus').click()
       await page
         .getByText(declaration.father.maritalStatus, { exact: true })
         .click()
-
       await page.locator('#father____educationalAttainment').click()
       await page
         .getByText(declaration.father.levelOfEducation, { exact: true })
         .click()
-
       await page.getByRole('button', { name: 'Continue' }).click()
     })
 
-    test('1.1.5 Go to review', async () => {
+    await test.step('1.1.5 Go to review', async () => {
       await goToSection(page, 'review')
     })
 
-    test('1.1.6 Verify information on review page', async () => {
+    await test.step('1.1.6 Verify information on review page', async () => {
       /*
        * Expected result: should include
        * - Child's First Name
@@ -320,7 +287,6 @@ test.describe.serial('1. Birth declaration case - 1', () => {
        * Expected result: should include
        * - Informant's relation to child
        */
-
       await expect(page.getByTestId('row-value-informant.relation')).toHaveText(
         declaration.informantType
       )
@@ -384,7 +350,6 @@ test.describe.serial('1. Birth declaration case - 1', () => {
       await expect(page.getByTestId('row-value-mother.idType')).toHaveText(
         declaration.mother.identifier.type
       )
-
       await expect(page.getByTestId('row-value-mother.nid')).toHaveText(
         declaration.mother.identifier.id
       )
@@ -434,7 +399,6 @@ test.describe.serial('1. Birth declaration case - 1', () => {
       await expect(page.getByTestId('row-value-father.idType')).toHaveText(
         declaration.father.identifier.type
       )
-
       await expect(page.getByTestId('row-value-father.nid')).toHaveText(
         declaration.father.identifier.id
       )
@@ -463,7 +427,8 @@ test.describe.serial('1. Birth declaration case - 1', () => {
         page.getByTestId('row-value-father.addressSameAs')
       ).toHaveText('Yes')
     })
-    test('1.1.7 Fill up informant comment & signature', async () => {
+
+    await test.step('1.1.7 Fill up informant comment & signature', async () => {
       await page.locator('#review____comment').fill(faker.lorem.sentence())
       await page.getByRole('button', { name: 'Sign', exact: true }).click()
       await drawSignature(page, 'review____signature_canvas_element', false)
@@ -475,12 +440,11 @@ test.describe.serial('1. Birth declaration case - 1', () => {
       await expect(page.getByRole('dialog')).not.toBeVisible()
     })
 
-    test('1.1.8 Declare', async () => {
+    await test.step('1.1.8 Declare', async () => {
       await selectDeclarationAction(page, 'Declare')
-
       await ensureOutboxIsEmpty(page)
-
       await page.getByText('Recent').click()
+
       await expect(
         page.getByRole('button', {
           name: formatName(declaration.child.name)
@@ -489,8 +453,8 @@ test.describe.serial('1. Birth declaration case - 1', () => {
     })
   })
 
-  test.describe('1.2 Declaration Review by RO', async () => {
-    test('1.2.1 Navigate to the declaration review page', async () => {
+  await test.step('1.2 Declaration Review by RO', async () => {
+    await test.step('1.2.1 Navigate to the declaration review page', async () => {
       await login(page, CREDENTIALS.REGISTRATION_OFFICER)
       await page.getByText('Pending validation').click()
       await page
@@ -498,7 +462,6 @@ test.describe.serial('1. Birth declaration case - 1', () => {
           name: formatName(declaration.child.name)
         })
         .click()
-
       await ensureAssigned(page)
 
       await expect(page.getByTestId('assignedTo-value')).toHaveText(
@@ -506,7 +469,9 @@ test.describe.serial('1. Birth declaration case - 1', () => {
       )
 
       await switchEventTab(page, 'Audit')
+
       const assignmentAuditRow = page.locator('#row_4')
+
       await expect(assignmentAuditRow.getByText('Assigned')).toBeVisible()
       await expect(assignmentAuditRow.getByText('Felix Katongo')).toBeVisible()
       await expect(
@@ -514,13 +479,15 @@ test.describe.serial('1. Birth declaration case - 1', () => {
       ).toBeVisible()
     })
 
-    test('1.2.2 Verify information on review page', async () => {
+    await test.step('1.2.2 Verify information on review page', async () => {
       await switchEventTab(page, 'Record')
+
       /*
        * Expected result: should include
        * - Child's First Name
        * - Child's Family Name
        */
+
       await expectRowValue(
         page,
         'child.name',
@@ -533,12 +500,14 @@ test.describe.serial('1. Birth declaration case - 1', () => {
        * Expected result: should include
        * - Child's Gender
        */
+
       await expectRowValue(page, 'child.gender', declaration.child.gender)
 
       /*
        * Expected result: should include
        * - Child's date of birth
        */
+
       await expectRowValue(
         page,
         'child.dob',
@@ -550,7 +519,9 @@ test.describe.serial('1. Birth declaration case - 1', () => {
        * - Child's Place of birth type
        * - Child's Place of birth details
        */
+
       await expectRowValue(page, 'child.placeOfBirth', declaration.placeOfBirth)
+
       await expectRowValue(
         page,
         'child.birthLocation',
@@ -561,6 +532,7 @@ test.describe.serial('1. Birth declaration case - 1', () => {
        * Expected result: should include
        * - Child's Attendant at birth
        */
+
       await expectRowValue(
         page,
         'child.attendantAtBirth',
@@ -571,12 +543,14 @@ test.describe.serial('1. Birth declaration case - 1', () => {
        * Expected result: should include
        * - Child's Birth type
        */
+
       await expectRowValue(page, 'child.birthType', declaration.birthType)
 
       /*
        * Expected result: should include
        * - Child's Weight at birth
        */
+
       await expectRowValue(
         page,
         'child.weightAtBirth',
@@ -587,6 +561,7 @@ test.describe.serial('1. Birth declaration case - 1', () => {
        * Expected result: should include
        * - Informant's relation to child
        */
+
       await expectRowValue(
         page,
         'informant.relation',
@@ -597,6 +572,7 @@ test.describe.serial('1. Birth declaration case - 1', () => {
        * Expected result: should include
        * - Informant's Email
        */
+
       await expectRowValue(page, 'informant.email', declaration.informantEmail)
 
       /*
@@ -604,6 +580,7 @@ test.describe.serial('1. Birth declaration case - 1', () => {
        * - Mother's First Name
        * - Mother's Family Name
        */
+
       await expectRowValue(
         page,
         'mother.name',
@@ -614,6 +591,7 @@ test.describe.serial('1. Birth declaration case - 1', () => {
        * Expected result: should include
        * - Mother's date of birth
        */
+
       await expectRowValue(
         page,
         'mother.dob',
@@ -624,6 +602,7 @@ test.describe.serial('1. Birth declaration case - 1', () => {
        * Expected result: should include
        * - Mother's Nationality
        */
+
       await expectRowValue(
         page,
         'mother.nationality',
@@ -634,6 +613,7 @@ test.describe.serial('1. Birth declaration case - 1', () => {
        * Expected result: should include
        * - Mother's Marital status
        */
+
       await expectRowValue(
         page,
         'mother.maritalStatus',
@@ -644,6 +624,7 @@ test.describe.serial('1. Birth declaration case - 1', () => {
        * Expected result: should include
        * - Mother's level of education
        */
+
       await expectRowValue(
         page,
         'mother.educationalAttainment',
@@ -655,17 +636,20 @@ test.describe.serial('1. Birth declaration case - 1', () => {
        * - Mother's Type of Id
        * - Mother's Id Number
        */
+
       await expectRowValue(
         page,
         'mother.idType',
         declaration.mother.identifier.type
       )
+
       await expectRowValue(page, 'mother.nid', declaration.mother.identifier.id)
 
       /*
        * Expected result: should include
        * - Mother's address
        */
+
       await validateAddress(
         page,
         declaration.mother.address,
@@ -677,6 +661,7 @@ test.describe.serial('1. Birth declaration case - 1', () => {
        * - Father's First Name
        * - Father's Family Name
        */
+
       await expectRowValue(
         page,
         'father.name',
@@ -689,6 +674,7 @@ test.describe.serial('1. Birth declaration case - 1', () => {
        * Expected result: should include
        * - Father's date of birth
        */
+
       await expectRowValue(
         page,
         'father.dob',
@@ -699,6 +685,7 @@ test.describe.serial('1. Birth declaration case - 1', () => {
        * Expected result: should include
        * - Father's Nationality
        */
+
       await expectRowValue(
         page,
         'father.nationality',
@@ -710,17 +697,20 @@ test.describe.serial('1. Birth declaration case - 1', () => {
        * - Father's Type of Id
        * - Father's Id Number
        */
+
       await expectRowValue(
         page,
         'father.idType',
         declaration.father.identifier.type
       )
+
       await expectRowValue(page, 'father.nid', declaration.father.identifier.id)
 
       /*
        * Expected result: should include
        * - Father's Marital status
        */
+
       await expectRowValue(
         page,
         'father.maritalStatus',
@@ -731,6 +721,7 @@ test.describe.serial('1. Birth declaration case - 1', () => {
        * Expected result: should include
        * - Father's level of education
        */
+
       await expectRowValue(
         page,
         'father.educationalAttainment',
@@ -741,7 +732,10 @@ test.describe.serial('1. Birth declaration case - 1', () => {
        * Expected result: should include
        * - Father's address
        */
+
       await expectRowValue(page, 'father.addressSameAs', 'Yes')
     })
   })
+
+  await page.close()
 })

@@ -1,4 +1,4 @@
-import { test, type Page, expect } from '@playwright/test'
+import { test, expect } from '@playwright/test'
 import { CREDENTIALS } from '../../../constants'
 import { login } from '../../../helpers'
 import { getToken } from '../../../helpers'
@@ -14,37 +14,27 @@ import {
 import { expectInUrl } from '../../../utils'
 import { mockNetworkConditions } from '../../../mock-network-conditions'
 
-test.describe
-  .serial('User should not be able to press print button twice', () => {
-  let declaration: Declaration
-  let page: Page
-  let eventId: string
+test('User should not be able to press print button twice', async ({
+  browser
+}) => {
+  const token = await getToken(
+    CREDENTIALS.REGISTRAR.USERNAME,
+    CREDENTIALS.REGISTRAR.PASSWORD
+  )
+  const res = await createDeclaration(token)
+  const declaration: Declaration = res.declaration
+  const page = await browser.newPage()
 
-  test.beforeAll(async ({ browser }) => {
-    const token = await getToken(
-      CREDENTIALS.REGISTRAR.USERNAME,
-      CREDENTIALS.REGISTRAR.PASSWORD
-    )
-    const res = await createDeclaration(token)
-    declaration = res.declaration
-    eventId = res.eventId
-    page = await browser.newPage()
-  })
-
-  test.afterAll(async () => {
-    await page.close()
-  })
-
-  test('Log in', async () => {
+  await test.step('Log in', async () => {
     await login(page)
   })
 
-  test('Navigate to certificate print action', async () => {
+  await test.step('Navigate to certificate print action', async () => {
     await page.getByRole('button', { name: 'Pending certification' }).click()
     await navigateToCertificatePrintAction(page, declaration)
   })
 
-  test('Fill details', async () => {
+  await test.step('Fill details', async () => {
     await selectCertificationType(page, 'Birth Certificate')
     await selectRequesterType(page, 'Print and issue to Informant (Mother)')
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -52,18 +42,21 @@ test.describe
     await page.getByRole('button', { name: 'Continue' }).click()
   })
 
-  test('Set slow connection', async () => {
+  await test.step('Set slow connection', async () => {
     await mockNetworkConditions(page, 'cellular2G')
   })
 
-  test('Print with slow connection', async () => {
+  await test.step('Print with slow connection', async () => {
     await page.getByRole('button', { name: 'Yes, print certificate' }).click()
 
     const popupPromise = page.waitForEvent('popup')
     await page.getByRole('button', { name: 'Print', exact: true }).click()
 
     await expect(
-      page.getByRole('button', { name: 'Yes, print certificate', exact: true })
+      page.getByRole('button', {
+        name: 'Yes, print certificate',
+        exact: true
+      })
     ).toBeDisabled()
 
     const popup = await popupPromise
@@ -73,6 +66,9 @@ test.describe
     // Check that the popup URL contains PDF content
     await expect(popup.url()).toBe('about:blank')
     await expect(download.suggestedFilename()).toMatch(/^.*\.pdf$/)
+
     await expectInUrl(page, `/workqueue/pending-certification`)
   })
+
+  await page.close()
 })

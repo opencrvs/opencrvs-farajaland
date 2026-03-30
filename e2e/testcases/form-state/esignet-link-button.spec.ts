@@ -8,29 +8,23 @@ async function authenticateInformantWithESignet(page: Page) {
   // Only tested with mosip-mock so far
   // https://github.com/opencrvs/mosip/blob/release-v1.8.0/packages/esignet-mock/src/index.ts#L166
   await expect(page).toHaveURL(/authorize/)
+
   // https://github.com/opencrvs/mosip/blob/release-v1.8.0/docs/mock-identities.json#L8
   await page.locator('#id-input').fill('1234567890')
   await page.locator('#authenticate').click()
   await expect(page).not.toHaveURL(/authorize/)
 }
 
-test.describe
-  .serial('E-Signet LINK_BUTTON inserts and locks informant data', () => {
-  let page: Page
+test('E-Signet LINK_BUTTON inserts and locks informant data', async ({
+  browser
+}) => {
+  const page = await browser.newPage()
 
-  test.beforeAll(async ({ browser }) => {
-    page = await browser.newPage()
-  })
-
-  test.afterAll(async () => {
-    await page.close()
-  })
-
-  test('Login', async () => {
+  await test.step('Login', async () => {
     await login(page)
   })
 
-  test('Name and DOB are inserted+disabled, National ID is unavailable', async () => {
+  await test.step('Name and DOB are inserted+disabled, National ID is unavailable', async () => {
     await openBirthDeclaration(page)
     await goToSection(page, 'informant')
 
@@ -40,7 +34,7 @@ test.describe
     await authenticateInformantWithESignet(page)
 
     await expect(page.getByText('ID Authenticated')).toBeVisible({
-      timeout: 30_000
+      timeout: 30000
     })
 
     await expect(page.locator('#firstname')).toHaveValue('Charles')
@@ -58,4 +52,6 @@ test.describe
 
     await expect(page.locator('#informant____nid')).toBeHidden()
   })
+
+  await page.close()
 })

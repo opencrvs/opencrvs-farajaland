@@ -1,4 +1,4 @@
-import { test, expect, type Page } from '@playwright/test'
+import { test, expect } from '@playwright/test'
 import { faker } from '@faker-js/faker'
 import {
   continueForm,
@@ -10,8 +10,8 @@ import {
   selectDeclarationAction
 } from '../../helpers'
 
-test.describe.serial('Death event summary', () => {
-  let page: Page
+test('Death event summary', async ({ browser }) => {
+  const page = await browser.newPage()
 
   const declaration = {
     deceased: {
@@ -49,38 +49,39 @@ test.describe.serial('Death event summary', () => {
     }
   }
 
-  test.beforeAll(async ({ browser }) => {
-    page = await browser.newPage()
-  })
-
-  test.afterAll(async () => {
-    await page.close()
-  })
-
-  test('Log in', async () => {
+  await test.step('Log in', async () => {
     await login(page)
   })
 
-  test('Start death event declaration', async () => {
+  await test.step('Start death event declaration', async () => {
     await page.click('#header-new-event')
+
     await page.getByLabel('Death').click()
+
     await page.getByRole('button', { name: 'Continue' }).click()
+
     await page.getByRole('button', { name: 'Continue' }).click()
   })
 
-  test('Input deceased address', async () => {
+  await test.step('Input deceased address', async () => {
     await page.locator('#firstname').fill(declaration.deceased.name.firstname)
+
     await page.locator('#surname').fill(declaration.deceased.name.surname)
 
     await page.locator('#province').click()
+
     await page
       .getByText(declaration.deceased.address.province, { exact: true })
       .click()
+
     await page.locator('#district').click()
+
     await page
       .getByText(declaration.deceased.address.district, { exact: true })
       .click()
+
     await page.locator('#village').click()
+
     await page
       .getByText(declaration.deceased.address.village, { exact: true })
       .click()
@@ -100,21 +101,27 @@ test.describe.serial('Death event summary', () => {
     await continueForm(page)
   })
 
-  test('Input place of death address', async () => {
+  await test.step('Input place of death address', async () => {
     await page.locator('#eventDetails____placeOfDeath').click()
+
     await page
       .getByText(declaration.eventDetails.placeOfDeath, { exact: true })
       .click()
 
     await page.locator('#province').click()
+
     await page
       .getByText(declaration.eventDetails.address.province, { exact: true })
       .click()
+
     await page.locator('#district').click()
+
     await page
       .getByText(declaration.eventDetails.address.district, { exact: true })
       .click()
+
     await page.locator('#village').click()
+
     await page
       .getByText(declaration.eventDetails.address.village, { exact: true })
       .click()
@@ -136,7 +143,7 @@ test.describe.serial('Death event summary', () => {
     await goToSection(page, 'review')
   })
 
-  test('Verify input in review section', async () => {
+  await test.step('Verify input in review section', async () => {
     await expectRowValueWithChangeButton(
       page,
       'deceased.address',
@@ -150,8 +157,9 @@ test.describe.serial('Death event summary', () => {
     )
   })
 
-  test('Save draft and find it in workqueue', async () => {
+  await test.step('Save draft and find it in workqueue', async () => {
     await selectDeclarationAction(page, 'Save & Exit', false)
+
     await page.getByText('Confirm', { exact: true }).click()
 
     await page.getByRole('button', { name: 'Drafts' }).click()
@@ -163,11 +171,13 @@ test.describe.serial('Death event summary', () => {
       .click()
   })
 
-  test('Uses "other" location in summary', async () => {
+  await test.step('Uses "other" location in summary', async () => {
     await expect(
       page.getByTestId('eventDetails.deathLocationOther')
     ).toContainText(
       joinValuesWith([...Object.values(declaration.eventDetails.address)], '')
     )
   })
+
+  await page.close()
 })

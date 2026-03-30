@@ -51,9 +51,8 @@ export async function getDeclaration({
   placeOfDeathType: placeOfDeathType = 'DECEASED_USUAL_RESIDENCE',
   token
 }: {
-  partialDeclaration?:
-    | ((_: Record<string, any>) => Record<string, any>)
-    | Record<string, any>
+  partialDeclaration?: // eslint-disable-next-line no-unused-vars
+  ((_: Record<string, any>) => Record<string, any>) | Record<string, any>
   placeOfDeathType?: 'DECEASED_USUAL_RESIDENCE' | 'HEALTH_FACILITY'
   token: string
 }) {
@@ -115,6 +114,7 @@ export interface CreateDeclarationResponse {
 
 export async function createDeclaration(
   token: string,
+  // eslint-disable-next-line no-unused-vars
   dec?: ((_: ActionUpdate) => Partial<ActionUpdate>) | Partial<ActionUpdate>,
   action: ActionType = ActionType.REGISTER,
   placeOfDeathType?: 'DECEASED_USUAL_RESIDENCE' | 'HEALTH_FACILITY'

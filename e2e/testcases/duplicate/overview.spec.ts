@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 import { getToken, login } from '../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../constants'
@@ -6,9 +6,10 @@ import { createDeclaration } from '../test-data/birth-declaration-with-mother-fa
 import { formatV2ChildName } from '../birth/helpers'
 import { ActionType } from '@opencrvs/toolkit/events'
 
-test.describe.serial('Duplicate overview', () => {
+test('Duplicate overview', async ({ browser }) => {
   let trackingId: string
-  let page: Page
+
+  const page = await browser.newPage()
 
   const details = {
     'child.name': {
@@ -29,11 +30,8 @@ test.describe.serial('Duplicate overview', () => {
 
   const name = formatV2ChildName(details)
 
-  test.beforeAll(async ({ browser }) => {
-    page = await browser.newPage()
-  })
-  test.describe('Shortcut declarations', async () => {
-    test('First declaration', async () => {
+  await test.step('Shortcut declarations', async () => {
+    await test.step('First declaration', async () => {
       const token = await getToken(
         CREDENTIALS.REGISTRAR.USERNAME,
         CREDENTIALS.REGISTRAR.PASSWORD
@@ -41,11 +39,10 @@ test.describe.serial('Duplicate overview', () => {
       const res = await createDeclaration(token, details)
 
       expect(res.trackingId).toBeDefined()
-
       trackingId = res.trackingId!
     })
 
-    test('Second declaration', async () => {
+    await test.step('Second declaration', async () => {
       const token = await getToken(
         CREDENTIALS.REGISTRAR.USERNAME,
         CREDENTIALS.REGISTRAR.PASSWORD
@@ -54,13 +51,13 @@ test.describe.serial('Duplicate overview', () => {
     })
   })
 
-  test("Navigate to potential duplicate's overview", async () => {
+  await test.step("Navigate to potential duplicate's overview", async () => {
     await login(page, CREDENTIALS.REGISTRAR)
     await page.getByRole('button', { name: 'Potential duplicate' }).click()
     await page.getByRole('button', { name }).click()
   })
 
-  test('Validate duplicate in overview page', async () => {
+  await test.step('Validate duplicate in overview page', async () => {
     await page.getByRole('button', { name: 'Assign record' }).click()
     await page.getByRole('button', { name: 'Assign', exact: true }).click()
 
@@ -69,7 +66,6 @@ test.describe.serial('Duplicate overview', () => {
     ).toBeVisible()
 
     await page.getByRole('button', { name: 'Audit', exact: true }).click()
-
     await page
       .getByRole('button', { name: 'Flagged as potential duplicate' })
       .click()
@@ -77,7 +73,6 @@ test.describe.serial('Duplicate overview', () => {
     await expect(
       page.locator('#event-history-modal').getByText('Matched to')
     ).toBeVisible()
-
     await expect(
       page.locator('#event-history-modal').getByText(trackingId)
     ).toBeVisible()

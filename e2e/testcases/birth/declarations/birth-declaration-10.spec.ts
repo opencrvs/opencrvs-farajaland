@@ -1,4 +1,4 @@
-import { test, expect, type Page } from '@playwright/test'
+import { test, expect } from '@playwright/test'
 import {
   continueForm,
   drawSignature,
@@ -12,8 +12,10 @@ import { CREDENTIALS } from '../../../constants'
 import { REQUIRED_VALIDATION_ERROR } from '../helpers'
 import { selectDeclarationAction } from '../../../helpers'
 import { ensureOutboxIsEmpty } from '../../../utils'
-test.describe.serial('10. Birth declaration case - 10', () => {
-  let page: Page
+
+test('10. Birth declaration case - 10', async ({ browser }) => {
+  const page = await browser.newPage()
+
   const declaration = {
     child: {
       name: {
@@ -29,32 +31,25 @@ test.describe.serial('10. Birth declaration case - 10', () => {
       detailsDontExist: false
     }
   }
-  test.beforeAll(async ({ browser }) => {
-    page = await browser.newPage()
-  })
 
-  test.afterAll(async () => {
-    await page.close()
-  })
+  await test.step('10.1 Declaration started by HO', async () => {
+    await login(page, CREDENTIALS.HOSPITAL_OFFICIAL)
+    await page.click('#header-new-event')
+    await page.getByLabel('Birth').click()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.getByRole('button', { name: 'Continue' }).click()
 
-  test.describe('10.1 Declaration started by HO', async () => {
-    test.beforeAll(async () => {
-      await login(page, CREDENTIALS.HOSPITAL_OFFICIAL)
-      await page.click('#header-new-event')
-      await page.getByLabel('Birth').click()
-      await page.getByRole('button', { name: 'Continue' }).click()
-      await page.getByRole('button', { name: 'Continue' }).click()
-    })
-
-    test('10.1.1 Fill child details', async () => {
+    await test.step('10.1.1 Fill child details', async () => {
       await page.locator('#firstname').fill(declaration.child.name.firstNames)
+
       await page.locator('#surname').fill(declaration.child.name.familyName)
 
       await continueForm(page)
     })
 
-    test('10.1.2 Fill informant details', async () => {
+    await test.step('10.1.2 Fill informant details', async () => {
       await page.locator('#informant____relation').click()
+
       await page
         .getByText(declaration.informantType, {
           exact: true
@@ -64,20 +59,21 @@ test.describe.serial('10. Birth declaration case - 10', () => {
       await continueForm(page)
     })
 
-    test("10.1.3 Fill mother's details", async () => {
+    await test.step("10.1.3 Fill mother's details", async () => {
       await page.getByLabel("Mother's details are not available").check()
+
       await continueForm(page)
     })
 
-    test("10.1.4 Fill father's details", async () => {
+    await test.step("10.1.4 Fill father's details", async () => {
       await continueForm(page)
     })
 
-    test('10.1.5 Go to review', async () => {
+    await test.step('10.1.5 Go to review', async () => {
       await goToSection(page, 'review')
     })
 
-    test('10.1.6 Verify information on review page', async () => {
+    await test.step('10.1.6 Verify information on review page', async () => {
       /*
        * Expected result: should include
        * - Child's First Name
@@ -164,10 +160,13 @@ test.describe.serial('10. Birth declaration case - 10', () => {
       )
     })
 
-    test('10.1.7 Fill up informant signature', async () => {
+    await test.step('10.1.7 Fill up informant signature', async () => {
       await page.locator('#review____comment').fill(faker.lorem.sentence())
+
       await page.getByRole('button', { name: 'Sign', exact: true }).click()
+
       await drawSignature(page, 'review____signature_canvas_element', false)
+
       await page
         .locator('#review____signature_modal')
         .getByRole('button', { name: 'Apply' })
@@ -176,10 +175,11 @@ test.describe.serial('10. Birth declaration case - 10', () => {
       await expect(page.getByRole('dialog')).not.toBeVisible()
     })
 
-    test('10.1.8 Notify', async () => {
+    await test.step('10.1.8 Notify', async () => {
       await selectDeclarationAction(page, 'Notify')
 
       await ensureOutboxIsEmpty(page)
+
       await page.getByText('Recent').click()
 
       await expect(
@@ -190,8 +190,8 @@ test.describe.serial('10. Birth declaration case - 10', () => {
     })
   })
 
-  test.describe('10.2 Declaration Review by RO', async () => {
-    test("10.2.1 Navigate to the declaration 'Record' tab", async () => {
+  await test.step('10.2 Declaration Review by RO', async () => {
+    await test.step("10.2.1 Navigate to the declaration 'Record' tab", async () => {
       await login(page, CREDENTIALS.REGISTRATION_OFFICER)
 
       await page.getByText('Notifications').click()
@@ -202,11 +202,13 @@ test.describe.serial('10. Birth declaration case - 10', () => {
           exact: true
         })
         .click()
+
       await page.getByRole('button', { name: 'Action', exact: true }).click()
+
       await switchEventTab(page, 'Record')
     })
 
-    test("10.2.2 Verify information on 'Record' tab", async () => {
+    await test.step("10.2.2 Verify information on 'Record' tab", async () => {
       /*
        * Expected result: should include
        * - Child's First Name
@@ -292,4 +294,6 @@ test.describe.serial('10. Birth declaration case - 10', () => {
       )
     })
   })
+
+  await page.close()
 })

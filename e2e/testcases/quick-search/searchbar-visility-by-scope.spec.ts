@@ -31,6 +31,7 @@ const testCases = [
     hasSearch: false
   }
 ]
+
 test.describe('Search bar should be visible only if the user has search scope', () => {
   for (const { credential, hasSearch } of testCases) {
     test(`${credential.USERNAME} ${hasSearch ? 'has' : 'does not have'} search scope`, async ({

@@ -140,6 +140,7 @@ test.describe('5. Validate language change', () => {
         timeout: 1000 * 20
       })
     })
+
     test('5.6.2. Create pin description should be in french', async ({
       page
     }) => {

@@ -21,60 +21,52 @@ async function selectIdType(page: Page, idType: string) {
   await page.getByText(idType, { exact: true }).click()
 }
 
-test.describe.serial('Validate collect payment page', () => {
-  let eventId: string
-  let declaration: Declaration
-  let page: Page
-  let trackingId: string | undefined
+test('Validate collect payment page', async ({ browser }) => {
+  const token = await getToken(
+    CREDENTIALS.REGISTRAR.USERNAME,
+    CREDENTIALS.REGISTRAR.PASSWORD
+  )
+  const res = await createDeclaration(token)
+  const eventId: string = res.eventId
+  const declaration: Declaration = res.declaration
+  const page = await browser.newPage()
+  const trackingId: string | undefined = res.trackingId
 
-  test.beforeAll(async ({ browser }) => {
-    const token = await getToken(
-      CREDENTIALS.REGISTRAR.USERNAME,
-      CREDENTIALS.REGISTRAR.PASSWORD
-    )
-    const res = await createDeclaration(token)
-    eventId = res.eventId
-    declaration = res.declaration
-    trackingId = res.trackingId
-    page = await browser.newPage()
-  })
-
-  test.afterAll(async () => {
-    await page.close()
-  })
-
-  test('5.0.1 Log in', async () => {
+  await test.step('5.0.1 Log in', async () => {
     await login(page)
   })
 
-  test('5.0.2 Navigate to certificate print action', async () => {
+  await test.step('5.0.2 Navigate to certificate print action', async () => {
     await page.getByRole('button', { name: 'Pending certification' }).click()
     await navigateToCertificatePrintAction(page, declaration)
   })
 
-  test('5.1 Select certification and requester type', async () => {
+  await test.step('5.1 Select certification and requester type', async () => {
     await selectCertificationType(page, 'Birth Certificate')
     await selectRequesterType(page, 'Print and issue to someone else')
   })
 
-  test('5.2 should be able to select "No ID available" and no other ID field will be visible', async () => {
+  await test.step('5.2 should be able to select "No ID available" and no other ID field will be visible', async () => {
     await selectIdType(page, 'No ID available')
+
     await expect(page.locator('#collector____PASSPORT____details')).toBeHidden()
   })
 
-  test('5.2 should be able to select any type of id and correspondent id input will be visible', async () => {
+  await test.step('5.2 should be able to select any type of id and correspondent id input will be visible', async () => {
     await selectIdType(page, 'Passport')
+
     await expect(
       page.locator('#collector____PASSPORT____details')
     ).toBeVisible()
 
     await selectIdType(page, 'Other')
+
     await expect(
       page.locator('#collector____OTHER____idTypeOther')
     ).toBeVisible()
   })
 
-  test('5.2 should be able to select National ID and correspondent id input will be visible with validation rules', async () => {
+  await test.step('5.2 should be able to select National ID and correspondent id input will be visible with validation rules', async () => {
     await selectIdType(page, 'National ID')
     await page.fill('#collector____nid', '1234567')
     await page.getByRole('heading', { name: 'Birth', exact: true }).click()
@@ -82,23 +74,28 @@ test.describe.serial('Validate collect payment page', () => {
     await expect(page.locator('#collector____nid_error')).toContainText(
       'The national ID can only be numeric and must be 10 digits long'
     )
+
     await page.fill('#collector____nid', '1235678922')
     await page.getByRole('heading', { name: 'Birth', exact: true }).click()
+
     await expect(page.locator('#collector____nid_error')).toBeHidden()
   })
 
-  test('5.3 should be able to enter first name', async () => {
+  await test.step('5.3 should be able to enter first name', async () => {
     await page.fill('#firstname', 'Muhammed Tareq')
+
     await expect(page.locator('#firstname')).toHaveValue('Muhammed Tareq')
   })
 
-  test('5.4 should be able to enter last name', async () => {
+  await test.step('5.4 should be able to enter last name', async () => {
     await page.fill('#surname', 'Aziz')
+
     await expect(page.locator('#surname')).toHaveValue('Aziz')
   })
 
-  test('5.5 keep relationship null and continue', async () => {
+  await test.step('5.5 keep relationship null and continue', async () => {
     await page.getByRole('button', { name: 'Continue' }).click()
+
     await expect(
       page
         .locator('#collector____OTHER____relationshipToChild_error')
@@ -106,33 +103,38 @@ test.describe.serial('Validate collect payment page', () => {
     ).toBeVisible()
   })
 
-  test('5.6 should be able to enter relationship', async () => {
+  await test.step('5.6 should be able to enter relationship', async () => {
     await page.fill('#collector____OTHER____relationshipToChild', 'Uncle')
+
     await expect(
       page.locator('#collector____OTHER____relationshipToChild')
     ).toHaveValue('Uncle')
+
     await page.getByRole('heading', { name: 'Birth', exact: true }).click()
   })
 
-  test('5.7 Should be able to add file and navigate to the payment page', async () => {
+  await test.step('5.7 Should be able to add file and navigate to the payment page', async () => {
     const path = require('path')
     const attachmentPath = path.resolve(__dirname, './528KB-random.png')
     const inputFile = await page.locator(
       'input[name="collector____OTHER____signedAffidavit"][type="file"]'
     )
     await inputFile.setInputFiles(attachmentPath)
+
     await expect(
       page.getByRole('button', { name: 'Signed Affidavit' })
     ).toBeVisible()
     await expect(page.locator('#preview_delete')).toBeVisible()
+
     await page.getByRole('button', { name: 'Continue' }).click()
+
     await expectInUrl(
       page,
       `/print-certificate/${eventId}/pages/collector.collect.payment`
     )
   })
 
-  test('5.8 Validate fee page', async () => {
+  await test.step('5.8 Validate fee page', async () => {
     await expect(
       page.getByText('Birth registration before 30 days of date of birth')
     ).toBeVisible()
@@ -141,14 +143,15 @@ test.describe.serial('Validate collect payment page', () => {
     await page.getByRole('button', { name: 'Continue' }).click()
   })
 
-  test('5.9 Print', async () => {
+  await test.step('5.9 Print', async () => {
     await printAndExpectPopup(page)
   })
 
-  test('5.10 Validate Certified -modal', async () => {
+  await test.step('5.10 Validate Certified -modal', async () => {
     if (!trackingId) {
       throw new Error('Tracking ID is undefined')
     }
+
     await type(page, '#searchText', trackingId)
     await page.locator('#searchIconButton').click()
     await page
@@ -170,13 +173,11 @@ test.describe.serial('Validate collect payment page', () => {
     await expect(
       page.getByText('Relationship to child' + 'Uncle')
     ).toBeVisible()
-
     await expect(page.getByText('Signed Affidavit (Optional)')).toBeVisible()
     await expect(
       page.getByRole('button', { name: 'Signed Affidavit' })
     ).toBeVisible()
     await expect(page.getByText('Verified' + 'No')).toBeVisible()
-
     await expect(page.getByText('Payment details')).toBeVisible()
     await expect(page.getByText('Fee')).toBeVisible()
     await expect(page.getByText('$5.00')).toBeVisible()
@@ -184,7 +185,8 @@ test.describe.serial('Validate collect payment page', () => {
     await expect(
       page.getByText('Birth registration before 30 days of date of birth')
     ).toBeVisible()
-
     await expect(page.getByText('Identity details')).not.toBeVisible()
   })
+
+  await page.close()
 })

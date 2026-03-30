@@ -1,16 +1,32 @@
+/* global Blob, globalThis */
 import { v4 as uuidv4 } from 'uuid'
 import { GATEWAY_HOST } from '../../constants'
 import fs from 'fs'
 import path from 'path'
 
-export function getSignatureFile() {
-  const buffer = fs.readFileSync(path.join(__dirname, 'signature.png'))
-  return new File([buffer], `signature-${Date.now()}.png`, {
-    type: 'image/png'
-  })
+type UploadFileLike = Blob & {
+  name: string
+  type: string
 }
 
-export async function uploadFile(file: File, token: string) {
+export function getSignatureFile() {
+  const buffer = fs.readFileSync(path.join(__dirname, 'signature.png'))
+  const filename = `signature-${Date.now()}.png`
+  const fileType = 'image/png'
+
+  if (typeof globalThis.File !== 'undefined') {
+    return new globalThis.File([buffer], filename, {
+      type: fileType
+    }) as UploadFileLike
+  }
+
+  const blob = new Blob([buffer], { type: fileType }) as UploadFileLike
+  blob.name = filename
+  blob.type = fileType
+  return blob
+}
+
+export async function uploadFile(file: UploadFileLike, token: string) {
   const formData = new FormData()
   const transactionId = uuidv4()
   formData.append('file', file)

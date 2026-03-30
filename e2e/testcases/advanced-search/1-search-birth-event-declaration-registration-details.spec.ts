@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 import { getToken, login } from '../../helpers'
 import { createDeclaration } from '../test-data/birth-declaration-with-father-brother'
 import { CREDENTIALS } from '../../constants'
@@ -9,48 +9,43 @@ const todayDate = `${new Date().getDate() < 10 ? '0' : ''}${new Date().getDate()
 const thisMonth = `${new Date().getMonth() < 9 ? '0' : ''}${(new Date().getMonth() + 1).toString()}`
 const thisYear = new Date().getFullYear().toString()
 
-test.describe
-  .serial('Advanced Search - Birth Event Declaration - Registration details', () => {
-  let page: Page
+test('Advanced Search - Birth Event Declaration - Registration details', async ({
+  browser
+}) => {
+  const page = await browser.newPage()
 
-  test.beforeAll(async ({ browser }) => {
-    page = await browser.newPage()
-    const token = await getToken(
-      CREDENTIALS.REGISTRAR.USERNAME,
-      CREDENTIALS.REGISTRAR.PASSWORD
-    )
+  const token = await getToken(
+    CREDENTIALS.REGISTRAR.USERNAME,
+    CREDENTIALS.REGISTRAR.PASSWORD
+  )
 
-    await createDeclaration(token, {
-      'child.dob': faker.date
-        .between({ from: '2025-09-10', to: '2025-11-28' })
-        .toISOString()
-        .split('T')[0],
-      'child.gender': 'female'
-    })
+  await createDeclaration(token, {
+    'child.dob': faker.date
+      .between({ from: '2025-09-10', to: '2025-11-28' })
+      .toISOString()
+      .split('T')[0],
+    'child.gender': 'female'
   })
 
-  test.afterAll(async () => {
-    await page.close()
-  })
-
-  test('1.1 - Validate log in and load search page', async () => {
+  await test.step('1.1 - Validate log in and load search page', async () => {
     await login(page)
     await page.click('#searchType')
+
     await expect(page).toHaveURL(/.*\/advanced-search/)
+
     await page.getByText('Birth').click()
   })
 
-  test.describe
-    .serial('1.5 - Validate search by registration details search fields', () => {
-    test('1.5.1 - Validate Place of registration filters, Date of registration Status of Record and Time Period', async () => {
+  await test.step('1.5 - Validate search by registration details search fields', async () => {
+    await test.step('1.5.1 - Validate Place of registration filters, Date of registration Status of Record and Time Period', async () => {
       await page.getByText('Registration details').click()
-
       await page
         .locator('#event____legalStatuses____REGISTERED____createdAtLocation')
         .fill('Ibombo')
-      await expect(page.getByText('Ibombo District Office')).toBeVisible()
-      await page.getByText('Ibombo District Office').click()
 
+      await expect(page.getByText('Ibombo District Office')).toBeVisible()
+
+      await page.getByText('Ibombo District Office').click()
       await type(
         page,
         '[data-testid="event____legalStatuses____REGISTERED____acceptedAt-dd"]',
@@ -70,22 +65,29 @@ test.describe
       await expect(
         page.getByRole('button', { name: 'Exact date unknown' })
       ).toBeVisible()
-
       await expect(page.locator('#event____status')).toBeVisible()
-      await page.locator('#event____status').click()
-      await expect(page.getByText('Registered')).toBeVisible()
-      await page.getByText('Registered').click()
-      await expect(page.getByText('Registered')).toHaveCount(2)
 
+      await page.locator('#event____status').click()
+
+      await expect(page.getByText('Registered')).toBeVisible()
+
+      await page.getByText('Registered').click()
+
+      await expect(page.getByText('Registered')).toHaveCount(2)
       await expect(page.locator('#event____updatedAt')).toBeVisible()
+
       await page.locator('#event____updatedAt').click()
+
       await expect(page.getByText('Last 7 days', { exact: true })).toBeVisible()
+
       await page.getByText('Last 7 days', { exact: true }).click()
+
       await expect(page.getByText('Last 7 days')).toHaveCount(2)
     })
 
-    test('1.5.2 - Validate search and show results', async () => {
+    await test.step('1.5.2 - Validate search and show results', async () => {
       await page.click('#search')
+
       await expect(page).toHaveURL(/.*\/search-result/)
       // event____legalStatuses____REGISTERED____acceptedAt=2025-05-19&
       await expect(page.url()).toContain(
@@ -99,10 +101,11 @@ test.describe
       await expect(page.url()).toContain(`event.status=REGISTERED&`)
       // event.updatedAt=2025-05-12%2C2025-05-19
       await expect(page.url()).toContain(`event.updatedAt=`)
-
       await expect(page.getByText('Search result')).toBeVisible()
+
       const searchResult = await page.locator('#content-name').textContent()
       const searchResultCountNumberInBracketsRegex = /\((\d+)\)$/
+
       await expect(searchResult).toMatch(searchResultCountNumberInBracketsRegex)
       await assertTexts({
         root: page,
@@ -122,8 +125,9 @@ test.describe
       ).toBeVisible()
     })
 
-    test('1.5.3 - Validate clicking on the search edit button', async () => {
+    await test.step('1.5.3 - Validate clicking on the search edit button', async () => {
       await page.getByRole('button', { name: 'Edit', exact: true }).click()
+
       await expect(page).toHaveURL(/.*\/advanced-search/)
       // event____legalStatuses____REGISTERED____createdAt=2025-05-19&
       await expect(page.url()).toContain(
@@ -138,7 +142,6 @@ test.describe
       // event.updatedAt=2025-05-12%2C2025-05-19
       await expect(page.url()).toContain(`event.updatedAt=`)
       await expect(page.locator('#tab_birth')).toHaveText('Birth')
-
       await expect(
         page.locator(
           '#searchable-select-event____legalStatuses____REGISTERED____createdAtLocation'
@@ -155,4 +158,6 @@ test.describe
       ).toHaveValue(thisYear)
     })
   })
+
+  await page.close()
 })

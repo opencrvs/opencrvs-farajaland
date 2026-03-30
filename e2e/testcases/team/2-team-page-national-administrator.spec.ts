@@ -3,7 +3,7 @@ import { CREDENTIALS } from '../../constants'
 import { continueUntilReview, login } from '../../helpers'
 
 test.describe('2. Team Page', () => {
-  test.describe.serial('2.1 Basic UI check', async () => {
+  test.describe('2.1 Basic UI check', async () => {
     let page: Page
 
     test.beforeAll(async ({ browser }) => {
@@ -16,7 +16,9 @@ test.describe('2. Team Page', () => {
 
     test('2.1.0 Verify UI', async () => {
       await login(page, CREDENTIALS.NATIONAL_SYSTEM_ADMIN)
+
       await page.getByRole('button', { name: 'Team' }).click()
+
       await expect(page.locator('#content-name')).toHaveText('HQ Office')
     })
 
@@ -30,7 +32,7 @@ test.describe('2. Team Page', () => {
     })
   })
 
-  test.describe.serial('2.2 User Account Actions', () => {
+  test.describe('2.2 User Account Actions', () => {
     let page: Page
 
     test.beforeEach(async ({ browser }) => {
@@ -49,6 +51,7 @@ test.describe('2. Team Page', () => {
     test.afterEach(async () => {
       await page.close()
     })
+
     test('2.2.1 Edit User Details', async () => {
       await expect(
         page

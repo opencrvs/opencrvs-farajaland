@@ -1,40 +1,35 @@
-import { expect, test, type Page } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 import { getToken, login } from '../../helpers'
 import { createDeclaration } from '../test-data/birth-declaration-with-father-brother'
 import { CREDENTIALS } from '../../constants'
 import { getMonthFormatted } from './helper'
 import { assertTexts, type } from '../../utils'
 
-test.describe
-  .serial("Advanced Search - Birth Event Declaration - Mother's details", () => {
-  let page: Page
+test("Advanced Search - Birth Event Declaration - Mother's details", async ({
+  browser
+}) => {
+  const page = await browser.newPage()
   let [yyyy, mm, dd] = ['', '', '']
-  let record: Awaited<ReturnType<typeof createDeclaration>>
 
-  test.beforeAll(async ({ browser }) => {
-    page = await browser.newPage()
-    const token = await getToken(
-      CREDENTIALS.REGISTRAR.USERNAME,
-      CREDENTIALS.REGISTRAR.PASSWORD
-    )
+  const token = await getToken(
+    CREDENTIALS.REGISTRAR.USERNAME,
+    CREDENTIALS.REGISTRAR.PASSWORD
+  )
 
-    record = await createDeclaration(token)
-    ;[yyyy, mm, dd] = record.declaration['mother.dob'].split('-')
-  })
+  const record = await createDeclaration(token)
+  ;[yyyy, mm, dd] = record.declaration['mother.dob'].split('-')
 
-  test.afterAll(async () => {
-    await page.close()
-  })
-
-  test('2.1 - Validate log in and load search page', async () => {
+  await test.step('2.1 - Validate log in and load search page', async () => {
     await login(page)
     await page.click('#searchType')
+
     await expect(page).toHaveURL(/.*\/advanced-search/)
+
     await page.getByText('Birth').click()
   })
 
-  test.describe.serial("2.5 - Validate search by Mother's details", () => {
-    test('2.5.1 - Validate filling name and dob filters', async () => {
+  await test.step("2.5 - Validate search by Mother's details", async () => {
+    await test.step('2.5.1 - Validate filling name and dob filters', async () => {
       await page.getByText('Mother details').click()
       await type(
         page,
@@ -51,8 +46,9 @@ test.describe
       await type(page, '[data-testid="mother____dob-yyyy"]', yyyy)
     })
 
-    test('2.5.2 - Validate search and show results', async () => {
+    await test.step('2.5.2 - Validate search and show results', async () => {
       await page.click('#search')
+
       await expect(page).toHaveURL(/.*\/search-result/)
       expect(page.url()).toContain(`mother.dob=${yyyy}-${mm}-${dd}`)
       expect(page.url()).toContain(
@@ -64,10 +60,12 @@ test.describe
           })
         )}`
       )
+
       await expect(page.getByText('Search results')).toBeVisible()
 
       const searchResult = await page.locator('#content-name').textContent()
       const searchResultCountNumberInBracketsRegex = /\((\d+)\)$/
+
       expect(searchResult).toMatch(searchResultCountNumberInBracketsRegex)
       await assertTexts({
         root: page,
@@ -84,8 +82,9 @@ test.describe
       ).toBeVisible()
     })
 
-    test('2.5.3 - Validate clicking on the search edit button', async () => {
+    await test.step('2.5.3 - Validate clicking on the search edit button', async () => {
       await page.getByRole('button', { name: 'Edit', exact: true }).click()
+
       await expect(page).toHaveURL(/.*\/advanced-search/)
       expect(page.url()).toContain(`mother.dob=${yyyy}-${mm}-${dd}`)
 
@@ -98,6 +97,7 @@ test.describe
         surname: record.declaration['mother.name'].surname,
         middlename: ''
       })
+
       await expect(page.locator('#tab_birth')).toHaveText('Birth')
       await expect(page.getByTestId('mother____dob-dd')).toHaveValue(dd)
       await expect(page.getByTestId('mother____dob-mm')).toHaveValue(mm)
@@ -110,33 +110,38 @@ test.describe
       )
     })
 
-    test('2.5.4 - Validate mother.dob range input', async () => {
+    await test.step('2.5.4 - Validate mother.dob range input', async () => {
       const motherDOBRangeButton = page.locator(
         '#mother____dob-date_range_button'
       )
       if (await motherDOBRangeButton.isVisible()) {
         await page.locator('#mother____dob-date_range_button').click()
+
         await expect(page.locator('#picker-modal')).toBeVisible()
 
         const currentMonth = new Date().getMonth() + 1
         const shortMonth = getMonthFormatted(currentMonth)
         const month = getMonthFormatted(currentMonth, { month: 'long' })
+
         await expect(
           page.getByRole('button', { name: shortMonth })
         ).toHaveCount(2)
         await expect(page.locator('#date-range-confirm-action')).toBeVisible()
 
         await page.locator('#date-range-confirm-action').click()
+
         await expect(page.locator('#picker-modal')).toBeHidden()
 
         const checkbox = page.locator(
           'input[type="checkbox"][name="mother____dobdate_range_toggle"]'
         )
+
         await expect(checkbox).toBeVisible()
         await expect(checkbox).toBeChecked()
 
         const currentYear = new Date().getFullYear()
         const lastYear = currentYear - 1
+
         // ex: 'May 2024 to May 2025' is visible after date range selection
         await expect(
           page.getByText(`${month} ${lastYear} to ${month} ${currentYear}`)
@@ -144,4 +149,6 @@ test.describe
       }
     })
   })
+
+  await page.close()
 })

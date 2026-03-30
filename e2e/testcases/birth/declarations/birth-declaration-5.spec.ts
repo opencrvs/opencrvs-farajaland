@@ -1,4 +1,4 @@
-import { test, expect, type Page } from '@playwright/test'
+import { test, expect } from '@playwright/test'
 import {
   continueForm,
   drawSignature,
@@ -14,8 +14,9 @@ import { CREDENTIALS } from '../../../constants'
 import { validateAddress } from '../helpers'
 import { ensureOutboxIsEmpty } from '../../../utils'
 
-test.describe.serial('5. Birth declaration case - 5', () => {
-  let page: Page
+test('5. Birth declaration case - 5', async ({ browser }) => {
+  const page = await browser.newPage()
+
   const declaration = {
     child: {
       name: {
@@ -90,35 +91,24 @@ test.describe.serial('5. Birth declaration case - 5', () => {
       reason: 'Father is a ghost'
     }
   }
-  test.beforeAll(async ({ browser }) => {
-    page = await browser.newPage()
-  })
 
-  test.afterAll(async () => {
-    await page.close()
-  })
+  await test.step('5.1 Declaration started by Registrar', async () => {
+    await login(page, CREDENTIALS.REGISTRAR_VILLAGE)
+    await page.click('#header-new-event')
+    await page.getByLabel('Birth').click()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.getByRole('button', { name: 'Continue' }).click()
 
-  test.describe('5.1 Declaration started by Registrar', async () => {
-    test.beforeAll(async () => {
-      await login(page, CREDENTIALS.REGISTRAR_VILLAGE)
-      await page.click('#header-new-event')
-      await page.getByLabel('Birth').click()
-      await page.getByRole('button', { name: 'Continue' }).click()
-      await page.getByRole('button', { name: 'Continue' }).click()
-    })
-
-    test('5.1.1 Fill child details', async () => {
+    await test.step('5.1.1 Fill child details', async () => {
       await page.locator('#firstname').fill(declaration.child.name.firstNames)
       await page.locator('#firstname').blur()
       await page.locator('#surname').fill(declaration.child.name.familyName)
       await page.locator('#surname').blur()
       await page.locator('#child____gender').click()
       await page.getByText(declaration.child.gender, { exact: true }).click()
-
       await page.getByPlaceholder('dd').fill(declaration.child.birthDate.dd)
       await page.getByPlaceholder('mm').fill(declaration.child.birthDate.mm)
       await page.getByPlaceholder('yyyy').fill(declaration.child.birthDate.yyyy)
-
       await page.locator('#child____placeOfBirth').click()
       await page
         .getByText(declaration.placeOfBirth, {
@@ -130,11 +120,9 @@ test.describe.serial('5. Birth declaration case - 5', () => {
       await expect(
         page.locator('#child____birthLocation____other-form-input #province')
       ).toBeDisabled()
-
       await expect(
         page.locator('#child____birthLocation____other-form-input #district')
       ).toBeDisabled()
-
       await expect(
         page.locator('#child____birthLocation____other-form-input #village')
       ).toBeDisabled()
@@ -148,14 +136,12 @@ test.describe.serial('5. Birth declaration case - 5', () => {
       await page
         .locator('#zipCode')
         .fill(declaration.birthLocation.postcodeOrZip)
-
       await page.locator('#child____attendantAtBirth').click()
       await page
         .getByText(declaration.attendantAtBirth, {
           exact: true
         })
         .click()
-
       await page.locator('#child____birthType').click()
       await page
         .getByText(declaration.birthType, {
@@ -166,14 +152,13 @@ test.describe.serial('5. Birth declaration case - 5', () => {
       await continueForm(page)
     })
 
-    test('5.1.2 Fill informant details', async () => {
+    await test.step('5.1.2 Fill informant details', async () => {
       await page.locator('#informant____relation').click()
       await page
         .getByText(declaration.informantType, {
           exact: true
         })
         .click()
-
       await page.locator('#informant____email').fill(declaration.informantEmail)
 
       /*
@@ -189,27 +174,21 @@ test.describe.serial('5. Birth declaration case - 5', () => {
         .fill(declaration.informant.name.firstNames)
       await page.locator('#surname').fill(declaration.informant.name.familyName)
       await page.locator('#surname').blur()
-
       await page.getByLabel('Exact date of birth unknown').check()
-
       await page
         .locator('#informant____age')
         .fill(declaration.informant.age.toString())
-
       await page.locator('#informant____nationality').click()
       await page
         .getByText(declaration.informant.nationality, { exact: true })
         .click()
-
       await page.locator('#informant____idType').click()
       await page
         .getByText(declaration.informant.identifier.type, { exact: true })
         .click()
-
       await page
         .locator('#informant____brn')
         .fill(declaration.informant.identifier.id)
-
       await page.locator('#country').click()
       await page
         .locator('#country input')
@@ -218,7 +197,6 @@ test.describe.serial('5. Birth declaration case - 5', () => {
         .locator('#country')
         .getByText(declaration.informant.address.country, { exact: true })
         .click()
-
       await page.locator('#state').fill(declaration.informant.address.state)
       await page
         .locator('#district2')
@@ -240,23 +218,19 @@ test.describe.serial('5. Birth declaration case - 5', () => {
       await continueForm(page)
     })
 
-    test("5.1.3 Fill mother's details", async () => {
+    await test.step("5.1.3 Fill mother's details", async () => {
       await page.locator('#firstname').fill(declaration.mother.name.firstNames)
       await page.locator('#firstname').blur()
       await page.locator('#surname').fill(declaration.mother.name.familyName)
       await page.locator('#surname').blur()
-
       await page.getByLabel('Exact date of birth unknown').check()
-
       await page
         .locator('#mother____age')
         .fill(declaration.mother.age.toString())
-
       await page.locator('#mother____idType').click()
       await page
         .getByText(declaration.mother.identifier.type, { exact: true })
         .click()
-
       await page.locator('#country').click()
       await page
         .locator('#country input')
@@ -265,7 +239,6 @@ test.describe.serial('5. Birth declaration case - 5', () => {
         .locator('#country')
         .getByText(declaration.mother.address.country, { exact: true })
         .click()
-
       await page.locator('#state').fill(declaration.mother.address.state)
       await page.locator('#district2').fill(declaration.mother.address.district)
       await page.locator('#cityOrTown').fill(declaration.mother.address.town)
@@ -281,29 +254,28 @@ test.describe.serial('5. Birth declaration case - 5', () => {
       await page
         .locator('#postcodeOrZip')
         .fill(declaration.mother.address.postcodeOrZip)
-
       await page.locator('#mother____maritalStatus').click()
       await page
         .getByText(declaration.mother.maritalStatus, { exact: true })
         .click()
-
       await page.locator('#mother____educationalAttainment').click()
       await page
         .getByText(declaration.mother.levelOfEducation, { exact: true })
         .click()
+
       await continueForm(page)
     })
 
-    test("5.1.4 Fill father's details", async () => {
+    await test.step("5.1.4 Fill father's details", async () => {
       await page.getByLabel("Father's details are not available").check()
       await page.locator('#father____reason').fill(declaration.father.reason)
     })
 
-    test('5.1.5 Go to review', async () => {
+    await test.step('5.1.5 Go to review', async () => {
       await goToSection(page, 'review')
     })
 
-    test('5.1.6 Verify information on review page', async () => {
+    await test.step('5.1.6 Verify information on review page', async () => {
       /*
        * Expected result: should include
        * - Child's First Name
@@ -376,6 +348,7 @@ test.describe.serial('5. Birth declaration case - 5', () => {
       await expect(page.getByTestId('row-value-informant.email')).toHaveText(
         declaration.informantEmail
       )
+
       /*
        * Expected result: should include
        * - Informant's First Name
@@ -499,7 +472,7 @@ test.describe.serial('5. Birth declaration case - 5', () => {
       )
     })
 
-    test('5.1.7 Fill up informant signature', async () => {
+    await test.step('5.1.7 Fill up informant signature', async () => {
       await page.locator('#review____comment').fill(faker.lorem.sentence())
       await page.getByRole('button', { name: 'Sign', exact: true }).click()
       await drawSignature(page, 'review____signature_canvas_element', false)
@@ -511,10 +484,9 @@ test.describe.serial('5. Birth declaration case - 5', () => {
       await expect(page.getByRole('dialog')).not.toBeVisible()
     })
 
-    test('5.1.8 Register', async () => {
+    await test.step('5.1.8 Register', async () => {
       await selectDeclarationAction(page, 'Register')
       await ensureOutboxIsEmpty(page)
-
       await page.getByText('Pending certification').click()
 
       await expect(
@@ -524,4 +496,6 @@ test.describe.serial('5. Birth declaration case - 5', () => {
       ).toBeVisible()
     })
   })
+
+  await page.close()
 })

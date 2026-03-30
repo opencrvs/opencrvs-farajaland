@@ -1,4 +1,4 @@
-import { test, expect, type Page } from '@playwright/test'
+import { test, expect } from '@playwright/test'
 import {
   formatName,
   goToSection,
@@ -9,8 +9,9 @@ import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../../constants'
 import { ensureOutboxIsEmpty } from '../../../utils'
 
-test.describe.serial('Submit and verify incomplete birth declaration', () => {
-  let page: Page
+test('Submit and verify incomplete birth declaration', async ({ browser }) => {
+  const page = await browser.newPage()
+
   const declaration = {
     child: {
       name: {
@@ -21,27 +22,17 @@ test.describe.serial('Submit and verify incomplete birth declaration', () => {
 
     placeOfBirth: 'Health Institution'
   }
-  test.beforeAll(async ({ browser }) => {
-    page = await browser.newPage()
-  })
 
-  test.afterAll(async () => {
-    await page.close()
-  })
+  await test.step('Declaration started by HO', async () => {
+    await login(page, CREDENTIALS.HOSPITAL_OFFICIAL)
+    await page.click('#header-new-event')
+    await page.getByLabel('Birth').click()
+    await page.getByRole('button', { name: 'Continue' }).click()
+    await page.getByRole('button', { name: 'Continue' }).click()
 
-  test.describe('Declaration started by HO', async () => {
-    test.beforeAll(async () => {
-      await login(page, CREDENTIALS.HOSPITAL_OFFICIAL)
-      await page.click('#header-new-event')
-      await page.getByLabel('Birth').click()
-      await page.getByRole('button', { name: 'Continue' }).click()
-      await page.getByRole('button', { name: 'Continue' }).click()
-    })
-
-    test('Fill child details', async () => {
+    await test.step('Fill child details', async () => {
       await page.locator('#firstname').fill(declaration.child.name.firstNames)
       await page.locator('#surname').fill(declaration.child.name.familyName)
-
       await page.locator('#child____placeOfBirth').click()
       await page
         .getByText(declaration.placeOfBirth, {
@@ -50,15 +41,14 @@ test.describe.serial('Submit and verify incomplete birth declaration', () => {
         .click()
     })
 
-    test('Go to review and send for review', async () => {
+    await test.step('Go to review and send for review', async () => {
       await goToSection(page, 'review')
       await selectDeclarationAction(page, 'Notify')
     })
 
-    test('Verify summary page', async () => {
+    await test.step('Verify summary page', async () => {
       await ensureOutboxIsEmpty(page)
       await page.getByText('Recent').click()
-
       await page
         .getByRole('button', {
           name: formatName(declaration.child.name),
@@ -88,10 +78,11 @@ test.describe.serial('Submit and verify incomplete birth declaration', () => {
       await expect(
         page.getByTestId('assignedTo-value').locator('span')
       ).toContainText('Not assigned')
-
       await expect(
         page.getByTestId('child.birthLocation-value').locator('span')
       ).toBeHidden()
     })
   })
+
+  await page.close()
 })

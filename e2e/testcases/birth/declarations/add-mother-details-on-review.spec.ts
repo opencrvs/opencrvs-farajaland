@@ -1,4 +1,4 @@
-import { test, expect, type Page } from '@playwright/test'
+import { test, expect } from '@playwright/test'
 import {
   continueForm,
   drawSignature,
@@ -20,8 +20,9 @@ import {
 import { REQUIRED_VALIDATION_ERROR } from '../helpers'
 import { selectDeclarationAction } from '../../../helpers'
 
-test.describe.serial('Add mother details on review', () => {
-  let page: Page
+test('Add mother details on review', async ({ browser }) => {
+  const page = await browser.newPage()
+
   const declaration = {
     child: {
       name: {
@@ -92,36 +93,27 @@ test.describe.serial('Add mother details on review', () => {
       }
     }
   }
-  test.beforeAll(async ({ browser }) => {
-    page = await browser.newPage()
-  })
 
-  test.afterAll(async () => {
-    await page.close()
-  })
-
-  test.describe('Declaration started by RO', async () => {
-    test('Login as RO', async () => {
+  await test.step('Declaration started by RO', async () => {
+    await test.step('Login as RO', async () => {
       await login(page, CREDENTIALS.REGISTRATION_OFFICER_VILLAGE)
     })
 
-    test('Initiate birth declaration', async () => {
+    await test.step('Initiate birth declaration', async () => {
       await page.click('#header-new-event')
       await page.getByLabel('Birth').click()
       await page.getByRole('button', { name: 'Continue' }).click()
       await page.getByRole('button', { name: 'Continue' }).click()
     })
 
-    test('Fill child details', async () => {
+    await test.step('Fill child details', async () => {
       await page.locator('#firstname').fill(declaration.child.name.firstNames)
       await page.locator('#surname').fill(declaration.child.name.familyName)
       await page.locator('#child____gender').click()
       await page.getByText(declaration.child.gender, { exact: true }).click()
-
       await page.getByPlaceholder('dd').fill(declaration.child.birthDate.dd)
       await page.getByPlaceholder('mm').fill(declaration.child.birthDate.mm)
       await page.getByPlaceholder('yyyy').fill(declaration.child.birthDate.yyyy)
-
       await page.locator('#child____placeOfBirth').click()
       await page
         .getByText(declaration.placeOfBirth, {
@@ -133,7 +125,6 @@ test.describe.serial('Add mother details on review', () => {
       await expect(
         page.locator('#child____birthLocation____other-form-input #province')
       ).toBeDisabled()
-
       await expect(
         page.locator('#child____birthLocation____other-form-input #district')
       ).toBeDisabled()
@@ -147,7 +138,6 @@ test.describe.serial('Add mother details on review', () => {
       await page
         .locator('#zipCode')
         .fill(declaration.birthLocation.postcodeOrZip)
-
       await page.locator('#child____attendantAtBirth').click()
       await page
         .getByText(declaration.attendantAtBirth, {
@@ -160,55 +150,49 @@ test.describe.serial('Add mother details on review', () => {
           exact: true
         })
         .click()
-
       await continueForm(page)
     })
 
-    test('Select Grandmother as informant', async () => {
+    await test.step('Select Grandmother as informant', async () => {
       await page.locator('#informant____relation').click()
       await page.getByText('Grandmother', { exact: true }).click()
       await page.getByText('Exact date of birth unknown').click()
       await page
         .locator('#informant____age')
         .fill(faker.number.int({ min: 18, max: 100 }).toString())
-
       await page.locator('#firstname').fill(faker.person.firstName())
       await page.locator('#surname').fill(faker.person.lastName())
-
       await page.locator('#informant____idType').click()
       await page.getByText('None', { exact: true }).click()
       await page.locator('#informant____email').fill(faker.internet.email())
       await continueForm(page)
     })
 
-    test('Mark mothers details as not available', async () => {
+    await test.step('Mark mothers details as not available', async () => {
       await page.getByLabel("Mother's details are not available").check()
       await page.locator('#mother____reason').fill(faker.lorem.sentence())
-
       await continueForm(page)
     })
 
-    test('Fill fathers details', async () => {
+    await test.step('Fill fathers details', async () => {
       await page.locator('#firstname').fill(declaration.father.name.firstNames)
       await page.locator('#surname').fill(declaration.father.name.familyName)
-
       await page.getByPlaceholder('dd').fill(declaration.father.birthDate.dd)
       await page.getByPlaceholder('mm').fill(declaration.father.birthDate.mm)
       await page
         .getByPlaceholder('yyyy')
         .fill(declaration.father.birthDate.yyyy)
-
       await page.locator('#father____idType').click()
       await page
         .getByText(declaration.father.identifier.type, { exact: true })
         .click()
     })
 
-    test('Go to review', async () => {
+    await test.step('Go to review', async () => {
       await goToSection(page, 'review')
     })
 
-    test('Fill up signature and comment', async () => {
+    await test.step('Fill up signature and comment', async () => {
       await page.locator('#review____comment').fill(faker.lorem.sentence())
       await page.getByRole('button', { name: 'Sign', exact: true }).click()
       await drawSignature(page, 'review____signature_canvas_element', false)
@@ -220,11 +204,9 @@ test.describe.serial('Add mother details on review', () => {
       await expect(page.getByRole('dialog')).not.toBeVisible()
     })
 
-    test('Declare', async () => {
+    await test.step('Declare', async () => {
       await selectDeclarationAction(page, 'Declare')
-
       await ensureOutboxIsEmpty(page)
-
       await page.getByText('Recent').click()
 
       await expect(
@@ -235,13 +217,11 @@ test.describe.serial('Add mother details on review', () => {
     })
   })
 
-  test.describe('Declaration Review by Registrar', async () => {
-    test('Navigate to the declaration Edit-action', async () => {
+  await test.step('Declaration Review by Registrar', async () => {
+    await test.step('Navigate to the declaration Edit-action', async () => {
       await logout(page)
       await login(page, CREDENTIALS.REGISTRAR_VILLAGE)
-
       await page.getByText('Pending registration').click()
-
       await page
         .getByRole('button', {
           name: formatName(declaration.child.name)
@@ -251,6 +231,7 @@ test.describe.serial('Add mother details on review', () => {
       await expect(page.getByTestId('status-value')).toHaveText('Declared')
 
       await selectAction(page, 'Edit')
+
       await expect(
         page.getByText(
           /You are editing a record declared by Velix Katongo \(Registration Officer at Klow Village Hospital\)/
@@ -258,41 +239,40 @@ test.describe.serial('Add mother details on review', () => {
       ).toBeVisible()
     })
 
-    test('Actions should be disabled with no edits made', async () => {
+    await test.step('Actions should be disabled with no edits made', async () => {
       await validateActionMenuButton(page, 'Declare with edits', false)
       await validateActionMenuButton(page, 'Register with edits', false)
     })
 
-    test('Add mothers details', async () => {
+    await test.step('Add mothers details', async () => {
       await page.getByTestId('change-button-mother.detailsNotAvailable').click()
       await page.getByText("Mother's details are not available").click()
-
       await page.locator('#firstname').fill(declaration.mother.name.firstNames)
       await page.locator('#surname').fill(declaration.mother.name.familyName)
-
       await page.getByLabel('Exact date of birth unknown').check()
       await page
         .locator('#mother____age')
         .fill(declaration.mother.age.toString())
-
       await page.locator('#mother____idType').click()
       await page.getByText('None', { exact: true }).click()
     })
 
-    test('Go back to review, expect to not see any validation errors', async () => {
+    await test.step('Go back to review, expect to not see any validation errors', async () => {
       await page.getByRole('button', { name: 'Back to review' }).click()
+
       await expect(page.getByText(REQUIRED_VALIDATION_ERROR)).not.toBeVisible()
     })
 
-    test('Actions should be enabled with edits made', async () => {
+    await test.step('Actions should be enabled with edits made', async () => {
       await validateActionMenuButton(page, 'Declare with edits')
       await validateActionMenuButton(page, 'Register with edits')
     })
 
     const comment = 'Mamas info added yo'
 
-    test('Register with edits', async () => {
+    await test.step('Register with edits', async () => {
       await selectDeclarationAction(page, 'Register with edits', false)
+
       await expect(
         page.getByText(
           'You are about to register this birth event with your edits. Registering this event will create an official civil registration record.'
@@ -300,23 +280,21 @@ test.describe.serial('Add mother details on review', () => {
       ).toBeVisible()
 
       await page.getByTestId('edit-comment').fill(comment)
-
       await page.getByRole('button', { name: 'Confirm' }).click()
     })
 
-    test('Assert event is registered', async () => {
+    await test.step('Assert event is registered', async () => {
       await ensureOutboxIsEmpty(page)
       await page.getByText('Pending certification').click()
       await page
         .getByRole('button', { name: formatName(declaration.child.name) })
         .click()
-
       await ensureAssigned(page)
 
       await expect(page.getByTestId('status-value')).toHaveText('Registered')
     })
 
-    test('Assert record form', async () => {
+    await test.step('Assert record form', async () => {
       await switchEventTab(page, 'Record')
 
       await expect(page.getByTestId('row-value-mother.name')).toHaveText(
@@ -332,18 +310,16 @@ test.describe.serial('Add mother details on review', () => {
       )
     })
 
-    test('Assert audit trail', async () => {
+    await test.step('Assert audit trail', async () => {
       await switchEventTab(page, 'Audit')
       await page.getByRole('button', { name: 'Edited', exact: true }).click()
 
       await expect(page.getByText('Comments: ' + comment)).toBeVisible()
-
       await expect(
         page.getByText(
           "Mother's name" + '-' + formatName(declaration.mother.name)
         )
       ).toBeVisible()
-
       await expect(
         page.getByText(
           'Age of mother (at the time of event)' +
@@ -351,11 +327,9 @@ test.describe.serial('Add mother details on review', () => {
             declaration.mother.age.toString()
         )
       ).toBeVisible()
-
       await expect(
         page.getByText('Nationality' + '-' + 'Farajaland')
       ).toBeVisible()
-
       await expect(page.getByText('Type of ID' + '-' + 'None')).toBeVisible()
 
       await page.locator('#close-btn').click()
@@ -363,8 +337,9 @@ test.describe.serial('Add mother details on review', () => {
       await page
         .getByRole('button', { name: 'Registered', exact: true })
         .click()
-
       await page.locator('#close-btn').click()
     })
   })
+
+  await page.close()
 })

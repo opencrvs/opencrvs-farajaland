@@ -20,6 +20,7 @@ test.describe('POST /api/events/events', () => {
       'POST',
       'foobar'
     )
+
     expect(response.status).toBe(401)
   })
 
