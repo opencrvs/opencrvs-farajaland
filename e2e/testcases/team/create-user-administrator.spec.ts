@@ -2,7 +2,7 @@ import { test, expect, type Page } from '@playwright/test'
 import path from 'path'
 import { loginWithNewUser, continueForm, login } from '../../helpers'
 import { faker } from '@faker-js/faker'
-import { CREDENTIALS, LOGIN_URL } from '../../constants'
+import { CREDENTIALS } from '../../constants'
 
 test.describe.serial('1. Create user -1', () => {
   let page: Page

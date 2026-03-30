@@ -95,9 +95,7 @@ export async function getFacilities() {
   return Object.values<Facility>(facilities)
 }
 
-export function generateLocationResource(
-  fhirLocation: fhir.Location
-): ILocation {
+function generateLocationResource(fhirLocation: fhir.Location): ILocation {
   const loc = {} as ILocation
   loc.id = fhirLocation.id
   loc.name = fhirLocation.name

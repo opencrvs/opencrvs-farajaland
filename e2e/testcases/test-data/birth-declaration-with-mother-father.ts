@@ -72,7 +72,7 @@ async function getPlaceOfBirth(
   throw new Error('Invalid place of birth type')
 }
 
-export async function getDeclaration({
+async function getDeclaration({
   informantRelation = 'MOTHER',
   partialDeclaration = {},
   placeOfBirthType = 'PRIVATE_HOME',
@@ -245,20 +245,4 @@ export async function createDeclaration(
     trackingId,
     registrationNumber
   }
-}
-
-export async function rejectDeclaration(
-  token: string,
-  eventId: string
-): Promise<any> {
-  const client = createClient(GATEWAY_HOST + '/events', `Bearer ${token}`)
-
-  const rejectResponse = await client.event.actions.reject.request.mutate({
-    eventId,
-    declaration: {},
-    transactionId: uuidv4(),
-    reason: { message: 'For test' }
-  })
-
-  return rejectResponse
 }
