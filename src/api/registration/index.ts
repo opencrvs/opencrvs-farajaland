@@ -12,7 +12,6 @@ import * as Hapi from '@hapi/hapi'
 import { generateRegistrationNumber } from './registrationNumber'
 import { createClient } from '@opencrvs/toolkit/api'
 import {
-  ActionInput,
   aggregateActionDeclarations,
   EventDocument,
   getPendingAction,
@@ -26,7 +25,7 @@ import { createMosipInteropClient } from '@opencrvs/mosip/api'
 import {
   shouldForwardBirthRegistrationToMosip,
   shouldForwardDeathRegistrationToMosip
-} from '@countryconfig/form/v2/mosip'
+} from '@countryconfig/events/mosip'
 
 export interface ActionConfirmationRequest extends Hapi.Request {
   payload: EventDocument
