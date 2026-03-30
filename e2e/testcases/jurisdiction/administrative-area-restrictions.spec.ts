@@ -1,9 +1,18 @@
 import { test, expect } from '@playwright/test'
 import { getToken, login, searchFromSearchBar } from '../../helpers'
 import { CLIENT_URL, CREDENTIALS } from '../../constants'
-import { createDeclaration, Declaration } from '../test-data/birth-declaration'
-import { formatV2ChildName } from '../birth/helpers'
-import { ActionType } from '@opencrvs/toolkit/events'
+import {
+  createDeclaration,
+  Declaration,
+  getDeclaration
+} from '../test-data/birth-declaration'
+import {
+  formatV2ChildName,
+  getAdministrativeAreas,
+  getIdByName
+} from '../birth/helpers'
+import { ActionType, AddressType } from '@opencrvs/toolkit/events'
+import { ensureAssigned } from '../../utils'
 
 test('Record declared in one administrative area should not appear for users in another administrative area', async ({
   browser
@@ -15,7 +24,28 @@ test('Record declared in one administrative area should not appear for users in 
 
   await test.step('Register record in Pualula District Office', async () => {
     const token = await getToken(CREDENTIALS.REGISTRATION_OFFICER_PUALULA)
-    const res = await createDeclaration(token, undefined, ActionType.DECLARE)
+
+    const administrativeAreas = await getAdministrativeAreas(token)
+    const village = getIdByName(administrativeAreas, 'Oya')
+
+    const declarationData = await getDeclaration({
+      token,
+      partialDeclaration: {
+        'child.placeOfBirth': 'PRIVATE_HOME',
+        'child.birthLocation.privateHome': {
+          country: 'FAR',
+          addressType: AddressType.DOMESTIC,
+          administrativeArea: village
+        }
+      }
+    })
+
+    const res = await createDeclaration(
+      token,
+      declarationData,
+      ActionType.DECLARE
+    )
+
     declaration = res.declaration
     eventId = res.eventId
     childName = formatV2ChildName(declaration)
@@ -58,6 +88,13 @@ test('Record declared in one administrative area should not appear for users in 
     await test.step('User should be able to navigate to record via direct URL', async () => {
       await page.goto(`${CLIENT_URL}/events/${eventId}`)
       await expect(page.locator('#content-name')).toHaveText(childName)
+    })
+
+    await test.step('Place of birth should be Farajaland, Pualula, Oya', async () => {
+      await ensureAssigned(page)
+      await expect(
+        page.getByTestId('child.birthLocation.privateHome-value')
+      ).toHaveText('FarajalandPualula-Oya')
     })
   })
 })
