@@ -37,10 +37,7 @@ test.describe.serial('Correct record - Change ages', () => {
   const informantAgeAfter = '22'
 
   test('Shortcut declaration', async () => {
-    let token = await getToken(
-      CREDENTIALS.REGISTRAR.USERNAME,
-      CREDENTIALS.REGISTRAR.PASSWORD
-    )
+    let token = await getToken(CREDENTIALS.REGISTRAR)
 
     const administrativeAreas = await getAdministrativeAreas(token)
     const province = getIdByName(administrativeAreas, 'Central')
@@ -111,7 +108,7 @@ test.describe.serial('Correct record - Change ages', () => {
       })
     )
     trackingId = res.trackingId!
-    token = await getToken('k.mweene', 'test')
+    token = await getToken(CREDENTIALS.REGISTRAR)
     declaration = res.declaration
   })
 

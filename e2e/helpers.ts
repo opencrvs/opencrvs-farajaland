@@ -6,7 +6,8 @@ import {
   GATEWAY_HOST,
   LOGIN_URL,
   SAFE_INPUT_CHANGE_TIMEOUT_MS,
-  SAFE_OUTBOX_TIMEOUT_MS
+  SAFE_OUTBOX_TIMEOUT_MS,
+  TEST_USER_PASSWORD
 } from './constants'
 import { format, parseISO } from 'date-fns'
 import { random } from 'lodash'
@@ -48,10 +49,10 @@ export async function logout(page: Page) {
 
 export async function login(
   page: Page,
-  credentials = CREDENTIALS.REGISTRAR,
+  username = CREDENTIALS.REGISTRAR,
   skipPin?: boolean
 ) {
-  const token = await getToken(credentials.USERNAME, credentials.PASSWORD)
+  const token = await getToken(username)
   expect(token).toBeDefined()
   await page.goto(`${CLIENT_URL}?token=${token}`)
 
@@ -66,7 +67,10 @@ export async function login(
   return token
 }
 
-export async function getToken(username: string, password: string) {
+export async function getToken(
+  username: string,
+  password: string = TEST_USER_PASSWORD
+) {
   const authUrl = `${AUTH_URL}/authenticate`
   const verifyUrl = `${AUTH_URL}/verifyCode`
 

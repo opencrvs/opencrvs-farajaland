@@ -22,20 +22,14 @@ test.describe
   })
 
   test('Declare a birth by Embassy Official', async () => {
-    const token = await getToken(
-      CREDENTIALS.EMBASSY_OFFICIAL.USERNAME,
-      CREDENTIALS.EMBASSY_OFFICIAL.PASSWORD
-    )
+    const token = await getToken(CREDENTIALS.EMBASSY_OFFICIAL)
 
     const res = await createDeclaration(token, undefined, ActionType.DECLARE)
     embassyDeclarationChildName = formatV2ChildName(res.declaration)
   })
 
   test('Declare a birth by Registrar', async () => {
-    const token = await getToken(
-      CREDENTIALS.REGISTRAR.USERNAME,
-      CREDENTIALS.REGISTRAR.PASSWORD
-    )
+    const token = await getToken(CREDENTIALS.REGISTRAR)
 
     const res = await createDeclaration(token, undefined, ActionType.DECLARE)
     registrarDeclarationChildName = formatV2ChildName(res.declaration)

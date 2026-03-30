@@ -11,10 +11,7 @@ test('Revoke and reinstate record', async ({ browser }) => {
   let childName: string
 
   await test.step('Setup declaration', async () => {
-    const token = await getToken(
-      CREDENTIALS.REGISTRAR.USERNAME,
-      CREDENTIALS.REGISTRAR.PASSWORD
-    )
+    const token = await getToken(CREDENTIALS.REGISTRAR)
     declaration = (await createDeclaration(token)).declaration
     childName = formatV2ChildName(declaration)
   })

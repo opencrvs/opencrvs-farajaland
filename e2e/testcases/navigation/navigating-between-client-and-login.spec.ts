@@ -1,5 +1,10 @@
-import { expect, test } from '@playwright/test'
-import { CLIENT_URL, CREDENTIALS, LOGIN_URL } from '../../constants'
+import { test } from '@playwright/test'
+import {
+  CLIENT_URL,
+  CREDENTIALS,
+  LOGIN_URL,
+  TEST_USER_PASSWORD
+} from '../../constants'
 import { createPIN, ensureLoginPageReady, logout } from '../../helpers'
 
 test('Navigating between client and login', async ({ page }) => {
@@ -10,8 +15,8 @@ test('Navigating between client and login', async ({ page }) => {
   })
 
   await test.step('Login step one', async () => {
-    await page.fill('#username', CREDENTIALS.REGISTRAR.USERNAME)
-    await page.fill('#password', CREDENTIALS.REGISTRAR.PASSWORD)
+    await page.fill('#username', CREDENTIALS.REGISTRAR)
+    await page.fill('#password', TEST_USER_PASSWORD)
     await page.click('#login-mobile-submit')
   })
 

@@ -88,10 +88,7 @@ test.describe.serial(' Correct record - 3', () => {
   })
 
   test('3.0 Shortcut declaration', async () => {
-    const token = await getToken(
-      CREDENTIALS.REGISTRAR.USERNAME,
-      CREDENTIALS.REGISTRAR.PASSWORD
-    )
+    const token = await getToken(CREDENTIALS.REGISTRAR)
 
     const res = await createDeclarationV2(
       token,

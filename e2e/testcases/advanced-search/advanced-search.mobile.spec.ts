@@ -15,10 +15,7 @@ test.describe.serial('Advanced Search - Mobile', () => {
   test.beforeAll(async ({ browser }) => {
     page = await browser.newPage()
     setMobileViewport(page)
-    const token = await getToken(
-      CREDENTIALS.REGISTRAR_VILLAGE.USERNAME,
-      CREDENTIALS.REGISTRAR_VILLAGE.PASSWORD
-    )
+    const token = await getToken(CREDENTIALS.REGISTRAR_VILLAGE)
 
     const administrativeAreas = await getAdministrativeAreas(token)
     province = getIdByName(administrativeAreas, 'Central')!
