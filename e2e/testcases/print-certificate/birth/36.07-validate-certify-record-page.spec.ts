@@ -20,10 +20,7 @@ test.describe.serial('7.0 Validate "Certify record" page', () => {
   let page: Page
 
   test.beforeAll(async ({ browser }) => {
-    const token = await getToken(
-      CREDENTIALS.REGISTRAR.USERNAME,
-      CREDENTIALS.REGISTRAR.PASSWORD
-    )
+    const token = await getToken(CREDENTIALS.REGISTRAR)
     const res = await createDeclaration(
       token,
       await getDeclaration({ informantRelation: 'BROTHER', token })

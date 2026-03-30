@@ -337,10 +337,7 @@ test.describe.serial('Archival of declaration pending validation', () => {
   let declaration: Declaration
 
   test.beforeAll(async ({ browser }) => {
-    token = await getToken(
-      CREDENTIALS.HOSPITAL_OFFICIAL.USERNAME,
-      CREDENTIALS.HOSPITAL_OFFICIAL.PASSWORD
-    )
+    token = await getToken(CREDENTIALS.HOSPITAL_OFFICIAL)
     const res = await createDeclaration(token, undefined, ActionType.DECLARE)
     declaration = res.declaration
 

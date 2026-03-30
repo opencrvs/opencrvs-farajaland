@@ -13,10 +13,7 @@ test.describe
 
   test.beforeAll(async ({ browser }) => {
     page = await browser.newPage()
-    const token = await getToken(
-      CREDENTIALS.REGISTRAR.USERNAME,
-      CREDENTIALS.REGISTRAR.PASSWORD
-    )
+    const token = await getToken(CREDENTIALS.REGISTRAR)
 
     record = await createDeclaration(token)
     ;[yyyy, mm, dd] = record.declaration['mother.dob'].split('-')

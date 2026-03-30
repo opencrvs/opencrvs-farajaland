@@ -28,7 +28,7 @@ test.describe('Roles in Record Audit', () => {
   for (const { credential, expectedAuditRole, action } of testCases) {
     test(expectedAuditRole, async ({ browser }) => {
       const page = await browser.newPage()
-      const token = await getToken(credential.USERNAME, credential.PASSWORD)
+      const token = await getToken(credential)
       const res = await createDeclaration(token, undefined, action)
 
       await login(page, CREDENTIALS.REGISTRAR)

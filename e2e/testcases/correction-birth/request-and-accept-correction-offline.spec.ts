@@ -26,10 +26,7 @@ test.describe.serial('Request and accept correction (offline)', () => {
   })
 
   test('Shortcut declaration', async () => {
-    let token = await getToken(
-      CREDENTIALS.REGISTRAR.USERNAME,
-      CREDENTIALS.REGISTRAR.PASSWORD
-    )
+    let token = await getToken(CREDENTIALS.REGISTRAR)
 
     const res = await createDeclarationV2(
       token,
@@ -82,7 +79,7 @@ test.describe.serial('Request and accept correction (offline)', () => {
     )
     trackingId = res.trackingId!
     eventId = res.eventId
-    token = await getToken('k.mweene', 'test')
+    token = await getToken(CREDENTIALS.REGISTRAR)
     declaration = res.declaration
   })
 
