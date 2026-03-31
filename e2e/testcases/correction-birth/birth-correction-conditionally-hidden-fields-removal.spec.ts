@@ -34,10 +34,7 @@ test.describe
   })
 
   test('Create and register declaration via API', async () => {
-    const token = await getToken(
-      CREDENTIALS.REGISTRAR.USERNAME,
-      CREDENTIALS.REGISTRAR.PASSWORD
-    )
+    const token = await getToken(CREDENTIALS.REGISTRAR)
     const administrativeAreas = await getAdministrativeAreas(token)
     const village = getIdByName(administrativeAreas, 'Klow')
 
