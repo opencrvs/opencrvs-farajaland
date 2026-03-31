@@ -2,7 +2,10 @@
   "compilerOptions": {
     "baseUrl": "./src",
     "paths": {
-      "@countryconfig/*": ["./*"]
+      "@countryconfig/*": ["./*"],
+      "@opencrvs/events/src/router": [
+        "../node_modules/@opencrvs/toolkit/dist/commons/api/router"
+      ]
     },
     "target": "es6",
     "module": "Node16",

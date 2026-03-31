@@ -1,6 +1,6 @@
 import { Page, expect, test } from '@playwright/test'
-import { goToSection, login } from '../../helpers'
-import { openBirthDeclaration } from '../birth/helpers'
+import { goToSection, login } from '../../../helpers'
+import { openBirthDeclaration } from '../../birth/helpers'
 
 async function authenticateInformantWithESignet(page: Page) {
   await page.locator('#informant____verify').click()
