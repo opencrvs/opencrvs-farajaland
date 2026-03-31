@@ -304,9 +304,10 @@ export async function importAdministrativeAreas(
   administrativeAreas: AdministrativeArea[]
 ) {
   const client = getClient()
+  const sortedAreas = sortAdministrativeAreasByParentFirst(administrativeAreas)
   await client.transaction().execute(async (trx) => {
     for (const [index, batch] of chunk(
-      administrativeAreas,
+      sortedAreas,
       INSERT_MAX_CHUNK_SIZE
     ).entries()) {
       logger.info(
@@ -339,8 +340,38 @@ export async function importAdministrativeAreas(
   })
 }
 
+export function sortAdministrativeAreasByParentFirst(
+  areas: AdministrativeArea[]
+): AdministrativeArea[] {
+  const areaMap = new Map(areas.map((area) => [area.id, area]))
+  const result: AdministrativeArea[] = []
+  const visited = new Set<string>()
+
+  for (const area of areas) {
+    if (visited.has(area.id)) continue
+
+    const ancestors: AdministrativeArea[] = []
+    let current: AdministrativeArea | undefined = area
+
+    while (current && !visited.has(current.id)) {
+      ancestors.unshift(current)
+      current = current.parentId ? areaMap.get(current.parentId) : undefined
+    }
+
+    for (const ancestor of ancestors) {
+      if (!visited.has(ancestor.id)) {
+        visited.add(ancestor.id)
+        result.push(ancestor)
+      }
+    }
+  }
+
+  return result
+}
+
 export async function importLocations(locations: Location[]) {
   const client = getClient()
+
   await client.transaction().execute(async (trx) => {
     for (const [index, batch] of chunk(
       locations,
