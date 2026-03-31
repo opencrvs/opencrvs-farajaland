@@ -46,7 +46,7 @@ async function getPlaceOfDeath(
   throw new Error('Invalid place of birth type')
 }
 
-export async function getDeclaration({
+async function getDeclaration({
   partialDeclaration = {},
   placeOfDeathType: placeOfDeathType = 'DECEASED_USUAL_RESIDENCE',
   token

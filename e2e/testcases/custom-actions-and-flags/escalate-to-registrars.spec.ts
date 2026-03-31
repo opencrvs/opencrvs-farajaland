@@ -28,10 +28,7 @@ test.describe.serial('Escalation of birth registration by Registrar', () => {
 
   test.beforeAll(async ({ browser }) => {
     page = await browser.newPage()
-    const token = await getToken(
-      CREDENTIALS.REGISTRAR.USERNAME,
-      CREDENTIALS.REGISTRAR.PASSWORD
-    )
+    const token = await getToken(CREDENTIALS.REGISTRAR)
     await createDeclaration(
       token,
       {

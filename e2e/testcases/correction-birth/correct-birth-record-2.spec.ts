@@ -40,10 +40,7 @@ test.describe.serial('Correct record - 2', () => {
   }
 
   test.beforeAll(async ({ browser }) => {
-    const token = await getToken(
-      CREDENTIALS.REGISTRAR.USERNAME,
-      CREDENTIALS.REGISTRAR.PASSWORD
-    )
+    const token = await getToken(CREDENTIALS.REGISTRAR)
 
     // Create declaration with father details available
     const res = await createDeclaration(

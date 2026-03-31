@@ -9,8 +9,6 @@ import { GATEWAY_HOST } from '../../constants'
 import { createClient } from '@opencrvs/toolkit/api'
 
 export const REQUIRED_VALIDATION_ERROR = 'Required'
-export const NAME_VALIDATION_ERROR =
-  "Input contains invalid characters. Please use only letters (a-z, A-Z), numbers (0-9), hyphens (-) and apostrophes(')"
 
 export async function validateAddress(
   page: Page,

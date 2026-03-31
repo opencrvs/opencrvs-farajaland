@@ -45,10 +45,7 @@ test.describe('1. Correct record - 1', () => {
   }
 
   test.beforeAll(async () => {
-    token = await getToken(
-      CREDENTIALS.REGISTRAR.USERNAME,
-      CREDENTIALS.REGISTRAR.PASSWORD
-    )
+    token = await getToken(CREDENTIALS.REGISTRAR)
     const res = await createDeclaration(
       token,
       undefined,

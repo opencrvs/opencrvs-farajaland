@@ -20,7 +20,7 @@ import {
 } from '../test-data/birth-declaration-with-mother-father'
 import { format, subDays, subYears } from 'date-fns'
 import { formatV2ChildName } from '../birth/helpers'
-import { IdType } from '@countryconfig/form/v2/person'
+import { IdType } from '@countryconfig/events/utils'
 import { ensureAssigned, expectInUrl, selectAction } from '../../utils'
 
 test.describe.serial(' Correct record - 3', () => {
@@ -88,10 +88,7 @@ test.describe.serial(' Correct record - 3', () => {
   })
 
   test('3.0 Shortcut declaration', async () => {
-    const token = await getToken(
-      CREDENTIALS.REGISTRAR.USERNAME,
-      CREDENTIALS.REGISTRAR.PASSWORD
-    )
+    const token = await getToken(CREDENTIALS.REGISTRAR)
 
     const res = await createDeclarationV2(
       token,

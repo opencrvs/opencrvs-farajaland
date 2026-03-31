@@ -34,10 +34,7 @@ test.describe.serial('Issue verifiable credential', () => {
   }
 
   test.beforeAll(async ({ browser }) => {
-    const token = await getToken(
-      CREDENTIALS.REGISTRAR.USERNAME,
-      CREDENTIALS.REGISTRAR.PASSWORD
-    )
+    const token = await getToken(CREDENTIALS.REGISTRAR)
 
     const motherInformantRes = await createDeclaration(token)
     motherInformantDeclaration = motherInformantRes.declaration

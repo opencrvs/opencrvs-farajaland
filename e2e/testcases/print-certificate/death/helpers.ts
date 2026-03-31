@@ -23,13 +23,3 @@ export async function navigateToCertificatePrintAction(
   await page.getByRole('button', { name: deceasedName }).click()
   await selectAction(page, 'Print')
 }
-
-export function getRowByTitle(page: Page, title: string) {
-  const button = page.getByRole('button', {
-    name: title
-  })
-  const parentRow = button.locator(
-    'xpath=ancestor::*[starts-with(@id, "row_")]'
-  )
-  return parentRow
-}
