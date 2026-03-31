@@ -10,10 +10,10 @@
  */
 
 import { applicationConfig } from '@countryconfig/api/application/application-config'
-import { tennisClubMembershipEvent } from '@countryconfig/form/tennis-club-membership'
-import { Event } from '@countryconfig/form/types/types'
-import { birthEvent } from '@countryconfig/form/v2/birth'
-import { deathEvent } from '@countryconfig/form/v2/death'
+import { tennisClubMembershipEvent } from '@countryconfig/events/tennis-club-membership'
+
+import { birthEvent } from '@countryconfig/events/birth'
+import { deathEvent } from '@countryconfig/events/death'
 import { logger } from '@countryconfig/logger'
 import {
   ActionConfig,
@@ -35,6 +35,7 @@ import { chunk, pickBy } from 'lodash'
 import { getClient } from './postgres'
 import { getStatistics } from '@countryconfig/utils'
 import { COUNTRY_NAMES_BY_CODE } from './countries'
+import { Event } from '@countryconfig/events/utils'
 
 /**
  * You can control which events you want to track in analytics by adding them here.
