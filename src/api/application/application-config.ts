@@ -25,6 +25,14 @@ export const applicationConfig = defineApplicationConfig({
         defaultMessage: 'District',
         description: 'Label for district in address'
       }
+    },
+    {
+      id: 'village',
+      label: {
+        id: 'field.address.village.label',
+        defaultMessage: 'Village',
+        description: 'Label for village in address'
+      }
     }
   ],
   PHONE_NUMBER_PATTERN: '^0(7|9)[0-9]{8}$',
@@ -41,34 +49,3 @@ export const applicationConfig = defineApplicationConfig({
    * | 'EMAIL'
    */
 })
-
-type EventNotificationFlags = {
-  'sent-notification'?: boolean
-  'sent-notification-for-review'?: boolean
-  'sent-for-approval'?: boolean
-  registered?: boolean
-  'sent-for-updates'?: boolean
-}
-
-type NotificationFlags = {
-  BIRTH?: EventNotificationFlags
-  DEATH?: EventNotificationFlags
-  MARRIAGE?: EventNotificationFlags
-}
-
-export const notificationForRecord: NotificationFlags = {
-  BIRTH: {
-    'sent-notification': true,
-    'sent-notification-for-review': true,
-    'sent-for-approval': true,
-    registered: true,
-    'sent-for-updates': true
-  },
-  DEATH: {
-    'sent-notification': true,
-    'sent-notification-for-review': true,
-    'sent-for-approval': true,
-    registered: true,
-    'sent-for-updates': true
-  }
-}

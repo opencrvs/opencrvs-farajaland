@@ -22,7 +22,7 @@ async function getPlaceOfDeath(
 ) {
   if (type === 'HEALTH_FACILITY') {
     const locations = await getLocations('HEALTH_FACILITY', token)
-    const locationId = getIdByName(locations, 'Ibombo Rural Health Centre')
+    const locationId = getIdByName(locations, 'Klow Village Hospital')
 
     return {
       'deceased.deathLocation': locationId
@@ -32,13 +32,13 @@ async function getPlaceOfDeath(
   if (type === 'DECEASED_USUAL_RESIDENCE') {
     const administrativeAreas = await getAdministrativeAreas(token)
 
-    const district = getIdByName(administrativeAreas, 'Ibombo')
+    const village = getIdByName(administrativeAreas, 'Klow')
 
     return {
       'deceased.address': {
         country: 'FAR',
         addressType: AddressType.DOMESTIC,
-        administrativeArea: district
+        administrativeArea: village
       }
     }
   }
@@ -46,7 +46,7 @@ async function getPlaceOfDeath(
   throw new Error('Invalid place of birth type')
 }
 
-export async function getDeclaration({
+async function getDeclaration({
   partialDeclaration = {},
   placeOfDeathType: placeOfDeathType = 'DECEASED_USUAL_RESIDENCE',
   token

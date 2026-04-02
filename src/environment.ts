@@ -68,5 +68,9 @@ export const env = cleanEnv(process.env, {
     default: 'http://countryconfig:3040/_demo-issuer/raw/jwt/sign',
     devDefault: 'http://localhost:3040/_demo-issuer/raw/jwt/sign',
     desc: 'URL for signing raw JWTs for verifiable credentials issuance'
+  }),
+  NO_MOSIP: bool({
+    default: false,
+    desc: 'Used in local development to disable MOSIP registration dependency'
   })
 })

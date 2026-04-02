@@ -18,10 +18,7 @@ test.describe
   let page: Page
 
   test.beforeAll(async ({ browser }) => {
-    const token = await getToken(
-      CREDENTIALS.REGISTRAR.USERNAME,
-      CREDENTIALS.REGISTRAR.PASSWORD
-    )
+    const token = await getToken(CREDENTIALS.REGISTRAR)
 
     // Create a declaration with a health facility place of birth
     const res = await createDeclaration(
@@ -76,9 +73,7 @@ test.describe
   })
 
   test('Validate child place of birth', async () => {
-    await expect(page.locator('#print')).toContainText(
-      'Ibombo Rural Health Centre'
-    )
+    await expect(page.locator('#print')).toContainText('Klow Village Hospital')
     await expect(page.locator('#print')).toContainText(
       'Ibombo, Central, Farajaland'
     )
@@ -90,10 +85,7 @@ test.describe.serial("Validate 'Birth Certificate' PDF details", () => {
   let page: Page
 
   test.beforeAll(async ({ browser }) => {
-    const token = await getToken(
-      CREDENTIALS.REGISTRAR.USERNAME,
-      CREDENTIALS.REGISTRAR.PASSWORD
-    )
+    const token = await getToken(CREDENTIALS.REGISTRAR)
 
     // Create a declaration
     const res = await createDeclaration(
@@ -126,9 +118,7 @@ test.describe.serial("Validate 'Birth Certificate' PDF details", () => {
   })
 
   test('Validate child place of birth', async () => {
-    await expect(page.locator('#print')).toContainText(
-      'Ibombo Rural Health Centre'
-    )
+    await expect(page.locator('#print')).toContainText('Klow Village Hospital')
     await expect(page.locator('#print')).toContainText(
       'Ibombo, Central, Farajaland'
     )

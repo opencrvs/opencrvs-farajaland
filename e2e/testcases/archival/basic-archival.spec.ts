@@ -32,7 +32,7 @@ test.describe.serial('Basic Archival flow', () => {
     birthType: 'Single',
     weightAtBirth: 2.4,
     placeOfBirth: 'Health Institution',
-    birthLocation: { facility: 'Ibombo District Office' },
+    birthLocation: { facility: 'Klow Village Hospital' },
     informantType: 'Mother',
     informantEmail: faker.internet.email(),
     mother: {
@@ -50,6 +50,7 @@ test.describe.serial('Basic Archival flow', () => {
         country: 'Farajaland',
         province: 'Sulaka',
         district: 'Irundu',
+        village: 'Xhosa',
         town: faker.location.city(),
         residentialArea: faker.location.county(),
         street: faker.location.street(),
@@ -182,6 +183,10 @@ test.describe.serial('Basic Archival flow', () => {
     await page.locator('#district').click()
     await page
       .getByText(declaration.mother.address.district, { exact: true })
+      .click()
+    await page.locator('#village').click()
+    await page
+      .getByText(declaration.mother.address.village, { exact: true })
       .click()
 
     await page.locator('#town').fill(declaration.mother.address.town)
@@ -332,10 +337,7 @@ test.describe.serial('Archival of declaration pending validation', () => {
   let declaration: Declaration
 
   test.beforeAll(async ({ browser }) => {
-    token = await getToken(
-      CREDENTIALS.HOSPITAL_OFFICIAL.USERNAME,
-      CREDENTIALS.HOSPITAL_OFFICIAL.PASSWORD
-    )
+    token = await getToken(CREDENTIALS.HOSPITAL_OFFICIAL)
     const res = await createDeclaration(token, undefined, ActionType.DECLARE)
     declaration = res.declaration
 

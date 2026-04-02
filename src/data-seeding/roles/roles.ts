@@ -1,10 +1,10 @@
-import { SCOPES, Scope } from '@opencrvs/toolkit/scopes'
+import { SCOPES } from '@opencrvs/toolkit/scopes'
 import { MessageDescriptor } from 'react-intl'
 
 type Role = {
   id: string
   label: MessageDescriptor
-  scopes: Scope[]
+  scopes: string[]
 }
 
 export const roles: Role[] = [
@@ -16,25 +16,25 @@ export const roles: Role[] = [
       id: 'userRole.registrationOfficer'
     },
     scopes: [
-      SCOPES.RECORD_READ,
       SCOPES.PERFORMANCE_READ,
       SCOPES.ORGANISATION_READ_LOCATIONS_MY_OFFICE,
       SCOPES.USER_READ_MY_JURISDICTION,
       SCOPES.ORGANISATION_READ_LOCATIONS_MY_JURISDICTION,
       SCOPES.RECORD_PRINT_ISSUE_CERTIFIED_COPIES,
       SCOPES.PERFORMANCE_READ_DASHBOARDS,
-      'type=record.search&event=birth,death,tennis-club-membership',
-      'workqueue[id=assigned-to-you|recent|requires-completion|in-review|in-external-validation|escalated|pending-validation|pending-updates|pending-approval|pending-certification|pending-issuance|correction-requested]',
-      'type=record.create&event=birth,death,tennis-club-membership&placeOfEvent=administrativeArea',
-      'type=record.read&event=birth,death,tennis-club-membership',
-      'type=record.declare&event=birth,death,tennis-club-membership',
-      'type=record.edit&event=birth,death,tennis-club-membership',
-      'type=record.reject&event=birth,death,tennis-club-membership',
-      'type=record.archive&event=birth,death,tennis-club-membership',
-      'type=record.print-certified-copies&event=birth,death,tennis-club-membership',
-      'type=record.request-correction&event=birth,death,tennis-club-membership',
-      'record.custom-action[event=birth,customActionType=VALIDATE_DECLARATION|ISSUE_CERTIFIED_COPY|ESCALATE]',
-      'record.custom-action[event=death,customActionType=VALIDATE_DECLARATION]'
+      'workqueue[id=assigned-to-you|recent|requires-completion|in-external-validation|escalated|pending-validation|pending-updates|pending-approval|pending-certification|pending-issuance|correction-requested]',
+      'type=record.search&placeOfEvent=administrativeArea',
+      'type=record.create&placeOfEvent=administrativeArea',
+      'type=record.read&placeOfEvent=administrativeArea',
+      'type=record.declare&placeOfEvent=administrativeArea',
+      'type=record.edit&placeOfEvent=administrativeArea',
+      'type=record.reject&placeOfEvent=administrativeArea',
+      'type=record.archive&declaredIn=administrativeArea',
+      'type=record.print-certified-copies&registeredIn=administrativeArea',
+      'type=record.request-correction&registeredIn=administrativeArea',
+      'type=record.custom-action&event=birth&customActionTypes=VALIDATE_DECLARATION,ESCALATE&placeOfEvent=administrativeArea',
+      'type=record.custom-action&event=birth&customActionTypes=ISSUE_CERTIFIED_COPY,ISSUE_VERIFIABLE_CREDENTIAL&registeredIn=administrativeArea',
+      'type=record.custom-action&event=death&customActionTypes=VALIDATE_DECLARATION&declaredIn=administrativeArea'
     ]
   },
   {
@@ -45,7 +45,6 @@ export const roles: Role[] = [
       id: 'userRole.localRegistrar'
     },
     scopes: [
-      SCOPES.RECORD_READ,
       SCOPES.PROFILE_ELECTRONIC_SIGNATURE,
       SCOPES.PERFORMANCE_READ,
       SCOPES.ORGANISATION_READ_LOCATIONS_MY_OFFICE,
@@ -53,20 +52,21 @@ export const roles: Role[] = [
       SCOPES.USER_READ_MY_JURISDICTION,
       SCOPES.RECORD_PRINT_ISSUE_CERTIFIED_COPIES,
       SCOPES.PERFORMANCE_READ_DASHBOARDS,
-      'type=record.search&event=birth,death,tennis-club-membership',
       'workqueue[id=assigned-to-you|recent|requires-completion|in-external-validation|escalated|potential-duplicate|pending-updates|pending-registration|pending-approval|pending-certification|pending-issuance|correction-requested]',
-      'type=record.create&event=birth,death,tennis-club-membership&placeOfEvent=administrativeArea',
-      'type=record.read&event=birth,death,tennis-club-membership',
-      'type=record.declare&event=birth,death,tennis-club-membership',
-      'type=record.edit&event=birth,death,tennis-club-membership',
-      'type=record.reject&event=birth,death,tennis-club-membership',
-      'type=record.archive&event=birth,death,tennis-club-membership',
-      'type=record.review-duplicates&event=birth,death,tennis-club-membership',
-      'type=record.register&event=birth,death,tennis-club-membership',
-      'type=record.print-certified-copies&event=birth,death,tennis-club-membership',
-      'type=record.correct&event=birth,death,tennis-club-membership',
-      'record.unassign-others[event=birth|death|tennis-club-membership]',
-      'record.custom-action[event=birth,customActionType=ESCALATE|ISSUE_CERTIFIED_COPY|ISSUE_VERIFIABLE_CREDENTIAL]'
+      'type=record.search&placeOfEvent=administrativeArea',
+      'type=record.create&placeOfEvent=administrativeArea',
+      'type=record.read&placeOfEvent=administrativeArea',
+      'type=record.declare&placeOfEvent=administrativeArea',
+      'type=record.edit&placeOfEvent=administrativeArea',
+      'type=record.reject&placeOfEvent=administrativeArea',
+      'type=record.archive&declaredIn=administrativeArea',
+      'type=record.review-duplicates&placeOfEvent=administrativeArea',
+      'type=record.register&placeOfEvent=administrativeArea',
+      'type=record.print-certified-copies&registeredIn=administrativeArea',
+      'type=record.correct&registeredIn=administrativeArea',
+      'type=record.custom-action&event=birth&customActionTypes=ESCALATE&placeOfEvent=administrativeArea',
+      'type=record.custom-action&event=birth&customActionTypes=ISSUE_CERTIFIED_COPY,ISSUE_VERIFIABLE_CREDENTIAL&registeredIn=administrativeArea',
+      'type=record.unassign-others'
     ]
   },
   {
@@ -127,25 +127,24 @@ export const roles: Role[] = [
       id: 'userRole.registrarGeneral'
     },
     scopes: [
-      SCOPES.RECORD_READ,
       SCOPES.PROFILE_ELECTRONIC_SIGNATURE,
       SCOPES.PERFORMANCE_READ,
       SCOPES.ORGANISATION_READ_LOCATIONS,
       SCOPES.USER_READ,
       SCOPES.RECORD_PRINT_ISSUE_CERTIFIED_COPIES,
-      'type=record.search&event=birth,death,tennis-club-membership',
+      'type=record.search',
       'workqueue[id=assigned-to-you|recent|pending-feedback-registrar-general|potential-duplicate|registration-registrar-general]',
-      'type=record.read&event=birth,death,tennis-club-membership',
-      'type=record.declare&event=birth,death,tennis-club-membership',
-      'type=record.reject&event=birth,death,tennis-club-membership',
-      'type=record.archive&event=birth,death,tennis-club-membership',
-      'type=record.review-duplicates&event=birth,death,tennis-club-membership',
-      'type=record.register&event=birth,death,tennis-club-membership',
-      'type=record.print-certified-copies&event=birth,death,tennis-club-membership',
-      'type=record.correct&event=birth,death,tennis-club-membership',
-      'record.custom-action[event=birth,customActionType=REGISTRAR_GENERAL_FEEDBACK|REVOKE_REGISTRATION|REINSTATE_REVOKE_REGISTRATION|APPROVE_DECLARATION]',
-      'record.custom-action[event=death,customActionType=APPROVE_DECLARATION]',
-      'record.unassign-others[event=birth|death|tennis-club-membership]'
+      'type=record.read',
+      'type=record.declare',
+      'type=record.reject',
+      'type=record.archive',
+      'type=record.review-duplicates',
+      'type=record.register',
+      'type=record.print-certified-copies',
+      'type=record.correct',
+      'type=record.custom-action&event=birth&customActionTypes=REGISTRAR_GENERAL_FEEDBACK,REVOKE_REGISTRATION,REINSTATE_REVOKE_REGISTRATION,APPROVE_DECLARATION',
+      'type=record.custom-action&event=death&customActionTypes=APPROVE_DECLARATION',
+      'type=record.unassign-others'
     ]
   },
   {
@@ -162,16 +161,18 @@ export const roles: Role[] = [
       SCOPES.PERFORMANCE_READ_DASHBOARDS,
       SCOPES.RECORD_PRINT_ISSUE_CERTIFIED_COPIES,
       SCOPES.PROFILE_ELECTRONIC_SIGNATURE,
-      'type=record.search&event=birth,death,tennis-club-membership',
+      'type=record.search&placeOfEvent=administrativeArea',
       'workqueue[id=recent|pending-feedback-provincinal-registrar|pending-approval|correction-requested]',
-      'type=record.read&event=birth,death,tennis-club-membership',
-      'type=record.reject&event=birth,death,tennis-club-membership',
-      'type=record.register&event=birth,death,tennis-club-membership',
-      'type=record.archive&event=birth,death,tennis-club-membership',
-      'record.custom-action[event=birth,customActionType=APPROVE_DECLARATION|PROVINCIAL_REGISTER_FEEDBACK|REINSTATE_REVOKE_REGISTRATION|ESCALATE]',
-      'record.custom-action[event=death,customActionType=APPROVE_DECLARATION]',
-      'type=record.print-certified-copies&event=birth,death,tennis-club-membership',
-      'type=record.correct&event=birth,death,tennis-club-membership'
+      'type=record.read&placeOfEvent=administrativeArea',
+      'type=record.reject&placeOfEvent=administrativeArea',
+      'type=record.edit&placeOfEvent=administrativeArea',
+      'type=record.register&declaredIn=administrativeArea',
+      'type=record.archive&placeOfEvent=administrativeArea',
+      'type=record.custom-action&event=birth&customActionTypes=PROVINCIAL_REGISTER_FEEDBACK,REINSTATE_REVOKE_REGISTRATION,ESCALATE&placeOfEvent=administrativeArea',
+      'type=record.custom-action&event=birth,death&customActionTypes=APPROVE_DECLARATION&declaredIn=administrativeArea',
+      'type=record.print-certified-copies&registeredIn=administrativeArea',
+      'type=record.correct&registeredIn=administrativeArea',
+      'type=record.unassign-others&placeOfEvent=administrativeArea'
     ]
   },
   {
@@ -183,15 +184,14 @@ export const roles: Role[] = [
     },
     scopes: [
       SCOPES.USER_READ_ONLY_MY_AUDIT,
-      'type=record.search&event=birth,death,tennis-club-membership',
+      'type=record.search&placeOfEvent=location',
       'workqueue[id=assigned-to-you|recent|pending-updates]',
-      'type=record.create&event=birth,death,tennis-club-membership&placeOfEvent=location',
-      'type=record.read&event=birth,death,tennis-club-membership',
-      'type=record.declare&event=birth,death,tennis-club-membership',
-      'type=record.notify&event=birth,death,tennis-club-membership',
-      'type=record.edit&event=birth,death,tennis-club-membership',
-      'type=record.print-certified-copies&event=birth,death,tennis-club-membership'
-      // 'record.registered.print-certified-copies[event=tennis-club-membership,templates=v2.tennis-club-membership-certificate-alpha]'
+      'type=record.create&placeOfEvent=location',
+      'type=record.read&placeOfEvent=location',
+      'type=record.declare&placeOfEvent=location',
+      'type=record.notify&placeOfEvent=location',
+      'type=record.edit&placeOfEvent=location',
+      'type=record.print-certified-copies&templates=v2.tennis-club-membership-certificate-alpha&registeredIn=location'
     ]
   },
   {
@@ -204,12 +204,12 @@ export const roles: Role[] = [
     scopes: [
       SCOPES.USER_READ_ONLY_MY_AUDIT,
       SCOPES.RECORD_PRINT_ISSUE_CERTIFIED_COPIES,
-      'type=record.search&event=birth,death,tennis-club-membership',
+      'type=record.search&placeOfEvent=location',
       'workqueue[id=assigned-to-you|recent]',
-      'type=record.create&event=birth,death,tennis-club-membership&placeOfEvent=location',
-      'type=record.read&event=birth,death,tennis-club-membership',
-      'type=record.edit&event=birth,death,tennis-club-membership',
-      'type=record.notify&event=birth,death,tennis-club-membership'
+      'type=record.create&placeOfEvent=location',
+      'type=record.read&placeOfEvent=location',
+      'type=record.edit&placeOfEvent=location',
+      'type=record.notify&placeOfEvent=location'
     ]
   },
   {
@@ -223,78 +223,15 @@ export const roles: Role[] = [
       SCOPES.USER_READ_ONLY_MY_AUDIT,
       SCOPES.RECORD_PRINT_ISSUE_CERTIFIED_COPIES,
       'workqueue[id=assigned-to-you|recent|escalated|pending-updates|pending-certification|potential-duplicate]',
-      'type=record.search&event=birth,death,tennis-club-membership&declaredIn=location',
-      'type=record.create&event=birth,death,tennis-club-membership&placeOfEvent=location',
-      'type=record.read&event=birth,death,tennis-club-membership',
-      'type=record.declare&event=birth,death,tennis-club-membership',
-      'type=record.edit&event=birth,death,tennis-club-membership',
-      'record.custom-action[event=birth,customActionType=ESCALATE|ISSUE_CERTIFIED_COPY]',
-      'type=record.print-certified-copies&event=birth,death,tennis-club-membership',
-      'type=record.correct&event=birth,death,tennis-club-membership'
-    ]
-  },
-  // Legacy roles from v1.8 for backwards compatibility
-  {
-    id: 'POLICE_OFFICER',
-    label: {
-      defaultMessage: 'Police Officer',
-      description: 'Name for user role Police Officer',
-      id: 'userRole.policeOfficer'
-    },
-    scopes: []
-  },
-  {
-    id: 'SOCIAL_WORKER',
-    label: {
-      defaultMessage: 'Social Worker',
-      description: 'Name for user role Social Worker',
-      id: 'userRole.socialWorker'
-    },
-    scopes: []
-  },
-  {
-    id: 'HEALTHCARE_WORKER',
-    label: {
-      defaultMessage: 'Healthcare Worker',
-      description: 'Name for user role Healthcare Worker',
-      id: 'userRole.healthcareWorker'
-    },
-    scopes: []
-  },
-  {
-    id: 'FIELD_AGENT',
-    label: {
-      defaultMessage: 'Field Agent',
-      description: 'Name for user role Field Agent',
-      id: 'userRole.fieldAgent'
-    },
-    scopes: []
-  },
-  {
-    id: 'LOCAL_LEADER',
-    label: {
-      defaultMessage: 'Local Leader',
-      description: 'Name for user role Local Leader',
-      id: 'userRole.LocalLeader'
-    },
-    scopes: []
-  },
-  {
-    // NOTE: This is 2.0  role configuration. It does not have the finalised scopes since all the features are not ready.
-    id: 'HEALTH_OFFICER',
-    label: {
-      defaultMessage: 'Health Officer',
-      description: 'Name for user role Health Officer',
-      id: 'userRole.healthOfficer'
-    },
-    scopes: [
-      'workqueue[id=assigned-to-you|recent|requires-updates-self|sent-for-review]',
-      'type=record.search&event=birth,death&declaredIn=location',
-      'type=record.read&event=birth,death,tennis-club-membership',
-      `type=record.create&event=birth,death,tennis-club-membership`,
-      'type=record.declare&event=birth,death,tennis-club-membership',
-      'type=record.notify&event=birth,death,tennis-club-membership',
-      'type=record.edit&event=birth,death'
+      'type=record.search&placeOfEvent=location',
+      'type=record.create&placeOfEvent=location',
+      'type=record.read&placeOfEvent=location',
+      'type=record.declare&placeOfEvent=location',
+      'type=record.edit&placeOfEvent=location',
+      'type=record.custom-action&event=birth&customActionTypes=ESCALATE&placeOfEvent=location',
+      'type=record.custom-action&event=birth&customActionTypes=ISSUE_CERTIFIED_COPY&registeredIn=location',
+      'type=record.print-certified-copies&registeredIn=location',
+      'type=record.correct&registeredIn=location'
     ]
   }
 ]

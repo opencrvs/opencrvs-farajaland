@@ -10,10 +10,7 @@ test.describe.serial('Navigating in and out of dashboard', () => {
   let page: Page
   let declaration: Declaration
   test.beforeAll(async ({ browser }) => {
-    const token = await getToken(
-      CREDENTIALS.REGISTRAR.USERNAME,
-      CREDENTIALS.REGISTRAR.PASSWORD
-    )
+    const token = await getToken(CREDENTIALS.REGISTRAR)
     const res = await createDeclaration(token, undefined, ActionType.DECLARE)
     declaration = res.declaration
     page = await browser.newPage()

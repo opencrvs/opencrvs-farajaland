@@ -46,7 +46,7 @@ async function getPlaceOfBirth(
 ) {
   if (type === 'HEALTH_FACILITY') {
     const locations = await getLocations('HEALTH_FACILITY', token)
-    const locationId = getIdByName(locations, 'Ibombo Rural Health Centre')
+    const locationId = getIdByName(locations, 'Klow Village Hospital')
 
     return {
       'child.placeOfBirth': 'HEALTH_FACILITY',
@@ -56,14 +56,14 @@ async function getPlaceOfBirth(
 
   if (type === 'PRIVATE_HOME') {
     const administrativeAreas = await getAdministrativeAreas(token)
-    const district = getIdByName(administrativeAreas, 'Ibombo')
+    const village = getIdByName(administrativeAreas, 'Klow')
 
     return {
       'child.placeOfBirth': 'PRIVATE_HOME',
       'child.birthLocation.privateHome': {
         country: 'FAR',
         addressType: AddressType.DOMESTIC,
-        administrativeArea: district,
+        administrativeArea: village,
         streetLevelDetails: { town: 'Dhaka' }
       }
     }
@@ -72,7 +72,7 @@ async function getPlaceOfBirth(
   throw new Error('Invalid place of birth type')
 }
 
-export async function getDeclaration({
+async function getDeclaration({
   informantRelation = 'MOTHER',
   partialDeclaration = {},
   placeOfBirthType = 'PRIVATE_HOME',
@@ -86,9 +86,10 @@ export async function getDeclaration({
   const administrativeAreas = await getAdministrativeAreas(token)
   const province = getIdByName(administrativeAreas, 'Central')
   const district = getIdByName(administrativeAreas, 'Ibombo')
+  const village = getIdByName(administrativeAreas, 'Klow')
 
-  if (!province || !district) {
-    throw new Error('Province or district not found')
+  if (!province || !district || !village) {
+    throw new Error('Province, district or village not found')
   }
 
   const mockDeclaration = {
@@ -112,7 +113,7 @@ export async function getDeclaration({
     'mother.nid': faker.string.numeric(10),
     'mother.address': {
       country: 'FAR',
-      administrativeArea: district,
+      administrativeArea: village,
       addressType: AddressType.DOMESTIC
     },
     'child.name': {
@@ -150,6 +151,7 @@ export async function getDeclaration({
             addressType: 'DOMESTIC' as const,
             province,
             district,
+            village,
             urbanOrRural: 'URBAN' as const
           }
         })
@@ -243,20 +245,4 @@ export async function createDeclaration(
     trackingId,
     registrationNumber
   }
-}
-
-export async function rejectDeclaration(
-  token: string,
-  eventId: string
-): Promise<any> {
-  const client = createClient(GATEWAY_HOST + '/events', `Bearer ${token}`)
-
-  const rejectResponse = await client.event.actions.reject.request.mutate({
-    eventId,
-    declaration: {},
-    transactionId: uuidv4(),
-    reason: { message: 'For test' }
-  })
-
-  return rejectResponse
 }

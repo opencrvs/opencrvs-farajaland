@@ -16,10 +16,7 @@ test.describe.serial('Navigating in and out of action', () => {
   let declaration: Declaration
   let eventId: string
   test.beforeAll(async ({ browser }) => {
-    const token = await getToken(
-      CREDENTIALS.REGISTRAR.USERNAME,
-      CREDENTIALS.REGISTRAR.PASSWORD
-    )
+    const token = await getToken(CREDENTIALS.REGISTRAR)
     const res = await createDeclaration(token)
     declaration = res.declaration
     eventId = res.eventId

@@ -102,7 +102,7 @@ test.describe.serial('Add mother details on review', () => {
 
   test.describe('Declaration started by RO', async () => {
     test('Login as RO', async () => {
-      await login(page, CREDENTIALS.REGISTRATION_OFFICER)
+      await login(page, CREDENTIALS.REGISTRATION_OFFICER_VILLAGE)
     })
 
     test('Initiate birth declaration', async () => {
@@ -238,7 +238,7 @@ test.describe.serial('Add mother details on review', () => {
   test.describe('Declaration Review by Registrar', async () => {
     test('Navigate to the declaration Edit-action', async () => {
       await logout(page)
-      await login(page, CREDENTIALS.REGISTRAR)
+      await login(page, CREDENTIALS.REGISTRAR_VILLAGE)
 
       await page.getByText('Pending registration').click()
 
@@ -253,7 +253,7 @@ test.describe.serial('Add mother details on review', () => {
       await selectAction(page, 'Edit')
       await expect(
         page.getByText(
-          /You are editing a record declared by Felix Katongo \(Registration (Officer|Agent) at Ibombo District Office\)/
+          /You are editing a record declared by Velix Katongo \(Registration Officer at Klow Village Hospital\)/
         )
       ).toBeVisible()
     })

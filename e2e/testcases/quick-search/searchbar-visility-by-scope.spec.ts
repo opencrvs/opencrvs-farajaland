@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test'
 import { CREDENTIALS, SAFE_OUTBOX_TIMEOUT_MS } from '../../constants'
 import { login } from '../../helpers'
+
 const testCases = [
   {
     credential: CREDENTIALS.HOSPITAL_OFFICIAL,
@@ -31,9 +32,10 @@ const testCases = [
     hasSearch: false
   }
 ]
+
 test.describe('Search bar should be visible only if the user has search scope', () => {
   for (const { credential, hasSearch } of testCases) {
-    test(`${credential.USERNAME} ${hasSearch ? 'has' : 'does not have'} search scope`, async ({
+    test(`${credential} ${hasSearch ? 'has' : 'does not have'} search scope`, async ({
       page
     }) => {
       await login(page, credential)

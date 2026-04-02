@@ -40,10 +40,7 @@ test.describe.serial('Correct record - 2', () => {
   }
 
   test.beforeAll(async ({ browser }) => {
-    const token = await getToken(
-      CREDENTIALS.REGISTRAR.USERNAME,
-      CREDENTIALS.REGISTRAR.PASSWORD
-    )
+    const token = await getToken(CREDENTIALS.REGISTRAR)
 
     // Create declaration with father details available
     const res = await createDeclaration(
@@ -168,6 +165,13 @@ test.describe.serial('Correct record - 2', () => {
 
       await page.locator('#informant____brn').fill(updatedInformantDetails.brn)
 
+      await page.locator('#province').click()
+      await page.getByText('Sulaka', { exact: true }).click()
+      await page.locator('#district').click()
+      await page.getByText('Irundu', { exact: true }).click()
+      await page.locator('#village').click()
+      await page.getByText('Xhosa', { exact: true }).click()
+
       await page.getByRole('button', { name: 'Back to review' }).click()
 
       await expectInUrl(page, `/events/request-correction/${eventId}/review`)
@@ -208,6 +212,13 @@ test.describe.serial('Correct record - 2', () => {
         )
         .getByText('Farajaland', { exact: true })
         .click()
+
+      await page.locator('#province').click()
+      await page.getByText('Central', { exact: true }).click()
+      await page.locator('#district').click()
+      await page.getByText('Ibombo', { exact: true }).click()
+      await page.locator('#village').click()
+      await page.getByText('Klow', { exact: true }).click()
 
       await page.getByTestId('text__town').fill(faker.location.city())
       await page.getByTestId('text__street').fill(faker.location.street())

@@ -31,7 +31,7 @@ test.describe.serial('1. Birth declaration case - 1', () => {
     birthType: 'Single',
     weightAtBirth: 2.4,
     placeOfBirth: 'Health Institution',
-    birthLocation: { facility: 'Ibombo District Office' },
+    birthLocation: { facility: 'Klow Village Hospital' },
     informantType: 'Mother',
     informantEmail: faker.internet.email(),
     mother: {
@@ -49,6 +49,7 @@ test.describe.serial('1. Birth declaration case - 1', () => {
         country: 'Farajaland',
         province: 'Sulaka',
         district: 'Irundu',
+        village: 'Xhosa',
         town: faker.location.city(),
         residentialArea: faker.location.county(),
         street: faker.location.street(),
@@ -184,6 +185,10 @@ test.describe.serial('1. Birth declaration case - 1', () => {
       await page
         .getByText(declaration.mother.address.district, { exact: true })
         .click()
+      await page.locator('#village').click()
+      await page
+        .getByText(declaration.mother.address.village, { exact: true })
+        .click()
 
       await page.locator('#town').fill(declaration.mother.address.town)
       await page
@@ -285,7 +290,7 @@ test.describe.serial('1. Birth declaration case - 1', () => {
       )
       await expect(
         page.getByTestId('row-value-child.birthLocation')
-      ).toHaveText('Ibombo District Office, Ibombo, Central, Farajaland')
+      ).toHaveText('Klow Village Hospital, Klow, Ibombo, Central, Farajaland')
 
       /*
        * Expected result: should include
@@ -549,7 +554,7 @@ test.describe.serial('1. Birth declaration case - 1', () => {
       await expectRowValue(
         page,
         'child.birthLocation',
-        'Ibombo District Office, Ibombo, Central, Farajaland'
+        'Klow Village Hospital, Klow, Ibombo, Central, Farajaland'
       )
 
       /*

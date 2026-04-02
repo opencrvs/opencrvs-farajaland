@@ -19,7 +19,7 @@ type InformantRelation = 'MOTHER' | 'BROTHER'
 
 function getInformantDetails(
   informantRelation: InformantRelation,
-  district?: string
+  village?: string
 ) {
   if (informantRelation === 'MOTHER') {
     return {
@@ -37,7 +37,7 @@ function getInformantDetails(
     },
     'informant.address': {
       country: 'FAR',
-      administrativeArea: district,
+      administrativeArea: village,
       addressType: AddressType.DOMESTIC
     },
     'informant.dob': '2008-09-12',
@@ -54,10 +54,7 @@ export async function getPlaceOfBirth(
 ) {
   if (type === 'HEALTH_FACILITY') {
     const locations = await getLocations('HEALTH_FACILITY', token)
-    const locationId = getIdByName(
-      locations,
-      name ?? 'Ibombo Rural Health Centre'
-    )
+    const locationId = getIdByName(locations, name ?? 'Klow Village Hospital')
 
     return {
       'child.placeOfBirth': 'HEALTH_FACILITY',
@@ -68,14 +65,14 @@ export async function getPlaceOfBirth(
   if (type === 'PRIVATE_HOME') {
     const administrativeAreas = await getAdministrativeAreas(token)
 
-    const district = getIdByName(administrativeAreas, 'Ibombo')
+    const village = getIdByName(administrativeAreas, 'Klow')
 
     return {
       'child.placeOfBirth': 'PRIVATE_HOME',
       'child.birthLocation.privateHome': {
         country: 'FAR',
         addressType: AddressType.DOMESTIC,
-        administrativeArea: district
+        administrativeArea: village
       }
     }
   }
@@ -96,7 +93,7 @@ export async function getDeclaration({
 }) {
   const administrativeAreas = await getAdministrativeAreas(token)
 
-  const district = getIdByName(administrativeAreas, 'Ibombo')
+  const village = getIdByName(administrativeAreas, 'Klow')
 
   const mockDeclaration = {
     'father.detailsNotAvailable': true,
@@ -115,7 +112,7 @@ export async function getDeclaration({
     'mother.address': {
       country: 'FAR',
       addressType: AddressType.DOMESTIC,
-      administrativeArea: district
+      administrativeArea: village
     },
     'child.name': {
       firstname: faker.person.firstName(),
@@ -126,7 +123,7 @@ export async function getDeclaration({
       .toISOString()
       .split('T')[0], // yesterday
     ...(await getPlaceOfBirth(placeOfBirthType, token)),
-    ...getInformantDetails(informantRelation, district)
+    ...getInformantDetails(informantRelation, village)
   }
 
   // 💡 Merge overriden fields
@@ -245,20 +242,4 @@ export async function createDeclaration(
     trackingId,
     registrationNumber
   }
-}
-
-export async function rejectDeclaration(
-  token: string,
-  eventId: string
-): Promise<any> {
-  const client = createClient(GATEWAY_HOST + '/events', `Bearer ${token}`)
-
-  const rejectResponse = await client.event.actions.reject.request.mutate({
-    eventId,
-    declaration: {},
-    transactionId: uuidv4(),
-    reason: { message: 'For test' }
-  })
-
-  return rejectResponse
 }

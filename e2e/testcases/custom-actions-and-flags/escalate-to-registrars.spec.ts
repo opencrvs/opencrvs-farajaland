@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { test, expect, type Page } from '@playwright/test'
 import {
   formatName,
@@ -29,10 +28,7 @@ test.describe.serial('Escalation of birth registration by Registrar', () => {
 
   test.beforeAll(async ({ browser }) => {
     page = await browser.newPage()
-    const token = await getToken(
-      CREDENTIALS.REGISTRAR.USERNAME,
-      CREDENTIALS.REGISTRAR.PASSWORD
-    )
+    const token = await getToken(CREDENTIALS.REGISTRAR)
     await createDeclaration(
       token,
       {

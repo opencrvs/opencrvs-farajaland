@@ -12,7 +12,6 @@ import * as Hapi from '@hapi/hapi'
 import { generateRegistrationNumber } from './registrationNumber'
 import { createClient } from '@opencrvs/toolkit/api'
 import {
-  ActionInput,
   aggregateActionDeclarations,
   EventDocument,
   getPendingAction,
@@ -26,7 +25,7 @@ import { createMosipInteropClient } from '@opencrvs/mosip/api'
 import {
   shouldForwardBirthRegistrationToMosip,
   shouldForwardDeathRegistrationToMosip
-} from '@countryconfig/form/v2/mosip'
+} from '@countryconfig/events/mosip'
 
 export interface ActionConfirmationRequest extends Hapi.Request {
   payload: EventDocument
@@ -107,25 +106,25 @@ export async function onRegisterHandler(
  * For registration actions specifically, you must provide a registration number when accepting.
  * See the Action Confirmation documentation for more details on asynchronous confirmation flows.
  */
-async function acceptRequestedRegistration(
-  token: string,
-  eventId: string,
-  actionId: string,
-  action: ActionInput
-) {
-  const url = new URL('events', GATEWAY_URL).toString()
-  const client = createClient(url, `Bearer ${token}`)
+// async function acceptRequestedRegistration(
+//   token: string,
+//   eventId: string,
+//   actionId: string,
+//   action: ActionInput
+// ) {
+//   const url = new URL('events', GATEWAY_URL).toString()
+//   const client = createClient(url, `Bearer ${token}`)
 
-  const event = await client.event.actions.register.accept.mutate({
-    ...action,
-    transactionId: uuidv4(),
-    eventId,
-    actionId,
-    registrationNumber: generateRegistrationNumber()
-  })
+//   const event = await client.event.actions.register.accept.mutate({
+//     ...action,
+//     transactionId: uuidv4(),
+//     eventId,
+//     actionId,
+//     registrationNumber: generateRegistrationNumber()
+//   })
 
-  return event
-}
+//   return event
+// }
 
 /**
  * Example function for asynchronously rejecting a registration action.
