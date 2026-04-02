@@ -16,9 +16,7 @@ COPY --from=deps /usr/src/app/node_modules ./node_modules
 # Copy application files
 COPY package.json yarn.lock tsconfig.json ./
 COPY src ./src
-COPY start-prod.sh ./
-RUN chmod +x ./start-prod.sh
 
 EXPOSE 3040
 
-CMD ["./start-prod.sh"]
+CMD ["yarn", "start:prod"]
