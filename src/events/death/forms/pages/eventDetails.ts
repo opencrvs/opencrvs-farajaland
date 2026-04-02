@@ -325,7 +325,12 @@ export const eventDetails = defineFormPage({
           )
         }
       ],
-      configuration: { locationTypes: ['HEALTH_FACILITY'] }
+      configuration: {
+        locationTypes: ['HEALTH_FACILITY'],
+        allowedLocations: user.jurisdiction(
+          user.scope('record.create').attribute('placeOfEvent')
+        )
+      }
     },
     {
       id: 'eventDetails.deathLocationOther',
@@ -368,7 +373,10 @@ export const eventDetails = defineFormPage({
         administrativeArea: user('primaryOfficeId').locationLevel('village')
       },
       configuration: {
-        streetAddressForm: defaultStreetAddressConfiguration
+        streetAddressForm: defaultStreetAddressConfiguration,
+        allowedLocations: user.jurisdiction(
+          user.scope('record.create').attribute('placeOfEvent')
+        )
       }
     },
     {
