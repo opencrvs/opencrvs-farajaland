@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.9.12
+
+### Improvements
+
+- Create index for analytics.event_actions.event_id field [#12182](https://github.com/opencrvs/opencrvs-core/issues/12182)
+
+
 ## 1.9.11
 
 ### Improvements

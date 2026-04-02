@@ -87,6 +87,9 @@ CREATE TABLE IF NOT EXISTS analytics.event_actions (
   UNIQUE (id, event_id)
 );
 
+CREATE INDEX CONCURRENTLY IF NOT EXISTS analytics_idx_event_actions_event_id
+ON analytics.event_actions (event_id);
+
 CREATE TABLE IF NOT EXISTS analytics.location_levels (
   id text PRIMARY KEY,
   level int NOT NULL,
