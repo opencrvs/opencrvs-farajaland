@@ -12,6 +12,9 @@ import { readCSVToJSON } from '@countryconfig/utils'
 import { Request, ResponseToolkit } from '@hapi/hapi'
 
 export async function usersHandler(_: Request, h: ResponseToolkit) {
+  // TWO_FA_ENABLED is used as a proxy for "real production environment".
+  // QA/staging deployments disable 2FA for testing convenience, so when it's
+  // false we seed default (test) employees instead of production ones.
   const users: unknown[] = await readCSVToJSON(
     './src/data-seeding/employees/source/default-employees.csv'
   )
