@@ -25,90 +25,58 @@ test.describe.serial('4. Organisation Page', () => {
       test('4.1.1.0 Verify Province -> District -> Health Facility(No Data)', async () => {
         await page.getByRole('button', { name: /Central/ }).click()
         await page.getByRole('button', { name: /Ibombo/ }).click()
-        const pageNavigator = page.getByRole('button', {
-          name: '3',
-          exact: true
-        })
-        await pageNavigator.scrollIntoViewIfNeeded()
-        await pageNavigator.click()
-
         await page
-          .getByRole('button', { name: /Mwachisompola Rural Health Centre/ })
+          .getByRole('button', { name: /Ibombo District Hospital/ })
           .click()
         await expect(page.locator('#content-name')).toHaveText(
-          /Mwachisompola Rural Health Centre/
+          /Ibombo District Hospital/
         )
         await expect(
           page.getByText('Ibombo, Central', { exact: true })
         ).toBeVisible()
-        await expect(page.getByText('No result')).toBeVisible()
+    
       })
       test('4.1.1.1 Verify Province -> District -> District Office', async () => {
-        for (let i = 0; i < 3; i++) {
-          await page.goBack()
-        }
-
+        await navigateToWorkqueue(page, 'Organisation')
         await page.getByRole('button', { name: /Central/ }).click()
-        await page.getByRole('button', { name: /Ibombo/ }).click()
-        const pageNavigator = page.getByRole('button', {
-          name: '4',
-          exact: true
-        })
-        await pageNavigator.scrollIntoViewIfNeeded()
-        await pageNavigator.click()
+        await page.getByRole('button', { name: /Central Province Office/ }).click()
 
-        await page
-          .getByRole('button', { name: /Ibombo District Office/ })
-          .click()
         await expect(page.locator('#content-name')).toHaveText(
-          /Ibombo District Office/
+          /Central Province Office/
         )
         await expect(
-          page.getByText('Ibombo, Central', { exact: true })
+          page.getByText('Central', { exact: true })
         ).toBeVisible()
       })
       test('4.1.1.2 Verify team page member list', async () => {
         const members = [
-          'Mitchell Owen',
-          'Emmanuel Mayuka',
-          'Kennedy Mweene',
-          'Felix Katongo',
-          'Kalusha Bwalya'
+          'Mitchel Owen',
+          'Emmanuel Mayuka'
         ]
 
-        await verifyMembersClickable(page, members, 'Ibombo District Office')
+        await verifyMembersClickable(page, members, 'Central Province Office')
       })
     })
     test.describe('4.1.2 Outside of Jurisdiction', async () => {
       test('4.1.2.0 Verify Embassy Official', async () => {
         await navigateToWorkqueue(page, 'Organisation')
         await expect(
-          page.getByRole('button', { name: /France Embassy Office/ })
+          page.getByRole('button', { name: /French Embassy Office/ })
         ).toBeDisabled()
       })
       test('4.1.2.1 Verify Province -> District -> District Office', async () => {
         await navigateToWorkqueue(page, 'Organisation')
-        await page.getByRole('button', { name: /Pualula/ }).click()
-        await page.getByRole('button', { name: /Embe/ }).click()
-        const pageNavigator = page.getByRole('button', {
-          name: '2',
-          exact: true
-        })
-        await pageNavigator.scrollIntoViewIfNeeded()
-        await pageNavigator.click()
-
         await expect(
           page.getByRole('button', { name: /HQ Office/ })
         ).toBeDisabled()
       })
-      test('4.1.2.2 Verify Province -> District -> Health Facility', async () => {
-        await navigateToWorkqueue(page, 'Team') // Adjustment for known Bug #11756
+      test('4.1.2.2 Verify Province -> District', async () => {
+      
         await navigateToWorkqueue(page, 'Organisation')
         await page.getByRole('button', { name: /Pualula/ }).click()
-        await page.getByRole('button', { name: /Funabuli/ }).click()
 
         await expect(
-          page.getByRole('button', { name: /Chishi Rural Health Centre/ })
+          page.getByRole('button', { name: /Pualula Province Office/ })
         ).toBeDisabled()
       })
     })

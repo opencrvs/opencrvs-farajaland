@@ -33,10 +33,7 @@ test.describe.serial("Correct record - Change father's ID number", () => {
   const newIdNumber = faker.string.numeric(10)
 
   test('Shortcut declaration', async () => {
-    let token = await getToken(
-      CREDENTIALS.REGISTRAR.USERNAME,
-      CREDENTIALS.REGISTRAR.PASSWORD
-    )
+    let token = await getToken(CREDENTIALS.REGISTRAR)
     const res = await createDeclarationV2(
       token,
       {
@@ -87,7 +84,7 @@ test.describe.serial("Correct record - Change father's ID number", () => {
       })
     )
     trackingId = res.trackingId!
-    token = await getToken('k.mweene', 'test')
+    token = await getToken(CREDENTIALS.REGISTRAR)
     declaration = res.declaration
   })
 

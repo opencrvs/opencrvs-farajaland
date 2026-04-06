@@ -20,8 +20,7 @@ test.describe.serial('Issue Certified Copy', () => {
   test.beforeAll(async ({ browser }) => {
     page = await browser.newPage()
     const token = await getToken(
-      CREDENTIALS.REGISTRAR.USERNAME,
-      CREDENTIALS.REGISTRAR.PASSWORD
+      CREDENTIALS.REGISTRAR
     )
     declaration = (await createDeclaration(token)).declaration
     childName = formatV2ChildName(declaration)

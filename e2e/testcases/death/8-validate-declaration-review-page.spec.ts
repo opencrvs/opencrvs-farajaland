@@ -34,14 +34,16 @@ test.describe.serial('8. Validate declaration review page', () => {
       brn: '',
       address: {
         country: 'Farajaland',
-        province: 'Pualula',
-        district: 'Pili'
+        province: 'Central',
+        district: 'Ibombo',
+        village: 'Klow'
       }
     },
     eventDetails: {
       date: getRandomDate(0, 20),
       causeOfDeathEstablished: false,
-      placeOfDeath: "Deceased's usual place of residence"
+      placeOfDeath: 'Health Institution',
+      deathLocation: 'Klow Village Hospital'
     },
     informant: {
       relation: 'Spouse',
@@ -113,14 +115,6 @@ test.describe.serial('8. Validate declaration review page', () => {
 
         await page.locator('#deceased____nid').fill(declaration.deceased.nid)
 
-        await page.locator('#province').click()
-        await page
-          .getByText(declaration.deceased.address.province, { exact: true })
-          .click()
-        await page.locator('#district').click()
-        await page
-          .getByText(declaration.deceased.address.district, { exact: true })
-          .click()
         await continueForm(page)
       })
 
@@ -131,10 +125,14 @@ test.describe.serial('8. Validate declaration review page', () => {
           .getByPlaceholder('yyyy')
           .fill(declaration.eventDetails.date.yyyy)
 
-        await page.locator('#eventDetails____placeOfDeath').click()
+        // Place of death must be users own location for HO
+        await page.getByTestId('select__eventDetails____placeOfDeath').click()
         await page
           .getByText(declaration.eventDetails.placeOfDeath, { exact: true })
           .click()
+
+        await page.locator('#eventDetails____deathLocation').fill('Klo')
+        await page.getByText(declaration.eventDetails.deathLocation).click()
 
         await continueForm(page)
       })
@@ -460,33 +458,6 @@ test.describe.serial('8. Validate declaration review page', () => {
         await expect(
           page.getByTestId('row-value-deceased.passport')
         ).toContainText(declaration.deceased.passport)
-      })
-
-      test("8.1.2.6 Change deceased's address", async () => {
-        await page.getByTestId('change-button-deceased.address').click()
-        await page.getByRole('button', { name: 'Continue' }).click()
-
-        declaration.deceased.address.province = 'Sulaka'
-        declaration.deceased.address.district = 'Afue'
-
-        await page.locator('#province').click()
-        await page
-          .getByText(declaration.deceased.address.province, { exact: true })
-          .click()
-        await page.locator('#district').click()
-        await page
-          .getByText(declaration.deceased.address.district, { exact: true })
-          .click()
-        await page.getByRole('button', { name: 'Back to review' }).click()
-        /*
-         * Expected result: should change deceased's address
-         */
-        await expect(
-          page.getByTestId('row-value-deceased.address')
-        ).toContainText(declaration.deceased.address.district)
-        await expect(
-          page.getByTestId('row-value-deceased.address')
-        ).toContainText(declaration.deceased.address.province)
       })
 
       test('8.1.2.7 Change informant type', async () => {
@@ -1015,20 +986,25 @@ test.describe.serial('8. Validate declaration review page', () => {
         await page.getByTestId('change-button-deceased.address').click()
 
         declaration.deceased.address.province = 'Central'
-        declaration.deceased.address.district = 'Itambo'
+        declaration.deceased.address.district = 'Ibombo'
+        declaration.deceased.address.village = 'Olani'
 
         await page.locator('#province').click()
         await page
+          .locator('#locationOption0')
           .getByText(declaration.deceased.address.province, { exact: true })
           .click()
+
         await page.locator('#district').click()
         await page
           .getByText(declaration.deceased.address.district, { exact: true })
           .click()
+        await page.locator('#village').click()
+        await page
+          .getByText(declaration.deceased.address.village, { exact: true })
+          .click()
         await page.getByRole('button', { name: 'Back to review' }).click()
-        /*
-         * Expected result: should change deceased's address
-         */
+
         await expect(
           page.getByTestId('row-value-deceased.address')
         ).toContainText(declaration.deceased.address.district)
@@ -1448,16 +1424,11 @@ test.describe.serial('8. Validate declaration review page', () => {
       test("8.3.2.6 Change deceased's address", async () => {
         await page.getByTestId('change-button-deceased.address').click()
 
-        declaration.deceased.address.province = 'Sulaka'
-        declaration.deceased.address.district = 'Afue'
+        declaration.deceased.address.village = 'Pemba'
 
-        await page.locator('#province').click()
+        await page.locator('#village').click()
         await page
-          .getByText(declaration.deceased.address.province, { exact: true })
-          .click()
-        await page.locator('#district').click()
-        await page
-          .getByText(declaration.deceased.address.district, { exact: true })
+          .getByText(declaration.deceased.address.village, { exact: true })
           .click()
         await page.getByRole('button', { name: 'Back to review' }).click()
         /*

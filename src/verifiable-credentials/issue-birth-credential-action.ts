@@ -13,8 +13,8 @@ import {
 import {
   InformantType,
   InformantTypeKey
-} from '@countryconfig/form/v2/birth/forms/pages/informant'
-import { informantMessageDescriptors } from '@countryconfig/form/common/messages'
+} from '@countryconfig/events/birth/forms/pages/informant'
+import { informantMessageDescriptors } from '@countryconfig/events/utils'
 import { CREDENTIAL_OFFER_HANDLER_URL } from './routes'
 
 const qrGenerated = not(
@@ -161,6 +161,7 @@ export const issueBirthCredentialAction = {
     description: '',
     id: 'event.birth.action.issue-vc.audit-history-label'
   },
+  icon: 'QrCode',
   flags: [
     // Adding this flag to prevents the action from being shown again after the credential is issued.
     // {
@@ -192,7 +193,7 @@ export const issueBirthCredentialAction = {
           'This is the confirmation text for the registrar general feedback action',
         id: 'event.birth.action.registrar-general-feedback.supportingCopy'
       },
-      configuration: { styles: { fontVariant: 'reg16', hint: true } },
+      configuration: { styles: { hint: true } },
       conditionals: [
         {
           type: ConditionalType.SHOW,
@@ -448,7 +449,7 @@ export const issueBirthCredentialAction = {
         id: 'event.birth.custom.action.issue-vc.field.qr-code.configuration.text'
       },
       configuration: {
-        styles: { fontVariant: 'reg16', hint: true, textAlign: 'center' }
+        styles: { hint: true, textAlign: 'center' }
       },
       conditionals: [
         {

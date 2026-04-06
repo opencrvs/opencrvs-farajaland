@@ -32,7 +32,7 @@ test.describe.serial('8. Validate declaration review page', () => {
     birthType: 'Single',
     weightAtBirth: 2.4,
     placeOfBirth: 'Health Institution',
-    birthLocation: 'Ibombo District Office',
+    birthLocation: 'Klow Village Hospital',
     informantType: 'Mother',
     informantEmail: faker.internet.email(),
     mother: {
@@ -48,8 +48,9 @@ test.describe.serial('8. Validate declaration review page', () => {
       },
       address: {
         country: 'Farajaland',
-        province: 'Pualula',
-        district: 'Pili'
+        province: 'Sulaka',
+        district: 'Irundu',
+        village: 'Xhosa'
       }
     },
     father: {
@@ -171,6 +172,10 @@ test.describe.serial('8. Validate declaration review page', () => {
         await page.locator('#district').click()
         await page
           .getByText(declaration.mother.address.district, { exact: true })
+          .click()
+        await page.locator('#village').click()
+        await page
+          .getByText(declaration.mother.address.village, { exact: true })
           .click()
 
         await continueForm(page)
@@ -709,15 +714,15 @@ test.describe.serial('8. Validate declaration review page', () => {
         await page.getByTestId('change-button-mother.address').click()
         await page.getByRole('button', { name: 'Continue' }).click()
 
-        declaration.mother.address.province = 'Sulaka'
         declaration.mother.address.district = 'Afue'
-        await page.locator('#province').click()
-        await page
-          .getByText(declaration.mother.address.province, { exact: true })
-          .click()
+        declaration.mother.address.village = 'Imani'
         await page.locator('#district').click()
         await page
           .getByText(declaration.mother.address.district, { exact: true })
+          .click()
+        await page.locator('#village').click()
+        await page
+          .getByText(declaration.mother.address.village, { exact: true })
           .click()
         await page.getByRole('button', { name: 'Back to review' }).click()
 

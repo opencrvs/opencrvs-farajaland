@@ -20,22 +20,20 @@ test.describe.serial('7. Team Page -1', () => {
       await login(page, CREDENTIALS.PROVINCIAL_REGISTRAR)
       await page.getByRole('button', { name: 'Team' }).click()
       await expect(page.locator('#content-name')).toHaveText(
-        'Ibombo District Office'
+        'Central Province Office'
       )
 
       await expect(
-        page.getByText('Ibombo, Central', {
+        page.getByText('Central', {
           exact: true
         })
       ).toBeVisible()
     })
 
     const team = [
-      { name: 'Mitchell Owen', role: 'Provincial Registrar' },
+      
       { name: 'Emmanuel Mayuka', role: 'Administrator' },
-      { name: 'Kennedy Mweene', role: 'Registrar' },
-      { name: 'Felix Katongo', role: 'Registration Officer' },
-      { name: 'Kalusha Bwalya', role: 'Hospital Official' }
+      { name: 'Mitchel Owen', role: 'Provincial Registrar' }
     ]
 
     test('7.1.1 Verify Team Members, Roles and their statuses', async () => {
@@ -44,14 +42,12 @@ test.describe.serial('7. Team Page -1', () => {
 
     test('7.1.2 Verify team page member list', async () => {
       const members = [
-        'Mitchell Owen',
         'Emmanuel Mayuka',
-        'Kennedy Mweene',
-        'Felix Katongo',
-        'Kalusha Bwalya'
+        'Mitchel Owen'
+        
       ]
 
-      await verifyMembersClickable(page, members, 'Ibombo District Office')
+      await verifyMembersClickable(page, members, 'Central Province Office')
     })
   })
 })

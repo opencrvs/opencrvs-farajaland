@@ -19,12 +19,10 @@ import { PhoneNumberFormat, PhoneNumberUtil } from 'google-libphonenumber'
 import { URL } from 'url'
 import { build } from 'esbuild'
 import { memoize } from 'lodash'
-export const GENERATE_TYPE_RN = 'registrationNumber'
-export const CHILD_CODE = 'child-details'
-export const DECEASED_CODE = 'deceased-details'
-export const OPENCRVS_SPECIFICATION_URL = 'http://opencrvs.org/specs/'
 import { join } from 'path'
 import { stringify } from 'csv-stringify/sync'
+
+export const OPENCRVS_SPECIFICATION_URL = 'http://opencrvs.org/specs/'
 
 export interface ILocation {
   id?: string
@@ -62,18 +60,6 @@ export interface IApplicationConfigResponse {
   config: IApplicationConfig
 }
 
-export function getCompositionId(resBody: fhir.Bundle) {
-  const id = resBody.entry
-    ?.map((e) => e.resource)
-    .find((res) => res?.resourceType === 'Composition')?.id
-
-  if (!id) {
-    throw new Error('Could not find composition id in FHIR Bundle')
-  }
-
-  return id
-}
-
 export function getTaskResource(
   bundle: fhir.Bundle & fhir.BundleEntry
 ): fhir.Task | undefined {
@@ -94,6 +80,18 @@ export function getTaskResource(
   } else {
     throw new Error('Unable to find Task Bundle from the provided data')
   }
+}
+
+export function getCompositionId(resBody: fhir.Bundle) {
+  const id = resBody.entry
+    ?.map((e) => e.resource)
+    .find((res) => res?.resourceType === 'Composition')?.id
+
+  if (!id) {
+    throw new Error('Could not find composition id in FHIR Bundle')
+  }
+
+  return id
 }
 
 export function getTaskResourceFromFhirBundle(fhirBundle: fhir.Bundle) {
@@ -143,7 +141,6 @@ export const convertToMSISDN = (phone: string, countryAlpha3: string) => {
       .replace(/[\s-]/g, '')
   )
 }
-
 export async function writeJSONToCSV(
   filename: string,
   data: Array<Record<string, any>>
@@ -226,7 +223,7 @@ export async function getStatistics(path?: string) {
       years: Object.keys(yearKeys)
         .map((key) => key.split('_').pop())
         .map(Number)
-        .filter((value, index, list) => list.indexOf(value) == index)
+        .filter((value, index, list) => list.indexOf(value) === index)
         .map((year) => ({
           year,
           male_population: parseFloat(yearKeys[`male_population_${year}`]),
@@ -263,7 +260,6 @@ export function createCustomFieldHandlebarName(fieldId: string) {
 export function uppercaseFirstLetter(str: string) {
   return str.charAt(0).toUpperCase() + str.slice(1)
 }
-
 
 function generateRegistrationNumber(trackingId: string): string {
   /* adding current year */

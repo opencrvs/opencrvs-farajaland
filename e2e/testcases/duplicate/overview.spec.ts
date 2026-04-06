@@ -34,10 +34,7 @@ test.describe.serial('Duplicate overview', () => {
   })
   test.describe('Shortcut declarations', async () => {
     test('First declaration', async () => {
-      const token = await getToken(
-        CREDENTIALS.REGISTRAR.USERNAME,
-        CREDENTIALS.REGISTRAR.PASSWORD
-      )
+      const token = await getToken(CREDENTIALS.REGISTRAR)
       const res = await createDeclaration(token, details)
 
       expect(res.trackingId).toBeDefined()
@@ -46,10 +43,7 @@ test.describe.serial('Duplicate overview', () => {
     })
 
     test('Second declaration', async () => {
-      const token = await getToken(
-        CREDENTIALS.REGISTRAR.USERNAME,
-        CREDENTIALS.REGISTRAR.PASSWORD
-      )
+      const token = await getToken(CREDENTIALS.REGISTRAR)
       await createDeclaration(token, details, ActionType.DECLARE)
     })
   })

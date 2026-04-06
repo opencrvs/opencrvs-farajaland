@@ -16,7 +16,7 @@ import {
   SAFE_INPUT_CHANGE_TIMEOUT_MS,
   SAFE_OUTBOX_TIMEOUT_MS
 } from '../../constants'
-import { IdType } from '@countryconfig/form/v2/person'
+import { IdType } from '@countryconfig/events/utils'
 import { random } from 'lodash'
 import { formatV2ChildName, REQUIRED_VALIDATION_ERROR } from '../birth/helpers'
 import { ensureAssigned, selectAction } from '../../utils'
@@ -41,6 +41,7 @@ test.describe.serial('Correct record - change informant type', () => {
       country: 'Farajaland',
       province: 'Sulaka',
       district: 'Irundu',
+      village: 'Xhosa',
       town: faker.location.city(),
       residentialArea: faker.location.county(),
       street: faker.location.street(),
@@ -73,10 +74,7 @@ test.describe.serial('Correct record - change informant type', () => {
   })
 
   test('Shortcut declaration', async () => {
-    let token = await getToken(
-      CREDENTIALS.REGISTRAR.USERNAME,
-      CREDENTIALS.REGISTRAR.PASSWORD
-    )
+    let token = await getToken(CREDENTIALS.REGISTRAR)
     const res = await createDeclarationV2(
       token,
       {
@@ -111,7 +109,7 @@ test.describe.serial('Correct record - change informant type', () => {
 
     trackingId = res.trackingId!
     eventId = res.eventId
-    token = await getToken('k.mweene', 'test')
+    token = await getToken(CREDENTIALS.REGISTRAR)
     declaration = res.declaration
   })
 
@@ -214,6 +212,15 @@ test.describe.serial('Correct record - change informant type', () => {
       await page
         .locator('#father____address-form-input')
         .getByText(updatedFatherDetails.address.district)
+        .click()
+
+      await page
+        .locator('#father____address-form-input')
+        .locator('#village')
+        .click()
+      await page
+        .locator('#father____address-form-input')
+        .getByText(updatedFatherDetails.address.village)
         .click()
 
       await page
