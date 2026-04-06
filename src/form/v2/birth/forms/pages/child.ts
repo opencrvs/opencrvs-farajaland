@@ -272,7 +272,7 @@ export const child = defineFormPage({
             not(
               field('child.dob')
                 .isAfter()
-                .days(applicationConfig.BIRTH.LATE_REGISTRATION_TARGET)
+                .days(365)
                 .inPast()
             ),
             field('child.dob').isBefore().now()

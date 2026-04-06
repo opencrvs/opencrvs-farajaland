@@ -89,6 +89,10 @@ import {
 } from './analytics/analytics'
 import { getClient } from './analytics/postgres'
 import { createClient } from '@opencrvs/toolkit/api'
+import { clientConfig } from "./client-config";
+import { clientConfigProd } from "./client-config.prod";
+import { loginConfig } from "./login-config";
+import { loginConfigProd } from "./login-config.prod";
 
 export interface ITokenPayload {
   sub: string
@@ -326,13 +330,12 @@ export async function createServer() {
     method: 'GET',
     path: '/client-config.js',
     handler: async (request, h) => {
-      const file =
-        process.env.NODE_ENV === 'production'
-          ? '/client-config.prod.js'
-          : '/client-config.js'
-
-      return h.file(join(__dirname, file))
-    },
+          const config =
+            process.env.NODE_ENV === 'production' ? clientConfigProd : clientConfig
+          return h
+            .response(`window.config = ${JSON.stringify(config)}`)
+            .type('application/javascript')
+        },
     options: {
       auth: false,
       tags: ['api'],
@@ -343,13 +346,13 @@ export async function createServer() {
   server.route({
     method: 'GET',
     path: '/login-config.js',
-    handler: (request, h) => {
-      const file =
-        process.env.NODE_ENV === 'production'
-          ? '/login-config.prod.js'
-          : '/login-config.js'
-      return h.file(join(__dirname, file))
-    },
+    handler: async (request, h) => {
+          const config =
+            process.env.NODE_ENV === 'production' ? loginConfigProd : loginConfig
+          return h
+            .response(`window.config = ${JSON.stringify(config)}`)
+            .type('application/javascript')
+        },
     options: {
       auth: false,
       tags: ['api'],
@@ -499,7 +502,7 @@ export async function createServer() {
 
   server.route({
     method: 'GET',
-    path: '/application-config',
+    path: '/config/application',
     handler: applicationConfigHandler,
     options: {
       auth: false,
@@ -510,7 +513,7 @@ export async function createServer() {
 
   server.route({
     method: 'GET',
-    path: '/workqueue',
+    path: '/config/workqueues',
     handler: workqueueconfigHandler,
     options: {
       auth: false,
@@ -521,7 +524,7 @@ export async function createServer() {
 
   server.route({
     method: 'GET',
-    path: '/locations',
+    path: '/config/locations',
     handler: locationsHandler,
     options: {
       auth: false,
@@ -532,7 +535,7 @@ export async function createServer() {
 
   server.route({
     method: 'GET',
-    path: '/roles',
+    path: '/config/roles',
     handler: rolesHandler,
     options: {
       auth: false,
@@ -543,7 +546,7 @@ export async function createServer() {
 
   server.route({
     method: 'GET',
-    path: '/users',
+    path: '/config/users',
     handler: usersHandler,
     options: {
       tags: ['api', 'users'],
@@ -660,7 +663,7 @@ export async function createServer() {
 
   server.route({
     method: 'GET',
-    path: '/events',
+    path: '/config/events',
     handler: getCustomEventsHandler,
     options: {
       auth: false,

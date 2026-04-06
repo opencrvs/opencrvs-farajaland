@@ -25,8 +25,7 @@ import {
   not,
   defineConditional,
   never,
-  now
-} from '@opencrvs/toolkit/events'
+  now, status, flag, InherentFlags } from '@opencrvs/toolkit/events'
 import { Event } from './types/types'
 import { MAX_NAME_LENGTH } from './v2/birth/validators'
 import { getMOSIPIntegrationFields } from './v2/mosip'
@@ -1180,23 +1179,38 @@ export const tennisClubMembershipEvent = defineConfig({
       review: TENNIS_CLUB_DECLARATION_REVIEW
     },
     {
-      type: ActionType.DELETE,
-      label: {
-        defaultMessage: 'Delete draft',
-        description:
-          'This is shown as the action name anywhere the user can trigger the action from',
-        id: 'event.tennis-club-membership.action.delete.label'
-      }
-    },
-    {
-      type: ActionType.VALIDATE,
+      type: ActionType.CUSTOM,
       label: {
         defaultMessage: 'Validate',
         description:
           'This is shown as the action name anywhere the user can trigger the action from',
         id: 'event.tennis-club-membership.action.validate.label'
       },
-      review: TENNIS_CLUB_DECLARATION_REVIEW
+      form: TENNIS_CLUB_DECLARATION_REVIEW.fields,
+        customActionType: 'VALIDATE_DECLARATION',
+        auditHistoryLabel: {
+              defaultMessage: 'Validated',
+              description: 'The label to show in audit history for the validate action',
+              id: 'event.unknown.custom.action.validate-declaration.audit-history-label'
+            },
+        supportingCopy: {
+              defaultMessage:
+                'Approving this declaration confirms it as legally accepted and eligible for registration.',
+              description:
+                'This is the supporting copy for the Validate declaration -action',
+              id: 'event.unknown.custom.action.validate-declaration.supportingCopy'
+            },
+        conditionals: [
+              {
+                type: ConditionalType.SHOW,
+                conditional: and(status('DECLARED'), not(flag('validated')))
+              },
+              {
+                type: ConditionalType.ENABLE,
+                conditional: not(flag(InherentFlags.POTENTIAL_DUPLICATE))
+              }
+            ],
+        flags: [{ id: 'validated', operation: 'add' }]
     },
     {
       type: ActionType.REGISTER,
@@ -1205,8 +1219,7 @@ export const tennisClubMembershipEvent = defineConfig({
         description:
           'This is shown as the action name anywhere the user can trigger the action from',
         id: 'event.tennis-club-membership.action.register.label'
-      },
-      review: TENNIS_CLUB_DECLARATION_REVIEW
+      }
     },
     {
       type: ActionType.PRINT_CERTIFICATE,
@@ -1494,5 +1507,16 @@ export const tennisClubMembershipEvent = defineConfig({
         }
       ]
     }
-  ]
+  ],
+    flags: [
+          {
+            id: 'validated',
+            label: {
+              id: 'event.unknown.flag.validated',
+              defaultMessage: 'Validated',
+              description: 'Flag label for validated'
+            },
+            requiresAction: true
+          }
+        ]
 })

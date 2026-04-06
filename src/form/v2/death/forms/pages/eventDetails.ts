@@ -196,7 +196,7 @@ export const eventDetails = defineFormPage({
             not(
               field('eventDetails.date')
                 .isAfter()
-                .days(applicationConfig.DEATH.REGISTRATION_TARGET)
+                .days(45)
                 .inPast()
             ),
             field('eventDetails.date').isBefore().now()
@@ -277,7 +277,7 @@ export const eventDetails = defineFormPage({
     },
     {
       id: 'eventDetails.addressHelper',
-      type: FieldType.PARAGRAPH,
+      type: FieldType.HEADING,
       label: {
         defaultMessage: 'Place of death',
         description: 'This is the label for the field',

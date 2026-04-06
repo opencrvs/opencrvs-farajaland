@@ -116,7 +116,7 @@ export const DEATH_CERTIFICATE_COLLECTOR_FORM = defineActionForm({
                 not(
                   field('eventDetails.date')
                     .isAfter()
-                    .days(applicationConfig.DEATH.REGISTRATION_TARGET)
+                    .days(45)
                     .inPast()
                 ),
                 field('eventDetails.date').isBefore().now()
@@ -166,7 +166,7 @@ export const DEATH_CERTIFICATE_COLLECTOR_FORM = defineActionForm({
               conditional: and(
                 field('eventDetails.date')
                   .isAfter()
-                  .days(applicationConfig.DEATH.REGISTRATION_TARGET)
+                  .days(45)
                   .inPast(),
                 field('eventDetails.date').isBefore().now()
               )
