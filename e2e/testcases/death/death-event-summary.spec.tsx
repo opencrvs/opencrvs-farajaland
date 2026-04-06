@@ -37,9 +37,9 @@ test.describe.serial('Death event summary', () => {
       placeOfDeath: 'Other',
       address: {
         country: 'Farajaland',
-        province: 'Sulaka',
-        district: 'Irundu',
-        village: 'Xhosa',
+        province: 'Central',
+        district: 'Ibombo',
+        village: 'Klow',
         town: 'Place of death Town',
         residentalArea: 'Place of death Area',
         street: 'Place of death Street',
