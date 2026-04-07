@@ -69,13 +69,6 @@ services:
       - NODE_ENV=production
       - DISABLE_RATE_LIMIT=true
 
-  workflow:
-    environment:
-      - LANGUAGES=en,fr
-      - SENTRY_DSN=${SENTRY_DSN:-}
-      - QA_ENV=true
-      - NODE_ENV=production
-
   search:
     environment:
       - SENTRY_DSN=${SENTRY_DSN:-}
