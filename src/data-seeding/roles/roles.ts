@@ -101,7 +101,7 @@ export const roles: Role[] = [
       SCOPES.USER_READ,
       SCOPES.USER_UPDATE,
       SCOPES.PERFORMANCE_READ,
-      SCOPES.RECORD_REINDEX,
+      'type=record.reindex',
       SCOPES.INTEGRATION_CREATE,
       SCOPES.PERFORMANCE_READ_DASHBOARDS
     ]
