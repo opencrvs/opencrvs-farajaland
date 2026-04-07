@@ -93,6 +93,7 @@ export const roles: Role[] = [
       id: 'userRole.nationalAdministrator'
     },
     scopes: [
+      'type=config.update-all',
       SCOPES.CONFIG_UPDATE_ALL,
       SCOPES.ORGANISATION_READ_LOCATIONS,
       SCOPES.USER_CREATE,
