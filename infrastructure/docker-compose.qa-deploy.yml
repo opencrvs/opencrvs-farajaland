@@ -45,7 +45,6 @@ services:
       - QA_ENV=true
       - AUTH_URL=http://auth:4040
       - APPLICATION_CONFIG_URL=http://config:2021
-      - CONFIRM_REGISTRATION_URL=http://workflow:5050/confirm/registration
       - MONGO_URL=mongodb://mongo1/user-mgnt?replicaSet=rs0
       - SENTRY_DSN=${SENTRY_DSN:-}
       - SENDER_EMAIL_ADDRESS=${SENDER_EMAIL_ADDRESS}
@@ -65,13 +64,6 @@ services:
       - DECLARED_DECLARATION_SEARCH_QUERY_COUNT=100
 
   gateway:
-    environment:
-      - LANGUAGES=en,fr
-      - SENTRY_DSN=${SENTRY_DSN:-}
-      - QA_ENV=true
-      - NODE_ENV=production
-
-  workflow:
     environment:
       - LANGUAGES=en,fr
       - SENTRY_DSN=${SENTRY_DSN:-}
