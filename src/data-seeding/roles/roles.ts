@@ -16,7 +16,7 @@ export const roles: Role[] = [
       id: 'userRole.registrationOfficer'
     },
     scopes: [
-      SCOPES.PERFORMANCE_READ,
+      'type=performance.read',
       SCOPES.ORGANISATION_READ_LOCATIONS_MY_OFFICE,
       SCOPES.USER_READ_MY_JURISDICTION,
       SCOPES.ORGANISATION_READ_LOCATIONS_MY_JURISDICTION,
@@ -44,8 +44,8 @@ export const roles: Role[] = [
       id: 'userRole.localRegistrar'
     },
     scopes: [
-      SCOPES.PROFILE_ELECTRONIC_SIGNATURE,
-      SCOPES.PERFORMANCE_READ,
+      'type=profile.electronic-signature',
+      'type=performance.read',
       SCOPES.ORGANISATION_READ_LOCATIONS_MY_OFFICE,
       SCOPES.ORGANISATION_READ_LOCATIONS_MY_JURISDICTION,
       SCOPES.USER_READ_MY_JURISDICTION,
@@ -99,9 +99,9 @@ export const roles: Role[] = [
       'user.edit[role=HOSPITAL_CLERK|COMMUNITY_LEADER|REGISTRATION_AGENT|LOCAL_REGISTRAR|NATIONAL_REGISTRAR|LOCAL_SYSTEM_ADMIN|NATIONAL_SYSTEM_ADMIN|PERFORMANCE_MANAGER|PROVINCIAL_REGISTRAR|EMBASSY_OFFICIAL]',
       SCOPES.USER_READ,
       SCOPES.USER_UPDATE,
-      SCOPES.PERFORMANCE_READ,
+      'type=performance.read',
       'type=record.reindex',
-      SCOPES.INTEGRATION_CREATE,
+      'type=integration.create',
       SCOPES.PERFORMANCE_READ_DASHBOARDS
     ]
   },
@@ -113,7 +113,7 @@ export const roles: Role[] = [
       id: 'userRole.operationsManager'
     },
     scopes: [
-      SCOPES.PERFORMANCE_READ,
+      'type=performance.read',
       SCOPES.ORGANISATION_READ_LOCATIONS,
       SCOPES.PERFORMANCE_READ_DASHBOARDS
     ]
@@ -126,8 +126,8 @@ export const roles: Role[] = [
       id: 'userRole.registrarGeneral'
     },
     scopes: [
-      SCOPES.PROFILE_ELECTRONIC_SIGNATURE,
-      SCOPES.PERFORMANCE_READ,
+      'type=profile.electronic-signature',
+      'type=performance.read',
       SCOPES.ORGANISATION_READ_LOCATIONS,
       SCOPES.USER_READ,
       'type=record.search',
@@ -155,9 +155,9 @@ export const roles: Role[] = [
     scopes: [
       SCOPES.ORGANISATION_READ_LOCATIONS_MY_JURISDICTION,
       SCOPES.USER_READ_MY_JURISDICTION,
-      SCOPES.PERFORMANCE_READ,
+      'type=performance.read',
       SCOPES.PERFORMANCE_READ_DASHBOARDS,
-      SCOPES.PROFILE_ELECTRONIC_SIGNATURE,
+      'type=profile.electronic-signature',
       'type=record.search&placeOfEvent=administrativeArea',
       'workqueue[id=recent|pending-feedback-provincinal-registrar|pending-approval|correction-requested]',
       'type=record.read&placeOfEvent=administrativeArea',
