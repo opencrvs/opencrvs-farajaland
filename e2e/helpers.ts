@@ -442,7 +442,7 @@ export async function searchFromSearchBar(
   const searchResult = await page.locator('#content-name').textContent()
   expect(searchResult).toMatch(searchResultRegex)
   if (expectToBeFound) {
-    await page.getByText(searchText, { exact: true }).click()
+    await page.getByRole('button', { name:searchText, exact: true }).click()
   } else {
     await expect(
       page.getByRole('button', { name: searchText, exact: true })

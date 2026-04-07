@@ -22,6 +22,8 @@ type Workqueue =
   | 'Pending certification'
   | 'Pending issuance'
   | 'Pending corrections'
+  | 'Team'
+  | 'Organisation'
 
 export async function navigateToWorkqueue(page: Page, workqueue: Workqueue) {
   if (isMobile(page)) {
@@ -55,6 +57,7 @@ export async function selectAction(
     | 'Revoke registration'
     | 'Reinstate registration'
     | 'Update'
+    | 'Issue certified copy'
 ) {
   if (await page.getByRole('button', { name: 'Assign record' }).isVisible()) {
     await ensureAssigned(page)
@@ -76,7 +79,7 @@ export async function selectAction(
 export async function ensureAssigned(page: Page) {
   await page.waitForTimeout(SAFE_INPUT_CHANGE_TIMEOUT_MS)
 
-  await page.getByRole('button', { name: 'Action' }).click()
+  await page.getByRole('button', { name: 'Action', exact: true }).click()
 
   const unAssignAction = page
     .locator('#action-Dropdown-Content li')
@@ -102,7 +105,7 @@ export async function ensureAssigned(page: Page) {
       page.getByRole('button', { name: 'Assign record' })
     ).toBeVisible({ timeout: SAFE_OUTBOX_TIMEOUT_MS })
 
-    await page.getByRole('button', { name: 'Action' }).click()
+    await page.getByRole('button', { name: 'Action', exact: true }).click()
 
     // Seems that on slower environments actions are not immediately available after unassign.
     // And end up having false negative for assignAction.isVisible().
