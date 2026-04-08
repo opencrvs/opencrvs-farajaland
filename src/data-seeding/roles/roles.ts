@@ -92,7 +92,6 @@ export const roles: Role[] = [
     },
     scopes: [
       'type=config.update-all',
-      SCOPES.CONFIG_UPDATE_ALL,
       'type=organisation.read-locations',
       'type=user.create',
       'user.create[role=HOSPITAL_CLERK|COMMUNITY_LEADER|REGISTRATION_AGENT|LOCAL_REGISTRAR|NATIONAL_REGISTRAR|LOCAL_SYSTEM_ADMIN|NATIONAL_SYSTEM_ADMIN|PERFORMANCE_MANAGER|PROVINCIAL_REGISTRAR|EMBASSY_OFFICIAL]',
