@@ -2,6 +2,7 @@ import { test, expect, type Page } from '@playwright/test'
 import { login } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
 import { verifyMembersEnabled } from '../birth/helpers'
+import { navigateToWorkqueue } from '../../utils'
 test.describe.serial('6. Organisation Page', () => {
   let page: Page
 
@@ -50,10 +51,7 @@ test.describe.serial('6. Organisation Page', () => {
 
     // @TODO: https://github.com/opencrvs/opencrvs-core/issues/11756
     test.skip('6.1.3 Verify Province -> District -> District Office', async () => {
-      for (let i = 0; i < 3; i++) {
-        await page.goBack()
-      }
-
+     await navigateToWorkqueue(page, 'Organisation')
       await page.getByRole('button', { name: /Sulaka/ }).click()
       await page.getByRole('button', { name: /Ilanga/ }).click()
 
