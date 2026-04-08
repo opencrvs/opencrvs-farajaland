@@ -20,7 +20,7 @@ export const roles: Role[] = [
       SCOPES.ORGANISATION_READ_LOCATIONS_MY_OFFICE,
       SCOPES.USER_READ_MY_JURISDICTION,
       SCOPES.ORGANISATION_READ_LOCATIONS_MY_JURISDICTION,
-      SCOPES.PERFORMANCE_READ_DASHBOARDS,
+      'type=performance.read-dashboards',
       'workqueue[id=assigned-to-you|recent|requires-completion|in-external-validation|escalated|pending-validation|pending-updates|pending-approval|pending-certification|pending-issuance|correction-requested]',
       'type=record.search&placeOfEvent=administrativeArea',
       'type=record.create&placeOfEvent=administrativeArea',
@@ -49,7 +49,7 @@ export const roles: Role[] = [
       SCOPES.ORGANISATION_READ_LOCATIONS_MY_OFFICE,
       SCOPES.ORGANISATION_READ_LOCATIONS_MY_JURISDICTION,
       SCOPES.USER_READ_MY_JURISDICTION,
-      SCOPES.PERFORMANCE_READ_DASHBOARDS,
+      'type=performance.read-dashboards',
       'workqueue[id=assigned-to-you|recent|requires-completion|in-external-validation|escalated|potential-duplicate|pending-updates|pending-registration|pending-approval|pending-certification|pending-issuance|correction-requested]',
       'type=record.search&placeOfEvent=administrativeArea',
       'type=record.create&placeOfEvent=administrativeArea',
@@ -93,16 +93,16 @@ export const roles: Role[] = [
     scopes: [
       'type=config.update-all',
       SCOPES.CONFIG_UPDATE_ALL,
-      SCOPES.ORGANISATION_READ_LOCATIONS,
-      SCOPES.USER_CREATE,
+      'type=organisation.read-locations',
+      'type=user.create',
       'user.create[role=HOSPITAL_CLERK|COMMUNITY_LEADER|REGISTRATION_AGENT|LOCAL_REGISTRAR|NATIONAL_REGISTRAR|LOCAL_SYSTEM_ADMIN|NATIONAL_SYSTEM_ADMIN|PERFORMANCE_MANAGER|PROVINCIAL_REGISTRAR|EMBASSY_OFFICIAL]',
       'user.edit[role=HOSPITAL_CLERK|COMMUNITY_LEADER|REGISTRATION_AGENT|LOCAL_REGISTRAR|NATIONAL_REGISTRAR|LOCAL_SYSTEM_ADMIN|NATIONAL_SYSTEM_ADMIN|PERFORMANCE_MANAGER|PROVINCIAL_REGISTRAR|EMBASSY_OFFICIAL]',
-      SCOPES.USER_READ,
-      SCOPES.USER_UPDATE,
+      'type=user.read',
+      'type=user.update',
       'type=performance.read',
       'type=record.reindex',
       'type=integration.create',
-      SCOPES.PERFORMANCE_READ_DASHBOARDS
+      'type=performance.read-dashboards'
     ]
   },
   {
@@ -114,8 +114,8 @@ export const roles: Role[] = [
     },
     scopes: [
       'type=performance.read',
-      SCOPES.ORGANISATION_READ_LOCATIONS,
-      SCOPES.PERFORMANCE_READ_DASHBOARDS
+      'type=organisation.read-locations',
+      'type=performance.read-dashboards'
     ]
   },
   {
@@ -128,8 +128,8 @@ export const roles: Role[] = [
     scopes: [
       'type=profile.electronic-signature',
       'type=performance.read',
-      SCOPES.ORGANISATION_READ_LOCATIONS,
-      SCOPES.USER_READ,
+      'type=organisation.read-locations',
+      'type=user.read',
       'type=record.search',
       'workqueue[id=assigned-to-you|recent|pending-feedback-registrar-general|potential-duplicate|registration-registrar-general]',
       'type=record.read',
@@ -156,7 +156,7 @@ export const roles: Role[] = [
       SCOPES.ORGANISATION_READ_LOCATIONS_MY_JURISDICTION,
       SCOPES.USER_READ_MY_JURISDICTION,
       'type=performance.read',
-      SCOPES.PERFORMANCE_READ_DASHBOARDS,
+      'type=performance.read-dashboards',
       'type=profile.electronic-signature',
       'type=record.search&placeOfEvent=administrativeArea',
       'workqueue[id=recent|pending-feedback-provincinal-registrar|pending-approval|correction-requested]',
