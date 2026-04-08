@@ -64,7 +64,7 @@ test.describe.serial('1. Create user -1', () => {
       )
 
       await expect(
-        page.getByText('Zimbi, Isamba', {
+        page.getByText('Zimbi, Isamba, Central', {
           exact: true
         })
       ).toBeVisible()

@@ -449,8 +449,8 @@ test.describe
       await page.getByText('Health Institution', { exact: true }).click()
       await page
         .locator('#child____birthLocation')
-        .fill('Nsali District Hospital'.slice(0, 3))
-      await page.getByText('Nsali District Hospital').click()
+        .fill('Ibombo District Hospital'.slice(0, 3))
+      await page.getByText('Ibombo District Hospital').click()
 
       await continueForm(page)
     })
