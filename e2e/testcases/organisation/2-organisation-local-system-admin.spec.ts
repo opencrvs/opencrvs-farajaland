@@ -24,7 +24,7 @@ test.describe.serial('2. Organisation Page', () => {
       await expect(page.locator('#content-name')).toHaveText('Organisation')
       await expect(page.getByText('Farajaland', { exact: true })).toBeVisible()
     })
-    test('2.1.1 Verify Province -> District -> Health Facility(No Data)', async () => {
+    test('2.1.1 Verify Province -> District -> Health Facility', async () => {
       await page.getByRole('button', { name: /Central/ }).click()
       await page.getByRole('button', { name: /Ibombo/ }).click()
       const pageNavigator = page.getByRole('button', { name: '2' })
@@ -38,7 +38,7 @@ test.describe.serial('2. Organisation Page', () => {
       await expect(
         page.getByText('Ibombo, Central', { exact: true })
       ).toBeVisible()
-      await expect(page.getByText('No result')).toBeVisible()
+      await expect(page.getByText('No result')).toBeHidden()
     })
     test('2.1.2 Verify Province -> District -> District Office', async () => {
       await navigateToWorkqueue(page, 'Organisation')

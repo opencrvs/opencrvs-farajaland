@@ -33,13 +33,13 @@ test.describe.serial('6. Organisation Page', () => {
       await verifyMembersEnabled(page, enabledMembers)
     })
 
-    test('6.1.2 Verify Province -> District -> Health Facility(No Data)', async () => {
+    test('6.1.2 Verify Province -> District -> Health Facility', async () => {
       for (let i = 0; i < 3; i++) {
         await page.goBack()
       }
 
       await page.getByRole('button', { name: /Central/ }).click()
-      await page.getByRole('button', { name: /Ezhi/ }).click()
+      await page.getByRole('button', { name: /Ibombo/ }).click()
       const pageNavigator = page.getByRole('button', { name: '3', exact: true })
       await pageNavigator.scrollIntoViewIfNeeded()
       await pageNavigator.click()

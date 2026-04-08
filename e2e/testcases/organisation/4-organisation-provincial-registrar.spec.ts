@@ -22,7 +22,7 @@ test.describe.serial('4. Organisation Page', () => {
       await expect(page.getByText('Farajaland', { exact: true })).toBeVisible()
     })
     test.describe('4.1.1 My jurisdiction ', async () => {
-      test('4.1.1.0 Verify Province -> District -> Health Facility(No Data)', async () => {
+      test('4.1.1.0 Verify Province -> District -> Health Facility', async () => {
         await page.getByRole('button', { name: /Central/ }).click()
         await page.getByRole('button', { name: /Ibombo/ }).click()
         await page
