@@ -27,10 +27,10 @@ test.describe.serial('5. Organisation Page', () => {
       await pageNavigator.click()
 
       await page
-        .getByRole('button', { name: /Kayosha Rural Health Centre/ })
+        .getByRole('button', { name: /Ibombo District Hospital/ })
         .click()
       await expect(page.locator('#content-name')).toHaveText(
-        /Kayosha Rural Health Centre/
+        /Ibombo District Hospital/
       )
       await expect(
         page.getByText('Ibombo, Central', { exact: true })

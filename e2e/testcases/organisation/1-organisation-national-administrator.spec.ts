@@ -27,9 +27,9 @@ test.describe.serial('1. Organisation Page', () => {
       await pageNavigator.scrollIntoViewIfNeeded()
       await pageNavigator.click()
 
-      await page.getByRole('button', { name: /Kapopo Health Post/ }).click()
+      await page.getByRole('button', { name: /Klow Village Hospital/ }).click()
       await expect(page.locator('#content-name')).toHaveText(
-        /Kapopo Health Post/
+        /Klow Village Hospital/
       )
       await expect(
         page.getByText('Ibombo, Central', { exact: true })
@@ -53,7 +53,7 @@ test.describe.serial('1. Organisation Page', () => {
     })
 
     test('1.1.2 Verify Province -> District -> District Office', async () => {
-     await navigateToWorkqueue(page, 'Organisation')
+      await navigateToWorkqueue(page, 'Organisation')
 
       await page.getByRole('button', { name: /Sulaka/ }).click()
       await page.getByRole('button', { name: /Ilanga/ }).click()

@@ -39,9 +39,9 @@ test.describe.serial('1. Create user -1', () => {
           name: /Central Province Office, Central/
         })
         .click()
-      await page.getByTestId('locationSearchInput').fill('Itumbwe')
+      await page.getByTestId('locationSearchInput').fill('Zobwe')
 
-      await page.getByText(/Itumbwe Health Post, Ibombo, Central/).click()
+      await page.getByText(/Zobwe District Hospital, Zobwe, Sulaka/).click()
 
       await page.click('#add-user')
       await expect(page.getByText('User details')).toBeVisible()
@@ -59,10 +59,12 @@ test.describe.serial('1. Create user -1', () => {
     test('1.1.2 Create user', async () => {
       await page.getByRole('button', { name: 'Create user' }).click()
 
-      await expect(page.locator('#header')).toContainText('Itumbwe Health Post')
+      await expect(page.locator('#header')).toContainText(
+        'Zobwe District Hospital'
+      )
 
       await expect(
-        page.getByText('Ibombo, Central', {
+        page.getByText('Zobwe, Sulaka', {
           exact: true
         })
       ).toBeVisible()

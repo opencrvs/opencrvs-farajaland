@@ -21,14 +21,14 @@ test.describe.serial('7. Organisation Page', () => {
       await expect(page.getByText('Farajaland', { exact: true })).toBeVisible()
     })
     test('7.1.1 Verify Province -> District -> Health Facility(No Data)', async () => {
-      await page.getByRole('button', { name: /Chuminga/ }).click()
-      await page.getByRole('button', { name: /Soka/ }).click()
+      await page.getByRole('button', { name: /Central/ }).click()
+      await page.getByRole('button', { name: /Ibombo/ }).click()
       const pageNavigator = page.getByRole('button', { name: '2', exact: true })
       await pageNavigator.scrollIntoViewIfNeeded()
       await pageNavigator.click()
 
       await expect(
-        page.getByRole('button', { name: /Mulunda Health Post/ })
+        page.getByRole('button', { name: /Klow Village Hospital/ })
       ).toBeDisabled()
     })
     test('7.1.2 Verify Province -> District -> District Office', async () => {

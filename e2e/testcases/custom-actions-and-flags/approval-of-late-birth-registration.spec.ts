@@ -449,8 +449,8 @@ test.describe
       await page.getByText('Health Institution', { exact: true }).click()
       await page
         .locator('#child____birthLocation')
-        .fill('Golden Valley Rural Health Centre'.slice(0, 3))
-      await page.getByText('Golden Valley Rural Health Centre').click()
+        .fill('Nsali District Hospital'.slice(0, 3))
+      await page.getByText('Nsali District Hospital').click()
 
       await continueForm(page)
     })
@@ -758,8 +758,8 @@ test.describe
       await page.getByText('Health Institution', { exact: true }).click()
       await page
         .locator('#child____birthLocation')
-        .fill('Golden Valley Rural Health Centre'.slice(0, 3))
-      await page.getByText('Golden Valley Rural Health Centre').click()
+        .fill('Nsali District Hospital'.slice(0, 3))
+      await page.getByText('Nsali District Hospital').click()
 
       await continueForm(page)
     })

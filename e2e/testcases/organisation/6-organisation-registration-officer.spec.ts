@@ -45,13 +45,13 @@ test.describe.serial('6. Organisation Page', () => {
       await pageNavigator.click()
 
       await expect(
-        page.getByRole('button', { name: /Kanyelele Rural Health Centre/ })
+        page.getByRole('button', { name: /Ibombo District Hospital/ })
       ).toBeDisabled()
     })
 
     // @TODO: https://github.com/opencrvs/opencrvs-core/issues/11756
     test.skip('6.1.3 Verify Province -> District -> District Office', async () => {
-     await navigateToWorkqueue(page, 'Organisation')
+      await navigateToWorkqueue(page, 'Organisation')
       await page.getByRole('button', { name: /Sulaka/ }).click()
       await page.getByRole('button', { name: /Ilanga/ }).click()
 

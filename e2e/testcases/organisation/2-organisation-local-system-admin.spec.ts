@@ -31,11 +31,9 @@ test.describe.serial('2. Organisation Page', () => {
       await pageNavigator.scrollIntoViewIfNeeded()
       await pageNavigator.click()
 
-      await page
-        .getByRole('button', { name: /Golden Valley Rural Health Centre/ })
-        .click()
+      await page.getByRole('button', { name: /Klow Village Hospital/ }).click()
       await expect(page.locator('#content-name')).toHaveText(
-        /Golden Valley Rural Health Centre/
+        /Klow Village Hospital/
       )
       await expect(
         page.getByText('Ibombo, Central', { exact: true })

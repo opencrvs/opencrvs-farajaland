@@ -34,25 +34,21 @@ test.describe.serial('4. Organisation Page', () => {
         await expect(
           page.getByText('Ibombo, Central', { exact: true })
         ).toBeVisible()
-    
       })
       test('4.1.1.1 Verify Province -> District -> District Office', async () => {
         await navigateToWorkqueue(page, 'Organisation')
         await page.getByRole('button', { name: /Central/ }).click()
-        await page.getByRole('button', { name: /Central Province Office/ }).click()
+        await page
+          .getByRole('button', { name: /Central Province Office/ })
+          .click()
 
         await expect(page.locator('#content-name')).toHaveText(
           /Central Province Office/
         )
-        await expect(
-          page.getByText('Central', { exact: true })
-        ).toBeVisible()
+        await expect(page.getByText('Central', { exact: true })).toBeVisible()
       })
       test('4.1.1.2 Verify team page member list', async () => {
-        const members = [
-          'Mitchel Owen',
-          'Emmanuel Mayuka'
-        ]
+        const members = ['Mitchel Owen', 'Emmanuel Mayuka']
 
         await verifyMembersClickable(page, members, 'Central Province Office')
       })
@@ -71,7 +67,6 @@ test.describe.serial('4. Organisation Page', () => {
         ).toBeDisabled()
       })
       test('4.1.2.2 Verify Province -> District', async () => {
-      
         await navigateToWorkqueue(page, 'Organisation')
         await page.getByRole('button', { name: /Pualula/ }).click()
 
