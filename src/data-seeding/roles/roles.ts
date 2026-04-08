@@ -17,9 +17,8 @@ export const roles: Role[] = [
     },
     scopes: [
       'type=performance.read',
-      SCOPES.ORGANISATION_READ_LOCATIONS_MY_OFFICE,
+      'type=organisation.read-locations&accessLevel=administrativeArea',
       SCOPES.USER_READ_MY_JURISDICTION,
-      SCOPES.ORGANISATION_READ_LOCATIONS_MY_JURISDICTION,
       'type=performance.read-dashboards',
       'workqueue[id=assigned-to-you|recent|requires-completion|in-external-validation|escalated|pending-validation|pending-updates|pending-approval|pending-certification|pending-issuance|correction-requested]',
       'type=record.search&placeOfEvent=administrativeArea',
@@ -46,8 +45,7 @@ export const roles: Role[] = [
     scopes: [
       'type=profile.electronic-signature',
       'type=performance.read',
-      SCOPES.ORGANISATION_READ_LOCATIONS_MY_OFFICE,
-      SCOPES.ORGANISATION_READ_LOCATIONS_MY_JURISDICTION,
+      'type=organisation.read-locations&accessLevel=administrativeArea',
       SCOPES.USER_READ_MY_JURISDICTION,
       'type=performance.read-dashboards',
       'workqueue[id=assigned-to-you|recent|requires-completion|in-external-validation|escalated|potential-duplicate|pending-updates|pending-registration|pending-approval|pending-certification|pending-issuance|correction-requested]',
@@ -75,7 +73,7 @@ export const roles: Role[] = [
       id: 'userRole.administrator'
     },
     scopes: [
-      SCOPES.ORGANISATION_READ_LOCATIONS_MY_JURISDICTION,
+      'type=organisation.read-locations&accessLevel=administrativeArea',
       SCOPES.USER_CREATE_MY_JURISDICTION,
       'user.create[role=HOSPITAL_CLERK|COMMUNITY_LEADER|REGISTRATION_AGENT|LOCAL_REGISTRAR|PROVINCIAL_REGISTRAR]',
       'user.edit[role=HOSPITAL_CLERK|COMMUNITY_LEADER|REGISTRATION_AGENT|LOCAL_REGISTRAR|PROVINCIAL_REGISTRAR]',
@@ -152,7 +150,7 @@ export const roles: Role[] = [
       id: 'userRole.provincialRegistrar'
     },
     scopes: [
-      SCOPES.ORGANISATION_READ_LOCATIONS_MY_JURISDICTION,
+      'type=organisation.read-locations&accessLevel=administrativeArea',
       SCOPES.USER_READ_MY_JURISDICTION,
       'type=performance.read',
       'type=performance.read-dashboards',
