@@ -77,7 +77,7 @@ export const roles: Role[] = [
       // TODO CIHAN: these need to be get rid of
       'user.create[role=HOSPITAL_CLERK|COMMUNITY_LEADER|REGISTRATION_AGENT|LOCAL_REGISTRAR|PROVINCIAL_REGISTRAR]',
       'user.edit[role=HOSPITAL_CLERK|COMMUNITY_LEADER|REGISTRATION_AGENT|LOCAL_REGISTRAR|PROVINCIAL_REGISTRAR]',
-      'type=user.update&accessLevel=administrativeArea',
+      'type=user.edit&accessLevel=administrativeArea',
       'type=user.read&accessLevel=administrativeArea'
     ]
   },
@@ -95,7 +95,7 @@ export const roles: Role[] = [
       'user.create[role=HOSPITAL_CLERK|COMMUNITY_LEADER|REGISTRATION_AGENT|LOCAL_REGISTRAR|NATIONAL_REGISTRAR|LOCAL_SYSTEM_ADMIN|NATIONAL_SYSTEM_ADMIN|PERFORMANCE_MANAGER|PROVINCIAL_REGISTRAR|EMBASSY_OFFICIAL]',
       'user.edit[role=HOSPITAL_CLERK|COMMUNITY_LEADER|REGISTRATION_AGENT|LOCAL_REGISTRAR|NATIONAL_REGISTRAR|LOCAL_SYSTEM_ADMIN|NATIONAL_SYSTEM_ADMIN|PERFORMANCE_MANAGER|PROVINCIAL_REGISTRAR|EMBASSY_OFFICIAL]',
       'type=user.read',
-      'type=user.update',
+      'type=user.edit',
       'type=performance.read',
       'type=record.reindex',
       'type=integration.create',
