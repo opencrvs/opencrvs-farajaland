@@ -40,9 +40,6 @@ test.describe.serial('6. Organisation Page', () => {
 
       await page.getByRole('button', { name: /Central/ }).click()
       await page.getByRole('button', { name: /Ibombo/ }).click()
-      const pageNavigator = page.getByRole('button', { name: '3', exact: true })
-      await pageNavigator.scrollIntoViewIfNeeded()
-      await pageNavigator.click()
 
       await expect(
         page.getByRole('button', { name: /Ibombo District Hospital/ })
