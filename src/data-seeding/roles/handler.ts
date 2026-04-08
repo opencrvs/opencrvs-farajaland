@@ -11,13 +11,14 @@
 import { PRODUCTION, QA_ENV } from '@countryconfig/constants'
 import { roles } from './roles'
 import { Request, ResponseToolkit } from '@hapi/hapi'
+import { encodeScope } from '@opencrvs/toolkit/scopes'
 
 export async function rolesHandler(_: Request, h: ResponseToolkit) {
   if (!PRODUCTION || QA_ENV) {
     return roles.map((role) => {
       return {
         ...role,
-        scopes: [...role.scopes, 'demo']
+        scopes: [...role.scopes, encodeScope({ type: 'demo' })]
       }
     })
   }
