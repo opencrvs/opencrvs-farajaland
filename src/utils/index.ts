@@ -10,7 +10,6 @@
  */
 
 import fetch from 'node-fetch'
-import { APPLICATION_CONFIG_URL } from '@countryconfig/constants'
 import { callingCountries } from 'country-data'
 import csv2json from 'csv2json'
 import { createReadStream } from 'fs'
@@ -114,11 +113,11 @@ export function getTrackingIdFromTaskResource(taskResource: fhir.Task) {
     taskResource.identifier.find((identifier) => {
       return (
         identifier.system ===
-          `${OPENCRVS_SPECIFICATION_URL}id/birth-tracking-id` ||
+        `${OPENCRVS_SPECIFICATION_URL}id/birth-tracking-id` ||
         identifier.system ===
-          `${OPENCRVS_SPECIFICATION_URL}id/death-tracking-id` ||
+        `${OPENCRVS_SPECIFICATION_URL}id/death-tracking-id` ||
         identifier.system ===
-          `${OPENCRVS_SPECIFICATION_URL}id/marriage-tracking-id`
+        `${OPENCRVS_SPECIFICATION_URL}id/marriage-tracking-id`
       )
     })
   if (!trackingIdentifier || !trackingIdentifier.value) {
@@ -167,18 +166,6 @@ export async function readCSVToJSON<T>(filename: string) {
         resolve(JSON.parse(chunks.join('')))
       })
   })
-}
-
-export async function getApplicationConfig() {
-  const configURL = new URL('publicConfig', APPLICATION_CONFIG_URL).toString()
-  const res = await fetch(configURL, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  })
-  const configData = (await res.json()) as IApplicationConfigResponse
-  return configData.config
 }
 
 export const buildTypeScriptToJavaScript = memoize(async (path: string) => {
@@ -252,9 +239,8 @@ export function createCustomFieldHandlebarName(fieldId: string) {
     }
   })
 
-  return `${fieldIdNameArray[0]}${fieldIdNameArray[1]}${
-    fieldIdNameArray[fieldIdNameArray.length - 1]
-  }`
+  return `${fieldIdNameArray[0]}${fieldIdNameArray[1]}${fieldIdNameArray[fieldIdNameArray.length - 1]
+    }`
 }
 
 export function uppercaseFirstLetter(str: string) {

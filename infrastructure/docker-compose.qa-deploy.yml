@@ -106,12 +106,6 @@ services:
       - QA_ENV=true
       - NODE_ENV=production
 
-  config:
-    environment:
-      - SENTRY_DSN=${SENTRY_DSN:-}
-      - QA_ENV=true
-      - NODE_ENV=production
-
   documents:
     environment:
       - QA_ENV=true
