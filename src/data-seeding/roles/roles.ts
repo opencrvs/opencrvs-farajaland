@@ -17,7 +17,8 @@ export const roles: Role[] = [
     },
     scopes: [
       'type=performance.read',
-      'type=organisation.read-locations&accessLevel=administrativeArea',
+      // TODO CIHAN org read locations scope
+      'type=organisation.read-locations',
       SCOPES.USER_READ_MY_JURISDICTION,
       'type=performance.read-dashboards',
       'workqueue[id=assigned-to-you|recent|requires-completion|in-external-validation|escalated|pending-validation|pending-updates|pending-approval|pending-certification|pending-issuance|correction-requested]',
@@ -45,7 +46,8 @@ export const roles: Role[] = [
     scopes: [
       'type=profile.electronic-signature',
       'type=performance.read',
-      'type=organisation.read-locations&accessLevel=administrativeArea',
+      // TODO CIHAN org read locations scope
+      'type=organisation.read-locations',
       SCOPES.USER_READ_MY_JURISDICTION,
       'type=performance.read-dashboards',
       'workqueue[id=assigned-to-you|recent|requires-completion|in-external-validation|escalated|potential-duplicate|pending-updates|pending-registration|pending-approval|pending-certification|pending-issuance|correction-requested]',
@@ -73,7 +75,8 @@ export const roles: Role[] = [
       id: 'userRole.administrator'
     },
     scopes: [
-      'type=organisation.read-locations&accessLevel=administrativeArea',
+      // TODO CIHAN org read locations scope
+      'type=organisation.read-locations',
       SCOPES.USER_CREATE_MY_JURISDICTION,
       'user.create[role=HOSPITAL_CLERK|COMMUNITY_LEADER|REGISTRATION_AGENT|LOCAL_REGISTRAR|PROVINCIAL_REGISTRAR]',
       'user.edit[role=HOSPITAL_CLERK|COMMUNITY_LEADER|REGISTRATION_AGENT|LOCAL_REGISTRAR|PROVINCIAL_REGISTRAR]',
@@ -150,7 +153,8 @@ export const roles: Role[] = [
       id: 'userRole.provincialRegistrar'
     },
     scopes: [
-      'type=organisation.read-locations&accessLevel=administrativeArea',
+      // TODO CIHAN org read locations scope
+      'type=organisation.read-locations',
       SCOPES.USER_READ_MY_JURISDICTION,
       'type=performance.read',
       'type=performance.read-dashboards',
