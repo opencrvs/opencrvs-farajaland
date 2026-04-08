@@ -12,6 +12,7 @@ services:
       - jwt-public-key.{{ts}}
     environment:
       - NODE_ENV=production
+      - TWO_FA_ENABLED=false
       - CHECK_INVALID_TOKEN=true
       - MONGO_URL=mongodb://mongo1/user-mgnt?replicaSet=rs0
       - SENTRY_DSN=${SENTRY_DSN:-}
@@ -60,6 +61,11 @@ services:
       - SENTRY_DSN=${SENTRY_DSN:-}
       - TWO_FA_ENABLED=false
       - NODE_ENV=production
+
+  events:
+    environment:
+      - NODE_ENV=production
+      - TWO_FA_ENABLED=false
 
   user-mgnt:
     environment:
