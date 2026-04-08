@@ -1,4 +1,3 @@
-import { SCOPES } from '@opencrvs/toolkit/scopes'
 import { MessageDescriptor } from 'react-intl'
 
 type Role = {
@@ -18,7 +17,7 @@ export const roles: Role[] = [
     scopes: [
       'type=performance.read',
       'type=organisation.read-locations&accessLevel=administrativeArea',
-      SCOPES.USER_READ_MY_JURISDICTION,
+      'type=user.read&accessLevel=administrativeArea',
       'type=performance.read-dashboards',
       'workqueue[id=assigned-to-you|recent|requires-completion|in-external-validation|escalated|pending-validation|pending-updates|pending-approval|pending-certification|pending-issuance|correction-requested]',
       'type=record.search&placeOfEvent=administrativeArea',
@@ -46,7 +45,7 @@ export const roles: Role[] = [
       'type=profile.electronic-signature',
       'type=performance.read',
       'type=organisation.read-locations&accessLevel=administrativeArea',
-      SCOPES.USER_READ_MY_JURISDICTION,
+      'type=user.read&accessLevel=administrativeArea',
       'type=performance.read-dashboards',
       'workqueue[id=assigned-to-you|recent|requires-completion|in-external-validation|escalated|potential-duplicate|pending-updates|pending-registration|pending-approval|pending-certification|pending-issuance|correction-requested]',
       'type=record.search&placeOfEvent=administrativeArea',
@@ -74,11 +73,12 @@ export const roles: Role[] = [
     },
     scopes: [
       'type=organisation.read-locations&accessLevel=administrativeArea',
-      SCOPES.USER_CREATE_MY_JURISDICTION,
+      'type=user.create&accessLevel=administrativeArea',
+      // TODO CIHAN: these need to be get rid of
       'user.create[role=HOSPITAL_CLERK|COMMUNITY_LEADER|REGISTRATION_AGENT|LOCAL_REGISTRAR|PROVINCIAL_REGISTRAR]',
       'user.edit[role=HOSPITAL_CLERK|COMMUNITY_LEADER|REGISTRATION_AGENT|LOCAL_REGISTRAR|PROVINCIAL_REGISTRAR]',
-      SCOPES.USER_UPDATE_MY_JURISDICTION,
-      SCOPES.USER_READ_MY_JURISDICTION
+      'type=user.update&accessLevel=administrativeArea',
+      'type=user.read&accessLevel=administrativeArea'
     ]
   },
   {
@@ -151,7 +151,7 @@ export const roles: Role[] = [
     },
     scopes: [
       'type=organisation.read-locations&accessLevel=administrativeArea',
-      SCOPES.USER_READ_MY_JURISDICTION,
+      'type=user.read&accessLevel=administrativeArea',
       'type=performance.read',
       'type=performance.read-dashboards',
       'type=profile.electronic-signature',
@@ -177,7 +177,7 @@ export const roles: Role[] = [
       id: 'userRole.hospitalClerk'
     },
     scopes: [
-      SCOPES.USER_READ_ONLY_MY_AUDIT,
+      'type=user.read-only-my-audit',
       'type=record.search&placeOfEvent=location',
       'workqueue[id=assigned-to-you|recent|pending-updates]',
       'type=record.create&placeOfEvent=location',
@@ -196,7 +196,7 @@ export const roles: Role[] = [
       id: 'userRole.communityLeader'
     },
     scopes: [
-      SCOPES.USER_READ_ONLY_MY_AUDIT,
+      'type=user.read-only-my-audit',
       'type=record.search&placeOfEvent=location',
       'workqueue[id=assigned-to-you|recent]',
       'type=record.create&placeOfEvent=location',
@@ -213,7 +213,7 @@ export const roles: Role[] = [
       id: 'userRole.embassyOffical'
     },
     scopes: [
-      SCOPES.USER_READ_ONLY_MY_AUDIT,
+      'type=user.read-only-my-audit',
       'workqueue[id=assigned-to-you|recent|escalated|pending-updates|pending-certification|potential-duplicate]',
       'type=record.search&placeOfEvent=location',
       'type=record.create&placeOfEvent=location',
