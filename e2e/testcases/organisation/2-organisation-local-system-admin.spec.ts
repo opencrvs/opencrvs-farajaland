@@ -34,7 +34,7 @@ test.describe.serial('2. Organisation Page', () => {
         /Klow Village Hospital/
       )
       await expect(
-        page.getByText('Ibombo, Central', { exact: true })
+        page.getByText('Klow, Ibombo, Central', { exact: true })
       ).toBeVisible()
       await expect(page.getByText('No result')).toBeHidden()
     })
