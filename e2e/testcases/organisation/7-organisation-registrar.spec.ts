@@ -26,7 +26,7 @@ test.describe.serial('7. Organisation Page', () => {
 
       await expect(
         page.getByRole('button', { name: /Klow Village Hospital/ })
-      ).toBeDisabled()
+      ).toBeEnabled()
     })
     test('7.1.2 Verify Province -> District -> District Office', async () => {
       await navigateToWorkqueue(page, 'Organisation')
