@@ -74,7 +74,6 @@ export const roles: Role[] = [
     scopes: [
       'type=organisation.read-locations&accessLevel=administrativeArea',
       'type=user.create&accessLevel=administrativeArea',
-      // TODO CIHAN: these need to be get rid of
       'user.create[role=HOSPITAL_CLERK|COMMUNITY_LEADER|REGISTRATION_AGENT|LOCAL_REGISTRAR|PROVINCIAL_REGISTRAR]',
       'user.edit[role=HOSPITAL_CLERK|COMMUNITY_LEADER|REGISTRATION_AGENT|LOCAL_REGISTRAR|PROVINCIAL_REGISTRAR]',
       'type=user.edit&accessLevel=administrativeArea',
