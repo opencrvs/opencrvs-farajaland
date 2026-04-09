@@ -69,14 +69,6 @@ services:
     deploy:
       replicas: 2
 
-  config:
-    environment:
-      - NODE_ENV=production
-      - SENTRY_DSN=${SENTRY_DSN:-}
-      - MONGO_URL=mongodb://config:${CONFIG_MONGODB_PASSWORD}@mongo1,mongo2/application-config?replicaSet=rs0
-    deploy:
-      replicas: 2
-
   scheduler:
     environment:
       - NODE_ENV=production
