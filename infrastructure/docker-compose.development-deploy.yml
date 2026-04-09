@@ -15,7 +15,6 @@ services:
       - TWO_FA_ENABLED=false
       - OPENCRVS_ENVIRONMENT=development
       - AUTH_URL=http://auth:4040
-      - APPLICATION_CONFIG_URL=http://config:2021
       - CONFIRM_REGISTRATION_URL=http://workflow:5050/confirm/registration
       - MONGO_URL=mongodb://mongo1/user-mgnt?replicaSet=rs0
       - SENTRY_DSN=${SENTRY_DSN:-}
@@ -76,11 +75,6 @@ services:
       - DEFAULT_USER_PASSWORD=test
 
   webhooks:
-    environment:
-      - SENTRY_DSN=${SENTRY_DSN:-}
-      - NODE_ENV=production
-
-  config:
     environment:
       - SENTRY_DSN=${SENTRY_DSN:-}
       - NODE_ENV=production
