@@ -15,14 +15,6 @@ services:
     deploy:
       replicas: 1
 
-  workflow:
-    environment:
-      - NODE_ENV=production
-      - LANGUAGES=en,fr
-      - SENTRY_DSN=${SENTRY_DSN:-}
-    deploy:
-      replicas: 1
-
   search:
     environment:
       - NODE_ENV=production
