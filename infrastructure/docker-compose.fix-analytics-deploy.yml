@@ -98,11 +98,6 @@ services:
       - SENTRY_DSN=${SENTRY_DSN:-}
       - NODE_ENV=production
 
-  config:
-    environment:
-      - SENTRY_DSN=${SENTRY_DSN:-}
-      - NODE_ENV=production
-
   documents:
     environment:
       - NODE_ENV=production
