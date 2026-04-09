@@ -27,7 +27,7 @@ import {
   NON_EXISTING_UUID
 } from './helpers'
 
-import { SAFE_IN_EXTERNAL_VALIDATION_MS } from '../../constants'
+import { CREDENTIALS, SAFE_IN_EXTERNAL_VALIDATION_MS } from '../../constants'
 
 test.describe('POST /api/events/events/{eventId}/notify', () => {
   let clientToken: string
