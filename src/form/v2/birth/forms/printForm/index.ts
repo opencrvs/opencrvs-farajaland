@@ -112,7 +112,7 @@ export const BIRTH_CERTIFICATE_COLLECTOR_FORM = defineActionForm({
                 not(
                   field('child.dob')
                     .isAfter()
-                    .days(applicationConfig.BIRTH.LATE_REGISTRATION_TARGET)
+                    .days(365)
                     .inPast()
                 ),
                 field('child.dob').isBefore().now()
@@ -164,13 +164,13 @@ export const BIRTH_CERTIFICATE_COLLECTOR_FORM = defineActionForm({
                 not(
                   field('child.dob')
                     .isAfter()
-                    .days(applicationConfig.BIRTH.REGISTRATION_TARGET)
+                    .days(30)
                     .inPast()
                 ),
 
                 field('child.dob')
                   .isAfter()
-                  .days(applicationConfig.BIRTH.LATE_REGISTRATION_TARGET)
+                  .days(365)
                   .inPast(),
                 field('child.dob').isBefore().now()
               )
@@ -219,7 +219,7 @@ export const BIRTH_CERTIFICATE_COLLECTOR_FORM = defineActionForm({
               conditional: and(
                 field('child.dob')
                   .isAfter()
-                  .days(applicationConfig.BIRTH.REGISTRATION_TARGET)
+                  .days(30)
                   .inPast(),
                 field('child.dob').isBefore().now()
               )

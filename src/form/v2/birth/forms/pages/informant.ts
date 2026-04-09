@@ -455,7 +455,7 @@ export const informant = defineFormPage({
     },
     {
       id: 'informant.addressHelper',
-      type: FieldType.PARAGRAPH,
+      type: FieldType.HEADING,
       label: {
         defaultMessage: 'Usual place of residence',
         description: 'This is the label for the field',

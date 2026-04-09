@@ -271,11 +271,11 @@ function sortLocationsByParentFirst(locations: Location[]): Location[] {
     if (visited.has(loc.id)) return
 
     if (
-      loc.parentId &&
-      locationMap.has(loc.parentId) &&
-      !visited.has(loc.parentId)
+      loc.administrativeAreaId &&
+      locationMap.has(loc.administrativeAreaId) &&
+      !visited.has(loc.administrativeAreaId)
     ) {
-      addWithAncestors(locationMap.get(loc.parentId)!)
+      addWithAncestors(locationMap.get(loc.administrativeAreaId)!)
     }
 
     visited.add(loc.id)
@@ -310,7 +310,7 @@ export async function importLocations(locations: Location[]) {
           batch.map((l) => ({
             id: l.id,
             name: l.name,
-            parentId: l.parentId,
+            parentId: l.administrativeAreaId,
             locationType: l.locationType
           }))
         )
