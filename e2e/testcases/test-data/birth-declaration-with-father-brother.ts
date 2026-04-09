@@ -59,6 +59,8 @@ function generateCustomPhoneNumber() {
   return `0${secondDigit}${rest}`
 }
 
+export const MOTHER_DOB = '1995-09-12'
+
 export async function getDeclaration({
   partialDeclaration = {},
   placeOfBirthType = 'PRIVATE_HOME'
@@ -78,7 +80,7 @@ export async function getDeclaration({
       firstname: faker.person.firstName(),
       surname: faker.person.lastName()
     },
-    'mother.dob': '1995-09-12',
+    'mother.dob': MOTHER_DOB,
     'mother.nationality': 'FAR',
     'mother.idType': 'NATIONAL_ID',
     'mother.nid': faker.string.numeric(10),
