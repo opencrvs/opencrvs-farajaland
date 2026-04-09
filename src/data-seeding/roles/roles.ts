@@ -189,7 +189,7 @@ export const roles: Role[] = [
       'type=record.read&placeOfEvent=location',
       'type=record.declare&placeOfEvent=location',
       'type=record.notify&placeOfEvent=location',
-      'type=record.edit&placeOfEvent=location',
+      'type=record.edit&placeOfEvent=location&declaredBy=user',
       'type=record.print-certified-copies&templates=v2.tennis-club-membership-certificate-alpha&registeredIn=location'
     ]
   },
