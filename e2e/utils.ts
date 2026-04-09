@@ -84,7 +84,7 @@ export async function ensureAssigned(page: Page) {
     .filter({ hasText: new RegExp(`^Assign$`, 'i') })
     .first()
 
-  assignAction.waitFor({ state: 'visible' })
+  await assignAction.waitFor({ state: 'visible' })
 
   await assignAction.click()
   // Wait for the assign modal to appear
@@ -94,9 +94,7 @@ export async function ensureAssigned(page: Page) {
     page.getByRole('button', { name: 'Assign record' })
   ).not.toBeVisible({ timeout: SAFE_OUTBOX_TIMEOUT_MS })
 
-  await expect(page.locator('#action-loading-undefined')).not.toBeVisible({
-    timeout: SAFE_OUTBOX_TIMEOUT_MS
-  })
+  await expect(page.locator('#action-loading-undefined')).not.toBeVisible()
 }
 
 export async function expectInUrl(page: Page, assertionString: string) {
