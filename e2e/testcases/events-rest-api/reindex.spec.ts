@@ -10,7 +10,13 @@
  */
 
 import { expect, test } from '@playwright/test'
-import { AUTH_URL, GATEWAY_HOST } from '../../constants'
+import {
+  AUTH_URL,
+  CREDENTIALS,
+  GATEWAY_HOST,
+  TEST_USER_PASSWORD
+} from '../../constants'
+import { getToken } from '../../helpers'
 
 const EVENTS_URL = `${GATEWAY_HOST}/events/events`
 
@@ -87,9 +93,10 @@ test.describe('Events reindex API', () => {
   let token: string
 
   test.beforeAll(async () => {
-    const res = await fetch(`${AUTH_URL}/internal/reindexing-token`)
-    const { token: reindexToken } = await res.json()
-    token = reindexToken
+    token = await getToken(
+      CREDENTIALS.NATIONAL_SYSTEM_ADMIN,
+      TEST_USER_PASSWORD
+    )
   })
 
   test('Trigger reindex and track until completion', async () => {
