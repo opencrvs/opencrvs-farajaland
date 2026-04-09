@@ -19,12 +19,10 @@ export const env = cleanEnv(process.env, {
   COUNTRY_CONFIG_PORT: port({ default: 3040 }),
   AUTH_URL: url({ devDefault: 'http://localhost:4040' }),
   COUNTRY_CONFIG_URL: url({ devDefault: 'http://localhost:3040' }),
-  APPLICATION_CONFIG_URL: url({ devDefault: 'http://localhost:2021/' }),
   SENTRY_DSN: str({ default: undefined }),
   CONFIRM_REGISTRATION_URL: url({
     devDefault: 'http://localhost:5050/confirm/registration'
   }),
-  QA_ENV: bool({ default: false }),
   ESIGNET_REDIRECT_URL: url({ devDefault: 'http://localhost:20260/authorize' }),
   OPENID_PROVIDER_CLIENT_ID: str({ devDefault: 'mock-client_id' }),
   OPENID_PROVIDER_CLAIMS: str({
