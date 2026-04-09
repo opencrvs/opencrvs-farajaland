@@ -93,6 +93,13 @@ services:
       - jwt-public-key.{{ts}}
     environment:
       - NODE_ENV=production
+<<<<<<< HEAD
+=======
+      - OPENCRVS_ENVIRONMENT=staging
+      - AUTH_URL=http://auth:4040
+      - APPLICATION_CONFIG_URL=http://config:2021
+      - CONFIRM_REGISTRATION_URL=http://workflow:5050/confirm/registration
+>>>>>>> upstream/develop
       - SENTRY_DSN=${SENTRY_DSN:-}
       - SENDER_EMAIL_ADDRESS=${SENDER_EMAIL_ADDRESS}
       - ALERT_EMAIL=${ALERT_EMAIL}

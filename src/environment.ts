@@ -32,6 +32,8 @@ export const env = cleanEnv(process.env, {
   MOSIP_API_USERINFO_URL: url({
     devDefault: 'http://localhost:2024/esignet/get-oidp-user-info'
   }),
+  TWO_FA_ENABLED: bool({ default: true }),
+  OPENCRVS_ENVIRONMENT: str({ devDefault: 'development' }),
   ANALYTICS_DATABASE_URL: url({
     default: undefined,
     devDefault:
