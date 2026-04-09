@@ -29,7 +29,7 @@ test.describe
 
     const childName = `${declaration['child.name'].firstname} ${declaration['child.name'].surname}`
     await page.getByRole('button', { name: childName }).click()
-    await ensureAssigned(page)
+    await ensureAssigned(page, CREDENTIALS.REGISTRAR)
     await expect(page.getByTestId('assignedTo-value')).toHaveText(
       'Kennedy Mweene'
     )

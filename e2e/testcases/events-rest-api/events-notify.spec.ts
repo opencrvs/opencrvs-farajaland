@@ -472,7 +472,7 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
 
     await page.getByText(await formatName(childName)).click()
 
-    await ensureAssigned(page)
+    await ensureAssigned(page, CREDENTIALS.REGISTRAR)
 
     await page.getByRole('button', { name: 'Audit' }).click()
 
@@ -810,7 +810,7 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
         .getByText(await formatV2ChildName({ 'child.name': childName }))
         .click()
 
-      await ensureAssigned(page)
+      await ensureAssigned(page, CREDENTIALS.REGISTRAR)
       await page.waitForTimeout(SAFE_IN_EXTERNAL_VALIDATION_MS)
     })
 

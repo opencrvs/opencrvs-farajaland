@@ -349,7 +349,7 @@ test.describe.serial('Correct record - 2', () => {
 
     test.describe('2.8.4 Validate history in record audit', async () => {
       test('2.8.4.1 Navigate to record audit', async () => {
-        await ensureAssigned(page)
+        await ensureAssigned(page, CREDENTIALS.REGISTRAR)
         await page.getByRole('button', { name: 'Audit' }).click()
       })
 

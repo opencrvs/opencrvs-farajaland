@@ -76,7 +76,7 @@ test.describe
     await type(page, '#searchText', trackingId)
     await page.locator('#searchIconButton').click()
     await page.getByRole('button', { name: 'Review' }).click()
-    await ensureAssigned(page)
+    await ensureAssigned(page, CREDENTIALS.REGISTRAR)
     await selectAction(page, 'Review correction request')
     await expect(page.getByText('Submitter' + clientName)).toBeVisible()
   })

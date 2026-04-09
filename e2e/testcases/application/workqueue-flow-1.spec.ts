@@ -371,7 +371,7 @@ test.describe.serial('1. Workqueue flow - 1', () => {
       })
       .click()
 
-    await ensureAssigned(page)
+    await ensureAssigned(page, CREDENTIALS.REGISTRAR)
     await page.goBack()
 
     const row = getRowByTitle(page, formatName(declaration.child.name))

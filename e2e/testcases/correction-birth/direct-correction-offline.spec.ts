@@ -91,7 +91,7 @@ test.describe.serial('Direct correction offline', () => {
       name: formatV2ChildName(declaration),
       trackingId
     })
-    await ensureAssigned(page)
+    await ensureAssigned(page, CREDENTIALS.REGISTRAR)
 
     await selectAction(page, 'Correct')
   })

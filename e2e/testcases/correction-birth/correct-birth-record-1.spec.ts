@@ -728,7 +728,7 @@ test.describe('1. Correct record - 1', () => {
 
       test.describe('1.2.6.4 Validate history in record audit', async () => {
         test('1.2.6.4.1 Validate correction requested modal', async () => {
-          await ensureAssigned(page)
+          await ensureAssigned(page, CREDENTIALS.REGISTRAR)
           await page.getByRole('button', { name: 'Audit' }).click()
 
           await page

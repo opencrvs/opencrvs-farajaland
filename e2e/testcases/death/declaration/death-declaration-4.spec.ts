@@ -737,7 +737,7 @@ test.describe.serial('4. Death declaration case - 4', () => {
         })
         .click()
 
-      await ensureAssigned(page)
+      await ensureAssigned(page, CREDENTIALS.REGISTRAR)
       await switchEventTab(page, 'Record')
     })
 

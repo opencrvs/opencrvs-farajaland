@@ -84,7 +84,7 @@ test.describe
       })
       await expect(childButton).toBeVisible({ timeout: 30_000 })
       await childButton.click()
-      await ensureAssigned(page)
+      await ensureAssigned(page, CREDENTIALS.REGISTRAR)
       await switchEventTab(page, 'Record')
       await expect(page.getByTestId('row-value-mother.occupation')).toHaveText(
         'House Wife'

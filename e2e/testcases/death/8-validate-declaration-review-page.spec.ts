@@ -1174,7 +1174,7 @@ test.describe.serial('8. Validate declaration review page', () => {
         })
         .click()
 
-      await ensureAssigned(page)
+      await ensureAssigned(page, CREDENTIALS.REGISTRAR)
       await switchEventTab(page, 'Record')
     })
     test('8.3.1.1 Verify information added on previous pages', async () => {

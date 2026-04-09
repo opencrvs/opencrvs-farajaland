@@ -64,7 +64,7 @@ test.describe.serial('Escalation of birth registration by Registrar', () => {
       await page
         .getByRole('button', { name: childNameForProvincialFormatted })
         .click()
-      await ensureAssigned(page)
+      await ensureAssigned(page, CREDENTIALS.REGISTRAR)
     })
 
     test("Event should not have the 'Escalated' -flag", async () => {
@@ -103,7 +103,7 @@ test.describe.serial('Escalation of birth registration by Registrar', () => {
       await page
         .getByRole('button', { name: childNameForRegGeneralFormatted })
         .click()
-      await ensureAssigned(page)
+      await ensureAssigned(page, CREDENTIALS.REGISTRAR)
     })
 
     test("Event should not have the 'Escalated' -flag", async () => {
@@ -216,7 +216,7 @@ test.describe.serial('Escalation of birth registration by Registrar', () => {
       })
 
       test('Assign', async () => {
-        await ensureAssigned(page)
+        await ensureAssigned(page, CREDENTIALS.REGISTRAR)
       })
 
       test('LR should still have the option to Escalate', async () => {
@@ -273,7 +273,7 @@ test.describe.serial('Escalation of birth registration by Registrar', () => {
       })
 
       test('Assign', async () => {
-        await ensureAssigned(page)
+        await ensureAssigned(page, CREDENTIALS.REGISTRAR)
       })
 
       test('LR should still have the option to Escalate', async () => {

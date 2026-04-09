@@ -347,7 +347,7 @@ test.describe.serial('Change informant on review', () => {
       await page
         .getByRole('button', { name: formatName(declaration.child.name) })
         .click()
-      await ensureAssigned(page)
+      await ensureAssigned(page, CREDENTIALS.REGISTRAR)
       await expect(page.getByTestId('status-value')).toHaveText('Registered')
     })
 

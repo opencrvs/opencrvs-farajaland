@@ -25,7 +25,7 @@ test('Revoke and reinstate record', async ({ browser }) => {
   })
 
   await test.step('Revoke record', async () => {
-    await ensureAssigned(page)
+    await ensureAssigned(page, CREDENTIALS.REGISTRAR)
     await selectAction(page, 'Revoke registration')
 
     await expect(page.getByRole('button', { name: 'Confirm' })).toBeDisabled()

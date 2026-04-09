@@ -59,10 +59,6 @@ export async function selectAction(
     | 'Update'
     | 'Issue certified copy'
 ) {
-  if (await page.getByRole('button', { name: 'Assign record' }).isVisible()) {
-    await ensureAssigned(page)
-  }
-
   await page.getByRole('button', { name: 'Action', exact: true }).click()
 
   if (isMobile(page)) {
@@ -93,10 +89,17 @@ const usernameToFullNameMap = {
  */
 export async function ensureAssigned(
   page: Page,
-  username: keyof typeof usernameToFullNameMap = 'k.mweene'
+  username: keyof typeof usernameToFullNameMap
 ) {
-  await page.getByRole('button', { name: 'Action', exact: true }).click()
   const userFullName = usernameToFullNameMap[username]
+
+  const assignedTo = page.getByTestId('assignedTo-value').locator('span')
+
+  if (await assignedTo.filter({ hasText: userFullName }).isVisible()) {
+    return
+  }
+
+  await page.getByRole('button', { name: 'Action', exact: true }).click()
 
   const assignAction = page
     .locator('#action-Dropdown-Content li')

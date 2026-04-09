@@ -60,7 +60,7 @@ test.describe
         name: getChildNameFromRecord(recordWithDefaultEmail)
       })
       .click()
-    await ensureAssigned(page)
+    await ensureAssigned(page, CREDENTIALS.REGISTRAR)
     await expect(page.getByTestId('assignedTo-value')).toHaveText(
       'Kennedy Mweene'
     )
@@ -119,7 +119,7 @@ test.describe
       })
       .click()
 
-    await ensureAssigned(page)
+    await ensureAssigned(page, CREDENTIALS.REGISTRAR)
     await expect(page.getByTestId('assignedTo-value')).toHaveText(
       'Kennedy Mweene'
     )

@@ -111,7 +111,7 @@ test.describe('Action menu options', () => {
     test('Registrar (assigned)', async () => {
       await login(page, CREDENTIALS.REGISTRAR)
       await searchFromSearchBar(page, formatV2ChildName(declaration))
-      await ensureAssigned(page)
+      await ensureAssigned(page, CREDENTIALS.REGISTRAR)
 
       await page.getByRole('button', { name: 'Action', exact: true }).click()
       const options = await page
@@ -140,6 +140,8 @@ test.describe('Action menu options', () => {
     test('Archive declaration', async () => {
       await login(page, CREDENTIALS.REGISTRAR)
       await searchFromSearchBar(page, formatV2ChildName(declaration))
+
+      await ensureAssigned(page, CREDENTIALS.REGISTRAR)
       await selectAction(page, 'Archive')
       await page.getByRole('button', { name: 'Archive', exact: true }).click()
     })

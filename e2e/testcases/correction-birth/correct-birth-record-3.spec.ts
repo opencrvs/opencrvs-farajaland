@@ -960,7 +960,7 @@ test.describe.serial(' Correct record - 3', () => {
         trackingId
       })
 
-      await ensureAssigned(page)
+      await ensureAssigned(page, CREDENTIALS.REGISTRAR)
 
       await expect(page.locator('#content-name')).toHaveText(
         formatV2ChildName(declaration)
@@ -1122,7 +1122,7 @@ test.describe.serial(' Correct record - 3', () => {
     })
 
     test('3.8.4 Assign record', async () => {
-      await ensureAssigned(page)
+      await ensureAssigned(page, CREDENTIALS.REGISTRAR)
     })
 
     test('3.8.5 Validate history in record audit', async () => {

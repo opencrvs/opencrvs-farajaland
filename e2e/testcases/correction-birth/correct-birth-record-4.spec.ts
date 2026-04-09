@@ -151,7 +151,7 @@ test.describe.serial('Correct record - 4', () => {
       name: formatV2ChildName(declaration),
       trackingId
     })
-    await ensureAssigned(page)
+    await ensureAssigned(page, CREDENTIALS.REGISTRAR)
 
     await selectAction(page, 'Correct')
   })
@@ -907,7 +907,7 @@ test.describe.serial('Correct record - 4', () => {
       trackingId
     })
 
-    await ensureAssigned(page)
+    await ensureAssigned(page, CREDENTIALS.REGISTRAR)
     await page.getByRole('button', { name: 'Audit' }).click()
 
     /*

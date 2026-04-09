@@ -316,7 +316,7 @@ test.describe.serial('Correct record - Change ages', () => {
       trackingId
     })
 
-    await ensureAssigned(page)
+    await ensureAssigned(page, CREDENTIALS.REGISTRAR)
 
     await page.getByRole('button', { name: 'Record', exact: true }).click()
 
