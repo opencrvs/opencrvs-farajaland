@@ -109,8 +109,6 @@ export async function ensureAssigned(
   // Wait for the assign modal to appear
   await page.getByRole('button', { name: 'Assign', exact: true }).click()
 
-  await expect(page.getByRole('button', { name: 'Assign record' }))
-
   await expect(
     page.getByTestId('assignedTo-value').locator('span')
   ).toContainText(userFullName)
