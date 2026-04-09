@@ -49,7 +49,7 @@ export async function logout(page: Page) {
 
 export async function login(
   page: Page,
-  username = CREDENTIALS.REGISTRAR,
+  username: (typeof CREDENTIALS)[keyof typeof CREDENTIALS] = CREDENTIALS.REGISTRAR,
   skipPin?: boolean
 ) {
   const token = await getToken(username)
@@ -442,7 +442,7 @@ export async function searchFromSearchBar(
   const searchResult = await page.locator('#content-name').textContent()
   expect(searchResult).toMatch(searchResultRegex)
   if (expectToBeFound) {
-    await page.getByRole('button', { name:searchText, exact: true }).click()
+    await page.getByRole('button', { name: searchText, exact: true }).click()
   } else {
     await expect(
       page.getByRole('button', { name: searchText, exact: true })

@@ -286,7 +286,7 @@ test.describe.serial('8. Birth declaration case - 8', () => {
         })
         .click()
 
-      await ensureAssigned(page)
+      await ensureAssigned(page, CREDENTIALS.REGISTRATION_OFFICER)
       await switchEventTab(page, 'Record')
     })
 

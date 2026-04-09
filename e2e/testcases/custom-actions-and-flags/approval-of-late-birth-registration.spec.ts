@@ -159,7 +159,7 @@ test.describe.serial('Approval of late birth registration', () => {
       await page.getByText('Pending approval').click()
       await page.getByRole('button', { name: childNameFormatted }).click()
 
-      await ensureAssigned(page)
+      await ensureAssigned(page, CREDENTIALS.REGISTRATION_OFFICER)
     })
 
     test("Event should have the 'Approval required for late registration' -flag", async () => {
@@ -208,7 +208,7 @@ test.describe.serial('Approval of late birth registration', () => {
     })
 
     test('Assign', async () => {
-      await ensureAssigned(page)
+      await ensureAssigned(page, CREDENTIALS.PROVINCIAL_REGISTRAR)
     })
 
     test("Event should have the 'Approval required for late registration' -flag", async () => {
@@ -669,7 +669,7 @@ test.describe
     })
 
     test('Assign', async () => {
-      await ensureAssigned(page)
+      await ensureAssigned(page, CREDENTIALS.REGISTRATION_OFFICER)
     })
 
     test("Event should have the 'Approval required for late registration' -flag", async () => {

@@ -98,7 +98,7 @@ test.describe.serial("Correct record - Change father's ID number", () => {
       name: formatV2ChildName(declaration),
       trackingId
     })
-    await ensureAssigned(page)
+    await ensureAssigned(page, CREDENTIALS.REGISTRATION_OFFICER)
 
     await selectAction(page, 'Correct')
   })

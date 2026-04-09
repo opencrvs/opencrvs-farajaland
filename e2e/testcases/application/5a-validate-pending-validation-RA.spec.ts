@@ -77,7 +77,7 @@ test.describe
   })
 
   test('5.4 Click "Validate"-action', async () => {
-    await ensureAssigned(page)
+    await ensureAssigned(page, CREDENTIALS.HOSPITAL_OFFICIAL)
     await selectAction(page, 'Validate')
 
     await expect(

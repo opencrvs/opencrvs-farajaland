@@ -64,7 +64,8 @@ test.describe('1. Correct record - 1', () => {
       await page
         .getByRole('button', { name: formatV2ChildName(declaration) })
         .click()
-      await ensureAssigned(page)
+
+      await ensureAssigned(page, CREDENTIALS.REGISTRATION_OFFICER)
     })
 
     test('1.1.1 Validate record audit page', async ({ page }) => {
@@ -200,7 +201,7 @@ test.describe('1. Correct record - 1', () => {
       await page
         .getByRole('button', { name: formatV2ChildName(declaration) })
         .click()
-      await ensureAssigned(page)
+      await ensureAssigned(page, CREDENTIALS.REGISTRATION_OFFICER)
     })
 
     test('1.2.0 Navigate to record correction', async () => {

@@ -72,7 +72,7 @@ test.describe
   })
 
   test('5.5 Register action should be available for declared and validated record', async () => {
-    await ensureAssigned(page)
+    await ensureAssigned(page, CREDENTIALS.REGISTRATION_OFFICER)
     await validateActionMenuButton(page, 'Register', true)
   })
 })

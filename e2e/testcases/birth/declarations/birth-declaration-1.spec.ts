@@ -499,7 +499,7 @@ test.describe.serial('1. Birth declaration case - 1', () => {
         })
         .click()
 
-      await ensureAssigned(page)
+      await ensureAssigned(page, CREDENTIALS.REGISTRATION_OFFICER)
 
       await expect(page.getByTestId('assignedTo-value')).toHaveText(
         'Felix Katongo'

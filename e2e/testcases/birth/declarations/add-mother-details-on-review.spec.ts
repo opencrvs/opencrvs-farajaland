@@ -311,7 +311,7 @@ test.describe.serial('Add mother details on review', () => {
         .getByRole('button', { name: formatName(declaration.child.name) })
         .click()
 
-      await ensureAssigned(page)
+      await ensureAssigned(page, CREDENTIALS.REGISTRATION_OFFICER_VILLAGE)
 
       await expect(page.getByTestId('status-value')).toHaveText('Registered')
     })

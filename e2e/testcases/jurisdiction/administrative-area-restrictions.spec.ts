@@ -91,7 +91,7 @@ test('Record declared in one administrative area should not appear for users in 
     })
 
     await test.step('Place of birth should be Farajaland, Pualula, Oya', async () => {
-      await ensureAssigned(page)
+      await ensureAssigned(page, CREDENTIALS.REGISTRATION_OFFICER_PUALULA)
       await expect(
         page.getByTestId('child.birthLocation.privateHome-value')
       ).toHaveText('FarajalandPualula-Oya')

@@ -154,7 +154,7 @@ test.describe.serial(' Correct record - 3', () => {
         trackingId
       })
 
-      await ensureAssigned(page)
+      await ensureAssigned(page, CREDENTIALS.REGISTRATION_OFFICER)
 
       await page.getByRole('button', { name: 'Action' }).click()
       await page.locator('#action-dropdownMenu').getByText('Print').click()
@@ -180,7 +180,7 @@ test.describe.serial(' Correct record - 3', () => {
     })
 
     test('3.1.2 Record audit', async () => {
-      await ensureAssigned(page)
+      await ensureAssigned(page, CREDENTIALS.REGISTRATION_OFFICER)
       await selectAction(page, 'Correct')
     })
   })
@@ -959,6 +959,7 @@ test.describe.serial(' Correct record - 3', () => {
         name: `${formatV2ChildName(declaration)}`,
         trackingId
       })
+
       await ensureAssigned(page)
 
       await expect(page.locator('#content-name')).toHaveText(

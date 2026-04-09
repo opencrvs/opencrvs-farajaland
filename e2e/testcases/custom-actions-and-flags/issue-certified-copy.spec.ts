@@ -19,9 +19,7 @@ test.describe.serial('Issue Certified Copy', () => {
 
   test.beforeAll(async ({ browser }) => {
     page = await browser.newPage()
-    const token = await getToken(
-      CREDENTIALS.REGISTRAR
-    )
+    const token = await getToken(CREDENTIALS.REGISTRAR)
     declaration = (await createDeclaration(token)).declaration
     childName = formatV2ChildName(declaration)
   })
@@ -35,9 +33,13 @@ test.describe.serial('Issue Certified Copy', () => {
       await navigateToWorkqueue(page, 'Pending certification')
       await page.getByRole('button', { name: childName }).click()
       await expect(page.getByText('Registered')).toBeVisible()
-      await ensureAssigned(page)
-      await expect(page.getByTestId('assignedTo').getByText('Felix Katongo')).toBeVisible()
-      await expect(page.getByTestId('flags').getByText('Pending first certificate issuance')).toBeVisible()
+      await ensureAssigned(page, CREDENTIALS.REGISTRATION_OFFICER)
+
+      await expect(
+        page
+          .getByTestId('flags')
+          .getByText('Pending first certificate issuance')
+      ).toBeVisible()
     })
     test('Navigate to print', async () => {
       await selectAction(page, 'Print')
@@ -82,12 +84,13 @@ test.describe.serial('Issue Certified Copy', () => {
     test('Print', async () => {
       await printAndExpectPopup(page)
     })
-    test('Ensure "Certified copy printed in advance of issuance" flag appears on record', async()=>{
+    test('Ensure "Certified copy printed in advance of issuance" flag appears on record', async () => {
       await searchFromSearchBar(page, childName)
       const Flags = page.getByTestId('flags').filter({ hasText: 'Flags' })
-      await expect(Flags.getByText('Certified copy printed in advance of issuance')).toBeVisible()
+      await expect(
+        Flags.getByText('Certified copy printed in advance of issuance')
+      ).toBeVisible()
       await page.getByTestId('exit-event').click()
-
     })
   })
   test.describe('Print issuance', async () => {
@@ -95,11 +98,8 @@ test.describe.serial('Issue Certified Copy', () => {
       await navigateToWorkqueue(page, 'Pending issuance')
       await page.getByRole('button', { name: childName }).click()
       await expect(page.getByText('Registered')).toBeVisible()
-      await ensureAssigned(page)
-      const assignedTo = page
-        .getByTestId('assignedTo')
-        .filter({ hasText: 'Assigned to' })
-      await expect(assignedTo.getByText('Felix Katongo')).toBeVisible()
+      await ensureAssigned(page, CREDENTIALS.REGISTRATION_OFFICER)
+
       const Flags = page.getByTestId('flags').filter({ hasText: 'Flags' })
       await expect(
         Flags.getByText('Certified copy printed in advance of issuance')

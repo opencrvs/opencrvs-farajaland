@@ -40,7 +40,7 @@ test.describe.serial('Birth correction flow', () => {
     await page
       .getByRole('button', { name: formatV2ChildName(declaration) })
       .click()
-    await ensureAssigned(page)
+    await ensureAssigned(page, CREDENTIALS.REGISTRATION_OFFICER)
     await selectAction(page, 'Correct')
   })
 

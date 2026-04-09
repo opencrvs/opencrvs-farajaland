@@ -98,7 +98,7 @@ test.describe.serial('4(a) Validate "Pending updates"-workqueue for HO', () => {
   })
 
   test('4.5 Acting directly from workqueue should redirect to the same workqueue', async () => {
-    await ensureAssigned(page)
+    await ensureAssigned(page, CREDENTIALS.HOSPITAL_OFFICIAL)
     await page.goBack()
 
     const row = getRowByTitle(page, formattedChildName)

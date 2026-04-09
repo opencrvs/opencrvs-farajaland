@@ -80,7 +80,7 @@ test.describe('10. Correct record', () => {
       await page
         .getByRole('button', { name: formatV2ChildName(declaration) })
         .click()
-      await ensureAssigned(page)
+      await ensureAssigned(page, CREDENTIALS.REGISTRATION_OFFICER)
       await selectAction(page, 'Correct')
     })
 

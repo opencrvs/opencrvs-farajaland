@@ -579,7 +579,7 @@ test.describe.serial('6. Death declaration case - 6', () => {
     })
 
     test('6.2.2 Verify information on "Record" tab', async () => {
-      await ensureAssigned(page)
+      await ensureAssigned(page, CREDENTIALS.REGISTRATION_OFFICER)
       await switchEventTab(page, 'Record')
       /*
        * Expected result: should include

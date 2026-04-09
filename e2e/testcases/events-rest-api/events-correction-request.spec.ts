@@ -62,7 +62,6 @@ test.describe
   test('Correction review has submitter name as system client', async ({
     browser
   }) => {
-    console.log('Event ID:', eventId, registrarToken)
     page = await browser.newPage()
     await login(page, CREDENTIALS.REGISTRAR)
 

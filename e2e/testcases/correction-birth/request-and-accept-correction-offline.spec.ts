@@ -94,7 +94,7 @@ test.describe.serial('Request and accept correction (offline)', () => {
         name: formatV2ChildName(declaration),
         trackingId
       })
-      await ensureAssigned(page)
+      await ensureAssigned(page, CREDENTIALS.REGISTRATION_OFFICER)
 
       await selectAction(page, 'Correct')
     })

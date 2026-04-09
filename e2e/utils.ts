@@ -76,8 +76,27 @@ export async function selectAction(
     .click()
 }
 
-export async function ensureAssigned(page: Page) {
+const usernameToFullNameMap = {
+  'k.cwalya': 'Kalusha Cwalya',
+  'g.phiri': 'Gift Phiri',
+  'f.katongo': 'Felix Katongo',
+  'm.simbaya': 'Mapalo Simbaya',
+  'v.katongo': 'Velix Katongo',
+  'k.mweene': 'Kennedy Mweene',
+  'v.mweene': 'Venedy Mweene',
+  'm.owen': 'Mitchel Owen',
+  'c.lungu': 'Chipo Lungu'
+} as const
+/**
+ *
+ * @param username name of the user record is assigned. Used for assertion after assignment. Checking absence of something will burn the whole timeout in CI.
+ */
+export async function ensureAssigned(
+  page: Page,
+  username: keyof typeof usernameToFullNameMap = 'k.mweene'
+) {
   await page.getByRole('button', { name: 'Action', exact: true }).click()
+  const userFullName = usernameToFullNameMap[username]
 
   const assignAction = page
     .locator('#action-Dropdown-Content li')
@@ -90,11 +109,11 @@ export async function ensureAssigned(page: Page) {
   // Wait for the assign modal to appear
   await page.getByRole('button', { name: 'Assign', exact: true }).click()
 
-  await expect(
-    page.getByRole('button', { name: 'Assign record' })
-  ).not.toBeVisible({ timeout: SAFE_OUTBOX_TIMEOUT_MS })
+  await expect(page.getByRole('button', { name: 'Assign record' }))
 
-  await expect(page.locator('#action-loading-undefined')).not.toBeVisible()
+  await expect(
+    page.getByTestId('assignedTo-value').locator('span')
+  ).toContainText(userFullName)
 }
 
 export async function expectInUrl(page: Page, assertionString: string) {

@@ -144,7 +144,7 @@ test.describe.serial('Escalation of birth registration by Registrar', () => {
     })
 
     test('Assign', async () => {
-      await ensureAssigned(page)
+      await ensureAssigned(page, CREDENTIALS.REGISTRAR_GENERAL)
     })
 
     test('Event should have the correct flag', async () => {
@@ -181,7 +181,7 @@ test.describe.serial('Escalation of birth registration by Registrar', () => {
     })
 
     test('Assign', async () => {
-      await ensureAssigned(page)
+      await ensureAssigned(page, CREDENTIALS.PROVINCIAL_REGISTRAR)
     })
 
     test('Event should have the correct flag', async () => {

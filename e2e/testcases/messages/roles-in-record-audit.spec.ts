@@ -52,7 +52,7 @@ test.describe('Roles in Record Audit', () => {
         })
         .click()
 
-      await ensureAssigned(page)
+      await ensureAssigned(page, credential)
       await switchEventTab(page, 'Audit')
 
       await expect(page.locator('#row_0')).toContainText(expectedAuditRole)
