@@ -23,6 +23,7 @@ test.describe.serial('1. Organisation Page', () => {
     test('1.1.1 Verify Province -> District -> Health Facility', async () => {
       await page.getByRole('button', { name: /Central/ }).click()
       await page.getByRole('button', { name: /Ibombo/ }).click()
+      await page.getByRole('button', { name: /Klow/ }).click()
 
       await page.getByRole('button', { name: /Klow Village Hospital/ }).click()
       await expect(page.locator('#content-name')).toHaveText(
@@ -31,6 +32,7 @@ test.describe.serial('1. Organisation Page', () => {
       await expect(
         page.getByText('Ibombo, Central', { exact: true })
       ).toBeVisible()
+
       await expect(page.getByText('No result')).toBeHidden()
     })
     test('1.1.2 Verify Province -> District -> Village -> Village Office(No Data)', async () => {
@@ -46,6 +48,7 @@ test.describe.serial('1. Organisation Page', () => {
       await expect(
         page.getByText('Laini, Ama, Chuminga', { exact: true })
       ).toBeVisible()
+
       await expect(page.getByText('No result')).toBeVisible()
     })
 

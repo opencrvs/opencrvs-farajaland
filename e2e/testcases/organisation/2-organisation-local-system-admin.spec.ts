@@ -27,9 +27,7 @@ test.describe.serial('2. Organisation Page', () => {
     test('2.1.1 Verify Province -> District -> Health Facility', async () => {
       await page.getByRole('button', { name: /Central/ }).click()
       await page.getByRole('button', { name: /Ibombo/ }).click()
-      const pageNavigator = page.getByRole('button', { name: '2' })
-      await pageNavigator.scrollIntoViewIfNeeded()
-      await pageNavigator.click()
+      await page.getByRole('button', { name: /Klow/ }).click()
 
       await page.getByRole('button', { name: /Klow Village Hospital/ }).click()
       await expect(page.locator('#content-name')).toHaveText(
