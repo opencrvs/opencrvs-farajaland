@@ -64,6 +64,7 @@ test.describe
     await expect(page.getByTestId('assignedTo-value')).toHaveText(
       'Kennedy Mweene'
     )
+
     await expect(page.getByTestId('informant.contact-value')).toContainText(
       recordWithDefaultEmail.declaration['informant.email']
     )
@@ -118,6 +119,7 @@ test.describe
       })
       .click()
 
+    await ensureAssigned(page)
     await expect(page.getByTestId('assignedTo-value')).toHaveText(
       'Kennedy Mweene'
     )
