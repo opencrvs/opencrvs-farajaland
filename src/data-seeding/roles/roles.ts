@@ -1,39 +1,13 @@
-import { SCOPES, Scope } from '@opencrvs/toolkit/scopes'
+import { SCOPES } from '@opencrvs/toolkit/scopes'
 import { MessageDescriptor } from 'react-intl'
 
 type Role = {
   id: string
   label: MessageDescriptor
-  scopes: Scope[]
+  scopes: string[]
 }
 
 export const roles: Role[] = [
-  {
-    id: 'FIELD_AGENT',
-    label: {
-      defaultMessage: 'Field Agent',
-      description: 'Name for user role Field Agent',
-      id: 'userRole.fieldAgent'
-    },
-    scopes: [
-      SCOPES.RECORD_DECLARE_BIRTH,
-      SCOPES.RECORD_DECLARE_DEATH,
-      SCOPES.RECORD_DECLARE_MARRIAGE,
-      SCOPES.RECORD_SUBMIT_INCOMPLETE,
-      SCOPES.RECORD_SUBMIT_FOR_REVIEW,
-      SCOPES.SEARCH_BIRTH,
-      SCOPES.SEARCH_DEATH,
-      SCOPES.SEARCH_MARRIAGE,
-      SCOPES.USER_READ_ONLY_MY_AUDIT,
-      'search[event=birth,access=all]',
-      'search[event=death,access=my-jurisdiction]',
-      'search[event=tennis-club-membership,access=all]',
-      'workqueue[id=assigned-to-you|recent|requires-updates-self|sent-for-review]',
-      `record.create[event=birth|death|tennis-club-membership]`,
-      'record.declare[event=birth|death|tennis-club-membership]',
-      'record.notify[event=birth|death|tennis-club-membership]'
-    ]
-  },
   {
     id: 'REGISTRATION_AGENT',
     label: {
@@ -42,91 +16,57 @@ export const roles: Role[] = [
       id: 'userRole.registrationOfficer'
     },
     scopes: [
-      SCOPES.RECORD_READ,
-      SCOPES.RECORD_DECLARE_BIRTH,
-      SCOPES.RECORD_DECLARE_DEATH,
-      SCOPES.RECORD_DECLARE_MARRIAGE,
-      SCOPES.RECORD_SUBMIT_FOR_APPROVAL,
-      SCOPES.RECORD_SUBMIT_FOR_UPDATES,
-      SCOPES.RECORD_DECLARATION_EDIT,
-      SCOPES.RECORD_REVIEW_DUPLICATES,
-      SCOPES.RECORD_DECLARATION_ARCHIVE,
-      SCOPES.RECORD_DECLARATION_REINSTATE,
-      SCOPES.RECORD_PRINT_ISSUE_CERTIFIED_COPIES,
-      SCOPES.RECORD_REGISTRATION_REQUEST_CORRECTION,
       SCOPES.PERFORMANCE_READ,
-      SCOPES.PERFORMANCE_READ_DASHBOARDS,
       SCOPES.ORGANISATION_READ_LOCATIONS_MY_OFFICE,
-      SCOPES.USER_READ_ONLY_MY_AUDIT,
-      SCOPES.SEARCH_BIRTH,
-      SCOPES.SEARCH_DEATH,
-      SCOPES.SEARCH_MARRIAGE,
+      SCOPES.USER_READ_MY_JURISDICTION,
       SCOPES.ORGANISATION_READ_LOCATIONS_MY_JURISDICTION,
-      SCOPES.USER_READ_ONLY_MY_AUDIT,
-      'search[event=birth,access=all]',
-      'search[event=death,access=all]',
-      'search[event=tennis-club-membership,access=all]',
-      'workqueue[id=assigned-to-you|recent|requires-completion|requires-updates-office|in-review|sent-for-approval|in-external-validation|ready-to-print|ready-to-issue]',
-      'record.create[event=birth|death|tennis-club-membership]',
-      'record.read[event=birth|death|tennis-club-membership]',
-      'record.declare[event=birth|death|tennis-club-membership]',
-      'record.declared.validate[event=birth|death|tennis-club-membership]',
-      'record.declared.reject[event=birth|death|tennis-club-membership]',
-      'record.declared.archive[event=birth|death|tennis-club-membership]',
-      'record.declared.review-duplicates[event=birth|death|tennis-club-membership]',
-      'record.registered.print-certified-copies[event=birth|death|tennis-club-membership]',
-      'record.registered.request-correction[event=birth|death|tennis-club-membership]'
+      SCOPES.RECORD_PRINT_ISSUE_CERTIFIED_COPIES,
+      SCOPES.PERFORMANCE_READ_DASHBOARDS,
+      'workqueue[id=assigned-to-you|recent|requires-completion|in-external-validation|escalated|pending-validation|pending-updates|pending-approval|pending-certification|pending-issuance|correction-requested]',
+      'type=record.search&placeOfEvent=administrativeArea',
+      'type=record.create&placeOfEvent=administrativeArea',
+      'type=record.read&placeOfEvent=administrativeArea',
+      'type=record.declare&placeOfEvent=administrativeArea',
+      'type=record.edit&placeOfEvent=administrativeArea',
+      'type=record.reject&placeOfEvent=administrativeArea',
+      'type=record.archive&declaredIn=administrativeArea',
+      'type=record.print-certified-copies&registeredIn=administrativeArea',
+      'type=record.request-correction&registeredIn=administrativeArea',
+      'type=record.custom-action&event=birth&customActionTypes=VALIDATE_DECLARATION,ESCALATE&placeOfEvent=administrativeArea',
+      'type=record.custom-action&event=birth&customActionTypes=ISSUE_CERTIFIED_COPY,ISSUE_VERIFIABLE_CREDENTIAL&registeredIn=administrativeArea',
+      'type=record.custom-action&event=death&customActionTypes=VALIDATE_DECLARATION&declaredIn=administrativeArea'
     ]
   },
   {
     id: 'LOCAL_REGISTRAR',
     label: {
-      defaultMessage: 'Local Registrar',
-      description: 'Name for user role Local Registrar',
+      defaultMessage: 'Registrar',
+      description: 'Name for user role Registrar',
       id: 'userRole.localRegistrar'
     },
     scopes: [
-      SCOPES.RECORD_READ,
-      SCOPES.RECORD_DECLARE_BIRTH,
-      SCOPES.RECORD_DECLARE_DEATH,
-      SCOPES.RECORD_DECLARE_MARRIAGE,
-      SCOPES.RECORD_SUBMIT_FOR_UPDATES,
-      SCOPES.RECORD_UNASSIGN_OTHERS,
-      SCOPES.RECORD_DECLARATION_EDIT,
-      SCOPES.RECORD_DECLARATION_ARCHIVE,
-      SCOPES.RECORD_DECLARATION_REINSTATE,
-      SCOPES.RECORD_REVIEW_DUPLICATES,
-      SCOPES.RECORD_REGISTER,
-      SCOPES.RECORD_PRINT_ISSUE_CERTIFIED_COPIES,
       SCOPES.PROFILE_ELECTRONIC_SIGNATURE,
-      SCOPES.RECORD_REGISTRATION_CORRECT,
-      SCOPES.RECORD_CONFIRM_REGISTRATION,
-      SCOPES.RECORD_REJECT_REGISTRATION,
       SCOPES.PERFORMANCE_READ,
-      SCOPES.PERFORMANCE_READ_DASHBOARDS,
-      SCOPES.PROFILE_ELECTRONIC_SIGNATURE,
-      SCOPES.USER_READ_ONLY_MY_AUDIT,
       SCOPES.ORGANISATION_READ_LOCATIONS_MY_OFFICE,
-      SCOPES.PERFORMANCE_EXPORT_VITAL_STATISTICS,
-      SCOPES.SEARCH_BIRTH,
-      SCOPES.SEARCH_DEATH,
-      SCOPES.SEARCH_MARRIAGE,
       SCOPES.ORGANISATION_READ_LOCATIONS_MY_JURISDICTION,
-      SCOPES.USER_READ_MY_OFFICE,
-      'search[event=birth,access=all]',
-      'search[event=death,access=all]',
-      'search[event=tennis-club-membership,access=all]',
-      'workqueue[id=assigned-to-you|recent|requires-completion|requires-updates-office|in-review-all|in-external-validation|ready-to-print|ready-to-issue]',
-      'record.create[event=birth|death|tennis-club-membership]',
-      'record.read[event=birth|death|tennis-club-membership]',
-      'record.declare[event=birth|death|tennis-club-membership]',
-      'record.declared.reject[event=birth|death|tennis-club-membership]',
-      'record.declared.archive[event=birth|death|tennis-club-membership]',
-      'record.declared.review-duplicates[event=birth|death|tennis-club-membership]',
-      'record.register[event=birth|death|tennis-club-membership]',
-      'record.registered.print-certified-copies[event=birth|death|tennis-club-membership]',
-      'record.registered.correct[event=birth|death|tennis-club-membership]',
-      'record.unassign-others[event=birth|death|tennis-club-membership]'
+      SCOPES.USER_READ_MY_JURISDICTION,
+      SCOPES.RECORD_PRINT_ISSUE_CERTIFIED_COPIES,
+      SCOPES.PERFORMANCE_READ_DASHBOARDS,
+      'workqueue[id=assigned-to-you|recent|requires-completion|in-external-validation|escalated|potential-duplicate|pending-updates|pending-registration|pending-approval|pending-certification|pending-issuance|correction-requested]',
+      'type=record.search&placeOfEvent=administrativeArea',
+      'type=record.create&placeOfEvent=administrativeArea',
+      'type=record.read&placeOfEvent=administrativeArea',
+      'type=record.declare&placeOfEvent=administrativeArea',
+      'type=record.edit&placeOfEvent=administrativeArea',
+      'type=record.reject&placeOfEvent=administrativeArea',
+      'type=record.archive&declaredIn=administrativeArea',
+      'type=record.review-duplicates&placeOfEvent=administrativeArea',
+      'type=record.register&placeOfEvent=administrativeArea',
+      'type=record.print-certified-copies&registeredIn=administrativeArea',
+      'type=record.correct&registeredIn=administrativeArea',
+      'type=record.custom-action&event=birth&customActionTypes=ESCALATE&placeOfEvent=administrativeArea',
+      'type=record.custom-action&event=birth&customActionTypes=ISSUE_CERTIFIED_COPY,ISSUE_VERIFIABLE_CREDENTIAL&registeredIn=administrativeArea',
+      'type=record.unassign-others'
     ]
   },
   {
@@ -139,9 +79,9 @@ export const roles: Role[] = [
     scopes: [
       SCOPES.ORGANISATION_READ_LOCATIONS_MY_JURISDICTION,
       SCOPES.USER_CREATE_MY_JURISDICTION,
-      'user.create[role=FIELD_AGENT|HOSPITAL_CLERK|COMMUNITY_LEADER|REGISTRATION_AGENT|LOCAL_REGISTRAR]',
+      'user.create[role=HOSPITAL_CLERK|COMMUNITY_LEADER|REGISTRATION_AGENT|LOCAL_REGISTRAR|PROVINCIAL_REGISTRAR]',
+      'user.edit[role=HOSPITAL_CLERK|COMMUNITY_LEADER|REGISTRATION_AGENT|LOCAL_REGISTRAR|PROVINCIAL_REGISTRAR]',
       SCOPES.USER_UPDATE_MY_JURISDICTION,
-      'user.edit[role=FIELD_AGENT|HOSPITAL_CLERK|COMMUNITY_LEADER|REGISTRATION_AGENT|LOCAL_REGISTRAR]',
       SCOPES.USER_READ_MY_JURISDICTION
     ]
   },
@@ -156,15 +96,14 @@ export const roles: Role[] = [
       SCOPES.CONFIG_UPDATE_ALL,
       SCOPES.ORGANISATION_READ_LOCATIONS,
       SCOPES.USER_CREATE,
-      'user.create[role=FIELD_AGENT|HOSPITAL_CLERK|COMMUNITY_LEADER|REGISTRATION_AGENT|LOCAL_REGISTRAR|NATIONAL_REGISTRAR|LOCAL_SYSTEM_ADMIN|NATIONAL_SYSTEM_ADMIN|PERFORMANCE_MANAGER]',
-      SCOPES.USER_UPDATE,
-      'user.edit[role=FIELD_AGENT|HOSPITAL_CLERK|COMMUNITY_LEADER|REGISTRATION_AGENT|LOCAL_REGISTRAR|NATIONAL_REGISTRAR|LOCAL_SYSTEM_ADMIN|NATIONAL_SYSTEM_ADMIN|PERFORMANCE_MANAGER]',
+      'user.create[role=HOSPITAL_CLERK|COMMUNITY_LEADER|REGISTRATION_AGENT|LOCAL_REGISTRAR|NATIONAL_REGISTRAR|LOCAL_SYSTEM_ADMIN|NATIONAL_SYSTEM_ADMIN|PERFORMANCE_MANAGER|PROVINCIAL_REGISTRAR|EMBASSY_OFFICIAL]',
+      'user.edit[role=HOSPITAL_CLERK|COMMUNITY_LEADER|REGISTRATION_AGENT|LOCAL_REGISTRAR|NATIONAL_REGISTRAR|LOCAL_SYSTEM_ADMIN|NATIONAL_SYSTEM_ADMIN|PERFORMANCE_MANAGER|PROVINCIAL_REGISTRAR|EMBASSY_OFFICIAL]',
       SCOPES.USER_READ,
+      SCOPES.USER_UPDATE,
       SCOPES.PERFORMANCE_READ,
-      SCOPES.PERFORMANCE_READ_DASHBOARDS,
-      SCOPES.PERFORMANCE_EXPORT_VITAL_STATISTICS,
       SCOPES.RECORD_REINDEX,
-      SCOPES.CONFIG_UPDATE_ALL
+      SCOPES.INTEGRATION_CREATE,
+      SCOPES.PERFORMANCE_READ_DASHBOARDS
     ]
   },
   {
@@ -176,9 +115,8 @@ export const roles: Role[] = [
     },
     scopes: [
       SCOPES.PERFORMANCE_READ,
-      SCOPES.PERFORMANCE_READ_DASHBOARDS,
-      SCOPES.PERFORMANCE_EXPORT_VITAL_STATISTICS,
-      SCOPES.ORGANISATION_READ_LOCATIONS
+      SCOPES.ORGANISATION_READ_LOCATIONS,
+      SCOPES.PERFORMANCE_READ_DASHBOARDS
     ]
   },
   {
@@ -189,74 +127,71 @@ export const roles: Role[] = [
       id: 'userRole.registrarGeneral'
     },
     scopes: [
-      SCOPES.RECORD_READ,
-      SCOPES.RECORD_DECLARE_BIRTH,
-      SCOPES.RECORD_DECLARE_DEATH,
-      SCOPES.RECORD_DECLARE_MARRIAGE,
-      SCOPES.RECORD_SUBMIT_FOR_UPDATES,
-      SCOPES.RECORD_UNASSIGN_OTHERS,
-      SCOPES.RECORD_DECLARATION_EDIT,
-      SCOPES.RECORD_DECLARATION_ARCHIVE,
-      SCOPES.RECORD_DECLARATION_REINSTATE,
-      SCOPES.RECORD_REVIEW_DUPLICATES,
-      SCOPES.RECORD_REGISTER,
-      SCOPES.RECORD_PRINT_ISSUE_CERTIFIED_COPIES,
       SCOPES.PROFILE_ELECTRONIC_SIGNATURE,
-      SCOPES.RECORD_REGISTRATION_CORRECT,
-      SCOPES.RECORD_CONFIRM_REGISTRATION,
-      SCOPES.RECORD_REJECT_REGISTRATION,
+      SCOPES.PERFORMANCE_READ,
+      SCOPES.ORGANISATION_READ_LOCATIONS,
+      SCOPES.USER_READ,
+      SCOPES.RECORD_PRINT_ISSUE_CERTIFIED_COPIES,
+      'type=record.search',
+      'workqueue[id=assigned-to-you|recent|pending-feedback-registrar-general|potential-duplicate|registration-registrar-general]',
+      'type=record.read',
+      'type=record.declare',
+      'type=record.reject',
+      'type=record.archive',
+      'type=record.review-duplicates',
+      'type=record.register',
+      'type=record.print-certified-copies',
+      'type=record.correct',
+      'type=record.custom-action&event=birth&customActionTypes=REGISTRAR_GENERAL_FEEDBACK,REVOKE_REGISTRATION,REINSTATE_REVOKE_REGISTRATION,APPROVE_DECLARATION',
+      'type=record.custom-action&event=death&customActionTypes=APPROVE_DECLARATION',
+      'type=record.unassign-others'
+    ]
+  },
+  {
+    id: 'PROVINCIAL_REGISTRAR',
+    label: {
+      defaultMessage: 'Provincial Registrar',
+      description: 'Name for user role Provincial Registrar',
+      id: 'userRole.provincialRegistrar'
+    },
+    scopes: [
+      SCOPES.ORGANISATION_READ_LOCATIONS_MY_JURISDICTION,
+      SCOPES.USER_READ_MY_JURISDICTION,
       SCOPES.PERFORMANCE_READ,
       SCOPES.PERFORMANCE_READ_DASHBOARDS,
-      SCOPES.PERFORMANCE_EXPORT_VITAL_STATISTICS,
-      SCOPES.USER_READ_ONLY_MY_AUDIT,
+      SCOPES.RECORD_PRINT_ISSUE_CERTIFIED_COPIES,
       SCOPES.PROFILE_ELECTRONIC_SIGNATURE,
-      SCOPES.ORGANISATION_READ_LOCATIONS_MY_OFFICE,
-      SCOPES.USER_READ_MY_OFFICE,
-      SCOPES.SEARCH_BIRTH,
-      SCOPES.SEARCH_DEATH,
-      SCOPES.SEARCH_MARRIAGE,
-      SCOPES.ORGANISATION_READ_LOCATIONS_MY_JURISDICTION,
-      SCOPES.USER_READ_MY_OFFICE,
-      'search[event=birth,access=all]',
-      'search[event=death,access=all]',
-      'search[event=tennis-club-membership,access=all]',
-      'workqueue[id=assigned-to-you|recent|requires-completion|requires-updates-office|in-review-all|in-external-validation|ready-to-print|ready-to-issue]',
-      'record.create[event=birth|death|tennis-club-membership]',
-      'record.read[event=birth|death|tennis-club-membership]',
-      'record.declare[event=birth|death|tennis-club-membership]',
-      'record.declared.reject[event=birth|death|tennis-club-membership]',
-      'record.declared.archive[event=birth|death|tennis-club-membership]',
-      'record.declared.review-duplicates[event=birth|death|tennis-club-membership]',
-      'record.register[event=birth|death|tennis-club-membership]',
-      'record.registered.print-certified-copies[event=birth|death|tennis-club-membership]',
-      'record.registered.correct[event=birth|death|tennis-club-membership]',
-      'record.unassign-others[event=birth|death|tennis-club-membership]'
+      'type=record.search&placeOfEvent=administrativeArea',
+      'workqueue[id=recent|pending-feedback-provincinal-registrar|pending-approval|correction-requested]',
+      'type=record.read&placeOfEvent=administrativeArea',
+      'type=record.reject&placeOfEvent=administrativeArea',
+      'type=record.edit&placeOfEvent=administrativeArea',
+      'type=record.register&declaredIn=administrativeArea',
+      'type=record.archive&placeOfEvent=administrativeArea',
+      'type=record.custom-action&event=birth&customActionTypes=PROVINCIAL_REGISTER_FEEDBACK,REINSTATE_REVOKE_REGISTRATION,ESCALATE&placeOfEvent=administrativeArea',
+      'type=record.custom-action&event=birth,death&customActionTypes=APPROVE_DECLARATION&declaredIn=administrativeArea',
+      'type=record.print-certified-copies&registeredIn=administrativeArea',
+      'type=record.correct&registeredIn=administrativeArea',
+      'type=record.unassign-others&placeOfEvent=administrativeArea'
     ]
   },
   {
     id: 'HOSPITAL_CLERK',
     label: {
-      defaultMessage: 'Hospital Clerk',
-      description: 'Name for user role Hospital Clerk',
+      defaultMessage: 'Hospital Official',
+      description: 'Name for user role Hospital Official',
       id: 'userRole.hospitalClerk'
     },
     scopes: [
-      SCOPES.RECORD_DECLARE_BIRTH,
-      SCOPES.RECORD_DECLARE_DEATH,
-      SCOPES.RECORD_SUBMIT_INCOMPLETE,
-      SCOPES.RECORD_SUBMIT_FOR_REVIEW,
-      SCOPES.SEARCH_BIRTH,
-      SCOPES.SEARCH_DEATH,
       SCOPES.USER_READ_ONLY_MY_AUDIT,
-      'search[event=birth,access=all]',
-      'search[event=death,access=all]',
-      'search[event=tennis-club-membership,access=all]',
-      'workqueue[id=assigned-to-you|recent|requires-updates-self|sent-for-review]',
-      'record.create[event=birth|death|tennis-club-membership]',
-      'record.read[event=birth|death|tennis-club-membership]',
-      'record.declare[event=birth|death|tennis-club-membership]',
-      'record.notify[event=birth|death|tennis-club-membership]',
-      'record.registered.print-certified-copies[event=tennis-club-membership,templates=v2.tennis-club-membership-certificate-alpha]'
+      'type=record.search&placeOfEvent=location',
+      'workqueue[id=assigned-to-you|recent|pending-updates]',
+      'type=record.create&placeOfEvent=location',
+      'type=record.read&placeOfEvent=location',
+      'type=record.declare&placeOfEvent=location',
+      'type=record.notify&placeOfEvent=location',
+      'type=record.edit&placeOfEvent=location',
+      'type=record.print-certified-copies&templates=v2.tennis-club-membership-certificate-alpha&registeredIn=location'
     ]
   },
   {
@@ -267,126 +202,36 @@ export const roles: Role[] = [
       id: 'userRole.communityLeader'
     },
     scopes: [
-      SCOPES.RECORD_DECLARE_BIRTH,
-      SCOPES.RECORD_DECLARE_DEATH,
-      SCOPES.RECORD_DECLARE_MARRIAGE,
-      SCOPES.RECORD_SUBMIT_INCOMPLETE,
-      SCOPES.RECORD_SUBMIT_FOR_REVIEW,
-      SCOPES.RECORD_PRINT_ISSUE_CERTIFIED_COPIES,
-      SCOPES.SEARCH_BIRTH,
-      SCOPES.SEARCH_DEATH,
-      SCOPES.SEARCH_MARRIAGE,
       SCOPES.USER_READ_ONLY_MY_AUDIT,
-      'search[event=birth,access=all]',
-      'search[event=death,access=all]',
-      'search[event=tennis-club-membership,access=all]',
-      'workqueue[id=assigned-to-you|recent|sent-for-review|ready-to-print]',
-      'record.create[event=birth|death|tennis-club-membership]',
-      'record.read[event=birth|death|tennis-club-membership]',
-      'record.declare[event=birth|death|tennis-club-membership]',
-      'record.notify[event=birth|death|tennis-club-membership]',
-      'record.registered.print-certified-copies[event=birth|death|tennis-club-membership]'
-    ]
-  },
-  // Legacy roles from v1.8 for backwards compatibility
-  {
-    id: 'POLICE_OFFICER',
-    label: {
-      defaultMessage: 'Police Officer',
-      description: 'Name for user role Police Officer',
-      id: 'userRole.policeOfficer'
-    },
-    scopes: [
-      SCOPES.RECORD_DECLARE_BIRTH,
-      SCOPES.RECORD_DECLARE_DEATH,
-      SCOPES.RECORD_DECLARE_MARRIAGE,
-      SCOPES.RECORD_SUBMIT_INCOMPLETE,
-      SCOPES.RECORD_SUBMIT_FOR_REVIEW,
-      SCOPES.SEARCH_BIRTH,
-      SCOPES.SEARCH_DEATH,
-      SCOPES.SEARCH_MARRIAGE,
-      'search[event=birth,access=all]',
-      'search[event=death,access=all]',
-      'search[event=tennis-club-membership,access=all]',
-      'workqueue[id=assigned-to-you|recent|requires-updates-self|sent-for-review]',
-      `record.create[event=birth|death|tennis-club-membership]`,
-      'record.declare[event=birth|death|tennis-club-membership]',
-      'record.notify[event=birth|death|tennis-club-membership]'
+      SCOPES.RECORD_PRINT_ISSUE_CERTIFIED_COPIES,
+      'type=record.search&placeOfEvent=location',
+      'workqueue[id=assigned-to-you|recent]',
+      'type=record.create&placeOfEvent=location',
+      'type=record.read&placeOfEvent=location',
+      'type=record.edit&placeOfEvent=location',
+      'type=record.notify&placeOfEvent=location'
     ]
   },
   {
-    id: 'SOCIAL_WORKER',
+    id: 'EMBASSY_OFFICIAL',
     label: {
-      defaultMessage: 'Social Worker',
-      description: 'Name for user role Social Worker',
-      id: 'userRole.socialWorker'
+      defaultMessage: 'Embassy Official',
+      description: 'Name for user role Embassy Official',
+      id: 'userRole.embassyOffical'
     },
     scopes: [
-      SCOPES.RECORD_DECLARE_BIRTH,
-      SCOPES.RECORD_DECLARE_DEATH,
-      SCOPES.RECORD_DECLARE_MARRIAGE,
-      SCOPES.RECORD_SUBMIT_INCOMPLETE,
-      SCOPES.RECORD_SUBMIT_FOR_REVIEW,
-      SCOPES.SEARCH_BIRTH,
-      SCOPES.SEARCH_DEATH,
-      SCOPES.SEARCH_MARRIAGE,
-      'search[event=birth,access=all]',
-      'search[event=death,access=all]',
-      'search[event=tennis-club-membership,access=all]',
-      'workqueue[id=assigned-to-you|recent|requires-updates-self|sent-for-review]',
-      `record.create[event=birth|death|tennis-club-membership]`,
-      'record.declare[event=birth|death|tennis-club-membership]',
-      'record.notify[event=birth|death|tennis-club-membership]'
-    ]
-  },
-  {
-    id: 'HEALTHCARE_WORKER',
-    label: {
-      defaultMessage: 'Healthcare Worker',
-      description: 'Name for user role Healthcare Worker',
-      id: 'userRole.healthcareWorker'
-    },
-    scopes: [
-      SCOPES.RECORD_DECLARE_BIRTH,
-      SCOPES.RECORD_DECLARE_DEATH,
-      SCOPES.RECORD_DECLARE_MARRIAGE,
-      SCOPES.RECORD_SUBMIT_INCOMPLETE,
-      SCOPES.RECORD_SUBMIT_FOR_REVIEW,
-      SCOPES.SEARCH_BIRTH,
-      SCOPES.SEARCH_DEATH,
-      SCOPES.SEARCH_MARRIAGE,
-      'search[event=birth,access=all]',
-      'search[event=death,access=all]',
-      'search[event=tennis-club-membership,access=all]',
-      'workqueue[id=assigned-to-you|recent|requires-updates-self|sent-for-review]',
-      `record.create[event=birth|death|tennis-club-membership]`,
-      'record.declare[event=birth|death|tennis-club-membership]',
-      'record.notify[event=birth|death|tennis-club-membership]'
-    ]
-  },
-  {
-    id: 'LOCAL_LEADER',
-    label: {
-      defaultMessage: 'Local Leader',
-      description: 'Name for user role Local Leader',
-      id: 'userRole.LocalLeader'
-    },
-    scopes: [
-      SCOPES.RECORD_DECLARE_BIRTH,
-      SCOPES.RECORD_DECLARE_DEATH,
-      SCOPES.RECORD_DECLARE_MARRIAGE,
-      SCOPES.RECORD_SUBMIT_INCOMPLETE,
-      SCOPES.RECORD_SUBMIT_FOR_REVIEW,
-      SCOPES.SEARCH_BIRTH,
-      SCOPES.SEARCH_DEATH,
-      SCOPES.SEARCH_MARRIAGE,
-      'search[event=birth,access=all]',
-      'search[event=death,access=all]',
-      'search[event=tennis-club-membership,access=all]',
-      'workqueue[id=assigned-to-you|recent|requires-updates-self|sent-for-review]',
-      `record.create[event=birth|death|tennis-club-membership]`,
-      'record.declare[event=birth|death|tennis-club-membership]',
-      'record.notify[event=birth|death|tennis-club-membership]'
+      SCOPES.USER_READ_ONLY_MY_AUDIT,
+      SCOPES.RECORD_PRINT_ISSUE_CERTIFIED_COPIES,
+      'workqueue[id=assigned-to-you|recent|escalated|pending-updates|pending-certification|potential-duplicate]',
+      'type=record.search&placeOfEvent=location',
+      'type=record.create&placeOfEvent=location',
+      'type=record.read&placeOfEvent=location',
+      'type=record.declare&placeOfEvent=location',
+      'type=record.edit&placeOfEvent=location',
+      'type=record.custom-action&event=birth&customActionTypes=ESCALATE&placeOfEvent=location',
+      'type=record.custom-action&event=birth&customActionTypes=ISSUE_CERTIFIED_COPY&registeredIn=location',
+      'type=record.print-certified-copies&registeredIn=location',
+      'type=record.correct&registeredIn=location'
     ]
   }
 ]
