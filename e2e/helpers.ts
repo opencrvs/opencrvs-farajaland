@@ -54,6 +54,7 @@ export async function login(
 ) {
   const token = await getToken(username)
   expect(token).toBeDefined()
+
   await page.goto(`${CLIENT_URL}?token=${token}`)
 
   await page.waitForSelector('#pin-input, #appSpinner', { state: 'visible' })
