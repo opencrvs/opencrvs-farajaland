@@ -67,11 +67,6 @@ services:
       - NODE_ENV=production
       - DISABLE_RATE_LIMIT=true
 
-  search:
-    environment:
-      - SENTRY_DSN=${SENTRY_DSN:-}
-      - NODE_ENV=production
-
   metrics:
     environment:
       - SENTRY_DSN=${SENTRY_DSN:-}
