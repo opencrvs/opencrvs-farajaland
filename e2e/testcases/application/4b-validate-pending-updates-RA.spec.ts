@@ -98,7 +98,7 @@ test.describe.serial('4(b) Validate "Pending updates"-workqueue for RO', () => {
   })
 
   test('4.4 Click Edit -action', async () => {
-    await ensureAssigned(page, CREDENTIALS.REGISTRAR)
+    await ensureAssigned(page, CREDENTIALS.REGISTRATION_OFFICER)
     await selectAction(page, 'Edit')
   })
 

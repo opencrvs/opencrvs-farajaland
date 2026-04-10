@@ -721,6 +721,7 @@ test.describe.serial('8. Validate declaration review page', () => {
     })
 
     test('8.2.1.1 Verify information added on previous pages', async () => {
+      await ensureAssigned(page, CREDENTIALS.REGISTRATION_OFFICER)
       await selectAction(page, 'Edit')
       /*
        * Expected result: should include

@@ -866,6 +866,7 @@ test.describe.serial('8. Validate declaration review page', () => {
         .click()
     })
     test('8.2.2 Validate', async () => {
+      await ensureAssigned(page, CREDENTIALS.REGISTRATION_OFFICER)
       await selectAction(page, 'Validate')
       await page.getByRole('button', { name: 'Confirm' }).click()
     })

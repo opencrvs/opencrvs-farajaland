@@ -273,6 +273,7 @@ test.describe.serial('Change informant on review', () => {
 
       await expect(page.getByTestId('status-value')).toHaveText('Declared')
 
+      await ensureAssigned(page, CREDENTIALS.REGISTRAR_VILLAGE)
       await selectAction(page, 'Edit')
       await expect(
         page.getByText(

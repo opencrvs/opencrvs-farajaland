@@ -8,7 +8,7 @@ import {
   login,
   uploadImage
 } from '../../helpers'
-import { faker } from '@faker-js/faker'
+import { en, faker } from '@faker-js/faker'
 import { format, parseISO, subDays } from 'date-fns'
 import { CREDENTIALS } from '../../constants'
 import {
@@ -688,6 +688,7 @@ test.describe('1. Correct record - 1', () => {
       })
 
       test('1.2.6.2 Correction review', async () => {
+        await ensureAssigned(page, CREDENTIALS.REGISTRAR)
         await selectAction(page, 'Review correction request')
 
         await expect(

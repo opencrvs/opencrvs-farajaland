@@ -10,6 +10,7 @@ import {
 } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
 import {
+  ensureAssigned,
   ensureInExternalValidationIsEmpty,
   ensureOutboxIsEmpty,
   selectAction
@@ -174,6 +175,7 @@ test.describe.serial('2. Workqueue flow - 2', () => {
         })
         .click()
 
+      await ensureAssigned(page, CREDENTIALS.REGISTRAR)
       await selectAction(page, 'Edit')
 
       await page

@@ -49,6 +49,7 @@ test.describe.serial('4(a) Validate "Pending updates"-workqueue for HO', () => {
   })
 
   test('4.0.3 Reject a declaration', async () => {
+    await ensureAssigned(page, CREDENTIALS.REGISTRATION_OFFICER)
     await selectAction(page, 'Reject')
 
     await page.getByTestId('reject-reason').fill(faker.lorem.sentence())

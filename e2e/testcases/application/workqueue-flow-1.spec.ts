@@ -171,6 +171,7 @@ test.describe.serial('1. Workqueue flow - 1', () => {
         })
         .click()
 
+      await ensureAssigned(page, CREDENTIALS.REGISTRATION_OFFICER)
       await selectAction(page, 'Edit')
 
       await page

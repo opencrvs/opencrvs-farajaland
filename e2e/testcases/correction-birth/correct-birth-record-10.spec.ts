@@ -595,6 +595,7 @@ test.describe('10. Correct record', () => {
       })
 
       test('10.1.6.2 Correction review', async () => {
+        await ensureAssigned(page, CREDENTIALS.REGISTRAR)
         await selectAction(page, 'Review correction request')
 
         await expect(page.getByText('Requester' + 'Someone else')).toBeVisible()

@@ -250,6 +250,7 @@ test.describe.serial('Add mother details on review', () => {
 
       await expect(page.getByTestId('status-value')).toHaveText('Declared')
 
+      await ensureAssigned(page, CREDENTIALS.REGISTRAR_VILLAGE)
       await selectAction(page, 'Edit')
       await expect(
         page.getByText(

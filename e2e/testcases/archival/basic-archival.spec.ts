@@ -13,7 +13,7 @@ import {
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../constants'
 import { fillDate, formatV2ChildName } from '../birth/helpers'
-import { ensureOutboxIsEmpty, selectAction } from '../../utils'
+import { ensureAssigned, ensureOutboxIsEmpty, selectAction } from '../../utils'
 import { ActionType } from '@opencrvs/toolkit/events'
 import { createDeclaration, Declaration } from '../test-data/birth-declaration'
 
@@ -305,6 +305,7 @@ test.describe.serial('Basic Archival flow', () => {
   })
 
   test('Archive the declaration', async () => {
+    await ensureAssigned(page, CREDENTIALS.REGISTRATION_OFFICER)
     await selectAction(page, 'Archive')
     await page.getByRole('button', { name: 'Archive', exact: true }).click()
   })
@@ -358,6 +359,7 @@ test.describe.serial('Archival of declaration pending validation', () => {
   })
 
   test('Validate the declaration', async () => {
+    await ensureAssigned(page, CREDENTIALS.REGISTRATION_OFFICER)
     await selectAction(page, 'Validate')
     await page.getByRole('button', { name: 'Confirm', exact: true }).click()
     await ensureOutboxIsEmpty(page)
@@ -376,6 +378,7 @@ test.describe.serial('Archival of declaration pending validation', () => {
   })
 
   test('Archive the declaration', async () => {
+    await ensureAssigned(page, CREDENTIALS.REGISTRAR)
     await selectAction(page, 'Archive')
     await page.getByRole('button', { name: 'Archive', exact: true }).click()
   })

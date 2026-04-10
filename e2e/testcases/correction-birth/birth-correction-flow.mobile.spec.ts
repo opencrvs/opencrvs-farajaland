@@ -7,6 +7,7 @@ import {
   Declaration
 } from '../test-data/birth-declaration-with-mother-father'
 import {
+  ensureAssigned,
   ensureOutboxIsEmpty,
   expectInUrl,
   navigateToWorkqueue,
@@ -46,6 +47,7 @@ test.describe.serial('Birth correction flow - Mobile', () => {
       .getByRole('button', { name: formatV2ChildName(declaration) })
       .click()
 
+    await ensureAssigned(page, CREDENTIALS.REGISTRATION_OFFICER)
     await selectAction(page, 'Correct')
   })
 
