@@ -69,11 +69,6 @@ services:
       - TWO_FA_ENABLED=false
       - NODE_ENV=production
 
-  search:
-    environment:
-      - SENTRY_DSN=${SENTRY_DSN:-}
-      - NODE_ENV=production
-
   metrics:
     environment:
       - SENTRY_DSN=${SENTRY_DSN:-}
