@@ -119,7 +119,7 @@ export async function ensureAssigned(
 
   await expect(
     page.getByTestId('assignedTo-value').locator('span')
-  ).toContainText(userFullName, { timeout: 15000 })
+  ).toContainText(userFullName, { timeout: SAFE_OUTBOX_TIMEOUT_MS })
 }
 
 export async function expectInUrl(page: Page, assertionString: string) {
