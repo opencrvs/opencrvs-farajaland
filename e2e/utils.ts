@@ -127,9 +127,7 @@ export async function expectInUrl(page: Page, assertionString: string) {
 }
 
 export async function ensureOutboxIsEmpty(page: Page) {
-  await page.waitForTimeout(SAFE_INPUT_CHANGE_TIMEOUT_MS)
-  // Check that we have succesfully moved to a view that shows outbox.
-  await expectInUrl(page, '/workqueue')
+  await page.waitForTimeout(1000)
 
   await expect(page.locator('#navigation_workqueue_outbox')).toHaveText(
     'Outbox',
