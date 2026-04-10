@@ -15,13 +15,6 @@ services:
     deploy:
       replicas: 1
 
-  search:
-    environment:
-      - NODE_ENV=production
-      - SENTRY_DSN=${SENTRY_DSN:-}
-    deploy:
-      replicas: 1
-
   metrics:
     environment:
       - NODE_ENV=production
