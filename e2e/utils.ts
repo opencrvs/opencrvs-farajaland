@@ -81,7 +81,12 @@ const usernameToFullNameMap = {
   'k.mweene': 'Kennedy Mweene',
   'v.mweene': 'Venedy Mweene',
   'm.owen': 'Mitchel Owen',
-  'c.lungu': 'Chipo Lungu'
+  'c.lungu': 'Chipo Lungu',
+  'n.siame': 'Njavwa Siame',
+  'j.campbell': 'Jonathan Campbell',
+  'e.mayuka': 'Emmanuel Mayuka',
+  'm.musonda': 'Mutale Musonda',
+  't.mwila': 'Toukira Mwila'
 } as const
 /**
  *

@@ -1,8 +1,9 @@
 import { Page, expect } from '@playwright/test'
 import { Declaration } from '../../test-data/birth-declaration'
-import { selectAction } from '../../../utils'
+import { ensureAssigned, selectAction } from '../../../utils'
 import { formatName } from '../../../helpers'
 import { formatV2ChildName } from '../../birth/helpers'
+import { CREDENTIALS } from '../../../constants'
 
 export async function selectCertificationType(page: Page, type: string) {
   await page.locator('#certificateTemplateId svg').click()
@@ -25,12 +26,13 @@ export async function navigateToCertificatePrintAction(
       surname: string
     }
     [key: string]: any
-  }
+  },
+  username: (typeof CREDENTIALS)[keyof typeof CREDENTIALS]
 ) {
   const childName = formatV2ChildName(declaration)
   await page.getByRole('button', { name: childName }).click()
 
-  await selectAction(page, 'Assign')
+  await ensureAssigned(page, username)
   await selectAction(page, 'Print')
 }
 

@@ -11,6 +11,7 @@ import {
 } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
 import {
+  ensureAssigned,
   ensureInExternalValidationIsEmpty,
   ensureOutboxIsEmpty,
   selectAction
@@ -276,6 +277,7 @@ test.describe.serial('4. Workqueue flow - 4', () => {
         })
         .click()
 
+      await ensureAssigned(page, CREDENTIALS.REGISTRATION_OFFICER)
       await selectAction(page, 'Validate')
 
       await page.getByRole('button', { name: 'Confirm' }).click()
