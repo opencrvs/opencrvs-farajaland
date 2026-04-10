@@ -31,21 +31,16 @@ test.describe.serial('7. Team Page -1', () => {
     })
 
     const team = [
-      
       { name: 'Emmanuel Mayuka', role: 'Administrator' },
       { name: 'Mitchel Owen', role: 'Provincial Registrar' }
     ]
 
     test('7.1.1 Verify Team Members, Roles and their statuses', async () => {
-       await verifyTeamMembers(page, team)
+      await verifyTeamMembers(page, team)
     })
 
     test('7.1.2 Verify team page member list', async () => {
-      const members = [
-        'Emmanuel Mayuka',
-        'Mitchel Owen'
-        
-      ]
+      const members = ['Emmanuel Mayuka', 'Mitchel Owen']
 
       await verifyMembersClickable(page, members, 'Central Province Office')
     })
