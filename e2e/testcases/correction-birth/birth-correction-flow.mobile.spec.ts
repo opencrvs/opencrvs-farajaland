@@ -155,6 +155,7 @@ test.describe.serial('Birth correction flow - Mobile', () => {
     })
 
     test('Navigate to correction review', async () => {
+      await ensureAssigned(page, CREDENTIALS.REGISTRAR)
       await selectAction(page, 'Review correction request')
 
       await expect(page.getByText('RequesterInformant (Mother)')).toBeVisible()

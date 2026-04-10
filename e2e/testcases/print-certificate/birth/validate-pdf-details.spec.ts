@@ -9,7 +9,7 @@ import {
   selectRequesterType
 } from './helpers'
 import { selectCertificationType } from './helpers'
-import { selectAction } from '../../../utils'
+import { ensureAssigned, selectAction } from '../../../utils'
 import { formatV2ChildName } from '../../birth/helpers'
 
 test.describe
@@ -68,6 +68,8 @@ test.describe
         exact: true
       })
       .click()
+
+    await ensureAssigned(page, CREDENTIALS.REGISTRAR)
     await selectAction(page, 'Print')
     await selectCertificationType(page, 'Birth Certificate Certified Copy')
     await selectRequesterType(page, 'Print and issue to Informant (Mother)')

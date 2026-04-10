@@ -25,7 +25,7 @@ test('Revoke and reinstate record', async ({ browser }) => {
   })
 
   await test.step('Revoke record', async () => {
-    await ensureAssigned(page, CREDENTIALS.REGISTRAR)
+    await ensureAssigned(page, CREDENTIALS.REGISTRAR_GENERAL)
     await selectAction(page, 'Revoke registration')
 
     await expect(page.getByRole('button', { name: 'Confirm' })).toBeDisabled()
@@ -42,6 +42,7 @@ test('Revoke and reinstate record', async ({ browser }) => {
   })
 
   await test.step('Reinstate record', async () => {
+    await ensureAssigned(page, CREDENTIALS.REGISTRAR_GENERAL)
     await selectAction(page, 'Reinstate registration')
     await expect(page.getByRole('button', { name: 'Confirm' })).toBeDisabled()
 

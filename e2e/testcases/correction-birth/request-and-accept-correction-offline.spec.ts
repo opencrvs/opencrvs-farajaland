@@ -181,6 +181,7 @@ test.describe.serial('Request and accept correction (offline)', () => {
         .getByRole('button', { name: formatV2ChildName(declaration) })
         .click()
 
+      await ensureAssigned(page, CREDENTIALS.REGISTRAR)
       await selectAction(page, 'Review correction request')
     })
 

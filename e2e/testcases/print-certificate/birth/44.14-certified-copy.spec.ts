@@ -9,7 +9,7 @@ import {
   navigateToCertificatePrintAction,
   selectRequesterType
 } from './helpers'
-import { selectAction } from '../../../utils'
+import { ensureAssigned, selectAction } from '../../../utils'
 import { formatV2ChildName } from '../../birth/helpers'
 
 test.describe.serial('44.14.0 Validate "Certified copy" option', () => {
@@ -75,6 +75,7 @@ test.describe.serial('44.14.0 Validate "Certified copy" option', () => {
       })
       .click()
 
+    await ensureAssigned(page, CREDENTIALS.REGISTRAR)
     await selectAction(page, 'Print')
     await page.locator('#certificateTemplateId svg').click()
     await expect(

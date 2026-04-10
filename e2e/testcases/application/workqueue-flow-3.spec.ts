@@ -217,6 +217,7 @@ test.describe.serial('3. Workqueue flow - 3', () => {
       await expect(page.getByText('Rejected')).toBeVisible()
 
       await ensureAssigned(page, CREDENTIALS.REGISTRATION_OFFICER)
+
       await page.getByRole('button', { name: 'Action' }).click()
       await expect(page.getByText('Reject', { exact: true })).not.toBeVisible()
       await expect(page.getByText('Review', { exact: true })).not.toBeVisible()
@@ -387,6 +388,7 @@ test.describe.serial('3. Workqueue flow - 3', () => {
         })
         .click()
 
+      await ensureAssigned(page, CREDENTIALS.REGISTRATION_OFFICER)
       await selectAction(page, 'Validate')
       await page.getByRole('button', { name: 'Confirm' }).click()
 

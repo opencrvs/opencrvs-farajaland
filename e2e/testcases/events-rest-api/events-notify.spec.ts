@@ -629,6 +629,7 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
     })
 
     test('Edit event', async () => {
+      await ensureAssigned(page, CREDENTIALS.REGISTRAR)
       await selectAction(page, 'Edit')
 
       await expect(page.getByTestId('row-value-child.name')).toHaveText(
@@ -690,6 +691,7 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
     })
 
     test('Print certificate', async () => {
+      await ensureAssigned(page, CREDENTIALS.REGISTRAR)
       await selectAction(page, 'Print')
       await selectRequesterType(page, 'Print and issue to Informant (Mother)')
       await page.getByRole('button', { name: 'Continue' }).click()

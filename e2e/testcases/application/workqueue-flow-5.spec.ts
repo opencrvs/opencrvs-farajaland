@@ -151,6 +151,7 @@ test.describe.serial('5. Workqueue flow - 5', () => {
         })
         .click()
 
+      await ensureAssigned(page, CREDENTIALS.REGISTRATION_OFFICER)
       await selectAction(page, 'Reject')
       await page.getByTestId('reject-reason').fill(faker.lorem.sentence())
       await page.getByRole('button', { name: 'Send For Update' }).click()

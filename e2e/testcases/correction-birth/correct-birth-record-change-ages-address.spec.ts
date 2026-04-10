@@ -304,6 +304,7 @@ test.describe.serial('Correct record - Change ages', () => {
   })
 
   test('Approve correction request', async () => {
+    await ensureAssigned(page, CREDENTIALS.REGISTRAR)
     await selectAction(page, 'Review correction request')
     await page.getByRole('button', { name: 'Approve', exact: true }).click()
     await page.getByRole('button', { name: 'Confirm', exact: true }).click()

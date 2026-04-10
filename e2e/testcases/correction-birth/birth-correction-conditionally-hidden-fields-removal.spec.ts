@@ -112,6 +112,8 @@ test.describe
           name: formatV2ChildName(declaration)
         })
         .click()
+
+      await ensureAssigned(page, CREDENTIALS.REGISTRAR)
       await selectAction(page, 'Correct')
       await page.locator('#requester____type').click()
       await page.getByText('Informant (Grandfather)', { exact: true }).click()

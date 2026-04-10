@@ -350,6 +350,7 @@ test.describe.serial('4. Workqueue flow - 4', () => {
         })
         .click()
 
+      await ensureAssigned(page, CREDENTIALS.REGISTRAR)
       await selectAction(page, 'Register')
       await page.getByRole('button', { name: 'Confirm' }).click()
 
