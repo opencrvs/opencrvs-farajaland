@@ -34,7 +34,7 @@ test.describe.serial('3. Team Page -1', () => {
     ]
 
     test('3.1.1 Verify Team Members, Roles and their statuses', async () => {
-        await verifyTeamMembers(page, team)
+      await verifyTeamMembers(page, team)
     })
   })
 })
