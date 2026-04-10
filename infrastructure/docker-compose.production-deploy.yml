@@ -15,14 +15,6 @@ services:
     deploy:
       replicas: 2
 
-  workflow:
-    environment:
-      - NODE_ENV=production
-      - LANGUAGES=en,fr
-      - SENTRY_DSN=${SENTRY_DSN:-}
-    deploy:
-      replicas: 2
-
   search:
     environment:
       - NODE_ENV=production
@@ -66,14 +58,6 @@ services:
       - NODE_ENV=production
       - SENTRY_DSN=${SENTRY_DSN:-}
       - MONGO_URL=mongodb://webhooks:${WEBHOOKS_MONGODB_PASSWORD}@mongo1,mongo2/webhooks?replicaSet=rs0
-    deploy:
-      replicas: 2
-
-  config:
-    environment:
-      - NODE_ENV=production
-      - SENTRY_DSN=${SENTRY_DSN:-}
-      - MONGO_URL=mongodb://config:${CONFIG_MONGODB_PASSWORD}@mongo1,mongo2/application-config?replicaSet=rs0
     deploy:
       replicas: 2
 
