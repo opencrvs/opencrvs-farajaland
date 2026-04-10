@@ -1,5 +1,4 @@
 import { test, expect, type Page } from '@playwright/test'
-import path from 'path'
 import { loginWithNewUser, continueForm, login } from '../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../constants'
@@ -12,11 +11,8 @@ test.describe.serial('1. Create user -1', () => {
     email: faker.internet.email(),
     role: 'Community Leader'
   }
-  const signaturePath = path.resolve(__dirname, '../../assets/sign1.png')
+
   const username = `${userinfo.firstName[0]}.${userinfo.surname}`.toLowerCase()
-  const question00 = 'What city were you born in?'
-  const question01 = 'What is your favorite movie?'
-  const question02 = 'What is your favorite food?'
 
   test.beforeAll(async ({ browser }) => {
     page = await browser.newPage()
