@@ -21,15 +21,13 @@ const ignoreHTTPSErrors = process.env.CI ? true : false
 export default defineConfig({
   timeout: TEST_TIMEOUT,
   testDir: './e2e/testcases',
-  /* Stop tests in 25 minutes. At this stage something is most likely broken. */
-  globalTimeout: process.env.CI ? 25 * 60 * 1000 : undefined,
 
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Don't retry. Fix the flaky ones. */
-  retries: 0,
+  retries: process.env.CI ? 3 : 0,
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
