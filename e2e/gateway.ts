@@ -2199,7 +2199,6 @@ export enum SystemType {
   Health = 'HEALTH',
   NationalId = 'NATIONAL_ID',
   RecordSearch = 'RECORD_SEARCH',
-  Webhook = 'WEBHOOK'
 }
 
 export enum TelecomSystem {
@@ -2346,13 +2345,3 @@ export type VerifyPasswordResult = {
   username?: Maybe<Scalars['String']>
 }
 
-export type WebhookInput = {
-  event: Scalars['String']
-  permissions: Array<InputMaybe<Scalars['String']>>
-}
-
-export type WebhookPermission = {
-  __typename?: 'WebhookPermission'
-  event: Scalars['String']
-  permissions: Array<Scalars['String']>
-}
