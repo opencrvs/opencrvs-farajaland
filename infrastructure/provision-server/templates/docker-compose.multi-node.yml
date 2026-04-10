@@ -46,14 +46,6 @@ services:
     deploy:
       replicas: 2
 
-  webhooks:
-    environment:
-      - NODE_ENV=production
-      - SENTRY_DSN=${SENTRY_DSN:-}
-      - MONGO_URL=mongodb://webhooks:${WEBHOOKS_MONGODB_PASSWORD}@mongo1,mongo2/webhooks?replicaSet=rs0
-    deploy:
-      replicas: 2
-
   scheduler:
     environment:
       - NODE_ENV=production

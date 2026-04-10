@@ -2140,12 +2140,10 @@ export type SystemSettings = {
   openIdProviderBaseUrl?: Maybe<Scalars['String']>
   openIdProviderClaims?: Maybe<Scalars['String']>
   openIdProviderClientId?: Maybe<Scalars['String']>
-  webhook?: Maybe<Array<WebhookPermission>>
 }
 
 export type SystemSettingsInput = {
   dailyQuota?: InputMaybe<Scalars['Int']>
-  webhook?: InputMaybe<Array<InputMaybe<WebhookInput>>>
 }
 
 export enum SystemStatus {
@@ -2191,7 +2189,6 @@ export type TotalVsExport = {
 
 export type UpdatePermissionsInput = {
   clientId: Scalars['String']
-  webhook: Array<WebhookInput>
 }
 
 export type User = {
@@ -2566,26 +2563,26 @@ export type SearchEventsQuery = {
     __typename?: 'EventSearchResultSet'
     results?: Array<
       | {
-          __typename?: 'BirthEventSearchSet'
-          registration?: {
-            __typename?: 'RegistrationSearchSet'
-            dateOfDeclaration?: any | null
-          } | null
-        }
+        __typename?: 'BirthEventSearchSet'
+        registration?: {
+          __typename?: 'RegistrationSearchSet'
+          dateOfDeclaration?: any | null
+        } | null
+      }
       | {
-          __typename?: 'DeathEventSearchSet'
-          registration?: {
-            __typename?: 'RegistrationSearchSet'
-            dateOfDeclaration?: any | null
-          } | null
-        }
+        __typename?: 'DeathEventSearchSet'
+        registration?: {
+          __typename?: 'RegistrationSearchSet'
+          dateOfDeclaration?: any | null
+        } | null
+      }
       | {
-          __typename?: 'MarriageEventSearchSet'
-          registration?: {
-            __typename?: 'RegistrationSearchSet'
-            dateOfDeclaration?: any | null
-          } | null
-        }
+        __typename?: 'MarriageEventSearchSet'
+        registration?: {
+          __typename?: 'RegistrationSearchSet'
+          dateOfDeclaration?: any | null
+        } | null
+      }
       | null
     > | null
   } | null

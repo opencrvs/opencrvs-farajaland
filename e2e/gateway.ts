@@ -2184,12 +2184,10 @@ export type SystemSettings = {
   openIdProviderBaseUrl?: Maybe<Scalars['String']>
   openIdProviderClaims?: Maybe<Scalars['String']>
   openIdProviderClientId?: Maybe<Scalars['String']>
-  webhook?: Maybe<Array<WebhookPermission>>
 }
 
 export type SystemSettingsInput = {
   dailyQuota?: InputMaybe<Scalars['Int']>
-  webhook?: InputMaybe<Array<InputMaybe<WebhookInput>>>
 }
 
 export enum SystemStatus {
@@ -2253,7 +2251,6 @@ export type TotalVsExport = {
 
 export type UpdatePermissionsInput = {
   clientId: Scalars['String']
-  webhook: Array<WebhookInput>
 }
 
 export type User = {
