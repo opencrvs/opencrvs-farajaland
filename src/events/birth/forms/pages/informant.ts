@@ -445,7 +445,9 @@ export const informant = defineFormPage({
       defaultValue: {
         country: 'FAR',
         addressType: AddressType.DOMESTIC,
-        administrativeArea: user('primaryOfficeId').locationLevel('district')
+        administrativeArea: user('administrativeAreaId').locationLevel(
+          'district'
+        )
       },
       configuration: {
         streetAddressForm: defaultStreetAddressConfiguration

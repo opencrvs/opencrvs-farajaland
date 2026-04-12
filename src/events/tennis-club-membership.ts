@@ -80,7 +80,9 @@ function applicantAddressFields() {
                 description: 'This is the label for the field',
                 id: 'event.tennis-club-membership.action.declare.form.section.who.field.address.province.label'
               },
-              defaultValue: user('primaryOfficeId').locationLevel('province'),
+              defaultValue: user('administrativeAreaId').locationLevel(
+                'province'
+              ),
               configuration: {
                 type: 'ADMIN_STRUCTURE'
               }
@@ -93,7 +95,7 @@ function applicantAddressFields() {
                 description: 'This is the label for the field',
                 id: 'event.tennis-club-membership.action.declare.form.section.who.field.address.district.label'
               },
-              defaultValue: user('primaryOfficeId').locationLevel('district'),
+              defaultValue: user('administrativeArea').locationLevel('district'),
               parent: field('applicant.address').getByPath([
                 'domestic',
                 'province'
