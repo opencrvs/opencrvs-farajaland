@@ -95,7 +95,8 @@ function applicantAddressFields() {
                 description: 'This is the label for the field',
                 id: 'event.tennis-club-membership.action.declare.form.section.who.field.address.district.label'
               },
-              defaultValue: user('administrativeArea').locationLevel('district'),
+              defaultValue:
+                user('administrativeArea').locationLevel('district'),
               parent: field('applicant.address').getByPath([
                 'domestic',
                 'province'
