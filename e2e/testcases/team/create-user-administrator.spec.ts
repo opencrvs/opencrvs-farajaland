@@ -1,0 +1,73 @@
+import { test, expect, type Page } from '@playwright/test'
+import { loginWithNewUser, continueForm, login } from '../../helpers'
+import { faker } from '@faker-js/faker'
+import { CREDENTIALS } from '../../constants'
+
+test.describe.serial('1. Create user -1', () => {
+  let page: Page
+  const userinfo = {
+    firstName: faker.person.firstName('male'),
+    surname: faker.person.lastName('male'),
+    email: faker.internet.email(),
+    role: 'Community Leader'
+  }
+
+  const username = `${userinfo.firstName[0]}.${userinfo.surname}`.toLowerCase()
+
+  test.beforeAll(async ({ browser }) => {
+    page = await browser.newPage()
+  })
+
+  test.afterAll(async () => {
+    await page.close()
+  })
+
+  test.describe('1.1 User creation started by local system admin', async () => {
+    test.beforeAll(async () => {
+      await login(page, CREDENTIALS.LOCAL_SYSTEM_ADMIN)
+      await page.getByRole('button', { name: 'Team' }).click()
+      await expect(page.locator('#content-name')).toHaveText(
+        'Central Province Office'
+      )
+
+      await page
+        .getByRole('button', {
+          name: /Central Province Office, Central/
+        })
+        .click()
+      await page.getByTestId('locationSearchInput').fill('Itumbwe')
+
+      await page.getByText(/Itumbwe Health Post, Ibombo, Central/).click()
+
+      await page.click('#add-user')
+      await expect(page.getByText('User details')).toBeVisible()
+    })
+
+    test('1.1.1 Fill user details', async () => {
+      await page.locator('#surname').fill(userinfo.surname)
+      await page.locator('#firstname').fill(userinfo.firstName)
+      await page.locator('#email').fill(userinfo.email)
+      await page.locator('#role').click()
+      await page.getByText(userinfo.role, { exact: true }).click()
+      await continueForm(page)
+    })
+
+    test('1.1.2 Create user', async () => {
+      await page.getByRole('button', { name: 'Create user' }).click()
+
+      await expect(page.locator('#header')).toContainText('Itumbwe Health Post')
+
+      await expect(
+        page.getByText('Ibombo, Central', {
+          exact: true
+        })
+      ).toBeVisible()
+    })
+  })
+
+  test.describe('2.1 Login with newly created user credentials', () => {
+    test('2.1.1 Enter your username and password', async ({ page }) => {
+      await loginWithNewUser(page, username)
+    })
+  })
+})

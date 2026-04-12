@@ -20,10 +20,7 @@ test.describe.serial("Validate 'Death Certificate' PDF details", () => {
   let declaration: Declaration
 
   test.beforeAll(async ({ browser }) => {
-    const token = await getToken(
-      CREDENTIALS.LOCAL_REGISTRAR.USERNAME,
-      CREDENTIALS.LOCAL_REGISTRAR.PASSWORD
-    )
+    const token = await getToken(CREDENTIALS.REGISTRAR)
     const res = await createDeclaration(token)
     declaration = res.declaration
     page = await browser.newPage()
@@ -38,7 +35,7 @@ test.describe.serial("Validate 'Death Certificate' PDF details", () => {
   })
 
   test('Go to review', async () => {
-    await page.getByRole('button', { name: 'Ready to print' }).click()
+    await page.getByRole('button', { name: 'Pending certification' }).click()
     await navigateToCertificatePrintAction(page, declaration)
     await selectCertificationType(page, 'Death Certificate')
     await selectRequesterType(page, 'Print and issue to Informant (Spouse)')
@@ -69,10 +66,7 @@ test.describe
   let declaration: Declaration
 
   test.beforeAll(async ({ browser }) => {
-    const token = await getToken(
-      CREDENTIALS.LOCAL_REGISTRAR.USERNAME,
-      CREDENTIALS.LOCAL_REGISTRAR.PASSWORD
-    )
+    const token = await getToken(CREDENTIALS.REGISTRAR)
     const res = await createDeclaration(token)
     declaration = res.declaration
     page = await browser.newPage()
@@ -91,7 +85,7 @@ test.describe
   })
 
   test('Go to review', async () => {
-    await page.getByRole('button', { name: 'Ready to print' }).click()
+    await page.getByRole('button', { name: 'Pending certification' }).click()
     await navigateToCertificatePrintAction(page, declaration)
     await selectCertificationType(page, 'Death Certificate Certified Copy')
     await selectRequesterType(page, 'Print and issue to Informant (Spouse)')

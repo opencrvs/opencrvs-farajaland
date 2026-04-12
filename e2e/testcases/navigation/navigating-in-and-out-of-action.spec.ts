@@ -16,10 +16,7 @@ test.describe.serial('Navigating in and out of action', () => {
   let declaration: Declaration
   let eventId: string
   test.beforeAll(async ({ browser }) => {
-    const token = await getToken(
-      CREDENTIALS.LOCAL_REGISTRAR.USERNAME,
-      CREDENTIALS.LOCAL_REGISTRAR.PASSWORD
-    )
+    const token = await getToken(CREDENTIALS.REGISTRAR)
     const res = await createDeclaration(token)
     declaration = res.declaration
     eventId = res.eventId
@@ -34,8 +31,8 @@ test.describe.serial('Navigating in and out of action', () => {
     await login(page)
   })
 
-  test('Navigate to ready to print', async () => {
-    await page.getByRole('button', { name: 'Ready to print' }).click()
+  test('Navigate to "Pending certification" -workqueue', async () => {
+    await page.getByRole('button', { name: 'Pending certification' }).click()
   })
 
   test('Navigate successfully through the print certificate action flow', async () => {
@@ -75,17 +72,22 @@ test.describe.serial('Navigating in and out of action', () => {
     await page.getByRole('button', { name: 'Print', exact: true }).click()
 
     // Wait for PDF the load and the page to be redirected to the overview page
-    await page.waitForURL(`**/workqueue/ready-to-print`)
-    await expectInUrl(page, `/workqueue/ready-to-print`)
+    await page.waitForURL(`**/workqueue/pending-certification`)
+    await expectInUrl(page, `/workqueue/pending-certification`)
   })
 
   test('Browser back button should take user to the front page instead of action flow', async () => {
     await page.goBack()
-    await expect(page.locator('#content-name')).toContainText('Ready to print')
+    await expect(page.locator('#content-name')).toContainText(
+      'Pending certification'
+    )
   })
 
   test('Browser forward button should take user back to the event overview page', async () => {
     await page.goForward()
-    await expectInUrl(page, `/events/overview/${eventId}`)
+    await expectInUrl(
+      page,
+      `/events/${eventId}?workqueue=pending-certification`
+    )
   })
 })

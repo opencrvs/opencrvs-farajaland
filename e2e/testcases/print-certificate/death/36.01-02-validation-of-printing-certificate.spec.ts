@@ -15,10 +15,7 @@ test.describe.serial('Certified copies', () => {
   let declaration: Declaration
 
   test.beforeAll(async ({ browser }) => {
-    const token = await getToken(
-      CREDENTIALS.LOCAL_REGISTRAR.USERNAME,
-      CREDENTIALS.LOCAL_REGISTRAR.PASSWORD
-    )
+    const token = await getToken(CREDENTIALS.REGISTRAR)
     const res = await createDeclaration(token)
     declaration = res.declaration
     page = await browser.newPage()
@@ -33,7 +30,7 @@ test.describe.serial('Certified copies', () => {
   })
 
   test('1.0.2 Click on "Print certificate" from action menu', async () => {
-    await page.getByRole('button', { name: 'Ready to print' }).click()
+    await page.getByRole('button', { name: 'Pending certification' }).click()
     await navigateToCertificatePrintAction(page, declaration)
   })
 
@@ -103,11 +100,8 @@ test.describe.serial('Certified copies renders spouse age correctly', () => {
   const spouseAge = 25
 
   test.beforeAll(async ({ browser }) => {
-    const token = await getToken(
-      CREDENTIALS.LOCAL_REGISTRAR.USERNAME,
-      CREDENTIALS.LOCAL_REGISTRAR.PASSWORD
-    )
-    const res = await createDeclaration(token, (mockDeclaration) => ({
+    const token = await getToken(CREDENTIALS.REGISTRAR)
+    const res = await createDeclaration(token, () => ({
       'spouse.dobUnknown': true,
       'spouse.age': {
         age: spouseAge,
@@ -128,7 +122,7 @@ test.describe.serial('Certified copies renders spouse age correctly', () => {
   })
 
   test('1.0.2 Click on "Print certificate" from action menu', async () => {
-    await page.getByRole('button', { name: 'Ready to print' }).click()
+    await page.getByRole('button', { name: 'Pending certification' }).click()
     await navigateToCertificatePrintAction(page, declaration)
   })
 
@@ -194,10 +188,7 @@ test.describe
   }
 
   test.beforeAll(async ({ browser }) => {
-    const token = await getToken(
-      CREDENTIALS.LOCAL_REGISTRAR.USERNAME,
-      CREDENTIALS.LOCAL_REGISTRAR.PASSWORD
-    )
+    const token = await getToken(CREDENTIALS.REGISTRAR)
 
     const res = await createDeclaration(token, (mockDeclaration) => ({
       ...declarationOverrides,
@@ -220,7 +211,7 @@ test.describe
   })
 
   test('1.0.2 Click on "Print certificate" from action menu', async () => {
-    await page.getByRole('button', { name: 'Ready to print' }).click()
+    await page.getByRole('button', { name: 'Pending certification' }).click()
     await navigateToCertificatePrintAction(page, declaration)
   })
 

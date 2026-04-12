@@ -8,15 +8,22 @@ import {
 import { isMobile } from './mobile-helpers'
 
 type Workqueue =
-  | 'Ready to print'
-  | 'Ready for review'
-  | 'Notifications'
-  | 'Requires updates'
-  | 'In external validation'
+  | 'Outbox'
+  | 'Drafts'
   | 'Assigned to you'
   | 'Recent'
-  | 'Sent for review'
-  | 'Outbox'
+  | 'Notifications'
+  | 'Potential duplicate'
+  | 'Pending updates'
+  | 'Pending approval'
+  | 'Escalated'
+  | 'Pending registration'
+  | 'Pending external validation'
+  | 'Pending certification'
+  | 'Pending issuance'
+  | 'Pending corrections'
+  | 'Team'
+  | 'Organisation'
 
 export async function navigateToWorkqueue(page: Page, workqueue: Workqueue) {
   if (isMobile(page)) {
@@ -38,14 +45,21 @@ export async function selectAction(
     | 'Assign'
     | 'Unassign'
     | 'Delete'
-    | 'Correct record'
-    | 'View'
+    | 'Correct'
     | 'Archive'
+    | 'Reject'
+    | 'Review correction request'
+    | 'Approve'
+    | 'Edit'
+    | 'Escalate'
+    | 'Registrar general feedback'
+    | 'Provincial registrar feedback'
+    | 'Revoke registration'
+    | 'Reinstate registration'
+    | 'Update'
+    | 'Issue certified copy'
 ) {
-  if (
-    (await page.getByTestId('status-value').innerText()) !== 'Draft' &&
-    action !== 'View'
-  ) {
+  if (await page.getByRole('button', { name: 'Assign record' }).isVisible()) {
     await ensureAssigned(page)
   }
 
@@ -65,7 +79,7 @@ export async function selectAction(
 export async function ensureAssigned(page: Page) {
   await page.waitForTimeout(SAFE_INPUT_CHANGE_TIMEOUT_MS)
 
-  await page.getByRole('button', { name: 'Action' }).click()
+  await page.getByRole('button', { name: 'Action', exact: true }).click()
 
   const unAssignAction = page
     .locator('#action-Dropdown-Content li')
@@ -87,14 +101,15 @@ export async function ensureAssigned(page: Page) {
     await unAssignAction.click()
     // Wait for the unassign modal to appear
     await page.getByRole('button', { name: 'Unassign', exact: true }).click()
-    await expect(page.getByTestId('assignedTo-value')).toHaveText(
-      'Not assigned',
-      {
-        timeout: SAFE_OUTBOX_TIMEOUT_MS
-      }
-    )
-    await page.getByRole('button', { name: 'Action' }).click()
+    await expect(
+      page.getByRole('button', { name: 'Assign record' })
+    ).toBeVisible({ timeout: SAFE_OUTBOX_TIMEOUT_MS })
 
+    await page.getByRole('button', { name: 'Action', exact: true }).click()
+
+    // Seems that on slower environments actions are not immediately available after unassign.
+    // And end up having false negative for assignAction.isVisible().
+    await page.waitForTimeout(SAFE_INPUT_CHANGE_TIMEOUT_MS)
     assignAction = page
       .locator('#action-Dropdown-Content li')
       .filter({ hasText: new RegExp(`^Assign$`, 'i') })
@@ -107,12 +122,13 @@ export async function ensureAssigned(page: Page) {
     await page.getByRole('button', { name: 'Assign', exact: true }).click()
   }
 
-  await expect(page.getByTestId('assignedTo-value')).not.toHaveText(
-    'Not assigned',
-    {
-      timeout: SAFE_OUTBOX_TIMEOUT_MS
-    }
-  )
+  await expect(
+    page.getByRole('button', { name: 'Assign record' })
+  ).not.toBeVisible({ timeout: SAFE_OUTBOX_TIMEOUT_MS })
+
+  await expect(page.locator('#action-loading-undefined')).not.toBeVisible({
+    timeout: SAFE_OUTBOX_TIMEOUT_MS
+  })
 }
 
 export async function expectInUrl(page: Page, assertionString: string) {
@@ -135,7 +151,7 @@ export async function ensureInExternalValidationIsEmpty(page: Page) {
 
   await expect(
     page.locator('#navigation_workqueue_in-external-validation')
-  ).toHaveText('In external validation', {
+  ).toHaveText('Pending external validation', {
     timeout: SAFE_IN_EXTERNAL_VALIDATION_MS
   })
 }

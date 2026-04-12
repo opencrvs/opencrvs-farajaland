@@ -4,7 +4,8 @@ import {
   drawSignature,
   expectRowValueWithChangeButton,
   goToSection,
-  login
+  login,
+  selectDeclarationAction
 } from '../../../helpers'
 import { CREDENTIALS } from '../../../constants'
 import { ensureOutboxIsEmpty, selectAction } from '../../../utils'
@@ -34,9 +35,9 @@ test.describe.serial('10. Death declaration case - 10', () => {
     await page.close()
   })
 
-  test.describe('10.1 Declaration started by FA', async () => {
+  test.describe('10.1 Declaration started by HO', async () => {
     test.beforeAll(async () => {
-      await login(page, CREDENTIALS.FIELD_AGENT)
+      await login(page, CREDENTIALS.HOSPITAL_OFFICIAL)
 
       await page.click('#header-new-event')
       await page.getByLabel('Death').click()
@@ -49,6 +50,13 @@ test.describe.serial('10. Death declaration case - 10', () => {
     })
 
     test('10.1.2 Fill event details', async () => {
+      // A place of death is needed, since hospital official may only declare a record in their own location
+      await page.getByTestId('select__eventDetails____placeOfDeath').click()
+      await page.getByText('Health Institution', { exact: true }).click()
+
+      await page.locator('#eventDetails____deathLocation').fill('Klow Village')
+      await page.getByText('Klow Village Hospital').click()
+
       await page.getByRole('button', { name: 'Continue' }).click()
     })
 
@@ -149,17 +157,6 @@ test.describe.serial('10. Death declaration case - 10', () => {
       )
 
       /*
-       * Expected result: should require
-       * - Place of death
-       * - Change button
-       */
-      await expectRowValueWithChangeButton(
-        page,
-        'eventDetails.placeOfDeath',
-        REQUIRED_VALIDATION_ERROR
-      )
-
-      /*
        * Expected result: should include
        * - Informant type
        * - Change button
@@ -244,10 +241,8 @@ test.describe.serial('10. Death declaration case - 10', () => {
         .click()
     })
 
-    test('10.1.7 Send for review', async () => {
-      await page.getByRole('button', { name: 'Send for review' }).click()
-      await expect(page.getByText('Send for review?')).toBeVisible()
-      await page.getByRole('button', { name: 'Confirm' }).click()
+    test('10.1.7 Notify', async () => {
+      await selectDeclarationAction(page, 'Notify')
       await ensureOutboxIsEmpty(page)
       await expect(page.getByText('Farajaland CRS')).toBeVisible()
 
@@ -256,11 +251,8 @@ test.describe.serial('10. Death declaration case - 10', () => {
        */
       expect(page.url().includes('assigned-to-you')).toBeTruthy()
 
-      await page.getByText('Sent for review').click()
+      await page.getByText('Recent').click()
 
-      /*
-       * Expected result: The declaration should be in sent for review
-       */
       await expect(
         page
           .getByRole('button', {
@@ -271,9 +263,9 @@ test.describe.serial('10. Death declaration case - 10', () => {
     })
   })
 
-  test.describe('10.2 Declaration Review by RA', async () => {
-    test('10.2.1 Navigate to the declaration review page', async () => {
-      await login(page, CREDENTIALS.REGISTRATION_AGENT)
+  test.describe('10.2 Declaration Review by RO', async () => {
+    test('10.2.1 Navigate to the declaration Edit-action', async () => {
+      await login(page, CREDENTIALS.REGISTRATION_OFFICER)
 
       await ensureOutboxIsEmpty(page)
       await page.getByText('Notifications').click()
@@ -284,10 +276,11 @@ test.describe.serial('10. Death declaration case - 10', () => {
         })
         .first()
         .click()
+
+      await selectAction(page, 'Edit')
     })
 
     test('10.2.2 Verify information on review page', async () => {
-      await selectAction(page, 'Review')
       /*
        * Expected result: should include
        * - Deceased's First Name
@@ -364,17 +357,6 @@ test.describe.serial('10. Death declaration case - 10', () => {
       await expectRowValueWithChangeButton(
         page,
         'eventDetails.date',
-        REQUIRED_VALIDATION_ERROR
-      )
-
-      /*
-       * Expected result: should require
-       * - Place of death
-       * - Change button
-       */
-      await expectRowValueWithChangeButton(
-        page,
-        'eventDetails.placeOfDeath',
         REQUIRED_VALIDATION_ERROR
       )
 

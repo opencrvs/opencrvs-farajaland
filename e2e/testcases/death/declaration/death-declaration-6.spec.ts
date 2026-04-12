@@ -6,11 +6,13 @@ import {
   formatDateObjectTo_dMMMMyyyy,
   getRandomDate,
   goToSection,
-  login
+  login,
+  selectDeclarationAction,
+  switchEventTab
 } from '../../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../../constants'
-import { ensureOutboxIsEmpty } from '../../../utils'
+import { ensureAssigned, ensureOutboxIsEmpty } from '../../../utils'
 
 test.describe.serial('6. Death declaration case - 6', () => {
   let page: Page
@@ -49,8 +51,9 @@ test.describe.serial('6. Death declaration case - 6', () => {
       placeOfDeath: 'Other',
       deathLocationOther: {
         country: 'Farajaland',
-        province: 'Chuminga',
-        district: 'Nsali',
+        province: 'Central',
+        district: 'Ibombo',
+        village: 'Olani',
         town: faker.location.city(),
         residentialArea: faker.location.county(),
         street: faker.location.street(),
@@ -98,9 +101,9 @@ test.describe.serial('6. Death declaration case - 6', () => {
     await page.close()
   })
 
-  test.describe('6.1 Declaration started by Local Registrar', async () => {
+  test.describe('6.1 Declaration started by Registrar', async () => {
     test.beforeAll(async () => {
-      await login(page, CREDENTIALS.LOCAL_REGISTRAR)
+      await login(page, CREDENTIALS.REGISTRAR)
 
       await page.click('#header-new-event')
       await page.getByLabel('Death').click()
@@ -178,6 +181,12 @@ test.describe.serial('6. Death declaration case - 6', () => {
       await page.locator('#district').click()
       await page
         .getByText(declaration.eventDetails.deathLocationOther.district, {
+          exact: true
+        })
+        .click()
+      await page.locator('#village').click()
+      await page
+        .getByText(declaration.eventDetails.deathLocationOther.village, {
           exact: true
         })
         .click()
@@ -407,6 +416,7 @@ test.describe.serial('6. Death declaration case - 6', () => {
         declaration.eventDetails.deathLocationOther.country +
           declaration.eventDetails.deathLocationOther.province +
           declaration.eventDetails.deathLocationOther.district +
+          declaration.eventDetails.deathLocationOther.village +
           declaration.eventDetails.deathLocationOther.town +
           declaration.eventDetails.deathLocationOther.residentialArea +
           declaration.eventDetails.deathLocationOther.street +
@@ -530,9 +540,7 @@ test.describe.serial('6. Death declaration case - 6', () => {
     })
 
     test('6.1.8 Register', async () => {
-      await page.getByRole('button', { name: 'Register' }).click()
-      await expect(page.getByText('Register the death?')).toBeVisible()
-      await page.locator('#confirm_Declare').click()
+      await selectDeclarationAction(page, 'Register')
       await ensureOutboxIsEmpty(page)
       await expect(page.getByText('Farajaland CRS')).toBeVisible()
 
@@ -541,11 +549,8 @@ test.describe.serial('6. Death declaration case - 6', () => {
        */
       expect(page.url().includes('assigned-to-you')).toBeTruthy()
 
-      await page.getByText('Ready to print').click()
+      await page.getByText('Pending certification').click()
 
-      /*
-       * Expected result: The declaration should be in sent for review
-       */
       await expect(
         page.getByRole('button', {
           name:
@@ -556,12 +561,12 @@ test.describe.serial('6. Death declaration case - 6', () => {
       ).toBeVisible()
     })
   })
-  test.describe('6.2 Declaration Review by Registration Agent', async () => {
-    test('6.2.1 Navigate to the declaration review page', async () => {
-      await login(page, CREDENTIALS.REGISTRATION_AGENT)
+  test.describe('6.2 Declaration Review by RO', async () => {
+    test('6.2.1 Navigate to the declaration "Record" -tab', async () => {
+      await login(page, CREDENTIALS.REGISTRATION_OFFICER)
 
       await ensureOutboxIsEmpty(page)
-      await page.getByText('Ready to print').click()
+      await page.getByText('Pending certification').click()
 
       await page
         .getByRole('button', {
@@ -573,9 +578,9 @@ test.describe.serial('6. Death declaration case - 6', () => {
         .click()
     })
 
-    test('6.2.2 Verify information on review page', async () => {
-      await page.getByRole('button', { name: 'Action', exact: true }).click()
-      await page.getByText('View', { exact: true }).click()
+    test('6.2.2 Verify information on "Record" tab', async () => {
+      await ensureAssigned(page)
+      await switchEventTab(page, 'Record')
       /*
        * Expected result: should include
        * - Deceased's First Name
@@ -676,6 +681,7 @@ test.describe.serial('6. Death declaration case - 6', () => {
         declaration.eventDetails.deathLocationOther.country +
           declaration.eventDetails.deathLocationOther.province +
           declaration.eventDetails.deathLocationOther.district +
+          declaration.eventDetails.deathLocationOther.village +
           declaration.eventDetails.deathLocationOther.town +
           declaration.eventDetails.deathLocationOther.residentialArea +
           declaration.eventDetails.deathLocationOther.street +

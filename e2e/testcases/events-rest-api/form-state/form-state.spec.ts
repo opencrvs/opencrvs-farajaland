@@ -1,10 +1,11 @@
 import { expect, Page, test } from '@playwright/test'
 import {
   continueForm,
+  login,
   drawSignature,
   getToken,
   goToSection,
-  login
+  selectDeclarationAction
 } from '../../../helpers'
 import { faker } from '@faker-js/faker'
 import { fillChildDetails, openBirthDeclaration } from '../../birth/helpers'
@@ -56,13 +57,13 @@ test.describe('Form state', () => {
       await page.getByRole('button', { name: 'Apply' }).click()
 
       // Save & Exit draft
-      await page.getByRole('button', { name: 'Save & Exit' }).click()
+      await selectDeclarationAction(page, 'Save & Exit', false)
       await page.getByRole('button', { name: 'Confirm' }).click()
     })
 
     test('Form states and annotations are not persisted', async () => {
       //@todo: The user should be navigated to "my-drafts" tab by default
-      await page.getByText('My drafts').click()
+      await page.getByText('Drafts').click()
 
       await expect(
         page.getByRole('button', { name: childName, exact: true })
@@ -93,14 +94,15 @@ test.describe('Form state', () => {
     test.afterAll(async () => {
       await page.close()
     })
+
     test('Login', async () => {
       await login(page)
     })
 
-    // First create a draft event, which we will come back to later
     test('Create a draft', async () => {
       await openBirthDeclaration(page)
       actionableEventChildName = await fillChildDetails(page)
+
       await page.getByRole('button', { name: 'Save & Exit' }).click()
       await page.getByRole('button', { name: 'Confirm' }).click()
 
@@ -122,17 +124,17 @@ test.describe('Form state', () => {
       await page.getByRole('button', { name: 'Apply' }).click()
 
       // Save & Exit draft
-      await page.getByRole('button', { name: 'Save & Exit' }).click()
+      await selectDeclarationAction(page, 'Save & Exit', false)
       await page.getByRole('button', { name: 'Confirm' }).click()
     })
 
     test('Form states and annotations are not persisted', async () => {
-      await page.getByRole('button', { name: 'My drafts' }).click()
+      await page.getByRole('button', { name: 'Drafts' }).click()
       await page
         .getByRole('button', { name: actionableEventChildName, exact: true })
         .click()
 
-      await selectAction(page, 'Declare')
+      await selectAction(page, 'Update')
 
       await expect(page.getByTestId('row-value-child.name')).not.toHaveText(
         REQUIRED_VALIDATION_ERROR
@@ -165,10 +167,7 @@ test.describe('Form state', () => {
     })
 
     test('Create a declaration', async () => {
-      const token = await getToken(
-        CREDENTIALS.LOCAL_REGISTRAR.USERNAME,
-        CREDENTIALS.LOCAL_REGISTRAR.PASSWORD
-      )
+      const token = await getToken(CREDENTIALS.REGISTRAR)
       declaration = (await createDeclaration(token)).declaration
       await page.reload()
       await ensureInExternalValidationIsEmpty(page)
@@ -177,7 +176,7 @@ test.describe('Form state', () => {
     test('Form changes in correction are persisted after reload', async () => {
       const updatedMotherName = faker.person.firstName('female')
       expect(declaration).toBeDefined()
-      await page.getByRole('button', { name: 'Ready to print' }).click()
+      await page.getByRole('button', { name: 'Pending certification' }).click()
       await navigateToCertificatePrintAction(page, declaration!)
       await selectRequesterType(page, 'Print and issue to Informant (Mother)')
       await continueForm(page)
@@ -214,7 +213,7 @@ test.describe('Form state', () => {
       expect(declaration).toBeDefined()
 
       await page.goto(CLIENT_URL)
-      await page.getByRole('button', { name: 'Ready to print' }).click()
+      await page.getByRole('button', { name: 'Pending certification' }).click()
       await navigateToCertificatePrintAction(page, declaration!)
       await selectRequesterType(page, 'Print and issue to someone else')
 

@@ -28,10 +28,7 @@ test.describe.serial('Validate collect payment page', () => {
   let trackingId: string | undefined
 
   test.beforeAll(async ({ browser }) => {
-    const token = await getToken(
-      CREDENTIALS.LOCAL_REGISTRAR.USERNAME,
-      CREDENTIALS.LOCAL_REGISTRAR.PASSWORD
-    )
+    const token = await getToken(CREDENTIALS.REGISTRAR)
     const res = await createDeclaration(token)
     eventId = res.eventId
     declaration = res.declaration
@@ -48,7 +45,7 @@ test.describe.serial('Validate collect payment page', () => {
   })
 
   test('5.0.2 Navigate to certificate print action', async () => {
-    await page.getByRole('button', { name: 'Ready to print' }).click()
+    await page.getByRole('button', { name: 'Pending certification' }).click()
     await navigateToCertificatePrintAction(page, declaration)
   })
 
@@ -155,6 +152,7 @@ test.describe.serial('Validate collect payment page', () => {
       .getByRole('button', { name: formatV2ChildName(declaration) })
       .click()
     await ensureAssigned(page)
+    await page.getByRole('button', { name: 'Audit' }).click()
     await page.getByRole('button', { name: 'Certified', exact: true }).click()
 
     await expect(page.getByText('Type' + 'Birth Certificate')).toBeVisible()

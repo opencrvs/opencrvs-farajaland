@@ -1,10 +1,11 @@
 import { expect, test } from '@playwright/test'
 import { login } from '../../helpers'
 import { assertTexts } from '../../utils'
+import { CREDENTIALS } from '../../constants'
 
 test.describe("Advanced Search 8 - Death - Deceased's place of death", () => {
   test.beforeEach(async ({ page }) => {
-    await login(page)
+    await login(page, CREDENTIALS.REGISTRAR_VILLAGE)
     await page.click('#searchType')
     await expect(page).toHaveURL(/.*\/advanced-search/)
     await page.getByText('Death').click()
@@ -33,8 +34,8 @@ test.describe("Advanced Search 8 - Death - Deceased's place of death", () => {
 
     await expect(page.getByText('Country')).not.toBeVisible()
 
-    await page.locator('#eventDetails____deathLocation').fill('water')
-    await page.getByText('Water FallsRural Health Centre').click()
+    await page.locator('#eventDetails____deathLocation').fill('Shifwa')
+    await page.getByText('Shifwankula Health Post').click()
 
     await page.getByTestId('search').click()
     await expect(page.getByText(/Search results\s*\(\d+\)/)).toBeVisible()
@@ -43,7 +44,7 @@ test.describe("Advanced Search 8 - Death - Deceased's place of death", () => {
       root: page,
       texts: [
         'Event: Death',
-        "Deceased's Health Institution: Water FallsRural Health Centre, Ienge, Pualula, Farajaland",
+        "Deceased's Health Institution: Shifwankula Health Post, Ibombo, Central, Farajaland",
         'Place of death: Health Institution'
       ],
       testId: 'search-result'
@@ -66,7 +67,7 @@ test.describe("Advanced Search 8 - Death - Deceased's place of death", () => {
       root: page,
       texts: [
         'Event: Death',
-        'Usual place of residence: Farajaland, Central, Ibombo',
+        'Usual place of residence: Farajaland, Central, Ibombo, Klow',
         'Place of death: Residential address'
       ],
       testId: 'search-result'
@@ -93,7 +94,5 @@ test.describe("Advanced Search 8 - Death - Deceased's place of death", () => {
       ],
       testId: 'search-result'
     })
-
-    const t = page.locator('#abcd')
   })
 })

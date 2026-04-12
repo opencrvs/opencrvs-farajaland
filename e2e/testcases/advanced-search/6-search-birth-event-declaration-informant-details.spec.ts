@@ -13,10 +13,7 @@ test.describe
 
   test.beforeAll(async ({ browser }) => {
     page = await browser.newPage()
-    const token = await getToken(
-      CREDENTIALS.LOCAL_REGISTRAR.USERNAME,
-      CREDENTIALS.LOCAL_REGISTRAR.PASSWORD
-    )
+    const token = await getToken(CREDENTIALS.REGISTRAR)
     record = await createDeclaration(token, {}, 'REGISTER', 'HEALTH_FACILITY')
     ;[yyyy, mm, dd] = record.declaration['informant.dob'].split('-')
   })
@@ -75,11 +72,13 @@ test.describe
           `Informant's Name: ${record.declaration['informant.name'].firstname} ${record.declaration['informant.name'].surname}`
         ]
       })
-      await expect(page.getByRole('button', { name: 'Edit' })).toBeVisible()
+      await expect(
+        page.getByRole('button', { name: 'Edit', exact: true })
+      ).toBeVisible()
     })
 
     test('2.5.3 - Validate clicking on the search edit button', async () => {
-      await page.getByRole('button', { name: 'Edit' }).click()
+      await page.getByRole('button', { name: 'Edit', exact: true }).click()
       await expect(page).toHaveURL(/.*\/advanced-search/)
       expect(page.url()).toContain(`informant.dob=${yyyy}-${mm}-${dd}`)
 

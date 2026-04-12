@@ -22,9 +22,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        runner: ${{ 
-          (inputs.build_arm == true && fromJSON('["ubuntu-24.04", "ubuntu-24.04-arm"]')) || 
-          fromJSON('["ubuntu-24.04"]') 
+        runner: ${{
+          (inputs.build_arm == true && fromJSON('["ubuntu-24.04", "ubuntu-24.04-arm"]')) ||
+          fromJSON('["ubuntu-24.04"]')
           }}
     outputs:
       version: ${{ steps.country_config.outputs.version }}
@@ -71,6 +71,7 @@ jobs:
           push: true
           provenance: false
           context: .
+          sbom: false
           tags: |
             ${{ secrets.DOCKERHUB_ACCOUNT}}/${{ secrets.DOCKERHUB_REPO }}:${{ steps.country_config.outputs.version }}
 
@@ -101,7 +102,7 @@ jobs:
         run: |
           TAG="${{ needs.build.outputs.version_common }}"
           REPO="${{ secrets.DOCKERHUB_ACCOUNT}}/${{ secrets.DOCKERHUB_REPO }}"
-          
+
           # Create manifest list based on whether ARM build exists
           if [[ "$BUILD_ARM" == "true" ]]; then
             MANIFEST_LIST="$REPO:$TAG-amd64 $REPO:$TAG-arm64"
@@ -110,7 +111,7 @@ jobs:
             MANIFEST_LIST="$REPO:$TAG-amd64"
             ASSETS_MANIFEST_LIST="$REPO:$TAG-amd64-assets"
           fi
-          
+
           echo "[🔁 pushing ] $REPO:$TAG"
           docker manifest create $REPO:$TAG \
              $MANIFEST_LIST

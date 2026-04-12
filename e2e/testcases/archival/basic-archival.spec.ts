@@ -4,14 +4,18 @@ import {
   drawSignature,
   formatName,
   getRandomDate,
+  getToken,
   goToSection,
   login,
-  logout
+  logout,
+  selectDeclarationAction
 } from '../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../constants'
-import { fillDate } from '../birth/helpers'
+import { fillDate, formatV2ChildName } from '../birth/helpers'
 import { ensureOutboxIsEmpty, selectAction } from '../../utils'
+import { ActionType } from '@opencrvs/toolkit/events'
+import { createDeclaration, Declaration } from '../test-data/birth-declaration'
 
 test.describe.serial('Basic Archival flow', () => {
   let page: Page
@@ -28,12 +32,7 @@ test.describe.serial('Basic Archival flow', () => {
     birthType: 'Single',
     weightAtBirth: 2.4,
     placeOfBirth: 'Health Institution',
-    birthLocation: {
-      facility: 'Golden Valley Rural Health Centre',
-      district: 'Ibombo',
-      province: 'Central',
-      country: 'Farajaland'
-    },
+    birthLocation: { facility: 'Klow Village Hospital' },
     informantType: 'Mother',
     informantEmail: faker.internet.email(),
     mother: {
@@ -51,6 +50,7 @@ test.describe.serial('Basic Archival flow', () => {
         country: 'Farajaland',
         province: 'Sulaka',
         district: 'Irundu',
+        village: 'Xhosa',
         town: faker.location.city(),
         residentialArea: faker.location.county(),
         street: faker.location.street(),
@@ -86,8 +86,8 @@ test.describe.serial('Basic Archival flow', () => {
     await page.close()
   })
 
-  test('Login as FA', async () => {
-    await login(page, CREDENTIALS.FIELD_AGENT)
+  test('Login as HO', async () => {
+    await login(page, CREDENTIALS.HOSPITAL_OFFICIAL)
   })
 
   test('Start creating new birth declaration', async () => {
@@ -184,6 +184,10 @@ test.describe.serial('Basic Archival flow', () => {
     await page
       .getByText(declaration.mother.address.district, { exact: true })
       .click()
+    await page.locator('#village').click()
+    await page
+      .getByText(declaration.mother.address.village, { exact: true })
+      .click()
 
     await page.locator('#town').fill(declaration.mother.address.town)
     await page
@@ -255,15 +259,13 @@ test.describe.serial('Basic Archival flow', () => {
       .click()
   })
 
-  test('Send for review', async () => {
-    await page.getByRole('button', { name: 'Send for review' }).click()
-    await page.getByRole('button', { name: 'Confirm' }).click()
-
+  test('Declare', async () => {
+    await selectDeclarationAction(page, 'Declare')
     await ensureOutboxIsEmpty(page)
   })
 
-  test('Archival is not available for FA', async () => {
-    await page.getByText('Sent for review').click()
+  test('Archival is not available for HO', async () => {
+    await page.getByText('Recent').click()
     await page
       .getByRole('button', {
         name: formatName(declaration.child.name)
@@ -283,12 +285,12 @@ test.describe.serial('Basic Archival flow', () => {
     await logout(page)
   })
 
-  test('Login as RA', async () => {
-    await login(page, CREDENTIALS.REGISTRATION_AGENT)
+  test('Login as RO', async () => {
+    await login(page, CREDENTIALS.REGISTRATION_OFFICER)
   })
 
   test('Navigate to the event overview page', async () => {
-    await page.getByText('Ready for review').click()
+    await page.getByText('Pending validation').click()
 
     // Expect not to see a quick action for Archival
     await expect(
@@ -304,17 +306,11 @@ test.describe.serial('Basic Archival flow', () => {
 
   test('Archive the declaration', async () => {
     await selectAction(page, 'Archive')
-    await expect(page.getByText('Archive declaration?')).toBeVisible()
-    await expect(
-      page.getByText(
-        'This will archive the record and remove it from your workspace'
-      )
-    ).toBeVisible()
     await page.getByRole('button', { name: 'Archive', exact: true }).click()
   })
 
   test('Archived declaration is not visible in workqueues', async () => {
-    await page.getByText('Ready for review').click()
+    await page.getByRole('button', { name: 'Pending validation' }).click()
     await expect(
       page.getByRole('button', {
         name: formatName(declaration.child.name)
@@ -332,5 +328,70 @@ test.describe.serial('Basic Archival flow', () => {
       .click()
 
     await expect(page.getByTestId('status-value')).toHaveText('Archived')
+  })
+})
+
+test.describe.serial('Archival of declaration pending validation', () => {
+  let page: Page
+  let token: string
+  let declaration: Declaration
+
+  test.beforeAll(async ({ browser }) => {
+    token = await getToken(CREDENTIALS.HOSPITAL_OFFICIAL)
+    const res = await createDeclaration(token, undefined, ActionType.DECLARE)
+    declaration = res.declaration
+
+    page = await browser.newPage()
+  })
+
+  test('Login as RO', async () => {
+    await login(page, CREDENTIALS.REGISTRATION_OFFICER)
+  })
+
+  test('Navigate to the event overview page', async () => {
+    await page.getByText('Pending validation').click()
+    await page
+      .getByRole('button', {
+        name: formatV2ChildName(declaration)
+      })
+      .click()
+  })
+
+  test('Validate the declaration', async () => {
+    await selectAction(page, 'Validate')
+    await page.getByRole('button', { name: 'Confirm', exact: true }).click()
+    await ensureOutboxIsEmpty(page)
+  })
+
+  test('Confirm the declaration is in "Pending registration" -workqueue', async () => {
+    await login(page, CREDENTIALS.REGISTRAR)
+
+    await page.getByText('Pending registration').click()
+    await page
+      .getByRole('button', { name: formatV2ChildName(declaration) })
+      .click()
+
+    await expect(page.getByTestId('status-value')).toHaveText('Declared')
+    await expect(page.getByTestId('flags-value')).toHaveText('Validated')
+  })
+
+  test('Archive the declaration', async () => {
+    await selectAction(page, 'Archive')
+    await page.getByRole('button', { name: 'Archive', exact: true }).click()
+  })
+
+  test('Archived declaration is not visible in workqueues', async () => {
+    await page.getByRole('button', { name: 'Pending registration' }).click()
+    await expect(
+      page.getByRole('button', { name: formatV2ChildName(declaration) })
+    ).not.toBeVisible()
+  })
+
+  test('Archived declaration can be found via search', async () => {
+    await page.locator('#searchText').fill(formatV2ChildName(declaration))
+    await page.locator('#searchIconButton').click()
+    await expect(
+      page.getByRole('button', { name: formatV2ChildName(declaration) })
+    ).not.toBeVisible()
   })
 })

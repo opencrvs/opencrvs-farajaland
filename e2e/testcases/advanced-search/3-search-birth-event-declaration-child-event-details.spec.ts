@@ -3,7 +3,7 @@ import { getToken, login } from '../../helpers'
 import { createDeclaration } from '../test-data/birth-declaration-with-father-brother'
 import { CREDENTIALS } from '../../constants'
 import { faker } from '@faker-js/faker'
-import { getAllLocations, getLocationIdByName } from '../birth/helpers'
+import { getIdByName, getAdministrativeAreas } from '../birth/helpers'
 import { assertTexts, type } from '../../utils'
 
 test.describe
@@ -15,21 +15,15 @@ test.describe
   let record: Awaited<ReturnType<typeof createDeclaration>>
   test.beforeAll(async ({ browser }) => {
     page = await browser.newPage()
-    const token = await getToken(
-      CREDENTIALS.LOCAL_REGISTRAR.USERNAME,
-      CREDENTIALS.LOCAL_REGISTRAR.PASSWORD
-    )
+    const token = await getToken(CREDENTIALS.REGISTRAR)
 
     record = await createDeclaration(
       token,
       {
         'child.dob': faker.date
-          // Randomly chosen DOB between 2010-01-01 and 2020-12-31
-          // Ensures the created record appears on the first page of search results
-          .between({ from: '2010-01-01', to: '2020-12-31' })
+          .between({ from: '2025-09-10', to: '2025-11-28' })
           .toISOString()
           .split('T')[0],
-        'child.reason': 'Other', // needed for late dob value
         'child.gender': 'female'
       },
       'REGISTER',
@@ -83,9 +77,9 @@ test.describe
       ).toBeVisible()
       await page.getByText('Health Institution', { exact: true }).click()
 
-      await page.locator('#child____birthLocation').fill('Ibombo Rural')
-      await expect(page.getByText('Ibombo Rural Health Centre')).toBeVisible()
-      await page.getByText('Ibombo Rural Health Centre').click()
+      await page.locator('#child____birthLocation').fill('Klow Village')
+      await expect(page.getByText('Klow Village Hospital')).toBeVisible()
+      await page.getByText('Klow Village Hospital').click()
     })
 
     test('3.1.2 - Validate search and show results', async () => {
@@ -106,15 +100,17 @@ test.describe
           'Event: Birth',
           `Child's Date of birth: ${yyyy}-${mm}-${dd}`,
           "Child's Sex: Female",
-          `Child's Location of birth: Ibombo Rural Health Centre, Ibombo, Central, Farajaland`,
+          `Child's Location of birth: Klow Village Hospital, Klow, Ibombo, Central, Farajaland`,
           `Child's Name: ${fullNameOfChild}`
         ]
       })
-      await expect(page.getByRole('button', { name: 'Edit' })).toBeVisible()
+      await expect(
+        page.getByRole('button', { name: 'Edit', exact: true })
+      ).toBeVisible()
     })
 
     test('3.1.3 - Validate clicking on the search edit button', async () => {
-      await page.getByRole('button', { name: 'Edit' }).click()
+      await page.getByRole('button', { name: 'Edit', exact: true }).click()
       await expect(page).toHaveURL(/.*\/advanced-search/)
       expect(page.url()).toContain(`child.birthLocation=${facilityId}`)
       expect(page.url()).toContain(`child.dob=${yyyy}-${mm}-${dd}`)
@@ -129,9 +125,9 @@ test.describe
       await expect(page.getByTestId('select__child____gender')).toContainText(
         'Female'
       )
-      await expect(page.locator('#child____birthLocation')).toHaveValue(
-        'Ibombo Rural Health Centre'
-      )
+      await expect(
+        page.locator('#searchable-select-child____birthLocation')
+      ).toHaveText('Klow Village Hospital')
     })
   })
 })
@@ -142,39 +138,35 @@ test.describe
   let fullNameOfChild = ''
   let province = ''
   let district = ''
+  let village = ''
   let record: Awaited<ReturnType<typeof createDeclaration>>
   test.beforeAll(async ({ browser }) => {
     page = await browser.newPage()
-    const token = await getToken(
-      CREDENTIALS.LOCAL_REGISTRAR.USERNAME,
-      CREDENTIALS.LOCAL_REGISTRAR.PASSWORD
-    )
+    const token = await getToken(CREDENTIALS.REGISTRAR)
 
-    const locations = await getAllLocations('ADMIN_STRUCTURE')
-    province = getLocationIdByName(locations, 'Central')!
-    district = getLocationIdByName(locations, 'Ibombo')!
+    const administrativeAreas = await getAdministrativeAreas(token)
+    province = getIdByName(administrativeAreas, 'Central')!
+    district = getIdByName(administrativeAreas, 'Ibombo')!
+    village = getIdByName(administrativeAreas, 'Klow')!
 
-    if (!province || !district) {
-      throw new Error('Province or district not found')
+    if (!province || !district || !village) {
+      throw new Error('Province, district or village not found')
     }
 
     record = await createDeclaration(
       token,
       {
         'child.dob': faker.date
-          // Randomly chosen DOB between 2010-01-01 and 2020-12-31
-          // Ensures the created record appears on the first page of search results
-          .between({ from: '2010-01-01', to: '2020-12-31' })
+          .between({ from: '2025-09-10', to: '2025-11-28' })
           .toISOString()
           .split('T')[0],
         'child.placeOfBirth': 'PRIVATE_HOME',
         'child.birthLocation.privateHome': {
           country: 'FAR',
           addressType: 'DOMESTIC',
-          administrativeArea: district,
+          administrativeArea: village,
           streetLevelDetails: { town: 'Dhaka' }
         },
-        'child.reason': 'Other', // needed for late dob value
         'child.gender': 'female'
       },
       'REGISTER',
@@ -192,7 +184,7 @@ test.describe
   })
 
   test('3.2 - Validate log in and load search page', async () => {
-    await login(page)
+    await login(page, CREDENTIALS.REGISTRATION_OFFICER)
     await page.click('#searchType')
     await expect(page).toHaveURL(/.*\/advanced-search/)
     await page.getByText('Birth').click()
@@ -212,6 +204,12 @@ test.describe
       page.locator('#searchable-select-province').getByText('Central')
       page.locator('#searchable-select-district').getByText('Ibombo')
 
+      await page.locator('#province').fill('Cent')
+      await page.getByText('Central', { exact: true }).click()
+      await page.locator('#district').fill('Ibo')
+      await page.getByText('Ibombo', { exact: true }).click()
+      await page.locator('#village').fill('Klo')
+      await page.getByText('Klow', { exact: true }).click()
       await page.locator('#town').fill('Dhaka')
       await page.locator('#town').blur()
     })
@@ -229,6 +227,7 @@ test.describe
         await expect(addressObject.addressType).toBe('DOMESTIC')
         await expect(addressObject.province).toBeTruthy()
         await expect(addressObject.district).toBeTruthy()
+        await expect(addressObject.village).toBeTruthy()
       }
 
       await expect(page.getByText('Search results')).toBeVisible()
@@ -241,16 +240,18 @@ test.describe
         testId: 'search-result',
         texts: [
           'Event: Birth',
-          `Location of birth: Farajaland, Central, Ibombo, Dhaka`,
+          `Location of birth: Farajaland, Central, Ibombo, Klow, Dhaka`,
           'Place of delivery: Residential address',
           fullNameOfChild
         ]
       })
-      await expect(page.getByRole('button', { name: 'Edit' })).toBeVisible()
+      await expect(
+        page.getByRole('button', { name: 'Edit', exact: true })
+      ).toBeVisible()
     })
 
     test('3.2.3 - Validate clicking on the search edit button', async () => {
-      await page.getByRole('button', { name: 'Edit' }).click()
+      await page.getByRole('button', { name: 'Edit', exact: true }).click()
       await expect(page).toHaveURL(/.*\/advanced-search/)
       const searchParams = new URLSearchParams(page.url())
       const address = searchParams.get('child.birthLocation.privateHome')
@@ -261,6 +262,7 @@ test.describe
         await expect(addressObject.addressType).toBe('DOMESTIC')
         await expect(addressObject.province).toBeTruthy()
         await expect(addressObject.district).toBeTruthy()
+        await expect(addressObject.village).toBeTruthy()
       }
       expect(page.url()).toContain(`child.placeOfBirth=PRIVATE_HOME`)
       expect(page.url()).toContain(`eventType=birth`)

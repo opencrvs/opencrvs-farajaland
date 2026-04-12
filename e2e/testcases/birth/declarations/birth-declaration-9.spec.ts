@@ -4,12 +4,14 @@ import {
   drawSignature,
   formatName,
   goToSection,
-  login
+  login,
+  selectDeclarationAction,
+  switchEventTab
 } from '../../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../../constants'
 import { REQUIRED_VALIDATION_ERROR } from '../helpers'
-import { ensureOutboxIsEmpty } from '../../../utils'
+import { ensureAssigned, ensureOutboxIsEmpty } from '../../../utils'
 
 test.describe.serial('9. Birth declaration case - 9', () => {
   let page: Page
@@ -36,9 +38,9 @@ test.describe.serial('9. Birth declaration case - 9', () => {
     await page.close()
   })
 
-  test.describe('9.1 Declaration started by FA', async () => {
+  test.describe('9.1 Declaration started by HO', async () => {
     test.beforeAll(async () => {
-      await login(page, CREDENTIALS.FIELD_AGENT)
+      await login(page, CREDENTIALS.HOSPITAL_OFFICIAL)
       await page.click('#header-new-event')
       await page.getByLabel('Birth').click()
       await page.getByRole('button', { name: 'Continue' }).click()
@@ -176,13 +178,11 @@ test.describe.serial('9. Birth declaration case - 9', () => {
       await expect(page.getByRole('dialog')).not.toBeVisible()
     })
 
-    test('9.1.8 Send for review', async () => {
-      await page.getByRole('button', { name: 'Send for review' }).click()
-      await expect(page.getByText('Send for review?')).toBeVisible()
-      await page.getByRole('button', { name: 'Confirm' }).click()
+    test('9.1.8 Notify', async () => {
+      await selectDeclarationAction(page, 'Notify')
 
       await ensureOutboxIsEmpty(page)
-      await page.getByText('Sent for review').click()
+      await page.getByText('Recent').click()
 
       await expect(
         page.getByRole('button', {
@@ -192,9 +192,9 @@ test.describe.serial('9. Birth declaration case - 9', () => {
     })
   })
 
-  test.describe('9.2 Declaration Review by RA', async () => {
+  test.describe('9.2 Declaration Review by RO', async () => {
     test('9.2.1 Navigate to the declaration review page', async () => {
-      await login(page, CREDENTIALS.REGISTRATION_AGENT)
+      await login(page, CREDENTIALS.REGISTRATION_OFFICER)
 
       await page.getByText('Notifications').click()
 
@@ -203,8 +203,8 @@ test.describe.serial('9. Birth declaration case - 9', () => {
           name: formatName(declaration.child.name)
         })
         .click()
-      await page.getByRole('button', { name: 'Action', exact: true }).click()
-      await page.getByText('View', { exact: true }).click()
+      await ensureAssigned(page)
+      await switchEventTab(page, 'Record')
     })
 
     test('9.2.2 Verify information on preview page', async () => {

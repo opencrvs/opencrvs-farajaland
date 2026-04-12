@@ -104,13 +104,36 @@ jobs:
         run: yarn
   test:
     needs: [deploy, discover-tests, get-core-commit, get-country-config-commit]
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     environment: ${{ github.event.inputs.environment || 'e2e' }}
     strategy:
+      max-parallel: 15
       fail-fast: false
       matrix:
-        test_file: ${{ fromJson(needs.discover-tests.outputs.test_matrix) }}
-    name: ${{ matrix.test_file }}
+        shard:
+          [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20
+          ]
+    name: shard-${{ matrix.shard }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -137,7 +160,7 @@ jobs:
           command: npx playwright install --with-deps
 
       - name: Run Playwright Tests
-        run: npx playwright test ./e2e/testcases/${{ matrix.test_file }}
+        run: npx playwright test --shard=${{ matrix.shard }}/20
         env:
           DOMAIN: '${{ vars.DOMAIN }}'
 
@@ -159,7 +182,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: playwright-report-${{github.event.inputs.core-image-tag || needs.get-core-commit.outputs.latest_commit_sha}}-${{github.event.inputs.countryconfig-image-tag || needs.get-country-config-commit.outputs.short_sha}}-${{ steps.artifact.outputs.artifact }}
+          name: playwright-report-${{github.event.inputs.core-image-tag || needs.get-core-commit.outputs.latest_commit_sha}}-${{github.event.inputs.countryconfig-image-tag || needs.get-country-config-commit.outputs.short_sha}}-${{ steps.artifact.outputs.artifact }}-shard-${{ matrix.shard }}-${{ github.run_id }}-${{ github.run_attempt }}
           path: playwright-report/
           retention-days: 30
 
@@ -172,7 +195,7 @@ jobs:
       - name: Send Slack notification
         uses: slackapi/slack-github-action@v1.26.0
         with:
-          channel-id: 'C02LU432JGK'
+          channel-id: 'C08FCLKER8X'
           slack-message: "❌ E2E pipeline triggered by ${{ github.event.client_payload.actor || github.actor }}'s commit failed. Check the logs at https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}."
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
@@ -186,7 +209,7 @@ jobs:
       - name: Send Slack notification
         uses: slackapi/slack-github-action@v1.26.0
         with:
-          channel-id: 'C02LU432JGK'
+          channel-id: 'C08FCLKER8X'
           slack-message: '✅ E2E pipeline finished successfully, triggered by ${{ github.event.client_payload.actor || github.actor }}. Check the logs at https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}.'
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}

@@ -12,16 +12,16 @@ import {
   createDeclaration as createDeclarationV2,
   Declaration as DeclarationV2
 } from '../test-data/birth-declaration-with-mother-father'
-import { format, subYears } from 'date-fns'
+import { format, subDays, subYears } from 'date-fns'
 import {
   CREDENTIALS,
   SAFE_INPUT_CHANGE_TIMEOUT_MS,
   SAFE_OUTBOX_TIMEOUT_MS
 } from '../../constants'
-import { IdType } from '@countryconfig/form/v2/person'
+import { IdType } from '@countryconfig/events/utils'
 import { random } from 'lodash'
 import { formatV2ChildName, REQUIRED_VALIDATION_ERROR } from '../birth/helpers'
-import { ensureAssigned } from '../../utils'
+import { ensureAssigned, selectAction } from '../../utils'
 
 test.describe.serial('Correct record - 4', () => {
   let declaration: DeclarationV2
@@ -43,6 +43,7 @@ test.describe.serial('Correct record - 4', () => {
       country: 'Farajaland',
       province: 'Sulaka',
       district: 'Irundu',
+      village: 'Xhosa',
       town: faker.location.city(),
       residentialArea: faker.location.county(),
       street: faker.location.street(),
@@ -55,7 +56,7 @@ test.describe.serial('Correct record - 4', () => {
 
   const updatedChildDetails = {
     placeOfBirth: 'Health Institution',
-    birthFacility: 'Mwenekombe Health Post',
+    birthFacility: 'Golden Valley Rural Health Centre',
     firstNames: faker.person.firstName(),
     familyName: faker.person.lastName()
   }
@@ -98,10 +99,7 @@ test.describe.serial('Correct record - 4', () => {
   }
 
   test('4.0 Shortcut declaration', async () => {
-    let token = await getToken(
-      CREDENTIALS.NATIONAL_REGISTRAR.USERNAME,
-      CREDENTIALS.NATIONAL_REGISTRAR.PASSWORD
-    )
+    let token = await getToken(CREDENTIALS.REGISTRAR)
     const res = await createDeclarationV2(
       token,
       {
@@ -110,8 +108,7 @@ test.describe.serial('Correct record - 4', () => {
           surname: faker.person.lastName()
         },
         'child.gender': 'male',
-        'child.dob': format(subYears(new Date(), 1), 'yyyy-MM-dd'),
-        'child.reason': 'Late',
+        'child.dob': format(subDays(new Date(), 2), 'yyyy-MM-dd'),
         'child.placeOfBirth': 'PRIVATE_HOME',
         'child.attendantAtBirth': 'PHYSICIAN',
         'child.birthType': 'SINGLE',
@@ -142,12 +139,12 @@ test.describe.serial('Correct record - 4', () => {
     )
     trackingId = res.trackingId!
     eventId = res.eventId
-    token = await getToken('k.mweene', 'test')
+    token = await getToken(CREDENTIALS.REGISTRAR)
     declaration = res.declaration
   })
 
   test('4.1 Ready to correct record > record audit', async () => {
-    await login(page, CREDENTIALS.LOCAL_REGISTRAR)
+    await login(page, CREDENTIALS.REGISTRAR)
 
     await auditRecord({
       page,
@@ -156,16 +153,7 @@ test.describe.serial('Correct record - 4', () => {
     })
     await ensureAssigned(page)
 
-    await page.getByRole('button', { name: 'Action', exact: true }).click()
-
-    /*
-     * Expected result: should show correct record button in action menu
-     */
-    await expect(
-      page.getByText('Correct record', { exact: true })
-    ).toBeVisible()
-
-    await page.getByText('Correct record', { exact: true }).click()
+    await selectAction(page, 'Correct')
   })
 
   test('4.2 Correction requester: legal guardian', async () => {
@@ -488,6 +476,15 @@ test.describe.serial('Correct record - 4', () => {
         await page
           .locator('#father____address-form-input')
           .getByText(updatedFatherDetails.address.district)
+          .click()
+
+        await page
+          .locator('#father____address-form-input')
+          .locator('#village')
+          .click()
+        await page
+          .locator('#father____address-form-input')
+          .getByText(updatedFatherDetails.address.village)
           .click()
 
         await page
@@ -880,12 +877,8 @@ test.describe.serial('Correct record - 4', () => {
     await page.getByRole('button', { name: 'Correct record' }).click()
     await page.getByRole('button', { name: 'Confirm' }).click()
 
-    /*
-     * Expected result: should
-     * - be navigated to sent for approval tab
-     * - include the declaration in this tab
-     */
-    expect(page.url().includes(`events/overview/${eventId}`)).toBeTruthy()
+    expect(page.url().includes(`events/${eventId}`)).toBeTruthy()
+    await page.getByTestId('exit-event').click()
     await page.getByRole('button', { name: 'Outbox' }).click()
 
     /*
@@ -915,6 +908,7 @@ test.describe.serial('Correct record - 4', () => {
     })
 
     await ensureAssigned(page)
+    await page.getByRole('button', { name: 'Audit' }).click()
 
     /*
      * Expected result: should show in task history
@@ -929,7 +923,7 @@ test.describe.serial('Correct record - 4', () => {
   })
   test('4.9 Validate record corrected modal', async () => {
     const correctionRequestedRow = page.locator(
-      '#listTable-task-history #row_7'
+      '#listTable-task-history #row_6'
     )
     await correctionRequestedRow.getByText('Record corrected').click()
 

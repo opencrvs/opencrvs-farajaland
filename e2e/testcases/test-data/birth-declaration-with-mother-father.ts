@@ -1,7 +1,11 @@
 import { v4 as uuidv4 } from 'uuid'
 import { GATEWAY_HOST } from '../../constants'
 import { faker } from '@faker-js/faker'
-import { getAllLocations, getLocationIdByName } from '../birth/helpers'
+import {
+  getLocations,
+  getIdByName,
+  getAdministrativeAreas
+} from '../birth/helpers'
 import { createClient } from '@opencrvs/toolkit/api'
 import {
   ActionDocument,
@@ -36,13 +40,13 @@ function getInformantDetails(informantRelation: InformantRelation) {
   }
 }
 
-async function getPlaceOfBirth(type: 'PRIVATE_HOME' | 'HEALTH_FACILITY') {
+async function getPlaceOfBirth(
+  type: 'PRIVATE_HOME' | 'HEALTH_FACILITY',
+  token: string
+) {
   if (type === 'HEALTH_FACILITY') {
-    const locations = await getAllLocations('HEALTH_FACILITY')
-    const locationId = getLocationIdByName(
-      locations,
-      'Ibombo Rural Health Centre'
-    )
+    const locations = await getLocations('HEALTH_FACILITY', token)
+    const locationId = getIdByName(locations, 'Klow Village Hospital')
 
     return {
       'child.placeOfBirth': 'HEALTH_FACILITY',
@@ -51,19 +55,15 @@ async function getPlaceOfBirth(type: 'PRIVATE_HOME' | 'HEALTH_FACILITY') {
   }
 
   if (type === 'PRIVATE_HOME') {
-    const locations = await getAllLocations('ADMIN_STRUCTURE')
-    const district = getLocationIdByName(locations, 'Ibombo')
-
-    if (!district) {
-      throw new Error('District not found')
-    }
+    const administrativeAreas = await getAdministrativeAreas(token)
+    const village = getIdByName(administrativeAreas, 'Klow')
 
     return {
       'child.placeOfBirth': 'PRIVATE_HOME',
       'child.birthLocation.privateHome': {
         country: 'FAR',
         addressType: AddressType.DOMESTIC,
-        administrativeArea: district,
+        administrativeArea: village,
         streetLevelDetails: { town: 'Dhaka' }
       }
     }
@@ -72,21 +72,24 @@ async function getPlaceOfBirth(type: 'PRIVATE_HOME' | 'HEALTH_FACILITY') {
   throw new Error('Invalid place of birth type')
 }
 
-export async function getDeclaration({
+async function getDeclaration({
   informantRelation = 'MOTHER',
   partialDeclaration = {},
-  placeOfBirthType = 'PRIVATE_HOME'
+  placeOfBirthType = 'PRIVATE_HOME',
+  token
 }: {
   informantRelation?: InformantRelation
   partialDeclaration?: any
   placeOfBirthType?: 'PRIVATE_HOME' | 'HEALTH_FACILITY'
+  token: string
 }) {
-  const locations = await getAllLocations('ADMIN_STRUCTURE')
-  const province = getLocationIdByName(locations, 'Central')
-  const district = getLocationIdByName(locations, 'Ibombo')
+  const administrativeAreas = await getAdministrativeAreas(token)
+  const province = getIdByName(administrativeAreas, 'Central')
+  const district = getIdByName(administrativeAreas, 'Ibombo')
+  const village = getIdByName(administrativeAreas, 'Klow')
 
-  if (!province || !district) {
-    throw new Error('Province or district not found')
+  if (!province || !district || !village) {
+    throw new Error('Province, district or village not found')
   }
 
   const mockDeclaration = {
@@ -110,7 +113,7 @@ export async function getDeclaration({
     'mother.nid': faker.string.numeric(10),
     'mother.address': {
       country: 'FAR',
-      administrativeArea: district,
+      administrativeArea: village,
       addressType: AddressType.DOMESTIC
     },
     'child.name': {
@@ -121,7 +124,7 @@ export async function getDeclaration({
     'child.dob': new Date(Date.now() - 60 * 60 * 24 * 1000)
       .toISOString()
       .split('T')[0], // yesterday
-    ...(await getPlaceOfBirth(placeOfBirthType)),
+    ...(await getPlaceOfBirth(placeOfBirthType, token)),
     ...getInformantDetails(informantRelation)
   }
 
@@ -148,6 +151,7 @@ export async function getDeclaration({
             addressType: 'DOMESTIC' as const,
             province,
             district,
+            village,
             urbanOrRural: 'URBAN' as const
           }
         })
@@ -173,7 +177,8 @@ export async function createDeclaration(
 ): Promise<CreateDeclarationResponse> {
   const declaration = await getDeclaration({
     partialDeclaration: dec,
-    placeOfBirthType
+    placeOfBirthType,
+    token
   })
 
   const client = createClient(GATEWAY_HOST + '/events', `Bearer ${token}`)
@@ -214,26 +219,6 @@ export async function createDeclaration(
     }
   }
 
-  const validateRes = await client.event.actions.validate.request.mutate({
-    eventId: eventId,
-    transactionId: uuidv4(),
-    declaration,
-    annotation,
-    duplicates: [],
-    keepAssignment: true
-  })
-
-  if (action === ActionType.VALIDATE) {
-    const validateAction = validateRes.actions.find(
-      (action: ActionDocument) => action.type === 'VALIDATE'
-    )
-
-    return {
-      eventId,
-      declaration: validateAction?.declaration as Declaration
-    }
-  }
-
   const registerRes = await client.event.actions.register.request.mutate({
     eventId: eventId,
     transactionId: uuidv4(),
@@ -260,20 +245,4 @@ export async function createDeclaration(
     trackingId,
     registrationNumber
   }
-}
-
-export async function rejectDeclaration(
-  token: string,
-  eventId: string
-): Promise<any> {
-  const client = createClient(GATEWAY_HOST + '/events', `Bearer ${token}`)
-
-  const rejectResponse = await client.event.actions.reject.request.mutate({
-    eventId,
-    declaration: {},
-    transactionId: uuidv4(),
-    reason: { message: 'For test' }
-  })
-
-  return rejectResponse
 }

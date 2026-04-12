@@ -21,7 +21,7 @@ export type Facility = {
   partOf: string
 }
 
-export async function getLocations() {
+export async function getAdministrativeAreas() {
   const url = `${GATEWAY_HOST}/location?type=ADMIN_STRUCTURE&_count=0`
 
   const res = await fetch(url, {
@@ -95,9 +95,7 @@ export async function getFacilities() {
   return Object.values<Facility>(facilities)
 }
 
-export function generateLocationResource(
-  fhirLocation: fhir.Location
-): ILocation {
+function generateLocationResource(fhirLocation: fhir.Location): ILocation {
   const loc = {} as ILocation
   loc.id = fhirLocation.id
   loc.name = fhirLocation.name

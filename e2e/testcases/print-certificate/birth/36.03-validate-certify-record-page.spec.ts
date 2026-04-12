@@ -20,10 +20,7 @@ test.describe.serial('3.0 Validate "Certify record" page', () => {
   let page: Page
   let trackingId: string | undefined
   test.beforeAll(async ({ browser }) => {
-    const token = await getToken(
-      CREDENTIALS.LOCAL_REGISTRAR.USERNAME,
-      CREDENTIALS.LOCAL_REGISTRAR.PASSWORD
-    )
+    const token = await getToken(CREDENTIALS.REGISTRAR)
     const res = await createDeclaration(token)
     eventId = res.eventId
     declaration = res.declaration
@@ -40,7 +37,7 @@ test.describe.serial('3.0 Validate "Certify record" page', () => {
   })
 
   test('3.0.2 Navigate to certificate print action', async () => {
-    await page.getByRole('button', { name: 'Ready to print' }).click()
+    await page.getByRole('button', { name: 'Pending certification' }).click()
     await navigateToCertificatePrintAction(page, declaration)
   })
 
@@ -147,6 +144,8 @@ test.describe.serial('3.0 Validate "Certify record" page', () => {
       .getByRole('button', { name: formatV2ChildName(declaration) })
       .click()
     await ensureAssigned(page)
+
+    await page.getByRole('button', { name: 'Audit' }).click()
     await page.getByRole('button', { name: 'Certified', exact: true }).click()
 
     const modal = page.getByTestId('event-history-modal')

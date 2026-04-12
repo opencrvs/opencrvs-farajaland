@@ -3,7 +3,7 @@ import { getToken, login } from '../../helpers'
 import { createDeclaration } from '../test-data/birth-declaration-with-father-brother'
 import { CREDENTIALS } from '../../constants'
 import { faker } from '@faker-js/faker'
-import { getAllLocations, getLocationIdByName } from '../birth/helpers'
+import { getIdByName, getAdministrativeAreas } from '../birth/helpers'
 import { expectInUrl } from '../../utils'
 import { setMobileViewport } from '../../mobile-helpers'
 
@@ -11,39 +11,35 @@ test.describe.serial('Advanced Search - Mobile', () => {
   let page: Page
   let province = ''
   let district = ''
+  let village = ''
   test.beforeAll(async ({ browser }) => {
     page = await browser.newPage()
     setMobileViewport(page)
-    const token = await getToken(
-      CREDENTIALS.LOCAL_REGISTRAR.USERNAME,
-      CREDENTIALS.LOCAL_REGISTRAR.PASSWORD
-    )
+    const token = await getToken(CREDENTIALS.REGISTRAR_VILLAGE)
 
-    const locations = await getAllLocations('ADMIN_STRUCTURE')
-    province = getLocationIdByName(locations, 'Central')!
-    district = getLocationIdByName(locations, 'Ibombo')!
+    const administrativeAreas = await getAdministrativeAreas(token)
+    province = getIdByName(administrativeAreas, 'Central')!
+    district = getIdByName(administrativeAreas, 'Ibombo')!
+    village = getIdByName(administrativeAreas, 'Klow')!
 
-    if (!province || !district) {
-      throw new Error('Province or district not found')
+    if (!province || !district || !village) {
+      throw new Error('Province, district or village not found')
     }
 
     await createDeclaration(
       token,
       {
         'child.dob': faker.date
-          // Randomly chosen DOB between 2010-01-01 and 2020-12-31
-          // Ensures the created record appears on the first page of search results
-          .between({ from: '2010-01-01', to: '2020-12-31' })
+          .between({ from: '2025-09-10', to: '2025-11-28' })
           .toISOString()
           .split('T')[0],
         'child.placeOfBirth': 'PRIVATE_HOME',
         'child.birthLocation.privateHome': {
           country: 'FAR',
           addressType: 'DOMESTIC',
-          administrativeArea: district,
+          administrativeArea: village,
           streetLevelDetails: { town: 'Dhaka' }
         },
-        'child.reason': 'Other', // needed for late dob value
         'child.gender': 'female'
       },
       'REGISTER',
@@ -56,7 +52,7 @@ test.describe.serial('Advanced Search - Mobile', () => {
   })
 
   test('Login', async () => {
-    await login(page)
+    await login(page, CREDENTIALS.REGISTRAR_VILLAGE)
   })
 
   test('Navigate to advanced search', async () => {
@@ -78,6 +74,7 @@ test.describe.serial('Advanced Search - Mobile', () => {
     page.locator('#country').getByText('Farajaland')
     page.locator('#province').getByText('Central')
     page.locator('#district').getByText('Ibombo')
+    page.locator('#village').getByText('Klow')
 
     await page.locator('#town').fill('Dhaka')
     await page.locator('#town').blur()
@@ -96,6 +93,7 @@ test.describe.serial('Advanced Search - Mobile', () => {
       await expect(addressObject.addressType).toBe('DOMESTIC')
       await expect(addressObject.province).toBeTruthy()
       await expect(addressObject.district).toBeTruthy()
+      await expect(addressObject.village).toBeTruthy()
     }
 
     await expect(page.getByText('Search results')).toBeVisible()

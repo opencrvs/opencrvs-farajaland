@@ -17,10 +17,7 @@ test.describe.serial('44.14.0 Validate "Certified copy" option', () => {
   let page: Page
 
   test.beforeAll(async ({ browser }) => {
-    const token = await getToken(
-      CREDENTIALS.LOCAL_REGISTRAR.USERNAME,
-      CREDENTIALS.LOCAL_REGISTRAR.PASSWORD
-    )
+    const token = await getToken(CREDENTIALS.REGISTRAR)
     const res = await createDeclaration(token)
     declaration = res.declaration
     page = await browser.newPage()
@@ -35,7 +32,7 @@ test.describe.serial('44.14.0 Validate "Certified copy" option', () => {
   })
 
   test('44.14.0.1 Navigate to certificate print action', async () => {
-    await page.getByRole('button', { name: 'Ready to print' }).click()
+    await page.getByRole('button', { name: 'Pending certification' }).click()
     await navigateToCertificatePrintAction(page, declaration)
   })
 
@@ -63,7 +60,7 @@ test.describe.serial('44.14.0 Validate "Certified copy" option', () => {
 
   test('44.14.3 "Certified Copy" is now available in certificate types', async () => {
     await page
-      .getByRole('textbox', { name: 'Search for a tracking ID' })
+      .getByRole('textbox', { name: 'Search for a record' })
       .fill(formatV2ChildName(declaration))
 
     await page.getByRole('button', { name: 'Search' }).click()

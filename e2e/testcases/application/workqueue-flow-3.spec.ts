@@ -6,10 +6,12 @@ import {
   formatName,
   getRandomDate,
   goToSection,
-  login
+  login,
+  selectDeclarationAction
 } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
 import {
+  ensureAssigned,
   ensureInExternalValidationIsEmpty,
   ensureOutboxIsEmpty,
   selectAction
@@ -21,8 +23,8 @@ import {
 } from '../birth/helpers'
 import { getRowByTitle } from '../print-certificate/birth/helpers'
 
-// FA Notifies => RA Rejects => FA Notifies again => RA validates => LR rejects
-// => RA validates again => LR registers
+// HO Notifies => RO Rejects => RO Re-declares and validates => Registrar rejects
+// => RO Re-declares again => Registrar registers
 
 test.describe.serial('3. Workqueue flow - 3', () => {
   let page: Page
@@ -36,12 +38,7 @@ test.describe.serial('3. Workqueue flow - 3', () => {
       birthDate: getRandomDate(0, 200)
     },
     placeOfBirth: 'Health Institution',
-    birthLocation: {
-      facility: 'Golden Valley Rural Health Centre',
-      district: 'Ibombo',
-      province: 'Central',
-      country: 'Farajaland'
-    },
+    birthLocation: { facility: 'Klow Village Hospital' },
     informantType: 'Mother',
     informantEmail: faker.internet.email(),
     mother: {
@@ -58,7 +55,8 @@ test.describe.serial('3. Workqueue flow - 3', () => {
       address: {
         country: 'Farajaland',
         province: 'Sulaka',
-        district: 'Irundu'
+        district: 'Irundu',
+        village: 'Xhosa'
       }
     },
     father: {
@@ -88,9 +86,9 @@ test.describe.serial('3. Workqueue flow - 3', () => {
     await page.close()
   })
 
-  test.describe('3.1 Notify by FA', async () => {
+  test.describe('3.1 Notify by HO', async () => {
     test.beforeAll(async () => {
-      await login(page, CREDENTIALS.FIELD_AGENT)
+      await login(page, CREDENTIALS.HOSPITAL_OFFICIAL)
       await page.click('#header-new-event')
       await page.getByLabel('Birth').click()
       await page.getByRole('button', { name: 'Continue' }).click()
@@ -135,10 +133,8 @@ test.describe.serial('3. Workqueue flow - 3', () => {
       await expect(page.getByRole('dialog')).not.toBeVisible()
     })
 
-    test('3.1.4 Send for review', async () => {
-      await page.getByRole('button', { name: 'Send for review' }).click()
-      await expect(page.getByText('Send for review?')).toBeVisible()
-      await page.getByRole('button', { name: 'Confirm' }).click()
+    test('3.1.4 Notify', async () => {
+      await selectDeclarationAction(page, 'Notify')
 
       await ensureOutboxIsEmpty(page)
     })
@@ -150,16 +146,15 @@ test.describe.serial('3. Workqueue flow - 3', () => {
         workqueues: [
           { title: 'Assigned to you', exists: false },
           { title: 'Recent', exists: true },
-          { title: 'Sent for review', exists: true },
-          { title: 'Requires updates', exists: false }
+          { title: 'Pending updates', exists: false }
         ]
       })
     })
   })
 
-  test.describe('3.2 Reject by RA', async () => {
+  test.describe('3.2 Reject by RO', async () => {
     test('3.2.1 Verify workqueue', async () => {
-      await login(page, CREDENTIALS.REGISTRATION_AGENT)
+      await login(page, CREDENTIALS.REGISTRATION_OFFICER)
 
       await assertRecordInWorkqueue({
         page,
@@ -168,16 +163,18 @@ test.describe.serial('3. Workqueue flow - 3', () => {
           { title: 'Assigned to you', exists: false },
           { title: 'Recent', exists: false },
           { title: 'Notifications', exists: true },
-          { title: 'Ready for review', exists: false },
-          { title: 'Requires updates', exists: false },
-          { title: 'Sent for approval', exists: false },
-          { title: 'In external validation', exists: false },
-          { title: 'Ready to print', exists: false }
+          { title: 'Pending validation', exists: false },
+          { title: 'Pending updates', exists: false },
+          { title: 'Pending approval', exists: false },
+          { title: 'Escalated', exists: false },
+          { title: 'Pending external validation', exists: false },
+          { title: 'Pending certification', exists: false },
+          { title: 'Pending issuance', exists: false }
         ]
       })
     })
 
-    test('3.2.2 Review', async () => {
+    test('3.2.2 Reject', async () => {
       await page.getByText('Notifications').click()
       await page
         .getByRole('button', {
@@ -185,12 +182,8 @@ test.describe.serial('3. Workqueue flow - 3', () => {
         })
         .click()
 
-      await selectAction(page, 'Review')
-
-      await page.getByRole('button', { name: 'Reject' }).click()
-
+      await selectAction(page, 'Reject')
       await page.getByTestId('reject-reason').fill(faker.lorem.sentence())
-
       await page.getByRole('button', { name: 'Send For Update' }).click()
 
       await assertRecordInWorkqueue({
@@ -200,45 +193,58 @@ test.describe.serial('3. Workqueue flow - 3', () => {
           { title: 'Assigned to you', exists: false },
           { title: 'Recent', exists: true },
           { title: 'Notifications', exists: false },
-          { title: 'Ready for review', exists: false },
-          { title: 'Sent for approval', exists: false },
-          { title: 'Requires updates', exists: true },
-          { title: 'In external validation', exists: false },
-          { title: 'Ready to print', exists: false }
+          { title: 'Pending validation', exists: false },
+          { title: 'Pending updates', exists: true },
+          { title: 'Pending approval', exists: false },
+          { title: 'Escalated', exists: false },
+          { title: 'Pending external validation', exists: false },
+          { title: 'Pending certification', exists: false },
+          { title: 'Pending issuance', exists: false }
         ]
       })
+    })
+
+    test('3.2.3 Ensure rejection is no longer available', async () => {
+      await page.getByRole('button', { name: 'Recent' }).click()
+      await page
+        .getByRole('button', {
+          name: childName
+        })
+        .click()
+
+      await expect(page.getByText('Rejected')).toBeVisible()
+
+      await ensureAssigned(page)
+      await page.getByRole('button', { name: 'Action' }).click()
+      await expect(page.getByText('Reject', { exact: true })).not.toBeVisible()
+      await expect(page.getByText('Review', { exact: true })).not.toBeVisible()
+      await page.getByRole('button', { name: 'Action' }).click()
+    })
+
+    test('3.2.4 Unassign', async () => {
+      await selectAction(page, 'Unassign')
+      await page.getByRole('button', { name: 'Unassign', exact: true }).click()
+      await expect(page.getByText('Not assigned')).toBeVisible()
+      if (await page.getByTestId('exit-event').isVisible()) {
+        await page.getByTestId('exit-event').click()
+      }
     })
   })
 
-  test.describe('3.3 Re-notify by FA', async () => {
-    test('3.3.1 Login', async () => {
-      await login(page, CREDENTIALS.FIELD_AGENT, true)
-      await assertRecordInWorkqueue({
-        page,
-        name: childName,
-        workqueues: [
-          { title: 'Assigned to you', exists: false },
-          { title: 'Recent', exists: false },
-          { title: 'Sent for review', exists: false },
-          { title: 'Requires updates', exists: true }
-        ]
-      })
-    })
-    test('3.3.2 Go to review', async () => {
+  test.describe('3.3 Re-declare and validate by RO', async () => {
+    test('3.3.1 Go to edit', async () => {
       await assignFromWorkqueue(page, childName)
-
       await getRowByTitle(page, childName)
         .getByRole('button', { name: 'Review' })
         .click()
+      await selectAction(page, 'Edit')
     })
 
-    test('3.3.3 Fill informant details', async () => {
+    test('3.3.2 Fill informant details', async () => {
       await page
         .getByTestId('accordion-Accordion_informant')
         .getByRole('button', { name: 'Change all' })
         .click()
-
-      await page.getByRole('button', { name: 'Continue' }).click()
 
       await page.locator('#informant____relation').click()
       await page
@@ -252,7 +258,7 @@ test.describe.serial('3. Workqueue flow - 3', () => {
       await continueForm(page)
     })
 
-    test("3.3.4 Fill mother's details", async () => {
+    test("3.3.3 Fill mother's details", async () => {
       await page.locator('#firstname').fill(declaration.mother.name.firstNames)
       await page.locator('#surname').fill(declaration.mother.name.familyName)
 
@@ -288,11 +294,15 @@ test.describe.serial('3. Workqueue flow - 3', () => {
       await page
         .getByText(declaration.mother.address.district, { exact: true })
         .click()
+      await page.locator('#village').click()
+      await page
+        .getByText(declaration.mother.address.village, { exact: true })
+        .click()
 
       await continueForm(page)
     })
 
-    test("3.3.5 Fill father's details", async () => {
+    test("3.3.4 Fill father's details", async () => {
       await page.locator('#firstname').fill(declaration.father.name.firstNames)
       await page.locator('#surname').fill(declaration.father.name.familyName)
 
@@ -313,133 +323,88 @@ test.describe.serial('3. Workqueue flow - 3', () => {
         .click()
 
       await page.locator('#father____addressSameAs_YES').click()
+      await continueForm(page, 'Back to review')
     })
 
-    test('3.3.6 Send for review', async () => {
-      await continueForm(page, 'Back to review')
-
-      await expect(page.getByRole('dialog')).not.toBeVisible()
-
-      await page.getByRole('button', { name: 'Send for review' }).click()
-      await expect(page.getByText('Send for review?')).toBeVisible()
-      await page.getByRole('button', { name: 'Confirm' }).click()
-
+    test('3.3.5 Declare with edits', async () => {
+      await selectDeclarationAction(page, 'Declare with edits')
       await ensureOutboxIsEmpty(page)
     })
 
-    test('3.3.7 Verify workqueue', async () => {
+    test('3.3.6 Verify workqueue', async () => {
       await assertRecordInWorkqueue({
         page,
         name: childName,
         workqueues: [
           { title: 'Assigned to you', exists: false },
           { title: 'Recent', exists: true },
-          { title: 'Sent for review', exists: true },
-          { title: 'Requires updates', exists: false }
+          { title: 'Pending updates', exists: false }
         ]
       })
     })
   })
 
-  test.describe('3.4 Validate by RA', async () => {
-    test('3.4.1 Verify workqueue', async () => {
-      await login(page, CREDENTIALS.REGISTRATION_AGENT, true)
+  test.describe('3.4 Reject by Registrar', async () => {
+    test('3.4.1 Login with Registrar', async () => {
+      await login(page, CREDENTIALS.REGISTRAR)
 
       await assertRecordInWorkqueue({
         page,
         name: childName,
         workqueues: [
+          { title: 'Outbox', exists: false },
+          { title: 'Drafts', exists: false },
           { title: 'Assigned to you', exists: false },
           { title: 'Recent', exists: false },
           { title: 'Notifications', exists: false },
-          { title: 'Ready for review', exists: true },
-          { title: 'Requires updates', exists: false },
-          { title: 'In external validation', exists: false },
-          { title: 'Ready to print', exists: false }
+          { title: 'Potential duplicate', exists: false },
+          { title: 'Pending updates', exists: false },
+          { title: 'Pending approval', exists: false },
+          { title: 'Pending registration', exists: true },
+          { title: 'Escalated', exists: false },
+          { title: 'Pending external validation', exists: false },
+          { title: 'Pending certification', exists: false },
+          { title: 'Pending issuance', exists: false }
         ]
       })
     })
-
-    test('3.4.2 Review', async () => {
-      await page.getByText('Ready for review').click()
-      await page
-        .getByRole('button', {
-          name: childName
-        })
-        .click()
-
-      await selectAction(page, 'Review')
-
-      await page.getByRole('button', { name: 'Send for approval' }).click()
-      await page.getByRole('button', { name: 'Confirm' }).click()
-
-      await assertRecordInWorkqueue({
-        page,
-        name: childName,
-        workqueues: [
-          { title: 'Assigned to you', exists: false },
-          { title: 'Recent', exists: true },
-          { title: 'Notifications', exists: false },
-          { title: 'Ready for review', exists: false },
-          // { title: 'Sent for approval', exists: true }, @ToDo: Investigate why this fails
-          { title: 'Requires updates', exists: false },
-          { title: 'In external validation', exists: false },
-          { title: 'Ready to print', exists: false }
-        ]
-      })
-    })
-  })
-
-  test.describe('3.5 Reject by LR', async () => {
-    test('3.5.1 Login with LR', async () => {
-      await login(page, CREDENTIALS.LOCAL_REGISTRAR)
-
-      await assertRecordInWorkqueue({
-        page,
-        name: childName,
-        workqueues: [
-          { title: 'Assigned to you', exists: false },
-          { title: 'Recent', exists: false },
-          { title: 'Notifications', exists: false },
-          { title: 'Ready for review', exists: true },
-          { title: 'Requires updates', exists: false },
-          { title: 'In external validation', exists: false },
-          { title: 'Ready to print', exists: false }
-        ]
-      })
-    })
-    test('3.5.2 Reject', async () => {
-      await page.getByText('Ready for review').click()
+    test('3.4.2 Reject', async () => {
+      await page.getByText('Pending registration').click()
 
       await assignFromWorkqueue(page, childName)
       await getRowByTitle(page, childName)
         .getByRole('button', { name: 'Review' })
         .click()
 
-      await page.getByRole('button', { name: 'Reject' }).click()
-
+      await selectAction(page, 'Reject')
       await page.getByTestId('reject-reason').fill(faker.lorem.sentence())
-
       await page.getByRole('button', { name: 'Send For Update' }).click()
 
       await assertRecordInWorkqueue({
         page,
         name: childName,
         workqueues: [
+          { title: 'Outbox', exists: false },
+          { title: 'Drafts', exists: false },
           { title: 'Assigned to you', exists: false },
           { title: 'Recent', exists: true },
           { title: 'Notifications', exists: false },
-          { title: 'Ready for review', exists: false },
-          { title: 'Requires updates', exists: true },
-          { title: 'In external validation', exists: false },
-          { title: 'Ready to print', exists: false }
+          { title: 'Potential duplicate', exists: false },
+          { title: 'Pending updates', exists: true },
+          { title: 'Pending approval', exists: false },
+          { title: 'Pending registration', exists: false },
+          { title: 'Escalated', exists: false },
+          { title: 'Pending external validation', exists: false },
+          { title: 'Pending certification', exists: false },
+          { title: 'Pending issuance', exists: false }
         ]
       })
     })
   })
-  test.describe('3.6 Re-validate by RA', async () => {
-    test('3.6.1 Login with RA', async () => {
-      await login(page, CREDENTIALS.REGISTRATION_AGENT, true)
+
+  test.describe('3.5 Re-declare with edits by RO', async () => {
+    test('3.5.1 Login with RO', async () => {
+      await login(page, CREDENTIALS.REGISTRATION_OFFICER, true)
 
       await assertRecordInWorkqueue({
         page,
@@ -448,83 +413,115 @@ test.describe.serial('3. Workqueue flow - 3', () => {
           { title: 'Assigned to you', exists: false },
           { title: 'Recent', exists: false },
           { title: 'Notifications', exists: false },
-          { title: 'Ready for review', exists: false },
-          { title: 'Requires updates', exists: true },
-          { title: 'Sent for approval', exists: false },
-          { title: 'In external validation', exists: false },
-          { title: 'Ready to print', exists: false }
+          { title: 'Pending validation', exists: false },
+          { title: 'Pending updates', exists: true },
+          { title: 'Pending approval', exists: false },
+          { title: 'Escalated', exists: false },
+          { title: 'Pending external validation', exists: false },
+          { title: 'Pending certification', exists: false },
+          { title: 'Pending issuance', exists: false }
         ]
       })
     })
 
-    test('3.6.2 Re-Validate', async () => {
-      await page.getByText('Requires updates').click()
+    test('3.5.2 Go to edit', async () => {
+      await page.getByText('Pending updates').click()
+      await assignFromWorkqueue(page, childName)
+      await getRowByTitle(page, childName)
+        .getByRole('button', { name: 'Review' })
+        .click()
+
+      await selectAction(page, 'Edit')
+    })
+
+    test('3.5.3 Change informant email', async () => {
+      await page
+        .getByTestId('accordion-Accordion_informant')
+        .getByRole('button', { name: 'Change all' })
+        .click()
+
+      await page.locator('#informant____email').fill(faker.internet.email())
+
+      await page
+        .getByRole('button', { name: 'Back to review', exact: true })
+        .click()
+    })
+
+    test('3.5.4 Re-declare with edits', async () => {
+      await selectDeclarationAction(page, 'Declare with edits')
+
+      await assertRecordInWorkqueue({
+        page,
+        name: childName,
+        workqueues: [
+          { title: 'Assigned to you', exists: false },
+          { title: 'Recent', exists: true },
+          { title: 'Notifications', exists: false },
+          { title: 'Pending validation', exists: false },
+          { title: 'Pending updates', exists: false },
+          { title: 'Pending approval', exists: false },
+          { title: 'Escalated', exists: false },
+          { title: 'Pending external validation', exists: false },
+          { title: 'Pending certification', exists: false },
+          { title: 'Pending issuance', exists: false }
+        ]
+      })
+    })
+  })
+
+  test.describe('3.6 Register by Registrar', async () => {
+    test('3.6.1 Login with Registrar', async () => {
+      await login(page, CREDENTIALS.REGISTRAR, true)
+
+      await assertRecordInWorkqueue({
+        page,
+        name: childName,
+        workqueues: [
+          { title: 'Outbox', exists: false },
+          { title: 'Drafts', exists: false },
+          { title: 'Assigned to you', exists: false },
+          { title: 'Recent', exists: false },
+          { title: 'Notifications', exists: false },
+          { title: 'Potential duplicate', exists: false },
+          { title: 'Pending updates', exists: false },
+          { title: 'Pending approval', exists: false },
+          { title: 'Pending registration', exists: true },
+          { title: 'Escalated', exists: false },
+          { title: 'Pending external validation', exists: false },
+          { title: 'Pending certification', exists: false },
+          { title: 'Pending issuance', exists: false }
+        ]
+      })
+    })
+    test('3.6.2 Register', async () => {
+      await page.getByText('Pending registration').click()
 
       await assignFromWorkqueue(page, childName)
       await getRowByTitle(page, childName)
         .getByRole('button', { name: 'Review' })
         .click()
 
-      await page.getByRole('button', { name: 'Send for approval' }).click()
+      await selectAction(page, 'Register')
       await page.getByRole('button', { name: 'Confirm' }).click()
-
-      await assertRecordInWorkqueue({
-        page,
-        name: childName,
-        workqueues: [
-          { title: 'Assigned to you', exists: false },
-          { title: 'Recent', exists: true },
-          { title: 'Notifications', exists: false },
-          { title: 'Ready for review', exists: false },
-          { title: 'Requires updates', exists: false },
-          { title: 'Sent for approval', exists: true },
-          { title: 'In external validation', exists: false },
-          { title: 'Ready to print', exists: false }
-        ]
-      })
-    })
-  })
-  test.describe('3.7 Register by LR', async () => {
-    test('3.7.1 Login with LR', async () => {
-      await login(page, CREDENTIALS.LOCAL_REGISTRAR, true)
-
-      await assertRecordInWorkqueue({
-        page,
-        name: childName,
-        workqueues: [
-          { title: 'Assigned to you', exists: false },
-          { title: 'Recent', exists: false },
-          { title: 'Notifications', exists: false },
-          { title: 'Ready for review', exists: true },
-          { title: 'Requires updates', exists: false },
-          { title: 'In external validation', exists: false },
-          { title: 'Ready to print', exists: false }
-        ]
-      })
-    })
-    test('3.7.2 Register', async () => {
-      await page.getByText('Ready for review').click()
-
-      await assignFromWorkqueue(page, childName)
-      await getRowByTitle(page, childName)
-        .getByRole('button', { name: 'Review' })
-        .click()
-
-      await page.getByRole('button', { name: 'Register' }).click()
-      await page.locator('#confirm_Register').click()
       await ensureInExternalValidationIsEmpty(page)
 
       await assertRecordInWorkqueue({
         page,
         name: childName,
         workqueues: [
+          { title: 'Outbox', exists: false },
+          { title: 'Drafts', exists: false },
           { title: 'Assigned to you', exists: false },
           { title: 'Recent', exists: true },
           { title: 'Notifications', exists: false },
-          { title: 'Ready for review', exists: false },
-          { title: 'Requires updates', exists: false },
-          { title: 'In external validation', exists: false },
-          { title: 'Ready to print', exists: true }
+          { title: 'Potential duplicate', exists: false },
+          { title: 'Pending updates', exists: false },
+          { title: 'Pending approval', exists: false },
+          { title: 'Pending registration', exists: false },
+          { title: 'Escalated', exists: false },
+          { title: 'Pending external validation', exists: false },
+          { title: 'Pending certification', exists: true },
+          { title: 'Pending issuance', exists: false }
         ]
       })
     })

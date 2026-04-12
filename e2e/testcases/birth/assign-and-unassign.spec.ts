@@ -10,10 +10,7 @@ test.describe.serial('Assign & Unassign', () => {
   let declaration: Declaration
 
   test.beforeAll(async ({ browser }) => {
-    const token = await getToken(
-      CREDENTIALS.LOCAL_REGISTRAR.USERNAME,
-      CREDENTIALS.LOCAL_REGISTRAR.PASSWORD
-    )
+    const token = await getToken(CREDENTIALS.REGISTRAR)
     const res = await createDeclaration(token)
     declaration = res.declaration
     page = await browser.newPage()
@@ -29,7 +26,7 @@ test.describe.serial('Assign & Unassign', () => {
 
   test('Click on "Assign" from action menu', async () => {
     await page.waitForTimeout(SAFE_WORKQUEUE_TIMEOUT_MS) // wait for the event to be in the workqueue.
-    await page.getByText('Ready to print').click()
+    await page.getByText('Pending certification').click()
 
     const childName = `${declaration['child.name'].firstname} ${declaration['child.name'].surname}`
     await page.getByRole('button', { name: childName }).click()

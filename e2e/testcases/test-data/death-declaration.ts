@@ -1,7 +1,11 @@
 import { v4 as uuidv4 } from 'uuid'
 import { GATEWAY_HOST } from '../../constants'
 import { faker } from '@faker-js/faker'
-import { getAllLocations, getLocationIdByName } from '../birth/helpers'
+import {
+  getLocations,
+  getIdByName,
+  getAdministrativeAreas
+} from '../birth/helpers'
 import { createClient } from '@opencrvs/toolkit/api'
 import {
   ActionDocument,
@@ -13,14 +17,12 @@ import { getSignatureFile, uploadFile } from './utils'
 import { omitBy } from 'lodash'
 
 async function getPlaceOfDeath(
-  type: 'DECEASED_USUAL_RESIDENCE' | 'HEALTH_FACILITY'
+  type: 'DECEASED_USUAL_RESIDENCE' | 'HEALTH_FACILITY',
+  token: string
 ) {
   if (type === 'HEALTH_FACILITY') {
-    const locations = await getAllLocations('HEALTH_FACILITY')
-    const locationId = getLocationIdByName(
-      locations,
-      'Ibombo Rural Health Centre'
-    )
+    const locations = await getLocations('HEALTH_FACILITY', token)
+    const locationId = getIdByName(locations, 'Klow Village Hospital')
 
     return {
       'deceased.deathLocation': locationId
@@ -28,19 +30,15 @@ async function getPlaceOfDeath(
   }
 
   if (type === 'DECEASED_USUAL_RESIDENCE') {
-    const locations = await getAllLocations('ADMIN_STRUCTURE')
-    const province = getLocationIdByName(locations, 'Central')
-    const district = getLocationIdByName(locations, 'Ibombo')
+    const administrativeAreas = await getAdministrativeAreas(token)
 
-    if (!province || !district) {
-      throw new Error('Province or district not found')
-    }
+    const village = getIdByName(administrativeAreas, 'Klow')
 
     return {
       'deceased.address': {
         country: 'FAR',
         addressType: AddressType.DOMESTIC,
-        administrativeArea: district
+        administrativeArea: village
       }
     }
   }
@@ -48,23 +46,17 @@ async function getPlaceOfDeath(
   throw new Error('Invalid place of birth type')
 }
 
-export async function getDeclaration({
+async function getDeclaration({
   partialDeclaration = {},
-  placeOfDeathType: placeOfDeathType = 'DECEASED_USUAL_RESIDENCE'
+  placeOfDeathType: placeOfDeathType = 'DECEASED_USUAL_RESIDENCE',
+  token
 }: {
   partialDeclaration?:
     | ((_: Record<string, any>) => Record<string, any>)
     | Record<string, any>
   placeOfDeathType?: 'DECEASED_USUAL_RESIDENCE' | 'HEALTH_FACILITY'
+  token: string
 }) {
-  const locations = await getAllLocations('ADMIN_STRUCTURE')
-  const province = getLocationIdByName(locations, 'Central')
-  const district = getLocationIdByName(locations, 'Ibombo')
-
-  if (!province || !district) {
-    throw new Error('Province or district not found')
-  }
-
   const mockDeclaration = {
     'spouse.dob': '1975-02-18',
     'spouse.age': undefined,
@@ -96,7 +88,7 @@ export async function getDeclaration({
     'deceased.numberOfDependants': 3,
     'eventDetails.sourceCauseDeath': 'PHYSICIAN',
     'eventDetails.causeOfDeathEstablished': true,
-    ...(await getPlaceOfDeath(placeOfDeathType))
+    ...(await getPlaceOfDeath(placeOfDeathType, token))
   }
 
   const overrides =
@@ -129,7 +121,8 @@ export async function createDeclaration(
 ): Promise<CreateDeclarationResponse> {
   const declaration = await getDeclaration({
     partialDeclaration: dec,
-    placeOfDeathType: placeOfDeathType
+    placeOfDeathType: placeOfDeathType,
+    token
   })
 
   const client = createClient(GATEWAY_HOST + '/events', `Bearer ${token}`)
@@ -166,26 +159,6 @@ export async function createDeclaration(
     }
 
     return { eventId, declaration: declareAction?.declaration as Declaration }
-  }
-
-  const validateRes = await client.event.actions.validate.request.mutate({
-    eventId: eventId,
-    transactionId: uuidv4(),
-    declaration,
-    annotation,
-    duplicates: [],
-    keepAssignment: true
-  })
-
-  if (action === ActionType.VALIDATE) {
-    const validateAction = validateRes.actions.find(
-      (action: ActionDocument) => action.type === 'VALIDATE'
-    )
-
-    return {
-      eventId,
-      declaration: validateAction?.declaration as Declaration
-    }
   }
 
   const registerRes = await client.event.actions.register.request.mutate({
