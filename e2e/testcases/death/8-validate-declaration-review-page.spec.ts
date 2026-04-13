@@ -14,7 +14,11 @@ import {
 } from '../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../constants'
-import { ensureAssigned, ensureOutboxIsEmpty, selectAction } from '../../utils'
+import {
+  ensureAssignedToUser,
+  ensureOutboxIsEmpty,
+  selectAction
+} from '../../utils'
 
 test.describe.serial('8. Validate declaration review page', () => {
   let page: Page
@@ -721,7 +725,7 @@ test.describe.serial('8. Validate declaration review page', () => {
     })
 
     test('8.2.1.1 Verify information added on previous pages', async () => {
-      await ensureAssigned(page, CREDENTIALS.REGISTRATION_OFFICER)
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
       await selectAction(page, 'Edit')
       /*
        * Expected result: should include
@@ -1175,7 +1179,7 @@ test.describe.serial('8. Validate declaration review page', () => {
         })
         .click()
 
-      await ensureAssigned(page, CREDENTIALS.REGISTRAR)
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
       await switchEventTab(page, 'Record')
     })
     test('8.3.1.1 Verify information added on previous pages', async () => {

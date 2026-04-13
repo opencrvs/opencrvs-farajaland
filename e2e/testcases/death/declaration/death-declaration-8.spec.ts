@@ -10,7 +10,7 @@ import {
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../../constants'
 import {
-  ensureAssigned,
+  ensureAssignedToUser,
   ensureOutboxIsEmpty,
   selectAction
 } from '../../../utils'
@@ -299,7 +299,7 @@ test.describe.serial('8. Death declaration case - 8', () => {
         })
         .click()
 
-      await ensureAssigned(page, CREDENTIALS.REGISTRATION_OFFICER)
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
       await selectAction(page, 'Edit')
     })
 

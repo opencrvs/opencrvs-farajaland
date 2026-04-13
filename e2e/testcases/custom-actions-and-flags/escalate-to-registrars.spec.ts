@@ -8,7 +8,11 @@ import {
 } from '../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../constants'
-import { ensureAssigned, ensureOutboxIsEmpty, selectAction } from '../../utils'
+import {
+  ensureAssignedToUser,
+  ensureOutboxIsEmpty,
+  selectAction
+} from '../../utils'
 import { createDeclaration } from '../test-data/birth-declaration-with-father-brother'
 
 test.describe.serial('Escalation of birth registration by Registrar', () => {
@@ -64,7 +68,7 @@ test.describe.serial('Escalation of birth registration by Registrar', () => {
       await page
         .getByRole('button', { name: childNameForProvincialFormatted })
         .click()
-      await ensureAssigned(page, CREDENTIALS.REGISTRAR)
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
     })
 
     test("Event should not have the 'Escalated' -flag", async () => {
@@ -103,7 +107,7 @@ test.describe.serial('Escalation of birth registration by Registrar', () => {
       await page
         .getByRole('button', { name: childNameForRegGeneralFormatted })
         .click()
-      await ensureAssigned(page, CREDENTIALS.REGISTRAR)
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
     })
 
     test("Event should not have the 'Escalated' -flag", async () => {
@@ -144,7 +148,7 @@ test.describe.serial('Escalation of birth registration by Registrar', () => {
     })
 
     test('Assign', async () => {
-      await ensureAssigned(page, CREDENTIALS.REGISTRAR_GENERAL)
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR_GENERAL)
     })
 
     test('Event should have the correct flag', async () => {
@@ -181,7 +185,7 @@ test.describe.serial('Escalation of birth registration by Registrar', () => {
     })
 
     test('Assign', async () => {
-      await ensureAssigned(page, CREDENTIALS.PROVINCIAL_REGISTRAR)
+      await ensureAssignedToUser(page, CREDENTIALS.PROVINCIAL_REGISTRAR)
     })
 
     test('Event should have the correct flag', async () => {
@@ -216,7 +220,7 @@ test.describe.serial('Escalation of birth registration by Registrar', () => {
       })
 
       test('Assign', async () => {
-        await ensureAssigned(page, CREDENTIALS.REGISTRAR)
+        await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
       })
 
       test('LR should still have the option to Escalate', async () => {
@@ -273,7 +277,7 @@ test.describe.serial('Escalation of birth registration by Registrar', () => {
       })
 
       test('Assign', async () => {
-        await ensureAssigned(page, CREDENTIALS.REGISTRAR)
+        await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
       })
 
       test('LR should still have the option to Escalate', async () => {

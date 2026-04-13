@@ -8,7 +8,7 @@ import {
 import { format, subDays, subYears } from 'date-fns'
 import { CREDENTIALS, SAFE_OUTBOX_TIMEOUT_MS } from '../../constants'
 import { formatV2ChildName } from '../birth/helpers'
-import { ensureAssigned, selectAction, type } from '../../utils'
+import { ensureAssignedToUser, selectAction, type } from '../../utils'
 
 test.describe.serial('Request and accept correction (offline)', () => {
   let declaration: DeclarationV2
@@ -94,7 +94,7 @@ test.describe.serial('Request and accept correction (offline)', () => {
         name: formatV2ChildName(declaration),
         trackingId
       })
-      await ensureAssigned(page, CREDENTIALS.REGISTRATION_OFFICER)
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
 
       await selectAction(page, 'Correct')
     })
@@ -181,7 +181,7 @@ test.describe.serial('Request and accept correction (offline)', () => {
         .getByRole('button', { name: formatV2ChildName(declaration) })
         .click()
 
-      await ensureAssigned(page, CREDENTIALS.REGISTRAR)
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
       await selectAction(page, 'Review correction request')
     })
 

@@ -14,7 +14,7 @@ import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../../constants'
 import { fillDate, validateAddress } from '../helpers'
 import { selectDeclarationAction } from '../../../helpers'
-import { ensureAssigned, ensureOutboxIsEmpty } from '../../../utils'
+import { ensureAssignedToUser, ensureOutboxIsEmpty } from '../../../utils'
 
 test.describe.serial('1. Birth declaration case - 1', () => {
   let page: Page
@@ -499,7 +499,7 @@ test.describe.serial('1. Birth declaration case - 1', () => {
         })
         .click()
 
-      await ensureAssigned(page, CREDENTIALS.REGISTRATION_OFFICER)
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
 
       await expect(page.getByTestId('assignedTo-value')).toHaveText(
         'Felix Katongo'

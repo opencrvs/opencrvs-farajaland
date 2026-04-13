@@ -13,7 +13,7 @@ import {
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../../constants'
 import {
-  ensureAssigned,
+  ensureAssignedToUser,
   ensureOutboxIsEmpty,
   selectAction
 } from '../../../utils'
@@ -250,7 +250,7 @@ test.describe.serial('Add mother details on review', () => {
 
       await expect(page.getByTestId('status-value')).toHaveText('Declared')
 
-      await ensureAssigned(page, CREDENTIALS.REGISTRAR_VILLAGE)
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR_VILLAGE)
       await selectAction(page, 'Edit')
       await expect(
         page.getByText(
@@ -312,7 +312,7 @@ test.describe.serial('Add mother details on review', () => {
         .getByRole('button', { name: formatName(declaration.child.name) })
         .click()
 
-      await ensureAssigned(page, CREDENTIALS.REGISTRAR_VILLAGE)
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR_VILLAGE)
 
       await expect(page.getByTestId('status-value')).toHaveText('Registered')
     })

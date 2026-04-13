@@ -6,7 +6,7 @@ import {
 } from '../test-data/birth-declaration-with-father-brother'
 import { CREDENTIALS } from '../../constants'
 import { faker } from '@faker-js/faker'
-import { ensureAssigned } from '../../utils'
+import { ensureAssignedToUser } from '../../utils'
 
 test.describe
   .serial("Quick Search - Birth Event Declaration - Child's details", () => {
@@ -60,7 +60,7 @@ test.describe
         name: getChildNameFromRecord(recordWithDefaultEmail)
       })
       .click()
-    await ensureAssigned(page, CREDENTIALS.REGISTRAR)
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
     await expect(page.getByTestId('assignedTo-value')).toHaveText(
       'Kennedy Mweene'
     )
@@ -119,7 +119,7 @@ test.describe
       })
       .click()
 
-    await ensureAssigned(page, CREDENTIALS.REGISTRAR)
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
     await expect(page.getByTestId('assignedTo-value')).toHaveText(
       'Kennedy Mweene'
     )

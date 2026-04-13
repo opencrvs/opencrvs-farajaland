@@ -12,7 +12,7 @@ import {
   navigateToCertificatePrintAction,
   printAndExpectPopup
 } from './helpers'
-import { ensureAssigned, type, expectInUrl } from '../../../utils'
+import { ensureAssignedToUser, type, expectInUrl } from '../../../utils'
 import { REQUIRED_VALIDATION_ERROR } from '../../birth/helpers'
 import { formatV2ChildName } from '../../birth/helpers'
 
@@ -155,7 +155,7 @@ test.describe.serial('Validate collect payment page', () => {
     await page
       .getByRole('button', { name: formatV2ChildName(declaration) })
       .click()
-    await ensureAssigned(page, CREDENTIALS.REGISTRAR)
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
     await page.getByRole('button', { name: 'Audit' }).click()
     await page.getByRole('button', { name: 'Certified', exact: true }).click()
 

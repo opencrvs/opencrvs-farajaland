@@ -9,7 +9,7 @@ import {
 } from '../../../helpers'
 import { CREDENTIALS } from '../../../constants'
 import {
-  ensureAssigned,
+  ensureAssignedToUser,
   ensureOutboxIsEmpty,
   selectAction
 } from '../../../utils'
@@ -281,7 +281,7 @@ test.describe.serial('10. Death declaration case - 10', () => {
         .first()
         .click()
 
-      await ensureAssigned(page, CREDENTIALS.REGISTRATION_OFFICER)
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
       await selectAction(page, 'Edit')
     })
 

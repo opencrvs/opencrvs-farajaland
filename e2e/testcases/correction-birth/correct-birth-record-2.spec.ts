@@ -12,7 +12,12 @@ import {
   createDeclaration,
   Declaration
 } from '../test-data/birth-declaration-with-mother-father'
-import { ensureAssigned, expectInUrl, selectAction, type } from '../../utils'
+import {
+  ensureAssignedToUser,
+  expectInUrl,
+  selectAction,
+  type
+} from '../../utils'
 import {
   navigateToCertificatePrintAction,
   selectCertificationType,
@@ -281,7 +286,7 @@ test.describe.serial('Correct record - 2', () => {
     })
 
     test('2.8.2 Correction review page', async () => {
-      await ensureAssigned(page, CREDENTIALS.REGISTRAR)
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
       await selectAction(page, 'Review correction request')
       await expect(page.getByText('Requester' + 'Father')).toBeVisible()
       await expect(
@@ -355,7 +360,7 @@ test.describe.serial('Correct record - 2', () => {
 
     test.describe('2.8.4 Validate history in record audit', async () => {
       test('2.8.4.1 Navigate to record audit', async () => {
-        await ensureAssigned(page, CREDENTIALS.REGISTRAR)
+        await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
         await page.getByRole('button', { name: 'Audit' }).click()
       })
 

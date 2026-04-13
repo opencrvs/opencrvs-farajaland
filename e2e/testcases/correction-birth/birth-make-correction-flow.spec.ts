@@ -6,7 +6,7 @@ import {
   createDeclaration,
   Declaration
 } from '../test-data/birth-declaration-with-mother-father'
-import { ensureAssigned, expectInUrl, selectAction } from '../../utils'
+import { ensureAssignedToUser, expectInUrl, selectAction } from '../../utils'
 import { formatV2ChildName, REQUIRED_VALIDATION_ERROR } from '../birth/helpers'
 
 test.describe.serial('Birth Record correction flow', () => {
@@ -34,7 +34,7 @@ test.describe.serial('Birth Record correction flow', () => {
     await page
       .getByRole('button', { name: formatV2ChildName(declaration) })
       .click()
-    await ensureAssigned(page, CREDENTIALS.REGISTRAR)
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
     await selectAction(page, 'Correct')
   })
 
@@ -231,7 +231,7 @@ test.describe.serial('Birth Record correction flow', () => {
       .click()
 
     await page.getByRole('button', { name: 'Audit' }).click()
-    await ensureAssigned(page, CREDENTIALS.REGISTRAR)
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
 
     await expect(
       page.getByRole('button', { name: 'Record corrected', exact: true })

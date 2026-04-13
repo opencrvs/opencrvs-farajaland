@@ -11,7 +11,7 @@ import {
 } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
 import {
-  ensureAssigned,
+  ensureAssignedToUser,
   ensureInExternalValidationIsEmpty,
   ensureOutboxIsEmpty,
   selectAction
@@ -182,7 +182,7 @@ test.describe.serial('3. Workqueue flow - 3', () => {
         })
         .click()
 
-      await ensureAssigned(page, CREDENTIALS.REGISTRATION_OFFICER)
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
 
       await selectAction(page, 'Reject')
       await page.getByTestId('reject-reason').fill(faker.lorem.sentence())
@@ -216,7 +216,7 @@ test.describe.serial('3. Workqueue flow - 3', () => {
 
       await expect(page.getByText('Rejected')).toBeVisible()
 
-      await ensureAssigned(page, CREDENTIALS.REGISTRATION_OFFICER)
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
 
       await page.getByRole('button', { name: 'Action' }).click()
       await expect(page.getByText('Reject', { exact: true })).not.toBeVisible()

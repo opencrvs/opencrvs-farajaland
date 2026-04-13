@@ -12,7 +12,7 @@ import {
   navigateToCertificatePrintAction,
   printAndExpectPopup
 } from './helpers'
-import { ensureAssigned, type } from '../../../utils'
+import { ensureAssignedToUser, type } from '../../../utils'
 import { formatV2ChildName } from '../../birth/helpers'
 
 async function selectIdType(page: Page, idType: string) {
@@ -79,7 +79,7 @@ test.describe
     await page
       .getByRole('button', { name: formatV2ChildName(declaration) })
       .click()
-    await ensureAssigned(page, CREDENTIALS.REGISTRAR)
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
     await page.getByRole('button', { name: 'Audit' }).click()
     await page.getByRole('button', { name: 'Certified', exact: true }).click()
 

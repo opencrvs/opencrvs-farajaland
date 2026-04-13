@@ -6,7 +6,7 @@ import { createDeclaration, Declaration } from '../test-data/birth-declaration'
 import { ActionType } from '@opencrvs/toolkit/events'
 import { formatV2ChildName } from '../birth/helpers'
 import {
-  ensureAssigned,
+  ensureAssignedToUser,
   ensureOutboxIsEmpty,
   expectInUrl,
   selectAction
@@ -77,7 +77,7 @@ test.describe
   })
 
   test('5.4 Click "Validate"-action', async () => {
-    await ensureAssigned(page, CREDENTIALS.REGISTRATION_OFFICER)
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
     await selectAction(page, 'Validate')
 
     await expect(

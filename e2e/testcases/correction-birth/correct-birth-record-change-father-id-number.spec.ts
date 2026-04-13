@@ -14,7 +14,7 @@ import {
 import { format, subDays, subYears } from 'date-fns'
 import { CREDENTIALS } from '../../constants'
 import { formatV2ChildName } from '../birth/helpers'
-import { ensureAssigned, selectAction } from '../../utils'
+import { ensureAssignedToUser, selectAction } from '../../utils'
 
 test.describe.serial("Correct record - Change father's ID number", () => {
   let declaration: DeclarationV2
@@ -98,7 +98,7 @@ test.describe.serial("Correct record - Change father's ID number", () => {
       name: formatV2ChildName(declaration),
       trackingId
     })
-    await ensureAssigned(page, CREDENTIALS.REGISTRATION_OFFICER)
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
 
     await selectAction(page, 'Correct')
   })
@@ -208,7 +208,7 @@ test.describe.serial("Correct record - Change father's ID number", () => {
   })
 
   test('Approve correction request', async () => {
-    await ensureAssigned(page, CREDENTIALS.REGISTRAR)
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
     await selectAction(page, 'Review correction request')
     await page.getByRole('button', { name: 'Approve', exact: true }).click()
     await page.getByRole('button', { name: 'Confirm', exact: true }).click()
@@ -221,7 +221,7 @@ test.describe.serial("Correct record - Change father's ID number", () => {
       trackingId
     })
 
-    await ensureAssigned(page, CREDENTIALS.REGISTRAR)
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
 
     await page.getByRole('button', { name: 'Record', exact: true }).click()
 

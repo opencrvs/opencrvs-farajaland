@@ -15,7 +15,12 @@ import {
   createDeclaration,
   Declaration
 } from '../test-data/birth-declaration-with-mother-father'
-import { ensureAssigned, expectInUrl, selectAction, type } from '../../utils'
+import {
+  ensureAssignedToUser,
+  expectInUrl,
+  selectAction,
+  type
+} from '../../utils'
 import { formatV2ChildName, REQUIRED_VALIDATION_ERROR } from '../birth/helpers'
 import { getMixedPath } from '@opencrvs/toolkit/events'
 
@@ -80,7 +85,7 @@ test.describe('10. Correct record', () => {
       await page
         .getByRole('button', { name: formatV2ChildName(declaration) })
         .click()
-      await ensureAssigned(page, CREDENTIALS.REGISTRATION_OFFICER)
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
       await selectAction(page, 'Correct')
     })
 
@@ -595,7 +600,7 @@ test.describe('10. Correct record', () => {
       })
 
       test('10.1.6.2 Correction review', async () => {
-        await ensureAssigned(page, CREDENTIALS.REGISTRAR)
+        await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
         await selectAction(page, 'Review correction request')
 
         await expect(page.getByText('Requester' + 'Someone else')).toBeVisible()
@@ -631,7 +636,7 @@ test.describe('10. Correct record', () => {
       })
       test.describe('10.1.6.4 Validate history in record audit', async () => {
         test('10.1.6.4.0 Ensure record is assigned', async () => {
-          await ensureAssigned(page, CREDENTIALS.REGISTRAR)
+          await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
         })
         test('10.1.6.4.1 Validate correction requested modal', async () => {
           await page.getByRole('button', { name: 'Audit' }).click()

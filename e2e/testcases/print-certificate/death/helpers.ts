@@ -1,6 +1,6 @@
 import { Page } from '@playwright/test'
 import { Declaration } from '../../test-data/death-declaration'
-import { ensureAssigned, selectAction } from '../../../utils'
+import { ensureAssignedToUser, selectAction } from '../../../utils'
 import { CREDENTIALS } from '../../../constants'
 
 export async function selectCertificationType(page: Page, type: string) {
@@ -24,6 +24,6 @@ export async function navigateToCertificatePrintAction(
   const deceasedName = `${declaration['deceased.name'].firstname} ${declaration['deceased.name'].surname}`
   await page.getByRole('button', { name: deceasedName }).click()
 
-  await ensureAssigned(page, username)
+  await ensureAssignedToUser(page, username)
   await selectAction(page, 'Print')
 }

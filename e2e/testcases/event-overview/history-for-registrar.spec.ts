@@ -2,7 +2,7 @@ import { test, expect, Page } from '@playwright/test'
 import { createDeclaration, Declaration } from '../test-data/birth-declaration'
 import { getToken, login, switchEventTab } from '../../helpers'
 import { CREDENTIALS, SAFE_WORKQUEUE_TIMEOUT_MS } from '../../constants'
-import { ensureAssigned } from '../../utils'
+import { ensureAssignedToUser } from '../../utils'
 
 test.describe
   .serial('History rows when Registrar registers a birth from scratch', () => {
@@ -29,7 +29,7 @@ test.describe
 
     const childName = `${declaration['child.name'].firstname} ${declaration['child.name'].surname}`
     await page.getByRole('button', { name: childName }).click()
-    await ensureAssigned(page, CREDENTIALS.REGISTRAR)
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
     await expect(page.getByTestId('assignedTo-value')).toHaveText(
       'Kennedy Mweene'
     )

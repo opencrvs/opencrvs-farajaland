@@ -7,7 +7,7 @@ import {
   Declaration
 } from '../test-data/birth-declaration-with-mother-father'
 import {
-  ensureAssigned,
+  ensureAssignedToUser,
   ensureOutboxIsEmpty,
   expectInUrl,
   selectAction,
@@ -40,7 +40,7 @@ test.describe.serial('Birth correction flow', () => {
     await page
       .getByRole('button', { name: formatV2ChildName(declaration) })
       .click()
-    await ensureAssigned(page, CREDENTIALS.REGISTRATION_OFFICER)
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
     await selectAction(page, 'Correct')
   })
 
@@ -254,7 +254,7 @@ test.describe.serial('Birth correction flow', () => {
     })
 
     test('Correction request action appears in audit history', async () => {
-      await ensureAssigned(page, CREDENTIALS.REGISTRAR)
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
       await page.getByRole('button', { name: 'Audit' }).click()
       await expect(
         page.getByRole('button', { name: 'Correction requested', exact: true })
@@ -328,7 +328,7 @@ test.describe.serial('Birth correction flow', () => {
     })
 
     test('Correction approved action appears in audit history', async () => {
-      await ensureAssigned(page, CREDENTIALS.REGISTRAR)
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
       await page.getByRole('button', { name: 'Audit' }).click()
 
       // Go to second page of audit history list

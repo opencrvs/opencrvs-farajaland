@@ -11,7 +11,7 @@ import {
   createDeclaration,
   Declaration
 } from '../test-data/birth-declaration-with-mother-father'
-import { ensureAssigned, selectAction } from '../../utils'
+import { ensureAssignedToUser, selectAction } from '../../utils'
 import { AddressType } from '@opencrvs/toolkit/events'
 import { format, subDays, subYears } from 'date-fns'
 
@@ -84,7 +84,7 @@ test.describe
       })
       await expect(childButton).toBeVisible({ timeout: 30_000 })
       await childButton.click()
-      await ensureAssigned(page, CREDENTIALS.REGISTRAR)
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
       await switchEventTab(page, 'Record')
       await expect(page.getByTestId('row-value-mother.occupation')).toHaveText(
         'House Wife'
@@ -113,7 +113,7 @@ test.describe
         })
         .click()
 
-      await ensureAssigned(page, CREDENTIALS.REGISTRAR)
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
       await selectAction(page, 'Correct')
       await page.locator('#requester____type').click()
       await page.getByText('Informant (Grandfather)', { exact: true }).click()

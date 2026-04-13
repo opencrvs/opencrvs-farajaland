@@ -90,9 +90,10 @@ const usernameToFullNameMap = {
 } as const
 /**
  *
+ * Ensures that the record is assigned to the user and it is reflected in the event summary.
  * @param username name of the user record is assigned. Used for assertion after assignment. Checking absence of something will burn the whole timeout in CI.
  */
-export async function ensureAssigned(
+export async function ensureAssignedToUser(
   page: Page,
   username: keyof typeof usernameToFullNameMap
 ) {
@@ -143,6 +144,12 @@ export async function ensureOutboxIsEmpty(page: Page) {
   )
 }
 
+/**
+ * Checks if user has pending item visible in external validation sidebar.
+ * @deprecated This will make every test flaky. External validation is user dependent. When running tests in parallel, there will be interference between tests and they will fail.
+ *
+ * Consider using `await page.waitForResponse((response) => response.url() === 'https://example.com' && response.status() === 200)` if you cannot find another UI element to wait for.
+ */
 export async function ensureInExternalValidationIsEmpty(page: Page) {
   await page.waitForTimeout(SAFE_INPUT_CHANGE_TIMEOUT_MS)
 

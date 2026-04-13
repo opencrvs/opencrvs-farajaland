@@ -2,7 +2,7 @@ import { test, expect, type Page } from '@playwright/test'
 import { getToken, login, searchFromSearchBar } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
 import {
-  ensureAssigned,
+  ensureAssignedToUser,
   navigateToWorkqueue,
   selectAction,
   ensureOutboxIsEmpty
@@ -33,7 +33,7 @@ test.describe.serial('Issue Certified Copy', () => {
       await navigateToWorkqueue(page, 'Pending certification')
       await page.getByRole('button', { name: childName }).click()
       await expect(page.getByText('Registered')).toBeVisible()
-      await ensureAssigned(page, CREDENTIALS.REGISTRATION_OFFICER)
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
 
       await expect(
         page
@@ -98,7 +98,7 @@ test.describe.serial('Issue Certified Copy', () => {
       await navigateToWorkqueue(page, 'Pending issuance')
       await page.getByRole('button', { name: childName }).click()
       await expect(page.getByText('Registered')).toBeVisible()
-      await ensureAssigned(page, CREDENTIALS.REGISTRATION_OFFICER)
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
 
       const Flags = page.getByTestId('flags').filter({ hasText: 'Flags' })
       await expect(

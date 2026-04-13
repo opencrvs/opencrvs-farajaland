@@ -12,7 +12,7 @@ import {
 import { CREDENTIALS } from '../../../constants'
 import { faker } from '@faker-js/faker'
 import { REQUIRED_VALIDATION_ERROR } from '../helpers'
-import { ensureAssigned, ensureOutboxIsEmpty } from '../../../utils'
+import { ensureAssignedToUser, ensureOutboxIsEmpty } from '../../../utils'
 
 test.describe.serial('8. Birth declaration case - 8', () => {
   let page: Page
@@ -286,7 +286,7 @@ test.describe.serial('8. Birth declaration case - 8', () => {
         })
         .click()
 
-      await ensureAssigned(page, CREDENTIALS.REGISTRATION_OFFICER)
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
       await switchEventTab(page, 'Record')
     })
 

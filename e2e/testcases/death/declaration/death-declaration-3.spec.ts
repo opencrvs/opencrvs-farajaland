@@ -13,7 +13,7 @@ import {
 } from '../../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../../constants'
-import { ensureAssigned, ensureOutboxIsEmpty } from '../../../utils'
+import { ensureAssignedToUser, ensureOutboxIsEmpty } from '../../../utils'
 
 test.describe.serial('3. Death declaration case - 3', () => {
   let page: Page
@@ -705,7 +705,7 @@ test.describe.serial('3. Death declaration case - 3', () => {
         })
         .click()
 
-      await ensureAssigned(page, CREDENTIALS.REGISTRATION_OFFICER)
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
       await switchEventTab(page, 'Record')
     })
 

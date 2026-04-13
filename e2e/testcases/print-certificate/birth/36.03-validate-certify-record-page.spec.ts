@@ -11,7 +11,7 @@ import {
   selectCertificationType,
   selectRequesterType
 } from './helpers'
-import { ensureAssigned, expectInUrl, type } from '../../../utils'
+import { ensureAssignedToUser, expectInUrl, type } from '../../../utils'
 import { formatV2ChildName } from '../../birth/helpers'
 
 test.describe.serial('3.0 Validate "Certify record" page', () => {
@@ -147,7 +147,7 @@ test.describe.serial('3.0 Validate "Certify record" page', () => {
     await page
       .getByRole('button', { name: formatV2ChildName(declaration) })
       .click()
-    await ensureAssigned(page, CREDENTIALS.REGISTRAR)
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
 
     await page.getByRole('button', { name: 'Audit' }).click()
     await page.getByRole('button', { name: 'Certified', exact: true }).click()

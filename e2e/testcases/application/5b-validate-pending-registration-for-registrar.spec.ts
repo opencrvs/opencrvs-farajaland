@@ -5,7 +5,7 @@ import { CREDENTIALS, SAFE_WORKQUEUE_TIMEOUT_MS } from '../../constants'
 import { createDeclaration, Declaration } from '../test-data/birth-declaration'
 import { ActionType } from '@opencrvs/toolkit/events'
 import { formatV2ChildName } from '../birth/helpers'
-import { ensureAssigned, expectInUrl } from '../../utils'
+import { ensureAssignedToUser, expectInUrl } from '../../utils'
 import { getRowByTitle } from '../print-certificate/birth/helpers'
 
 test.describe
@@ -72,7 +72,7 @@ test.describe
   })
 
   test('5.5 Register action should be available for declared and validated record', async () => {
-    await ensureAssigned(page, CREDENTIALS.REGISTRAR)
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
     await validateActionMenuButton(page, 'Register', true)
   })
 })

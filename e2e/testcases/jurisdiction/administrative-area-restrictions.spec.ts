@@ -12,7 +12,7 @@ import {
   getIdByName
 } from '../birth/helpers'
 import { ActionType, AddressType } from '@opencrvs/toolkit/events'
-import { ensureAssigned } from '../../utils'
+import { ensureAssignedToUser } from '../../utils'
 
 test('Record declared in one administrative area should not appear for users in another administrative area', async ({
   browser
@@ -91,7 +91,7 @@ test('Record declared in one administrative area should not appear for users in 
     })
 
     await test.step('Place of birth should be Farajaland, Pualula, Oya', async () => {
-      await ensureAssigned(page, CREDENTIALS.REGISTRAR_PUALULA)
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR_PUALULA)
       await expect(
         page.getByTestId('child.birthLocation.privateHome-value')
       ).toHaveText('FarajalandPualula-Oya')
