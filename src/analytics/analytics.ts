@@ -204,6 +204,13 @@ async function upsertAnalyticsEventActions(
 
       const action = event.actions[i]
 
+      if (
+        action.status === ActionStatus.Requested ||
+        action.status === ActionStatus.Rejected
+      ) {
+        continue
+      }
+
       const actionAtCurrentPoint = getCurrentEventState(
         {
           ...event,
@@ -213,13 +220,6 @@ async function upsertAnalyticsEventActions(
       )
 
       const { type, ...act } = action
-
-      if (
-        action.status === ActionStatus.Requested ||
-        action.status === ActionStatus.Rejected
-      ) {
-        continue
-      }
 
       const actionConfig = eventConfig.actions.find((a) => a.type === type)
 
