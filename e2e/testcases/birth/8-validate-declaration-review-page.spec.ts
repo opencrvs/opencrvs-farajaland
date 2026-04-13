@@ -1126,10 +1126,12 @@ test.describe.serial('8. Validate declaration review page', () => {
       await expectRowValue(page, 'father.addressSameAs', 'Yes')
     })
 
-    test('8.3.1.2 Register', async () => {
+    test('8.3.1.2 Assign', async () => {
       await selectAction(page, 'Assign')
       await page.getByRole('button', { name: 'Assign', exact: true }).click()
+    })
 
+    test('8.3.1.3 Register', async () => {
       await selectAction(page, 'Register')
       await page.getByRole('button', { name: 'Confirm' }).click()
     })

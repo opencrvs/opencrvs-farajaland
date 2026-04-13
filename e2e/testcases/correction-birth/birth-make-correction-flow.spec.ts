@@ -224,22 +224,17 @@ test.describe.serial('Birth Record correction flow', () => {
     )
   })
 
-  test('Record correction action appears in audit history', async () => {
+  test('Assign', async () => {
     await page
       .getByRole('button', { name: formatV2ChildName(declaration) })
       .click()
 
-    await page.getByRole('button', { name: 'Audit' }).click()
-    await selectAction(page, 'Assign')
-
-    await page.getByRole('button', { name: 'Assign', exact: true }).click()
-
-    await expect(
-      page.getByRole('button', { name: 'Record corrected', exact: true })
-    ).toBeVisible()
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
   })
 
   test('Record Correction audit history modal opens when action is clicked', async () => {
+    await page.getByRole('button', { name: 'Audit' }).click()
+
     await page
       .getByRole('button', { name: 'Record corrected', exact: true })
       .click()

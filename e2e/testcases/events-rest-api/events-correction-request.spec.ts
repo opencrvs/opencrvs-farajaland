@@ -9,7 +9,7 @@ import {
 import { CREDENTIALS, GATEWAY_HOST } from '../../constants'
 import { login } from '../../helpers'
 import { createClient } from '@opencrvs/toolkit/api'
-import { ensureAssignedToUser, selectAction, type } from '../../utils'
+import { selectAction, type } from '../../utils'
 
 test.describe
   .serial('POST /api/events/events/{eventId}/correction/request', () => {

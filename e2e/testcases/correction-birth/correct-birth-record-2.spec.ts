@@ -359,12 +359,16 @@ test.describe.serial('Correct record - 2', () => {
     })
 
     test.describe('2.8.4 Validate history in record audit', async () => {
-      test('2.8.4.1 Navigate to record audit', async () => {
+      test('2.8.4.1 Assign', async () => {
         await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
-        await page.getByRole('button', { name: 'Audit' }).click()
       })
 
-      test('2.8.4.2 Validate correction requested modal', async () => {
+      test('2.8.4.2 Navigate to record audit', async () => {
+        await page.getByRole('button', { name: 'Audit' }).click()
+        await page.reload()
+      })
+
+      test('2.8.4.3 Validate correction requested modal', async () => {
         await page
           .getByRole('button', { name: 'Correction requested', exact: true })
           .click()
@@ -400,7 +404,7 @@ test.describe.serial('Correct record - 2', () => {
         await page.getByRole('button', { name: 'Next page' }).click()
       })
 
-      test('2.8.4.3 Validate correction rejected modal', async () => {
+      test('2.8.4.4 Validate correction rejected modal', async () => {
         await page
           .getByRole('button', { name: 'Correction rejected', exact: true })
           .click()

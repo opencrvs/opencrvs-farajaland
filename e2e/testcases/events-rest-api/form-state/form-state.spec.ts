@@ -169,7 +169,7 @@ test.describe('Form state', () => {
     test('Create a declaration', async () => {
       const token = await getToken(CREDENTIALS.REGISTRAR)
       declaration = (await createDeclaration(token)).declaration
-      await page.reload()
+
       await ensureInExternalValidationIsEmpty(page)
     })
 

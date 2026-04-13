@@ -812,7 +812,9 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
       await page
         .getByText(await formatV2ChildName({ 'child.name': childName }))
         .click()
+    })
 
+    test('Assign event', async () => {
       await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
       await page.waitForTimeout(SAFE_IN_EXTERNAL_VALIDATION_MS)
     })
