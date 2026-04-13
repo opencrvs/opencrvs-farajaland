@@ -77,6 +77,7 @@ test.describe
     await page.locator('#searchIconButton').click()
     await page.getByRole('button', { name: 'Review' }).click()
 
+    await selectAction(page, 'Assign')
     await selectAction(page, 'Review correction request')
     await expect(page.getByText('Submitter' + clientName)).toBeVisible()
   })
