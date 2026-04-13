@@ -23,6 +23,7 @@ test.describe.serial('7. Organisation Page', () => {
     test('7.1.1 Verify Province -> District -> Health Facility(No Data)', async () => {
       await page.getByRole('button', { name: /Central/ }).click()
       await page.getByRole('button', { name: /Ibombo/ }).click()
+      await page.getByRole('button', { name: /Klow/ }).click()
 
       await expect(
         page.getByRole('button', { name: /Klow Village Hospital/ })

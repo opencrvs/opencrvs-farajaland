@@ -43,7 +43,7 @@ test.describe.serial('6. Organisation Page', () => {
 
       await expect(
         page.getByRole('button', { name: /Ibombo District Hospital/ })
-      ).toBeDisabled()
+      ).toBeEnabled()
     })
 
     // @TODO: https://github.com/opencrvs/opencrvs-core/issues/11756
