@@ -799,6 +799,7 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
     })
 
     test('Reject event', async () => {
+      await ensureAssigned(page, CREDENTIALS.REGISTRAR)
       await selectAction(page, 'Reject')
       await page.getByTestId('reject-reason').fill(faker.lorem.sentence())
       await page.getByRole('button', { name: 'Send For Update' }).click()

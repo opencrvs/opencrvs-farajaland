@@ -1324,7 +1324,6 @@ test.describe.serial('8. Validate declaration review page', () => {
 
     test.describe('8.3.2 Click any "Change" link', async () => {
       test('8.3.2.0 Navigate to Edit-action', async () => {
-        await ensureAssigned(page, CREDENTIALS.REGISTRAR)
         await selectAction(page, 'Edit')
       })
 

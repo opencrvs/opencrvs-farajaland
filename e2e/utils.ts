@@ -126,6 +126,10 @@ export async function expectInUrl(page: Page, assertionString: string) {
   await expect(page.url().includes(assertionString)).toBeTruthy()
 }
 
+/**
+ * Checks if user has pending item visible in outbox sidebar.
+ * @deprecated This will make every test flaky. Outbox is user dependent. When running tests in parallel, there will be interference between tests and they will fail.
+ */
 export async function ensureOutboxIsEmpty(page: Page) {
   await page.waitForTimeout(1000)
 
