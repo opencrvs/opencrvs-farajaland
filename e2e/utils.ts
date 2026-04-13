@@ -129,9 +129,11 @@ export async function expectInUrl(page: Page, assertionString: string) {
 /**
  * Checks if user has pending item visible in outbox sidebar.
  * @deprecated This will make every test flaky. Outbox is user dependent. When running tests in parallel, there will be interference between tests and they will fail.
+ *
+ * Consider using `await page.waitForResponse((response) => response.url() === 'https://example.com' && response.status() === 200)` if you cannot find another UI element to wait for.
  */
 export async function ensureOutboxIsEmpty(page: Page) {
-  await page.waitForTimeout(1000)
+  await page.waitForTimeout(SAFE_INPUT_CHANGE_TIMEOUT_MS)
 
   await expect(page.locator('#navigation_workqueue_outbox')).toHaveText(
     'Outbox',

@@ -229,8 +229,9 @@ test.describe.serial('Birth Record correction flow', () => {
     await page
       .getByRole('button', { name: formatV2ChildName(declaration) })
       .click()
-    await ensureAssigned(page, CREDENTIALS.REGISTRAR)
+
     await page.getByRole('button', { name: 'Audit' }).click()
+    await ensureAssigned(page, CREDENTIALS.REGISTRAR)
 
     await expect(
       page.getByRole('button', { name: 'Record corrected', exact: true })
