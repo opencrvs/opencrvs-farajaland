@@ -8,7 +8,7 @@ import {
   login,
   uploadImage
 } from '../../helpers'
-import { faker } from '@faker-js/faker'
+import { en, faker } from '@faker-js/faker'
 import { format, parseISO, subDays } from 'date-fns'
 import { CREDENTIALS } from '../../constants'
 import {
@@ -16,7 +16,7 @@ import {
   Declaration
 } from '../test-data/birth-declaration-with-mother-father'
 import {
-  ensureAssigned,
+  ensureAssignedToUser,
   ensureOutboxIsEmpty,
   expectInUrl,
   selectAction,
@@ -64,7 +64,8 @@ test.describe('1. Correct record - 1', () => {
       await page
         .getByRole('button', { name: formatV2ChildName(declaration) })
         .click()
-      await ensureAssigned(page)
+
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
     })
 
     test('1.1.1 Validate record audit page', async ({ page }) => {
@@ -200,7 +201,7 @@ test.describe('1. Correct record - 1', () => {
       await page
         .getByRole('button', { name: formatV2ChildName(declaration) })
         .click()
-      await ensureAssigned(page)
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
     })
 
     test('1.2.0 Navigate to record correction', async () => {
@@ -687,6 +688,7 @@ test.describe('1. Correct record - 1', () => {
       })
 
       test('1.2.6.2 Correction review', async () => {
+        await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
         await selectAction(page, 'Review correction request')
 
         await expect(
@@ -727,7 +729,7 @@ test.describe('1. Correct record - 1', () => {
 
       test.describe('1.2.6.4 Validate history in record audit', async () => {
         test('1.2.6.4.1 Validate correction requested modal', async () => {
-          await ensureAssigned(page)
+          await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
           await page.getByRole('button', { name: 'Audit' }).click()
 
           await page

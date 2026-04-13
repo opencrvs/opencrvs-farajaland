@@ -12,7 +12,7 @@ import {
   switchEventTab,
   validateActionMenuButton
 } from '../../helpers'
-import { ensureAssigned, expectInUrl, selectAction } from '../../utils'
+import { ensureAssignedToUser, expectInUrl, selectAction } from '../../utils'
 import { getAdministrativeAreas, getIdByName } from '../birth/helpers'
 import { formatV2ChildName, REQUIRED_VALIDATION_ERROR } from '../birth/helpers'
 import { getDeclaration } from '../test-data/birth-declaration'
@@ -27,7 +27,7 @@ import {
   NON_EXISTING_UUID
 } from './helpers'
 
-import { SAFE_IN_EXTERNAL_VALIDATION_MS } from '../../constants'
+import { CREDENTIALS, SAFE_IN_EXTERNAL_VALIDATION_MS } from '../../constants'
 
 test.describe('POST /api/events/events/{eventId}/notify', () => {
   let clientToken: string
@@ -472,7 +472,7 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
 
     await page.getByText(await formatName(childName)).click()
 
-    await ensureAssigned(page)
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
 
     await page.getByRole('button', { name: 'Audit' }).click()
 
@@ -629,6 +629,7 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
     })
 
     test('Edit event', async () => {
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
       await selectAction(page, 'Edit')
 
       await expect(page.getByTestId('row-value-child.name')).toHaveText(
@@ -690,6 +691,7 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
     })
 
     test('Print certificate', async () => {
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
       await selectAction(page, 'Print')
       await selectRequesterType(page, 'Print and issue to Informant (Mother)')
       await page.getByRole('button', { name: 'Continue' }).click()
@@ -797,6 +799,7 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
     })
 
     test('Reject event', async () => {
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
       await selectAction(page, 'Reject')
       await page.getByTestId('reject-reason').fill(faker.lorem.sentence())
       await page.getByRole('button', { name: 'Send For Update' }).click()
@@ -809,8 +812,10 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
       await page
         .getByText(await formatV2ChildName({ 'child.name': childName }))
         .click()
+    })
 
-      await ensureAssigned(page)
+    test('Assign event', async () => {
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
       await page.waitForTimeout(SAFE_IN_EXTERNAL_VALIDATION_MS)
     })
 

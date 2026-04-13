@@ -12,7 +12,11 @@ import {
 } from '../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../constants'
-import { ensureAssigned, ensureOutboxIsEmpty, selectAction } from '../../utils'
+import {
+  ensureAssignedToUser,
+  ensureOutboxIsEmpty,
+  selectAction
+} from '../../utils'
 import { selectDeclarationAction } from '../../helpers'
 import { format, subDays } from 'date-fns'
 
@@ -159,7 +163,7 @@ test.describe.serial('Approval of late birth registration', () => {
       await page.getByText('Pending approval').click()
       await page.getByRole('button', { name: childNameFormatted }).click()
 
-      await ensureAssigned(page)
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
     })
 
     test("Event should have the 'Approval required for late registration' -flag", async () => {
@@ -208,7 +212,7 @@ test.describe.serial('Approval of late birth registration', () => {
     })
 
     test('Assign', async () => {
-      await ensureAssigned(page)
+      await ensureAssignedToUser(page, CREDENTIALS.PROVINCIAL_REGISTRAR)
     })
 
     test("Event should have the 'Approval required for late registration' -flag", async () => {
@@ -254,7 +258,7 @@ test.describe.serial('Approval of late birth registration', () => {
     })
 
     test('Assign', async () => {
-      await ensureAssigned(page)
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
     })
 
     test('LR should not have the option to Approve', async () => {
@@ -669,7 +673,7 @@ test.describe
     })
 
     test('Assign', async () => {
-      await ensureAssigned(page)
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
     })
 
     test("Event should have the 'Approval required for late registration' -flag", async () => {
@@ -851,7 +855,7 @@ test.describe
     })
 
     test('Assign', async () => {
-      await ensureAssigned(page)
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
     })
 
     test("Event should not have the 'Approval required for late registration' -flag", async () => {
@@ -889,7 +893,7 @@ test.describe
     test('Go to record', async () => {
       await page.getByText('Recent').click()
       await page.getByRole('button', { name: childNameFormatted }).click()
-      await ensureAssigned(page)
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
     })
 
     test("Event should have the 'Approval required for late registration' -flag", async () => {

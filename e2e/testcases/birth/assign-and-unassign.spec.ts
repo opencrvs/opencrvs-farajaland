@@ -3,7 +3,7 @@ import { expect, test, type Page } from '@playwright/test'
 import { login, getToken } from '../../helpers'
 import { CREDENTIALS, SAFE_WORKQUEUE_TIMEOUT_MS } from '../../constants'
 import { createDeclaration, Declaration } from '../test-data/birth-declaration'
-import { ensureAssigned, selectAction } from '../../utils'
+import { ensureAssignedToUser, selectAction } from '../../utils'
 
 test.describe.serial('Assign & Unassign', () => {
   let page: Page
@@ -30,10 +30,7 @@ test.describe.serial('Assign & Unassign', () => {
 
     const childName = `${declaration['child.name'].firstname} ${declaration['child.name'].surname}`
     await page.getByRole('button', { name: childName }).click()
-    await ensureAssigned(page)
-    await expect(page.getByTestId('assignedTo-value')).toHaveText(
-      'Kennedy Mweene'
-    )
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
   })
 
   test('Click on "Unassign" from action menu', async () => {
