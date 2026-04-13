@@ -91,6 +91,7 @@ const usernameToFullNameMap = {
 /**
  *
  * Ensures that the record is assigned to the user and it is reflected in the event summary.
+ *
  * @param username name of the user record is assigned. Used for assertion after assignment. Checking absence of something will burn the whole timeout in CI.
  */
 export async function ensureAssignedToUser(

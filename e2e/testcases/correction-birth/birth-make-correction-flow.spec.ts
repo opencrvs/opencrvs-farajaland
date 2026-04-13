@@ -225,13 +225,14 @@ test.describe.serial('Birth Record correction flow', () => {
   })
 
   test('Record correction action appears in audit history', async () => {
-    await page.reload()
     await page
       .getByRole('button', { name: formatV2ChildName(declaration) })
       .click()
 
     await page.getByRole('button', { name: 'Audit' }).click()
-    await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
+    await selectAction(page, 'Assign')
+
+    await page.getByRole('button', { name: 'Assign', exact: true }).click()
 
     await expect(
       page.getByRole('button', { name: 'Record corrected', exact: true })

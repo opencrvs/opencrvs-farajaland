@@ -1128,6 +1128,8 @@ test.describe.serial('8. Validate declaration review page', () => {
 
     test('8.3.1.2 Register', async () => {
       await selectAction(page, 'Assign')
+      await page.getByRole('button', { name: 'Assign', exact: true }).click()
+
       await selectAction(page, 'Register')
       await page.getByRole('button', { name: 'Confirm' }).click()
     })

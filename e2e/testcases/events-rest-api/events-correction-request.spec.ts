@@ -78,6 +78,8 @@ test.describe
     await page.getByRole('button', { name: 'Review' }).click()
 
     await selectAction(page, 'Assign')
+    await page.getByRole('button', { name: 'Assign', exact: true }).click()
+
     await selectAction(page, 'Review correction request')
     await expect(page.getByText('Submitter' + clientName)).toBeVisible()
   })
