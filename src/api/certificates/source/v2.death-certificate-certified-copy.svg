@@ -85,9 +85,9 @@
   <g clip-path="url(#clip2_948_2918)">
     <text fill="#222222" xml:space="preserve" style="white-space: pre" font-family="Noto Sans" font-size="8" letter-spacing="0px">
       {{#ifCond ($lookup $declaration "deceased.address.addressType") '===' "INTERNATIONAL" }}
-        <tspan x="312" y="188.104">{{$filter ", " ($lookup $declaration 'deceased.address.streetLevelDetails.district2') ($lookup $declaration 'deceased.address.streetLevelDetails.state') ($lookup $declaration 'deceased.address.country')}}</tspan>
+        <tspan x="312" y="188.104">{{$join ", " ($lookup $declaration 'deceased.address.streetLevelDetails.district2') ($lookup $declaration 'deceased.address.streetLevelDetails.state') ($lookup $declaration 'deceased.address.country')}}</tspan>
       {{else}}
-        <tspan x="312" y="188.104">{{$filter ", " ($lookup $declaration 'deceased.address.district') ($lookup $declaration 'deceased.address.province') ($lookup $declaration 'deceased.address.country')}}</tspan>
+        <tspan x="312" y="188.104">{{$join ", " ($lookup $declaration 'deceased.address.district') ($lookup $declaration 'deceased.address.province') ($lookup $declaration 'deceased.address.country')}}</tspan>
       {{/ifCond}}
     </text>
   </g>
@@ -148,11 +148,11 @@
         {{else}}
           {{#ifCond ($lookup $declaration 'eventDetails.deathLocationOther') '!==' undefined }}
           <tspan x="312" y="294.104">{{$or ($lookup $declaration 'eventDetails.deathLocationOther.district') ($lookup $declaration 'eventDetails.deathLocationOther.streetLevelDetails.district2')}}&#10;</tspan>
-          <tspan x="312" y="306.104">{{$filter ", " ($or ($lookup $declaration 'eventDetails.deathLocationOther.streetLevelDetails.state') ($lookup $declaration 'eventDetails.deathLocationOther.province')) ($lookup $declaration 'eventDetails.deathLocationOther.country')}}</tspan>
+          <tspan x="312" y="306.104">{{$join ", " ($or ($lookup $declaration 'eventDetails.deathLocationOther.streetLevelDetails.state') ($lookup $declaration 'eventDetails.deathLocationOther.province')) ($lookup $declaration 'eventDetails.deathLocationOther.country')}}</tspan>
           {{else}}
             {{#ifCond ($lookup $declaration 'deceased.address') '!==' undefined }}
             <tspan x="312" y="294.104">{{$or ($lookup $declaration 'deceased.address.district') ($lookup $declaration 'deceased.address.streetLevelDetails.district2')}}&#10;</tspan>
-            <tspan x="312" y="306.104">{{$filter ", " ($or ($lookup $declaration 'deceased.address.streetLevelDetails.state') ($lookup $declaration 'deceased.address.province')) ($lookup $declaration 'deceased.address.country')}}</tspan>
+            <tspan x="312" y="306.104">{{$join ", " ($or ($lookup $declaration 'deceased.address.streetLevelDetails.state') ($lookup $declaration 'deceased.address.province')) ($lookup $declaration 'deceased.address.country')}}</tspan>
             {{/ifCond}}
           {{/ifCond}}
         {{/ifCond}}
