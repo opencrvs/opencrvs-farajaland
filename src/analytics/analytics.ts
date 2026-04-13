@@ -265,19 +265,28 @@ async function upsertAnalyticsEventActions(
     return []
   }
 
-  return trx
-    .insertInto('analytics.event_actions')
-    .values(allEventActions)
-    .onConflict((oc) =>
-      oc.column('id').doUpdateSet((eb) =>
-        Object.fromEntries(
-          Object.keys(allEventActions[0])
-            .filter((key) => key !== 'id')
-            .map((key) => [key, eb.ref(`excluded.${key}`)])
+  /*
+   * This must be chunked not to cause an error if one event happens to have
+   * 10k actions
+   */
+  const chunks = chunk(allEventActions, 3000)
+
+  for (const batch of chunks) {
+    await trx
+      .insertInto('analytics.event_actions')
+      .values(batch)
+      .onConflict((oc) =>
+        oc.column('id').doUpdateSet((eb) =>
+          Object.fromEntries(
+            Object.keys(allEventActions[0])
+              .filter((key) => key !== 'id')
+              .map((key) => [key, eb.ref(`excluded.${key}`)])
+          )
         )
       )
-    )
-    .execute()
+      .execute()
+  }
+  return
 }
 
 export async function importEvents(events: EventDocument[], trx: Kysely<any>) {
