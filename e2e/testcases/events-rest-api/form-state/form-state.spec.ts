@@ -14,11 +14,7 @@ import {
   createDeclaration,
   Declaration
 } from '../../test-data/birth-declaration'
-import {
-  ensureInExternalValidationIsEmpty,
-  selectAction,
-  type
-} from '../../../utils'
+import { selectAction, type } from '../../../utils'
 import {
   navigateToCertificatePrintAction,
   selectRequesterType
@@ -162,15 +158,13 @@ test.describe('Form state', () => {
       await page.close()
     })
 
-    test('Login', async () => {
-      await login(page)
-    })
-
     test('Create a declaration', async () => {
       const token = await getToken(CREDENTIALS.REGISTRAR)
       declaration = (await createDeclaration(token)).declaration
+    })
 
-      await ensureInExternalValidationIsEmpty(page)
+    test('Login', async () => {
+      await login(page)
     })
 
     test('Form changes in correction are persisted after reload', async () => {
