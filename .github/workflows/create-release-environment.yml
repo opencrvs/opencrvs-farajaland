@@ -144,7 +144,7 @@ jobs:
         image_tag: ${{ steps.get_latest_commit.outputs.config_tag }}
       steps:
           - name: Checkout repo ${{ github.repository }}
-            uses: actions/checkout@v4
+            uses: actions/checkout@v6
           - name: Get latest commit SHA
             id: get_latest_commit
             run: |
@@ -161,7 +161,7 @@ jobs:
         image_tag: ${{ steps.get_latest_commit.outputs.config_tag }}
       steps:
           - name: Checkout repo ${{ github.repository }}
-            uses: actions/checkout@v4
+            uses: actions/checkout@v6
           - name: Get latest commit SHA
             id: get_latest_commit
             run: |
