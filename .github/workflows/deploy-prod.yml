@@ -1,5 +1,5 @@
 name: Deploy (production)
-run-name: "Deploy to ${{ inputs.environment }} with (core: ${{ inputs.core-image-tag }}, country config: ${{ inputs.countryconfig-image-tag }}, reset: ${{ inputs.reset }})"
+run-name: 'Deploy to ${{ inputs.environment }} with (core: ${{ inputs.core-image-tag }}, country config: ${{ inputs.countryconfig-image-tag }}, reset: ${{ inputs.reset }})'
 on:
   workflow_dispatch:
     inputs:
@@ -123,7 +123,7 @@ jobs:
           ' > .env.${{ inputs.environment }}
 
       - name: Use Node.js from .nvmrc
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version-file: ${{ github.event.repository.name }}/.nvmrc
 

@@ -79,7 +79,7 @@ jobs:
       test_matrix: ${{ steps.list-tests.outputs.test_matrix }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version-file: .nvmrc
 
@@ -136,7 +136,7 @@ jobs:
     name: shard-${{ matrix.shard }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
           node-version-file: .nvmrc
 
