@@ -2,7 +2,7 @@ import { expect, test, type Page } from '@playwright/test'
 import { CREDENTIALS } from '../../constants'
 import { getToken, login, searchFromSearchBar } from '../../helpers'
 import {
-  ensureAssigned,
+  ensureAssignedToUser,
   ensureOutboxIsEmpty,
   navigateToWorkqueue,
   selectAction
@@ -64,7 +64,7 @@ test.describe.serial('Issue verifiable credential', () => {
   test('Log in and navigate to mother informant record', async () => {
     await login(page, CREDENTIALS.REGISTRAR)
     await searchFromSearchBar(page, motherInformantChildName)
-    await ensureAssigned(page)
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
   })
 
   test('Requester dropdown spec: mother informant only shows mother (and father if available)', async () => {
@@ -104,7 +104,7 @@ test.describe.serial('Issue verifiable credential', () => {
   test('Requester dropdown spec: non-parent informant shows available parent(s) plus informant relation', async () => {
     await navigateToWorkqueue(page, 'Pending certification')
     await searchFromSearchBar(page, nonParentInformantChildName)
-    await ensureAssigned(page)
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
 
     await openIssueVerifiableCredentialAction()
 
@@ -137,7 +137,7 @@ test.describe.serial('Issue verifiable credential', () => {
   test('Show verifiable credential QR code in Birth Certificate', async () => {
     await navigateToWorkqueue(page, 'Pending certification')
     await searchFromSearchBar(page, motherInformantChildName)
-    await ensureAssigned(page)
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
 
     await selectAction(page, 'Print')
     await selectCertificationType(page, 'Birth Certificate')
@@ -147,8 +147,11 @@ test.describe.serial('Issue verifiable credential', () => {
 
     // known UX issue:
     // there is a background HTTP call to create the verifiable credential. We need to wait for it to succeed.
-    const HTTP_CALL_RESPONSE_WAIT_MS = 500
-    await page.waitForTimeout(HTTP_CALL_RESPONSE_WAIT_MS)
+    await page.waitForResponse(
+      (response) =>
+        response.url().includes('/verifiable-credentials/paper-credential') &&
+        response.status() === 200
+    )
 
     await page.getByRole('button', { name: 'Continue' }).click()
 

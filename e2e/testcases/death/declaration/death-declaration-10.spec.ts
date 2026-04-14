@@ -8,7 +8,11 @@ import {
   selectDeclarationAction
 } from '../../../helpers'
 import { CREDENTIALS } from '../../../constants'
-import { ensureOutboxIsEmpty, selectAction } from '../../../utils'
+import {
+  ensureAssignedToUser,
+  ensureOutboxIsEmpty,
+  selectAction
+} from '../../../utils'
 import { REQUIRED_VALIDATION_ERROR } from '../../birth/helpers'
 
 test.describe.serial('10. Death declaration case - 10', () => {
@@ -277,6 +281,7 @@ test.describe.serial('10. Death declaration case - 10', () => {
         .first()
         .click()
 
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
       await selectAction(page, 'Edit')
     })
 

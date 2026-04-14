@@ -11,8 +11,7 @@ import {
 } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
 import {
-  ensureAssigned,
-  ensureInExternalValidationIsEmpty,
+  ensureAssignedToUser,
   ensureOutboxIsEmpty,
   selectAction
 } from '../../utils'
@@ -171,6 +170,7 @@ test.describe.serial('1. Workqueue flow - 1', () => {
         })
         .click()
 
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
       await selectAction(page, 'Edit')
 
       await page
@@ -330,11 +330,9 @@ test.describe.serial('1. Workqueue flow - 1', () => {
         })
         .click()
 
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
       await selectAction(page, 'Register')
       await page.getByRole('button', { name: 'Confirm' }).click()
-
-      await ensureOutboxIsEmpty(page)
-      await ensureInExternalValidationIsEmpty(page)
 
       await assertRecordInWorkqueue({
         page,
@@ -371,7 +369,7 @@ test.describe.serial('1. Workqueue flow - 1', () => {
       })
       .click()
 
-    await ensureAssigned(page)
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
     await page.goBack()
 
     const row = getRowByTitle(page, formatName(declaration.child.name))

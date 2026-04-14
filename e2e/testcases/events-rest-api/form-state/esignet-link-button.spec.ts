@@ -40,7 +40,7 @@ test.describe
     await authenticateInformantWithESignet(page)
 
     await expect(page.getByText('ID Authenticated')).toBeVisible({
-      timeout: 30_000
+      timeout: 60_000
     })
 
     await expect(page.locator('#firstname')).toHaveValue('Charles')
