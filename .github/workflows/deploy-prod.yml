@@ -35,13 +35,13 @@ jobs:
           issue-body: 'Please approve or deny the deployment of core: ${{ github.event.inputs.core-image-tag }} country config: ${{ github.event.inputs.countryconfig-image-tag }} to ${{ github.event.inputs.environment }}'
           exclude-workflow-initiator-as-approver: false
       - name: Clone core
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
           repository: 'opencrvs/opencrvs-core'
           path: './opencrvs-core'
       - name: Clone country config resource package
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
           path: './${{ github.event.repository.name }}'

@@ -247,7 +247,7 @@ jobs:
     timeout-minutes: 60
     steps:
       - name: Clone country config resource package
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
           ref: ${{ github.ref_name }}
@@ -317,12 +317,12 @@ jobs:
     timeout-minutes: 60
     steps:
       - name: Clone country config resource package
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           token: ${{ secrets.MIGRATION_GH_TOKEN }}
           path: country-config-repo
       - name: Clone infrastructure repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           repository: ${{ inputs.target_owner }}/${{ inputs.target_repo_name }}
           token: ${{ secrets.MIGRATION_GH_TOKEN }}
