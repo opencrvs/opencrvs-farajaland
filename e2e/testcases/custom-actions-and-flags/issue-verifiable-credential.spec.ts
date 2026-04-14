@@ -147,8 +147,11 @@ test.describe.serial('Issue verifiable credential', () => {
 
     // known UX issue:
     // there is a background HTTP call to create the verifiable credential. We need to wait for it to succeed.
-    const HTTP_CALL_RESPONSE_WAIT_MS = 500
-    await page.waitForTimeout(HTTP_CALL_RESPONSE_WAIT_MS)
+    await page.waitForResponse(
+      (response) =>
+        response.url().includes('/verifiable-credentials/paper-credential') &&
+        response.status() === 200
+    )
 
     await page.getByRole('button', { name: 'Continue' }).click()
 

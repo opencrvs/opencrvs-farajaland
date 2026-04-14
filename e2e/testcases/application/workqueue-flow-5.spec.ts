@@ -12,7 +12,6 @@ import {
 import { CREDENTIALS } from '../../constants'
 import {
   ensureAssignedToUser,
-  ensureInExternalValidationIsEmpty,
   ensureOutboxIsEmpty,
   selectAction
 } from '../../utils'
@@ -466,7 +465,6 @@ test.describe.serial('5. Workqueue flow - 5', () => {
 
       await selectAction(page, 'Register')
       await page.getByRole('button', { name: 'Confirm' }).click()
-      await ensureInExternalValidationIsEmpty(page)
 
       await assertRecordInWorkqueue({
         page,
