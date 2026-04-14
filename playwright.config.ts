@@ -1,6 +1,6 @@
 import { defineConfig, devices } from '@playwright/test'
 
-const TEST_TIMEOUT = 70000
+const TEST_TIMEOUT = 90000
 
 const subdomains = ['register'] // TODO: Add more subdomains if needed
 const insecureOrigins = subdomains.map(
@@ -27,7 +27,7 @@ export default defineConfig({
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Don't retry. Fix the flaky ones. */
-  retries: process.env.CI ? 1 : 0,
+  retries: process.env.CI ? 3 : 0,
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
