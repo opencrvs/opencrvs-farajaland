@@ -91,7 +91,7 @@ jobs:
           echo "test_matrix=$tests_suites" >> $GITHUB_OUTPUT
           echo "test_matrix=$tests_suites"
       - name: Cache Node.js dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             node_modules
@@ -141,7 +141,7 @@ jobs:
           node-version-file: .nvmrc
 
       - name: Cache Node.js dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: |
             node_modules
@@ -179,7 +179,7 @@ jobs:
         id: artifact
         run: echo "artifact=$(echo '${{ matrix.test_file }}' | sed 's/\//__/g')" >> $GITHUB_OUTPUT
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: playwright-report-${{github.event.inputs.core-image-tag || needs.get-core-commit.outputs.latest_commit_sha}}-${{github.event.inputs.countryconfig-image-tag || needs.get-country-config-commit.outputs.short_sha}}-${{ steps.artifact.outputs.artifact }}-shard-${{ matrix.shard }}-${{ github.run_id }}-${{ github.run_attempt }}
