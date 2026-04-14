@@ -4,7 +4,7 @@ import { login, getToken } from '../../helpers'
 import { CREDENTIALS, SAFE_WORKQUEUE_TIMEOUT_MS } from '../../constants'
 import { createDeclaration, Declaration } from '../test-data/birth-declaration'
 import { formatV2ChildName } from '../birth/helpers'
-import { expectInUrl, selectAction } from '../../utils'
+import { ensureAssignedToUser, expectInUrl, selectAction } from '../../utils'
 
 test.describe.serial('6 Validate "Pending certification"-workqueue', () => {
   let page: Page
@@ -73,6 +73,7 @@ test.describe.serial('6 Validate "Pending certification"-workqueue', () => {
   })
 
   test('6.5 Click Print action', async () => {
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
     await selectAction(page, 'Print')
     await expect(page.locator('#content-name')).toHaveText('Certify record')
     await expectInUrl(

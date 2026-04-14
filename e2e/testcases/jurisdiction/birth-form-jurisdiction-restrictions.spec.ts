@@ -57,8 +57,8 @@ test.describe('Birth form - child place of birth jurisdiction restrictions', () 
 
     // Make sure select menu only has one visible option and that it contains locations in user's administrative area
     const options = await dropdown.locator('[role="list"] > li')
-    await expect(options).toHaveCount(41)
-    await expect(options.nth(1)).toHaveText('Chamakubi Health Post')
+    await expect(options).toHaveCount(2)
+    await expect(options.nth(1)).toHaveText('Ibombo District Hospital')
   })
 
   test('Registrar should be able to only choose an address in their own administrative area as Residential Address', async () => {

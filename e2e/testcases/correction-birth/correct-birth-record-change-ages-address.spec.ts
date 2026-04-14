@@ -14,7 +14,7 @@ import {
 } from '../test-data/birth-declaration'
 import { CREDENTIALS } from '../../constants'
 import { formatV2ChildName, getAdministrativeAreas } from '../birth/helpers'
-import { ensureAssigned, selectAction } from '../../utils'
+import { ensureAssignedToUser, selectAction } from '../../utils'
 import { getIdByName } from '../birth/helpers'
 import { AddressType } from '@opencrvs/toolkit/events'
 
@@ -122,7 +122,7 @@ test.describe.serial('Correct record - Change ages', () => {
       name: formatV2ChildName(declaration),
       trackingId
     })
-    await ensureAssigned(page)
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
 
     await selectAction(page, 'Correct')
   })
@@ -304,6 +304,7 @@ test.describe.serial('Correct record - Change ages', () => {
   })
 
   test('Approve correction request', async () => {
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
     await selectAction(page, 'Review correction request')
     await page.getByRole('button', { name: 'Approve', exact: true }).click()
     await page.getByRole('button', { name: 'Confirm', exact: true }).click()
@@ -316,7 +317,7 @@ test.describe.serial('Correct record - Change ages', () => {
       trackingId
     })
 
-    await ensureAssigned(page)
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
 
     await page.getByRole('button', { name: 'Record', exact: true }).click()
 

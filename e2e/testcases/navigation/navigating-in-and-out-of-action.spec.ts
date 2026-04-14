@@ -36,7 +36,11 @@ test.describe.serial('Navigating in and out of action', () => {
   })
 
   test('Navigate successfully through the print certificate action flow', async () => {
-    await navigateToCertificatePrintAction(page, declaration)
+    await navigateToCertificatePrintAction(
+      page,
+      declaration,
+      CREDENTIALS.REGISTRAR
+    )
     await selectCertificationType(page, 'Birth Certificate')
     await selectRequesterType(page, 'Print and issue to Informant (Mother)')
     await page.getByRole('button', { name: 'Continue' }).click()
