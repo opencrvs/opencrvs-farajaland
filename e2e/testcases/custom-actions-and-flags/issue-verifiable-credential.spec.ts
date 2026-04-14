@@ -149,8 +149,8 @@ test.describe.serial('Issue verifiable credential', () => {
     // there is a background HTTP call to create the verifiable credential. We need to wait for it to succeed.
     await page.waitForResponse(
       (response) =>
-        response.url().includes('verifiable-credentials/paper-credential') &&
-        response.status() === 201
+        response.url().includes('/verifiable-credentials/paper-credential') &&
+        response.status() === 200
     )
 
     await page.getByRole('button', { name: 'Continue' }).click()
