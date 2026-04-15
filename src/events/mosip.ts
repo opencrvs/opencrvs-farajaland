@@ -97,7 +97,7 @@ export const getMOSIPIntegrationFields = (
       ],
       label: {
         id: `${page}.verified.status`,
-        defaultMessage: 'Verification status',
+        defaultMessage: 'Identity status',
         description: 'The title for the status field label'
       },
       configuration: {
@@ -193,6 +193,7 @@ export const getMOSIPIntegrationFields = (
             type: FieldType.LOADER,
             parent: field(`${page}.verify-nid-http-fetch`),
             variant: 'highlighted',
+            hideLabel: false,
             conditionals: [
               {
                 type: ConditionalType.SHOW,
@@ -209,7 +210,7 @@ export const getMOSIPIntegrationFields = (
             ],
             label: {
               id: 'form.fetch-loader.label',
-              defaultMessage: "Fetching the person's data from E-Signet",
+              defaultMessage: 'Identity status',
               description:
                 'This is the label for the fetch individual information loader'
             },
@@ -232,8 +233,8 @@ export const getMOSIPIntegrationFields = (
       type: FieldType.ID_READER,
       required: false,
       label: {
-        defaultMessage: 'QR Code',
-        description: 'This is the label for the field',
+        defaultMessage: 'Identity status',
+        description: 'Label for ID Reader field',
         id: `event.birth.action.declare.form.section.${page}.field.qr.label`
       },
       conditionals: [
@@ -242,6 +243,7 @@ export const getMOSIPIntegrationFields = (
           conditional: existingShowConditional?.conditional
             ? and(
                 existingShowConditional?.conditional,
+                field(`${page}.verify-nid-http-fetch`).get('loading').isFalsy(),
                 not(
                   or(
                     field(`${page}.verified`).isEqualTo('pending'),
@@ -251,12 +253,15 @@ export const getMOSIPIntegrationFields = (
                   )
                 )
               )
-            : not(
-                or(
-                  field(`${page}.verified`).isEqualTo('pending'),
-                  field(`${page}.verified`).isEqualTo('verified'),
-                  field(`${page}.verified`).isEqualTo('authenticated'),
-                  field(`${page}.verified`).isEqualTo('failed')
+            : and(
+                field(`${page}.verify-nid-http-fetch`).get('loading').isFalsy(),
+                not(
+                  or(
+                    field(`${page}.verified`).isEqualTo('pending'),
+                    field(`${page}.verified`).isEqualTo('verified'),
+                    field(`${page}.verified`).isEqualTo('authenticated'),
+                    field(`${page}.verified`).isEqualTo('failed')
+                  )
                 )
               )
         },
@@ -266,15 +271,6 @@ export const getMOSIPIntegrationFields = (
         }
       ],
       methods: [
-        {
-          type: FieldType.QR_READER,
-          label: {
-            id: `event.birth.action.declare.form.section.${page}.field.qr.label`,
-            defaultMessage: 'Scan QR code',
-            description: 'This is the label for the field'
-          },
-          id: `${page}.id-reader`
-        },
         ...(esignet
           ? [
               {
@@ -286,18 +282,27 @@ export const getMOSIPIntegrationFields = (
                   description: 'The title for the E-Signet verification button'
                 },
                 configuration: {
-                  icon: 'Globe',
+                  icon: 'Fingerprint',
                   url: `${ESIGNET_REDIRECT_URL}?client_id=${OPENID_PROVIDER_CLIENT_ID}&response_type=code&scope=openid%20profile&acr_values=mosip:idp:acr:static-code&claims=name,family_name,given_name,middle_name,birthdate,address&state=fetch-on-mount`,
                   text: {
                     id: 'verify.label',
-                    defaultMessage: 'e-Signet',
+                    defaultMessage: 'Authenticate with National ID system',
                     description:
                       'The title for the E-Signet verification button'
                   }
                 }
               }
             ]
-          : [])
+          : []),
+        {
+          type: FieldType.QR_READER,
+          label: {
+            id: `event.birth.action.declare.form.section.${page}.field.qr.label`,
+            defaultMessage: 'Scan QR code',
+            description: 'This is the label for the field'
+          },
+          id: `${page}.id-reader`
+        }
       ]
     }
   ]
