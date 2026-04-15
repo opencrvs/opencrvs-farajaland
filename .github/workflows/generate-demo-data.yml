@@ -33,7 +33,7 @@ jobs:
         node-version: [14.17.0]
     steps:
       - name: Checking out git repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v6
         with:
           ref: ${{ github.event.inputs.branch }}
       - name: Install dependencies

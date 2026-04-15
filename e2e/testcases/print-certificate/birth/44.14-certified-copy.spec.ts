@@ -9,7 +9,7 @@ import {
   navigateToCertificatePrintAction,
   selectRequesterType
 } from './helpers'
-import { selectAction } from '../../../utils'
+import { ensureAssignedToUser, selectAction } from '../../../utils'
 import { formatV2ChildName } from '../../birth/helpers'
 
 test.describe.serial('44.14.0 Validate "Certified copy" option', () => {
@@ -33,7 +33,11 @@ test.describe.serial('44.14.0 Validate "Certified copy" option', () => {
 
   test('44.14.0.1 Navigate to certificate print action', async () => {
     await page.getByRole('button', { name: 'Pending certification' }).click()
-    await navigateToCertificatePrintAction(page, declaration)
+    await navigateToCertificatePrintAction(
+      page,
+      declaration,
+      CREDENTIALS.REGISTRAR
+    )
   })
 
   test('44.14.1 "Certified Copy" is not available in certificate types', async () => {
@@ -71,6 +75,7 @@ test.describe.serial('44.14.0 Validate "Certified copy" option', () => {
       })
       .click()
 
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
     await selectAction(page, 'Print')
     await page.locator('#certificateTemplateId svg').click()
     await expect(

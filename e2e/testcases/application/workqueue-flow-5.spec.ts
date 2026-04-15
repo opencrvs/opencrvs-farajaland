@@ -11,8 +11,7 @@ import {
 } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
 import {
-  ensureAssigned,
-  ensureInExternalValidationIsEmpty,
+  ensureAssignedToUser,
   ensureOutboxIsEmpty,
   selectAction
 } from '../../utils'
@@ -151,6 +150,7 @@ test.describe.serial('5. Workqueue flow - 5', () => {
         })
         .click()
 
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
       await selectAction(page, 'Reject')
       await page.getByTestId('reject-reason').fill(faker.lorem.sentence())
       await page.getByRole('button', { name: 'Send For Update' }).click()
@@ -166,7 +166,7 @@ test.describe.serial('5. Workqueue flow - 5', () => {
 
       await expect(page.getByText('Rejected')).toBeVisible()
 
-      await ensureAssigned(page)
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
       await page.getByRole('button', { name: 'Action' }).click()
       await expect(page.getByText('Reject', { exact: true })).not.toBeVisible()
       await expect(page.getByText('Review', { exact: true })).not.toBeVisible()
@@ -465,7 +465,6 @@ test.describe.serial('5. Workqueue flow - 5', () => {
 
       await selectAction(page, 'Register')
       await page.getByRole('button', { name: 'Confirm' }).click()
-      await ensureInExternalValidationIsEmpty(page)
 
       await assertRecordInWorkqueue({
         page,

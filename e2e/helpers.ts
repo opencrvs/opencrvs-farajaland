@@ -49,11 +49,12 @@ export async function logout(page: Page) {
 
 export async function login(
   page: Page,
-  username = CREDENTIALS.REGISTRAR,
+  username: (typeof CREDENTIALS)[keyof typeof CREDENTIALS] = CREDENTIALS.REGISTRAR,
   skipPin?: boolean
 ) {
   const token = await getToken(username)
   expect(token).toBeDefined()
+
   await page.goto(`${CLIENT_URL}?token=${token}`)
 
   await page.waitForSelector('#pin-input, #appSpinner', { state: 'visible' })

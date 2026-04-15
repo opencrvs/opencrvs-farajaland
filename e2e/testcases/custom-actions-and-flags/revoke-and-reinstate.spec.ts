@@ -1,7 +1,11 @@
 import { expect, test } from '@playwright/test'
 import { getToken, login, searchFromSearchBar } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
-import { ensureAssigned, ensureOutboxIsEmpty, selectAction } from '../../utils'
+import {
+  ensureAssignedToUser,
+  ensureOutboxIsEmpty,
+  selectAction
+} from '../../utils'
 import { createDeclaration, Declaration } from '../test-data/birth-declaration'
 import { formatV2ChildName } from '../birth/helpers'
 
@@ -25,7 +29,7 @@ test('Revoke and reinstate record', async ({ browser }) => {
   })
 
   await test.step('Revoke record', async () => {
-    await ensureAssigned(page)
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR_GENERAL)
     await selectAction(page, 'Revoke registration')
 
     await expect(page.getByRole('button', { name: 'Confirm' })).toBeDisabled()
@@ -42,6 +46,7 @@ test('Revoke and reinstate record', async ({ browser }) => {
   })
 
   await test.step('Reinstate record', async () => {
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR_GENERAL)
     await selectAction(page, 'Reinstate registration')
     await expect(page.getByRole('button', { name: 'Confirm' })).toBeDisabled()
 

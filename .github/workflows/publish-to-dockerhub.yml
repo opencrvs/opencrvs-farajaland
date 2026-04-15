@@ -31,13 +31,13 @@ jobs:
       version_common: ${{ steps.country_config.outputs.version_common }}
     runs-on: ${{ matrix.runner }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         if: github.event_name == 'workflow_dispatch'
         with:
           fetch-depth: 2
           ref: '${{ inputs.branch_name }}'
 
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         if: github.event_name == 'push'
 
       - name: Get tags
