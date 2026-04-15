@@ -192,6 +192,7 @@ export const getMOSIPIntegrationFields = (
             id: `${page}.fetch-loader`,
             type: FieldType.LOADER,
             parent: field(`${page}.verify-nid-http-fetch`),
+            variant: 'highlighted',
             conditionals: [
               {
                 type: ConditionalType.SHOW,
