@@ -52,4 +52,4 @@ export const CREDENTIALS = {
   PERFORMANCE_MANAGER: 'm.musonda',
   PROVINCIAL_REGISTRAR: 'm.owen',
   EMBASSY_OFFICIAL: 't.mwila'
-}
+} as const

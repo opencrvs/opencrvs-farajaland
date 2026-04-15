@@ -21,7 +21,7 @@ import {
 import { format, subDays, subYears } from 'date-fns'
 import { formatV2ChildName } from '../birth/helpers'
 import { IdType } from '@countryconfig/events/utils'
-import { ensureAssigned, expectInUrl, selectAction } from '../../utils'
+import { ensureAssignedToUser, expectInUrl, selectAction } from '../../utils'
 
 test.describe.serial(' Correct record - 3', () => {
   let declaration: DeclarationV2
@@ -154,7 +154,7 @@ test.describe.serial(' Correct record - 3', () => {
         trackingId
       })
 
-      await ensureAssigned(page)
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
 
       await page.getByRole('button', { name: 'Action' }).click()
       await page.locator('#action-dropdownMenu').getByText('Print').click()
@@ -180,7 +180,7 @@ test.describe.serial(' Correct record - 3', () => {
     })
 
     test('3.1.2 Record audit', async () => {
-      await ensureAssigned(page)
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
       await selectAction(page, 'Correct')
     })
   })
@@ -959,7 +959,8 @@ test.describe.serial(' Correct record - 3', () => {
         name: `${formatV2ChildName(declaration)}`,
         trackingId
       })
-      await ensureAssigned(page)
+
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
 
       await expect(page.locator('#content-name')).toHaveText(
         formatV2ChildName(declaration)
@@ -1121,7 +1122,7 @@ test.describe.serial(' Correct record - 3', () => {
     })
 
     test('3.8.4 Assign record', async () => {
-      await ensureAssigned(page)
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
     })
 
     test('3.8.5 Validate history in record audit', async () => {

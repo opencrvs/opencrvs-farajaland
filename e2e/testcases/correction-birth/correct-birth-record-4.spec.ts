@@ -21,7 +21,7 @@ import {
 import { IdType } from '@countryconfig/events/utils'
 import { random } from 'lodash'
 import { formatV2ChildName, REQUIRED_VALIDATION_ERROR } from '../birth/helpers'
-import { ensureAssigned, selectAction } from '../../utils'
+import { ensureAssignedToUser, selectAction } from '../../utils'
 
 test.describe.serial('Correct record - 4', () => {
   let declaration: DeclarationV2
@@ -56,7 +56,7 @@ test.describe.serial('Correct record - 4', () => {
 
   const updatedChildDetails = {
     placeOfBirth: 'Health Institution',
-    birthFacility: 'Golden Valley Rural Health Centre',
+    birthFacility: 'Ibombo District Hospital',
     firstNames: faker.person.firstName(),
     familyName: faker.person.lastName()
   }
@@ -151,7 +151,7 @@ test.describe.serial('Correct record - 4', () => {
       name: formatV2ChildName(declaration),
       trackingId
     })
-    await ensureAssigned(page)
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
 
     await selectAction(page, 'Correct')
   })
@@ -907,7 +907,7 @@ test.describe.serial('Correct record - 4', () => {
       trackingId
     })
 
-    await ensureAssigned(page)
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
     await page.getByRole('button', { name: 'Audit' }).click()
 
     /*

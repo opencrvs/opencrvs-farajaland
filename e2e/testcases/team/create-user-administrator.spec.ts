@@ -1,5 +1,4 @@
 import { test, expect, type Page } from '@playwright/test'
-import path from 'path'
 import { loginWithNewUser, continueForm, login } from '../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../constants'
@@ -12,11 +11,8 @@ test.describe.serial('1. Create user -1', () => {
     email: faker.internet.email(),
     role: 'Community Leader'
   }
-  const signaturePath = path.resolve(__dirname, '../../assets/sign1.png')
+
   const username = `${userinfo.firstName[0]}.${userinfo.surname}`.toLowerCase()
-  const question00 = 'What city were you born in?'
-  const question01 = 'What is your favorite movie?'
-  const question02 = 'What is your favorite food?'
 
   test.beforeAll(async ({ browser }) => {
     page = await browser.newPage()
@@ -39,9 +35,9 @@ test.describe.serial('1. Create user -1', () => {
           name: /Central Province Office, Central/
         })
         .click()
-      await page.getByTestId('locationSearchInput').fill('Itumbwe')
+      await page.getByTestId('locationSearchInput').fill('Zimbi')
 
-      await page.getByText(/Itumbwe Health Post, Ibombo, Central/).click()
+      await page.getByText(/Zimbi Village Office, Zimbi, Isamba/).click()
 
       await page.click('#add-user')
       await expect(page.getByText('User details')).toBeVisible()
@@ -59,10 +55,12 @@ test.describe.serial('1. Create user -1', () => {
     test('1.1.2 Create user', async () => {
       await page.getByRole('button', { name: 'Create user' }).click()
 
-      await expect(page.locator('#header')).toContainText('Itumbwe Health Post')
+      await expect(page.locator('#header')).toContainText(
+        'Zimbi Village Office'
+      )
 
       await expect(
-        page.getByText('Ibombo, Central', {
+        page.getByText('Zimbi, Isamba, Central', {
           exact: true
         })
       ).toBeVisible()

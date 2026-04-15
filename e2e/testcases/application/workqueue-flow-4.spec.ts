@@ -11,6 +11,7 @@ import {
 } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
 import {
+  ensureAssignedToUser,
   ensureInExternalValidationIsEmpty,
   ensureOutboxIsEmpty,
   selectAction
@@ -276,6 +277,7 @@ test.describe.serial('4. Workqueue flow - 4', () => {
         })
         .click()
 
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
       await selectAction(page, 'Validate')
 
       await page.getByRole('button', { name: 'Confirm' }).click()
@@ -348,6 +350,7 @@ test.describe.serial('4. Workqueue flow - 4', () => {
         })
         .click()
 
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
       await selectAction(page, 'Register')
       await page.getByRole('button', { name: 'Confirm' }).click()
 

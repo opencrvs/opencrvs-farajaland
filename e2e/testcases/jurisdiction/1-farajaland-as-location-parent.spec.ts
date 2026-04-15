@@ -27,7 +27,7 @@ test.describe.serial('1.Farajaland as location parent', () => {
         ...(await getPlaceOfBirth(
           'HEALTH_FACILITY',
           token,
-          'Mpepo Rural Health Centre'
+          'Klow Village Hospital'
         ))
       },
       token

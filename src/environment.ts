@@ -20,9 +20,6 @@ export const env = cleanEnv(process.env, {
   AUTH_URL: url({ devDefault: 'http://localhost:4040' }),
   COUNTRY_CONFIG_URL: url({ devDefault: 'http://localhost:3040' }),
   SENTRY_DSN: str({ default: undefined }),
-  CONFIRM_REGISTRATION_URL: url({
-    devDefault: 'http://localhost:5050/confirm/registration'
-  }),
   ESIGNET_REDIRECT_URL: url({ devDefault: 'http://localhost:20260/authorize' }),
   OPENID_PROVIDER_CLIENT_ID: str({ devDefault: 'mock-client_id' }),
   OPENID_PROVIDER_CLAIMS: str({
@@ -68,6 +65,7 @@ export const env = cleanEnv(process.env, {
     desc: 'URL for signing raw JWTs for verifiable credentials issuance'
   }),
   NO_MOSIP: bool({
+    devDefault: true,
     default: false,
     desc: 'Used in local development to disable MOSIP registration dependency'
   })
