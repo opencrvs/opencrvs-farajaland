@@ -1,9 +1,12 @@
 import { expect, test, type Page } from '@playwright/test'
 import { getToken, login } from '../../helpers'
-import { createDeclaration } from '../test-data/birth-declaration-with-father-brother'
+import {
+  createDeclaration,
+  MOTHER_DOB
+} from '../test-data/birth-declaration-with-father-brother'
 import { CREDENTIALS } from '../../constants'
 import { faker } from '@faker-js/faker'
-import { assertTexts, type } from '../../utils'
+import { assertTexts, selectLocationOption, type } from '../../utils'
 
 const todayDate = `${new Date().getDate() < 10 ? '0' : ''}${new Date().getDate().toString()}`
 const thisMonth = `${new Date().getMonth() < 9 ? '0' : ''}${(new Date().getMonth() + 1).toString()}`
@@ -20,11 +23,14 @@ test.describe
       CREDENTIALS.LOCAL_REGISTRAR.PASSWORD
     )
 
+    const minChildDob = new Date(MOTHER_DOB)
+    minChildDob.setFullYear(minChildDob.getFullYear() + 18)
+
     await createDeclaration(token, {
       'child.dob': faker.date
-        // Randomly chosen DOB between 2010-01-01 and 2020-12-31
-        // Ensures the created record appears on the first page of search results
-        .between({ from: '2010-01-01', to: '2020-12-31' })
+        // DOB must be at least 18 years after mother.dob to pass validation
+        // Upper bound ensures the record appears on the first page of search results
+        .between({ from: minChildDob, to: '2020-12-31' })
         .toISOString()
         .split('T')[0],
       'child.reason': 'Other', // needed for late dob value
@@ -51,8 +57,7 @@ test.describe
       await page
         .locator('#event____legalStatuses____REGISTERED____createdAtLocation')
         .fill('Ibombo')
-      await expect(page.getByText('Ibombo District Office')).toBeVisible()
-      await page.getByText('Ibombo District Office').click()
+      await selectLocationOption(page, 'Ibombo District Office')
 
       await type(
         page,
