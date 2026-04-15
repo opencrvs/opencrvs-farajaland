@@ -17,36 +17,12 @@ import {
   never,
   not,
   or,
-  PageTypes,
-  TranslationConfig
+  PageTypes
 } from '@opencrvs/toolkit/events'
-import { createSelectOptions } from '@countryconfig/events/utils'
 import { COUNTRY_CONFIG_URL } from '@countryconfig/constants'
 import { emptyMessage } from '@countryconfig/events/utils'
 import { SourceCauseDeathType } from './eventDetails'
 
-export const SymptomType = {
-  SYMPTOM_1: 'SYMPTOM_1',
-  OTHER: 'OTHER'
-} as const
-
-const spcSymptomMessageDescriptors = {
-  SYMPTOM_1: {
-    defaultMessage: 'An example CoD symptom',
-    description: '',
-    id: 'spcRegionalGroup.SYMPTOM_1'
-  },
-  OTHER: {
-    defaultMessage: 'Other',
-    description: '',
-    id: 'form.field.label.otherOption'
-  }
-} satisfies Record<keyof typeof SymptomType, TranslationConfig>
-
-const spcSymptomOptions = createSelectOptions(
-  SymptomType,
-  spcSymptomMessageDescriptors
-)
 const durationOptions = [
   {
     value: 'Minutes',
