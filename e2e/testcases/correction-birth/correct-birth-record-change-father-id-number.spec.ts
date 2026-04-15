@@ -14,7 +14,7 @@ import {
 import { format, subDays, subYears } from 'date-fns'
 import { CREDENTIALS } from '../../constants'
 import { formatV2ChildName } from '../birth/helpers'
-import { ensureAssigned, selectAction } from '../../utils'
+import { ensureAssignedToUser, selectAction } from '../../utils'
 
 test.describe.serial("Correct record - Change father's ID number", () => {
   let declaration: DeclarationV2
@@ -33,10 +33,7 @@ test.describe.serial("Correct record - Change father's ID number", () => {
   const newIdNumber = faker.string.numeric(10)
 
   test('Shortcut declaration', async () => {
-    let token = await getToken(
-      CREDENTIALS.REGISTRAR.USERNAME,
-      CREDENTIALS.REGISTRAR.PASSWORD
-    )
+    let token = await getToken(CREDENTIALS.REGISTRAR)
     const res = await createDeclarationV2(
       token,
       {
@@ -87,7 +84,7 @@ test.describe.serial("Correct record - Change father's ID number", () => {
       })
     )
     trackingId = res.trackingId!
-    token = await getToken('k.mweene', 'test')
+    token = await getToken(CREDENTIALS.REGISTRAR)
     declaration = res.declaration
   })
 
@@ -101,7 +98,7 @@ test.describe.serial("Correct record - Change father's ID number", () => {
       name: formatV2ChildName(declaration),
       trackingId
     })
-    await ensureAssigned(page)
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
 
     await selectAction(page, 'Correct')
   })
@@ -211,6 +208,7 @@ test.describe.serial("Correct record - Change father's ID number", () => {
   })
 
   test('Approve correction request', async () => {
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
     await selectAction(page, 'Review correction request')
     await page.getByRole('button', { name: 'Approve', exact: true }).click()
     await page.getByRole('button', { name: 'Confirm', exact: true }).click()
@@ -223,7 +221,7 @@ test.describe.serial("Correct record - Change father's ID number", () => {
       trackingId
     })
 
-    await ensureAssigned(page)
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
 
     await page.getByRole('button', { name: 'Record', exact: true }).click()
 

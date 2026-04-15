@@ -6,7 +6,7 @@ import { createDeclaration, Declaration } from '../test-data/birth-declaration'
 import { ActionType } from '@opencrvs/toolkit/events'
 import { formatV2ChildName } from '../birth/helpers'
 import {
-  ensureAssigned,
+  ensureAssignedToUser,
   ensureOutboxIsEmpty,
   expectInUrl,
   selectAction
@@ -20,10 +20,7 @@ test.describe
   let eventId: string
 
   test.beforeAll(async ({ browser }) => {
-    const token = await getToken(
-      CREDENTIALS.HOSPITAL_OFFICIAL.USERNAME,
-      CREDENTIALS.HOSPITAL_OFFICIAL.PASSWORD
-    )
+    const token = await getToken(CREDENTIALS.HOSPITAL_OFFICIAL)
     const res = await createDeclaration(token, undefined, ActionType.DECLARE)
     declaration = res.declaration
     eventId = res.eventId
@@ -80,7 +77,7 @@ test.describe
   })
 
   test('5.4 Click "Validate"-action', async () => {
-    await ensureAssigned(page)
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
     await selectAction(page, 'Validate')
 
     await expect(

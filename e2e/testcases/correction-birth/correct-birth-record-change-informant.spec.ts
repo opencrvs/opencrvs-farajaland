@@ -16,10 +16,10 @@ import {
   SAFE_INPUT_CHANGE_TIMEOUT_MS,
   SAFE_OUTBOX_TIMEOUT_MS
 } from '../../constants'
-import { IdType } from '@countryconfig/form/v2/person'
+import { IdType } from '@countryconfig/events/utils'
 import { random } from 'lodash'
 import { formatV2ChildName, REQUIRED_VALIDATION_ERROR } from '../birth/helpers'
-import { ensureAssigned, selectAction } from '../../utils'
+import { ensureAssignedToUser, selectAction } from '../../utils'
 
 test.describe.serial('Correct record - change informant type', () => {
   let declaration: DeclarationV2
@@ -74,10 +74,7 @@ test.describe.serial('Correct record - change informant type', () => {
   })
 
   test('Shortcut declaration', async () => {
-    let token = await getToken(
-      CREDENTIALS.REGISTRAR.USERNAME,
-      CREDENTIALS.REGISTRAR.PASSWORD
-    )
+    let token = await getToken(CREDENTIALS.REGISTRAR)
     const res = await createDeclarationV2(
       token,
       {
@@ -112,7 +109,7 @@ test.describe.serial('Correct record - change informant type', () => {
 
     trackingId = res.trackingId!
     eventId = res.eventId
-    token = await getToken('k.mweene', 'test')
+    token = await getToken(CREDENTIALS.REGISTRAR)
     declaration = res.declaration
   })
 
@@ -124,7 +121,7 @@ test.describe.serial('Correct record - change informant type', () => {
       name: formatV2ChildName(declaration),
       trackingId
     })
-    await ensureAssigned(page)
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
 
     await selectAction(page, 'Correct')
   })
@@ -342,7 +339,7 @@ test.describe.serial('Correct record - change informant type', () => {
       trackingId
     })
 
-    await ensureAssigned(page)
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
     await page.getByRole('button', { name: 'Audit' }).click()
 
     await expect(

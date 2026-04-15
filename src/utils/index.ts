@@ -10,7 +10,6 @@
  */
 
 import fetch from 'node-fetch'
-import { APPLICATION_CONFIG_URL } from '@countryconfig/constants'
 import { callingCountries } from 'country-data'
 import csv2json from 'csv2json'
 import { createReadStream } from 'fs'
@@ -19,12 +18,10 @@ import { PhoneNumberFormat, PhoneNumberUtil } from 'google-libphonenumber'
 import { URL } from 'url'
 import { build } from 'esbuild'
 import { memoize } from 'lodash'
-export const GENERATE_TYPE_RN = 'registrationNumber'
-export const CHILD_CODE = 'child-details'
-export const DECEASED_CODE = 'deceased-details'
-export const OPENCRVS_SPECIFICATION_URL = 'http://opencrvs.org/specs/'
 import { join } from 'path'
 import { stringify } from 'csv-stringify/sync'
+
+export const OPENCRVS_SPECIFICATION_URL = 'http://opencrvs.org/specs/'
 
 export interface ILocation {
   id?: string
@@ -62,18 +59,6 @@ export interface IApplicationConfigResponse {
   config: IApplicationConfig
 }
 
-export function getCompositionId(resBody: fhir.Bundle) {
-  const id = resBody.entry
-    ?.map((e) => e.resource)
-    .find((res) => res?.resourceType === 'Composition')?.id
-
-  if (!id) {
-    throw new Error('Could not find composition id in FHIR Bundle')
-  }
-
-  return id
-}
-
 export function getTaskResource(
   bundle: fhir.Bundle & fhir.BundleEntry
 ): fhir.Task | undefined {
@@ -96,6 +81,18 @@ export function getTaskResource(
   }
 }
 
+export function getCompositionId(resBody: fhir.Bundle) {
+  const id = resBody.entry
+    ?.map((e) => e.resource)
+    .find((res) => res?.resourceType === 'Composition')?.id
+
+  if (!id) {
+    throw new Error('Could not find composition id in FHIR Bundle')
+  }
+
+  return id
+}
+
 export function getTaskResourceFromFhirBundle(fhirBundle: fhir.Bundle) {
   const taskEntry =
     fhirBundle.entry &&
@@ -116,11 +113,11 @@ export function getTrackingIdFromTaskResource(taskResource: fhir.Task) {
     taskResource.identifier.find((identifier) => {
       return (
         identifier.system ===
-          `${OPENCRVS_SPECIFICATION_URL}id/birth-tracking-id` ||
+        `${OPENCRVS_SPECIFICATION_URL}id/birth-tracking-id` ||
         identifier.system ===
-          `${OPENCRVS_SPECIFICATION_URL}id/death-tracking-id` ||
+        `${OPENCRVS_SPECIFICATION_URL}id/death-tracking-id` ||
         identifier.system ===
-          `${OPENCRVS_SPECIFICATION_URL}id/marriage-tracking-id`
+        `${OPENCRVS_SPECIFICATION_URL}id/marriage-tracking-id`
       )
     })
   if (!trackingIdentifier || !trackingIdentifier.value) {
@@ -143,7 +140,6 @@ export const convertToMSISDN = (phone: string, countryAlpha3: string) => {
       .replace(/[\s-]/g, '')
   )
 }
-
 export async function writeJSONToCSV(
   filename: string,
   data: Array<Record<string, any>>
@@ -170,18 +166,6 @@ export async function readCSVToJSON<T>(filename: string) {
         resolve(JSON.parse(chunks.join('')))
       })
   })
-}
-
-export async function getApplicationConfig() {
-  const configURL = new URL('publicConfig', APPLICATION_CONFIG_URL).toString()
-  const res = await fetch(configURL, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  })
-  const configData = (await res.json()) as IApplicationConfigResponse
-  return configData.config
 }
 
 export const buildTypeScriptToJavaScript = memoize(async (path: string) => {
@@ -226,7 +210,7 @@ export async function getStatistics(path?: string) {
       years: Object.keys(yearKeys)
         .map((key) => key.split('_').pop())
         .map(Number)
-        .filter((value, index, list) => list.indexOf(value) == index)
+        .filter((value, index, list) => list.indexOf(value) === index)
         .map((year) => ({
           year,
           male_population: parseFloat(yearKeys[`male_population_${year}`]),
@@ -255,15 +239,13 @@ export function createCustomFieldHandlebarName(fieldId: string) {
     }
   })
 
-  return `${fieldIdNameArray[0]}${fieldIdNameArray[1]}${
-    fieldIdNameArray[fieldIdNameArray.length - 1]
-  }`
+  return `${fieldIdNameArray[0]}${fieldIdNameArray[1]}${fieldIdNameArray[fieldIdNameArray.length - 1]
+    }`
 }
 
 export function uppercaseFirstLetter(str: string) {
   return str.charAt(0).toUpperCase() + str.slice(1)
 }
-
 
 function generateRegistrationNumber(trackingId: string): string {
   /* adding current year */

@@ -13,7 +13,11 @@ import {
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../constants'
 import { fillDate, formatV2ChildName } from '../birth/helpers'
-import { ensureOutboxIsEmpty, selectAction } from '../../utils'
+import {
+  ensureAssignedToUser,
+  ensureOutboxIsEmpty,
+  selectAction
+} from '../../utils'
 import { ActionType } from '@opencrvs/toolkit/events'
 import { createDeclaration, Declaration } from '../test-data/birth-declaration'
 
@@ -305,6 +309,7 @@ test.describe.serial('Basic Archival flow', () => {
   })
 
   test('Archive the declaration', async () => {
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
     await selectAction(page, 'Archive')
     await page.getByRole('button', { name: 'Archive', exact: true }).click()
   })
@@ -337,10 +342,7 @@ test.describe.serial('Archival of declaration pending validation', () => {
   let declaration: Declaration
 
   test.beforeAll(async ({ browser }) => {
-    token = await getToken(
-      CREDENTIALS.HOSPITAL_OFFICIAL.USERNAME,
-      CREDENTIALS.HOSPITAL_OFFICIAL.PASSWORD
-    )
+    token = await getToken(CREDENTIALS.HOSPITAL_OFFICIAL)
     const res = await createDeclaration(token, undefined, ActionType.DECLARE)
     declaration = res.declaration
 
@@ -361,6 +363,7 @@ test.describe.serial('Archival of declaration pending validation', () => {
   })
 
   test('Validate the declaration', async () => {
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
     await selectAction(page, 'Validate')
     await page.getByRole('button', { name: 'Confirm', exact: true }).click()
     await ensureOutboxIsEmpty(page)
@@ -379,6 +382,7 @@ test.describe.serial('Archival of declaration pending validation', () => {
   })
 
   test('Archive the declaration', async () => {
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
     await selectAction(page, 'Archive')
     await page.getByRole('button', { name: 'Archive', exact: true }).click()
   })

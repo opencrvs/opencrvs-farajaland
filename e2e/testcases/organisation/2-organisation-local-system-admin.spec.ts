@@ -2,6 +2,7 @@ import { test, expect, type Page } from '@playwright/test'
 import { login } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
 import { verifyMembersClickable } from '../birth/helpers'
+import { navigateToWorkqueue } from '../../utils'
 test.describe.serial('2. Organisation Page', () => {
   let page: Page
 
@@ -23,29 +24,22 @@ test.describe.serial('2. Organisation Page', () => {
       await expect(page.locator('#content-name')).toHaveText('Organisation')
       await expect(page.getByText('Farajaland', { exact: true })).toBeVisible()
     })
-    test('2.1.1 Verify Province -> District -> Health Facility(No Data)', async () => {
+    test('2.1.1 Verify Province -> District -> Health Facility', async () => {
       await page.getByRole('button', { name: /Central/ }).click()
       await page.getByRole('button', { name: /Ibombo/ }).click()
-      const pageNavigator = page.getByRole('button', { name: '2' })
-      await pageNavigator.scrollIntoViewIfNeeded()
-      await pageNavigator.click()
+      await page.getByRole('button', { name: /Klow/ }).click()
 
-      await page
-        .getByRole('button', { name: /Golden Valley Rural Health Centre/ })
-        .click()
+      await page.getByRole('button', { name: /Klow Village Hospital/ }).click()
       await expect(page.locator('#content-name')).toHaveText(
-        /Golden Valley Rural Health Centre/
+        /Klow Village Hospital/
       )
       await expect(
-        page.getByText('Ibombo, Central', { exact: true })
+        page.getByText('Klow, Ibombo, Central', { exact: true })
       ).toBeVisible()
-      await expect(page.getByText('No result')).toBeVisible()
+      await expect(page.getByText('No result')).toBeHidden()
     })
     test('2.1.2 Verify Province -> District -> District Office', async () => {
-      for (let i = 0; i < 3; i++) {
-        await page.goBack()
-      }
-
+      await navigateToWorkqueue(page, 'Organisation')
       await page.getByRole('button', { name: /Central/ }).click()
       await page.getByRole('button', { name: /Ibombo/ }).click()
 
@@ -69,9 +63,7 @@ test.describe.serial('2. Organisation Page', () => {
 
   test.describe.serial('2.2 Out of Scope Access', async () => {
     test('2.2.1 Verify Province -> District -> Health Facility', async () => {
-      for (let i = 0; i < 3; i++) {
-        await page.goBack()
-      }
+      await navigateToWorkqueue(page, 'Organisation')
       await page.getByRole('button', { name: /Organisation/ }).click()
       await page.getByRole('button', { name: /Sulaka/ }).click()
       await page.getByRole('button', { name: /Ilanga/ }).click()
@@ -80,9 +72,7 @@ test.describe.serial('2. Organisation Page', () => {
       ).toBeDisabled()
     })
     test('2.2.2 Verify Province -> District -> District Office', async () => {
-      for (let i = 0; i < 2; i++) {
-        await page.goBack()
-      }
+      await navigateToWorkqueue(page, 'Organisation')
 
       await page.getByRole('button', { name: /Chuminga/ }).click()
       await page.getByRole('button', { name: /Ama/ }).click()

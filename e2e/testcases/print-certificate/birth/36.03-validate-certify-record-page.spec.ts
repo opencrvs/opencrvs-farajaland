@@ -11,7 +11,7 @@ import {
   selectCertificationType,
   selectRequesterType
 } from './helpers'
-import { ensureAssigned, expectInUrl, type } from '../../../utils'
+import { ensureAssignedToUser, expectInUrl, type } from '../../../utils'
 import { formatV2ChildName } from '../../birth/helpers'
 
 test.describe.serial('3.0 Validate "Certify record" page', () => {
@@ -20,10 +20,7 @@ test.describe.serial('3.0 Validate "Certify record" page', () => {
   let page: Page
   let trackingId: string | undefined
   test.beforeAll(async ({ browser }) => {
-    const token = await getToken(
-      CREDENTIALS.REGISTRAR.USERNAME,
-      CREDENTIALS.REGISTRAR.PASSWORD
-    )
+    const token = await getToken(CREDENTIALS.REGISTRAR)
     const res = await createDeclaration(token)
     eventId = res.eventId
     declaration = res.declaration
@@ -41,7 +38,11 @@ test.describe.serial('3.0 Validate "Certify record" page', () => {
 
   test('3.0.2 Navigate to certificate print action', async () => {
     await page.getByRole('button', { name: 'Pending certification' }).click()
-    await navigateToCertificatePrintAction(page, declaration)
+    await navigateToCertificatePrintAction(
+      page,
+      declaration,
+      CREDENTIALS.REGISTRAR
+    )
   })
 
   test('3.1 should navigate to Verify their identity page', async () => {
@@ -146,7 +147,7 @@ test.describe.serial('3.0 Validate "Certify record" page', () => {
     await page
       .getByRole('button', { name: formatV2ChildName(declaration) })
       .click()
-    await ensureAssigned(page)
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
 
     await page.getByRole('button', { name: 'Audit' }).click()
     await page.getByRole('button', { name: 'Certified', exact: true }).click()

@@ -5,7 +5,7 @@ import { CREDENTIALS } from '../../constants'
 import { createDeclaration, Declaration } from '../test-data/birth-declaration'
 import { ActionType } from '@opencrvs/toolkit/events'
 import { formatV2ChildName } from '../birth/helpers'
-import { ensureAssigned, selectAction } from '../../utils'
+import { ensureAssignedToUser, selectAction } from '../../utils'
 
 async function getActionMenuOptions(page: Page, declaration: Declaration) {
   await searchFromSearchBar(page, formatV2ChildName(declaration))
@@ -32,10 +32,7 @@ test.describe('Action menu options', () => {
     let declaration: Declaration
 
     test.beforeAll(async () => {
-      const token = await getToken(
-        CREDENTIALS.HOSPITAL_OFFICIAL.USERNAME,
-        CREDENTIALS.HOSPITAL_OFFICIAL.PASSWORD
-      )
+      const token = await getToken(CREDENTIALS.HOSPITAL_OFFICIAL)
       const res = await createDeclaration(token, undefined, ActionType.DECLARE)
       declaration = res.declaration
     })
@@ -71,10 +68,7 @@ test.describe('Action menu options', () => {
     let declaration: Declaration
 
     test.beforeAll(async () => {
-      const token = await getToken(
-        CREDENTIALS.REGISTRAR.USERNAME,
-        CREDENTIALS.REGISTRAR.PASSWORD
-      )
+      const token = await getToken(CREDENTIALS.REGISTRAR)
       const res = await createDeclaration(token, undefined, ActionType.DECLARE)
       declaration = res.declaration
     })
@@ -97,10 +91,7 @@ test.describe('Action menu options', () => {
     let declaration: Declaration
 
     test.beforeAll(async () => {
-      const token = await getToken(
-        CREDENTIALS.REGISTRAR.USERNAME,
-        CREDENTIALS.REGISTRAR.PASSWORD
-      )
+      const token = await getToken(CREDENTIALS.REGISTRAR)
       const res = await createDeclaration(token, undefined)
       declaration = res.declaration
     })
@@ -120,7 +111,7 @@ test.describe('Action menu options', () => {
     test('Registrar (assigned)', async () => {
       await login(page, CREDENTIALS.REGISTRAR)
       await searchFromSearchBar(page, formatV2ChildName(declaration))
-      await ensureAssigned(page)
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
 
       await page.getByRole('button', { name: 'Action', exact: true }).click()
       const options = await page
@@ -141,10 +132,7 @@ test.describe('Action menu options', () => {
     let declaration: Declaration
 
     test.beforeAll(async () => {
-      const token = await getToken(
-        CREDENTIALS.REGISTRAR.USERNAME,
-        CREDENTIALS.REGISTRAR.PASSWORD
-      )
+      const token = await getToken(CREDENTIALS.REGISTRAR)
       const res = await createDeclaration(token, undefined, ActionType.DECLARE)
       declaration = res.declaration
     })
@@ -152,6 +140,8 @@ test.describe('Action menu options', () => {
     test('Archive declaration', async () => {
       await login(page, CREDENTIALS.REGISTRAR)
       await searchFromSearchBar(page, formatV2ChildName(declaration))
+
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
       await selectAction(page, 'Archive')
       await page.getByRole('button', { name: 'Archive', exact: true }).click()
     })

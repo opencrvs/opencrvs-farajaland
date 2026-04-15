@@ -59,7 +59,7 @@ function generateCustomPhoneNumber() {
   return `0${secondDigit}${rest}`
 }
 
-export async function getDeclaration({
+async function getDeclaration({
   partialDeclaration = {},
   placeOfBirthType = 'PRIVATE_HOME',
   token

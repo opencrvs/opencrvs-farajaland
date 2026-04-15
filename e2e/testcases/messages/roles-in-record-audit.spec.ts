@@ -3,7 +3,7 @@ import { CREDENTIALS } from '../../constants'
 import { getToken, login, switchEventTab } from '../../helpers'
 import { createDeclaration } from '../test-data/birth-declaration'
 import { ActionType } from '@opencrvs/toolkit/events'
-import { ensureAssigned } from '../../utils'
+import { ensureAssignedToUser } from '../../utils'
 import { formatV2ChildName } from '../birth/helpers'
 
 const testCases = [
@@ -28,7 +28,7 @@ test.describe('Roles in Record Audit', () => {
   for (const { credential, expectedAuditRole, action } of testCases) {
     test(expectedAuditRole, async ({ browser }) => {
       const page = await browser.newPage()
-      const token = await getToken(credential.USERNAME, credential.PASSWORD)
+      const token = await getToken(credential)
       const res = await createDeclaration(token, undefined, action)
 
       await login(page, CREDENTIALS.REGISTRAR)
@@ -52,7 +52,7 @@ test.describe('Roles in Record Audit', () => {
         })
         .click()
 
-      await ensureAssigned(page)
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
       await switchEventTab(page, 'Audit')
 
       await expect(page.locator('#row_0')).toContainText(expectedAuditRole)

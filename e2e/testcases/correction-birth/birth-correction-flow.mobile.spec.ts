@@ -7,6 +7,7 @@ import {
   Declaration
 } from '../test-data/birth-declaration-with-mother-father'
 import {
+  ensureAssignedToUser,
   ensureOutboxIsEmpty,
   expectInUrl,
   navigateToWorkqueue,
@@ -22,10 +23,7 @@ test.describe.serial('Birth correction flow - Mobile', () => {
   let page: Page
 
   test.beforeAll(async ({ browser }) => {
-    const token = await getToken(
-      CREDENTIALS.REGISTRAR.USERNAME,
-      CREDENTIALS.REGISTRAR.PASSWORD
-    )
+    const token = await getToken(CREDENTIALS.REGISTRAR)
     const res = await createDeclaration(
       token,
       undefined,
@@ -49,6 +47,7 @@ test.describe.serial('Birth correction flow - Mobile', () => {
       .getByRole('button', { name: formatV2ChildName(declaration) })
       .click()
 
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
     await selectAction(page, 'Correct')
   })
 
@@ -156,6 +155,7 @@ test.describe.serial('Birth correction flow - Mobile', () => {
     })
 
     test('Navigate to correction review', async () => {
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
       await selectAction(page, 'Review correction request')
 
       await expect(page.getByText('RequesterInformant (Mother)')).toBeVisible()

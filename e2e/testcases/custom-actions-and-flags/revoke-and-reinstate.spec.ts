@@ -1,39 +1,35 @@
-import { expect, test, type Page } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 import { getToken, login, searchFromSearchBar } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
-import { ensureAssigned, ensureOutboxIsEmpty, selectAction } from '../../utils'
+import {
+  ensureAssignedToUser,
+  ensureOutboxIsEmpty,
+  selectAction
+} from '../../utils'
 import { createDeclaration, Declaration } from '../test-data/birth-declaration'
 import { formatV2ChildName } from '../birth/helpers'
 
-test.describe.serial('Revoke and reinstate record', () => {
-  let page: Page
+test('Revoke and reinstate record', async ({ browser }) => {
+  const page = await browser.newPage()
   let declaration: Declaration
   let childName: string
 
-  test.beforeAll(async ({ browser }) => {
-    page = await browser.newPage()
-    const token = await getToken(
-      CREDENTIALS.REGISTRAR.USERNAME,
-      CREDENTIALS.REGISTRAR.PASSWORD
-    )
+  await test.step('Setup declaration', async () => {
+    const token = await getToken(CREDENTIALS.REGISTRAR)
     declaration = (await createDeclaration(token)).declaration
     childName = formatV2ChildName(declaration)
   })
 
-  test.afterAll(async () => {
-    await page.close()
-  })
-
-  test('Login as Registrar General', async () => {
+  await test.step('Login as Registrar General', async () => {
     await login(page, CREDENTIALS.REGISTRAR_GENERAL)
   })
 
-  test('Navigate to the declaration overview page', async () => {
+  await test.step('Navigate to the declaration overview page', async () => {
     await searchFromSearchBar(page, childName)
   })
 
-  test('Revoke record', async () => {
-    await ensureAssigned(page)
+  await test.step('Revoke record', async () => {
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR_GENERAL)
     await selectAction(page, 'Revoke registration')
 
     await expect(page.getByRole('button', { name: 'Confirm' })).toBeDisabled()
@@ -44,12 +40,13 @@ test.describe.serial('Revoke and reinstate record', () => {
     await ensureOutboxIsEmpty(page)
   })
 
-  test('Assert "Revoked" -flag is present', async () => {
+  await test.step('Assert "Revoked" -flag is present', async () => {
     await searchFromSearchBar(page, childName)
     await expect(page.getByText('Revoked')).toBeVisible()
   })
 
-  test('Reinstate record', async () => {
+  await test.step('Reinstate record', async () => {
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR_GENERAL)
     await selectAction(page, 'Reinstate registration')
     await expect(page.getByRole('button', { name: 'Confirm' })).toBeDisabled()
 

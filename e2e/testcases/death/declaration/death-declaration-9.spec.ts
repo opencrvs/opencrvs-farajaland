@@ -9,7 +9,11 @@ import {
 } from '../../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../../constants'
-import { ensureOutboxIsEmpty, selectAction } from '../../../utils'
+import {
+  ensureAssignedToUser,
+  ensureOutboxIsEmpty,
+  selectAction
+} from '../../../utils'
 import { REQUIRED_VALIDATION_ERROR } from '../../birth/helpers'
 
 test.describe.serial('9. Death declaration case - 9', () => {
@@ -297,6 +301,7 @@ test.describe.serial('9. Death declaration case - 9', () => {
     })
 
     test('9.2.2 Verify information on review page', async () => {
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
       await selectAction(page, 'Edit')
       /*
        * Expected result: should include

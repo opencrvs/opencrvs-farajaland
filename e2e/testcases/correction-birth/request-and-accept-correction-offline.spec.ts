@@ -8,7 +8,7 @@ import {
 import { format, subDays, subYears } from 'date-fns'
 import { CREDENTIALS, SAFE_OUTBOX_TIMEOUT_MS } from '../../constants'
 import { formatV2ChildName } from '../birth/helpers'
-import { ensureAssigned, selectAction, type } from '../../utils'
+import { ensureAssignedToUser, selectAction, type } from '../../utils'
 
 test.describe.serial('Request and accept correction (offline)', () => {
   let declaration: DeclarationV2
@@ -26,10 +26,7 @@ test.describe.serial('Request and accept correction (offline)', () => {
   })
 
   test('Shortcut declaration', async () => {
-    let token = await getToken(
-      CREDENTIALS.REGISTRAR.USERNAME,
-      CREDENTIALS.REGISTRAR.PASSWORD
-    )
+    let token = await getToken(CREDENTIALS.REGISTRAR)
 
     const res = await createDeclarationV2(
       token,
@@ -82,7 +79,7 @@ test.describe.serial('Request and accept correction (offline)', () => {
     )
     trackingId = res.trackingId!
     eventId = res.eventId
-    token = await getToken('k.mweene', 'test')
+    token = await getToken(CREDENTIALS.REGISTRAR)
     declaration = res.declaration
   })
 
@@ -97,7 +94,7 @@ test.describe.serial('Request and accept correction (offline)', () => {
         name: formatV2ChildName(declaration),
         trackingId
       })
-      await ensureAssigned(page)
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
 
       await selectAction(page, 'Correct')
     })
@@ -184,6 +181,7 @@ test.describe.serial('Request and accept correction (offline)', () => {
         .getByRole('button', { name: formatV2ChildName(declaration) })
         .click()
 
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
       await selectAction(page, 'Review correction request')
     })
 

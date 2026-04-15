@@ -10,10 +10,10 @@
  */
 
 import { applicationConfig } from '@countryconfig/api/application/application-config'
-import { tennisClubMembershipEvent } from '@countryconfig/form/tennis-club-membership'
-import { Event } from '@countryconfig/form/types/types'
-import { birthEvent } from '@countryconfig/form/v2/birth'
-import { deathEvent } from '@countryconfig/form/v2/death'
+import { tennisClubMembershipEvent } from '@countryconfig/events/tennis-club-membership'
+
+import { birthEvent } from '@countryconfig/events/birth'
+import { deathEvent } from '@countryconfig/events/death'
 import { logger } from '@countryconfig/logger'
 import {
   ActionConfig,
@@ -35,6 +35,7 @@ import { chunk, pickBy } from 'lodash'
 import { getClient } from './postgres'
 import { getStatistics } from '@countryconfig/utils'
 import { COUNTRY_NAMES_BY_CODE } from './countries'
+import { Event } from '@countryconfig/events/utils'
 
 /**
  * You can control which events you want to track in analytics by adding them here.
@@ -203,6 +204,13 @@ async function upsertAnalyticsEventActions(
 
       const action = event.actions[i]
 
+      if (
+        action.status === ActionStatus.Requested ||
+        action.status === ActionStatus.Rejected
+      ) {
+        continue
+      }
+
       const actionAtCurrentPoint = getCurrentEventState(
         {
           ...event,
@@ -212,13 +220,6 @@ async function upsertAnalyticsEventActions(
       )
 
       const { type, ...act } = action
-
-      if (
-        action.status === ActionStatus.Requested ||
-        action.status === ActionStatus.Rejected
-      ) {
-        continue
-      }
 
       const actionConfig = eventConfig.actions.find((a) => a.type === type)
 
@@ -264,19 +265,28 @@ async function upsertAnalyticsEventActions(
     return []
   }
 
-  return trx
-    .insertInto('analytics.event_actions')
-    .values(allEventActions)
-    .onConflict((oc) =>
-      oc.column('id').doUpdateSet((eb) =>
-        Object.fromEntries(
-          Object.keys(allEventActions[0])
-            .filter((key) => key !== 'id')
-            .map((key) => [key, eb.ref(`excluded.${key}`)])
+  /*
+   * This must be chunked not to cause an error if one event happens to have
+   * 10k actions
+   */
+  const chunks = chunk(allEventActions, 3000)
+
+  for (const batch of chunks) {
+    await trx
+      .insertInto('analytics.event_actions')
+      .values(batch)
+      .onConflict((oc) =>
+        oc.column('id').doUpdateSet((eb) =>
+          Object.fromEntries(
+            Object.keys(allEventActions[0])
+              .filter((key) => key !== 'id')
+              .map((key) => [key, eb.ref(`excluded.${key}`)])
+          )
         )
       )
-    )
-    .execute()
+      .execute()
+  }
+  return
 }
 
 export async function importEvents(events: EventDocument[], trx: Kysely<any>) {
@@ -303,9 +313,10 @@ export async function importAdministrativeAreas(
   administrativeAreas: AdministrativeArea[]
 ) {
   const client = getClient()
+  const sortedAreas = sortAdministrativeAreasByParentFirst(administrativeAreas)
   await client.transaction().execute(async (trx) => {
     for (const [index, batch] of chunk(
-      administrativeAreas,
+      sortedAreas,
       INSERT_MAX_CHUNK_SIZE
     ).entries()) {
       logger.info(
@@ -338,8 +349,38 @@ export async function importAdministrativeAreas(
   })
 }
 
+export function sortAdministrativeAreasByParentFirst(
+  areas: AdministrativeArea[]
+): AdministrativeArea[] {
+  const areaMap = new Map(areas.map((area) => [area.id, area]))
+  const result: AdministrativeArea[] = []
+  const visited = new Set<string>()
+
+  for (const area of areas) {
+    if (visited.has(area.id)) continue
+
+    const ancestors: AdministrativeArea[] = []
+    let current: AdministrativeArea | undefined = area
+
+    while (current && !visited.has(current.id)) {
+      ancestors.unshift(current)
+      current = current.parentId ? areaMap.get(current.parentId) : undefined
+    }
+
+    for (const ancestor of ancestors) {
+      if (!visited.has(ancestor.id)) {
+        visited.add(ancestor.id)
+        result.push(ancestor)
+      }
+    }
+  }
+
+  return result
+}
+
 export async function importLocations(locations: Location[]) {
   const client = getClient()
+
   await client.transaction().execute(async (trx) => {
     for (const [index, batch] of chunk(
       locations,

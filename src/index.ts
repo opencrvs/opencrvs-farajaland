@@ -49,7 +49,7 @@ import { certificateHandler } from './api/certificates/handler'
 import { rolesHandler } from './data-seeding/roles/handler'
 import { usersHandler } from './data-seeding/employees/handler'
 import { applicationConfigHandler } from './api/application/handler'
-import { handlebarsHandler } from './form/common/certificate/handlebars/handler'
+import { handlebarsHandler } from './certificate/handlebars/handler'
 import { fontsHandler } from './api/fonts/handler'
 import {
   getEventsHandler,
@@ -65,13 +65,13 @@ import {
   ActionType,
   EventDocument
 } from '@opencrvs/toolkit/events'
-import { Event } from './form/types/types'
 import {
   onMosipBirthRegisterHandler,
   onMosipDeathRegisterHandler,
   onRegisterHandler
 } from './api/registration'
 import { env } from './environment'
+
 import { workqueueconfigHandler } from './api/workqueue/handler'
 import getUserNotificationRoutes from './config/routes/userNotificationRoutes'
 import getVerifiableCredentialRoutes from './verifiable-credentials/routes'
@@ -86,6 +86,7 @@ import {
 import { getClient } from './analytics/postgres'
 import { createClient } from '@opencrvs/toolkit/api'
 import { getGovernmentPortalApiRoutes } from './government-portal-api/routes'
+import { Event } from './events/utils/types'
 
 export interface ITokenPayload {
   sub: string
@@ -679,16 +680,16 @@ export async function createServer() {
       actions: event.actions.map((action, index) =>
         index === event.actions.length - 1
           ? {
-            ...action,
-            status: ActionStatus.Accepted,
-            ...(actionType === ActionType.REGISTER && response.source
-              ? {
-                registrationNumber: (
-                  response.source as { registrationNumber: string }
-                ).registrationNumber
-              }
-              : {})
-          }
+              ...action,
+              status: ActionStatus.Accepted,
+              ...(actionType === ActionType.REGISTER && response.source
+                ? {
+                    registrationNumber: (
+                      response.source as { registrationNumber: string }
+                    ).registrationNumber
+                  }
+                : {})
+            }
           : action
       ) as ActionDocument[]
     }
@@ -721,6 +722,27 @@ export async function createServer() {
       /*
        * Store to analytics database
        */
+      const event = request.payload as EventDocument
+
+      const eventWithOptimisticallyApprovedLastAction = {
+        ...event,
+        actions: event.actions.map((action, index) =>
+          index === event.actions.length - 1
+            ? {
+                ...action,
+                status: ActionStatus.Accepted,
+                ...(actionType === ActionType.REGISTER
+                  ? {
+                      registrationNumber: (
+                        response.source as { registrationNumber: string }
+                      ).registrationNumber
+                    }
+                  : {})
+              }
+            : action
+        ) as ActionDocument[]
+      }
+
       const client = getClient()
       try {
         await client.transaction().execute(async (trx) => {

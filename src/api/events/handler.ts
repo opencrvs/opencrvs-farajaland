@@ -8,9 +8,9 @@
  *
  * Copyright (C) The OpenCRVS Authors located at https://github.com/opencrvs/opencrvs-core/blob/master/AUTHORS.
  */
-import { tennisClubMembershipEvent } from '@countryconfig/form/tennis-club-membership'
-import { birthEvent } from '@countryconfig/form/v2/birth'
-import { deathEvent } from '@countryconfig/form/v2/death'
+import { tennisClubMembershipEvent } from '@countryconfig/events/tennis-club-membership'
+import { birthEvent } from '@countryconfig/events/birth'
+import { deathEvent } from '@countryconfig/events/death'
 import * as Hapi from '@hapi/hapi'
 import { sendInformantNotification } from '../notification/informantNotification'
 import { ActionConfirmationRequest } from '../registration'
@@ -21,7 +21,7 @@ import {
   deepMerge,
   getPendingAction
 } from '@opencrvs/toolkit/events'
-import { MOSIP_INTEROP_URL } from '@countryconfig/constants'
+import { MOSIP_INTEROP_URL, NO_MOSIP } from '@countryconfig/constants'
 import { differenceInYears } from 'date-fns'
 
 export function getEventsHandler(_: Hapi.Request, h: Hapi.ResponseToolkit) {
@@ -56,8 +56,12 @@ export async function onBirthActionHandler(
   request: ActionConfirmationRequest,
   h: Hapi.ResponseToolkit
 ) {
-  const token = request.auth.artifacts.token as string
+  // Used in local development to disable MOSIP registration dependency
+  if (NO_MOSIP) {
+    return h.response({}).code(200)
+  }
 
+  const token = request.auth.artifacts.token as string
   const event = request.payload
   await sendInformantNotification({ event, token })
 
@@ -165,8 +169,12 @@ export async function onDeathActionHandler(
   request: ActionConfirmationRequest,
   h: Hapi.ResponseToolkit
 ) {
-  const token = request.auth.artifacts.token as string
+  // Used in local development to disable MOSIP registration dependency
+  if (NO_MOSIP) {
+    return h.response({}).code(200)
+  }
 
+  const token = request.auth.artifacts.token as string
   const event = request.payload
   await sendInformantNotification({ event, token })
 

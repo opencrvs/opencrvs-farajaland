@@ -16,16 +16,11 @@ import { printAndExpectPopup } from '../birth/helpers'
 test.describe.serial('10.0 Validate "Review" page', () => {
   let page: Page
   let declaration: Declaration
-  let eventId: string
 
   test.beforeAll(async ({ browser }) => {
-    const token = await getToken(
-      CREDENTIALS.REGISTRAR.USERNAME,
-      CREDENTIALS.REGISTRAR.PASSWORD
-    )
+    const token = await getToken(CREDENTIALS.REGISTRAR)
     const res = await createDeclaration(token)
     declaration = res.declaration
-    eventId = res.eventId
     page = await browser.newPage()
   })
 
@@ -39,7 +34,11 @@ test.describe.serial('10.0 Validate "Review" page', () => {
 
   test('10.0.2 Navigate to certificate print action', async () => {
     await page.getByRole('button', { name: 'Pending certification' }).click()
-    await navigateToCertificatePrintAction(page, declaration)
+    await navigateToCertificatePrintAction(
+      page,
+      declaration,
+      CREDENTIALS.REGISTRAR
+    )
   })
 
   test('10.1 Review page validations', async () => {

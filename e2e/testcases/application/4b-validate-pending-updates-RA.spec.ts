@@ -6,7 +6,7 @@ import { createDeclaration, Declaration } from '../test-data/birth-declaration'
 import { ActionType } from '@opencrvs/toolkit/events'
 import { formatV2ChildName } from '../birth/helpers'
 import {
-  ensureAssigned,
+  ensureAssignedToUser,
   ensureOutboxIsEmpty,
   expectInUrl,
   navigateToWorkqueue,
@@ -21,10 +21,7 @@ test.describe.serial('4(b) Validate "Pending updates"-workqueue for RO', () => {
   let eventId: string
 
   test.beforeAll(async ({ browser }) => {
-    const token = await getToken(
-      CREDENTIALS.REGISTRATION_OFFICER.USERNAME,
-      CREDENTIALS.REGISTRATION_OFFICER.PASSWORD
-    )
+    const token = await getToken(CREDENTIALS.REGISTRATION_OFFICER)
     const res = await createDeclaration(token, undefined, ActionType.DECLARE)
     declaration = res.declaration
     eventId = res.eventId
@@ -49,7 +46,7 @@ test.describe.serial('4(b) Validate "Pending updates"-workqueue for RO', () => {
   })
 
   test('4.0.3 Reject a declaration', async () => {
-    await ensureAssigned(page)
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
     await selectAction(page, 'Reject')
 
     await page.getByTestId('reject-reason').fill(faker.lorem.sentence())
@@ -101,7 +98,7 @@ test.describe.serial('4(b) Validate "Pending updates"-workqueue for RO', () => {
   })
 
   test('4.4 Click Edit -action', async () => {
-    await ensureAssigned(page)
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
     await selectAction(page, 'Edit')
   })
 

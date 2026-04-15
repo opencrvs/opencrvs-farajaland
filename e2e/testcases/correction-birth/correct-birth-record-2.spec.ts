@@ -12,7 +12,12 @@ import {
   createDeclaration,
   Declaration
 } from '../test-data/birth-declaration-with-mother-father'
-import { ensureAssigned, expectInUrl, selectAction, type } from '../../utils'
+import {
+  ensureAssignedToUser,
+  expectInUrl,
+  selectAction,
+  type
+} from '../../utils'
 import {
   navigateToCertificatePrintAction,
   selectCertificationType,
@@ -40,10 +45,7 @@ test.describe.serial('Correct record - 2', () => {
   }
 
   test.beforeAll(async ({ browser }) => {
-    const token = await getToken(
-      CREDENTIALS.REGISTRAR.USERNAME,
-      CREDENTIALS.REGISTRAR.PASSWORD
-    )
+    const token = await getToken(CREDENTIALS.REGISTRAR)
 
     // Create declaration with father details available
     const res = await createDeclaration(
@@ -61,7 +63,12 @@ test.describe.serial('Correct record - 2', () => {
   test('2.1 Certificate preview', async () => {
     await login(page, CREDENTIALS.REGISTRATION_OFFICER)
     await page.getByRole('button', { name: 'Pending certification' }).click()
-    await navigateToCertificatePrintAction(page, declaration)
+    await navigateToCertificatePrintAction(
+      page,
+      declaration,
+      CREDENTIALS.REGISTRATION_OFFICER
+    )
+
     await selectCertificationType(page, 'Birth Certificate')
     await selectRequesterType(page, 'Print and issue to Informant (Mother)')
     await page.getByRole('button', { name: 'Continue', exact: true }).click()
@@ -279,6 +286,7 @@ test.describe.serial('Correct record - 2', () => {
     })
 
     test('2.8.2 Correction review page', async () => {
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
       await selectAction(page, 'Review correction request')
       await expect(page.getByText('Requester' + 'Father')).toBeVisible()
       await expect(
@@ -349,58 +357,66 @@ test.describe.serial('Correct record - 2', () => {
 
       await expectInUrl(page, `/events/${eventId}`)
     })
+  })
 
-    test.describe('2.8.4 Validate history in record audit', async () => {
-      test('2.8.4.1 Navigate to record audit', async () => {
-        await ensureAssigned(page)
-        await page.getByRole('button', { name: 'Audit' }).click()
-      })
+  test.describe('2.9 Validate history in record audit', async () => {
+    test('2.9.0 Login', async ({ browser }) => {
+      const page = await browser.newPage()
+      await login(page, CREDENTIALS.REGISTRAR)
+    })
 
-      test('2.8.4.2 Validate correction requested modal', async () => {
-        await page
-          .getByRole('button', { name: 'Correction requested', exact: true })
-          .click()
+    test('2.9.1 Assign', async () => {
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
+    })
 
-        await expect(page.getByText('Requester' + 'Father')).toBeVisible()
+    test('2.9.2 Navigate to record audit', async () => {
+      await page.getByRole('button', { name: 'Audit' }).click()
+    })
 
-        await expect(
-          page.getByText(
-            'Reason for correction' +
-              'Informant provided incorrect information (Material error)'
-          )
-        ).toBeVisible()
+    test('2.9.3 Validate correction requested modal', async () => {
+      await page
+        .getByRole('button', { name: 'Correction requested', exact: true })
+        .click()
 
-        await expect(page.getByText('Fee total' + '$' + fee)).toBeVisible()
+      await expect(page.getByText('Requester' + 'Father')).toBeVisible()
 
-        await expect(
-          page.getByText(
-            'Place of delivery' + 'Health Institution' + 'Residential address'
-          )
-        ).toBeVisible()
+      await expect(
+        page.getByText(
+          'Reason for correction' +
+            'Informant provided incorrect information (Material error)'
+        )
+      ).toBeVisible()
 
-        await expect(
-          page.getByText('Relationship to child' + 'Mother' + 'Brother')
-        ).toBeVisible()
+      await expect(page.getByText('Fee total' + '$' + fee)).toBeVisible()
 
-        await expect(
-          page.getByText(
-            "Informant's name" + '-' + formatName(updatedInformantDetails)
-          )
-        ).toBeVisible()
+      await expect(
+        page.getByText(
+          'Place of delivery' + 'Health Institution' + 'Residential address'
+        )
+      ).toBeVisible()
 
-        await page.locator('#close-btn').click()
-        await page.getByRole('button', { name: 'Next page' }).click()
-      })
+      await expect(
+        page.getByText('Relationship to child' + 'Mother' + 'Brother')
+      ).toBeVisible()
 
-      test('2.8.4.3 Validate correction rejected modal', async () => {
-        await page
-          .getByRole('button', { name: 'Correction rejected', exact: true })
-          .click()
+      await expect(
+        page.getByText(
+          "Informant's name" + '-' + formatName(updatedInformantDetails)
+        )
+      ).toBeVisible()
 
-        await expect(page.getByText('Reason' + 'No legal proof')).toBeVisible()
+      await page.locator('#close-btn').click()
+      await page.getByRole('button', { name: 'Next page' }).click()
+    })
 
-        await page.locator('#close-btn').click()
-      })
+    test('2.9.4 Validate correction rejected modal', async () => {
+      await page
+        .getByRole('button', { name: 'Correction rejected', exact: true })
+        .click()
+
+      await expect(page.getByText('Reason' + 'No legal proof')).toBeVisible()
+
+      await page.locator('#close-btn').click()
     })
   })
 })

@@ -2,6 +2,7 @@ import { test, expect, type Page } from '@playwright/test'
 import { login } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
 import { verifyMembersClickable } from '../birth/helpers'
+import { navigateToWorkqueue } from '../../utils'
 test.describe.serial('1. Organisation Page', () => {
   let page: Page
 
@@ -19,27 +20,23 @@ test.describe.serial('1. Organisation Page', () => {
       await expect(page.locator('#content-name')).toHaveText('Organisation')
       await expect(page.getByText('Farajaland', { exact: true })).toBeVisible()
     })
-    test('1.1.1 Verify Province -> District -> Health Facility(No Data)', async () => {
+    test('1.1.1 Verify Province -> District -> Health Facility', async () => {
       await page.getByRole('button', { name: /Central/ }).click()
       await page.getByRole('button', { name: /Ibombo/ }).click()
-      const pageNavigator = page.getByRole('button', { name: '3' })
-      await pageNavigator.scrollIntoViewIfNeeded()
-      await pageNavigator.click()
+      await page.getByRole('button', { name: /Klow/ }).click()
 
-      await page.getByRole('button', { name: /Kapopo Health Post/ }).click()
+      await page.getByRole('button', { name: /Klow Village Hospital/ }).click()
       await expect(page.locator('#content-name')).toHaveText(
-        /Kapopo Health Post/
+        /Klow Village Hospital/
       )
       await expect(
-        page.getByText('Ibombo, Central', { exact: true })
+        page.getByText('Klow, Ibombo, Central', { exact: true })
       ).toBeVisible()
-      await expect(page.getByText('No result')).toBeVisible()
+
+      await expect(page.getByText('No result')).toBeHidden()
     })
     test('1.1.2 Verify Province -> District -> Village -> Village Office(No Data)', async () => {
-      for (let i = 0; i < 3; i++) {
-        await page.goBack()
-      }
-
+      await navigateToWorkqueue(page, 'Organisation')
       await page.getByRole('button', { name: /Chuminga/ }).click()
       await page.getByRole('button', { name: /Ama/ }).click()
       await page.getByRole('button', { name: /Laini/ }).click()
@@ -51,13 +48,12 @@ test.describe.serial('1. Organisation Page', () => {
       await expect(
         page.getByText('Laini, Ama, Chuminga', { exact: true })
       ).toBeVisible()
+
       await expect(page.getByText('No result')).toBeVisible()
     })
 
     test('1.1.2 Verify Province -> District -> District Office', async () => {
-      for (let i = 0; i < 4; i++) {
-        await page.goBack()
-      }
+      await navigateToWorkqueue(page, 'Organisation')
 
       await page.getByRole('button', { name: /Sulaka/ }).click()
       await page.getByRole('button', { name: /Ilanga/ }).click()

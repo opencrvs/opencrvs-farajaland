@@ -243,19 +243,3 @@ export async function createDeclaration(
     registrationNumber
   }
 }
-
-export async function rejectDeclaration(
-  token: string,
-  eventId: string
-): Promise<any> {
-  const client = createClient(GATEWAY_HOST + '/events', `Bearer ${token}`)
-
-  const rejectResponse = await client.event.actions.reject.request.mutate({
-    eventId,
-    declaration: {},
-    transactionId: uuidv4(),
-    reason: { message: 'For test' }
-  })
-
-  return rejectResponse
-}

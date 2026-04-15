@@ -15,10 +15,7 @@ test.describe.serial('Can view non-downloaded event online', () => {
 
   test.beforeAll(async ({ browser }) => {
     page = await browser.newPage()
-    const token = await getToken(
-      CREDENTIALS.REGISTRATION_OFFICER.USERNAME,
-      CREDENTIALS.REGISTRATION_OFFICER.PASSWORD
-    )
+    const token = await getToken(CREDENTIALS.REGISTRATION_OFFICER)
     const res = await createDeclaration(token, undefined, ActionType.DECLARE)
     declaration = res.declaration
     childName = formatV2ChildName(declaration)
@@ -59,10 +56,7 @@ test.describe.serial('Can partially view non-downloaded event offline', () => {
 
   test.beforeAll(async ({ browser }) => {
     page = await browser.newPage()
-    const token = await getToken(
-      CREDENTIALS.REGISTRATION_OFFICER.USERNAME,
-      CREDENTIALS.REGISTRATION_OFFICER.PASSWORD
-    )
+    const token = await getToken(CREDENTIALS.REGISTRATION_OFFICER)
     const res = await createDeclaration(token, undefined, ActionType.DECLARE)
     declaration = res.declaration
     childName = formatV2ChildName(declaration)
@@ -107,10 +101,7 @@ test.describe.serial('Can view downloaded event offline', () => {
 
   test.beforeAll(async ({ browser }) => {
     page = await browser.newPage()
-    const token = await getToken(
-      CREDENTIALS.REGISTRATION_OFFICER.USERNAME,
-      CREDENTIALS.REGISTRATION_OFFICER.PASSWORD
-    )
+    const token = await getToken(CREDENTIALS.REGISTRATION_OFFICER)
     const res = await createDeclaration(token, undefined, ActionType.DECLARE)
     declaration = res.declaration
     childName = formatV2ChildName(declaration)

@@ -57,14 +57,8 @@ export type IntegrationContext = {
 }
 
 export async function createIntegrationContext(): Promise<IntegrationContext> {
-  const systemAdminToken = await getToken(
-    CREDENTIALS.NATIONAL_SYSTEM_ADMIN.USERNAME,
-    CREDENTIALS.NATIONAL_SYSTEM_ADMIN.PASSWORD
-  )
-  const registrarToken = await getToken(
-    CREDENTIALS.REGISTRAR.USERNAME,
-    CREDENTIALS.REGISTRAR.PASSWORD
-  )
+  const systemAdminToken = await getToken(CREDENTIALS.NATIONAL_SYSTEM_ADMIN)
+  const registrarToken = await getToken(CREDENTIALS.REGISTRAR)
 
   const name = `Health integration ${format(new Date(), 'dd.MM. HH:mm:ss')}`
 

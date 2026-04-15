@@ -19,12 +19,7 @@ export const env = cleanEnv(process.env, {
   COUNTRY_CONFIG_PORT: port({ default: 3040 }),
   AUTH_URL: url({ devDefault: 'http://localhost:4040' }),
   COUNTRY_CONFIG_URL: url({ devDefault: 'http://localhost:3040' }),
-  APPLICATION_CONFIG_URL: url({ devDefault: 'http://localhost:2021/' }),
   SENTRY_DSN: str({ default: undefined }),
-  CONFIRM_REGISTRATION_URL: url({
-    devDefault: 'http://localhost:5050/confirm/registration'
-  }),
-  QA_ENV: bool({ default: false }),
   ESIGNET_REDIRECT_URL: url({ devDefault: 'http://localhost:20260/authorize' }),
   OPENID_PROVIDER_CLIENT_ID: str({ devDefault: 'mock-client_id' }),
   OPENID_PROVIDER_CLAIMS: str({
@@ -68,5 +63,10 @@ export const env = cleanEnv(process.env, {
     default: 'http://countryconfig:3040/_demo-issuer/raw/jwt/sign',
     devDefault: 'http://localhost:3040/_demo-issuer/raw/jwt/sign',
     desc: 'URL for signing raw JWTs for verifiable credentials issuance'
+  }),
+  NO_MOSIP: bool({
+    devDefault: true,
+    default: false,
+    desc: 'Used in local development to disable MOSIP registration dependency'
   })
 })

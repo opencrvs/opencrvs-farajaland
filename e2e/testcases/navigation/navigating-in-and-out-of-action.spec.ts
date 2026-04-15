@@ -16,10 +16,7 @@ test.describe.serial('Navigating in and out of action', () => {
   let declaration: Declaration
   let eventId: string
   test.beforeAll(async ({ browser }) => {
-    const token = await getToken(
-      CREDENTIALS.REGISTRAR.USERNAME,
-      CREDENTIALS.REGISTRAR.PASSWORD
-    )
+    const token = await getToken(CREDENTIALS.REGISTRAR)
     const res = await createDeclaration(token)
     declaration = res.declaration
     eventId = res.eventId
@@ -39,7 +36,11 @@ test.describe.serial('Navigating in and out of action', () => {
   })
 
   test('Navigate successfully through the print certificate action flow', async () => {
-    await navigateToCertificatePrintAction(page, declaration)
+    await navigateToCertificatePrintAction(
+      page,
+      declaration,
+      CREDENTIALS.REGISTRAR
+    )
     await selectCertificationType(page, 'Birth Certificate')
     await selectRequesterType(page, 'Print and issue to Informant (Mother)')
     await page.getByRole('button', { name: 'Continue' }).click()

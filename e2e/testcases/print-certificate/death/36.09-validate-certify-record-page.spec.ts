@@ -16,10 +16,7 @@ test.describe.serial('9.0 Validate "Certify record" page', () => {
   let declaration: Declaration
 
   test.beforeAll(async ({ browser }) => {
-    const token = await getToken(
-      CREDENTIALS.REGISTRAR.USERNAME,
-      CREDENTIALS.REGISTRAR.PASSWORD
-    )
+    const token = await getToken(CREDENTIALS.REGISTRAR)
     const res = await createDeclaration(token)
     declaration = res.declaration
     page = await browser.newPage()
@@ -35,7 +32,11 @@ test.describe.serial('9.0 Validate "Certify record" page', () => {
 
   test('9.0.1 Navigate to certificate print action', async () => {
     await page.getByRole('button', { name: 'Pending certification' }).click()
-    await navigateToCertificatePrintAction(page, declaration)
+    await navigateToCertificatePrintAction(
+      page,
+      declaration,
+      CREDENTIALS.REGISTRAR
+    )
   })
 
   test('9.1 Review page validations', async () => {
