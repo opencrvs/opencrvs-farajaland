@@ -35,7 +35,7 @@ The default values for these variables have been added to the `docker-compose.de
 ### New features
 
 - V2 certificate SVG templates now use the `$join` helper for location hierarchies, replacing hardcoded comma separators. Empty/undefined levels are automatically filtered, preventing leading or trailing commas.
-- Mother's address in `v2.birth-certificate-certified-copy.svg` now uses the `fullAddress` convenience variable (`{{$lookup $declaration "mother.address.fullAddress"}}`) instead of individual fields.
+- Mother's address in `v2.birth-certificate-certified-copy.svg` now uses the `administrativeArea` convenience variable (`{{$lookup $declaration "mother.address.administrativeArea"}}`) instead of individual fields.
 - Docker swarm to Kubernetes migration script [#10858](https://github.com/opencrvs/opencrvs-core/issues/10858), [#10787](https://github.com/opencrvs/opencrvs-core/issues/10787)
 
 ## 1.9.11
