@@ -69,7 +69,7 @@ const mannerDeathTypeOptions = createSelectOptions(
   mannerDeathMessageDescriptors
 )
 
-const SourceCauseDeathType = {
+export const SourceCauseDeathType = {
   PHYSICIAN: 'PHYSICIAN',
   LAY_REPORTED: 'LAY_REPORTED',
   VERBAL_AUTOPSY: 'VERBAL_AUTOPSY',
