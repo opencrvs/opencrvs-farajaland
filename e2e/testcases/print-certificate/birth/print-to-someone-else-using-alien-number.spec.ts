@@ -12,7 +12,7 @@ import {
   navigateToCertificatePrintAction,
   printAndExpectPopup
 } from './helpers'
-import { ensureAssigned, type } from '../../../utils'
+import { ensureAssignedToUser, type } from '../../../utils'
 import { formatV2ChildName } from '../../birth/helpers'
 
 async function selectIdType(page: Page, idType: string) {
@@ -44,7 +44,11 @@ test.describe
 
   test('Navigate to certificate print action', async () => {
     await page.getByRole('button', { name: 'Pending certification' }).click()
-    await navigateToCertificatePrintAction(page, declaration)
+    await navigateToCertificatePrintAction(
+      page,
+      declaration,
+      CREDENTIALS.REGISTRAR
+    )
   })
 
   test('Fill details, including Alien Number', async () => {
@@ -75,7 +79,7 @@ test.describe
     await page
       .getByRole('button', { name: formatV2ChildName(declaration) })
       .click()
-    await ensureAssigned(page)
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
     await page.getByRole('button', { name: 'Audit' }).click()
     await page.getByRole('button', { name: 'Certified', exact: true }).click()
 

@@ -6,7 +6,7 @@ import {
 } from '../test-data/birth-declaration-with-father-brother'
 import { CREDENTIALS } from '../../constants'
 import { faker } from '@faker-js/faker'
-import { ensureAssigned } from '../../utils'
+import { ensureAssignedToUser } from '../../utils'
 
 test.describe
   .serial("Quick Search - Birth Event Declaration - Child's details", () => {
@@ -60,10 +60,11 @@ test.describe
         name: getChildNameFromRecord(recordWithDefaultEmail)
       })
       .click()
-    await ensureAssigned(page)
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
     await expect(page.getByTestId('assignedTo-value')).toHaveText(
       'Kennedy Mweene'
     )
+
     await expect(page.getByTestId('informant.contact-value')).toContainText(
       recordWithDefaultEmail.declaration['informant.email']
     )
@@ -90,7 +91,7 @@ test.describe
         name: getChildNameFromRecord(recordWithDefaultEmail)
       })
       .click()
-    await ensureAssigned(page)
+
     await expect(page.getByTestId('assignedTo-value')).toHaveText(
       'Kennedy Mweene'
     )
@@ -117,7 +118,8 @@ test.describe
         name: getChildNameFromRecord(record)
       })
       .click()
-    await ensureAssigned(page)
+
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
     await expect(page.getByTestId('assignedTo-value')).toHaveText(
       'Kennedy Mweene'
     )
@@ -144,7 +146,7 @@ test.describe
         name: getChildNameFromRecord(record)
       })
       .click()
-    await ensureAssigned(page)
+
     await expect(page.getByTestId('assignedTo-value')).toHaveText(
       'Kennedy Mweene'
     )
@@ -180,7 +182,7 @@ test.describe
         name: getChildNameFromRecord(record)
       })
       .click()
-    await ensureAssigned(page)
+
     await expect(page.getByTestId('assignedTo-value')).toHaveText(
       'Kennedy Mweene'
     )

@@ -343,14 +343,14 @@ test.describe.serial("2. Validate the child's details page", () => {
       await test.step('Enter any health institution', async () => {
         await page
           .locator('#searchable-select-child____birthLocation input')
-          .fill('go')
-        await page.getByText('Golden Valley Rural Health Centre').click()
+          .fill('ib')
+        await page.getByText('Ibombo District Hospital').click()
 
         await expect(
           page.locator(
             '#searchable-select-child____birthLocation .react-select__single-value'
           )
-        ).toHaveText('Golden Valley Rural Health Centre')
+        ).toHaveText('Ibombo District Hospital')
       })
     })
 

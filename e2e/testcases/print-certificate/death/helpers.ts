@@ -1,6 +1,7 @@
 import { Page } from '@playwright/test'
 import { Declaration } from '../../test-data/death-declaration'
-import { selectAction } from '../../../utils'
+import { ensureAssignedToUser, selectAction } from '../../../utils'
+import { CREDENTIALS } from '../../../constants'
 
 export async function selectCertificationType(page: Page, type: string) {
   await page.locator('#certificateTemplateId svg').click()
@@ -17,9 +18,12 @@ export async function selectRequesterType(page: Page, type: string) {
 
 export async function navigateToCertificatePrintAction(
   page: Page,
-  declaration: Declaration
+  declaration: Declaration,
+  username: (typeof CREDENTIALS)[keyof typeof CREDENTIALS]
 ) {
   const deceasedName = `${declaration['deceased.name'].firstname} ${declaration['deceased.name'].surname}`
   await page.getByRole('button', { name: deceasedName }).click()
+
+  await ensureAssignedToUser(page, username)
   await selectAction(page, 'Print')
 }

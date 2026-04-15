@@ -34,8 +34,8 @@ test.describe("Advanced Search 8 - Death - Deceased's place of death", () => {
 
     await expect(page.getByText('Country')).not.toBeVisible()
 
-    await page.locator('#eventDetails____deathLocation').fill('Shifwa')
-    await page.getByText('Shifwankula Health Post').click()
+    await page.locator('#eventDetails____deathLocation').fill('Zobwe')
+    await page.getByText('Zobwe District Hospital').click()
 
     await page.getByTestId('search').click()
     await expect(page.getByText(/Search results\s*\(\d+\)/)).toBeVisible()
@@ -44,7 +44,7 @@ test.describe("Advanced Search 8 - Death - Deceased's place of death", () => {
       root: page,
       texts: [
         'Event: Death',
-        "Deceased's Health Institution: Shifwankula Health Post, Ibombo, Central, Farajaland",
+        "Deceased's Health Institution: Zobwe District Hospital, Zobwe, Sulaka, Farajaland",
         'Place of death: Health Institution'
       ],
       testId: 'search-result'
