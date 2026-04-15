@@ -27,7 +27,7 @@ jobs:
     if: ${{ !contains(github.actor, 'bot') }}
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v6
 
       - name: Get PR Information (when manually triggered)
         env:

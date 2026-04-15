@@ -97,7 +97,3 @@ services:
   documents:
     environment:
       - NODE_ENV=production
-
-  scheduler:
-    environment:
-      - NODE_ENV=production
