@@ -18,6 +18,7 @@ import {
   ensureOutboxIsEmpty,
   selectAction
 } from '../../../utils'
+import { causeOfDeathDetails } from '@countryconfig/events/death/forms/pages/causeOfDeathDetails'
 
 test.describe.serial('4. Death declaration case - 4', () => {
   let page: Page
@@ -51,6 +52,29 @@ test.describe.serial('4. Death declaration case - 4', () => {
       sourceCauseDeath: 'Medically Certified Cause of Death',
       placeOfDeath: 'Health Institution',
       deathLocation: 'Ibombo District Hospital'
+    },
+    causeOfDeathDetails: {
+      causeOfDeathA: {
+        symptomOne: 'Sepsis, unspecified',
+        duration: {
+          interval: '4',
+          unit: 'Hours'
+        }
+      },
+      causeOfDeathB: {
+        symptomOne: 'Adenoviral pneumonia',
+        duration: {
+          interval: '7',
+          unit: 'Days'
+        }
+      },
+      causeOfDeathOther: {
+        symptomOne: 'Chronic obstructive pulmonary disease, unspecified',
+        duration: {
+          interval: '5',
+          unit: 'Years'
+        }
+      }
     },
     informant: {
       relation: 'Son in law',
@@ -196,7 +220,84 @@ test.describe.serial('4. Death declaration case - 4', () => {
       await continueForm(page)
     })
 
-    test('4.1.3 Fill informant details', async () => {
+    test('4.1.3 Fill cause of death details', async () => {
+      await page
+        .locator('#causeOfDeathDetails____causeOfDeathA____symptom____one')
+        .fill(declaration.causeOfDeathDetails.causeOfDeathA.symptomOne)
+      await page
+        .getByText(declaration.causeOfDeathDetails.causeOfDeathA.symptomOne, {
+          exact: true
+        })
+        .click()
+      await page
+        .locator('#causeOfDeathDetails____causeOfDeathA____interval')
+        .fill(declaration.causeOfDeathDetails.causeOfDeathA.duration.interval)
+      await page
+        .locator('#causeOfDeathDetails____causeOfDeathA____interval-form-input')
+        .getByTestId('select__unit')
+        .click()
+      await page
+        .getByText(
+          declaration.causeOfDeathDetails.causeOfDeathA.duration.unit,
+          { exact: true }
+        )
+        .click()
+
+      await page
+        .locator('#causeOfDeathDetails____causeOfDeathB____symptom____one')
+        .fill(declaration.causeOfDeathDetails.causeOfDeathB.symptomOne)
+      await page
+        .getByText(declaration.causeOfDeathDetails.causeOfDeathB.symptomOne, {
+          exact: true
+        })
+        .click()
+      await page
+        .locator('#causeOfDeathDetails____causeOfDeathB____interval')
+        .fill(declaration.causeOfDeathDetails.causeOfDeathB.duration.interval)
+      await page
+        .locator('#causeOfDeathDetails____causeOfDeathB____interval-form-input')
+        .getByTestId('select__unit')
+        .click()
+      await page
+        .getByText(
+          declaration.causeOfDeathDetails.causeOfDeathB.duration.unit,
+          { exact: true }
+        )
+        .click()
+
+      await page
+        .locator('#causeOfDeathDetails____causeOfDeathOther____symptom____one')
+        .fill(declaration.causeOfDeathDetails.causeOfDeathOther.symptomOne)
+      await page
+        .getByText(
+          declaration.causeOfDeathDetails.causeOfDeathOther.symptomOne,
+          {
+            exact: true
+          }
+        )
+        .click()
+      await page
+        .locator('#causeOfDeathDetails____causeOfDeathOther____interval')
+        .fill(
+          declaration.causeOfDeathDetails.causeOfDeathOther.duration.interval
+        )
+      await page
+        .locator(
+          '#causeOfDeathDetails____causeOfDeathOther____interval-form-input'
+        )
+        .getByTestId('select__unit')
+        .click()
+      await page
+        .getByText(
+          declaration.causeOfDeathDetails.causeOfDeathOther.duration.unit,
+          { exact: true }
+        )
+        .click()
+
+      await continueForm(page)
+    })
+
+    test('4.1.4 Fill informant details', async () => {
       await page.locator('#informant____relation').click()
       await page
         .getByText(declaration.informant.relation, {
@@ -260,7 +361,7 @@ test.describe.serial('4. Death declaration case - 4', () => {
       await continueForm(page)
     })
 
-    test('4.1.4 Fill spouse details', async () => {
+    test('4.1.5 Fill spouse details', async () => {
       await page.locator('#firstname').fill(declaration.spouse.name.firstname)
       await page.locator('#surname').fill(declaration.spouse.name.surname)
 
@@ -299,7 +400,7 @@ test.describe.serial('4. Death declaration case - 4', () => {
       await continueForm(page)
     })
 
-    test.describe('4.1.5 Upload supporting document', async () => {
+    test.describe('4.1.6 Upload supporting document', async () => {
       test('4.1.5.1 Upload proof for deceased', async () => {
         const imageUploadSectionTitles = [
           'National ID',
@@ -383,7 +484,7 @@ test.describe.serial('4. Death declaration case - 4', () => {
       })
     })
 
-    test('4.1.6 Verify information on preview page', async () => {
+    test('4.1.7 Verify information on preview page', async () => {
       /*
        * Expected result: should include
        * - Deceased's First Name
@@ -686,7 +787,7 @@ test.describe.serial('4. Death declaration case - 4', () => {
       )
     })
 
-    test('4.1.7 Fill up informant signature', async () => {
+    test('4.1.8 Fill up informant signature', async () => {
       await page.locator('#review____comment').fill(annotation.review.comment)
       await page.getByRole('button', { name: 'Sign', exact: true }).click()
       await drawSignature(page, 'review____signature_canvas_element', false)
@@ -696,7 +797,7 @@ test.describe.serial('4. Death declaration case - 4', () => {
         .click()
     })
 
-    test('4.1.8 Declare and validate', async () => {
+    test('4.1.9 Declare and validate', async () => {
       await selectDeclarationAction(page, 'Declare')
       await ensureOutboxIsEmpty(page)
       await expect(page.getByText('Farajaland CRS')).toBeVisible()
