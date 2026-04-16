@@ -1728,15 +1728,17 @@
   dependencies:
     "@octokit/openapi-types" "^18.0.0"
 
-"@opencrvs/mosip@1.9.0":
-  version "1.9.0"
-  resolved "https://registry.yarnpkg.com/@opencrvs/mosip/-/mosip-1.9.0.tgz#453ee10f97bbbd5e8249604ee826d195f5843a14"
-  integrity sha512-oY/Y+MfRKN+FZJLrtx4LJ2xIBKxs4iwRZxhiOSX1DDktifyKFvSd5v9rg0xlkiS5BXlzrL8Yz/xIheMm94DncQ==
+"@opencrvs/mosip@2.0.0-rc.4":
+  version "2.0.0-rc.4"
+  resolved "https://registry.yarnpkg.com/@opencrvs/mosip/-/mosip-2.0.0-rc.4.tgz#625fdfb888fc5fc7f6754be8a534181c390fe64d"
+  integrity sha512-QAqzvO5SsTBd/3j4Qw6DoluGXFYqmsJHNlfPrwFqkVHxy8Ix+nqVSi9UtB7DWsLVAHAvPbyKztMoFCqMWRcYug==
+  dependencies:
+    zod "^4.1.12"
 
-"@opencrvs/toolkit@1.9.11-rc.e689124":
-  version "1.9.11-rc.e689124"
-  resolved "https://registry.yarnpkg.com/@opencrvs/toolkit/-/toolkit-1.9.11-rc.e689124.tgz#b78d4710212a3fbece6c8c1365f5766acf6148d3"
-  integrity sha512-96GLsAlxNIf886mnm9tx+WLaP+4mIEsTbT5rmNyT7iDeXqyOb2VN7p5jk0g8+u2bvXyoAi61rlM+vSvk+W8A8Q==
+"@opencrvs/toolkit@1.9.11-rc.1cc7faf":
+  version "1.9.11-rc.1cc7faf"
+  resolved "https://registry.yarnpkg.com/@opencrvs/toolkit/-/toolkit-1.9.11-rc.1cc7faf.tgz#aec6d7b9c70011849ed790100e2989f3a7839050"
+  integrity sha512-24GtrITfvkCoDroZee8rujjRTchSrPp1dXRpo4w3wTI4HbBTa8pjgLS7yj1YlY5qFE/OSP036LFKHf9/IcYgag==
   dependencies:
     "@trpc/client" "11.4.3"
     "@trpc/server" "11.4.3"
@@ -1750,8 +1752,8 @@
     superjson "1.9.0-0"
     ts-morph "^27.0.2"
     uuid "^9.0.0"
-    zod "^4.1.12"
-    zod-openapi "^5.4.3"
+    zod "^4.2.1"
+    zod-openapi "^5.4.6"
 
 "@parcel/watcher-android-arm64@2.5.0":
   version "2.5.0"
@@ -8491,12 +8493,12 @@ yocto-queue@^0.1.0:
   resolved "https://registry.yarnpkg.com/yocto-queue/-/yocto-queue-0.1.0.tgz#0294eb3dee05028d31ee1a5fa2c556a6aaf10a1b"
   integrity sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==
 
-zod-openapi@^5.4.3:
-  version "5.4.5"
-  resolved "https://registry.yarnpkg.com/zod-openapi/-/zod-openapi-5.4.5.tgz#050917f4b724d85c07692ee7f528040c15c18fa9"
-  integrity sha512-DVLBNsnggh8k/Yq7qp+NeQCH6JuLIyGzUQWA1wN5+7DpQJSwC7WYR/2lE6uQDmGcS/X6l4tUyYFpeG4nk3nOpA==
+zod-openapi@^5.4.6:
+  version "5.4.6"
+  resolved "https://registry.yarnpkg.com/zod-openapi/-/zod-openapi-5.4.6.tgz#000bedda0843c2ff1af3d7236e8d52d831115de4"
+  integrity sha512-P2jsOOBAq/6hCwUsMCjUATZ8szkMsV5VAwZENfyxp2Hc/XPJQpVwAgevWZc65xZauCwWB9LAn7zYeiCJFAEL+A==
 
-zod@^4.1.12:
-  version "4.1.12"
-  resolved "https://registry.yarnpkg.com/zod/-/zod-4.1.12.tgz#64f1ea53d00eab91853195653b5af9eee68970f0"
-  integrity sha512-JInaHOamG8pt5+Ey8kGmdcAcg3OL9reK8ltczgHTAwNhMys/6ThXHityHxVV2p3fkw/c+MAvBHFVYHFZDmjMCQ==
+zod@^4.1.12, zod@^4.2.1:
+  version "4.3.6"
+  resolved "https://registry.yarnpkg.com/zod/-/zod-4.3.6.tgz#89c56e0aa7d2b05107d894412227087885ab112a"
+  integrity sha512-rftlrkhHZOcjDwkGlnUtZZkvaPHCsDATp4pGpuOOMDaTdDDXF91wuVDJoWoPsKX/3YPQ5fHuF3STjcYyKr+Qhg==
