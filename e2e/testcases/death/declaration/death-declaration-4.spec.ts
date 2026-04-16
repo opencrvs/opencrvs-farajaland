@@ -18,7 +18,6 @@ import {
   ensureOutboxIsEmpty,
   selectAction
 } from '../../../utils'
-import { causeOfDeathDetails } from '@countryconfig/events/death/forms/pages/causeOfDeathDetails'
 
 test.describe.serial('4. Death declaration case - 4', () => {
   let page: Page
