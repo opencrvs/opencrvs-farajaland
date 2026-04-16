@@ -1132,7 +1132,7 @@ services:
         tag: 'mosip-mock'
 
   esignet-mock:
-    image: ghcr.io/opencrvs/esignet-mock:1.9.2-mock.1
+    image: ghcr.io/opencrvs/esignet-mock:2.0.0-rc.3
     volumes:
       - /certs:/certs:ro
     environment:
