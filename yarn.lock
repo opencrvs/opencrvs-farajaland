@@ -834,10 +834,10 @@
   dependencies:
     "@octokit/openapi-types" "^18.0.0"
 
-"@opencrvs/toolkit@1.9.11-rc.63fd82d":
-  version "1.9.11-rc.63fd82d"
-  resolved "https://registry.yarnpkg.com/@opencrvs/toolkit/-/toolkit-1.9.11-rc.63fd82d.tgz#e49c5d968c7c915fce3483f05e71b02d757d2c58"
-  integrity sha512-UY/S9HTH+W0y7eudvvQBy6aje+ENRPGR0tItWKumex+p4GO8FpWQ3fTPSZScsezNHF3eQn5xsBTTr8oQhxHjUg==
+"@opencrvs/toolkit@1.9.11-rc.d61fa76":
+  version "1.9.11-rc.d61fa76"
+  resolved "https://registry.yarnpkg.com/@opencrvs/toolkit/-/toolkit-1.9.11-rc.d61fa76.tgz#998e840208b4565a1af4c3fc1f66d8ed9e08bfe8"
+  integrity sha512-TJNSsUE9Lqz5KZHNE8PzrwKwNgS9XV7UP7l9qWqtQFSj/x88sys2dZwpZU2f3rt5GWam5BcQCGoROcrxE+5Brw==
   dependencies:
     "@trpc/client" "11.4.3"
     "@trpc/server" "11.4.3"
@@ -852,7 +852,7 @@
     ts-morph "^27.0.2"
     uuid "^9.0.0"
     zod "^4.2"
-    zod-openapi "^5.4.3"
+    zod-openapi "^5.4.6"
 
 "@pkgjs/parseargs@^0.11.0":
   version "0.11.0"
@@ -5852,10 +5852,10 @@ yocto-queue@^0.1.0:
   resolved "https://registry.yarnpkg.com/yocto-queue/-/yocto-queue-0.1.0.tgz#0294eb3dee05028d31ee1a5fa2c556a6aaf10a1b"
   integrity sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==
 
-zod-openapi@^5.4.3:
-  version "5.4.3"
-  resolved "https://registry.yarnpkg.com/zod-openapi/-/zod-openapi-5.4.3.tgz#ec886fac181b778bc2e9ccc3462c470543f23e26"
-  integrity sha512-6kJ/gJdvHZtuxjYHoMtkl2PixCwRuZ/s79dVkEr7arHvZGXfx7Cvh53X3HfJ5h9FzGelXOXlnyjwfX0sKEPByw==
+zod-openapi@^5.4.6:
+  version "5.4.6"
+  resolved "https://registry.yarnpkg.com/zod-openapi/-/zod-openapi-5.4.6.tgz#000bedda0843c2ff1af3d7236e8d52d831115de4"
+  integrity sha512-P2jsOOBAq/6hCwUsMCjUATZ8szkMsV5VAwZENfyxp2Hc/XPJQpVwAgevWZc65xZauCwWB9LAn7zYeiCJFAEL+A==
 
 zod@^4.2:
   version "4.3.6"
