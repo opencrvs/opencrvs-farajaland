@@ -131,6 +131,9 @@
     "picomatch": "^2.3.2",
     "rollup": "^4.59.0",
     "semver": "^7.5.2",
-    "handlebars": "4.7.9"
+    "handlebars": "4.7.9",
+    "lodash": "4.18.0",
+    "@hapi/content": ">=6.0.1",
+    "@trpc/server": ">=11.8.0"
   }
 }
