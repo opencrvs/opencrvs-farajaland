@@ -406,9 +406,7 @@ export const deceased = defineFormPage({
       defaultValue: {
         country: 'FAR',
         addressType: AddressType.DOMESTIC,
-        administrativeArea: user('administrativeAreaId').locationLevel(
-          'village'
-        )
+        administrativeArea: user('primaryOfficeId').locationLevel('village')
       },
       configuration: {
         streetAddressForm: defaultStreetAddressConfiguration
