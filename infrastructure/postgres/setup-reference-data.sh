@@ -6,10 +6,14 @@ set -euo pipefail
 : "${POSTGRES_PORT:=5432}"
 : "${POSTGRES_PASSWORD:?Must set POSTGRES_PASSWORD}"
 : "${POSTGRES_USER:?Must set POSTGRES_USER}"
-: "${REFERENCE_DATA_POSTGRES_PASSWORD:?Must set REFERENCE_DATA_POSTGRES_PASSWORD}"
-: "${REFERENCE_DATA_POSTGRES_USER:?Must set REFERENCE_DATA_POSTGRES_USER}"
-: "${REFERENCE_DATA_EDITOR_PASSWORD:?Must set REFERENCE_DATA_EDITOR_PASSWORD}"
-: "${REFERENCE_DATA_EDITOR_USER:?Must set REFERENCE_DATA_EDITOR_USER}"
+
+if [[ -z "$REFERENCE_DATA_POSTGRES_PASSWORD" ||
+      -z "$REFERENCE_DATA_POSTGRES_USER" ||
+      -z "$REFERENCE_DATA_EDITOR_PASSWORD" ||
+      -z "$REFERENCE_DATA_EDITOR_USER" ]]; then
+  echo "Required variables are not set, skipping..."
+  exit 0
+fi
 : "${KEEP_ALIVE_SECONDS:=0}" # Prevent Swarm from marking this task as failed due to early exit
 
 TARGET_DB=${TARGET_DB:-"events"}

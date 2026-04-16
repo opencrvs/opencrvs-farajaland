@@ -789,6 +789,9 @@ export async function createServer() {
     if (env.ANALYTICS_DATABASE_URL) {
       await syncLocationLevels()
       await syncLocationStatistics()
+    }
+
+    if (env.REFERENCE_DATA_DATABASE_URL) {
       await syncReferenceData()
     }
 
