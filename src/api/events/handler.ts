@@ -22,7 +22,7 @@ import {
   getPendingAction
 } from '@opencrvs/toolkit/events'
 import { MOSIP_INTEROP_URL, NO_MOSIP } from '@countryconfig/constants'
-import { differenceInYears } from 'date-fns'
+import { shouldForwardBirthRegistrationToMosip } from '../../events/mosip'
 
 export function getEventsHandler(_: Hapi.Request, h: Hapi.ResponseToolkit) {
   return h
@@ -144,22 +144,11 @@ export async function onBirthCorrectionActionHandler(
     pendingAction.declaration
   )
 
-  const childNid = declaration['child.nid']
-  const childDob = declaration['child.dob']
-  const childAge =
-    typeof childDob === 'string'
-      ? differenceInYears(new Date(), new Date(childDob))
-      : null
+  const childHasNid = Boolean(declaration['child.nid'])
 
-  const childHasNid = Boolean(childNid)
-  const childIsUnder16 =
-    childAge !== null && !Number.isNaN(childAge) && childAge < 16
-
-  if (childHasNid && childIsUnder16) {
+  if (shouldForwardBirthRegistrationToMosip(declaration) && !childHasNid) {
     // eslint-disable-next-line no-console
-    console.log(
-      'Birth correction check passed: child.nid exists and child is under 16'
-    )
+    console.log('Birth correction check passed: record is eligible for MOSIP')
   }
 
   return h.response().code(200)
