@@ -163,8 +163,10 @@ jobs:
           --country_config_version=${{ env.image_tag }} \
           --replicas=${{ vars.REPLICAS }}
   seed-data:
-    needs: reset
-    if: ${{ inputs.reset == 'true' && needs.reset.outputs.outcome == 'success' }}
+    needs:
+      - reset
+      - deploy
+    if: ${{ inputs.reset == 'true' && needs.deploy.result == 'success' }}
     uses: ./.github/workflows/seed-data.yml
     with:
       environment: ${{ inputs.environment }}
