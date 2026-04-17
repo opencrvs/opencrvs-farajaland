@@ -244,9 +244,9 @@ export const roles: Role[] = [
       { type: 'record.declare', options: { placeOfEvent: 'location' } },
       { type: 'record.edit', options: { placeOfEvent: 'location' } },
       { type: 'record.custom-action', options: { event: ['birth'], customActionTypes: ['ESCALATE'], placeOfEvent: 'location' } },
-      { type: 'record.custom-action', options: { event: ['birth'], customActionTypes: ['ISSUE_CERTIFIED_COPY'], registeredIn: 'location' } },
-      { type: 'record.print-certified-copies', options: { registeredIn: 'location' } },
-      { type: 'record.correct', options: { registeredIn: 'location' } }
+      { type: 'record.custom-action', options: { event: ['birth'], customActionTypes: ['ISSUE_CERTIFIED_COPY'], placeOfEvent: 'location' } },
+      { type: 'record.print-certified-copies', options: { placeOfEvent: 'location' } },
+      { type: 'record.correct', options: { placeOfEvent: 'location' } }
     ])
   }
 ]
