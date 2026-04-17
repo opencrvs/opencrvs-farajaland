@@ -1735,10 +1735,10 @@
   dependencies:
     zod "^4.1.12"
 
-"@opencrvs/toolkit@1.9.11-rc.6976007":
-  version "1.9.11-rc.6976007"
-  resolved "https://registry.yarnpkg.com/@opencrvs/toolkit/-/toolkit-1.9.11-rc.6976007.tgz#34408952590261cff0b5bb8ccd185dc1a5572415"
-  integrity sha512-HU+i+lhRYnhe6BbWb2MMldMj0g3m0cHM66Z7cfcub/HyzWYMFgLzEkzXiJAlPhmc+2Fzgx6dO1OAoZtn8MzBog==
+"@opencrvs/toolkit@1.9.11-rc.61d85f5":
+  version "1.9.11-rc.61d85f5"
+  resolved "https://registry.yarnpkg.com/@opencrvs/toolkit/-/toolkit-1.9.11-rc.61d85f5.tgz#664fc2233e1551d5a5f5eb70a7980b1d74104f4c"
+  integrity sha512-fc/68qXjN0StW48AtXJSvi1ipiNWOMeDy8emlX07/or33AZM8W3YD+5h4w+YxQjBqM00XkIumvPUn6iA4Z8VTw==
   dependencies:
     "@trpc/client" "11.4.3"
     "@trpc/server" "11.4.3"
@@ -1750,9 +1750,10 @@
     object-hash "^3.0.0"
     qs "6.14.0"
     superjson "1.9.0-0"
+    ts-morph "^27.0.2"
     uuid "^9.0.0"
-    zod "^4.1.12"
-    zod-openapi "^5.4.3"
+    zod "^4.2.1"
+    zod-openapi "^5.4.6"
 
 "@parcel/watcher-android-arm64@2.5.0":
   version "2.5.0"
