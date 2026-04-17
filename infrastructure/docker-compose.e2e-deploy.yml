@@ -96,3 +96,33 @@ services:
       - --accesslog=true
       - --accesslog.format=json
       - --ping=true
+
+  postgres-on-update:
+    image: postgres:17.6
+    command: ['bash', '-c', 'bash /setup-reference-data.sh']
+    configs:
+      - source: postgres-reference-data-on-deploy.{{ts}}
+        target: /setup-reference-data.sh
+    deploy:
+      labels:
+        - traefik.enable=false
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - REFERENCE_DATA_POSTGRES_USER=${REFERENCE_DATA_POSTGRES_USER}
+      - REFERENCE_DATA_POSTGRES_PASSWORD=${REFERENCE_DATA_POSTGRES_PASSWORD}
+      - REFERENCE_DATA_DATABASE_URL=${REFERENCE_DATA_DATABASE_URL}
+      - REFERENCE_DATA_EDITOR_USER=${REFERENCE_DATA_EDITOR_USER}
+      - REFERENCE_DATA_EDITOR_PASSWORD=${REFERENCE_DATA_EDITOR_PASSWORD}
+      - KEEP_ALIVE_SECONDS=10
+    networks:
+      - overlay_net
+
+configs:
+  postgres-reference-data-on-deploy.{{ts}}:
+    file: /opt/opencrvs/infrastructure/postgres/setup-reference-data.sh
