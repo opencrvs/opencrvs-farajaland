@@ -1043,7 +1043,7 @@ services:
     volumes:
       - /data/sqlite:/data/sqlite
       - /certs:/certs:ro
-    image: ghcr.io/opencrvs/mosip-api:1.9.2-mock.1
+    image: ghcr.io/opencrvs/mosip-api:2.0.0-rc.4
     environment:
       - NODE_ENV=production
       - MOSIP_BIRTH_WEBHOOK_URL=http://mosip-mock:20240/webhooks/opencrvs/birth
@@ -1108,7 +1108,7 @@ services:
         tag: 'mosip-api'
 
   mosip-mock:
-    image: ghcr.io/opencrvs/mosip-mock:1.9.2-mock.1
+    image: ghcr.io/opencrvs/mosip-mock:2.0.0-rc.4
     depends_on:
       - mosip-api
     environment:
@@ -1132,7 +1132,7 @@ services:
         tag: 'mosip-mock'
 
   esignet-mock:
-    image: ghcr.io/opencrvs/esignet-mock:1.9.2-mock.1
+    image: ghcr.io/opencrvs/esignet-mock:2.0.0-rc.4
     volumes:
       - /certs:/certs:ro
     environment:
