@@ -37,12 +37,7 @@ on:
           - development
           - qa
           - e2e
-          - v17
           - staging
-          - pentest
-          - fix-analytics
-          - mosip
-          - openfn
       core-image-tag:
         description: Core image tag
         required: true
@@ -57,7 +52,7 @@ on:
         default: false
 jobs:
   reset:
-    if: ${{ inputs.reset == 'true' && needs.deploy.outputs.outcome == 'success' }}
+    if: ${{ inputs.reset == 'true' }}
     uses: ./.github/workflows/clear-environment.yml
     with:
       environment: ${{ inputs.environment }}
