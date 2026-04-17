@@ -92,7 +92,7 @@
     "joi": "^17.4.0",
     "jwt-decode": "^2.2.0",
     "kysely": "^0.28.14",
-    "lodash": "^4.18.0",
+    "lodash": "^4.18.1",
     "luxon": "^3.7.1",
     "nanoid": "3",
     "node-fetch": "^2.6.1",
@@ -132,7 +132,7 @@
     "rollup": "^4.59.0",
     "semver": "^7.5.2",
     "handlebars": "4.7.9",
-    "lodash": "4.18.0",
+    "lodash": "4.18.1",
     "@hapi/content": ">=6.0.1",
     "@trpc/server": ">=11.8.0"
   }
