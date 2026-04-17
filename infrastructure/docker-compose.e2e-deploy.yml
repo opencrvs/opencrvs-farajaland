@@ -95,7 +95,7 @@ services:
 
   postgres-on-update:
     image: postgres:17.6
-    command: ['bash', '-c', 'bash /setup-reference-data.sh']
+    command: ['bash', '-c', 'bash /on-deploy.sh && bash /setup-analytics.sh && bash /setup-reference-data.sh']
     configs:
       - source: postgres-reference-data-on-deploy.{{ts}}
         target: /setup-reference-data.sh
