@@ -809,21 +809,6 @@ services:
       options:
         gelf-address: 'udp://127.0.0.1:12201'
         tag: 'metrics'
-  scheduler:
-    environment:
-      - NODE_ENV=production
-      - OPENHIM_MONGO_URL=mongodb://openhim:${OPENHIM_MONGODB_PASSWORD}@mongo1/openhim-dev?replicaSet=rs0
-    deploy:
-      replicas: 1
-      labels:
-        - 'traefik.enable=false'
-    networks:
-      - overlay_net
-    logging:
-      driver: gelf
-      options:
-        gelf-address: 'udp://127.0.0.1:12201'
-        tag: 'scheduler'
   documents:
     deploy:
       replicas: 1
@@ -1022,7 +1007,7 @@ services:
     volumes:
       - /data/sqlite:/data/sqlite
       - /certs:/certs:ro
-    image: ghcr.io/opencrvs/mosip-api:1.9.2-mock.1
+    image: ghcr.io/opencrvs/mosip-api:2.0.0-rc.4
     environment:
       - NODE_ENV=production
       - OPENCRVS_GATEWAY_URL=http://gateway:7070
@@ -1085,7 +1070,7 @@ services:
         tag: 'mosip-api'
 
   mosip-mock:
-    image: ghcr.io/opencrvs/mosip-mock:1.9.2-mock.1
+    image: ghcr.io/opencrvs/mosip-mock:2.0.0-rc.4
     depends_on:
       - mosip-api
     environment:
@@ -1109,7 +1094,7 @@ services:
         tag: 'mosip-mock'
 
   esignet-mock:
-    image: ghcr.io/opencrvs/esignet-mock:1.9.2-mock.1
+    image: ghcr.io/opencrvs/esignet-mock:2.0.0-rc.4
     volumes:
       - /certs:/certs:ro
     environment:

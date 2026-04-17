@@ -12,7 +12,7 @@ import {
 } from '../../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../../constants'
-import { ensureAssigned, ensureOutboxIsEmpty } from '../../../utils'
+import { ensureAssignedToUser, ensureOutboxIsEmpty } from '../../../utils'
 
 test.describe.serial('6. Death declaration case - 6', () => {
   let page: Page
@@ -579,7 +579,7 @@ test.describe.serial('6. Death declaration case - 6', () => {
     })
 
     test('6.2.2 Verify information on "Record" tab', async () => {
-      await ensureAssigned(page)
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
       await switchEventTab(page, 'Record')
       /*
        * Expected result: should include

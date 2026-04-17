@@ -14,7 +14,11 @@ import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../constants'
 import { fillDate } from './helpers'
 import { selectDeclarationAction } from '../../helpers'
-import { ensureAssigned, ensureOutboxIsEmpty, selectAction } from '../../utils'
+import {
+  ensureAssignedToUser,
+  ensureOutboxIsEmpty,
+  selectAction
+} from '../../utils'
 
 test.describe.serial('8. Validate declaration review page', () => {
   let page: Page
@@ -866,6 +870,7 @@ test.describe.serial('8. Validate declaration review page', () => {
         .click()
     })
     test('8.2.2 Validate', async () => {
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
       await selectAction(page, 'Validate')
       await page.getByRole('button', { name: 'Confirm' }).click()
     })
@@ -1121,8 +1126,12 @@ test.describe.serial('8. Validate declaration review page', () => {
       await expectRowValue(page, 'father.addressSameAs', 'Yes')
     })
 
-    test('8.3.1.2 Register', async () => {
-      await ensureAssigned(page)
+    test('8.3.1.2 Assign', async () => {
+      await selectAction(page, 'Assign')
+      await page.getByRole('button', { name: 'Assign', exact: true }).click()
+    })
+
+    test('8.3.1.3 Register', async () => {
       await selectAction(page, 'Register')
       await page.getByRole('button', { name: 'Confirm' }).click()
     })

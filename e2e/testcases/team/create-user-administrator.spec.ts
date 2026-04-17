@@ -35,9 +35,9 @@ test.describe.serial('1. Create user -1', () => {
           name: /Central Province Office, Central/
         })
         .click()
-      await page.getByTestId('locationSearchInput').fill('Itumbwe')
+      await page.getByTestId('locationSearchInput').fill('Zimbi')
 
-      await page.getByText(/Itumbwe Health Post, Ibombo, Central/).click()
+      await page.getByText(/Zimbi Village Office, Zimbi, Isamba/).click()
 
       await page.click('#add-user')
       await expect(page.getByText('User details')).toBeVisible()
@@ -55,10 +55,12 @@ test.describe.serial('1. Create user -1', () => {
     test('1.1.2 Create user', async () => {
       await page.getByRole('button', { name: 'Create user' }).click()
 
-      await expect(page.locator('#header')).toContainText('Itumbwe Health Post')
+      await expect(page.locator('#header')).toContainText(
+        'Zimbi Village Office'
+      )
 
       await expect(
-        page.getByText('Ibombo, Central', {
+        page.getByText('Zimbi, Isamba, Central', {
           exact: true
         })
       ).toBeVisible()

@@ -9,7 +9,7 @@ import {
   selectRequesterType
 } from './helpers'
 import { selectCertificationType } from './helpers'
-import { selectAction } from '../../../utils'
+import { ensureAssignedToUser, selectAction } from '../../../utils'
 import { formatV2ChildName } from '../../birth/helpers'
 
 test.describe
@@ -42,7 +42,11 @@ test.describe
 
   test('Print birth certificate once', async () => {
     await page.getByRole('button', { name: 'Pending certification' }).click()
-    await navigateToCertificatePrintAction(page, declaration)
+    await navigateToCertificatePrintAction(
+      page,
+      declaration,
+      CREDENTIALS.REGISTRAR
+    )
     await selectCertificationType(page, 'Birth Certificate')
     await selectRequesterType(page, 'Print and issue to Informant (Mother)')
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -64,6 +68,8 @@ test.describe
         exact: true
       })
       .click()
+
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
     await selectAction(page, 'Print')
     await selectCertificationType(page, 'Birth Certificate Certified Copy')
     await selectRequesterType(page, 'Print and issue to Informant (Mother)')
@@ -109,7 +115,11 @@ test.describe.serial("Validate 'Birth Certificate' PDF details", () => {
 
   test('Go to review', async () => {
     await page.getByRole('button', { name: 'Pending certification' }).click()
-    await navigateToCertificatePrintAction(page, declaration)
+    await navigateToCertificatePrintAction(
+      page,
+      declaration,
+      CREDENTIALS.REGISTRAR
+    )
     await selectCertificationType(page, 'Birth Certificate')
     await selectRequesterType(page, 'Print and issue to Informant (Mother)')
     await page.getByRole('button', { name: 'Continue' }).click()

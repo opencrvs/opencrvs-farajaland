@@ -6,24 +6,17 @@ import {
   getToken,
   goToSection,
   selectDeclarationAction
-} from '../../../helpers'
+} from '../../helpers'
 import { faker } from '@faker-js/faker'
-import { fillChildDetails, openBirthDeclaration } from '../../birth/helpers'
-import { CLIENT_URL, CREDENTIALS } from '../../../constants'
-import {
-  createDeclaration,
-  Declaration
-} from '../../test-data/birth-declaration'
-import {
-  ensureInExternalValidationIsEmpty,
-  selectAction,
-  type
-} from '../../../utils'
+import { fillChildDetails, openBirthDeclaration } from '../birth/helpers'
+import { CLIENT_URL, CREDENTIALS } from '../../constants'
+import { createDeclaration, Declaration } from '../test-data/birth-declaration'
+import { selectAction, type } from '../../utils'
 import {
   navigateToCertificatePrintAction,
   selectRequesterType
-} from '../../print-certificate/birth/helpers'
-import { REQUIRED_VALIDATION_ERROR } from '../../birth/helpers'
+} from '../print-certificate/birth/helpers'
+import { REQUIRED_VALIDATION_ERROR } from '../birth/helpers'
 
 test.describe('Form state', () => {
   test.describe
@@ -162,22 +155,24 @@ test.describe('Form state', () => {
       await page.close()
     })
 
-    test('Login', async () => {
-      await login(page)
-    })
-
     test('Create a declaration', async () => {
       const token = await getToken(CREDENTIALS.REGISTRAR)
       declaration = (await createDeclaration(token)).declaration
-      await page.reload()
-      await ensureInExternalValidationIsEmpty(page)
+    })
+
+    test('Login', async () => {
+      await login(page)
     })
 
     test('Form changes in correction are persisted after reload', async () => {
       const updatedMotherName = faker.person.firstName('female')
       expect(declaration).toBeDefined()
       await page.getByRole('button', { name: 'Pending certification' }).click()
-      await navigateToCertificatePrintAction(page, declaration!)
+      await navigateToCertificatePrintAction(
+        page,
+        declaration!,
+        CREDENTIALS.REGISTRAR
+      )
       await selectRequesterType(page, 'Print and issue to Informant (Mother)')
       await continueForm(page)
       await page.getByRole('button', { name: 'Verified' }).click()
@@ -214,14 +209,22 @@ test.describe('Form state', () => {
 
       await page.goto(CLIENT_URL)
       await page.getByRole('button', { name: 'Pending certification' }).click()
-      await navigateToCertificatePrintAction(page, declaration!)
+      await navigateToCertificatePrintAction(
+        page,
+        declaration!,
+        CREDENTIALS.REGISTRAR
+      )
       await selectRequesterType(page, 'Print and issue to someone else')
 
       await page.getByTestId('text__firstname').fill(faker.person.firstName())
 
       await page.getByTestId('exit-button').click()
 
-      await navigateToCertificatePrintAction(page, declaration!)
+      await navigateToCertificatePrintAction(
+        page,
+        declaration!,
+        CREDENTIALS.REGISTRAR
+      )
 
       await expect(
         page.getByTestId('select__collector____requesterId')

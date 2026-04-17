@@ -65,10 +65,6 @@ services:
     environment:
       - NODE_ENV=production
 
-  scheduler:
-    environment:
-      - NODE_ENV=production
-
   traefik:
     command:
       # Use HTTP-01 challenge as the web server is publicly available

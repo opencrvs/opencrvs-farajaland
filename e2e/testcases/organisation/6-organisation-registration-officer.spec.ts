@@ -33,25 +33,22 @@ test.describe.serial('6. Organisation Page', () => {
       await verifyMembersEnabled(page, enabledMembers)
     })
 
-    test('6.1.2 Verify Province -> District -> Health Facility(No Data)', async () => {
+    test('6.1.2 Verify Province -> District -> Health Facility', async () => {
       for (let i = 0; i < 3; i++) {
         await page.goBack()
       }
 
       await page.getByRole('button', { name: /Central/ }).click()
-      await page.getByRole('button', { name: /Ezhi/ }).click()
-      const pageNavigator = page.getByRole('button', { name: '3', exact: true })
-      await pageNavigator.scrollIntoViewIfNeeded()
-      await pageNavigator.click()
+      await page.getByRole('button', { name: /Ibombo/ }).click()
 
       await expect(
-        page.getByRole('button', { name: /Kanyelele Rural Health Centre/ })
-      ).toBeDisabled()
+        page.getByRole('button', { name: /Ibombo District Hospital/ })
+      ).toBeEnabled()
     })
 
     // @TODO: https://github.com/opencrvs/opencrvs-core/issues/11756
     test.skip('6.1.3 Verify Province -> District -> District Office', async () => {
-     await navigateToWorkqueue(page, 'Organisation')
+      await navigateToWorkqueue(page, 'Organisation')
       await page.getByRole('button', { name: /Sulaka/ }).click()
       await page.getByRole('button', { name: /Ilanga/ }).click()
 
