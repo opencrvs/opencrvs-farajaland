@@ -137,6 +137,15 @@ export const birthEvent = defineConfig({
   summary: {
     fields: [
       {
+        fieldId: 'child.nid',
+        conditionals: [
+          {
+            type: ConditionalType.SHOW,
+            conditional: not(field('child.nid').isFalsy())
+          }
+        ]
+      },
+      {
         fieldId: 'child.dob',
         emptyValueMessage: {
           defaultMessage: 'No date of birth',
