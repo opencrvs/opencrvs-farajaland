@@ -42,6 +42,11 @@ test.describe('Informant details resets when relation is changed', () => {
       await page.getByText('National ID', { exact: true }).click()
 
       await page.locator('#informant____nid').fill('1234567890')
+      await expect(
+        page.locator('label', {
+          hasText: 'ID Number'
+        })
+      ).toBeVisible()
 
       await page.locator('#country').click()
       await page.getByText('Estonia', { exact: true }).click()
@@ -72,7 +77,11 @@ test.describe('Informant details resets when relation is changed', () => {
       await expect(page.locator('#informant____dob-mm')).toHaveValue('')
       await expect(page.locator('#informant____dob-yyyy')).toHaveValue('')
 
-      await expect(page.getByText('National ID')).toBeHidden()
+      await expect(
+        page.locator('label', {
+          hasText: 'ID Number'
+        })
+      ).toBeHidden()
 
       await expect(page.getByText('Estonia')).toBeHidden()
       await expect(page.locator('#country')).toHaveText('Farajaland')
@@ -126,6 +135,11 @@ test.describe('Informant details resets when relation is changed', () => {
       await page.getByText('National ID', { exact: true }).click()
 
       await page.locator('#informant____nid').fill('1234567890')
+      await expect(
+        page.locator('label', {
+          hasText: 'ID Number'
+        })
+      ).toBeVisible()
 
       await page.locator('#informant____addressSameAs_NO').check()
 
@@ -158,7 +172,11 @@ test.describe('Informant details resets when relation is changed', () => {
       await expect(page.locator('#informant____dob-mm')).toHaveValue('')
       await expect(page.locator('#informant____dob-yyyy')).toHaveValue('')
 
-      await expect(page.getByText('National ID')).toBeHidden()
+      await expect(
+        page.locator('label', {
+          hasText: 'ID Number'
+        })
+      ).toBeHidden()
 
       await expect(page.getByText('Estonia')).toBeHidden()
       await expect(page.locator('#country')).toBeHidden()
