@@ -37,12 +37,7 @@ on:
           - development
           - qa
           - e2e
-          - v17
           - staging
-          - pentest
-          - fix-analytics
-          - mosip
-          - openfn
       core-image-tag:
         description: Core image tag
         required: true
@@ -56,7 +51,14 @@ on:
         description: Reset the environment
         default: false
 jobs:
+  reset:
+    if: ${{ inputs.reset == 'true' }}
+    uses: ./.github/workflows/clear-environment.yml
+    with:
+      environment: ${{ inputs.environment }}
+    secrets: inherit
   deploy:
+    needs: reset
     environment: ${{ inputs.environment }}
     runs-on: ubuntu-24.04
     outputs:
@@ -160,16 +162,11 @@ jobs:
           --version=${{ inputs.core-image-tag }} \
           --country_config_version=${{ env.image_tag }} \
           --replicas=${{ vars.REPLICAS }}
-  reset:
-    needs: deploy
-    if: ${{ inputs.reset == 'true' && needs.deploy.outputs.outcome == 'success' }}
-    uses: ./.github/workflows/clear-environment.yml
-    with:
-      environment: ${{ inputs.environment }}
-    secrets: inherit
   seed-data:
-    needs: reset
-    if: ${{ inputs.reset == 'true' && needs.reset.outputs.outcome == 'success' }}
+    needs:
+      - reset
+      - deploy
+    if: ${{ inputs.reset == 'true' && needs.deploy.result == 'success' }}
     uses: ./.github/workflows/seed-data.yml
     with:
       environment: ${{ inputs.environment }}
