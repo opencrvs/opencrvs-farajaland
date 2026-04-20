@@ -1010,8 +1010,6 @@ services:
     image: ghcr.io/opencrvs/mosip-api:2.0.0-rc.4
     environment:
       - NODE_ENV=production
-      - MOSIP_BIRTH_WEBHOOK_URL=http://mosip-mock:20240/webhooks/opencrvs/birth
-      - MOSIP_DEATH_WEBHOOK_URL=http://mosip-mock:20240/webhooks/opencrvs/death
       - OPENCRVS_GATEWAY_URL=http://gateway:7070
       - OPENCRVS_PUBLIC_KEY_URL=http://auth:4040/.well-known
       - LOCALE=en
