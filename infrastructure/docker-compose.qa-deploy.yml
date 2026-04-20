@@ -79,9 +79,12 @@ services:
       - NODE_ENV=production
 
   events:
+    secrets:
+      - jwt-public-key.{{ts}}
     environment:
       - NODE_ENV=production
       - TWO_FA_ENABLED=false
+      - CERT_PUBLIC_KEY_PATH=/run/secrets/jwt-public-key.{{ts}}
 
   user-mgnt:
     environment:
