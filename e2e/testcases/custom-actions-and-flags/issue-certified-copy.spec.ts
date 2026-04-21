@@ -4,8 +4,7 @@ import { CREDENTIALS } from '../../constants'
 import {
   ensureAssignedToUser,
   navigateToWorkqueue,
-  selectAction,
-  ensureOutboxIsEmpty
+  selectAction
 } from '../../utils'
 import { Declaration, createDeclaration } from '../test-data/birth-declaration'
 import { REQUIRED_VALIDATION_ERROR } from '../birth/helpers'

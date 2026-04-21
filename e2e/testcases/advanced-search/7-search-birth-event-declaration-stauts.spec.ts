@@ -75,7 +75,7 @@ test.describe
     expect(searchResult).toMatch(searchResultCountNumberInBracketsRegex)
     expect(page.url()).toContain(`event.status=ALL`)
     expect(page.url()).toContain(
-      `child.name=${encodeURIComponent(JSON.stringify({ firstname, middlename: '', surname }))}`
+      `child.name=${encodeURIComponent(JSON.stringify({ firstname, surname }))}`
     )
     await expect(
       page.getByRole('button', { name: joinValuesWith([firstname, surname]) })

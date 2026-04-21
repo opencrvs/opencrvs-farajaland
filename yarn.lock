@@ -1721,13 +1721,13 @@
   dependencies:
     zod "^4.1.12"
 
-"@opencrvs/toolkit@1.9.11-rc.ef9743e":
-  version "1.9.11-rc.ef9743e"
-  resolved "https://registry.yarnpkg.com/@opencrvs/toolkit/-/toolkit-1.9.11-rc.ef9743e.tgz#fc108716d7a5197e7670e71ff9e0c8e0cb4d4640"
-  integrity sha512-F031nhkt+jvojdF9puMJ5X9Pm//NK2MEErp/4GDopn2oRbtzYTn6bU8Godl4fYYVneQvr6ZDEBVMaHCXRxLt0A==
+"@opencrvs/toolkit@1.9.12-rc.eec1bae":
+  version "1.9.12-rc.eec1bae"
+  resolved "https://registry.yarnpkg.com/@opencrvs/toolkit/-/toolkit-1.9.12-rc.eec1bae.tgz#13e8c4c94d2c2d6c969c390b80666becc050846f"
+  integrity sha512-JjAxegX0AoL827RuWk4cKBblDDmb/UlGAMnEt5NdROjCE3jltgPhG1zg8qbPUHuNUX8jf5xdHMNOREjSPtZ7bQ==
   dependencies:
     "@trpc/client" "11.4.3"
-    "@trpc/server" "11.4.3"
+    "@trpc/server" "^11.8.0"
     ajv "^8.17.1"
     ajv-formats "^3.0.1"
     date-fns "^2.28.0"
@@ -2089,7 +2089,7 @@
   resolved "https://registry.npmjs.org/@trpc/client/-/client-11.4.3.tgz"
   integrity sha512-i2suttUCfColktXT8bqex5kHW5jpT15nwUh0hGSDiW1keN621kSUQKcLJ095blqQAUgB+lsmgSqSMmB4L9shQQ==
 
-"@trpc/server@11.4.3", "@trpc/server@>=11.8.0":
+"@trpc/server@>=11.8.0", "@trpc/server@^11.8.0":
   version "11.16.0"
   resolved "https://registry.yarnpkg.com/@trpc/server/-/server-11.16.0.tgz#14977e2fc91367e5353af913105a3d866c41db98"
   integrity sha512-XgGuUMddrUTd04+za/WE5GFuZ1/YU9XQG0t3VL5WOIu2JspkOlq6k4RYEiqS6HSJt+S0RXaPdIoE2anIP/BBRQ==
