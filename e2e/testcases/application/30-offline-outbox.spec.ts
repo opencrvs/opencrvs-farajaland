@@ -6,7 +6,8 @@ import {
   formatName,
   getRandomDate,
   goToSection,
-  login
+  login,
+  selectDeclarationAction
 } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
 import { faker } from '@faker-js/faker'
@@ -30,12 +31,7 @@ test.describe
     birthType: 'Single',
     weightAtBirth: 2.4,
     placeOfBirth: 'Health Institution',
-    birthLocation: {
-      facility: 'Golden Valley Rural Health Centre',
-      district: 'Ibombo',
-      province: 'Central',
-      country: 'Farajaland'
-    },
+    birthLocation: { facility: 'Klow Village Hospital' },
     informantType: 'Mother',
     informantEmail: faker.internet.email(),
     mother: {
@@ -53,6 +49,7 @@ test.describe
         country: 'Farajaland',
         province: 'Sulaka',
         district: 'Irundu',
+        village: 'Xhosa',
         town: faker.location.city(),
         residentialArea: faker.location.county(),
         street: faker.location.street(),
@@ -107,13 +104,13 @@ test.describe
   })
 
   test('30.0 Login', async () => {
-    await login(page, CREDENTIALS.FIELD_AGENT)
+    await login(page, CREDENTIALS.HOSPITAL_OFFICIAL)
 
     // this is needed to get eventConfig before going offline
     await page.click('#header-new-event')
     await page.getByLabel('Birth').click()
     await goToSection(page, 'review')
-    await page.getByRole('button', { name: 'Exit', exact: true }).click()
+    await page.getByTestId('exit-button').click()
     await page.getByRole('button', { name: 'Confirm', exact: true }).click()
 
     await page.context().setOffline(true)
@@ -218,6 +215,10 @@ test.describe
       await page
         .getByText(declaration.mother.address.district, { exact: true })
         .click()
+      await page.locator('#village').click()
+      await page
+        .getByText(declaration.mother.address.village, { exact: true })
+        .click()
 
       await page.locator('#town').fill(declaration.mother.address.town)
       await page
@@ -293,10 +294,8 @@ test.describe
       await expect(page.getByRole('dialog')).not.toBeVisible()
     })
 
-    test('30.1.8 Send for review', async () => {
-      await page.getByRole('button', { name: 'Send for review' }).click()
-      await expect(page.getByText('Send for review?')).toBeVisible()
-      await page.getByRole('button', { name: 'Confirm' }).click()
+    test('30.1.8 Declare', async () => {
+      await selectDeclarationAction(page, 'Declare')
     })
   })
 
@@ -317,10 +316,8 @@ test.describe
         .fill(partialDeclaration1.child.name.familyName)
       await goToSection(page, 'review')
     })
-    test('30.2.2 Send for review', async () => {
-      await page.getByRole('button', { name: 'Send for review' }).click()
-      await expect(page.getByText('Send for review?')).toBeVisible()
-      await page.getByRole('button', { name: 'Confirm' }).click()
+    test('30.2.2 Notify', async () => {
+      await selectDeclarationAction(page, 'Notify')
     })
   })
 
@@ -341,10 +338,8 @@ test.describe
         .fill(partialDeclaration2.child.name.familyName)
       await goToSection(page, 'review')
     })
-    test('30.3.2 Send for review', async () => {
-      await page.getByRole('button', { name: 'Send for review' }).click()
-      await expect(page.getByText('Send for review?')).toBeVisible()
-      await page.getByRole('button', { name: 'Confirm' }).click()
+    test('30.3.2 Notify', async () => {
+      await selectDeclarationAction(page, 'Notify')
     })
   })
 

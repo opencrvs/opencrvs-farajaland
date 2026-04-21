@@ -8,13 +8,15 @@ import {
   goToSection,
   login,
   logout,
+  switchEventTab,
   uploadImage,
   uploadImageToSection
 } from '../../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../../constants'
 import { fillDate, validateAddress } from '../helpers'
-import { ensureOutboxIsEmpty, selectAction } from '../../../utils'
+import { selectDeclarationAction } from '../../../helpers'
+import { ensureOutboxIsEmpty } from '../../../utils'
 
 test.describe.serial('3. Birth declaration case - 3', () => {
   let page: Page
@@ -32,8 +34,8 @@ test.describe.serial('3. Birth declaration case - 3', () => {
     placeOfBirth: 'Residential address',
     birthLocation: {
       country: 'Farajaland',
-      province: 'Pualula',
-      district: 'Funabuli',
+      province: 'Central',
+      district: 'Ibombo',
       town: faker.location.city(),
       residentialArea: faker.location.county(),
       street: faker.location.street(),
@@ -57,6 +59,7 @@ test.describe.serial('3. Birth declaration case - 3', () => {
         country: 'Farajaland',
         province: 'Chuminga',
         district: 'Ama',
+        village: 'Kitu',
         town: faker.location.city(),
         residentialArea: faker.location.county(),
         street: faker.location.street(),
@@ -106,6 +109,7 @@ test.describe.serial('3. Birth declaration case - 3', () => {
         country: 'Farajaland',
         province: 'Chuminga',
         district: 'Nsali',
+        village: 'Oro',
         town: faker.location.city(),
         residentialArea: faker.location.county(),
         street: faker.location.street(),
@@ -122,9 +126,9 @@ test.describe.serial('3. Birth declaration case - 3', () => {
     await page.close()
   })
 
-  test.describe('3.1 Declaration started by RA', async () => {
+  test.describe('3.1 Declaration started by RO', async () => {
     test.beforeAll(async () => {
-      await login(page, CREDENTIALS.REGISTRATION_AGENT)
+      await login(page, CREDENTIALS.REGISTRATION_OFFICER_VILLAGE)
       await page.click('#header-new-event')
       await page.getByLabel('Birth').click()
       await page.getByRole('button', { name: 'Continue' }).click()
@@ -147,23 +151,20 @@ test.describe.serial('3. Birth declaration case - 3', () => {
           exact: true
         })
         .click()
-      await page
-        .locator('#child____birthLocation____privateHome-form-input #province')
-        .click()
-      await page
-        .getByText(declaration.birthLocation.province, {
-          exact: true
-        })
-        .click()
 
-      await page
-        .locator('#child____birthLocation____privateHome-form-input #district')
-        .click()
-      await page
-        .getByText(declaration.birthLocation.district, {
-          exact: true
-        })
-        .click()
+      // Province and district are disabled because the user jurisdiction is limited to user's administrative area
+      await expect(
+        page.locator(
+          '#child____birthLocation____privateHome-form-input #province'
+        )
+      ).toBeDisabled()
+
+      await expect(
+        page.locator(
+          '#child____birthLocation____privateHome-form-input #district'
+        )
+      ).toBeDisabled()
+
       await page.locator('#town').fill(declaration.birthLocation.town)
       await page
         .locator('#residentialArea')
@@ -229,6 +230,15 @@ test.describe.serial('3. Birth declaration case - 3', () => {
         .locator('#informant____nid')
         .fill(declaration.informant.identifier.id)
 
+      await page.locator('#country').click()
+      await page
+        .locator('#country input')
+        .fill(declaration.informant.address.country.slice(0, 3))
+      await page
+        .locator('#country')
+        .getByText(declaration.informant.address.country, { exact: true })
+        .click()
+
       await page.locator('#province').click()
       await page
         .getByText(declaration.informant.address.province, { exact: true })
@@ -236,6 +246,10 @@ test.describe.serial('3. Birth declaration case - 3', () => {
       await page.locator('#district').click()
       await page
         .getByText(declaration.informant.address.district, { exact: true })
+        .click()
+      await page.locator('#village').click()
+      await page
+        .getByText(declaration.informant.address.village, { exact: true })
         .click()
 
       await page.locator('#town').fill(declaration.informant.address.town)
@@ -335,6 +349,10 @@ test.describe.serial('3. Birth declaration case - 3', () => {
       await page.locator('#district').click()
       await page
         .getByText(declaration.father.address.district, { exact: true })
+        .click()
+      await page.locator('#village').click()
+      await page
+        .getByText(declaration.father.address.village, { exact: true })
         .click()
       await page.locator('#town').fill(declaration.father.address.town)
       await page
@@ -709,14 +727,11 @@ test.describe.serial('3. Birth declaration case - 3', () => {
       await expect(page.getByRole('dialog')).not.toBeVisible()
     })
 
-    test('3.1.9 Send for approval', async () => {
-      await page.getByRole('button', { name: 'Send for approval' }).click()
-      await expect(page.getByText('Send for approval?')).toBeVisible()
-      await page.getByRole('button', { name: 'Confirm' }).click()
-
+    test('3.1.9 Declare', async () => {
+      await selectDeclarationAction(page, 'Declare')
       await ensureOutboxIsEmpty(page)
 
-      await page.getByText('Sent for approval').click()
+      await page.getByText('Recent').click()
 
       await expect(
         page.getByRole('button', {
@@ -726,11 +741,11 @@ test.describe.serial('3. Birth declaration case - 3', () => {
     })
   })
 
-  test.describe('3.2 Declaration Review by Local Registrar', async () => {
-    test('3.2.1 Navigate to the declaration review page', async () => {
+  test.describe('3.2 Declaration Review by Registrar', async () => {
+    test('3.2.1 Navigate to the declaration "Record" -tab', async () => {
       await logout(page)
-      await login(page, CREDENTIALS.LOCAL_REGISTRAR)
-      await page.getByText('Ready for review').click()
+      await login(page, CREDENTIALS.REGISTRAR)
+      await page.getByText('Pending registration').click()
 
       await page
         .getByRole('button', {
@@ -738,10 +753,10 @@ test.describe.serial('3. Birth declaration case - 3', () => {
         })
         .click()
 
-      await selectAction(page, 'Review')
+      await switchEventTab(page, 'Record')
     })
 
-    test('3.2.2 Verify information on review page', async () => {
+    test('3.2.2 Verify information on "Record" -tab', async () => {
       /*
        * Expected result: should include
        * - Child's First Name

@@ -39,7 +39,7 @@ test.describe
     await ensureOutboxIsEmpty(page)
 
     //@todo: The user should be navigated to "my-drafts" tab by default
-    await page.getByText('My drafts').click()
+    await page.getByText('Drafts').click()
 
     await expect(
       page.getByText(joinValuesWith([firstname, surname]))
@@ -77,7 +77,7 @@ test.describe
     expect(page.url()).toContain(
       `child.name=${encodeURIComponent(JSON.stringify({ firstname, surname }))}`
     )
-    expect(
+    await expect(
       page.getByRole('button', { name: joinValuesWith([firstname, surname]) })
     ).not.toBeVisible()
   })

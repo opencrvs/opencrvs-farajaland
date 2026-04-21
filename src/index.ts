@@ -11,7 +11,6 @@
 require('app-module-path').addPath(require('path').join(__dirname))
 require('dotenv').config()
 
-import StreamArray from 'stream-json/streamers/StreamArray'
 import path from 'path'
 import * as Hapi from '@hapi/hapi'
 import * as Pino from 'hapi-pino'
@@ -21,74 +20,74 @@ import * as Sentry from 'hapi-sentry'
 import * as H2o2 from '@hapi/h2o2'
 import fetch from 'node-fetch'
 import {
-  CLIENT_APP_URL,
-  DOMAIN,
   GATEWAY_URL,
-  LOGIN_URL,
   SENTRY_DSN,
   COUNTRY_CONFIG_HOST,
   COUNTRY_CONFIG_PORT,
-  CHECK_INVALID_TOKEN,
   AUTH_URL,
   DEFAULT_TIMEOUT,
+  DOMAIN,
+  LOGIN_URL,
+  CLIENT_APP_URL,
   THIRTY_MINUTES_IN_MILLISECONDS
 } from '@countryconfig/constants'
-import { statisticsHandler } from '@countryconfig/api/data-generator/handler'
 import {
   contentHandler,
   countryLogoHandler
 } from '@countryconfig/api/content/handler'
-import { eventRegistrationHandler } from '@countryconfig/api/event-registration/handler'
 import decode from 'jwt-decode'
-import { join } from 'path'
 import { logger } from '@countryconfig/logger'
+import clientConfig from './client-config'
+import clientConfigProd from './client-config.prod'
+import loginConfig from './login-config'
+import loginConfigProd from './login-config.prod'
 import { emailHandler, emailSchema } from './api/notification/handler'
 import { ErrorContext } from 'hapi-auth-jwt2'
 import { mapGeojsonHandler } from '@countryconfig/api/dashboards/handler'
-import { formHandler } from '@countryconfig/form'
 import { locationsHandler } from './data-seeding/locations/handler'
 import { certificateHandler } from './api/certificates/handler'
 import { rolesHandler } from './data-seeding/roles/handler'
 import { usersHandler } from './data-seeding/employees/handler'
 import { applicationConfigHandler } from './api/application/handler'
-import { validatorsHandler } from './form/common/custom-validation-conditionals/validators-handler'
-import { conditionalsHandler } from './form/common/custom-validation-conditionals/conditionals-handler'
-import { COUNTRY_WIDE_CRUDE_DEATH_RATE } from './api/application/application-config'
-import { handlebarsHandler } from './form/common/certificate/handlebars/handler'
-import { trackingIDHandler } from './api/tracking-id/handler'
-import { dashboardQueriesHandler } from './api/dashboards/handler'
+import { handlebarsHandler } from './certificate/handlebars/handler'
 import { fontsHandler } from './api/fonts/handler'
-import { recordNotificationHandler } from './api/record-notification/handler'
 import {
-  getCustomEventsHandler,
+  getEventsHandler,
   onAnyActionHandler,
   onBirthActionHandler,
-  onDeathActionHandler
-} from '@countryconfig/api/custom-event/handler'
+  onDeathActionHandler,
+  onCustomActionHandler
+} from '@countryconfig/api/events/handler'
 import {
   ActionDocument,
   ActionStatus,
   ActionType,
   EventDocument
 } from '@opencrvs/toolkit/events'
-import { Event } from './form/types/types'
 import {
   onMosipBirthRegisterHandler,
   onMosipDeathRegisterHandler,
   onRegisterHandler
 } from './api/registration'
 import { env } from './environment'
+
 import { workqueueconfigHandler } from './api/workqueue/handler'
 import getUserNotificationRoutes from './config/routes/userNotificationRoutes'
+import getVerifiableCredentialRoutes from './verifiable-credentials/routes'
 import {
+  importAdministrativeAreas,
   importEvent,
   importEvents,
-  importLocations,
   syncLocationLevels,
-  syncLocationStatistics
+  syncLocationStatistics,
+  importLocations
 } from './analytics/analytics'
 import { getClient } from './analytics/postgres'
 import { createClient } from '@opencrvs/toolkit/api'
+import { getGovernmentPortalApiRoutes } from './government-portal-api/routes'
+import { Event } from './events/utils/types'
+import { syncReferenceData } from './data-seeding/reference-data/reference-data'
+import { causeOfDeathSearchHandler } from './data-seeding/reference-data/handler'
 
 export interface ITokenPayload {
   sub: string
@@ -100,7 +99,7 @@ export interface ITokenPayload {
 export default function getPlugins() {
   const plugins: any[] = [inert, JWT, H2o2]
 
-  if (process.env.NODE_ENV === 'production') {
+  if (process.env.NODE_ENV !== 'test') {
     plugins.push({
       plugin: Pino,
       options: {
@@ -161,32 +160,6 @@ export const verifyToken = async (token: string, authUrl: string) => {
   }
 
   return false
-}
-
-const validateFunc = async (
-  payload: any,
-  request: Hapi.Request,
-  checkInvalidToken: boolean,
-  authUrl: string
-) => {
-  let valid
-  if (checkInvalidToken) {
-    valid = await verifyToken(
-      request.headers.authorization.replace('Bearer ', ''),
-      authUrl
-    )
-  }
-
-  if (valid === true || !checkInvalidToken) {
-    return {
-      isValid: true,
-      credentials: payload
-    }
-  }
-
-  return {
-    isValid: false
-  }
 }
 
 async function getPublicKey(): Promise<string> {
@@ -267,8 +240,10 @@ export async function createServer() {
       issuer: 'opencrvs:auth-service',
       audience: 'opencrvs:countryconfig-user'
     },
-    validate: (payload: any, request: Hapi.Request) =>
-      validateFunc(payload, request, CHECK_INVALID_TOKEN, AUTH_URL)
+    validate: (payload: any, request: Hapi.Request) => ({
+      isValid: true,
+      credentials: payload
+    })
   })
 
   server.auth.default('jwt')
@@ -325,13 +300,12 @@ export async function createServer() {
   server.route({
     method: 'GET',
     path: '/client-config.js',
-    handler: async (request, h) => {
-      const file =
-        process.env.NODE_ENV === 'production'
-          ? '/client-config.prod.js'
-          : '/client-config.js'
-
-      return h.file(join(__dirname, file))
+    handler: (_request, h) => {
+      const config =
+        process.env.NODE_ENV === 'production' ? clientConfigProd : clientConfig
+      return h
+        .response(`window.config = ${JSON.stringify(config)}`)
+        .type('application/javascript')
     },
     options: {
       auth: false,
@@ -343,12 +317,12 @@ export async function createServer() {
   server.route({
     method: 'GET',
     path: '/login-config.js',
-    handler: (request, h) => {
-      const file =
-        process.env.NODE_ENV === 'production'
-          ? '/login-config.prod.js'
-          : '/login-config.js'
-      return h.file(join(__dirname, file))
+    handler: (_request, h) => {
+      const config =
+        process.env.NODE_ENV === 'production' ? loginConfigProd : loginConfig
+      return h
+        .response(`window.config = ${JSON.stringify(config)}`)
+        .type('application/javascript')
     },
     options: {
       auth: false,
@@ -371,55 +345,12 @@ export async function createServer() {
 
   server.route({
     method: 'GET',
-    path: '/validators.js',
-    handler: validatorsHandler,
-    options: {
-      auth: false,
-      tags: ['api'],
-      description: 'Serves validation functions as JS'
-    }
-  })
-
-  server.route({
-    method: 'GET',
-    path: '/conditionals.js',
-    handler: conditionalsHandler,
-    options: {
-      auth: false,
-      tags: ['api'],
-      description: 'Serves conditionals as JS'
-    }
-  })
-
-  server.route({
-    method: 'GET',
     path: '/content/{application}',
     handler: contentHandler,
     options: {
       auth: false,
       tags: ['api'],
       description: 'Serves language content'
-    }
-  })
-
-  server.route({
-    method: 'GET',
-    path: '/dashboards/queries.json',
-    handler: dashboardQueriesHandler,
-    options: {
-      tags: ['api'],
-      auth: false,
-      description: 'Serves dashboard view refresher queries'
-    }
-  })
-
-  server.route({
-    method: 'GET',
-    path: '/forms',
-    handler: formHandler,
-    options: {
-      tags: ['api'],
-      description: 'Serves form configuration'
     }
   })
 
@@ -447,40 +378,6 @@ export async function createServer() {
 
   server.route({
     method: 'POST',
-    path: '/event-registration',
-    handler: eventRegistrationHandler,
-    options: {
-      tags: ['api'],
-      description:
-        'Opportunity for sychrounous integrations with 3rd party systems as a final step in event registration. If successful returns identifiers for that event.'
-    }
-  })
-
-  server.route({
-    method: 'GET',
-    path: '/crude-death-rate',
-    handler: () => ({
-      crudeDeathRate: COUNTRY_WIDE_CRUDE_DEATH_RATE
-    }),
-    options: {
-      tags: ['api'],
-      description: 'Serves country wise crude death rate'
-    }
-  })
-
-  server.route({
-    method: 'GET',
-    path: '/statistics',
-    handler: statisticsHandler,
-    options: {
-      tags: ['api'],
-      description:
-        'Returns population and crude birth rate statistics for each location'
-    }
-  })
-
-  server.route({
-    method: 'POST',
     path: '/email',
     handler: emailHandler,
     options: {
@@ -499,7 +396,7 @@ export async function createServer() {
 
   server.route({
     method: 'GET',
-    path: '/application-config',
+    path: '/config/application',
     handler: applicationConfigHandler,
     options: {
       auth: false,
@@ -510,7 +407,7 @@ export async function createServer() {
 
   server.route({
     method: 'GET',
-    path: '/workqueue',
+    path: '/config/workqueues',
     handler: workqueueconfigHandler,
     options: {
       auth: false,
@@ -521,7 +418,7 @@ export async function createServer() {
 
   server.route({
     method: 'GET',
-    path: '/locations',
+    path: '/config/locations',
     handler: locationsHandler,
     options: {
       auth: false,
@@ -532,7 +429,7 @@ export async function createServer() {
 
   server.route({
     method: 'GET',
-    path: '/roles',
+    path: '/config/roles',
     handler: rolesHandler,
     options: {
       auth: false,
@@ -543,21 +440,11 @@ export async function createServer() {
 
   server.route({
     method: 'GET',
-    path: '/users',
+    path: '/config/users',
     handler: usersHandler,
     options: {
       tags: ['api', 'users'],
       description: 'Returns users metadata'
-    }
-  })
-
-  server.route({
-    method: 'POST',
-    path: '/tracking-id',
-    handler: trackingIDHandler,
-    options: {
-      tags: ['api'],
-      description: 'Provides a tracking id'
     }
   })
 
@@ -577,6 +464,8 @@ export async function createServer() {
       }
     }
   })
+
+  server.route(getGovernmentPortalApiRoutes())
 
   server.route({
     method: 'GET',
@@ -606,16 +495,6 @@ export async function createServer() {
       auth: false,
       tags: ['api', 'static'],
       description: 'Server static files for client'
-    }
-  })
-
-  server.route({
-    method: 'GET',
-    path: '/record-notification',
-    handler: recordNotificationHandler,
-    options: {
-      tags: ['api'],
-      description: 'Checks for enabled notification for record'
     }
   })
 
@@ -660,12 +539,33 @@ export async function createServer() {
 
   server.route({
     method: 'GET',
-    path: '/events',
-    handler: getCustomEventsHandler,
+    path: '/config/events',
+    handler: getEventsHandler,
     options: {
       auth: false,
       tags: ['api', 'events'],
       description: 'Serves custom events'
+    }
+  })
+
+  server.route({
+    method: 'GET',
+    path: '/causes-of-death',
+    handler: causeOfDeathSearchHandler,
+    options: {
+      auth: false,
+      tags: ['api', 'search'],
+      description: 'Fuzzy search codes with source-based priority'
+    }
+  })
+
+  server.route({
+    method: 'POST',
+    path: `/trigger/events/{event}/actions/${ActionType.CUSTOM}`,
+    handler: onCustomActionHandler,
+    options: {
+      tags: ['api', 'events'],
+      description: 'Receives notifications on event custom action'
     }
   })
 
@@ -730,6 +630,21 @@ export async function createServer() {
   })
 
   server.route(getUserNotificationRoutes())
+  server.route(getVerifiableCredentialRoutes())
+
+  server.route({
+    method: 'GET',
+    path: '/triggers/system/ready',
+    handler: (_request, h) => {
+      // Not implemented by default
+      // You can use this endpoint to for instance set up integration clients
+      return h.response().code(501)
+    },
+    options: {
+      tags: ['api', 'triggers'],
+      description: 'System ready endpoint'
+    }
+  })
 
   server.ext({
     type: 'onRequest',
@@ -769,7 +684,7 @@ export async function createServer() {
           ? {
               ...action,
               status: ActionStatus.Accepted,
-              ...(actionType === ActionType.REGISTER
+              ...(actionType === ActionType.REGISTER && response.source
                 ? {
                     registrationNumber: (
                       response.source as { registrationNumber: string }
@@ -809,6 +724,27 @@ export async function createServer() {
       /*
        * Store to analytics database
        */
+      const event = request.payload as EventDocument
+
+      const eventWithOptimisticallyApprovedLastAction = {
+        ...event,
+        actions: event.actions.map((action, index) =>
+          index === event.actions.length - 1
+            ? {
+                ...action,
+                status: ActionStatus.Accepted,
+                ...(actionType === ActionType.REGISTER
+                  ? {
+                      registrationNumber: (
+                        response.source as { registrationNumber: string }
+                      ).registrationNumber
+                    }
+                  : {})
+              }
+            : action
+        ) as ActionDocument[]
+      }
+
       const client = getClient()
       try {
         await client.transaction().execute(async (trx) => {
@@ -833,6 +769,10 @@ export async function createServer() {
       const url = new URL('events', GATEWAY_URL).toString()
       const apiClient = createClient(url, req.headers.authorization)
       const locations = await apiClient.locations.list.query()
+      const administrativeAreas =
+        await apiClient.administrativeAreas.list.query()
+
+      await importAdministrativeAreas(administrativeAreas)
       await importLocations(locations)
       lastLocationSyncAt = now
       logger.info('Reindex: locations synced into analytics.')
@@ -851,9 +791,13 @@ export async function createServer() {
       await syncLocationStatistics()
     }
 
-    const logMsg = `Server successfully started on ${COUNTRY_CONFIG_HOST}:${COUNTRY_CONFIG_PORT}`
-    logger.info(logMsg)
-    server.log('info', logMsg)
+    if (env.REFERENCE_DATA_DATABASE_URL) {
+      await syncReferenceData()
+    }
+
+    logger.info(
+      `Server successfully started on ${COUNTRY_CONFIG_HOST}:${COUNTRY_CONFIG_PORT}`
+    )
   }
 
   return { server, start, stop }

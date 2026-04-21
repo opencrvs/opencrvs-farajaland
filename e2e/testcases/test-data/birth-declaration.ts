@@ -1,7 +1,11 @@
 import { v4 as uuidv4 } from 'uuid'
 import { GATEWAY_HOST } from '../../constants'
 import { faker } from '@faker-js/faker'
-import { getAllLocations, getLocationIdByName } from '../birth/helpers'
+import {
+  getLocations,
+  getIdByName,
+  getAdministrativeAreas
+} from '../birth/helpers'
 import { createClient } from '@opencrvs/toolkit/api'
 import {
   ActionDocument,
@@ -15,7 +19,7 @@ type InformantRelation = 'MOTHER' | 'BROTHER'
 
 function getInformantDetails(
   informantRelation: InformantRelation,
-  district?: string
+  village?: string
 ) {
   if (informantRelation === 'MOTHER') {
     return {
@@ -33,7 +37,7 @@ function getInformantDetails(
     },
     'informant.address': {
       country: 'FAR',
-      administrativeArea: district,
+      administrativeArea: village,
       addressType: AddressType.DOMESTIC
     },
     'informant.dob': '2008-09-12',
@@ -44,14 +48,13 @@ function getInformantDetails(
 }
 
 export async function getPlaceOfBirth(
-  type: 'PRIVATE_HOME' | 'HEALTH_FACILITY'
+  type: 'PRIVATE_HOME' | 'HEALTH_FACILITY',
+  token: string,
+  name?: string
 ) {
   if (type === 'HEALTH_FACILITY') {
-    const locations = await getAllLocations('HEALTH_FACILITY')
-    const locationId = getLocationIdByName(
-      locations,
-      'Ibombo Rural Health Centre'
-    )
+    const locations = await getLocations('HEALTH_FACILITY', token)
+    const locationId = getIdByName(locations, name ?? 'Klow Village Hospital')
 
     return {
       'child.placeOfBirth': 'HEALTH_FACILITY',
@@ -60,20 +63,16 @@ export async function getPlaceOfBirth(
   }
 
   if (type === 'PRIVATE_HOME') {
-    const locations = await getAllLocations('ADMIN_STRUCTURE')
-    const province = getLocationIdByName(locations, 'Central')
-    const district = getLocationIdByName(locations, 'Ibombo')
+    const administrativeAreas = await getAdministrativeAreas(token)
 
-    if (!province || !district) {
-      throw new Error('Province or district not found')
-    }
+    const village = getIdByName(administrativeAreas, 'Klow')
 
     return {
       'child.placeOfBirth': 'PRIVATE_HOME',
       'child.birthLocation.privateHome': {
         country: 'FAR',
         addressType: AddressType.DOMESTIC,
-        administrativeArea: district
+        administrativeArea: village
       }
     }
   }
@@ -84,19 +83,17 @@ export async function getPlaceOfBirth(
 export async function getDeclaration({
   informantRelation = 'MOTHER',
   partialDeclaration = {},
-  placeOfBirthType = 'PRIVATE_HOME'
+  placeOfBirthType = 'PRIVATE_HOME',
+  token
 }: {
   informantRelation?: InformantRelation
   partialDeclaration?: Record<string, any>
   placeOfBirthType?: 'PRIVATE_HOME' | 'HEALTH_FACILITY'
+  token: string
 }) {
-  const locations = await getAllLocations('ADMIN_STRUCTURE')
-  const province = getLocationIdByName(locations, 'Central')
-  const district = getLocationIdByName(locations, 'Ibombo')
+  const administrativeAreas = await getAdministrativeAreas(token)
 
-  if (!province || !district) {
-    throw new Error('Province or district not found')
-  }
+  const village = getIdByName(administrativeAreas, 'Klow')
 
   const mockDeclaration = {
     'father.detailsNotAvailable': true,
@@ -115,7 +112,7 @@ export async function getDeclaration({
     'mother.address': {
       country: 'FAR',
       addressType: AddressType.DOMESTIC,
-      administrativeArea: district
+      administrativeArea: village
     },
     'child.name': {
       firstname: faker.person.firstName(),
@@ -125,8 +122,8 @@ export async function getDeclaration({
     'child.dob': new Date(Date.now() - 60 * 60 * 24 * 1000)
       .toISOString()
       .split('T')[0], // yesterday
-    ...(await getPlaceOfBirth(placeOfBirthType)),
-    ...getInformantDetails(informantRelation, district)
+    ...(await getPlaceOfBirth(placeOfBirthType, token)),
+    ...getInformantDetails(informantRelation, village)
   }
 
   // 💡 Merge overriden fields
@@ -154,7 +151,13 @@ export async function createDeclaration(
   const declaration =
     dec ??
     (await getDeclaration({
-      placeOfBirthType
+      placeOfBirthType,
+      token,
+      partialDeclaration:
+        action === ActionType.NOTIFY
+          ? // Drop arbitrary fields not needed for notify action
+            { 'mother.nid': null, 'mother.dob': null }
+          : undefined
     }))
 
   const client = createClient(GATEWAY_HOST + '/events', `Bearer ${token}`)
@@ -173,17 +176,16 @@ export async function createDeclaration(
     'review.signature': filename
   }
 
-  const declareRes = await client.event.actions.declare.request.mutate({
-    eventId: eventId,
-    transactionId: uuidv4(),
-    declaration,
-    annotation,
-    keepAssignment: action !== ActionType.DECLARE
-  })
+  if (action === ActionType.NOTIFY) {
+    const notifyRes = await client.event.actions.notify.request.mutate({
+      eventId: eventId,
+      transactionId: uuidv4(),
+      declaration,
+      annotation
+    })
 
-  if (action === ActionType.DECLARE) {
-    const declareAction = declareRes.actions.find(
-      (action: ActionDocument) => action.type === 'DECLARE'
+    const declareAction = notifyRes.actions.find(
+      (action: ActionDocument) => action.type === ActionType.NOTIFY
     )
 
     if (!declareAction || !('declaration' in declareAction)) {
@@ -196,35 +198,39 @@ export async function createDeclaration(
     }
   }
 
-  const validateRes = await client.event.actions.validate.request.mutate({
-    eventId: eventId,
+  const declareRes = await client.event.actions.declare.request.mutate({
+    eventId,
     transactionId: uuidv4(),
     declaration,
     annotation,
-    duplicates: [],
-    keepAssignment: true
+    keepAssignment: action !== ActionType.DECLARE
   })
 
-  if (action === ActionType.VALIDATE) {
-    const validateAction = validateRes.actions.find(
-      (action: ActionDocument) => action.type === 'VALIDATE'
+  if (action === ActionType.DECLARE) {
+    const declareAction = declareRes.actions.find(
+      (action: ActionDocument) => action.type === ActionType.DECLARE
     )
+
+    if (!declareAction || !('declaration' in declareAction)) {
+      throw new Error('Declaration info not found in action')
+    }
 
     return {
       eventId,
-      declaration: validateAction?.declaration as Declaration
+      declaration: declareAction?.declaration as Declaration,
+      trackingId: declareRes.trackingId
     }
   }
 
   const registerRes = await client.event.actions.register.request.mutate({
-    eventId: eventId,
+    eventId,
     transactionId: uuidv4(),
     declaration,
     annotation
   })
 
   const registerAction = registerRes.actions.find(
-    (action: ActionDocument) => action.type === 'REGISTER'
+    (action: ActionDocument) => action.type === ActionType.REGISTER
   )
 
   const trackingId = registerRes?.trackingId as string
@@ -236,20 +242,4 @@ export async function createDeclaration(
     trackingId,
     registrationNumber
   }
-}
-
-export async function rejectDeclaration(
-  token: string,
-  eventId: string
-): Promise<any> {
-  const client = createClient(GATEWAY_HOST + '/events', `Bearer ${token}`)
-
-  const rejectResponse = await client.event.actions.reject.request.mutate({
-    eventId,
-    declaration: {},
-    transactionId: uuidv4(),
-    reason: { message: 'For test' }
-  })
-
-  return rejectResponse
 }

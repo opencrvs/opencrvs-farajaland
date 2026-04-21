@@ -12,7 +12,7 @@ import {
   navigateToCertificatePrintAction,
   printAndExpectPopup
 } from './helpers'
-import { ensureAssigned, type, expectInUrl } from '../../../utils'
+import { ensureAssignedToUser, type, expectInUrl } from '../../../utils'
 import { REQUIRED_VALIDATION_ERROR } from '../../birth/helpers'
 import { formatV2ChildName } from '../../birth/helpers'
 
@@ -28,10 +28,7 @@ test.describe.serial('Validate collect payment page', () => {
   let trackingId: string | undefined
 
   test.beforeAll(async ({ browser }) => {
-    const token = await getToken(
-      CREDENTIALS.LOCAL_REGISTRAR.USERNAME,
-      CREDENTIALS.LOCAL_REGISTRAR.PASSWORD
-    )
+    const token = await getToken(CREDENTIALS.REGISTRAR)
     const res = await createDeclaration(token)
     eventId = res.eventId
     declaration = res.declaration
@@ -48,8 +45,12 @@ test.describe.serial('Validate collect payment page', () => {
   })
 
   test('5.0.2 Navigate to certificate print action', async () => {
-    await page.getByRole('button', { name: 'Ready to print' }).click()
-    await navigateToCertificatePrintAction(page, declaration)
+    await page.getByRole('button', { name: 'Pending certification' }).click()
+    await navigateToCertificatePrintAction(
+      page,
+      declaration,
+      CREDENTIALS.REGISTRAR
+    )
   })
 
   test('5.1 Select certification and requester type', async () => {
@@ -154,7 +155,8 @@ test.describe.serial('Validate collect payment page', () => {
     await page
       .getByRole('button', { name: formatV2ChildName(declaration) })
       .click()
-    await ensureAssigned(page)
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
+    await page.getByRole('button', { name: 'Audit' }).click()
     await page.getByRole('button', { name: 'Certified', exact: true }).click()
 
     await expect(page.getByText('Type' + 'Birth Certificate')).toBeVisible()

@@ -6,11 +6,18 @@ import {
   getRandomDate,
   goToSection,
   login,
-  logout
+  logout,
+  selectDeclarationAction,
+  switchEventTab,
+  validateActionMenuButton
 } from '../../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../../constants'
-import { ensureOutboxIsEmpty, selectAction } from '../../../utils'
+import {
+  ensureAssignedToUser,
+  ensureOutboxIsEmpty,
+  selectAction
+} from '../../../utils'
 import { REQUIRED_VALIDATION_ERROR } from '../helpers'
 
 test.describe.serial('Change informant on review', () => {
@@ -29,8 +36,8 @@ test.describe.serial('Change informant on review', () => {
     placeOfBirth: 'Other',
     birthLocation: {
       country: 'Farajaland',
-      province: 'Pualula',
-      district: 'Funabuli',
+      province: 'Central',
+      district: 'Ibombo',
       town: faker.location.city(),
       residentialArea: faker.location.county(),
       street: faker.location.street(),
@@ -94,9 +101,9 @@ test.describe.serial('Change informant on review', () => {
     await page.close()
   })
 
-  test.describe('Declaration started by RA', async () => {
+  test.describe('Declaration started by RO', async () => {
     test.beforeAll(async () => {
-      await login(page, CREDENTIALS.REGISTRATION_AGENT)
+      await login(page, CREDENTIALS.REGISTRATION_OFFICER_VILLAGE)
       await page.click('#header-new-event')
       await page.getByLabel('Birth').click()
       await page.getByRole('button', { name: 'Continue' }).click()
@@ -120,19 +127,14 @@ test.describe.serial('Change informant on review', () => {
         })
         .click()
 
-      await page.locator('#province').click()
-      await page
-        .getByText(declaration.birthLocation.province, {
-          exact: true
-        })
-        .click()
+      // Province and district are disabled because the user jurisdiction is limited to user's administrative area
+      await expect(
+        page.locator('#child____birthLocation____other-form-input #province')
+      ).toBeDisabled()
 
-      await page.locator('#district').click()
-      await page
-        .getByText(declaration.birthLocation.district, {
-          exact: true
-        })
-        .click()
+      await expect(
+        page.locator('#child____birthLocation____other-form-input #district')
+      ).toBeDisabled()
 
       await page.locator('#town').fill(declaration.birthLocation.town)
       await page
@@ -242,13 +244,11 @@ test.describe.serial('Change informant on review', () => {
       await expect(page.getByRole('dialog')).not.toBeVisible()
     })
 
-    test('Send for approval', async () => {
-      await page.getByRole('button', { name: 'Send for approval' }).click()
-      await page.getByRole('button', { name: 'Confirm' }).click()
-
+    test('Declare', async () => {
+      await selectDeclarationAction(page, 'Declare')
       await ensureOutboxIsEmpty(page)
 
-      await page.getByText('Sent for approval').click()
+      await page.getByText('Recent').click()
 
       await expect(
         page.getByRole('button', {
@@ -258,12 +258,12 @@ test.describe.serial('Change informant on review', () => {
     })
   })
 
-  test.describe('Declaration Review by Local Registrar', async () => {
-    test('Navigate to the declaration review page', async () => {
+  test.describe('Declaration Review by Registrar', async () => {
+    test('Navigate to the declaration Edit-action', async () => {
       await logout(page)
-      await login(page, CREDENTIALS.LOCAL_REGISTRAR)
+      await login(page, CREDENTIALS.REGISTRAR_VILLAGE)
 
-      await page.getByText('Ready for review').click()
+      await page.getByText('Pending registration').click()
 
       await page
         .getByRole('button', {
@@ -271,12 +271,19 @@ test.describe.serial('Change informant on review', () => {
         })
         .click()
 
-      await selectAction(page, 'Review')
+      await expect(page.getByTestId('status-value')).toHaveText('Declared')
+
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR_VILLAGE)
+      await selectAction(page, 'Edit')
+      await expect(
+        page.getByText(
+          /You are editing a record declared by Velix Katongo \(Registration Officer at Klow Village Hospital\)/
+        )
+      ).toBeVisible()
     })
 
     test('Change informant to father', async () => {
       await page.getByTestId('change-button-informant.relation').click()
-      await page.getByRole('button', { name: 'Continue' }).click()
 
       await page.locator('#informant____relation').click()
       await page.getByText('Father', { exact: true }).click()
@@ -296,14 +303,12 @@ test.describe.serial('Change informant on review', () => {
         REQUIRED_VALIDATION_ERROR
       )
 
-      await expect(
-        page.getByRole('button', { name: 'Register' })
-      ).toBeDisabled()
+      await validateActionMenuButton(page, 'Register with edits', false)
+      await validateActionMenuButton(page, 'Declare with edits', false)
     })
 
     test('Fill in father details', async () => {
       await page.getByTestId('change-button-father.name').click()
-      await page.getByRole('button', { name: 'Continue' }).click()
 
       await page.locator('#firstname').fill(declaration.father.name.firstNames)
       await page.locator('#surname').fill(declaration.father.name.familyName)
@@ -323,7 +328,48 @@ test.describe.serial('Change informant on review', () => {
     test('Go back to review, expect to not see any validation errors', async () => {
       await page.getByRole('button', { name: 'Back to review' }).click()
       await expect(page.getByText(REQUIRED_VALIDATION_ERROR)).not.toBeVisible()
-      await expect(page.getByRole('button', { name: 'Register' })).toBeEnabled()
+      await validateActionMenuButton(page, 'Register with edits')
+      await validateActionMenuButton(page, 'Declare with edits')
+    })
+
+    test('Register with edits', async () => {
+      await selectDeclarationAction(page, 'Register with edits', false)
+      await expect(
+        page.getByText(
+          'You are about to register this birth event with your edits. Registering this event will create an official civil registration record.'
+        )
+      ).toBeVisible()
+      await page.getByRole('button', { name: 'Confirm' }).click()
+    })
+
+    test('Assert event is registered', async () => {
+      await ensureOutboxIsEmpty(page)
+      await page.getByText('Pending certification').click()
+      await page
+        .getByRole('button', { name: formatName(declaration.child.name) })
+        .click()
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR_VILLAGE)
+      await expect(page.getByTestId('status-value')).toHaveText('Registered')
+    })
+
+    test('Assert record form', async () => {
+      await switchEventTab(page, 'Record')
+      await expect(page.getByTestId('row-value-father.name')).toHaveText(
+        declaration.father.name.firstNames +
+          ' ' +
+          declaration.father.name.familyName
+      )
+    })
+
+    test('Assert audit trail', async () => {
+      await switchEventTab(page, 'Audit')
+      await page.getByRole('button', { name: 'Edited', exact: true }).click()
+
+      await page.locator('#close-btn').click()
+
+      await page
+        .getByRole('button', { name: 'Registered', exact: true })
+        .click()
     })
   })
 })

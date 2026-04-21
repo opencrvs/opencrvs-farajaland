@@ -12,7 +12,12 @@ import {
   createDeclaration,
   Declaration
 } from '../test-data/birth-declaration-with-mother-father'
-import { ensureAssigned, expectInUrl, selectAction, type } from '../../utils'
+import {
+  ensureAssignedToUser,
+  expectInUrl,
+  selectAction,
+  type
+} from '../../utils'
 import {
   navigateToCertificatePrintAction,
   selectCertificationType,
@@ -40,10 +45,7 @@ test.describe.serial('Correct record - 2', () => {
   }
 
   test.beforeAll(async ({ browser }) => {
-    const token = await getToken(
-      CREDENTIALS.LOCAL_REGISTRAR.USERNAME,
-      CREDENTIALS.LOCAL_REGISTRAR.PASSWORD
-    )
+    const token = await getToken(CREDENTIALS.REGISTRAR)
 
     // Create declaration with father details available
     const res = await createDeclaration(
@@ -59,9 +61,14 @@ test.describe.serial('Correct record - 2', () => {
   })
 
   test('2.1 Certificate preview', async () => {
-    await login(page, CREDENTIALS.REGISTRATION_AGENT)
-    await page.getByRole('button', { name: 'Ready to print' }).click()
-    await navigateToCertificatePrintAction(page, declaration)
+    await login(page, CREDENTIALS.REGISTRATION_OFFICER)
+    await page.getByRole('button', { name: 'Pending certification' }).click()
+    await navigateToCertificatePrintAction(
+      page,
+      declaration,
+      CREDENTIALS.REGISTRATION_OFFICER
+    )
+
     await selectCertificationType(page, 'Birth Certificate')
     await selectRequesterType(page, 'Print and issue to Informant (Mother)')
     await page.getByRole('button', { name: 'Continue', exact: true }).click()
@@ -138,7 +145,7 @@ test.describe.serial('Correct record - 2', () => {
     firstNames: faker.person.firstName(),
     familyName: faker.person.lastName(),
     brn: faker.string.numeric(10),
-    age: faker.number.int({ min: 1, max: 100 }).toString(),
+    age: faker.number.int({ min: 18, max: 100 }).toString(),
     email: faker.internet.email()
   }
 
@@ -148,7 +155,7 @@ test.describe.serial('Correct record - 2', () => {
 
       await expectInUrl(
         page,
-        `/events/request-correction/${eventId}/pages/informant?from=review&workqueue=ready-to-print#informant____relation`
+        `/events/request-correction/${eventId}/pages/informant?from=review&workqueue=pending-certification#informant____relation`
       )
 
       await page.locator('#informant____relation').click()
@@ -170,6 +177,13 @@ test.describe.serial('Correct record - 2', () => {
 
       await page.locator('#informant____brn').fill(updatedInformantDetails.brn)
 
+      await page.locator('#province').click()
+      await page.getByText('Sulaka', { exact: true }).click()
+      await page.locator('#district').click()
+      await page.getByText('Irundu', { exact: true }).click()
+      await page.locator('#village').click()
+      await page.getByText('Xhosa', { exact: true }).click()
+
       await page.getByRole('button', { name: 'Back to review' }).click()
 
       await expectInUrl(page, `/events/request-correction/${eventId}/review`)
@@ -188,7 +202,7 @@ test.describe.serial('Correct record - 2', () => {
 
       await expectInUrl(
         page,
-        `/events/request-correction/${eventId}/pages/child?from=review&workqueue=ready-to-print#child____placeOfBirth`
+        `/events/request-correction/${eventId}/pages/child?from=review&workqueue=pending-certification#child____placeOfBirth`
       )
 
       await page.locator('#child____placeOfBirth').click()
@@ -210,6 +224,13 @@ test.describe.serial('Correct record - 2', () => {
         )
         .getByText('Farajaland', { exact: true })
         .click()
+
+      await page.locator('#province').click()
+      await page.getByText('Central', { exact: true }).click()
+      await page.locator('#district').click()
+      await page.getByText('Ibombo', { exact: true }).click()
+      await page.locator('#village').click()
+      await page.getByText('Klow', { exact: true }).click()
 
       await page.getByTestId('text__town').fill(faker.location.city())
       await page.getByTestId('text__street').fill(faker.location.street())
@@ -244,17 +265,17 @@ test.describe.serial('Correct record - 2', () => {
       .click()
     await page.getByRole('button', { name: 'Confirm' }).click()
 
-    await expectInUrl(page, `/workqueue/ready-to-print`)
+    await expectInUrl(page, `/workqueue/pending-certification`)
   })
 
   test.describe('2.8 Correction Review', async () => {
     test.beforeAll(async ({ browser }) => {
       await page.close()
       page = await browser.newPage()
-      await login(page, CREDENTIALS.LOCAL_REGISTRAR)
+      await login(page, CREDENTIALS.REGISTRAR)
     })
 
-    test('2.8.1 Record audit by local registrar', async () => {
+    test('2.8.1 Record audit by Registrar', async () => {
       if (!trackingId) {
         throw new Error('Tracking ID is required')
       }
@@ -267,7 +288,8 @@ test.describe.serial('Correct record - 2', () => {
     })
 
     test('2.8.2 Correction review page', async () => {
-      await selectAction(page, 'Review')
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
+      await selectAction(page, 'Review correction request')
       await expect(page.getByText('Requester' + 'Father')).toBeVisible()
       await expect(
         page.getByText(
@@ -335,69 +357,68 @@ test.describe.serial('Correct record - 2', () => {
       await page.locator('#reject-correction-reason').fill('No legal proof')
       await page.getByRole('button', { name: 'Confirm', exact: true }).click()
 
-      await expectInUrl(page, `/events/overview/${eventId}`)
+      await expectInUrl(page, `/events/${eventId}`)
+    })
+  })
+
+  test.describe('2.9 Validate history in record audit', async () => {
+    test('2.9.0 Login', async ({ browser }) => {
+      const page = await browser.newPage()
+      await login(page, CREDENTIALS.REGISTRAR)
     })
 
-    test.describe('2.8.4 Validate history in record audit', async () => {
-      test('2.8.4.1 Navigate to record audit', async () => {
-        if (!trackingId) {
-          throw new Error('Tracking ID is required')
-        }
+    test('2.9.1 Assign', async () => {
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
+    })
 
-        await type(page, '#searchText', trackingId)
-        await page.locator('#searchIconButton').click()
-        await page
-          .getByRole('button', { name: formatV2ChildName(declaration) })
-          .click()
+    test('2.9.2 Navigate to record audit', async () => {
+      await page.getByRole('button', { name: 'Audit' }).click()
+    })
 
-        await ensureAssigned(page)
-      })
+    test('2.9.3 Validate correction requested modal', async () => {
+      await page
+        .getByRole('button', { name: 'Correction requested', exact: true })
+        .click()
 
-      test('2.8.4.2 Validate correction requested modal', async () => {
-        await page
-          .getByRole('button', { name: 'Correction requested', exact: true })
-          .click()
+      await expect(page.getByText('Requester' + 'Father')).toBeVisible()
 
-        await expect(page.getByText('Requester' + 'Father')).toBeVisible()
+      await expect(
+        page.getByText(
+          'Reason for correction' +
+            'Informant provided incorrect information (Material error)'
+        )
+      ).toBeVisible()
 
-        await expect(
-          page.getByText(
-            'Reason for correction' +
-              'Informant provided incorrect information (Material error)'
-          )
-        ).toBeVisible()
+      await expect(page.getByText('Fee total' + '$' + fee)).toBeVisible()
 
-        await expect(page.getByText('Fee total' + '$' + fee)).toBeVisible()
+      await expect(
+        page.getByText(
+          'Place of delivery' + 'Health Institution' + 'Residential address'
+        )
+      ).toBeVisible()
 
-        await expect(
-          page.getByText(
-            'Place of delivery' + 'Health Institution' + 'Residential address'
-          )
-        ).toBeVisible()
+      await expect(
+        page.getByText('Relationship to child' + 'Mother' + 'Brother')
+      ).toBeVisible()
 
-        await expect(
-          page.getByText('Relationship to child' + 'Mother' + 'Brother')
-        ).toBeVisible()
+      await expect(
+        page.getByText(
+          "Informant's name" + '-' + formatName(updatedInformantDetails)
+        )
+      ).toBeVisible()
 
-        await expect(
-          page.getByText(
-            "Informant's name" + '-' + formatName(updatedInformantDetails)
-          )
-        ).toBeVisible()
+      await page.locator('#close-btn').click()
+      await page.getByRole('button', { name: 'Next page' }).click()
+    })
 
-        await page.locator('#close-btn').click()
-        await page.getByRole('button', { name: 'Next page' }).click()
-      })
+    test('2.9.4 Validate correction rejected modal', async () => {
+      await page
+        .getByRole('button', { name: 'Correction rejected', exact: true })
+        .click()
 
-      test('2.8.4.3 Validate correction rejected modal', async () => {
-        await page
-          .getByRole('button', { name: 'Correction rejected', exact: true })
-          .click()
+      await expect(page.getByText('Reason' + 'No legal proof')).toBeVisible()
 
-        await expect(page.getByText('Reason' + 'No legal proof')).toBeVisible()
-
-        await page.locator('#close-btn').click()
-      })
+      await page.locator('#close-btn').click()
     })
   })
 })

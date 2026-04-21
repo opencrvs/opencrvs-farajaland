@@ -15,16 +15,11 @@ import { expectInUrl } from '../../../utils'
 test.describe.serial('10.0 Validate "Review" page', () => {
   let declaration: Declaration
   let page: Page
-  let eventId: string
 
   test.beforeAll(async ({ browser }) => {
-    const token = await getToken(
-      CREDENTIALS.LOCAL_REGISTRAR.USERNAME,
-      CREDENTIALS.LOCAL_REGISTRAR.PASSWORD
-    )
+    const token = await getToken(CREDENTIALS.REGISTRAR)
     const res = await createDeclaration(token)
     declaration = res.declaration
-    eventId = res.eventId
     page = await browser.newPage()
   })
 
@@ -37,8 +32,12 @@ test.describe.serial('10.0 Validate "Review" page', () => {
   })
 
   test('10.0.2 Navigate to certificate print action', async () => {
-    await page.getByRole('button', { name: 'Ready to print' }).click()
-    await navigateToCertificatePrintAction(page, declaration)
+    await page.getByRole('button', { name: 'Pending certification' }).click()
+    await navigateToCertificatePrintAction(
+      page,
+      declaration,
+      CREDENTIALS.REGISTRAR
+    )
   })
 
   test('10.1 Review page validations', async () => {
@@ -51,10 +50,10 @@ test.describe.serial('10.0 Validate "Review" page', () => {
     await page.getByRole('button', { name: 'Yes, print certificate' }).click()
     await expect(page.locator('#confirm-print-modal')).toBeVisible()
     await expect(page.locator('#confirm-print-modal')).toContainText(
-      'Print and issue certificate?'
+      'Print certified copy?'
     )
     await expect(page.locator('#confirm-print-modal')).toContainText(
-      'A Pdf of the certificate will open in a new tab for printing and issuing.'
+      'This will generate a certified copy of the record for printing.'
     )
   })
 
@@ -66,6 +65,6 @@ test.describe.serial('10.0 Validate "Review" page', () => {
   test('10.3 Click print button, user will navigate to a new tab from where user can download PDF', async () => {
     await printAndExpectPopup(page)
 
-    await expectInUrl(page, `/workqueue/ready-to-print`)
+    await expectInUrl(page, `/workqueue/pending-certification`)
   })
 })

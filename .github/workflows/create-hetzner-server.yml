@@ -1,38 +1,38 @@
 name: Create Hetzner Server
 run-name: Create server for ${{ inputs.environment }} environment
 on:
-    workflow_dispatch:
-      inputs:
-        environment:
-          description: "Short server name (3–5 letters)"
-          required: true
-        type:
-          description: "Environment type (single or multi node)"
-          required: false
-          type: choice
-          default: 'single-node'
-          options:
-            - single-node
-            - multi-node
-        backup_enabled:
-          type: boolean
-          description: Backup enabled
-          default: false
-          required: false
-    workflow_call:
-      inputs:
-        environment:
-          type: string
-          description: Environment to deploy to
-          required: true
-        type:
-          type: string
-          description: Select group tag you want to execute
-          default: 'single-node'
-        backup_enabled:
-          type: boolean
-          description: Backup enabled
-          default: false
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Short server name (3–5 letters)'
+        required: true
+      type:
+        description: 'Environment type (single or multi node)'
+        required: false
+        type: choice
+        default: 'single-node'
+        options:
+          - single-node
+          - multi-node
+      backup_enabled:
+        type: boolean
+        description: Backup enabled
+        default: false
+        required: false
+  workflow_call:
+    inputs:
+      environment:
+        type: string
+        description: Environment to deploy to
+        required: true
+      type:
+        type: string
+        description: Select group tag you want to execute
+        default: 'single-node'
+      backup_enabled:
+        type: boolean
+        description: Backup enabled
+        default: false
 
 env:
   GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
@@ -52,7 +52,7 @@ jobs:
     environment: ${{ inputs.environment }}
     steps:
       - name: Checkout repo ${{ github.repository }}
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           # Token permissions:  read:org, read:public_key, repo, workflow
           token: ${{ secrets.GH_TOKEN }}
@@ -63,7 +63,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
       - name: Checkout repo ${{ env.TERRAFORM_REPO }}
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: ${{ env.TERRAFORM_REPO }}
           ref: main

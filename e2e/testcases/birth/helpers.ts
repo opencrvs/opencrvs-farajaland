@@ -6,11 +6,9 @@ import { ensureOutboxIsEmpty } from '../../utils'
 import { getRowByTitle } from '../print-certificate/birth/helpers'
 import { SAFE_OUTBOX_TIMEOUT_MS } from '../../constants'
 import { GATEWAY_HOST } from '../../constants'
-import fetch from 'node-fetch'
+import { createClient } from '@opencrvs/toolkit/api'
 
 export const REQUIRED_VALIDATION_ERROR = 'Required'
-export const NAME_VALIDATION_ERROR =
-  "Input contains invalid characters. Please use only letters (a-z, A-Z), numbers (0-9), hyphens (-) and apostrophes(')"
 
 export async function validateAddress(
   page: Page,
@@ -20,13 +18,11 @@ export async function validateAddress(
   // selection is not rendered as part of the address.
   const addressWithoutGeographicalArea = omit(address, 'urbanOrRural')
 
-  await Promise.all(
-    Object.values(addressWithoutGeographicalArea).map(
-      (val) =>
-        typeof val === 'string' &&
-        expect(page.getByTestId(elementTestId).getByText(val)).toBeVisible()
-    )
-  )
+  for (const val of Object.values(addressWithoutGeographicalArea)) {
+    if (typeof val === 'string') {
+      await expect(page.getByTestId(elementTestId).getByText(val)).toBeVisible()
+    }
+  }
 }
 
 export async function fillDate(
@@ -105,27 +101,82 @@ export const assignFromWorkqueue = async (page: Page, name: string) => {
 
   await expect(
     getRowByTitle(page, name)
-      .getByRole('button', { name: 'Assign record' })
+      .getByRole('button', { name: 'User avatar' })
       .locator('img')
   ).toBeVisible({
     timeout: SAFE_OUTBOX_TIMEOUT_MS
   })
 }
 
-export async function getAllLocations(
-  type: 'ADMIN_STRUCTURE' | 'HEALTH_FACILITY' | 'CRVS_OFFICE'
+export async function getLocations(
+  type: 'HEALTH_FACILITY' | 'CRVS_OFFICE',
+  token: string
 ) {
-  const locations = (await fetch(
-    `${GATEWAY_HOST}/location?type=${type}&_count=0`
-  ).then((res) => res.json())) as fhir.Bundle
-
-  return locations.entry!.map((entry) => entry.resource as fhir.Location)
+  const client = createClient(GATEWAY_HOST + '/events', `Bearer ${token}`)
+  const locations = await client.locations.list.query({
+    locationType: type
+  })
+  return locations
 }
 
-export function getLocationIdByName(locations: fhir.Location[], name: string) {
-  const location = locations.find((location) => location.name === name)
+export async function getAdministrativeAreas(token: string) {
+  const client = createClient(GATEWAY_HOST + '/events', `Bearer ${token}`)
+  const locations = await client.administrativeAreas.list.query()
+
+  return locations
+}
+
+export function getIdByName(
+  items: { name: string; id: string }[],
+  name: string
+) {
+  const location = items.find((item) => item.name === name)
   if (!location) {
     throw new Error(`Location with name ${name} not found`)
   }
   return location.id
+}
+
+export async function verifyMembersEnabled(page: Page, members: string[]) {
+  for (const member of members) {
+    const row = page.getByRole('row', { name: new RegExp(member) })
+    await expect(row.getByText('Active')).toBeVisible()
+    await expect(row.getByRole('button', { name: member })).toBeEnabled()
+  }
+}
+
+export async function verifyMembersClickable(
+  page: Page,
+  members: string[],
+  officeButtonName: string
+) {
+  for (const member of members) {
+    const row = page.getByRole('row', { name: new RegExp(member) })
+    await expect(row.getByText('Active')).toBeVisible()
+    await row.getByRole('button', { name: member }).click()
+    await expect(page.locator('#content-name')).toHaveText(member)
+    await page.getByRole('button', { name: officeButtonName }).click()
+    await expect(page).toHaveURL(/.*\/team/)
+  }
+}
+export async function verifyTeamMembers(
+  page: Page,
+  team: { name: string; role: string; disabled?: boolean }[]
+) {
+  const rows = page.locator('#user_list tr:has(td)')
+
+  for (const member of team) {
+    const row = rows.filter({ hasText: member.name })
+    await expect(row).toHaveCount(1)
+
+    await expect(row.getByText(member.role)).toBeVisible()
+    await expect(row.getByText('Active')).toBeVisible()
+
+    const memberButton = row.getByRole('button', { name: member.name })
+    if (member.disabled) {
+      await expect(memberButton).toBeDisabled()
+    } else {
+      await expect(memberButton).toBeEnabled()
+    }
+  }
 }

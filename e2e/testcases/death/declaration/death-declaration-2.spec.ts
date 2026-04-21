@@ -6,11 +6,14 @@ import {
   formatDateObjectTo_dMMMMyyyy,
   getRandomDate,
   login,
-  uploadImageToSection
+  switchEventTab,
+  uploadImageToSection,
+  expectRowValue,
+  selectDeclarationAction
 } from '../../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../../constants'
-import { ensureOutboxIsEmpty, selectAction } from '../../../utils'
+import { ensureAssignedToUser, ensureOutboxIsEmpty } from '../../../utils'
 
 test.describe.serial('2. Death declaration case - 2', () => {
   let page: Page
@@ -30,6 +33,7 @@ test.describe.serial('2. Death declaration case - 2', () => {
         country: 'Farajaland',
         province: 'Sulaka',
         district: 'Zobwe',
+        village: 'Chuma',
         town: faker.location.city(),
         residentialArea: faker.location.county(),
         street: faker.location.street(),
@@ -43,7 +47,8 @@ test.describe.serial('2. Death declaration case - 2', () => {
       causeOfDeathEstablished: true,
       sourceCauseDeath: 'Lay reported',
       description: "T'was an accident sire",
-      placeOfDeath: "Deceased's usual place of residence"
+      placeOfDeath: 'Health Institution',
+      deathLocation: 'Klow Village Hospital'
     },
     informant: {
       relation: 'Son',
@@ -72,6 +77,7 @@ test.describe.serial('2. Death declaration case - 2', () => {
         country: 'Farajaland',
         province: 'Chuminga',
         district: 'Nsali',
+        village: 'Oro',
         town: faker.location.city(),
         residentialArea: faker.location.county(),
         street: faker.location.street(),
@@ -93,9 +99,9 @@ test.describe.serial('2. Death declaration case - 2', () => {
     await page.close()
   })
 
-  test.describe('2.1 Declaration started by FA', async () => {
+  test.describe('2.1 Declaration started by HO', async () => {
     test.beforeAll(async () => {
-      await login(page, CREDENTIALS.FIELD_AGENT)
+      await login(page, CREDENTIALS.HOSPITAL_OFFICIAL)
 
       await page.click('#header-new-event')
       await page.getByLabel('Death').click()
@@ -139,6 +145,10 @@ test.describe.serial('2. Death declaration case - 2', () => {
       await page
         .getByText(declaration.deceased.address.district, { exact: true })
         .click()
+      await page.locator('#village').click()
+      await page
+        .getByText(declaration.deceased.address.village, { exact: true })
+        .click()
       await page.locator('#town').fill(declaration.deceased.address.town)
       await page
         .locator('#residentialArea')
@@ -178,6 +188,12 @@ test.describe.serial('2. Death declaration case - 2', () => {
       await page
         .getByText(declaration.eventDetails.placeOfDeath, { exact: true })
         .click()
+
+      await page.locator('#eventDetails____deathLocation').fill('Klow Village')
+      await expect(
+        page.getByText(declaration.eventDetails.deathLocation)
+      ).toBeVisible()
+      await page.getByText(declaration.eventDetails.deathLocation).click()
 
       await continueForm(page)
     })
@@ -239,6 +255,15 @@ test.describe.serial('2. Death declaration case - 2', () => {
 
       await page.locator('#spouse____addressSameAs_NO').check()
 
+      await page.locator('#country').click()
+      await page
+        .locator('#country input')
+        .fill(declaration.spouse.address.country.slice(0, 3))
+      await page
+        .locator('#country')
+        .getByText(declaration.spouse.address.country, { exact: true })
+        .click()
+
       await page.locator('#province').click()
       await page
         .getByText(declaration.spouse.address.province, { exact: true })
@@ -246,6 +271,10 @@ test.describe.serial('2. Death declaration case - 2', () => {
       await page.locator('#district').click()
       await page
         .getByText(declaration.spouse.address.district, { exact: true })
+        .click()
+      await page.locator('#village').click()
+      await page
+        .getByText(declaration.spouse.address.village, { exact: true })
         .click()
       await page.locator('#town').fill(declaration.spouse.address.town)
       await page
@@ -431,6 +460,7 @@ test.describe.serial('2. Death declaration case - 2', () => {
         declaration.deceased.address.country +
           declaration.deceased.address.province +
           declaration.deceased.address.district +
+          declaration.deceased.address.village +
           declaration.deceased.address.town +
           declaration.deceased.address.residentialArea +
           declaration.deceased.address.street +
@@ -653,6 +683,7 @@ test.describe.serial('2. Death declaration case - 2', () => {
         declaration.spouse.address.country +
           declaration.spouse.address.province +
           declaration.spouse.address.district +
+          declaration.spouse.address.village +
           declaration.spouse.address.town +
           declaration.spouse.address.residentialArea +
           declaration.spouse.address.street +
@@ -671,10 +702,8 @@ test.describe.serial('2. Death declaration case - 2', () => {
         .click()
     })
 
-    test('2.1.8 Send for review', async () => {
-      await page.getByRole('button', { name: 'Send for review' }).click()
-      await expect(page.getByText('Send for review?')).toBeVisible()
-      await page.getByRole('button', { name: 'Confirm' }).click()
+    test('2.1.8 Declare', async () => {
+      await selectDeclarationAction(page, 'Declare')
       await ensureOutboxIsEmpty(page)
       await expect(page.getByText('Farajaland CRS')).toBeVisible()
 
@@ -683,10 +712,10 @@ test.describe.serial('2. Death declaration case - 2', () => {
        */
       expect(page.url().includes('assigned-to-you')).toBeTruthy()
 
-      await page.getByText('Sent for review').click()
+      await page.getByText('Recent').click()
 
       /*
-       * Expected result: The declaration should be in sent for review
+       * Expected result: The declaration should be in recent
        */
       await expect(
         page.getByRole('button', {
@@ -698,12 +727,12 @@ test.describe.serial('2. Death declaration case - 2', () => {
       ).toBeVisible()
     })
   })
-  test.describe('2.2 Declaration Review by RA', async () => {
-    test('2.2.1 Navigate to the declaration review page', async () => {
-      await login(page, CREDENTIALS.REGISTRATION_AGENT)
+  test.describe('2.2 Declaration Review by RO', async () => {
+    test('2.2.1 Navigate to the declaration "Record" -tab', async () => {
+      await login(page, CREDENTIALS.REGISTRATION_OFFICER)
 
       await ensureOutboxIsEmpty(page)
-      await page.getByText('Ready for review').click()
+      await page.getByText('Pending validation').click()
 
       await page
         .getByRole('button', {
@@ -713,17 +742,19 @@ test.describe.serial('2. Death declaration case - 2', () => {
             declaration.deceased.name.surname
         })
         .click()
+
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
+      await switchEventTab(page, 'Record')
     })
 
-    test('2.2.2 Verify information on review page', async () => {
-      await selectAction(page, 'Review')
+    test('2.2.2 Verify information on "Record" tab', async () => {
       /*
        * Expected result: should include
        * - Deceased's First Name
        * - Deceased's Family Name
        * - Change button
        */
-      await expectRowValueWithChangeButton(
+      await expectRowValue(
         page,
         'deceased.name',
         declaration.deceased.name.firstname +
@@ -736,18 +767,14 @@ test.describe.serial('2. Death declaration case - 2', () => {
        * - Deceased's Gender
        * - Change button
        */
-      await expectRowValueWithChangeButton(
-        page,
-        'deceased.gender',
-        declaration.deceased.gender
-      )
+      await expectRowValue(page, 'deceased.gender', declaration.deceased.gender)
 
       /*
        * Expected result: should include
        * - Deceased's age
        * - Change button
        */
-      await expectRowValueWithChangeButton(
+      await expectRowValue(
         page,
         'deceased.age',
         declaration.deceased.age.toString()
@@ -758,7 +785,7 @@ test.describe.serial('2. Death declaration case - 2', () => {
        * - Deceased's Nationality
        * - Change button
        */
-      await expectRowValueWithChangeButton(
+      await expectRowValue(
         page,
         'deceased.nationality',
         declaration.deceased.nationality
@@ -770,12 +797,8 @@ test.describe.serial('2. Death declaration case - 2', () => {
        * - Deceased's Id Number
        * - Change button
        */
-      await expectRowValueWithChangeButton(
-        page,
-        'deceased.idType',
-        declaration.deceased.idType
-      )
-      await expectRowValueWithChangeButton(
+      await expectRowValue(page, 'deceased.idType', declaration.deceased.idType)
+      await expectRowValue(
         page,
         'deceased.passport',
         declaration.deceased.passport
@@ -786,7 +809,7 @@ test.describe.serial('2. Death declaration case - 2', () => {
        * - Deceased's marital status
        * - Change button
        */
-      await expectRowValueWithChangeButton(
+      await expectRowValue(
         page,
         'deceased.maritalStatus',
         declaration.deceased.maritalStatus
@@ -797,12 +820,13 @@ test.describe.serial('2. Death declaration case - 2', () => {
        * - Deceased's address
        * - Change button
        */
-      await expectRowValueWithChangeButton(
+      await expectRowValue(
         page,
         'deceased.address',
         declaration.deceased.address.country +
           declaration.deceased.address.province +
           declaration.deceased.address.district +
+          declaration.deceased.address.village +
           declaration.deceased.address.town +
           declaration.deceased.address.residentialArea +
           declaration.deceased.address.street +
@@ -815,7 +839,7 @@ test.describe.serial('2. Death declaration case - 2', () => {
        * - Date of death
        * - Change button
        */
-      await expectRowValueWithChangeButton(
+      await expectRowValue(
         page,
         'eventDetails.date',
         formatDateObjectTo_dMMMMyyyy(declaration.eventDetails.date)
@@ -826,7 +850,7 @@ test.describe.serial('2. Death declaration case - 2', () => {
        * - Manner of death has been established
        * - Change button
        */
-      await expectRowValueWithChangeButton(
+      await expectRowValue(
         page,
         'eventDetails.mannerOfDeath',
         declaration.eventDetails.mannerOfDeath
@@ -837,18 +861,14 @@ test.describe.serial('2. Death declaration case - 2', () => {
        * - Cause of death has been established
        * - Change button
        */
-      await expectRowValueWithChangeButton(
-        page,
-        'eventDetails.causeOfDeathEstablished',
-        'Yes'
-      )
+      await expectRowValue(page, 'eventDetails.causeOfDeathEstablished', 'Yes')
 
       /*
        * Expected result: should include
        * - Source cause of death
        * - Change button
        */
-      await expectRowValueWithChangeButton(
+      await expectRowValue(
         page,
         'eventDetails.sourceCauseDeath',
         declaration.eventDetails.sourceCauseDeath
@@ -859,7 +879,7 @@ test.describe.serial('2. Death declaration case - 2', () => {
        * - Description cause of death
        * - Change button
        */
-      await expectRowValueWithChangeButton(
+      await expectRowValue(
         page,
         'eventDetails.description',
         declaration.eventDetails.description
@@ -870,7 +890,7 @@ test.describe.serial('2. Death declaration case - 2', () => {
        * - Place of death
        * - Change button
        */
-      await expectRowValueWithChangeButton(
+      await expectRowValue(
         page,
         'eventDetails.placeOfDeath',
         declaration.eventDetails.placeOfDeath
@@ -881,7 +901,7 @@ test.describe.serial('2. Death declaration case - 2', () => {
        * - Informant type
        * - Change button
        */
-      await expectRowValueWithChangeButton(
+      await expectRowValue(
         page,
         'informant.relation',
         declaration.informant.relation
@@ -893,7 +913,7 @@ test.describe.serial('2. Death declaration case - 2', () => {
        * - Informant's Family Name
        * - Change button
        */
-      await expectRowValueWithChangeButton(
+      await expectRowValue(
         page,
         'informant.name',
         declaration.informant.name.firstname +
@@ -906,7 +926,7 @@ test.describe.serial('2. Death declaration case - 2', () => {
        * - informant's date of birth
        * - Change button
        */
-      await expectRowValueWithChangeButton(
+      await expectRowValue(
         page,
         'informant.dob',
         formatDateObjectTo_dMMMMyyyy(declaration.informant.dob)
@@ -917,7 +937,7 @@ test.describe.serial('2. Death declaration case - 2', () => {
        * - informant's Nationality
        * - Change button
        */
-      await expectRowValueWithChangeButton(
+      await expectRowValue(
         page,
         'informant.nationality',
         declaration.informant.nationality
@@ -929,38 +949,26 @@ test.describe.serial('2. Death declaration case - 2', () => {
        * - informant's Id Number
        * - Change button
        */
-      await expectRowValueWithChangeButton(
+      await expectRowValue(
         page,
         'informant.idType',
         declaration.informant.idType
       )
-      await expectRowValueWithChangeButton(
-        page,
-        'informant.nid',
-        declaration.informant.nid
-      )
+      await expectRowValue(page, 'informant.nid', declaration.informant.nid)
 
       /*
        * Expected result: should include
        * - informant's address
        * - Change button
        */
-      await expectRowValueWithChangeButton(
-        page,
-        'informant.addressSameAs',
-        'Yes'
-      )
+      await expectRowValue(page, 'informant.addressSameAs', 'Yes')
 
       /*
        * Expected result: should include
        * - Informant's Email
        * - Change button
        */
-      await expectRowValueWithChangeButton(
-        page,
-        'informant.email',
-        declaration.informant.email
-      )
+      await expectRowValue(page, 'informant.email', declaration.informant.email)
 
       /*
        * Expected result: should include
@@ -968,7 +976,7 @@ test.describe.serial('2. Death declaration case - 2', () => {
        * - Spouse's Family Name
        * - Change button
        */
-      await expectRowValueWithChangeButton(
+      await expectRowValue(
         page,
         'spouse.name',
         declaration.spouse.name.firstname +
@@ -981,7 +989,7 @@ test.describe.serial('2. Death declaration case - 2', () => {
        * - Spouse's age
        * - Change button
        */
-      await expectRowValueWithChangeButton(
+      await expectRowValue(
         page,
         'spouse.age',
         declaration.spouse.age.toString()
@@ -992,7 +1000,7 @@ test.describe.serial('2. Death declaration case - 2', () => {
        * - Spouse's Nationality
        * - Change button
        */
-      await expectRowValueWithChangeButton(
+      await expectRowValue(
         page,
         'spouse.nationality',
         declaration.spouse.nationality
@@ -1003,28 +1011,21 @@ test.describe.serial('2. Death declaration case - 2', () => {
        * - Spouse's Id Number
        * - Change button
        */
-      await expectRowValueWithChangeButton(
-        page,
-        'spouse.idType',
-        declaration.spouse.idType
-      )
-      await expectRowValueWithChangeButton(
-        page,
-        'spouse.passport',
-        declaration.spouse.passport
-      )
+      await expectRowValue(page, 'spouse.idType', declaration.spouse.idType)
+      await expectRowValue(page, 'spouse.passport', declaration.spouse.passport)
 
       /*
        * Expected result: should include
        * - Spouse's address
        * - Change button
        */
-      await expectRowValueWithChangeButton(
+      await expectRowValue(
         page,
         'spouse.address',
         declaration.spouse.address.country +
           declaration.spouse.address.province +
           declaration.spouse.address.district +
+          declaration.spouse.address.village +
           declaration.spouse.address.town +
           declaration.spouse.address.residentialArea +
           declaration.spouse.address.street +

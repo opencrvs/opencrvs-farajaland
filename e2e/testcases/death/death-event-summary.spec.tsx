@@ -6,7 +6,8 @@ import {
   getRandomDate,
   goToSection,
   joinValuesWith,
-  login
+  login,
+  selectDeclarationAction
 } from '../../helpers'
 
 test.describe.serial('Death event summary', () => {
@@ -20,8 +21,9 @@ test.describe.serial('Death event summary', () => {
       },
       address: {
         country: 'Farajaland',
-        province: 'Pualula',
-        district: 'Pili',
+        province: 'Sulaka',
+        district: 'Irundu',
+        village: 'Xhosa',
         town: 'Deceased Town',
         residentalArea: 'Deceased Area',
         street: 'Deceased Street',
@@ -35,8 +37,9 @@ test.describe.serial('Death event summary', () => {
       placeOfDeath: 'Other',
       address: {
         country: 'Farajaland',
-        province: 'Pualula',
-        district: 'Pili',
+        province: 'Central',
+        district: 'Ibombo',
+        village: 'Klow',
         town: 'Place of death Town',
         residentalArea: 'Place of death Area',
         street: 'Place of death Street',
@@ -77,6 +80,10 @@ test.describe.serial('Death event summary', () => {
     await page
       .getByText(declaration.deceased.address.district, { exact: true })
       .click()
+    await page.locator('#village').click()
+    await page
+      .getByText(declaration.deceased.address.village, { exact: true })
+      .click()
 
     await page.locator('#town').fill(declaration.deceased.address.town)
 
@@ -106,6 +113,10 @@ test.describe.serial('Death event summary', () => {
     await page.locator('#district').click()
     await page
       .getByText(declaration.eventDetails.address.district, { exact: true })
+      .click()
+    await page.locator('#village').click()
+    await page
+      .getByText(declaration.eventDetails.address.village, { exact: true })
       .click()
 
     await page.locator('#town').fill(declaration.eventDetails.address.town)
@@ -140,10 +151,10 @@ test.describe.serial('Death event summary', () => {
   })
 
   test('Save draft and find it in workqueue', async () => {
-    await page.getByText('Save & Exit', { exact: true }).click()
+    await selectDeclarationAction(page, 'Save & Exit', false)
     await page.getByText('Confirm', { exact: true }).click()
 
-    await page.getByRole('button', { name: 'My drafts' }).click()
+    await page.getByRole('button', { name: 'Drafts' }).click()
 
     await page
       .getByRole('button', {

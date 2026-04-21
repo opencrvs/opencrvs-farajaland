@@ -1488,7 +1488,6 @@ export type Query = {
   fetchLocationWiseEventMetrics?: Maybe<Array<LocationWiseEstimationMetric>>
   fetchMarriageRegistration?: Maybe<MarriageRegistration>
   fetchMonthWiseEventMetrics?: Maybe<Array<MonthWiseEstimationMetric>>
-  fetchRecordDetailsForVerification?: Maybe<RecordDetails>
   fetchRegistration?: Maybe<EventRegistration>
   fetchRegistrationCountByStatus?: Maybe<RegistrationCountResult>
   fetchRegistrationForViewing?: Maybe<EventRegistration>
@@ -1555,10 +1554,6 @@ export type QueryFetchMonthWiseEventMetricsArgs = {
   locationId?: InputMaybe<Scalars['String']>
   timeEnd: Scalars['String']
   timeStart: Scalars['String']
-}
-
-export type QueryFetchRecordDetailsForVerificationArgs = {
-  id: Scalars['String']
 }
 
 export type QueryFetchRegistrationArgs = {
@@ -1782,8 +1777,6 @@ export type QuestionnaireQuestionInput = {
   fieldId?: InputMaybe<Scalars['String']>
   value?: InputMaybe<Scalars['String']>
 }
-
-export type RecordDetails = BirthRegistration | DeathRegistration
 
 export enum RegAction {
   Assigned = 'ASSIGNED',
@@ -2147,12 +2140,10 @@ export type SystemSettings = {
   openIdProviderBaseUrl?: Maybe<Scalars['String']>
   openIdProviderClaims?: Maybe<Scalars['String']>
   openIdProviderClientId?: Maybe<Scalars['String']>
-  webhook?: Maybe<Array<WebhookPermission>>
 }
 
 export type SystemSettingsInput = {
   dailyQuota?: InputMaybe<Scalars['Int']>
-  webhook?: InputMaybe<Array<InputMaybe<WebhookInput>>>
 }
 
 export enum SystemStatus {
@@ -2164,7 +2155,6 @@ export enum SystemType {
   Health = 'HEALTH',
   NationalId = 'NATIONAL_ID',
   RecordSearch = 'RECORD_SEARCH',
-  Webhook = 'WEBHOOK'
 }
 
 export type TotalMetricsByLocation = {
@@ -2198,7 +2188,6 @@ export type TotalVsExport = {
 
 export type UpdatePermissionsInput = {
   clientId: Scalars['String']
-  webhook: Array<WebhookInput>
 }
 
 export type User = {
@@ -2302,17 +2291,6 @@ export type VerifyPasswordResult = {
   scrope?: Maybe<Array<Maybe<Scalars['String']>>>
   status?: Maybe<Scalars['String']>
   username?: Maybe<Scalars['String']>
-}
-
-export type WebhookInput = {
-  event: Scalars['String']
-  permissions: Array<InputMaybe<Scalars['String']>>
-}
-
-export type WebhookPermission = {
-  __typename?: 'WebhookPermission'
-  event: Scalars['String']
-  permissions: Array<Scalars['String']>
 }
 
 export type BirthRegistrationFragmentFragment = {
@@ -2573,26 +2551,26 @@ export type SearchEventsQuery = {
     __typename?: 'EventSearchResultSet'
     results?: Array<
       | {
-          __typename?: 'BirthEventSearchSet'
-          registration?: {
-            __typename?: 'RegistrationSearchSet'
-            dateOfDeclaration?: any | null
-          } | null
-        }
+        __typename?: 'BirthEventSearchSet'
+        registration?: {
+          __typename?: 'RegistrationSearchSet'
+          dateOfDeclaration?: any | null
+        } | null
+      }
       | {
-          __typename?: 'DeathEventSearchSet'
-          registration?: {
-            __typename?: 'RegistrationSearchSet'
-            dateOfDeclaration?: any | null
-          } | null
-        }
+        __typename?: 'DeathEventSearchSet'
+        registration?: {
+          __typename?: 'RegistrationSearchSet'
+          dateOfDeclaration?: any | null
+        } | null
+      }
       | {
-          __typename?: 'MarriageEventSearchSet'
-          registration?: {
-            __typename?: 'RegistrationSearchSet'
-            dateOfDeclaration?: any | null
-          } | null
-        }
+        __typename?: 'MarriageEventSearchSet'
+        registration?: {
+          __typename?: 'RegistrationSearchSet'
+          dateOfDeclaration?: any | null
+        } | null
+      }
       | null
     > | null
   } | null

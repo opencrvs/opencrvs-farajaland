@@ -10,31 +10,29 @@
  */
 import { env } from './environment'
 
-export const TEST_SOURCE = `${process.cwd()}/src/tests/`
 export const DEFAULT_TIMEOUT = 600000
-export const SEVEN_DAYS_IN_MILISECOND = 1000 * 60 * 60 * 24 * 7
 export const THIRTY_MINUTES_IN_MILLISECONDS = 1000 * 60 * 30
 
 export const DOMAIN = env.DOMAIN
 export const GATEWAY_URL = env.GATEWAY_URL
 export const LOGIN_URL = env.LOGIN_URL
 export const CLIENT_APP_URL = env.CLIENT_APP_URL
-export const FHIR_URL = env.FHIR_URL
 
 export const COUNTRY_CONFIG_HOST = env.COUNTRY_CONFIG_HOST
 export const COUNTRY_CONFIG_PORT = env.COUNTRY_CONFIG_PORT
 export const AUTH_URL = env.AUTH_URL
 export const COUNTRY_CONFIG_URL = env.COUNTRY_CONFIG_URL
-export const APPLICATION_CONFIG_URL = env.APPLICATION_CONFIG_URL
 
 export const SENTRY_DSN = env.SENTRY_DSN
-export const CHECK_INVALID_TOKEN = env.CHECK_INVALID_TOKEN
 
 export const PRODUCTION = env.isProd
-export const QA_ENV = env.QA_ENV
 export const ESIGNET_REDIRECT_URL = env.ESIGNET_REDIRECT_URL
 export const OPENID_PROVIDER_CLIENT_ID = env.OPENID_PROVIDER_CLIENT_ID
 export const OPENID_PROVIDER_CLAIMS = env.OPENID_PROVIDER_CLAIMS
 export const MOSIP_API_USERINFO_URL = env.MOSIP_API_USERINFO_URL
 export const ANALYTICS_DATABASE_URL = env.ANALYTICS_DATABASE_URL
 export const MOSIP_INTEROP_URL = env.MOSIP_INTEROP_URL
+export const SYSTEM_CLIENT_ID = env.SYSTEM_CLIENT_ID
+export const SYSTEM_CLIENT_SECRET = env.SYSTEM_CLIENT_SECRET
+export const NO_MOSIP = env.NO_MOSIP
+export const REFERENCE_DATA_DATABASE_URL = env.REFERENCE_DATA_DATABASE_URL

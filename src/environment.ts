@@ -15,22 +15,11 @@ export const env = cleanEnv(process.env, {
   GATEWAY_URL: url({ devDefault: 'http://localhost:7070' }),
   LOGIN_URL: url({ devDefault: 'http://localhost:3020/' }),
   CLIENT_APP_URL: url({ devDefault: 'http://localhost:3000/' }),
-  FHIR_URL: url({ devDefault: 'http://localhost:3447/fhir' }),
   COUNTRY_CONFIG_HOST: str({ default: '0.0.0.0' }),
   COUNTRY_CONFIG_PORT: port({ default: 3040 }),
   AUTH_URL: url({ devDefault: 'http://localhost:4040' }),
   COUNTRY_CONFIG_URL: url({ devDefault: 'http://localhost:3040' }),
-  APPLICATION_CONFIG_URL: url({ devDefault: 'http://localhost:2021/' }),
   SENTRY_DSN: str({ default: undefined }),
-  CHECK_INVALID_TOKEN: bool({
-    default: true,
-    devDefault: false,
-    desc: 'Check if the token has been invalidated in the auth service before it has expired'
-  }),
-  CONFIRM_REGISTRATION_URL: url({
-    devDefault: 'http://localhost:5050/confirm/registration'
-  }),
-  QA_ENV: bool({ default: false }),
   ESIGNET_REDIRECT_URL: url({ devDefault: 'http://localhost:20260/authorize' }),
   OPENID_PROVIDER_CLIENT_ID: str({ devDefault: 'mock-client_id' }),
   OPENID_PROVIDER_CLAIMS: str({
@@ -54,5 +43,35 @@ export const env = cleanEnv(process.env, {
     default: '',
     devDefault: '',
     desc: 'Comma separated list of URLs to forward action events to'
+  }),
+  SYSTEM_CLIENT_ID: str({
+    default: undefined,
+    devDefault: undefined,
+    desc: 'Client ID for system-to-system authentication on /api/ proxy endpoints'
+  }),
+  SYSTEM_CLIENT_SECRET: str({
+    default: undefined,
+    devDefault: undefined,
+    desc: 'Client secret for system-to-system authentication on /api/ proxy endpoints'
+  }),
+  VERIFIABLE_CREDENTIALS_SDJWT_ISSUE_URL: url({
+    default: 'http://countryconfig:3040/_demo-issuer/openid4vc/sdjwt/issue',
+    devDefault: 'http://localhost:3040/_demo-issuer/openid4vc/sdjwt/issue',
+    desc: 'URL for requesting SD-JWT credential offers for verifiable credentials issuance'
+  }),
+  VERIFIABLE_CREDENTIALS_RAW_JWT_SIGN_URL: url({
+    default: 'http://countryconfig:3040/_demo-issuer/raw/jwt/sign',
+    devDefault: 'http://localhost:3040/_demo-issuer/raw/jwt/sign',
+    desc: 'URL for signing raw JWTs for verifiable credentials issuance'
+  }),
+  NO_MOSIP: bool({
+    devDefault: true,
+    default: false,
+    desc: 'Used in local development to disable MOSIP registration dependency'
+  }),
+  REFERENCE_DATA_DATABASE_URL: url({
+    devDefault:
+      'postgres://events_reference_data:reference_data_password@localhost:5432/events',
+    desc: 'The database URL for reads and writes to `reference_data.icd10`. See `/infrastructure/postgres/setup-reference-data.sh` for how the default database is set up for your country.'
   })
 })

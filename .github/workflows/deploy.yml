@@ -37,14 +37,7 @@ on:
           - development
           - qa
           - e2e
-          - v17
           - staging
-          - pentest
-          - v19-beta-staging
-          - v19-beta-prod
-          - fix-analytics
-          - mosip
-          - openfn
       core-image-tag:
         description: Core image tag
         required: true
@@ -58,7 +51,14 @@ on:
         description: Reset the environment
         default: false
 jobs:
+  reset:
+    if: ${{ inputs.reset == 'true' }}
+    uses: ./.github/workflows/clear-environment.yml
+    with:
+      environment: ${{ inputs.environment }}
+    secrets: inherit
   deploy:
+    needs: reset
     environment: ${{ inputs.environment }}
     runs-on: ubuntu-24.04
     outputs:
@@ -66,13 +66,13 @@ jobs:
     timeout-minutes: 60
     steps:
       - name: Clone core
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
           repository: 'opencrvs/opencrvs-core'
           path: './opencrvs-core'
       - name: Clone country config resource package
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
           ref: ${{ github.ref_name }}
@@ -145,7 +145,7 @@ jobs:
               | .[]
           ' > .env.${{ inputs.environment }}
       - name: Use Node.js from .nvmrc
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version-file: ${{ github.event.repository.name }}/.nvmrc
       - name: Deploy to ${{ inputs.environment }}
@@ -162,16 +162,11 @@ jobs:
           --version=${{ inputs.core-image-tag }} \
           --country_config_version=${{ env.image_tag }} \
           --replicas=${{ vars.REPLICAS }}
-  reset:
-    needs: deploy
-    if: ${{ inputs.reset == 'true' && needs.deploy.outputs.outcome == 'success' }}
-    uses: ./.github/workflows/clear-environment.yml
-    with:
-      environment: ${{ inputs.environment }}
-    secrets: inherit
   seed-data:
-    needs: reset
-    if: ${{ inputs.reset == 'true' && needs.reset.outputs.outcome == 'success' }}
+    needs:
+      - reset
+      - deploy
+    if: ${{ inputs.reset == 'true' && needs.deploy.result == 'success' }}
     uses: ./.github/workflows/seed-data.yml
     with:
       environment: ${{ inputs.environment }}

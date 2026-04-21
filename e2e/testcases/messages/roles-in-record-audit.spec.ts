@@ -1,32 +1,26 @@
 import { expect, test } from '@playwright/test'
 import { CREDENTIALS } from '../../constants'
-import { getToken, login } from '../../helpers'
+import { getToken, login, switchEventTab } from '../../helpers'
 import { createDeclaration } from '../test-data/birth-declaration'
 import { ActionType } from '@opencrvs/toolkit/events'
-import { ensureAssigned } from '../../utils'
+import { ensureAssignedToUser } from '../../utils'
 import { formatV2ChildName } from '../birth/helpers'
 
 const testCases = [
   {
-    credential: CREDENTIALS.FIELD_AGENT,
+    credential: CREDENTIALS.HOSPITAL_OFFICIAL,
     action: ActionType.DECLARE,
-    expectedAuditRole: 'Hospital Clerk'
-  },
-
-  {
-    credential: CREDENTIALS.ANOTHER_FIELD_AGENT,
-    action: ActionType.DECLARE,
-    expectedAuditRole: 'Community Leader'
+    expectedAuditRole: 'Hospital Official'
   },
   {
-    credential: CREDENTIALS.REGISTRATION_AGENT,
-    action: ActionType.VALIDATE,
+    credential: CREDENTIALS.REGISTRATION_OFFICER,
+    action: ActionType.DECLARE,
     expectedAuditRole: 'Registration Officer'
   },
   {
-    credential: CREDENTIALS.LOCAL_REGISTRAR,
+    credential: CREDENTIALS.REGISTRAR,
     action: ActionType.REGISTER,
-    expectedAuditRole: 'Local Registrar'
+    expectedAuditRole: 'Registrar'
   }
 ]
 
@@ -34,10 +28,10 @@ test.describe('Roles in Record Audit', () => {
   for (const { credential, expectedAuditRole, action } of testCases) {
     test(expectedAuditRole, async ({ browser }) => {
       const page = await browser.newPage()
-      const token = await getToken(credential.USERNAME, credential.PASSWORD)
+      const token = await getToken(credential)
       const res = await createDeclaration(token, undefined, action)
 
-      await login(page, CREDENTIALS.LOCAL_REGISTRAR)
+      await login(page, CREDENTIALS.REGISTRAR)
 
       await expect(page.locator('#content-name')).toHaveText(
         'Assigned to you',
@@ -47,7 +41,7 @@ test.describe('Roles in Record Audit', () => {
       )
 
       await page
-        .getByRole('textbox', { name: 'Search for a tracking ID' })
+        .getByRole('textbox', { name: 'Search for a record' })
         .fill(formatV2ChildName(res.declaration))
 
       await page.getByRole('button', { name: 'Search' }).click()
@@ -58,7 +52,8 @@ test.describe('Roles in Record Audit', () => {
         })
         .click()
 
-      await ensureAssigned(page)
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
+      await switchEventTab(page, 'Audit')
 
       await expect(page.locator('#row_0')).toContainText(expectedAuditRole)
     })
