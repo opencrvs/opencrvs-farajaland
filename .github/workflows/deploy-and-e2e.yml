@@ -73,7 +73,7 @@ jobs:
 
   discover-tests:
     name: Discover test directories
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     needs: [get-core-commit, get-country-config-commit]
     outputs:
       test_matrix: ${{ steps.list-tests.outputs.test_matrix }}
@@ -96,8 +96,7 @@ jobs:
           path: |
             node_modules
             ~/.cache/yarn/v6
-            ~/.cache/ms-playwright
-          key: ${{github.event.inputs.countryconfig-image-tag || needs.get-country-config-commit.outputs.short_sha}}
+          key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-node-
 
@@ -142,23 +141,32 @@ jobs:
           node-version-file: .nvmrc
 
       - name: Cache Node.js dependencies
+        id: node-cache
         uses: actions/cache@v5
-        id: cache
         with:
           path: |
             node_modules
             ~/.cache/yarn/v6
-            ~/.cache/ms-playwright
-          key: ${{github.event.inputs.countryconfig-image-tag || needs.get-country-config-commit.outputs.short_sha}}
+          key: ${{ runner.os }}-node-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-node-
 
+      - name: Cache Playwright browsers
+        id: playwright-cache
+        uses: actions/cache@v5
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+
       - name: Install Dependencies
-        if: steps.cache.outputs.cache-hit != 'true'
+        if: steps.node-cache.outputs.cache-hit != 'true'
         run: yarn
 
-      - uses: nick-fields/retry@v4
-        if: steps.cache.outputs.cache-hit != 'true'
+      - name: Install Playwright
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        uses: nick-fields/retry@v4
         with:
           timeout_minutes: 10
           max_attempts: 3
@@ -175,6 +183,7 @@ jobs:
           [ -d ctrf ] && \
             echo "ctrf=true" >> $GITHUB_OUTPUT || \
             echo "ctrf=false" >> $GITHUB_OUTPUT
+
       - name: Publish Test Summary Results
         run: npx github-actions-ctrf ctrf/ctrf-report.json
         if: always() && steps.ctrf_check.outputs.ctrf == 'true'
