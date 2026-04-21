@@ -96,6 +96,7 @@ jobs:
           path: |
             node_modules
             ~/.cache/yarn/v6
+            ~/.cache/ms-playwright
           key: ${{github.event.inputs.countryconfig-image-tag || needs.get-country-config-commit.outputs.short_sha}}
           restore-keys: |
             ${{ runner.os }}-node-
@@ -142,22 +143,31 @@ jobs:
 
       - name: Cache Node.js dependencies
         uses: actions/cache@v5
+        id: cache
         with:
           path: |
             node_modules
             ~/.cache/yarn/v6
+            ~/.cache/ms-playwright
           key: ${{github.event.inputs.countryconfig-image-tag || needs.get-country-config-commit.outputs.short_sha}}
           restore-keys: |
             ${{ runner.os }}-node-
 
       - name: Install Dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
         run: yarn
 
-      - uses: nick-fields/retry@v4
+      - name: Install Playwright system dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: npx playwright install-deps chromium
+
+      - name: Install Playwright browsers
+        if: steps.cache.outputs.cache-hit != 'true'
+        uses: nick-fields/retry@v4
         with:
           timeout_minutes: 10
           max_attempts: 3
-          command: npx playwright install --with-deps
+          command: npx playwright install chromium
 
       - name: Run Playwright Tests
         run: npx playwright test --shard=${{ matrix.shard }}/20
