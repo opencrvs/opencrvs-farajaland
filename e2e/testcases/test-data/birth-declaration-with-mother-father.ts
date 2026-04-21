@@ -50,7 +50,8 @@ async function getPlaceOfBirth(
 
     return {
       'child.placeOfBirth': 'HEALTH_FACILITY',
-      'child.birthLocation': locationId
+      'child.birthLocation': locationId,
+      'child.birthLocationId': locationId
     }
   }
 
@@ -65,7 +66,8 @@ async function getPlaceOfBirth(
         addressType: AddressType.DOMESTIC,
         administrativeArea: village,
         streetLevelDetails: { town: 'Dhaka' }
-      }
+      },
+      'child.birthLocationId': village
     }
   }
 
