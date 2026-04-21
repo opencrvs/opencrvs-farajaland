@@ -102,6 +102,23 @@ jobs:
 
       - name: Install Dependencies
         run: yarn
+
+      - name: Cache Playwright browsers
+        id: playwright-cache
+        uses: actions/cache@v5
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+
+      - name: Install Playwright
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        uses: nick-fields/retry@v4
+        with:
+          timeout_minutes: 10
+          max_attempts: 3
+          command: npx playwright install --with-deps
   test:
     needs: [deploy, discover-tests, get-core-commit, get-country-config-commit]
     runs-on: ubuntu-24.04
