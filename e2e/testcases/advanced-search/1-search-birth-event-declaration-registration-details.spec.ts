@@ -1,9 +1,6 @@
 import { expect, test, type Page } from '@playwright/test'
 import { getToken, login } from '../../helpers'
-import {
-  createDeclaration,
-  MOTHER_DOB
-} from '../test-data/birth-declaration-with-father-brother'
+import { createDeclaration } from '../test-data/birth-declaration-with-father-brother'
 import { CREDENTIALS } from '../../constants'
 import { faker } from '@faker-js/faker'
 import { assertTexts, selectLocationOption, type } from '../../utils'
@@ -23,14 +20,12 @@ test.describe
       CREDENTIALS.LOCAL_REGISTRAR.PASSWORD
     )
 
-    const minChildDob = new Date(MOTHER_DOB)
-    minChildDob.setFullYear(minChildDob.getFullYear() + 18)
-
     await createDeclaration(token, {
+      'mother.dob': '1995-09-12',
       'child.dob': faker.date
         // DOB must be at least 18 years after mother.dob to pass validation
         // Upper bound ensures the record appears on the first page of search results
-        .between({ from: minChildDob, to: '2020-12-31' })
+        .between({ from: '2013-09-15', to: '2020-12-31' })
         .toISOString()
         .split('T')[0],
       'child.reason': 'Other', // needed for late dob value
