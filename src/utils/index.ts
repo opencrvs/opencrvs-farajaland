@@ -9,13 +9,11 @@
  * Copyright (C) The OpenCRVS Authors located at https://github.com/opencrvs/opencrvs-core/blob/master/AUTHORS.
  */
 
-import fetch from 'node-fetch'
 import { callingCountries } from 'country-data'
 import csv2json from 'csv2json'
 import { createReadStream } from 'fs'
 import fs from 'fs'
 import { PhoneNumberFormat, PhoneNumberUtil } from 'google-libphonenumber'
-import { URL } from 'url'
 import { build } from 'esbuild'
 import { memoize } from 'lodash'
 import { join } from 'path'
@@ -113,11 +111,11 @@ export function getTrackingIdFromTaskResource(taskResource: fhir.Task) {
     taskResource.identifier.find((identifier) => {
       return (
         identifier.system ===
-        `${OPENCRVS_SPECIFICATION_URL}id/birth-tracking-id` ||
+          `${OPENCRVS_SPECIFICATION_URL}id/birth-tracking-id` ||
         identifier.system ===
-        `${OPENCRVS_SPECIFICATION_URL}id/death-tracking-id` ||
+          `${OPENCRVS_SPECIFICATION_URL}id/death-tracking-id` ||
         identifier.system ===
-        `${OPENCRVS_SPECIFICATION_URL}id/marriage-tracking-id`
+          `${OPENCRVS_SPECIFICATION_URL}id/marriage-tracking-id`
       )
     })
   if (!trackingIdentifier || !trackingIdentifier.value) {
@@ -239,8 +237,9 @@ export function createCustomFieldHandlebarName(fieldId: string) {
     }
   })
 
-  return `${fieldIdNameArray[0]}${fieldIdNameArray[1]}${fieldIdNameArray[fieldIdNameArray.length - 1]
-    }`
+  return `${fieldIdNameArray[0]}${fieldIdNameArray[1]}${
+    fieldIdNameArray[fieldIdNameArray.length - 1]
+  }`
 }
 
 export function uppercaseFirstLetter(str: string) {
