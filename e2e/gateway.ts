@@ -2184,12 +2184,10 @@ export type SystemSettings = {
   openIdProviderBaseUrl?: Maybe<Scalars['String']>
   openIdProviderClaims?: Maybe<Scalars['String']>
   openIdProviderClientId?: Maybe<Scalars['String']>
-  webhook?: Maybe<Array<WebhookPermission>>
 }
 
 export type SystemSettingsInput = {
   dailyQuota?: InputMaybe<Scalars['Int']>
-  webhook?: InputMaybe<Array<InputMaybe<WebhookInput>>>
 }
 
 export enum SystemStatus {
@@ -2201,7 +2199,6 @@ export enum SystemType {
   Health = 'HEALTH',
   NationalId = 'NATIONAL_ID',
   RecordSearch = 'RECORD_SEARCH',
-  Webhook = 'WEBHOOK'
 }
 
 export enum TelecomSystem {
@@ -2253,7 +2250,6 @@ export type TotalVsExport = {
 
 export type UpdatePermissionsInput = {
   clientId: Scalars['String']
-  webhook: Array<WebhookInput>
 }
 
 export type User = {
@@ -2349,13 +2345,3 @@ export type VerifyPasswordResult = {
   username?: Maybe<Scalars['String']>
 }
 
-export type WebhookInput = {
-  event: Scalars['String']
-  permissions: Array<InputMaybe<Scalars['String']>>
-}
-
-export type WebhookPermission = {
-  __typename?: 'WebhookPermission'
-  event: Scalars['String']
-  permissions: Array<Scalars['String']>
-}

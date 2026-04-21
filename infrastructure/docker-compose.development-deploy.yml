@@ -51,9 +51,12 @@ services:
       - NODE_ENV=production
 
   events:
+    secrets:
+      - jwt-public-key.{{ts}}
     environment:
       - NODE_ENV=production
       - TWO_FA_ENABLED=false
+      - CERT_PUBLIC_KEY_PATH=/run/secrets/jwt-public-key.{{ts}}
 
   user-mgnt:
     environment:
@@ -61,16 +64,7 @@ services:
       - NODE_ENV=production
       - DEFAULT_USER_PASSWORD=test
 
-  webhooks:
-    environment:
-      - SENTRY_DSN=${SENTRY_DSN:-}
-      - NODE_ENV=production
-
   documents:
-    environment:
-      - NODE_ENV=production
-
-  scheduler:
     environment:
       - NODE_ENV=production
 

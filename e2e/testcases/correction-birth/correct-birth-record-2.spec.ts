@@ -7,7 +7,7 @@ import {
   uploadImage
 } from '../../helpers'
 import { faker } from '@faker-js/faker'
-import { CREDENTIALS } from '../../constants'
+import { CREDENTIALS, SAFE_INPUT_CHANGE_TIMEOUT_MS } from '../../constants'
 import {
   createDeclaration,
   Declaration
@@ -160,6 +160,8 @@ test.describe.serial('Correct record - 2', () => {
 
       await page.locator('#informant____relation').click()
       await page.getByText('Brother', { exact: true }).click()
+
+      await page.waitForTimeout(SAFE_INPUT_CHANGE_TIMEOUT_MS)
 
       await page.locator('#firstname').fill(updatedInformantDetails.firstNames)
       await page.locator('#surname').fill(updatedInformantDetails.familyName)
