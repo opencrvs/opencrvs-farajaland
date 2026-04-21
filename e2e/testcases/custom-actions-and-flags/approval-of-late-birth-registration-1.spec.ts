@@ -104,14 +104,7 @@ test.describe.serial('Approval of late birth registration', () => {
         .getByText('Farajaland', { exact: true })
         .click()
 
-      await page.locator('#province').click()
-      await page.getByText('Central', { exact: true }).click()
-
-      await page.locator('#district').click()
-      await page.getByText('Ibombo', { exact: true }).click()
-
-      await page.locator('#village').click()
-      await page.getByText('Klow', { exact: true }).click()
+      // use default selected "Klow" village as address
 
       await continueForm(page)
     })
@@ -349,14 +342,7 @@ test.describe('Birth with non-late registration will not have flag or Approve-ac
         .getByText('Farajaland', { exact: true })
         .click()
 
-      await page.locator('#province').click()
-      await page.getByText('Central', { exact: true }).click()
-
-      await page.locator('#district').click()
-      await page.getByText('Ibombo', { exact: true }).click()
-
-      await page.locator('#village').click()
-      await page.getByText('Klow', { exact: true }).click()
+      // use default selected "Klow" village as address
 
       await continueForm(page)
     })
