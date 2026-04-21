@@ -159,7 +159,7 @@ jobs:
 
       - name: Install Playwright system dependencies
         if: steps.cache.outputs.cache-hit != 'true'
-        run: npx playwright install-deps chromium
+        run: npx playwright install-deps
 
       - name: Install Playwright browsers
         if: steps.cache.outputs.cache-hit != 'true'
@@ -167,7 +167,7 @@ jobs:
         with:
           timeout_minutes: 10
           max_attempts: 3
-          command: npx playwright install chromium
+          command: npx playwright install
 
       - name: Run Playwright Tests
         run: npx playwright test --shard=${{ matrix.shard }}/20
