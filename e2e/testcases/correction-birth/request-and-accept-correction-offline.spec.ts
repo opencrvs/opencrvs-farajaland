@@ -204,14 +204,14 @@ test.describe.serial('Request and accept correction (offline)', () => {
       await page.getByTestId('exit-event').click()
 
       await page.getByRole('button', { name: 'Outbox' }).click()
-      await expect(page.locator('#wait-connection-text')).toBeVisible()
+      await expect(page.getByText('Offline')).toBeVisible()
     })
 
     test('Go back online', async () => {
       // Go back online
       await page.context().setOffline(false)
 
-      await expect(page.locator('#wait-connection-text')).not.toBeVisible()
+      await expect(page.getByText('Offline')).not.toBeVisible()
 
       await expect(await page.locator('#no-record')).toContainText(
         'No records require processing',

@@ -56,7 +56,7 @@ test.describe.serial('Print certificate', () => {
     })
 
     test('2.3 Click continue after selecting requester type and template type', async () => {
-      await page.reload({ waitUntil: 'networkidle' })
+      await page.reload()
       await page.locator('#collector____requesterId').click()
       const selectOptionsLabels = [
         'Print and issue to Informant (Mother)',
