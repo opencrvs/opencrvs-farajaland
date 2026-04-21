@@ -157,17 +157,12 @@ jobs:
         if: steps.cache.outputs.cache-hit != 'true'
         run: yarn
 
-      - name: Install Playwright system dependencies
+      - uses: nick-fields/retry@v4
         if: steps.cache.outputs.cache-hit != 'true'
-        run: npx playwright install-deps
-
-      - name: Install Playwright browsers
-        if: steps.cache.outputs.cache-hit != 'true'
-        uses: nick-fields/retry@v4
         with:
           timeout_minutes: 10
           max_attempts: 3
-          command: npx playwright install
+          command: npx playwright install --with-deps
 
       - name: Run Playwright Tests
         run: npx playwright test --shard=${{ matrix.shard }}/20
