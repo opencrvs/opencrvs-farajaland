@@ -40,11 +40,6 @@ services:
       - NODE_ENV=production
       - DISABLE_RATE_LIMIT=true
 
-  metrics:
-    environment:
-      - SENTRY_DSN=${SENTRY_DSN:-}
-      - NODE_ENV=production
-
   auth:
     environment:
       - SENTRY_DSN=${SENTRY_DSN:-}
