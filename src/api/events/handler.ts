@@ -15,10 +15,10 @@ import * as Hapi from '@hapi/hapi'
 import { sendInformantNotification } from '../notification/informantNotification'
 import { ActionConfirmationRequest } from '../registration'
 
+export const eventConfigs = [tennisClubMembershipEvent, birthEvent, deathEvent]
+
 export function getEventsHandler(_: Hapi.Request, h: Hapi.ResponseToolkit) {
-  return h
-    .response([tennisClubMembershipEvent, birthEvent, deathEvent])
-    .code(200)
+  return h.response(eventConfigs).code(200)
 }
 
 export async function onCustomActionHandler(

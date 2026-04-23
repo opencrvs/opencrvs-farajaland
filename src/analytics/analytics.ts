@@ -10,10 +10,6 @@
  */
 
 import { applicationConfig } from '@countryconfig/api/application/application-config'
-import { tennisClubMembershipEvent } from '@countryconfig/events/tennis-club-membership'
-
-import { birthEvent } from '@countryconfig/events/birth'
-import { deathEvent } from '@countryconfig/events/death'
 import { logger } from '@countryconfig/logger'
 import {
   ActionConfig,
@@ -36,24 +32,17 @@ import { getClient } from './postgres'
 import { getStatistics } from '@countryconfig/utils'
 import { COUNTRY_NAMES_BY_CODE } from './countries'
 import { Event } from '@countryconfig/events/utils'
+import { eventConfigs } from '@countryconfig/api/events/handler'
+
+const analyticsEventConfigs = eventConfigs.filter(
+  (event) => event.analytics === true
+)
 
 /**
  * You can control which events you want to track in analytics by adding them here.
  */
 function findEventConfig(eventType: string) {
-  if (eventType === Event.Birth) {
-    return birthEvent
-  }
-
-  if (eventType === Event.TENNIS_CLUB_MEMBERSHIP) {
-    return tennisClubMembershipEvent
-  }
-
-  if (eventType === Event.Death) {
-    return deathEvent
-  }
-
-  return null
+  return analyticsEventConfigs.find((event) => event.id === eventType)
 }
 
 function getEventConfig(eventType: string) {
