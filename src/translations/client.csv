@@ -2305,7 +2305,7 @@ views.idVerification.banner.failedFetchIdDetails.description,Explains the failur
 views.idVerification.banner.failedFetchIdDetails.title,Displayed when fetching individual details from the National ID System fails.,Failed to retrieve individuals details,Échec de la récupération des détails des individus
 views.idVerification.banner.verified.description,,"This identity data has been successfully verified with the Farajaland’s National ID System. Please note that their identity has not been authenticated using the individuals biometrics. To make edits, please remove the verification first.",Ces données d'identité ont été vérifiées avec succès avec le système national d'identification de Farajaland.
 views.idVerification.banner.verified.resetConfirmation.description,,"By clicking ‘Continue,’ you’ll remove ID Verified status and unlock the fields for editing.","En cliquant sur «Continuer», vous supprimerez l'état de l'ID vérifié et déverrouillez les champs pour l'édition."
-views.idVerification.banner.verified.resetConfirmation.title,,Revoke valid ID?,Révoquer une pièce d'identité valide?
+views.idVerification.banner.verified.resetConfirmation.title,,Reset valid ID?,Réinitialiser une pièce d'identité valide?
 views.idVerification.banner.verified.title,,ID Verified,Id vérifié
 views.qrReader.button,Button to scan QR code,Scan QR code,Scanner le code QR
 views.qrReader.scannerDialogSupportingCopy,Supporting copy for the scanner dialog,Place the Notifier's ID card in front of the camera.,Placez la carte d'identité du notificateur devant la caméra.
