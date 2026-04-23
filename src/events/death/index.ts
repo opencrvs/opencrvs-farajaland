@@ -35,7 +35,6 @@ import { Event } from '@countryconfig/events/utils'
 
 export const deathEvent = defineConfig({
   id: Event.Death,
-  analytics: true,
   declaration: DEATH_DECLARATION_FORM,
   label: {
     defaultMessage: 'Death',
