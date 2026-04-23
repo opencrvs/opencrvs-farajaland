@@ -8,14 +8,10 @@
  *
  * Copyright (C) The OpenCRVS Authors located at https://github.com/opencrvs/opencrvs-core/blob/master/AUTHORS.
  */
-import { tennisClubMembershipEvent } from '@countryconfig/events/tennis-club-membership'
-import { birthEvent } from '@countryconfig/events/birth'
-import { deathEvent } from '@countryconfig/events/death'
 import * as Hapi from '@hapi/hapi'
+import { eventConfigs } from '@countryconfig/events'
 import { sendInformantNotification } from '../notification/informantNotification'
 import { ActionConfirmationRequest } from '../registration'
-
-export const eventConfigs = [tennisClubMembershipEvent, birthEvent, deathEvent]
 
 export function getEventsHandler(_: Hapi.Request, h: Hapi.ResponseToolkit) {
   return h.response(eventConfigs).code(200)

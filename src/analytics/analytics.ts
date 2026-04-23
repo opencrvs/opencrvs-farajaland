@@ -32,7 +32,7 @@ import { getClient } from './postgres'
 import { getStatistics } from '@countryconfig/utils'
 import { COUNTRY_NAMES_BY_CODE } from './countries'
 import { Event } from '@countryconfig/events/utils'
-import { eventConfigs } from '@countryconfig/api/events/handler'
+import { eventConfigs } from '@countryconfig/events'
 
 /**
  * You can control which events you want to track in analytics with the 'analytics' boolean property in the event config.
