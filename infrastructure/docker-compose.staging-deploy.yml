@@ -30,15 +30,6 @@ services:
     deploy:
       replicas: 1
 
-  notification:
-    environment:
-      - NODE_ENV=production
-      - LANGUAGES=en,fr
-      - SENTRY_DSN=${SENTRY_DSN:-}
-      - MONGO_URL=mongodb://notification:${NOTIFICATION_MONGODB_PASSWORD}@mongo1/notification?replicaSet=rs0
-    deploy:
-      replicas: 1
-
   documents:
     environment:
       - NODE_ENV=production
