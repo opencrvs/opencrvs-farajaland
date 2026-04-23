@@ -56,23 +56,11 @@ test.describe.serial('11. Birth declaration case - 11', () => {
       await continueForm(page)
     })
 
-    test('11.1.2 Skip informant details', async () => {
-      await continueForm(page)
-    })
-
-    test("11.1.3 Skip mother's details", async () => {
-      await continueForm(page)
-    })
-
-    test("11.1.4 Skip father's details", async () => {
-      await continueForm(page)
-    })
-
-    test('11.1.5 Go to review', async () => {
+    test('11.1.2 Go to review', async () => {
       await goToSection(page, 'review')
     })
 
-    test('11.1.6 Notify', async () => {
+    test('11.1.3 Notify', async () => {
       await selectDeclarationAction(page, 'Notify')
 
       await ensureOutboxIsEmpty(page)
