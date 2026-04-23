@@ -710,27 +710,6 @@ services:
       options:
         gelf-address: 'udp://127.0.0.1:12201'
         tag: 'events'
-  notification:
-    secrets:
-      - jwt-public-key.{{ts}}
-    environment:
-      - NODE_ENV=production
-      - LANGUAGES=en,fr
-      - SENTRY_DSN=${SENTRY_DSN:-}
-      - APN_SERVICE_URL=http://apm-server:8200
-      - CERT_PUBLIC_KEY_PATH=/run/secrets/jwt-public-key.{{ts}}
-      - MONGO_URL=mongodb://notification:${NOTIFICATION_MONGODB_PASSWORD}@mongo1/notification?replicaSet=rs0
-    deploy:
-      replicas: 1
-      labels:
-        - 'traefik.enable=false'
-    networks:
-      - overlay_net
-    logging:
-      driver: gelf
-      options:
-        gelf-address: 'udp://127.0.0.1:12201'
-        tag: 'notification'
   gateway:
     secrets:
       - jwt-public-key.{{ts}}
