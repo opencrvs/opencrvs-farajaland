@@ -1252,6 +1252,7 @@ const TENNIS_CLUB_MEMBERSHIP_CERTIFICATE_COLLECTOR_FORM = defineActionForm({
 
 export const tennisClubMembershipEvent = defineConfig({
   id: Event.TENNIS_CLUB_MEMBERSHIP,
+  analytics: true,
   declaration: TENNIS_CLUB_DECLARATION_FORM,
   label: {
     defaultMessage: 'Tennis club membership application',
