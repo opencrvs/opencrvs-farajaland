@@ -58,7 +58,6 @@ import {
 } from './issue'
 import { readFileSync } from 'fs'
 import { join } from 'path'
-// import { callVSExportAPIToGenerateDeclarationData } from './vsExport'
 /*
  *
  * Configuration
@@ -423,8 +422,6 @@ async function main() {
           )
         }
         await queue.addAll(operations)
-        // Doesnt work because the API isnt exposed in deployed environments: https://github.com/opencrvs/opencrvs-core/issues/4761
-        // await callVSExportAPIToGenerateDeclarationData(submissionDate)
       }
 
       /*
