@@ -34,13 +34,13 @@ import { COUNTRY_NAMES_BY_CODE } from './countries'
 import { Event } from '@countryconfig/events/utils'
 import { eventConfigs } from '@countryconfig/api/events/handler'
 
+/**
+ * You can control which events you want to track in analytics with the 'analytics' boolean property in the event config.
+ */
 const analyticsEventConfigs = eventConfigs.filter(
   (event) => event.analytics === true
 )
 
-/**
- * You can control which events you want to track in analytics by adding them here.
- */
 function findEventConfig(eventType: string) {
   return analyticsEventConfigs.find((event) => event.id === eventType)
 }
