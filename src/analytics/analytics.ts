@@ -34,7 +34,7 @@ import { precalculateBirthEvent } from '@countryconfig/analytics/analytics-preca
 import { Event } from '@countryconfig/events/utils/types'
 
 /**
- * You can control which events you want to track in analytics with the 'analytics' boolean property in the event config.
+ * You can exclude events from analytics by setting 'analytics' property to 'false' in the event config.
  */
 const analyticsEventConfigs = eventConfigs.filter(
   (event) => event.analytics === true

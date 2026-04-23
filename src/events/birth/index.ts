@@ -40,7 +40,6 @@ import {
 
 export const birthEvent = defineConfig({
   id: Event.Birth,
-  analytics: true,
   declaration: BIRTH_DECLARATION_FORM,
   label: {
     defaultMessage: 'Birth',
