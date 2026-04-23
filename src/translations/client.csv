@@ -1405,6 +1405,7 @@ form.field.label.urban,,Urban,Urbain
 form.field.label.userAttachmentSection,,Signature,Signature
 form.field.label.userDevice,,Device,Dispositif
 form.field.label.userFirstName,,User's first name,Prénom de l'utilisateur
+form.field.label.userFullName,User's full English name,User's full name,Nom complet de l'utilisateur
 form.field.label.userSignatureAttachment,,User's signature,Signature de l'utilisateur
 form.field.label.userSignatureAttachmentDesc,,Ask the user to sign a piece of paper and then scan or take a photo,"Demandez à l'utilisateur de signer une feuille de papier, puis scannez ou prenez une photo."
 form.field.label.userSignatureAttachmentTitle,,Upload signature,Joindre la signature

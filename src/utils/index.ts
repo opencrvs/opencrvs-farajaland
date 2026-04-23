@@ -111,11 +111,11 @@ export function getTrackingIdFromTaskResource(taskResource: fhir.Task) {
     taskResource.identifier.find((identifier) => {
       return (
         identifier.system ===
-          `${OPENCRVS_SPECIFICATION_URL}id/birth-tracking-id` ||
+        `${OPENCRVS_SPECIFICATION_URL}id/birth-tracking-id` ||
         identifier.system ===
-          `${OPENCRVS_SPECIFICATION_URL}id/death-tracking-id` ||
+        `${OPENCRVS_SPECIFICATION_URL}id/death-tracking-id` ||
         identifier.system ===
-          `${OPENCRVS_SPECIFICATION_URL}id/marriage-tracking-id`
+        `${OPENCRVS_SPECIFICATION_URL}id/marriage-tracking-id`
       )
     })
   if (!trackingIdentifier || !trackingIdentifier.value) {
@@ -237,9 +237,8 @@ export function createCustomFieldHandlebarName(fieldId: string) {
     }
   })
 
-  return `${fieldIdNameArray[0]}${fieldIdNameArray[1]}${
-    fieldIdNameArray[fieldIdNameArray.length - 1]
-  }`
+  return `${fieldIdNameArray[0]}${fieldIdNameArray[1]}${fieldIdNameArray[fieldIdNameArray.length - 1]
+    }`
 }
 
 export function uppercaseFirstLetter(str: string) {
