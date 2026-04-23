@@ -16,7 +16,6 @@ import {
   ActionDocument,
   ActionStatus,
   ActionType,
-  AddressFieldValue,
   AdministrativeArea,
   EventConfig,
   EventDocument,
@@ -25,14 +24,14 @@ import {
   getCurrentEventState,
   Location
 } from '@opencrvs/toolkit/events'
-import { differenceInDays } from 'date-fns'
+
 import { ExpressionBuilder, Kysely } from 'kysely'
 import { chunk, pickBy } from 'lodash'
 import { getClient } from './postgres'
 import { getStatistics } from '@countryconfig/utils'
-import { COUNTRY_NAMES_BY_CODE } from './countries'
-import { Event } from '@countryconfig/events/utils'
 import { eventConfigs } from '@countryconfig/events'
+import { precalculateBirthEvent } from '@countryconfig/analytics/analytics-precalculations'
+import { Event } from '@countryconfig/events/utils/types'
 
 /**
  * You can control which events you want to track in analytics with the 'analytics' boolean property in the event config.
@@ -100,27 +99,6 @@ function getAnnotation(
   }
 }
 
-function getCountryPlaceOfBirthResolved(
-  declaration: ActionDocument['declaration']
-) {
-  const placeOfBirth =
-    'child.birthLocation.privateHome' in declaration
-      ? declaration['child.birthLocation.privateHome']
-      : 'child.birthLocation.other' in declaration
-        ? declaration['child.birthLocation.other']
-        : null
-
-  const maybeAddress = AddressFieldValue.safeParse(placeOfBirth)
-
-  if (!maybeAddress.success) {
-    return 'Farajaland'
-  }
-
-  const country = maybeAddress.data.country
-
-  return COUNTRY_NAMES_BY_CODE[country] || 'Farajaland'
-}
-
 function precalculateAdditionalAnalytics(
   action: ActionDocument,
   declaration: ActionDocument['declaration'],
@@ -129,20 +107,8 @@ function precalculateAdditionalAnalytics(
   /*
    * Example: precalculate age from action creation date and child's date of birth
    */
-
   if (eventConfig.id === Event.Birth) {
-    const createdAt = new Date(action.createdAt)
-    const childDoB = declaration['child.dob']
-    if (!childDoB) return action
-
-    return {
-      ...declaration,
-      'child.age.days': differenceInDays(
-        createdAt,
-        new Date(childDoB as string)
-      ),
-      'child.countryPlaceOfBirth': getCountryPlaceOfBirthResolved(declaration)
-    }
+    return precalculateBirthEvent(action, declaration)
   }
 
   return declaration
