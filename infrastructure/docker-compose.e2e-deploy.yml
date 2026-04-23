@@ -1,10 +1,4 @@
 services:
-  notification:
-    environment:
-      - LANGUAGES=en,fr
-      - SENTRY_DSN=${SENTRY_DSN:-}
-      - NODE_ENV=production
-
   countryconfig:
     image: ${DOCKERHUB_ACCOUNT}/${DOCKERHUB_REPO}:${COUNTRY_CONFIG_VERSION}
     restart: unless-stopped
