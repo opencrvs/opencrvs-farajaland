@@ -8,10 +8,8 @@
  *
  * Copyright (C) The OpenCRVS Authors located at https://github.com/opencrvs/opencrvs-core/blob/master/AUTHORS.
  */
-import { tennisClubMembershipEvent } from '@countryconfig/events/tennis-club-membership'
-import { birthEvent } from '@countryconfig/events/birth'
-import { deathEvent } from '@countryconfig/events/death'
 import * as Hapi from '@hapi/hapi'
+import { eventConfigs } from '@countryconfig/events'
 import { sendInformantNotification } from '../notification/informantNotification'
 import { ActionConfirmationRequest } from '../registration'
 import { createMosipInteropClient } from '@opencrvs/mosip/api'
@@ -29,9 +27,7 @@ import { shouldForwardBirthRegistrationToMosip } from '../../events/mosip'
 import { logger } from '@countryconfig/logger'
 
 export function getEventsHandler(_: Hapi.Request, h: Hapi.ResponseToolkit) {
-  return h
-    .response([tennisClubMembershipEvent, birthEvent, deathEvent])
-    .code(200)
+  return h.response(eventConfigs).code(200)
 }
 
 export async function onCustomActionHandler(
