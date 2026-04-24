@@ -204,10 +204,6 @@ test.describe
       page.locator('#searchable-select-province').getByText('Central')
       page.locator('#searchable-select-district').getByText('Ibombo')
 
-      await page.locator('#province').fill('Cent')
-      await page.getByText('Central', { exact: true }).click()
-      await page.locator('#district').fill('Ibo')
-      await page.getByText('Ibombo', { exact: true }).click()
       await page.locator('#village').fill('Klo')
       await page.getByText('Klow', { exact: true }).click()
       await page.locator('#town').fill('Dhaka')

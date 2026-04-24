@@ -168,18 +168,6 @@ test.describe.serial('5. Death declaration case - 5', () => {
         .getByText(declaration.eventDetails.placeOfDeath, { exact: true })
         .click()
 
-      await page.locator('#province').click()
-      await page
-        .getByText(declaration.eventDetails.deathLocationOther.province, {
-          exact: true
-        })
-        .click()
-      await page.locator('#district').click()
-      await page
-        .getByText(declaration.eventDetails.deathLocationOther.district, {
-          exact: true
-        })
-        .click()
       await page.locator('#village').click()
       await page
         .getByText(declaration.eventDetails.deathLocationOther.village, {
