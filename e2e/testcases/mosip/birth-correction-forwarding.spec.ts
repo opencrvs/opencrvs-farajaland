@@ -4,9 +4,8 @@ import { v4 as uuidv4 } from 'uuid'
 import { faker } from '@faker-js/faker'
 import { differenceInYears } from 'date-fns'
 import {
-  Action,
-  aggregateActionDeclarations,
-  getCurrentEventState
+  EventDocument,
+  aggregateActionDeclarations
 } from '@opencrvs/toolkit/events'
 import { CREDENTIALS, GATEWAY_HOST } from '../../constants'
 import { getToken } from '../../helpers'
@@ -19,7 +18,6 @@ import {
   getDeclaration,
   type Declaration
 } from '../test-data/birth-declaration'
-import { birthEvent } from '@countryconfig/events/birth'
 
 async function getEventById(eventId: string, token: string) {
   const client = createClient(`${GATEWAY_HOST}/events`, `Bearer ${token}`)
@@ -126,30 +124,12 @@ test.describe.serial('Birth correction trigger eligibility checks', () => {
       }
     )
 
-    expect(correctionResponse.status).toBe(200)
-
-    let acceptedRequestActionId: string | undefined
-
-    await expect
-      .poll(
-        async () => {
-          const event = await getEventById(eventId, token)
-          const acceptedRequestAction = (event.actions as Action[]).find(
-            (action) =>
-              action.type === 'REQUEST_CORRECTION' &&
-              action.status === 'Accepted'
-          )
-
-          acceptedRequestActionId = acceptedRequestAction?.id
-
-          return Boolean(acceptedRequestActionId)
-        },
-        {
-          timeout: 30_000,
-          intervals: [500, 1000, 2000]
-        }
-      )
-      .toBe(true)
+    const correctedEvent = (await correctionResponse.json()) as EventDocument
+    const acceptedRequestAction = correctedEvent.actions.find(
+      (action) =>
+        action.type === 'REQUEST_CORRECTION' && action.status === 'Accepted'
+    )
+    const acceptedRequestActionId = acceptedRequestAction!.id
 
     const approveResponse = await fetchClientAPI(
       `/api/events/events/${eventId}/correction/approve`,
@@ -158,7 +138,7 @@ test.describe.serial('Birth correction trigger eligibility checks', () => {
       {
         eventId,
         transactionId: uuidv4(),
-        requestId: acceptedRequestActionId!,
+        requestId: acceptedRequestActionId,
         type: 'APPROVE_CORRECTION',
         declaration: {
           'mother.verified': 'verified'
@@ -191,7 +171,7 @@ test.describe.serial('Birth correction trigger eligibility checks', () => {
       .toBeTruthy()
 
     const event = await getEventById(eventId, token)
-    const state = getCurrentEventState(event, birthEvent)
-    expect(state.declaration['child.nid']).toMatch(/^\d{10}$/)
+    const declaration = aggregateActionDeclarations(event)
+    expect(declaration['child.nid']).toMatch(/^\d{10}$/)
   })
 })
