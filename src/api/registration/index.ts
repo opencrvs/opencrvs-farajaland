@@ -26,6 +26,20 @@ import {
   shouldForwardBirthRegistrationToMosip,
   shouldForwardDeathRegistrationToMosip
 } from '@countryconfig/events/mosip'
+import { InformantType as BirthInformantType } from '@countryconfig/events/birth/forms/pages/informant'
+import { InformantType as DeathInformantType } from '@countryconfig/events/death/forms/pages/informant'
+
+interface HttpFetchValue {
+  data?: { sub?: string }
+}
+
+function getInformantPsut(
+  declaration: Record<string, any>,
+  section: string
+): string | undefined {
+  return (declaration[`${section}.verify-nid-http-fetch`] as HttpFetchValue)
+    ?.data?.sub
+}
 
 export interface ActionConfirmationRequest extends Hapi.Request {
   payload: EventDocument
@@ -181,6 +195,13 @@ export async function onMosipBirthRegisterHandler(
     )
     const childName = declaration['child.name'] as NameFieldValue | undefined
 
+    const birthInformantSection =
+      {
+        [BirthInformantType.MOTHER]: 'mother',
+        [BirthInformantType.FATHER]: 'father'
+      }[declaration['informant.relation'] as string] ?? 'informant'
+    const informantPsut = getInformantPsut(declaration, birthInformantSection)
+
     // @TODO: Check whether this might crash country-config if MOSIP doesn't respond
     mosipInteropClient.register({
       trackingId: event.trackingId,
@@ -201,7 +222,7 @@ export async function onMosipBirthRegisterHandler(
         recipientFullName: '@TODO',
         recipientPhone: '@TODO'
       },
-      metaInfo: {},
+      metaInfo: { informantPsut },
       audit: {}
     })
 
@@ -246,6 +267,12 @@ export async function onMosipDeathRegisterHandler(
       | NameFieldValue
       | undefined
 
+    const deathInformantSection =
+      declaration['informant.relation'] === DeathInformantType.SPOUSE
+        ? 'spouse'
+        : 'informant'
+    const informantPsut = getInformantPsut(declaration, deathInformantSection)
+
     // @TODO: Check whether this might crash country-config if MOSIP doesn't respond
     mosipInteropClient.register({
       trackingId: event.trackingId,
@@ -267,7 +294,7 @@ export async function onMosipDeathRegisterHandler(
         recipientFullName: '@TODO',
         recipientPhone: '@TODO'
       },
-      metaInfo: {},
+      metaInfo: { informantPsut },
       audit: {}
     })
 
