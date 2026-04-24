@@ -488,6 +488,16 @@ test.describe.serial(' Correct record - 3', () => {
           .getByText(updatedMotherDetails.address.country, { exact: true })
           .click()
 
+        await page.locator('#province').click()
+        await page
+          .getByText(updatedMotherDetails.address.province, { exact: true })
+          .click()
+
+        await page.locator('#district').click()
+        await page
+          .getByText(updatedMotherDetails.address.district, { exact: true })
+          .click()
+
         await page.locator('#village').click()
         await page
           .getByText(updatedMotherDetails.address.village, { exact: true })
@@ -673,12 +683,6 @@ test.describe.serial(' Correct record - 3', () => {
 
       await page.locator('#child____placeOfBirth').click()
       await page.getByText(updatedChildDetails.placeOfBirth).click()
-
-      // await page.locator('#province').click()
-      // await page.getByText(updatedChildDetails.birthLocation.province).click()
-
-      // await page.locator('#district').click()
-      // await page.getByText(updatedChildDetails.birthLocation.district).click()
 
       await page.locator('#village').click()
       await page.getByText(updatedChildDetails.birthLocation.village).click()
