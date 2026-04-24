@@ -190,18 +190,8 @@ test.describe.serial('Birth correction trigger eligibility checks', () => {
       )
       .toBeTruthy()
 
-    await expect
-      .poll(
-        async () => {
-          const event = await getEventById(eventId, token)
-          const state = getCurrentEventState(event, birthEvent)
-          return state.declaration['child.nid']
-        },
-        {
-          timeout: 30_000,
-          intervals: [1000, 2000, 5000]
-        }
-      )
-      .toMatch(/^\d{10}$/)
+    const event = await getEventById(eventId, token)
+    const state = getCurrentEventState(event, birthEvent)
+    expect(state.declaration['child.nid']).toMatch(/^\d{10}$/)
   })
 })
