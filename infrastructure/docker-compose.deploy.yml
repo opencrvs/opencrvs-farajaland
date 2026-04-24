@@ -238,9 +238,6 @@ services:
       - USER_MGNT_MONGODB_PASSWORD=${USER_MGNT_MONGODB_PASSWORD}
       - HEARTH_MONGODB_PASSWORD=${HEARTH_MONGODB_PASSWORD}
       - PERFORMANCE_MONGODB_PASSWORD=${PERFORMANCE_MONGODB_PASSWORD}
-      - METRICS_MONGODB_PASSWORD=${METRICS_MONGODB_PASSWORD}
-      - OPENHIM_MONGODB_PASSWORD=${OPENHIM_MONGODB_PASSWORD}
-      - NOTIFICATION_MONGODB_PASSWORD=${NOTIFICATION_MONGODB_PASSWORD}
       - EVENTS_MONGODB_PASSWORD=${EVENTS_MONGODB_PASSWORD}
     networks:
       - overlay_net
@@ -541,7 +538,7 @@ services:
     deploy:
       labels:
         - 'traefik.enable=true'
-        - 'traefik.http.routers.countryconfig.rule=(Host(`countryconfig.{{hostname}}`)|| Host(`registry.{{hostname}}`)) && !Path(`/reindex`) && !Path(`/email`) && !Path(`/notification`) && !Path(`/dashboards/queries.json`)'
+        - 'traefik.http.routers.countryconfig.rule=(Host(`countryconfig.{{hostname}}`)|| Host(`registry.{{hostname}}`)) && !Path(`/reindex`) && !Path(`/email`) && !Path(`/dashboards/queries.json`)'
         - 'traefik.http.services.countryconfig.loadbalancer.server.port=3040'
         - 'traefik.http.routers.countryconfig.tls=true'
         - 'traefik.http.routers.countryconfig.tls.certresolver=certResolver'
@@ -561,8 +558,6 @@ services:
         - 'traefik.http.routers.block-email.middlewares=block-internal-routes'
         - 'traefik.http.routers.block-reindex.rule=Host(`countryconfig.{{hostname}}`) && Path(`/reindex`)'
         - 'traefik.http.routers.block-reindex.middlewares=block-internal-routes'
-        - 'traefik.http.routers.block-notification.rule=Host(`countryconfig.{{hostname}}`) && Path(`/notification`)'
-        - 'traefik.http.routers.block-notification.middlewares=block-internal-routes'
         - 'traefik.http.routers.block-dashboard-queries.rule=Host(`countryconfig.{{hostname}}`) && Path(`/dashboards/queries.json`)'
         - 'traefik.http.routers.block-dashboard-queries.middlewares=block-internal-routes'
       replicas: 1
@@ -724,27 +719,6 @@ services:
       options:
         gelf-address: 'udp://127.0.0.1:12201'
         tag: 'events'
-  notification:
-    secrets:
-      - jwt-public-key.{{ts}}
-    environment:
-      - NODE_ENV=production
-      - LANGUAGES=en,fr
-      - SENTRY_DSN=${SENTRY_DSN:-}
-      - APN_SERVICE_URL=http://apm-server:8200
-      - CERT_PUBLIC_KEY_PATH=/run/secrets/jwt-public-key.{{ts}}
-      - MONGO_URL=mongodb://notification:${NOTIFICATION_MONGODB_PASSWORD}@mongo1/notification?replicaSet=rs0
-    deploy:
-      replicas: 1
-      labels:
-        - 'traefik.enable=false'
-    networks:
-      - overlay_net
-    logging:
-      driver: gelf
-      options:
-        gelf-address: 'udp://127.0.0.1:12201'
-        tag: 'notification'
   gateway:
     secrets:
       - jwt-public-key.{{ts}}
@@ -784,32 +758,6 @@ services:
       options:
         gelf-address: 'udp://127.0.0.1:12201'
         tag: 'gateway'
-  metrics:
-    secrets:
-      - jwt-public-key.{{ts}}
-    volumes:
-      - /data/vsexport:/usr/src/app/packages/metrics/src/scripts
-    environment:
-      - NODE_ENV=production
-      - SENTRY_DSN=${SENTRY_DSN:-}
-      - APN_SERVICE_URL=http://apm-server:8200
-      - CERT_PUBLIC_KEY_PATH=/run/secrets/jwt-public-key.{{ts}}
-      - MONGO_URL=mongodb://metrics:${METRICS_MONGODB_PASSWORD}@mongo1/metrics?replicaSet=rs0
-      - DASHBOARD_MONGO_URL=mongodb://performance:${PERFORMANCE_MONGODB_PASSWORD}@mongo1/performance?replicaSet=rs0
-    deploy:
-      placement:
-        constraints:
-          - node.labels.data1 == true
-      labels:
-        - 'traefik.enable=false'
-      replicas: 1
-    networks:
-      - overlay_net
-    logging:
-      driver: gelf
-      options:
-        gelf-address: 'udp://127.0.0.1:12201'
-        tag: 'metrics'
   documents:
     deploy:
       replicas: 1
@@ -840,7 +788,6 @@ services:
       - DASHBOARD_MONGO_URL=mongodb://performance:${PERFORMANCE_MONGODB_PASSWORD}@mongo1/performance?replicaSet=rs0
       - HEARTH_MONGO_URL=mongodb://hearth:${HEARTH_MONGODB_PASSWORD}@mongo1/hearth-dev?replicaSet=rs0
       - EVENTS_MONGO_URL=mongodb://events:${EVENTS_MONGODB_PASSWORD}@mongo1/events?replicaSet=rs0
-      - OPENHIM_MONGO_URL=mongodb://openhim:${OPENHIM_MONGODB_PASSWORD}@mongo1/openhim-dev?replicaSet=rs0
       - EVENTS_POSTGRES_URL=postgres://events_migrator:${EVENTS_MIGRATOR_POSTGRES_PASSWORD}@postgres/events
       - ES_HOST=search-user:${ROTATING_SEARCH_ELASTIC_PASSWORD}@elasticsearch:9200
       - MINIO_ACCESS_KEY=${MINIO_ROOT_USER}
@@ -872,7 +819,6 @@ services:
       - DASHBOARD_MONGO_URL=mongodb://performance:${PERFORMANCE_MONGODB_PASSWORD}@mongo1/performance?replicaSet=rs0
       - HEARTH_MONGO_URL=mongodb://hearth:${HEARTH_MONGODB_PASSWORD}@mongo1/hearth-dev?replicaSet=rs0
       - EVENTS_MONGO_URL=mongodb://events:${EVENTS_MONGODB_PASSWORD}@mongo1/events?replicaSet=rs0
-      - OPENHIM_MONGO_URL=mongodb://openhim:${OPENHIM_MONGODB_PASSWORD}@mongo1/openhim-dev?replicaSet=rs0
       - EVENTS_POSTGRES_URL=postgres://events_migrator:${EVENTS_MIGRATOR_POSTGRES_PASSWORD}@postgres/events
       - EVENTS_SUPERUSER_POSTGRES_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres/events
       - ES_HOST=search-user:${ROTATING_SEARCH_ELASTIC_PASSWORD}@elasticsearch:9200
