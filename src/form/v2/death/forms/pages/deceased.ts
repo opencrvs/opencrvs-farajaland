@@ -366,7 +366,7 @@ export const deceased = defineFormPage({
     },
     {
       id: `deceased.addressHelper`,
-      type: FieldType.PARAGRAPH,
+      type: FieldType.HEADING,
       label: {
         defaultMessage: 'Usual place of residence',
         description: 'This is the label for the field',

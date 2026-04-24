@@ -113,12 +113,7 @@ export const DEATH_CERTIFICATE_COLLECTOR_FORM = defineActionForm({
             {
               type: ConditionalType.SHOW,
               conditional: and(
-                not(
-                  field('eventDetails.date')
-                    .isAfter()
-                    .days(applicationConfig.DEATH.REGISTRATION_TARGET)
-                    .inPast()
-                ),
+                not(field('eventDetails.date').isAfter().days(45).inPast()),
                 field('eventDetails.date').isBefore().now()
               )
             }
@@ -164,10 +159,7 @@ export const DEATH_CERTIFICATE_COLLECTOR_FORM = defineActionForm({
             {
               type: ConditionalType.SHOW,
               conditional: and(
-                field('eventDetails.date')
-                  .isAfter()
-                  .days(applicationConfig.DEATH.REGISTRATION_TARGET)
-                  .inPast(),
+                field('eventDetails.date').isAfter().days(45).inPast(),
                 field('eventDetails.date').isBefore().now()
               )
             }
