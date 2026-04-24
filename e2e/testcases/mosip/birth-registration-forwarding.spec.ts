@@ -20,10 +20,7 @@ test.describe.serial('Birth registration forwarding to MOSIP', () => {
   let eventId: string
 
   test.beforeAll(async () => {
-    token = await getToken(
-      CREDENTIALS.REGISTRAR.USERNAME,
-      CREDENTIALS.REGISTRAR.PASSWORD
-    )
+    token = await getToken(CREDENTIALS.REGISTRAR)
 
     const declarationForMosipForwarding = await getDeclaration({
       token,
@@ -48,39 +45,38 @@ test.describe.serial('Birth registration forwarding to MOSIP', () => {
       'authenticated'
     )
 
-    const startedAt = Date.now()
-    const timeoutMs = 30000
-    const intervalMs = 1000
+    let acceptedActionRegistrationNumber: string | undefined
 
-    while (Date.now() - startedAt < timeoutMs) {
-      const event = await getEventById(eventId, token)
-      const registerActions = event.actions.filter(
-        (action: { type: string }) => action.type === 'REGISTER'
-      )
+    await expect
+      .poll(
+        async () => {
+          const event = await getEventById(eventId, token)
+          const registerActions = event.actions.filter(
+            (action: { type: string }) => action.type === 'REGISTER'
+          )
 
-      if (
-        registerActions.some(
-          (action: { status: string }) => action.status === 'Requested'
-        )
-      ) {
-        const acceptedAction = registerActions.find(
-          (action: { status: string }) => action.status === 'Accepted'
-        )
+          const hasRequestedRegisterAction = registerActions.some(
+            (action: { status: string }) => action.status === 'Requested'
+          )
+          const acceptedAction = registerActions.find(
+            (action: { status: string }) => action.status === 'Accepted'
+          )
 
-        if (acceptedAction) {
-          expect(
-            (acceptedAction as { registrationNumber?: string })
-              .registrationNumber
-          ).toBeDefined()
-          return
+          if (!hasRequestedRegisterAction || !acceptedAction) {
+            return false
+          }
+
+          acceptedActionRegistrationNumber = (
+            acceptedAction as { registrationNumber?: string }
+          ).registrationNumber
+
+          return Boolean(acceptedActionRegistrationNumber)
+        },
+        {
+          timeout: 30_000,
+          intervals: [500, 1000, 2000]
         }
-      }
-
-      await new Promise((resolve) => setTimeout(resolve, intervalMs))
-    }
-
-    throw new Error(
-      'REGISTER action did not complete MOSIP requested-to-accepted flow'
-    )
+      )
+      .toBe(true)
   })
 })

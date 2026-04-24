@@ -3,8 +3,11 @@ import { createClient } from '@opencrvs/toolkit/api'
 import { v4 as uuidv4 } from 'uuid'
 import { faker } from '@faker-js/faker'
 import { differenceInYears } from 'date-fns'
-import { aggregateActionDeclarations } from '@opencrvs/toolkit/events'
-import { omit } from 'lodash'
+import {
+  Action,
+  aggregateActionDeclarations,
+  getCurrentEventState
+} from '@opencrvs/toolkit/events'
 import { CREDENTIALS, GATEWAY_HOST } from '../../constants'
 import { getToken } from '../../helpers'
 import {
@@ -16,6 +19,7 @@ import {
   getDeclaration,
   type Declaration
 } from '../test-data/birth-declaration'
+import { birthEvent } from '@countryconfig/events/birth'
 
 async function getEventById(eventId: string, token: string) {
   const client = createClient(`${GATEWAY_HOST}/events`, `Bearer ${token}`)
@@ -34,74 +38,67 @@ test.describe.serial('Birth correction trigger eligibility checks', () => {
     clientToken = integrationContext.clientToken
     healthFacilityId = integrationContext.healthFacilityId
 
-    token = await getToken(
-      CREDENTIALS.REGISTRAR.USERNAME,
-      CREDENTIALS.REGISTRAR.PASSWORD
-    )
+    token = await getToken(CREDENTIALS.REGISTRAR)
 
     const declarationForMosipForwarding: Declaration = await getDeclaration({
       token,
       partialDeclaration: {
-        'mother.verified': 'authenticated'
+        'mother.verified': 'failed'
       }
     })
 
     const response = await createDeclaration(
       token,
-      omit(declarationForMosipForwarding, ['mother.idType', 'mother.nid'])
+      declarationForMosipForwarding
     )
 
     eventId = response.eventId
 
-    const startedAt = Date.now()
-    const timeoutMs = 30000
-    const intervalMs = 1000
+    await expect
+      .poll(
+        async () => {
+          const event = await getEventById(eventId, token)
+          const registerActions = event.actions.filter(
+            (action: { type: string }) => action.type === 'REGISTER'
+          )
 
-    while (Date.now() - startedAt < timeoutMs) {
-      const event = await getEventById(eventId, token)
-      const registerActions = event.actions.filter(
-        (action: { type: string }) => action.type === 'REGISTER'
+          const hasRequestedRegisterAction = registerActions.some(
+            (action: { status: string }) => action.status === 'Requested'
+          )
+          const acceptedRegisterAction = registerActions.find(
+            (action: { status: string }) => action.status === 'Accepted'
+          )
+
+          if (hasRequestedRegisterAction && acceptedRegisterAction) {
+            registeredEvent = event
+            return true
+          }
+
+          return false
+        },
+        {
+          timeout: 30_000,
+          intervals: [500, 1000, 2000]
+        }
       )
-
-      const hasRequestedRegisterAction = registerActions.some(
-        (action: { status: string }) => action.status === 'Requested'
-      )
-      const acceptedRegisterAction = registerActions.find(
-        (action: { status: string }) => action.status === 'Accepted'
-      )
-
-      if (hasRequestedRegisterAction && acceptedRegisterAction) {
-        registeredEvent = event
-        return
-      }
-
-      await new Promise((resolve) => setTimeout(resolve, intervalMs))
-    }
-
-    throw new Error(
-      'REGISTER action did not complete MOSIP requested-to-accepted flow'
-    )
+      .toBe(true)
   })
 
-  test('REQUEST_CORRECTION is accepted for an eligible birth record', async () => {
+  test('REQUEST_CORRECTION can be approved for an eligible birth record', async () => {
     /**
-     * Acceptance criteria for this e2e check:
-     * - The corrected birth record must have child.nid present.
-     * - The child must be under 16 years old.
-     * - Trigger route under test: /trigger/events/birth/actions/REQUEST_CORRECTION.
-     * - On correction request, the action is processed successfully (HTTP 200 / Requested action).
-     *
-     * Note: child.nid is not provided directly in this test declaration payload.
-     * It is added by MOSIP registration confirmation (register.request -> register.accept)
-     * in line with interop behavior.
-     * Console log assertions are covered in tests/mosip-birth-correction-eligibility.test.ts
-     * because service stdout is not a stable assertion surface in black-box e2e runs.
+     * Acceptance criteria validated by this test:
+     * - Setup creates a registered birth event where mother identity is not authenticated,
+     *   so MOSIP does not generate child.nid during initial registration.
+     * - Eligibility remains valid for correction forwarding (child has a date of birth and is younger than 16).
+     * - REQUEST_CORRECTION is submitted successfully and transitions to Accepted.
+     * - APPROVE_CORRECTION is submitted against the accepted request and transitions to Accepted.
+     * - After approval completes, child.nid is generated and present in the latest event state.
      */
     const aggregatedDeclaration = aggregateActionDeclarations(registeredEvent)
     const childNid = aggregatedDeclaration['child.nid']
-    const childDob = aggregatedDeclaration['child.dob'] as string | undefined
+    const childDob = aggregatedDeclaration['child.dob']
 
-    expect(childNid).toBeTruthy()
+    expect(childNid).toBeFalsy()
     expect(childDob).toBeTruthy()
     expect(
       differenceInYears(new Date(), new Date(childDob as string))
@@ -119,7 +116,8 @@ test.describe.serial('Birth correction trigger eligibility checks', () => {
           'child.name': {
             firstname: faker.person.firstName(),
             surname: faker.person.lastName()
-          }
+          },
+          'mother.verified': 'verified'
         },
         annotation: {
           'review.comment': 'MOSIP correction trigger e2e check'
@@ -127,15 +125,83 @@ test.describe.serial('Birth correction trigger eligibility checks', () => {
         createdAtLocation: healthFacilityId
       }
     )
-    const correctedEvent = await correctionResponse.json()
 
     expect(correctionResponse.status).toBe(200)
 
-    const correctionAction = (
-      correctedEvent.actions as Array<{ type: string; status: string }>
-    ).find((action) => action.type === 'REQUEST_CORRECTION')
+    let acceptedRequestActionId: string | undefined
 
-    expect(correctionAction).toBeDefined()
-    expect(correctionAction?.status).toBe('Requested')
+    await expect
+      .poll(
+        async () => {
+          const event = await getEventById(eventId, token)
+          const acceptedRequestAction = (event.actions as Action[]).find(
+            (action) =>
+              action.type === 'REQUEST_CORRECTION' &&
+              action.status === 'Accepted'
+          )
+
+          acceptedRequestActionId = acceptedRequestAction?.id
+
+          return Boolean(acceptedRequestActionId)
+        },
+        {
+          timeout: 30_000,
+          intervals: [500, 1000, 2000]
+        }
+      )
+      .toBe(true)
+
+    const approveResponse = await fetchClientAPI(
+      `/api/events/events/${eventId}/correction/approve`,
+      'POST',
+      clientToken,
+      {
+        eventId,
+        transactionId: uuidv4(),
+        requestId: acceptedRequestActionId!,
+        type: 'APPROVE_CORRECTION',
+        declaration: {
+          'mother.verified': 'verified'
+        },
+        annotation: {
+          'review.comment': 'MOSIP correction approval e2e check'
+        },
+        createdAtLocation: healthFacilityId
+      }
+    )
+
+    expect(approveResponse.status).toBe(200)
+
+    await expect
+      .poll(
+        async () => {
+          const event = await getEventById(eventId, token)
+          const acceptedApproveAction = event.actions.find(
+            ({ type, status }) =>
+              type === 'APPROVE_CORRECTION' && status === 'Accepted'
+          )
+
+          return acceptedApproveAction
+        },
+        {
+          timeout: 30_000,
+          intervals: [1000, 2000, 5000]
+        }
+      )
+      .toBeTruthy()
+
+    await expect
+      .poll(
+        async () => {
+          const event = await getEventById(eventId, token)
+          const state = getCurrentEventState(event, birthEvent)
+          return state.declaration['child.nid']
+        },
+        {
+          timeout: 30_000,
+          intervals: [1000, 2000, 5000]
+        }
+      )
+      .toMatch(/^\d{10}$/)
   })
 })

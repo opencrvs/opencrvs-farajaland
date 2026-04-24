@@ -582,11 +582,11 @@ export async function createServer() {
 
   server.route({
     method: 'POST',
-    path: `/trigger/events/birth/actions/${ActionType.REQUEST_CORRECTION}`,
+    path: `/trigger/events/birth/actions/${ActionType.APPROVE_CORRECTION}`,
     handler: onBirthCorrectionActionHandler,
     options: {
       tags: ['api', 'events'],
-      description: 'Receives notifications on birth correction actions'
+      description: 'Receives notifications on birth correction approval actions'
     }
   })
 
