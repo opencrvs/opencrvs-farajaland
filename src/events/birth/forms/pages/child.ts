@@ -220,7 +220,13 @@ export const child = defineFormPage({
         description: 'This is the label for the field',
         id: 'event.birth.action.declare.form.section.child.field.name.label'
       },
-      validation: [invalidNameValidator('child.name')]
+      validation: [invalidNameValidator('child.name')],
+      conditionals: [
+        {
+          type: ConditionalType.SHOW,
+          conditional: not(user.hasRole('HOSPITAL_CLERK'))
+        }
+      ]
     },
     {
       id: 'child.gender',
