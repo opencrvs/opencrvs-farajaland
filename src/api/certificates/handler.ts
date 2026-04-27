@@ -12,7 +12,7 @@
 
 import { Request, ResponseObject, ResponseToolkit } from '@hapi/hapi'
 import { Event } from '@countryconfig/events/utils'
-import { ActionType, event, never, not } from '@opencrvs/toolkit/events'
+import { ActionType, event, not } from '@opencrvs/toolkit/events'
 
 type FontFamilyTypes = {
   normal: string
@@ -264,97 +264,6 @@ export async function certificateHandler(
             .hasAction(ActionType.PRINT_CERTIFICATE)
             .withTemplate('v2.birth-certificate')
             .minCount(1)
-        }
-      ]
-    },
-    {
-      id: 'v2.tennis-club-membership-certificate',
-      event: Event.TENNIS_CLUB_MEMBERSHIP,
-      isV2Template: true,
-      label: {
-        id: 'certificates.tennis-club-membership.certificate.copy',
-        defaultMessage: 'Tennis Club Membership Certificate copy',
-        description: 'The label for a tennis-club-membership certificate'
-      },
-      isDefault: true,
-      fee: {
-        onTime: 7,
-        late: 10.6,
-        delayed: 18
-      },
-      svgUrl:
-        '/api/countryconfig/certificates/v2.tennis-club-membership-certificate.svg',
-      fonts: notoSansFont,
-      conditionals: [
-        {
-          type: 'SHOW',
-          // Show only for registered events
-          conditional: event.hasAction(ActionType.PRINT_CERTIFICATE).minCount(0)
-        }
-      ]
-    },
-    {
-      id: 'v2.tennis-club-membership-certified-certificate',
-      event: Event.TENNIS_CLUB_MEMBERSHIP,
-      isV2Template: true,
-      label: {
-        id: 'certificates.tennis-club-membership.certificate.certified-copy',
-        defaultMessage: 'Tennis Club Membership Certificate certified copy',
-        description: 'The label for a tennis-club-membership certificate'
-      },
-      isDefault: false,
-      fee: {
-        onTime: 7,
-        late: 10.6,
-        delayed: 18
-      },
-      svgUrl:
-        '/api/countryconfig/certificates/v2.tennis-club-membership-certified-certificate.svg',
-      fonts: notoSansFont
-    },
-    {
-      id: 'v2.tennis-club-membership-certificate-multipage',
-      event: Event.TENNIS_CLUB_MEMBERSHIP,
-      isV2Template: true,
-      label: {
-        id: 'certificates.tennis-club-membership.certificate.multipage',
-        defaultMessage: 'Tennis Club Membership Certificate Multipage',
-        description: 'The label for a tennis club membership certificate'
-      },
-      isDefault: false,
-      fee: {
-        onTime: 7,
-        late: 10.6,
-        delayed: 18
-      },
-      svgUrl:
-        '/api/countryconfig/certificates/v2.tennis-club-membership-certificate-multipage.svg',
-      fonts: libreBaskervilleFont
-    },
-    {
-      id: 'v2.tennis-club-membership-certificate-alpha',
-      event: Event.TENNIS_CLUB_MEMBERSHIP,
-      isV2Template: true,
-      label: {
-        id: 'certificates.tennis-club-membership.certificate.alpha',
-        defaultMessage: 'Tennis Club Membership Certificate Alpha',
-        description:
-          'The label for a tennis club membership certificate for alpha print button testing'
-      },
-      isDefault: false,
-      fee: {
-        onTime: 7,
-        late: 10.6,
-        delayed: 18
-      },
-      svgUrl:
-        '/api/countryconfig/certificates/v2.tennis-club-membership-alpha.svg',
-      fonts: libreBaskervilleFont,
-      conditionals: [
-        {
-          type: 'SHOW',
-          // Never show in print-cert flow
-          conditional: never()
         }
       ]
     },

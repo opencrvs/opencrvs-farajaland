@@ -49,7 +49,7 @@ export const deathEvent = defineConfig({
     id: 'event.death.title'
   },
   fallbackTitle: {
-    id: 'event.tennis-club-membership.fallbackTitle',
+    id: 'event.death.fallbackTitle',
     defaultMessage: 'No name provided',
     description:
       'This is a fallback title if actual title resolves to empty string'

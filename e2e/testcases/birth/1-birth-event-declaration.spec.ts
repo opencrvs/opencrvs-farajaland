@@ -44,7 +44,7 @@ test.describe.serial('1. Birth event declaration', () => {
          * - Exit button
          */
         await expect(
-          page.getByLabel('Tennis club membership application')
+          page.getByLabel('Death')
         ).toBeVisible()
 
         await expect(
@@ -273,7 +273,7 @@ test.describe.serial('1. Birth event declaration', () => {
         ).toBeVisible()
       })
 
-      test.skip("1.6.2 Validate Mother's details block", async () => {})
+      test.skip("1.6.2 Validate Mother's details block", async () => { })
 
       test('1.6.3 click continue', async () => {
         await page.getByRole('button', { name: 'Continue' }).click()
@@ -319,7 +319,7 @@ test.describe.serial('1. Birth event declaration', () => {
         ).toBeVisible()
       })
 
-      test.skip("1.7.2 Validate Father's details block", async () => {})
+      test.skip("1.7.2 Validate Father's details block", async () => { })
 
       test('1.7.3 click continue', async () => {
         await page.getByRole('button', { name: 'Continue' }).click()
@@ -580,6 +580,6 @@ test.describe.serial('1. Birth event declaration', () => {
 
   // @TODO: This test is not implemented in V2 events yet
   test.describe.skip('1.12 Technical test for shortcuts', () => {
-    test.skip('Shortcut for quickly creating declarations', async () => {})
+    test.skip('Shortcut for quickly creating declarations', async () => { })
   })
 })
