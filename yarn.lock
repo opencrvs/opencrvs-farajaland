@@ -1721,10 +1721,10 @@
   dependencies:
     zod "^4.1.12"
 
-"@opencrvs/toolkit@1.9.12-rc.c4d2a9f":
-  version "1.9.12-rc.c4d2a9f"
-  resolved "https://registry.yarnpkg.com/@opencrvs/toolkit/-/toolkit-1.9.12-rc.c4d2a9f.tgz#c369bf280996e493bd618dbdad27645de87d1e28"
-  integrity sha512-HYPz5TqRtDdWETw/3ot3bJqfZc1+fftGw0MAsM0Y/bGAJcQtkCfRjZY7HRUyId66p4a/VkhY21W1T8nkELYU9w==
+"@opencrvs/toolkit@1.9.12-rc.c22ddaf":
+  version "1.9.12-rc.c22ddaf"
+  resolved "https://registry.yarnpkg.com/@opencrvs/toolkit/-/toolkit-1.9.12-rc.c22ddaf.tgz#64c8c3529d78dc6eda3ac104c464182f539f93bc"
+  integrity sha512-MsQ+UIHMe/1K1PsNAeXYJlHESHxCXXcjlPFmkKn1DhP6Knnn0qYxXCQwKnjcDBQh8O94Rani42DA4UrEbPGE/Q==
   dependencies:
     "@trpc/client" "11.4.3"
     "@trpc/server" "^11.8.0"
