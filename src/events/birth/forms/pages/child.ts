@@ -20,7 +20,8 @@ import {
   PageTypes,
   field,
   user,
-  never
+  never,
+  SelectOption
 } from '@opencrvs/toolkit/events'
 import { not } from '@opencrvs/toolkit/conditionals'
 
@@ -150,7 +151,7 @@ const attendantAtBirthMessageDescriptors = {
   }
 } satisfies Record<keyof typeof AttendantAtBirth, TranslationConfig>
 
-const placeOfBirthMessageDescriptors = {
+export const placeOfBirthMessageDescriptors = {
   HEALTH_FACILITY: {
     defaultMessage: 'Health Institution',
     description: 'Select item for Health Institution',
@@ -170,10 +171,41 @@ const placeOfBirthMessageDescriptors = {
 
 const genderOptions = createSelectOptions(GenderTypes, genderMessageDescriptors)
 
-export const placeOfBirthOptions = createSelectOptions(
-  PlaceOfBirth,
-  placeOfBirthMessageDescriptors
-)
+const placeOfBirthOptions = [
+  {
+    value: PlaceOfBirth.HEALTH_FACILITY,
+    label: placeOfBirthMessageDescriptors.HEALTH_FACILITY,
+    conditionals: [
+      {
+        type: ConditionalType.SHOW,
+        conditional: and(
+          not(user.hasRole('EMBASSY_OFFICIAL')),
+          not(user.hasRole('COMMUNITY_LEADER'))
+        )
+      }
+    ]
+  },
+  {
+    value: PlaceOfBirth.PRIVATE_HOME,
+    label: placeOfBirthMessageDescriptors.PRIVATE_HOME,
+    conditionals: [
+      {
+        type: ConditionalType.SHOW,
+        conditional: not(user.hasRole('HOSPITAL_CLERK'))
+      }
+    ]
+  },
+  {
+    value: PlaceOfBirth.OTHER,
+    label: placeOfBirthMessageDescriptors.OTHER.defaultMessage,
+    conditionals: [
+      {
+        type: ConditionalType.SHOW,
+        conditional: not(user.hasRole('HOSPITAL_CLERK'))
+      }
+    ]
+  }
+] satisfies SelectOption[]
 
 const typeOfBirthOptions = createSelectOptions(
   TypeOfBirth,
