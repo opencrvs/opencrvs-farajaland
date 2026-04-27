@@ -302,10 +302,7 @@ export const mother = defineFormPage({
         conditionals: [
           {
             type: ConditionalType.SHOW,
-            conditional: and(
-              not(field('mother.dobUnknown').isEqualTo(true)),
-              requireMotherDetails
-            )
+            conditional: requireMotherDetails
           }
         ]
       },
@@ -313,72 +310,6 @@ export const mother = defineFormPage({
         valuePath: 'data.birthDate',
         disableIf: ['pending', 'verified', 'authenticated']
       }
-    ),
-    connectToMOSIPIdReader(
-      {
-        id: 'mother.dobUnknown',
-        type: FieldType.CHECKBOX,
-        label: {
-          defaultMessage: 'Exact date of birth unknown',
-          description: 'This is the label for the field',
-          id: 'event.birth.action.declare.form.section.person.field.age.checkbox.label'
-        },
-        conditionals: [
-          {
-            type: ConditionalType.SHOW,
-            conditional: requireMotherDetails
-          },
-          {
-            type: ConditionalType.DISPLAY_ON_REVIEW,
-            conditional: never()
-          }
-        ]
-      },
-      {
-        valuePath: 'data.dobUnknown',
-        disableIf: ['pending', 'verified', 'authenticated']
-      }
-    ),
-    connectToMOSIPVerificationStatus(
-      {
-        id: 'mother.age',
-        type: FieldType.AGE,
-        required: true,
-        analytics: true,
-        label: {
-          defaultMessage: 'Age of mother (at the time of event)',
-          description: 'This is the label for the field',
-          id: 'event.birth.action.declare.form.section.mother.field.age.label'
-        },
-        configuration: {
-          asOfDate: field('child.dob'),
-          postfix: {
-            defaultMessage: 'years',
-            description: 'This is the postfix for age field',
-            id: 'event.birth.action.declare.form.section.person.field.age.postfix'
-          }
-        },
-        conditionals: [
-          {
-            type: ConditionalType.SHOW,
-            conditional: and(
-              field('mother.dobUnknown').isEqualTo(true),
-              requireMotherDetails
-            )
-          }
-        ],
-        validation: [
-          {
-            validator: field('mother.age').asAge().isBetween(12, 120),
-            message: {
-              defaultMessage: 'Age must be between 12 and 120',
-              description: 'Error message for invalid age',
-              id: 'event.action.declare.form.section.person.field.age.error'
-            }
-          }
-        ]
-      },
-      { disableIf: ['pending', 'verified', 'authenticated'] }
     ),
     {
       id: 'mother.addressDivider1',
