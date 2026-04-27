@@ -66,12 +66,8 @@ export const mother = defineFormPage({
         {
           type: ConditionalType.SHOW,
           conditional: and(
-            not(
-              field('informant.relation').isEqualTo(InformantType.MOTHER)
-            ),
-            not(
-              user.hasRole('HOSPITAL_CLERK')
-            )
+            not(field('informant.relation').isEqualTo(InformantType.MOTHER)),
+            not(user.hasRole('HOSPITAL_CLERK'))
           )
         },
         {
@@ -88,12 +84,8 @@ export const mother = defineFormPage({
         {
           type: ConditionalType.SHOW,
           conditional: and(
-            not(
-              field('informant.relation').isEqualTo(InformantType.MOTHER)
-            ),
-            not(
-              user.hasRole('HOSPITAL_CLERK')
-            )
+            not(field('informant.relation').isEqualTo(InformantType.MOTHER)),
+            not(user.hasRole('HOSPITAL_CLERK'))
           )
         }
       ]
@@ -131,9 +123,7 @@ export const mother = defineFormPage({
           type: ConditionalType.SHOW,
           conditional: and(
             requireMotherDetails,
-            not(
-              user.hasRole('HOSPITAL_CLERK')
-            )
+            not(user.hasRole('HOSPITAL_CLERK'))
           )
         }
       ],
@@ -155,9 +145,7 @@ export const mother = defineFormPage({
             type: ConditionalType.SHOW,
             conditional: and(
               requireMotherDetails,
-              not(
-                user.hasRole('HOSPITAL_CLERK')
-              )
+              not(user.hasRole('HOSPITAL_CLERK'))
             )
           }
         ]
@@ -177,9 +165,8 @@ export const mother = defineFormPage({
           type: ConditionalType.SHOW,
           conditional: and(
             requireMotherDetails,
-            not(
-              user.hasRole('HOSPITAL_CLERK')
-            )
+            field('mother.nationality').isEqualTo('FAR'),
+            not(user.hasRole('HOSPITAL_CLERK'))
           )
         }
       ]
@@ -200,9 +187,7 @@ export const mother = defineFormPage({
             conditional: and(
               field('mother.idType').isEqualTo(IdType.NATIONAL_ID),
               requireMotherDetails,
-              not(
-                user.hasRole('HOSPITAL_CLERK')
-              )
+              not(user.hasRole('HOSPITAL_CLERK'))
             )
           }
         ],
@@ -243,9 +228,7 @@ export const mother = defineFormPage({
             conditional: and(
               field('mother.idType').isEqualTo(IdType.PASSPORT),
               requireMotherDetails,
-              not(
-                user.hasRole('HOSPITAL_CLERK')
-              )
+              not(user.hasRole('HOSPITAL_CLERK'))
             )
           }
         ]
@@ -428,9 +411,7 @@ export const mother = defineFormPage({
           type: ConditionalType.SHOW,
           conditional: and(
             requireMotherDetails,
-            not(
-              user.hasRole('HOSPITAL_CLERK')
-            )
+            not(user.hasRole('HOSPITAL_CLERK'))
           )
         }
       ]
@@ -451,9 +432,7 @@ export const mother = defineFormPage({
           type: ConditionalType.SHOW,
           conditional: and(
             requireMotherDetails,
-            not(
-              user.hasRole('HOSPITAL_CLERK')
-            )
+            not(user.hasRole('HOSPITAL_CLERK'))
           )
         }
       ],
@@ -489,9 +468,7 @@ export const mother = defineFormPage({
           type: ConditionalType.SHOW,
           conditional: and(
             requireMotherDetails,
-            not(
-              user.hasRole('HOSPITAL_CLERK')
-            )
+            not(user.hasRole('HOSPITAL_CLERK'))
           )
         }
       ]
