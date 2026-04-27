@@ -45,12 +45,11 @@ import {
 export const InformantType = {
   MOTHER: 'MOTHER',
   FATHER: 'FATHER',
-  OTHER: 'OTHER',
   GRANDFATHER: 'GRANDFATHER',
   GRANDMOTHER: 'GRANDMOTHER',
-  BROTHER: 'BROTHER',
-  SISTER: 'SISTER',
-  LEGAL_GUARDIAN: 'LEGAL_GUARDIAN'
+  LEGAL_GUARDIAN: 'LEGAL_GUARDIAN',
+  SELF: 'SELF',
+  OTHER: 'OTHER'
 } as const
 export type InformantTypeKey = keyof typeof InformantType
 
@@ -76,25 +75,20 @@ const informantMessageDescriptors = {
     description: 'Label for option Grandmother',
     id: 'form.field.label.informantRelation.grandmother'
   },
-  BROTHER: {
-    defaultMessage: 'Brother',
-    description: 'Label for option brother',
-    id: 'form.field.label.informantRelation.brother'
-  },
-  SISTER: {
-    defaultMessage: 'Sister',
-    description: 'Label for option Sister',
-    id: 'form.field.label.informantRelation.sister'
-  },
   LEGAL_GUARDIAN: {
     defaultMessage: 'Legal guardian',
     description: 'Label for option Legal Guardian',
     id: 'form.field.label.informantRelation.legalGuardian'
   },
   OTHER: {
-    defaultMessage: 'Someone else',
+    defaultMessage: 'Other',
     description: 'Label for option someone else',
     id: 'form.field.label.informantRelation.others'
+  },
+  SELF: {
+    defaultMessage: 'Self',
+    description: 'Label for option Self',
+    id: 'form.field.label.informantRelation.self'
   }
 } satisfies Record<keyof typeof InformantType, TranslationConfig>
 

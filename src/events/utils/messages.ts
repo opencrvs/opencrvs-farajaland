@@ -10,6 +10,11 @@
  */
 
 export const informantMessageDescriptors = {
+  SELF: {
+    defaultMessage: 'Self',
+    description: 'Label for option Self',
+    id: 'form.field.label.informantRelation.self'
+  },
   birthInformantTitle: {
     defaultMessage: 'Informant type',
     description: 'Who is applying for birth registration',

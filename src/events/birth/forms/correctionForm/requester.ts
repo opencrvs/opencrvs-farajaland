@@ -234,11 +234,10 @@ export const correctionFormRequesters: FieldConfig[] = [
     ]
   },
   ...getFieldConfigForInformant(InformantType.OTHER),
-  ...getFieldConfigForInformant(InformantType.BROTHER),
   ...getFieldConfigForInformant(InformantType.GRANDFATHER),
   ...getFieldConfigForInformant(InformantType.GRANDMOTHER),
-  ...getFieldConfigForInformant(InformantType.SISTER),
   ...getFieldConfigForInformant(InformantType.LEGAL_GUARDIAN),
+  ...getFieldConfigForInformant(InformantType.SELF),
   {
     id: 'requester.idType',
     type: FieldType.SELECT,
