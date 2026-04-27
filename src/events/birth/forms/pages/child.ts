@@ -177,7 +177,10 @@ const placeOfBirthOptions = [
     conditionals: [
       {
         type: ConditionalType.SHOW,
-        conditional: not(user.hasRole('EMBASSY_OFFICIAL'))
+        conditional: and(
+          not(user.hasRole('EMBASSY_OFFICIAL')),
+          not(user.hasRole('COMMUNITY_LEADER'))
+        )
       }
     ]
   },
