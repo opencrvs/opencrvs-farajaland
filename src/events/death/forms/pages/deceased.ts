@@ -341,7 +341,7 @@ export const deceased = defineFormPage({
       id: `deceased.addressHelper`,
       type: FieldType.HEADING,
       label: {
-        defaultMessage: 'Usual place of residence',
+        defaultMessage: 'Place of residence',
         description: 'This is the label for the field',
         id: `v2.event.death.action.declare.form.section.deceased.field.addressHelper.label`
       },
@@ -360,7 +360,7 @@ export const deceased = defineFormPage({
       hideLabel: true,
       secured: true,
       label: {
-        defaultMessage: 'Usual place of residence',
+        defaultMessage: 'Place of residence',
         description: 'This is the label for the field',
         id: 'event.death.action.declare.form.section.deceased.field.address.label'
       },

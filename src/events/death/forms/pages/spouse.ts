@@ -380,7 +380,7 @@ export const spouse = defineFormPage({
       required: true,
       hideLabel: true,
       label: {
-        defaultMessage: 'Usual place of residence',
+        defaultMessage: 'Place of residence',
         description: 'This is the label for the field',
         id: 'event.death.action.declare.form.section.spouse.field.address.label'
       },

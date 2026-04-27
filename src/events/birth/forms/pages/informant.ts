@@ -157,7 +157,7 @@ export const informant = defineFormPage({
       type: FieldType.NAME,
       required: true,
       configuration: farajalandNameConfig,
-      hideLabel: true,
+      hideLabel: false,
       label: {
         defaultMessage: "Notifying Official",
         description: 'This is the label for the field',
@@ -455,7 +455,7 @@ export const informant = defineFormPage({
       id: 'informant.addressHelper',
       type: FieldType.HEADING,
       label: {
-        defaultMessage: 'Usual place of residence',
+        defaultMessage: 'Place of residence',
         description: 'This is the label for the field',
         id: 'event.birth.action.declare.form.section.person.field.addressHelper.label'
       },
@@ -480,7 +480,7 @@ export const informant = defineFormPage({
       required: true,
       hideLabel: true,
       label: {
-        defaultMessage: 'Usual place of residence',
+        defaultMessage: 'Place of residence',
         description: 'This is the label for the field',
         id: 'event.birth.action.declare.form.section.person.field.address.label'
       },

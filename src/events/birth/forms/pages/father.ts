@@ -396,7 +396,7 @@ export const father = defineFormPage({
       id: 'father.addressHelper',
       type: FieldType.HEADING,
       label: {
-        defaultMessage: 'Usual place of residence',
+        defaultMessage: 'Place of residence',
         description: 'This is the label for the field',
         id: 'event.birth.action.declare.form.section.person.field.addressHelper.label'
       },
@@ -452,7 +452,7 @@ export const father = defineFormPage({
       hideLabel: true,
       secured: true,
       label: {
-        defaultMessage: 'Usual place of residence',
+        defaultMessage: 'Place of residence',
         description: 'This is the label for the field',
         id: 'event.birth.action.declare.form.section.person.field.address.label'
       },

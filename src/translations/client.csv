@@ -851,8 +851,8 @@ event.birth.action.declare.form.section.mother.field.age.label,This is the label
 event.birth.action.declare.form.section.mother.field.name.label,This is the label for the field,Mother's name,Nom de la mère
 event.birth.action.declare.form.section.mother.field.previousBirths.label,This is the label for the field,No. of previous births,Nombre de naissances antérieures
 event.birth.action.declare.form.section.mother.field.reason.label,This is the label for the field,Reason,Raison
-event.birth.action.declare.form.section.person.field.address.label,This is the label for the field,Usual place of residence,Lieu de résidence habituel
-event.birth.action.declare.form.section.person.field.addressHelper.label,This is the label for the field,Usual place of residence,Adresse du domicile
+event.birth.action.declare.form.section.person.field.address.label,This is the label for the field,Place of residence,Lieu de résidence habituel
+event.birth.action.declare.form.section.person.field.addressHelper.label,This is the label for the field,Place of residence,Adresse du domicile
 event.birth.action.declare.form.section.person.field.age.checkbox.label,This is the label for the field,Exact date of birth unknown,Date de naissance exacte inconnue
 event.birth.action.declare.form.section.person.field.age.postfix,This is the postfix for age field,years,years
 event.birth.action.declare.form.section.person.field.brn.label,This is the label for the field,Birth Registration no.,Numéro d'enregistrement de naissance
@@ -966,8 +966,8 @@ event.death.action.declare.form.nid.unique,This is the error message for non-uni
 event.death.action.declare.form.review.comment.label,Label for the comment field in the review section,Comment,Commentaire
 event.death.action.declare.form.review.signature.label,Label for the signature field in the review section,Signature of informant,Signature de l'informateur
 event.death.action.declare.form.review.title,Title of the form to show in review page,"{deceased.name.firstname, select, __EMPTY__ {{deceased.name.surname, select, __EMPTY__ {Death declaration} other {Death declaration for {deceased.name.surname}}}} other {{deceased.name.surname, select, __EMPTY__ {Death declaration for {deceased.name.firstname}} other {Death declaration for {deceased.name.firstname} {deceased.name.surname}}}}}","{deceased.name.firstname, select, __EMPTY__ {{deceased.name.surname, select, __EMPTY__ {Déclaration de décès} other {Déclaration de décès de {deceased.name.surname}}}} other {{deceased.name.surname, select, __EMPTY__ {Déclaration de décès de {deceased.name.firstname}} other {Déclaration de décès de {deceased.name.firstname} {deceased.name.surname}}}}}"
-event.death.action.declare.form.section.deceased.field.address.label,This is the label for the field,Usual place of residence,Lieu de résidence habituel
-event.death.action.declare.form.section.deceased.field.addressHelper.label,This is the label for the field,Usual place of residence,Lieu de résidence habituel
+event.death.action.declare.form.section.deceased.field.address.label,This is the label for the field,Place of residence,Lieu de résidence habituel
+event.death.action.declare.form.section.deceased.field.addressHelper.label,This is the label for the field,Place of residence,Lieu de résidence habituel
 event.death.action.declare.form.section.deceased.field.age.checkbox.label,This is the label for the field,Exact date of birth unknown,Date exacte de naissance inconnue
 event.death.action.declare.form.section.deceased.field.age.error,Error message for invalid age,Age must be between 0 and 120,L'auteur doit avoir entre 0 et 120 ans
 event.death.action.declare.form.section.deceased.field.age.label,This is the label for the field,Age of deceased (at the time of event),Âge du défunt (au moment de l'événement)
@@ -996,8 +996,8 @@ event.death.action.declare.form.section.event.field.manner.label,This is the lab
 event.death.action.declare.form.section.event.field.reason.label,This is the label for the field,Reason for late registration,Raison de l'inscription tardive
 event.death.action.declare.form.section.event.field.sourceCauseDeath.label,This is the label for the field,Source of cause of death,Source de la cause du décès
 event.death.action.declare.form.section.informant.field.address.addressSameAs.label,This is the label for the field,Same as deceased's usual place of residence?,Identique au lieu de résidence habituel du défunt ?
-event.death.action.declare.form.section.informant.field.address.label,This is the label for the field,Usual place of residence,Lieu de résidence habituel
-event.death.action.declare.form.section.informant.field.addressHelper.label,This is the label for the field,Usual place of residence,Lieu de résidence habituel
+event.death.action.declare.form.section.informant.field.address.label,This is the label for the field,Place of residence,Lieu de résidence habituel
+event.death.action.declare.form.section.informant.field.addressHelper.label,This is the label for the field,Place of residence,Lieu de résidence habituel
 event.death.action.declare.form.section.informant.field.age.checkbox.label,This is the label for the field,Exact date of birth unknown,Date exacte de naissance inconnue
 event.death.action.declare.form.section.informant.field.age.label,This is the label for the field,Age of informant (at the time of event),Âge de l'informateur (au moment de l'événement)
 event.death.action.declare.form.section.informant.field.age.postfix,This is the postfix for age field,years,ans
@@ -1020,8 +1020,8 @@ event.death.action.declare.form.section.person.field.nationality.label,This is t
 event.death.action.declare.form.section.person.field.nid.label,This is the label for the field,ID Number,Numéro d'identité
 event.death.action.declare.form.section.person.field.passport.label,This is the label for the field,ID Number,Numéro d'identité
 event.death.action.declare.form.section.spouse.field.address.addressSameAs.label,This is the label for the field,Same as deceased's usual place of residence?,Identique au lieu de résidence habituel du défunt ?
-event.death.action.declare.form.section.spouse.field.address.label,This is the label for the field,Usual place of residence,Lieu de résidence habituel
-event.death.action.declare.form.section.spouse.field.addressHelper.label,This is the label for the field,Usual place of residence,Lieu de résidence habituel
+event.death.action.declare.form.section.spouse.field.address.label,This is the label for the field,Place of residence,Lieu de résidence habituel
+event.death.action.declare.form.section.spouse.field.addressHelper.label,This is the label for the field,Place of residence,Lieu de résidence habituel
 event.death.action.declare.form.section.spouse.field.age.checkbox.label,This is the label for the field,Exact date of birth unknown,Date exacte de naissance inconnue
 event.death.action.declare.form.section.spouse.field.age.label,This is the label for the field,Age of spouse (at the time of event),Âge du conjoint (au moment de l'événement)
 event.death.action.declare.form.section.spouse.field.age.postfix,This is the postfix for age field,years,ans
@@ -1197,7 +1197,7 @@ form.field.label.deathDescription,,Description,Description
 form.field.label.deceasedDeathProof,,Proof of death of deceased,Preuve du décès du défunt
 form.field.label.deceasedDocumentParagraph,,The following documents are required,"Pour l'enregistrement d'un décès, les documents suivants sont requis :"
 form.field.label.deceasedIDProof,,Proof of deceased's ID,Preuve de l'identité de la personne décédée
-form.field.label.deceasedPrimaryAddress,,Usual place of residence,Lieu de résidence habituel
+form.field.label.deceasedPrimaryAddress,,Place of residence,Lieu de résidence habituel
 form.field.label.deceasedSecondaryAddress,,Secondary Address,Adresse secondaire
 form.field.label.deny,,No,Non
 form.field.label.district,Label for District,District,District
@@ -1242,7 +1242,7 @@ form.field.label.iDTypeOtherLabel,,Other Form of ID,Autre type de carte d'identi
 form.field.label.iDTypePassport,Option for form field: Form of ID,Passport,Passeport
 form.field.label.iDTypeRefugeeNumber,,Refugee Number,Numéro de réfugié
 form.field.label.informant,Informant Label,Informant,Informateur
-form.field.label.informantPrimaryAddress,,Usual place of residence,Quelle est l'adresse de leur domicile ?
+form.field.label.informantPrimaryAddress,,Place of residence,Quelle est l'adresse de leur domicile ?
 form.field.label.informantRelation.bride,Label for option bride,Bride,Mariée
 form.field.label.informantRelation.brother,Label for option brother,Brother,Frère
 form.field.label.informantRelation.contactPoint,,Contact Point,point de contact
@@ -1316,7 +1316,7 @@ form.field.label.placeOfDeath,,Place of death,Où le décès s'est-il produit ?
 form.field.label.placeOfDeathSameAsPrimary,,Deceased's usual place of residence,Lieu de résidence habituel du défunt
 form.field.label.placeOfMarriage,,Place of marriage,Lieu du mariage
 form.field.label.polygamy,,Polygamous,Polygame
-form.field.label.primaryAddress,,Usual place of residence,Lieu de résidence habituel
+form.field.label.primaryAddress,,Place of residence,Lieu de résidence habituel
 form.field.label.primaryAddressSameAsDeceasedsPrimary,,Same as deceased's usual place of residence?,Le même que le lieu de résidence habituel du défunt ?
 form.field.label.primaryAddressSameAsOtherPrimary,,Same as mother's usual place of residence?,Même que le lieu de résidence habituel de la mère ?
 form.field.label.privateHome,Select item for Private Home,Residential address,Adresse de résidence
@@ -1368,7 +1368,7 @@ form.field.nidNotVerifiedReviewSection,,Unauthenticated,Non authentifié
 form.field.nidOffline,,National ID authentication is currently not available offline.,L'authentification de la carte d'identité nationale n'est actuellement pas disponible hors ligne.
 form.field.nidVerificationOngoing,Label for indicating offline status for the user. NID verification is not currently available offline.,National ID authentication is currently not available offline.,L'authentification de l'identifiant national n'est actuellement pas disponible hors ligne
 form.field.nidVerified,,Authenticated,Authentifié
-form.field.previewGroups.primaryAddress,,Usual place of residence,Adresse résidentielle
+form.field.previewGroups.primaryAddress,,Place of residence,Adresse résidentielle
 form.field.previewGroups.secondaryAddress,,Secondary address,Adresse secondaire
 form.field.select.placeholder,,Select,Sélectionnez
 form.field.showLabel,Button to show section,Show,Afficher

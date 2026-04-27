@@ -456,7 +456,7 @@ export const informant = defineFormPage({
       id: 'informant.addressHelper',
       type: FieldType.HEADING,
       label: {
-        defaultMessage: 'Usual place of residence',
+        defaultMessage: 'Place of residence',
         description: 'This is the label for the field',
         id: 'event.death.action.declare.form.section.informant.field.addressHelper.label'
       },
@@ -484,7 +484,7 @@ export const informant = defineFormPage({
       required: true,
       hideLabel: true,
       label: {
-        defaultMessage: 'Usual place of residence',
+        defaultMessage: 'Place of residence',
         description: 'This is the label for the field',
         id: 'event.death.action.declare.form.section.informant.field.address.label'
       },
