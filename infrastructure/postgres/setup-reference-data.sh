@@ -7,10 +7,10 @@ set -euo pipefail
 : "${POSTGRES_PASSWORD:?Must set POSTGRES_PASSWORD}"
 : "${POSTGRES_USER:?Must set POSTGRES_USER}"
 
-if [[ -z "$REFERENCE_DATA_POSTGRES_PASSWORD" ||
-      -z "$REFERENCE_DATA_POSTGRES_USER" ||
-      -z "$REFERENCE_DATA_EDITOR_PASSWORD" ||
-      -z "$REFERENCE_DATA_EDITOR_USER" ]]; then
+if [[ -z "${REFERENCE_DATA_POSTGRES_PASSWORD:-}" ||
+      -z "${REFERENCE_DATA_POSTGRES_USER:-}" ||
+      -z "${REFERENCE_DATA_EDITOR_PASSWORD:-}" ||
+      -z "${REFERENCE_DATA_EDITOR_USER:-}" ]]; then
   echo "Required variables are not set, skipping..."
   exit 0
 fi
