@@ -556,7 +556,7 @@ form.field.label.app.certifyRecordTo.groom,,Print and issue to groom
 form.field.label.attendantAtBirthLayperson,,Layperson
 form.field.label.cityUrbanOption,Label for City,Town
 form.field.label.empty,empty string,
-form.field.label.informantsRelationWithChild,,Relationship to child
+form.field.label.informantsRelationWithChild,,Informant type
 form.field.label.maritalStatusSeparated,,Separated
 form.field.label.relationOtherFamilyMember,Label for other family member relation,Other family member
 form.field.label.totalFees,Label for input Reason for Change,

@@ -194,7 +194,7 @@ export const correctionFormRequesters: FieldConfig[] = [
     required: true,
     label: {
       id: 'event.death.action.correction.form.section.requester.relationship.label',
-      defaultMessage: 'Relationship to child',
+      defaultMessage: 'Informant type',
       description: 'This is the label for the field'
     },
     placeholder: {

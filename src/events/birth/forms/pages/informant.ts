@@ -127,7 +127,7 @@ export const informant = defineFormPage({
       analytics: true,
       required: true,
       label: {
-        defaultMessage: 'Relationship to child',
+        defaultMessage: 'Informant type',
         description: 'This is the label for the field',
         id: 'event.birth.action.declare.form.section.informant.field.relation.label'
       },
@@ -144,7 +144,7 @@ export const informant = defineFormPage({
       type: FieldType.TEXT,
       required: true,
       label: {
-        defaultMessage: 'Relationship to child',
+        defaultMessage: 'Informant type',
         description: 'This is the label for the field',
         id: 'event.birth.action.declare.form.section.informant.field.other.relation.label'
       },

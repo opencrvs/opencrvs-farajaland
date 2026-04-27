@@ -295,8 +295,8 @@ export const printCertificateCollectorOther: FieldConfig[] = [
     type: FieldType.TEXT,
     required: true,
     label: {
-      defaultMessage: 'Relationship to child',
-      description: 'This is the label for the relationship to child field',
+      defaultMessage: 'Informant type',
+      description: 'This is the label for the Informant type field',
       id: 'event.birth.action.form.section.relationshipToChild.label'
     },
     conditionals: [

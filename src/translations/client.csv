@@ -843,10 +843,10 @@ event.birth.action.declare.form.section.father.field.reason.label,This is the la
 event.birth.action.declare.form.section.informant.field.age.label,This is the label for the field,Age of informant (at the time of event),Âge de l'informateur (au moment de l'événement)
 event.birth.action.declare.form.section.informant.field.email.label,This is the label for the field,Email,E-mail
 event.birth.action.declare.form.section.informant.field.name.label,This is the label for the field,Informant's name,Nom du déclarant
-event.birth.action.declare.form.section.informant.field.other.relation.label,This is the label for the field,Relationship to child,Relation avec l'enfant
+event.birth.action.declare.form.section.informant.field.other.relation.label,This is the label for the field,Informant type,Relation avec l'enfant
 event.birth.action.declare.form.section.informant.field.phoneNo.error,The error message that appears on phone numbers where the first two characters must be a 01 and length must be 11,Must be a valid 10 digit number that starts with 0(7|9),Doit être un nombre valide de  {num} chiffres qui commence par  {start}
 event.birth.action.declare.form.section.informant.field.phoneNo.label,This is the label for the field,Phone number,Numéro de téléphone
-event.birth.action.declare.form.section.informant.field.relation.label,This is the label for the field,Relationship to child,Relation avec l'enfant
+event.birth.action.declare.form.section.informant.field.relation.label,This is the label for the field,Informant type,Relation avec l'enfant
 event.birth.action.declare.form.section.mother.field.age.label,This is the label for the field,Age of mother (at the time of event),Âge de la mère (au moment de l'événement)
 event.birth.action.declare.form.section.mother.field.name.label,This is the label for the field,Mother's name,Nom de la mère
 event.birth.action.declare.form.section.mother.field.previousBirths.label,This is the label for the field,No. of previous births,Nombre de naissances antérieures
@@ -950,7 +950,7 @@ event.death.action.correction.form.section.requester.mother.label,This is the la
 event.death.action.correction.form.section.requester.name.label,This is the label for the field,Name,Nom
 event.death.action.correction.form.section.requester.nid.label,This is the label for the field,ID Number,Numéro d'identité
 event.death.action.correction.form.section.requester.passport.label,This is the label for the field,ID Number,Numéro d'identité
-event.death.action.correction.form.section.requester.relationship.label,This is the label for the field,Relationship to child,Relation avec l'enfant
+event.death.action.correction.form.section.requester.relationship.label,This is the label for the field,Informant type,Relation avec l'enfant
 event.death.action.correction.form.section.requester.relationship.placeholder,This is the placeholder for the field,eg. Grandmother,ex. Grand-mère
 event.death.action.correction.form.section.supporting-documents.title,This is the title of the section,Upload supporting documents,Télécharger les documents justificatifs
 event.death.action.correction.form.section.verifyIdentity.data.label,Title for the data section,,
@@ -1267,7 +1267,7 @@ form.field.label.informantRelation.whoIsBirthInformant,Label for option birth in
 form.field.label.informantRelation.whoIsDeathInformant,Label for option death informant,Who is informant,Qui est l'informateur
 form.field.label.informantSecondaryAddress,,Secondary Address,Adresse secondaire
 form.field.label.informantTitle,,Informant's details,Coordonnées de l'informateur
-form.field.label.informantsRelationWithChild,,Relationship to child,Lien de parenté avec l'enfant
+form.field.label.informantsRelationWithChild,,Informant type,Lien de parenté avec l'enfant
 form.field.label.informantsRelationWithDeceased,,Relationship to deceased,Lien de parenté avec le défunt
 form.field.label.internationalAddressLine1,,Address Line 1,Adresse ligne 1
 form.field.label.internationalAddressLine2,,Address Line 2,Ligne d'adresse 2
