@@ -2315,3 +2315,4 @@ form.field.label.proofOfAssignResponsibility.fileName,This is the label for the 
 event.birth.action.declare.form.section.documents.field.proofOfAssignResponsibility.label.fileName,This is the label for the file name,Proof of assigned responsibility,Preuve de responsabilité assignée
 form.field.label.acquiredChildCourtDocument.fileName,This is the label for the file name,Acquired child court document,Document judiciaire relatif à l'enfant acquis
 event.birth.action.declare.form.section.documents.field.acquiredChildCourtDocument.label.fileName,This is the label for the file name,Acquired child court document,Document judiciaire relatif à l'enfant acquis
+event.birth.action.declare.form.review.print.label,Label for the print button in the review section,Print certificate inadvance of registration,Imprimer le certificat avant l'enregistrement
