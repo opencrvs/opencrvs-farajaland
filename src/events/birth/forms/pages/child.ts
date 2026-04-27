@@ -344,6 +344,7 @@ export const child = defineFormPage({
           defaultStreetAddressConfiguration
         )
       ],
+      parent: field('child.placeOfBirth'),
       defaultValue: {
         country: 'FAR',
         addressType: AddressType.DOMESTIC,
@@ -391,10 +392,11 @@ export const child = defineFormPage({
           defaultStreetAddressConfiguration
         )
       ],
+      parent: field('child.placeOfBirth'),
       defaultValue: {
         country: 'FAR',
         addressType: AddressType.DOMESTIC,
-        administrativeArea: user('primaryOfficeId').locationLevel('district')
+        administrativeArea: user('administrativeAreaId')
       },
       configuration: {
         streetAddressForm: defaultStreetAddressConfiguration,
