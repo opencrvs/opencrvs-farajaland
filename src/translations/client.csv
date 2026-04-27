@@ -162,7 +162,7 @@ certificate.parent.details.label.firstName,Parent first names,First name(s),Pré
 certificate.parent.details.label.firstNameInEng,Parent first names,First name(s),Prénom(s)
 certificate.parent.details.label.nationality,Parent Nationality,Nationality,Nationalité
 certificate.parent.details.label.number,Parent number,Number,Numéro
-certificate.parent.details.label.typeOfID,Parent Type of ID,Type of ID,Type de document d'identité
+certificate.parent.details.label.typeOfID,Parent Form of ID,Form of ID,Type de document d'identité
 certificate.receipt.amount,Amount paid for certificate label,Amount paid:,Montant payé:
 certificate.receipt.amountDue,The label for due amount,Fee,Tarif certificat
 certificate.receipt.birthService.after,Amount due on certificate for birth label,Birth registration after {target} days of date of birth,Déclaration de la naissance après {target} jours de la date de naissance
@@ -855,16 +855,16 @@ event.birth.action.declare.form.section.person.field.address.label,This is the l
 event.birth.action.declare.form.section.person.field.addressHelper.label,This is the label for the field,Usual place of residence,Adresse du domicile
 event.birth.action.declare.form.section.person.field.age.checkbox.label,This is the label for the field,Exact date of birth unknown,Date de naissance exacte inconnue
 event.birth.action.declare.form.section.person.field.age.postfix,This is the postfix for age field,years,years
-event.birth.action.declare.form.section.person.field.brn.label,This is the label for the field,ID Number,Numéro d'identification
+event.birth.action.declare.form.section.person.field.brn.label,This is the label for the field,Birth Registration no.,Numéro d'enregistrement de naissance
 event.birth.action.declare.form.section.person.field.dob.error,This is the error message for invalid date,Must be a valid birth date,Doit être une date de naissance valide
 event.birth.action.declare.form.section.person.field.dob.label,This is the label for the field,Date of birth,Date de naissance
 event.birth.action.declare.form.section.person.field.educationalAttainment.label,This is the label for the field,Level of education,Niveau d'éducation
-event.birth.action.declare.form.section.person.field.idType.label,This is the label for the field,Type of ID,Type d'identification
+event.birth.action.declare.form.section.person.field.idType.label,This is the label for the field,Form of ID,Type d'identification
 event.birth.action.declare.form.section.person.field.maritalStatus.label,This is the label for the field,Marital Status,Marital Status
 event.birth.action.declare.form.section.person.field.nationality.label,This is the label for the field,Nationality,Nationalité
-event.birth.action.declare.form.section.person.field.nid.label,This is the label for the field,ID Number,Numéro d'identification
+event.birth.action.declare.form.section.person.field.nid.label,This is the label for the field,National ID no.,Numéro d'identification national
 event.birth.action.declare.form.section.person.field.occupation.label,This is the label for the field,Occupation,Profession
-event.birth.action.declare.form.section.person.field.passport.label,This is the label for the field,ID Number,Numéro d'identification
+event.birth.action.declare.form.section.person.field.passport.label,This is the label for the field,Passport no.,Numéro de passeport
 event.birth.action.declare.label,This is shown as the action name anywhere the user can trigger the action from,Declare,Declare
 event.birth.action.delete.label,Label for delete button in dropdown menu,Delete,Supprimer
 event.birth.action.edit.declare.copy,Description for `Declare with edits` in edit action menu,You are about to redeclare this birth event with your edits. This will permanently update the declaration.,Vous êtes sur le point de redéclarer cet événement avec vos modifications. Cela mettra à jour définitivement la déclaration.
@@ -943,7 +943,7 @@ event.death.action.correction.form.section.fees.title,This is the title of the s
 event.death.action.correction.form.section.reason.title,This is the title of the section,Reason for correction,Raison de la correction
 event.death.action.correction.form.section.requester.brn.label,This is the label for the field,ID Number,Numéro d'identité
 event.death.action.correction.form.section.requester.father.label,This is the label for the field,Father,Père
-event.death.action.correction.form.section.requester.idType.label,This is the label for the field,Type of ID,Type d'identité
+event.death.action.correction.form.section.requester.idType.label,This is the label for the field,Form of ID,Type d'identité
 event.death.action.correction.form.section.requester.identity.verify.title,This is the title of the section,Verify their identity,Vérifier l'identité
 event.death.action.correction.form.section.requester.label,This is the label for the field,Requester,Demandeur
 event.death.action.correction.form.section.requester.mother.label,This is the label for the field,Mother,Mère
@@ -1005,7 +1005,7 @@ event.death.action.declare.form.section.informant.field.brn.label,This is the la
 event.death.action.declare.form.section.informant.field.dob.error,This is the error message for invalid date,Must be a valid Birthdate,Doit être une date de naissance valide
 event.death.action.declare.form.section.informant.field.dob.label,This is the label for the field,Date of birth,Date de naissance
 event.death.action.declare.form.section.informant.field.email.label,This is the label for the field,Email,Email
-event.death.action.declare.form.section.informant.field.idType.label,This is the label for the field,Type of ID,Type d'identité
+event.death.action.declare.form.section.informant.field.idType.label,This is the label for the field,Form of ID,Type d'identité
 event.death.action.declare.form.section.informant.field.name.label,This is the label for the field,Informant's name,Nom de l'informateur
 event.death.action.declare.form.section.informant.field.nationality.label,This is the label for the field,Nationality,Nationalité
 event.death.action.declare.form.section.informant.field.nid.label,This is the label for the field,ID Number,Numéro d'identité
@@ -1015,7 +1015,7 @@ event.death.action.declare.form.section.informant.field.phoneNo.error,The error 
 event.death.action.declare.form.section.informant.field.phoneNo.label,This is the label for the field,Phone number,Numéro de téléphone
 event.death.action.declare.form.section.informant.field.relation.label,This is the label for the field,Informant type,Type d'informateur
 event.death.action.declare.form.section.person.field.brn.label,This is the label for the field,ID Number,Numéro d'identité
-event.death.action.declare.form.section.person.field.idType.label,This is the label for the field,Type of ID,Type d'identité
+event.death.action.declare.form.section.person.field.idType.label,This is the label for the field,Form of ID,Type d'identité
 event.death.action.declare.form.section.person.field.nationality.label,This is the label for the field,Nationality,Nationalité
 event.death.action.declare.form.section.person.field.nid.label,This is the label for the field,ID Number,Numéro d'identité
 event.death.action.declare.form.section.person.field.passport.label,This is the label for the field,ID Number,Numéro d'identité
@@ -1029,7 +1029,7 @@ event.death.action.declare.form.section.spouse.field.brn.label,This is the label
 event.death.action.declare.form.section.spouse.field.detailsNotAvailable.label,This is the label for the field,Spouse's details are not available,Les informations du conjoint ne sont pas disponibles
 event.death.action.declare.form.section.spouse.field.dob.error,This is the error message for invalid date,Must be a valid Birthdate,Doit être une date de naissance valide
 event.death.action.declare.form.section.spouse.field.dob.label,This is the label for the field,Date of birth,Date de naissance
-event.death.action.declare.form.section.spouse.field.idType.label,This is the label for the field,Type of ID,Type d'identité
+event.death.action.declare.form.section.spouse.field.idType.label,This is the label for the field,Form of ID,Type d'identité
 event.death.action.declare.form.section.spouse.field.name.label,This is the label for the field,Spouse's name,Nom du conjoint
 event.death.action.declare.form.section.spouse.field.nationality.label,This is the label for the field,Nationality,Nationalité
 event.death.action.declare.form.section.spouse.field.nid.label,This is the label for the field,ID Number,Numéro d'identité
@@ -1050,13 +1050,13 @@ event.death.action.form.section.idNumberOther.label,Field for entering ID Number
 event.death.action.form.section.idType.alienNumber.label,Option for selecting Alien Number as the ID type,Alien Number,Numéro d'étranger
 event.death.action.form.section.idType.brn.label,Option for selecting Birth Registration Number as the ID type,Birth Registration Number,Numéro d'enregistrement de naissance
 event.death.action.form.section.idType.drivingLicense.label,Option for selecting Driving License as the ID type,Drivers License,Permis de conduire
-event.death.action.form.section.idType.label,This is the label for selecting the type of ID,Type of ID,Type d'identité
+event.death.action.form.section.idType.label,This is the label for selecting the Form of ID,Form of ID,Type d'identité
 event.death.action.form.section.idType.nid.label,Option for selecting National ID as the ID type,National ID,Carte nationale d'identité
 event.death.action.form.section.idType.noId.label,Option for selecting No ID as the ID type,No ID available,Aucune identité disponible
 event.death.action.form.section.idType.other.label,Option for selecting Other as the ID type,Other,Autre
 event.death.action.form.section.idType.passport.label,Option for selecting Passport as the ID type,Passport,Passeport
 event.death.action.form.section.idType.refugeeNumber.label,Option for selecting Refugee Number as the ID type,Refugee Number,Numéro de réfugié
-event.death.action.form.section.idTypeOther.label,Field for entering ID type if Other is selected,Other type of ID,Autre type d'identité
+event.death.action.form.section.idTypeOther.label,Field for entering ID type if Other is selected,Other Form of ID,Autre type d'identité
 event.death.action.form.section.nid.label,Field for entering ID Number,National ID,Carte nationale d'identité
 event.death.action.form.section.passportDetails.label,Field for entering Passport details,Passport,Passeport
 event.death.action.form.section.refugeeNumberDetails.label,Field for entering Refugee Number details,Refugee Number,Numéro de réfugié
@@ -1229,17 +1229,17 @@ form.field.label.firstNames,,First name(s),Prénom(s)
 form.field.label.fullHonorificName,,Full Honorific Name,Nom complet avec titre
 form.field.label.healthInstitution,Select item for Health Institution,Health Institution,Institution de santé
 form.field.label.iD,,ID Number,Numéro d'identification
-form.field.label.iDType,,Type of ID,Type d'identification
+form.field.label.iDType,,Form of ID,Type d'identification
 form.field.label.iDTypeAlienNumber,,Alien Number,Numéro d'étranger
-form.field.label.iDTypeBRN,Option for form field: Type of ID,Birth Registration Number,Numéro d'enregistrement de naissance
+form.field.label.iDTypeBRN,Option for form field: Form of ID,Birth Registration Number,Numéro d'enregistrement de naissance
 form.field.label.iDTypeDRN,,Death Registration Number,Numéro d'enregistrement de décès
 form.field.label.iDTypeDrivingLicense,,Drivers License,Permis de conduire
-form.field.label.iDTypeNationalID,Option for form field: Type of ID,National ID,Carte d'identité nationale
+form.field.label.iDTypeNationalID,Option for form field: Form of ID,National ID,Carte d'identité nationale
 form.field.label.iDTypeNoID,,No ID available,Aucune pièce d'identité disponible
-form.field.label.iDTypeNone,Option for form field: Type of ID,None,Aucun
+form.field.label.iDTypeNone,Option for form field: Form of ID,None,Aucun
 form.field.label.iDTypeOther,,Other,Autre
-form.field.label.iDTypeOtherLabel,,Other type of ID,Autre type de carte d'identité
-form.field.label.iDTypePassport,Option for form field: Type of ID,Passport,Passeport
+form.field.label.iDTypeOtherLabel,,Other Form of ID,Autre type de carte d'identité
+form.field.label.iDTypePassport,Option for form field: Form of ID,Passport,Passeport
 form.field.label.iDTypeRefugeeNumber,,Refugee Number,Numéro de réfugié
 form.field.label.informant,Informant Label,Informant,Informateur
 form.field.label.informantPrimaryAddress,,Usual place of residence,Quelle est l'adresse de leur domicile ?
@@ -1346,7 +1346,7 @@ form.field.label.someoneElseCollector,,Print and issue to someone else,Imprimer 
 form.field.label.spouseDetailsExist,,Spouse's details are not available,Pas d'information sur le conjoint
 form.field.label.state,Label for State,Province,Province
 form.field.label.typeOfDocument,,Choose type of supporting document,Choisissez le type de document
-form.field.label.typeOfId,,Type of ID,Type d'identification
+form.field.label.typeOfId,,Form of ID,Type d'identification
 form.field.label.typeOfMarriage,,Type of marriage,Type de mariage
 form.field.label.updatingUser,,Updating user,Mise à jour de l'utilisateur
 form.field.label.uploadDocForMother,,Mother,Mère

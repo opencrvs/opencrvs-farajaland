@@ -22,22 +22,22 @@ export const IdType = {
 const idTypeMessageDescriptors = {
   NATIONAL_ID: {
     defaultMessage: 'National ID',
-    description: 'Option for form field: Type of ID',
+    description: 'Option for form field: Form of ID',
     id: 'form.field.label.iDTypeNationalID'
   },
   PASSPORT: {
     defaultMessage: 'Passport',
-    description: 'Option for form field: Type of ID',
+    description: 'Option for form field: Form of ID',
     id: 'form.field.label.iDTypePassport'
   },
   BIRTH_REGISTRATION_NUMBER: {
     defaultMessage: 'Birth Registration Number',
-    description: 'Option for form field: Type of ID',
+    description: 'Option for form field: Form of ID',
     id: 'form.field.label.iDTypeBRN'
   },
   NONE: {
     defaultMessage: 'None',
-    description: 'Option for form field: Type of ID',
+    description: 'Option for form field: Form of ID',
     id: 'form.field.label.iDTypeNone'
   }
 } satisfies Record<keyof typeof IdType, TranslationConfig>

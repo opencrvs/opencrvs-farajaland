@@ -38,8 +38,8 @@ export const printCertificateCollectorOther: FieldConfig[] = [
     type: FieldType.SELECT,
     required: true,
     label: {
-      defaultMessage: 'Type of ID',
-      description: 'This is the label for selecting the type of ID',
+      defaultMessage: 'Form of ID',
+      description: 'This is the label for selecting the Form of ID',
       id: 'event.birth.action.form.section.idType.label'
     },
     conditionals: [
@@ -238,7 +238,7 @@ export const printCertificateCollectorOther: FieldConfig[] = [
     type: FieldType.TEXT,
     required: true,
     label: {
-      defaultMessage: 'Other type of ID',
+      defaultMessage: 'Other Form of ID',
       description: 'Field for entering ID type if "Other" is selected',
       id: 'event.birth.action.form.section.idTypeOther.label'
     },

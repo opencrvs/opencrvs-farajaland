@@ -268,7 +268,7 @@ export const spouse = defineFormPage({
         type: FieldType.SELECT,
         required: true,
         label: {
-          defaultMessage: 'Type of ID',
+          defaultMessage: 'Form of ID',
           description: 'This is the label for the field',
           id: 'event.death.action.declare.form.section.spouse.field.idType.label'
         },

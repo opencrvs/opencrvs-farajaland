@@ -93,6 +93,7 @@ The default values for these variables have been added to the `docker-compose.de
 - **Upgrade node version to 22**
 
   This version enforces environment to have Node 22 installed (supported until 30 April 2027) and removes support for Node 18 for better performance and using [new features](https://github.com/nodejs/node/releases/tag/v22.0.0) offered by NodeJS
+
   - Use nvm to upgrade your local development environment to use node version `22.x.x.`
   - Add conditions for the certified copy certificate to ensure it's only available to children who are 1 year or older. [#9684](https://github.com/opencrvs/opencrvs-core/issues/9684)
   - Available disk space in root file system alert adjusted to fire when 20GB are remaining, rather than when diskspace usage is at 70%.
@@ -415,6 +416,7 @@ wq.noRecords.draft,No records messages for empty draft tab,No records in my draf
 - Introduce a new certificate handlebar "preview" which can be used to conditionally render some svg element when previewing the certificate e.g. background image similar to security paper
 
 - **Notification flags**: Added notification flags for `BIRTH`, `DEATH`, and `MARRIAGE` events, including:
+
   - `sent-notification`
   - `sent-notification-for-review`
   - `sent-for-approval`
@@ -457,6 +459,7 @@ INSERT CSV ROWS IN ENGLISH ONLY
 - **Upgrade node version to 18**
 
   This version enforces environment to have Node 18 installed (supported until April 2025) and removes support for Node 16
+
   - Use nvm to upgrade your local development environment to use node version `18.19.x.`
   - Specified operating systems in js modules as `darwin, linux`
   - Dev scripts and Vite run with an environment variable `NODE_OPTIONS=--dns-result-order=ipv4first` to resolve ipv4 addresses for `localhost` to support systems that resolves ipv6 addresses by default in Node versions >=17
@@ -678,6 +681,7 @@ In the next OpenCRVS release v1.5.0, there will be two significant changes:
 
   Below is a list of all the new handlebars that are meant to be used with the
   "location" handlebar helper.
+
   - statePrimaryInformantId
   - districtPrimaryInformantId
   - statePlaceofbirthId
@@ -709,8 +713,8 @@ In the next OpenCRVS release v1.5.0, there will be two significant changes:
 
   Spouse section is an optional section in death form. Going forward it will be included in Farajaland example configuration.
 
-- #### Type of ID dropdown
-  Farajaland forms will now include a dropdown to select the type of ID an individual is providing e.g. National ID, Driving License etc. instead of being restricted to only national ID number.
+- #### Form of ID dropdown
+  Farajaland forms will now include a dropdown to select the Form of ID an individual is providing e.g. National ID, Driving License etc. instead of being restricted to only national ID number.
 - #### Number of dependents of deceased field
   As an example of custom field, the deceased section in death form will now include the **numberOfDependants** field.
 - #### Reason for late registration field

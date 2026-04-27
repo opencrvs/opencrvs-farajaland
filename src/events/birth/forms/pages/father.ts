@@ -282,7 +282,7 @@ export const father = defineFormPage({
         type: FieldType.SELECT,
         required: true,
         label: {
-          defaultMessage: 'Type of ID',
+          defaultMessage: 'Form of ID',
           description: 'This is the label for the field',
           id: 'event.birth.action.declare.form.section.person.field.idType.label'
         },

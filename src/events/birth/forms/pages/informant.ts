@@ -131,7 +131,13 @@ export const informant = defineFormPage({
         description: 'This is the label for the field',
         id: 'event.birth.action.declare.form.section.informant.field.relation.label'
       },
-      options: birthInformantTypeOptions
+      options: birthInformantTypeOptions,
+      conditionals: [
+        {
+          type: ConditionalType.SHOW,
+          conditional: not(user.hasRole('HOSPITAL_CLERK'))
+        }
+      ]
     },
     {
       id: 'informant.other.relation',
@@ -152,6 +158,73 @@ export const informant = defineFormPage({
       ],
       parent: field('informant.relation')
     },
+    {
+      id: 'informant.notifyingOfficialName',
+      type: FieldType.NAME,
+      required: true,
+      configuration: farajalandNameConfig,
+      hideLabel: true,
+      label: {
+        defaultMessage: "Notifying Official",
+        description: 'This is the label for the field',
+        id: 'event.birth.action.declare.form.section.informant.field.notifyingOfficialName.label'
+      },
+      conditionals: [
+        {
+          type: ConditionalType.SHOW,
+          conditional: user.hasRole('HOSPITAL_CLERK')
+        }
+      ],
+      validation: [invalidNameValidator('informant.notifyingOfficialName')],
+      defaultValue: {
+        firstname: user('firstname'),
+        middlename: user('middlename'),
+        surname: user('surname')
+      },
+    },
+    {
+      id: 'informant.nationality',
+      type: FieldType.COUNTRY,
+      required: true,
+      label: {
+        defaultMessage: 'Nationality',
+        description: 'This is the label for the field',
+        id: 'event.birth.action.declare.form.section.person.field.nationality.label'
+      },
+      conditionals: [
+        {
+          type: ConditionalType.SHOW,
+          conditional: informantOtherThanParent
+        }
+      ],
+      defaultValue: 'FAR',
+      parent: field('informant.relation')
+    },
+    connectToMOSIPIdReader(
+      {
+        id: 'informant.idType',
+        type: FieldType.SELECT,
+        required: true,
+        label: {
+          defaultMessage: 'Form of ID',
+          description: 'This is the label for the field',
+          id: 'event.birth.action.declare.form.section.person.field.idType.label'
+        },
+        options: idTypeOptions,
+        conditionals: [
+          {
+            type: ConditionalType.SHOW,
+            conditional: informantOtherThanParent
+          }
+        ],
+        parent: field('informant.relation')
+      },
+      {
+        valuePath: 'data.idType',
+        hideIf: ['authenticated'],
+        disableIf: ['pending', 'verified']
+      }
+    ),
     // fields:
     // informant.verified, informant.query-params, informant.verify-nid-http-fetch,
     // informant.fetch-loader, informant.id-reader
@@ -163,6 +236,103 @@ export const informant = defineFormPage({
         }
       ]
     }),
+    connectToMOSIPIdReader(
+      {
+        id: 'informant.nid',
+        type: FieldType.ID,
+        required: true,
+        label: {
+          defaultMessage: 'National ID no.',
+          description: 'This is the label for the field',
+          id: 'event.birth.action.declare.form.section.person.field.nid.label'
+        },
+        conditionals: [
+          {
+            type: ConditionalType.SHOW,
+            conditional: and(
+              field('informant.idType').isEqualTo(IdType.NATIONAL_ID),
+              informantOtherThanParent
+            )
+          }
+        ],
+        validation: [
+          nationalIdValidator('informant.nid'),
+          {
+            message: {
+              defaultMessage: 'National id must be unique',
+              description: 'This is the error message for non-unique ID Number',
+              id: 'event.birth.action.declare.form.nid.unique'
+            },
+            validator: and(
+              not(field('informant.nid').isEqualTo(field('mother.nid'))),
+              not(field('informant.nid').isEqualTo(field('father.nid')))
+            )
+          }
+        ],
+        parent: field('informant.relation')
+      },
+      {
+        valuePath: 'data.nid',
+        hideIf: ['authenticated'],
+        disableIf: ['pending', 'verified']
+      }
+    ),
+    connectToMOSIPIdReader(
+      {
+        id: 'informant.passport',
+        type: FieldType.TEXT,
+        required: false,
+        label: {
+          defaultMessage: 'Passport no.',
+          description: 'This is the label for the field',
+          id: 'event.birth.action.declare.form.section.person.field.passport.label'
+        },
+        conditionals: [
+          {
+            type: ConditionalType.SHOW,
+            conditional: and(
+              field('informant.idType').isEqualTo(IdType.PASSPORT),
+              informantOtherThanParent
+            )
+          }
+        ],
+        parent: field('informant.relation')
+      },
+      {
+        valuePath: 'data.passport',
+        hideIf: ['authenticated'],
+        disableIf: ['pending', 'verified']
+      }
+    ),
+    connectToMOSIPIdReader(
+      {
+        id: 'informant.brn',
+        type: FieldType.TEXT,
+        required: true,
+        label: {
+          defaultMessage: 'Birth Registration no.',
+          description: 'This is the label for the field',
+          id: 'event.birth.action.declare.form.section.person.field.brn.label'
+        },
+        conditionals: [
+          {
+            type: ConditionalType.SHOW,
+            conditional: and(
+              field('informant.idType').isEqualTo(
+                IdType.BIRTH_REGISTRATION_NUMBER
+              ),
+              informantOtherThanParent
+            )
+          }
+        ],
+        parent: field('informant.relation')
+      },
+      {
+        valuePath: 'data.brn',
+        hideIf: ['authenticated'],
+        disableIf: ['pending', 'verified']
+      }
+    ),
     connectToMOSIPIdReader(
       {
         id: 'informant.name',
@@ -303,146 +473,6 @@ export const informant = defineFormPage({
         parent: field('informant.relation')
       },
       { disableIf: ['pending', 'verified', 'authenticated'] }
-    ),
-    {
-      id: 'informant.nationality',
-      type: FieldType.COUNTRY,
-      required: true,
-      label: {
-        defaultMessage: 'Nationality',
-        description: 'This is the label for the field',
-        id: 'event.birth.action.declare.form.section.person.field.nationality.label'
-      },
-      conditionals: [
-        {
-          type: ConditionalType.SHOW,
-          conditional: informantOtherThanParent
-        }
-      ],
-      defaultValue: 'FAR',
-      parent: field('informant.relation')
-    },
-    connectToMOSIPIdReader(
-      {
-        id: 'informant.idType',
-        type: FieldType.SELECT,
-        required: true,
-        label: {
-          defaultMessage: 'Type of ID',
-          description: 'This is the label for the field',
-          id: 'event.birth.action.declare.form.section.person.field.idType.label'
-        },
-        options: idTypeOptions,
-        conditionals: [
-          {
-            type: ConditionalType.SHOW,
-            conditional: informantOtherThanParent
-          }
-        ],
-        parent: field('informant.relation')
-      },
-      {
-        valuePath: 'data.idType',
-        hideIf: ['authenticated'],
-        disableIf: ['pending', 'verified']
-      }
-    ),
-    connectToMOSIPIdReader(
-      {
-        id: 'informant.nid',
-        type: FieldType.ID,
-        required: true,
-        label: {
-          defaultMessage: 'ID Number',
-          description: 'This is the label for the field',
-          id: 'event.birth.action.declare.form.section.person.field.nid.label'
-        },
-        conditionals: [
-          {
-            type: ConditionalType.SHOW,
-            conditional: and(
-              field('informant.idType').isEqualTo(IdType.NATIONAL_ID),
-              informantOtherThanParent
-            )
-          }
-        ],
-        validation: [
-          nationalIdValidator('informant.nid'),
-          {
-            message: {
-              defaultMessage: 'National id must be unique',
-              description: 'This is the error message for non-unique ID Number',
-              id: 'event.birth.action.declare.form.nid.unique'
-            },
-            validator: and(
-              not(field('informant.nid').isEqualTo(field('mother.nid'))),
-              not(field('informant.nid').isEqualTo(field('father.nid')))
-            )
-          }
-        ],
-        parent: field('informant.relation')
-      },
-      {
-        valuePath: 'data.nid',
-        hideIf: ['authenticated'],
-        disableIf: ['pending', 'verified']
-      }
-    ),
-    connectToMOSIPIdReader(
-      {
-        id: 'informant.passport',
-        type: FieldType.TEXT,
-        required: true,
-        label: {
-          defaultMessage: 'ID Number',
-          description: 'This is the label for the field',
-          id: 'event.birth.action.declare.form.section.person.field.passport.label'
-        },
-        conditionals: [
-          {
-            type: ConditionalType.SHOW,
-            conditional: and(
-              field('informant.idType').isEqualTo(IdType.PASSPORT),
-              informantOtherThanParent
-            )
-          }
-        ],
-        parent: field('informant.relation')
-      },
-      {
-        valuePath: 'data.passport',
-        hideIf: ['authenticated'],
-        disableIf: ['pending', 'verified']
-      }
-    ),
-    connectToMOSIPIdReader(
-      {
-        id: 'informant.brn',
-        type: FieldType.TEXT,
-        required: true,
-        label: {
-          defaultMessage: 'ID Number',
-          description: 'This is the label for the field',
-          id: 'event.birth.action.declare.form.section.person.field.brn.label'
-        },
-        conditionals: [
-          {
-            type: ConditionalType.SHOW,
-            conditional: and(
-              field('informant.idType').isEqualTo(
-                IdType.BIRTH_REGISTRATION_NUMBER
-              ),
-              informantOtherThanParent
-            )
-          }
-        ],
-        parent: field('informant.relation')
-      },
-      {
-        valuePath: 'data.brn',
-        hideIf: ['authenticated'],
-        disableIf: ['pending', 'verified']
-      }
     ),
     {
       id: 'informant.addressDivider1',
