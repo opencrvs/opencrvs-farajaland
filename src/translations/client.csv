@@ -1236,7 +1236,7 @@ form.field.label.iDTypeDRN,,Death Registration Number,Numéro d'enregistrement d
 form.field.label.iDTypeDrivingLicense,,Drivers License,Permis de conduire
 form.field.label.iDTypeNationalID,Option for form field: Form of ID,National ID,Carte d'identité nationale
 form.field.label.iDTypeNoID,,No ID available,Aucune pièce d'identité disponible
-form.field.label.iDTypeNone,Option for form field: Form of ID,None,Aucun
+form.field.label.iDTypeNone,Option for form field: Form of ID,No ID,Aucun
 form.field.label.iDTypeOther,,Other,Autre
 form.field.label.iDTypeOtherLabel,,Other Form of ID,Autre type de carte d'identité
 form.field.label.iDTypePassport,Option for form field: Form of ID,Passport,Passeport

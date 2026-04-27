@@ -306,35 +306,6 @@ export const informant = defineFormPage({
     ),
     connectToMOSIPIdReader(
       {
-        id: 'informant.brn',
-        type: FieldType.TEXT,
-        required: true,
-        label: {
-          defaultMessage: 'Birth Registration no.',
-          description: 'This is the label for the field',
-          id: 'event.birth.action.declare.form.section.person.field.brn.label'
-        },
-        conditionals: [
-          {
-            type: ConditionalType.SHOW,
-            conditional: and(
-              field('informant.idType').isEqualTo(
-                IdType.BIRTH_REGISTRATION_NUMBER
-              ),
-              informantOtherThanParent
-            )
-          }
-        ],
-        parent: field('informant.relation')
-      },
-      {
-        valuePath: 'data.brn',
-        hideIf: ['authenticated'],
-        disableIf: ['pending', 'verified']
-      }
-    ),
-    connectToMOSIPIdReader(
-      {
         id: 'informant.name',
         type: FieldType.NAME,
         required: true,

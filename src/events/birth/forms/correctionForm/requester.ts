@@ -297,25 +297,6 @@ export const correctionFormRequesters: FieldConfig[] = [
     parent: field('informant.relation')
   },
   {
-    id: 'requester.brn',
-    type: FieldType.TEXT,
-    required: true,
-    label: {
-      defaultMessage: 'ID Number',
-      description: 'This is the label for the field',
-      id: 'event.birth.action.correction.form.section.requester.brn.label'
-    },
-    conditionals: [
-      {
-        type: ConditionalType.SHOW,
-        conditional: and(
-          field('requester.type').isEqualTo('SOMEONE_ELSE'),
-          field('requester.idType').isEqualTo(IdType.BIRTH_REGISTRATION_NUMBER)
-        )
-      }
-    ]
-  },
-  {
     id: 'requester.name',
     type: FieldType.NAME,
     required: true,

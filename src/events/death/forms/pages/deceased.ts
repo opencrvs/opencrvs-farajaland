@@ -308,31 +308,6 @@ export const deceased = defineFormPage({
         disableIf: ['pending', 'verified']
       }
     ),
-    connectToMOSIPIdReader(
-      {
-        id: `deceased.brn`,
-        type: FieldType.TEXT,
-        required: true,
-        label: {
-          defaultMessage: 'ID Number',
-          description: 'This is the label for the field',
-          id: `v2.event.death.action.declare.form.section.person.field.brn.label`
-        },
-        conditionals: [
-          {
-            type: ConditionalType.SHOW,
-            conditional: field('deceased.idType').isEqualTo(
-              IdType.BIRTH_REGISTRATION_NUMBER
-            )
-          }
-        ]
-      },
-      {
-        valuePath: 'data.brn',
-        hideIf: ['authenticated'],
-        disableIf: ['pending', 'verified']
-      }
-    ),
     {
       id: 'deceased.maritalStatus',
       type: FieldType.SELECT,

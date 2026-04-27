@@ -15,7 +15,6 @@ import { createSelectOptions } from '../utils'
 export const IdType = {
   NATIONAL_ID: 'NATIONAL_ID',
   PASSPORT: 'PASSPORT',
-  BIRTH_REGISTRATION_NUMBER: 'BIRTH_REGISTRATION_NUMBER',
   NONE: 'NONE'
 } as const
 
@@ -30,13 +29,8 @@ const idTypeMessageDescriptors = {
     description: 'Option for form field: Form of ID',
     id: 'form.field.label.iDTypePassport'
   },
-  BIRTH_REGISTRATION_NUMBER: {
-    defaultMessage: 'Birth Registration Number',
-    description: 'Option for form field: Form of ID',
-    id: 'form.field.label.iDTypeBRN'
-  },
   NONE: {
-    defaultMessage: 'None',
+    defaultMessage: 'No ID',
     description: 'Option for form field: Form of ID',
     id: 'form.field.label.iDTypeNone'
   }
