@@ -45,8 +45,6 @@ test.describe.serial('Birth registration forwarding to MOSIP', () => {
       'authenticated'
     )
 
-    let acceptedActionRegistrationNumber: string | undefined
-
     await expect
       .poll(
         async () => {
@@ -66,7 +64,7 @@ test.describe.serial('Birth registration forwarding to MOSIP', () => {
             return false
           }
 
-          acceptedActionRegistrationNumber = (
+          const acceptedActionRegistrationNumber = (
             acceptedAction as { registrationNumber?: string }
           ).registrationNumber
 
