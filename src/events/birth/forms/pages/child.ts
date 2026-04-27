@@ -229,18 +229,6 @@ export const child = defineFormPage({
       ]
     },
     {
-      id: 'child.gender',
-      analytics: true,
-      type: FieldType.SELECT,
-      required: true,
-      label: {
-        defaultMessage: 'Sex',
-        description: 'This is the label for the field',
-        id: 'event.birth.action.declare.form.section.child.field.gender.label'
-      },
-      options: genderOptions
-    },
-    {
       id: 'child.dob',
       analytics: true,
       type: 'DATE',
@@ -287,6 +275,18 @@ export const child = defineFormPage({
       ]
     },
     {
+      id: 'child.gender',
+      analytics: true,
+      type: FieldType.SELECT,
+      required: true,
+      label: {
+        defaultMessage: 'Sex',
+        description: 'This is the label for the field',
+        id: 'event.birth.action.declare.form.section.child.field.gender.label'
+      },
+      options: genderOptions
+    },
+    {
       id: 'child.divider1',
       type: FieldType.DIVIDER,
       label: emptyMessage
@@ -298,7 +298,7 @@ export const child = defineFormPage({
       required: true,
       secured: true,
       label: {
-        defaultMessage: 'Place of delivery',
+        defaultMessage: 'Place of birth',
         description: 'This is the label for the field',
         id: 'event.birth.action.declare.form.section.child.field.placeOfBirth.label'
       },

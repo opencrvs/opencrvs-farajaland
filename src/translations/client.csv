@@ -823,20 +823,20 @@ event.birth.action.declare.form.review.comment.label,Label for the comment field
 event.birth.action.declare.form.review.signature.label,Label for the signature field in the review section,Signature of informant,Signature de l'informateur
 event.birth.action.declare.form.review.title,Title of the form to show in review page,"{child.name.firstname, select, __EMPTY__ {{child.name.surname, select, __EMPTY__ {Birth declaration} other {Birth declaration for {child.name.surname}}}} other {{child.name.surname, select, __EMPTY__ {Birth declaration for {child.name.firstname}} other {Birth declaration for {child.name.firstname} {child.name.surname}}}}}","{child.name.firstname, select, __EMPTY__ {{child.name.surname, select, __EMPTY__ {Déclaration de naissance} other {Déclaration de naissance pour {child.name.surname}}}} other {{child.name.surname, select, __EMPTY__ {Déclaration de naissance pour {child.name.firstname}} other {Déclaration de naissance pour {child.name.firstname} {child.name.surname}}}}}"
 event.birth.action.declare.form.section.child.field.attendantAtBirth.label,This is the label for the field,Attendant at birth,Accoucheur(se)
-event.birth.action.declare.form.section.child.field.birthLocation.label,This is the label for the field,Location of birth,Lieu de naissance
+event.birth.action.declare.form.section.child.field.birthLocation.label,This is the label for the field,Health institution,Institution de santé
 event.birth.action.declare.form.section.child.field.birthType.label,This is the label for the field,Type of birth,Type d'accouchement
 event.birth.action.declare.form.section.child.field.dob.error,This is the error message for invalid date,Must be a valid birth date,Doit être une date de naissance valide
 event.birth.action.declare.form.section.child.field.dob.label,This is the label for the field,Date of birth,Date de naissance
 event.birth.action.declare.form.section.child.field.gender.label,This is the label for the field,Sex,Sexe
 event.birth.action.declare.form.section.child.field.name.label,This is the label for the field,Child's name,Nom de l'enfant
-event.birth.action.declare.form.section.child.field.placeOfBirth.label,This is the label for the field,Place of delivery,Lieu de l'accouchement
+event.birth.action.declare.form.section.child.field.placeOfBirth.label,This is the label for the field,Place of birth,Lieu de l'accouchement
 event.birth.action.declare.form.section.child.field.weightAtBirth.label,This is the label for the field,Weight at birth,Poids à la naissance
 event.birth.action.declare.form.section.child.field.weightAtBirth.postfix,This is the postfix for the weight field,Kilograms (kg),Kilograms (kg)
-event.birth.action.declare.form.section.documents.field.proofOfBirth.label,This is the label for the field,Notification of birth,Notification de naissance
+event.birth.action.declare.form.section.documents.field.proofOfBirth.label,This is the label for the field,Proof of birth,Notification de naissance
 event.birth.action.declare.form.section.documents.field.proofOfFather.label,This is the label for the field,Proof of father's ID,Identité du père
 event.birth.action.declare.form.section.documents.field.proofOfMother.label,This is the label for the field,Proof of mother's ID,Identité de la mère
 event.birth.action.declare.form.section.documents.field.proofOther.label,This is the label for the field,Other,Autre
-event.birth.action.declare.form.section.father.field.address.addressSameAs.label,This is the label for the field,Same as mother's usual place of residence?,Identique au lieu de résidence habituel de la mère?
+event.birth.action.declare.form.section.father.field.address.addressSameAs.label,This is the label for the field,Same as mother's address?,Identique au lieu de résidence habituel de la mère?
 event.birth.action.declare.form.section.father.field.age.label,This is the label for the field,Age of father (at the time of event),Âge du père (au moment de l'événement)
 event.birth.action.declare.form.section.father.field.name.label,This is the label for the field,Father's name,Nom du père
 event.birth.action.declare.form.section.father.field.reason.label,This is the label for the field,Reason,Raison
@@ -1202,7 +1202,7 @@ form.field.label.deceasedSecondaryAddress,,Secondary Address,Adresse secondaire
 form.field.label.deny,,No,Non
 form.field.label.district,Label for District,District,District
 form.field.label.docTypeBirthCert,,Birth certificate,Certificat de la naissance
-form.field.label.docTypeChildBirthProof,,Notification of birth,Notification de la naissance
+form.field.label.docTypeChildBirthProof,,Proof of birth,Notification de la naissance
 form.field.label.docTypeCopyOfBurialReceipt,,Certified copy of burial receipt,Copie certifiée du reçu d'enterrement
 form.field.label.docTypeCoronersReport,,Coroner's report,Rapport du médecin légiste
 form.field.label.docTypeHospitalDeathCertificate,,Hospital certificate of death,Certificat de décès émis par l'hôpital
@@ -1221,7 +1221,7 @@ form.field.label.email,,Email,e-mail
 form.field.label.empty,empty string, ,
 form.field.label.exactDateOfBirthUnknown,,Exact date of birth unknown,Date de naissance exacte inconnue
 form.field.label.familyName,,Last name,Nom de famille
-form.field.label.fathersDetailsExist,,Father's details are not available,Pas d'information sur le père
+form.field.label.fathersDetailsExist,,Father's details unavailable,Pas d'information sur le père
 form.field.label.fileSizeError,,File size must be less than 2MB,La taille du fichier doit être inférieure à 2 Mo
 form.field.label.fileUploadError,,{type} supported image only,{type} format d'images accepté
 form.field.label.firstName,,First name(s),Prénom(s)
@@ -1300,7 +1300,7 @@ form.field.label.marriedLastName,,Married last name (if different),Marié Nom de
 form.field.label.medicallyCertified,,Medically Certified Cause of Death,Cause officielle du décès
 form.field.label.middleName,,Middle name,Deuxième prénom
 form.field.label.monogamy,,Monogamous,Monogame
-form.field.label.mothersDetailsExist,,Mother's details are not available,Pas d'information sur la mère
+form.field.label.mothersDetailsExist,,Mother's details unavailable,Pas d'information sur la mère
 form.field.label.multipleBirth,,No. of previous births,Nombre de naissances antérieures
 form.field.label.nationality,,Nationality,Nationalité
 form.field.label.occupation,,Occupation,Profession
@@ -1311,14 +1311,14 @@ form.field.label.otherOption,,Other,Autre
 form.field.label.phoneNumber,,Phone number,Numéro de téléphone
 form.field.label.physician,,Physician,Médecin
 form.field.label.placeOfBirth,,Location,Lieu
-form.field.label.placeOfBirthPreview,,Place of delivery,Lieu de l'accouchement
+form.field.label.placeOfBirthPreview,,Place of birth,Lieu de l'accouchement
 form.field.label.placeOfDeath,,Place of death,Où le décès s'est-il produit ?
 form.field.label.placeOfDeathSameAsPrimary,,Deceased's usual place of residence,Lieu de résidence habituel du défunt
 form.field.label.placeOfMarriage,,Place of marriage,Lieu du mariage
 form.field.label.polygamy,,Polygamous,Polygame
 form.field.label.primaryAddress,,Place of residence,Lieu de résidence habituel
 form.field.label.primaryAddressSameAsDeceasedsPrimary,,Same as deceased's usual place of residence?,Le même que le lieu de résidence habituel du défunt ?
-form.field.label.primaryAddressSameAsOtherPrimary,,Same as mother's usual place of residence?,Même que le lieu de résidence habituel de la mère ?
+form.field.label.primaryAddressSameAsOtherPrimary,,Same as mother's address?,Même que le lieu de résidence habituel de la mère ?
 form.field.label.privateHome,Select item for Private Home,Residential address,Adresse de résidence
 form.field.label.proofOfBirth,,Proof of birth,Preuve de naissance
 form.field.label.proofOfBridesID,,Proof of bride's identity,Preuve de l'identité de la mariée

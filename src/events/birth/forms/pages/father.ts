@@ -62,7 +62,7 @@ export const father = defineFormPage({
       type: FieldType.CHECKBOX,
       analytics: true,
       label: {
-        defaultMessage: "Father's details are not available",
+        defaultMessage: "Father's details unavailable",
         description: 'This is the label for the field',
         id: 'event.birth.action.declare.form.section.father.field.detailsNotAvailable.label'
       },
@@ -354,7 +354,7 @@ export const father = defineFormPage({
       options: yesNoRadioOptions,
       required: true,
       label: {
-        defaultMessage: "Same as mother's usual place of residence?",
+        defaultMessage: "Same as mother's address?",
         description: 'This is the label for the field',
         id: 'event.birth.action.declare.form.section.father.field.address.addressSameAs.label'
       },

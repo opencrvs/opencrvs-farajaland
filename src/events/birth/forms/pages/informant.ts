@@ -153,11 +153,33 @@ export const informant = defineFormPage({
       parent: field('informant.relation')
     },
     {
+      id: 'informant.notifyingOfficialNameHelper',
+      type: FieldType.HEADING,
+      label: {
+        defaultMessage: "Notifying Official",
+        description: 'This is the label for the field',
+        id: 'event.birth.action.declare.form.section.informant.field.notifyingOfficialName.label'
+      },
+      configuration: {
+        styles: { fontVariant: 'h3' }
+      },
+      conditionals: [
+        {
+          type: ConditionalType.DISPLAY_ON_REVIEW,
+          conditional: never()
+        },
+        {
+          type: ConditionalType.SHOW,
+          conditional: user.hasRole('HOSPITAL_CLERK')
+        }
+      ]
+    },
+    {
       id: 'informant.notifyingOfficialName',
       type: FieldType.NAME,
       required: true,
       configuration: farajalandNameConfig,
-      hideLabel: false,
+      hideLabel: true,
       label: {
         defaultMessage: "Notifying Official",
         description: 'This is the label for the field',
@@ -445,16 +467,27 @@ export const informant = defineFormPage({
       parent: field('informant.relation')
     },
     {
-      id: 'informant.address.divider.end',
+      id: 'informant.contactPoint.divider',
       type: FieldType.DIVIDER,
-      label: emptyMessage,
+      label: emptyMessage
+    },
+    {
+      id: 'informant.contactPointHelper',
+      type: FieldType.HEADING,
+      label: {
+        defaultMessage: 'Point of contact',
+        description: 'This is the label for the field',
+        id: 'event.birth.action.declare.form.section.informant.field.contactPointHelper.label'
+      },
+      configuration: {
+        styles: { fontVariant: 'h3' }
+      },
       conditionals: [
         {
-          type: ConditionalType.SHOW,
-          conditional: informantOtherThanParent
+          type: ConditionalType.DISPLAY_ON_REVIEW,
+          conditional: never()
         }
-      ],
-      parent: field('informant.relation')
+      ]
     },
     {
       id: 'informant.phoneNo',

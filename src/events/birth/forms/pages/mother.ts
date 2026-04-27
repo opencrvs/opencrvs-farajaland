@@ -58,7 +58,7 @@ export const mother = defineFormPage({
       id: 'mother.detailsNotAvailable',
       type: FieldType.CHECKBOX,
       label: {
-        defaultMessage: "Mother's details are not available",
+        defaultMessage: "Mother's details unavailable",
         description: 'This is the label for the field',
         id: 'event.birth.action.declare.form.section.mother.field.detailsNotAvailable.label'
       },
