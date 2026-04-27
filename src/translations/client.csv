@@ -832,7 +832,7 @@ event.birth.action.declare.form.section.child.field.name.label,This is the label
 event.birth.action.declare.form.section.child.field.placeOfBirth.label,This is the label for the field,Place of delivery,Lieu de l'accouchement
 event.birth.action.declare.form.section.child.field.weightAtBirth.label,This is the label for the field,Weight at birth,Poids à la naissance
 event.birth.action.declare.form.section.child.field.weightAtBirth.postfix,This is the postfix for the weight field,Kilograms (kg),Kilograms (kg)
-event.birth.action.declare.form.section.documents.field.proofOfBirth.label,This is the label for the field,Proof of birth,Preuve de naissance
+event.birth.action.declare.form.section.documents.field.proofOfBirth.label,This is the label for the field,Notification of birth,Notification de naissance
 event.birth.action.declare.form.section.documents.field.proofOfFather.label,This is the label for the field,Proof of father's ID,Identité du père
 event.birth.action.declare.form.section.documents.field.proofOfMother.label,This is the label for the field,Proof of mother's ID,Identité de la mère
 event.birth.action.declare.form.section.documents.field.proofOther.label,This is the label for the field,Other,Autre
@@ -2311,3 +2311,7 @@ event.birth.custom.action.issue-vc.field.qr-code.configuration.text,Explanation 
 event.birth.custom.action.issue-vc.field.qr-code.configuration.alt,Alt text for VC QR image,QR Code,Code QR
 event.birth.custom.action.issue-vc.field.accepted-vc-offer.label,Checkbox label to confirm citizen acceptance of VC offer,I confirm that the citizen has accepted the verifiable credential offer,Je confirme que le citoyen a accepté l’offre d’attestation vérifiable
 event.birth.custom.action.issue-vc.field.accepted-vc-offer.error,Validation message for citizen acceptance checkbox,Please confirm that the citizen has accepted the verifiable credential offer,Veuillez confirmer que le citoyen a accepté l’offre d’attestation vérifiable
+form.field.label.proofOfAssignResponsibility.fileName,This is the label for the file name,Proof of assigned responsibility,Preuve de responsabilité assignée
+event.birth.action.declare.form.section.documents.field.proofOfAssignResponsibility.label.fileName,This is the label for the file name,Proof of assigned responsibility,Preuve de responsabilité assignée
+form.field.label.acquiredChildCourtDocument.fileName,This is the label for the file name,Acquired child court document,Document judiciaire relatif à l'enfant acquis
+event.birth.action.declare.form.section.documents.field.acquiredChildCourtDocument.label.fileName,This is the label for the file name,Acquired child court document,Document judiciaire relatif à l'enfant acquis
