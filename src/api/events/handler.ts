@@ -14,12 +14,17 @@ import { sendInformantNotification } from '../notification/informantNotification
 import { ActionConfirmationRequest } from '../registration'
 import { createMosipInteropClient } from '@opencrvs/mosip/api'
 import {
+  Action,
+  ActionType,
   aggregateActionDeclarations,
   deepMerge,
-  getPendingAction
+  getPendingAction,
+  RegisterAction,
+  NameFieldValue
 } from '@opencrvs/toolkit/events'
-import { MOSIP_INTEROP_URL } from '@countryconfig/constants'
-import { NO_MOSIP } from '@countryconfig/constants'
+import { MOSIP_INTEROP_URL, NO_MOSIP } from '@countryconfig/constants'
+import { shouldForwardBirthRegistrationToMosip } from '../../events/mosip'
+import { logger } from '@countryconfig/logger'
 
 export function getEventsHandler(_: Hapi.Request, h: Hapi.ResponseToolkit) {
   return h.response(eventConfigs).code(200)
@@ -117,6 +122,91 @@ export async function onBirthActionHandler(
       transactionId: `informant-${event.id}`
     })
   return h.response({ declaration: updatedFields }).code(200)
+}
+
+const getAcceptedBirthRegistrationNumber = (actions: Action[]) => {
+  const acceptedRegisterAction = actions.find(
+    ({ type, status }) => type === ActionType.REGISTER && status === 'Accepted'
+  ) as RegisterAction | undefined
+
+  // `APPROVE_CORRECTION` is only available when the event has been registered
+  return acceptedRegisterAction!.registrationNumber!
+}
+
+export async function onBirthCorrectionActionHandler(
+  request: ActionConfirmationRequest,
+  h: Hapi.ResponseToolkit
+) {
+  // Used in local development to disable MOSIP registration dependency
+  if (NO_MOSIP) {
+    return h.response({}).code(200)
+  }
+
+  const token = request.auth.artifacts.token as string
+  const event = request.payload
+  await sendInformantNotification({ event, token })
+  const pendingAction = getPendingAction(event.actions)
+  const declaration = deepMerge(
+    aggregateActionDeclarations(event),
+    pendingAction.declaration
+  )
+
+  const childHasNid = Boolean(declaration['child.nid'])
+  const shouldForwardToMosip =
+    shouldForwardBirthRegistrationToMosip(declaration) && !childHasNid
+
+  if (!shouldForwardToMosip) {
+    logger.info(
+      'Birth registration correction will not be forwarded to MOSIP based on custom logic.'
+    )
+
+    return h.response({}).code(200)
+  }
+
+  logger.info(
+    'Passed country specified custom logic check for birth correction. Forwarding to MOSIP...'
+  )
+  const birthCertificateNumber = getAcceptedBirthRegistrationNumber(
+    event.actions
+  )
+  const mosipInteropClient = createMosipInteropClient(
+    MOSIP_INTEROP_URL,
+    `Bearer ${token}`
+  )
+  const childName = declaration['child.name'] as NameFieldValue
+
+  try {
+    await mosipInteropClient.register({
+      trackingId: event.trackingId,
+      requestFields: {
+        birthCertificateNumber,
+        fullName: [childName.firstname, childName.middlename, childName.surname]
+          .filter(Boolean)
+          .join(' '),
+        dateOfBirth: declaration['child.dob'],
+        gender: declaration['child.gender']
+      },
+      notification: {
+        recipientEmail: '@TODO',
+        recipientFullName: '@TODO',
+        recipientPhone: '@TODO'
+      },
+      metaInfo: {},
+      audit: {}
+    })
+    return h.response({}).code(202)
+  } catch (error) {
+    logger.error(
+      { eventId: event.id, err: error },
+      'Failed to forward birth correction approval to MOSIP'
+    )
+
+    return h
+      .response({
+        reason: 'Unexpected error in OpenCRVS-MOSIP interoperability layer'
+      })
+      .code(400)
+  }
 }
 
 export async function onDeathActionHandler(
