@@ -318,11 +318,44 @@ export const child = defineFormPage({
       conditionals: [
         {
           type: ConditionalType.SHOW,
-          conditional: field('child.placeOfBirth').isEqualTo(
-            PlaceOfBirth.HEALTH_FACILITY
+          conditional: and(
+            field('child.placeOfBirth').isEqualTo(
+              PlaceOfBirth.HEALTH_FACILITY
+            ),
+            not(user.hasRole('HOSPITAL_CLERK'))
           )
         }
       ],
+      configuration: {
+        locationTypes: ['HEALTH_FACILITY'],
+        allowedLocations: user.jurisdiction(
+          user.scope('record.create').attribute('placeOfEvent')
+        )
+      }
+    },
+    {
+      id: 'child.birthLocation',
+      analytics: true,
+      type: FieldType.LOCATION,
+      required: true,
+      secured: true,
+      label: {
+        defaultMessage: 'Health Institution',
+        description: 'This is the label for the field',
+        id: 'event.birth.action.declare.form.section.child.field.birthLocation.label'
+      },
+      conditionals: [
+        {
+          type: ConditionalType.SHOW,
+          conditional: and(
+            field('child.placeOfBirth').isEqualTo(
+              PlaceOfBirth.HEALTH_FACILITY
+            ),
+            user.hasRole('HOSPITAL_CLERK')
+          )
+        }
+      ],
+      defaultValue: user('primaryOfficeId'),
       configuration: {
         locationTypes: ['HEALTH_FACILITY'],
         allowedLocations: user.jurisdiction(
