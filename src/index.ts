@@ -32,7 +32,6 @@ import {
   AUTH_URL,
   DEFAULT_TIMEOUT
 } from '@countryconfig/constants'
-import { statisticsHandler } from '@countryconfig/api/data-generator/handler'
 import {
   contentHandler,
   countryLogoHandler
@@ -467,18 +466,6 @@ export async function createServer() {
       description: 'Serves country wise crude death rate'
     }
   })
-
-  server.route({
-    method: 'GET',
-    path: '/statistics',
-    handler: statisticsHandler,
-    options: {
-      tags: ['api'],
-      description:
-        'Returns population and crude birth rate statistics for each location'
-    }
-  })
-
   server.route({
     method: 'POST',
     path: '/email',
