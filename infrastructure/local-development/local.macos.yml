@@ -24,4 +24,3 @@ docker-workers:
       ansible_host: 'worker.orb.local'
       ansible_user: 'provision'
       data_label: data2
-
