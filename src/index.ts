@@ -601,16 +601,6 @@ export async function createServer() {
 
   server.route({
     method: 'POST',
-    path: `/trigger/events/${Event.TENNIS_CLUB_MEMBERSHIP}/actions/${ActionType.REGISTER}`,
-    handler: onRegisterHandler,
-    options: {
-      tags: ['api', 'events'],
-      description: 'Receives notifications on event actions'
-    }
-  })
-
-  server.route({
-    method: 'POST',
     path: `/trigger/events/${Event.Birth}/actions/${ActionType.REGISTER}`,
     handler: onMosipBirthRegisterHandler,
     options: {
@@ -682,16 +672,16 @@ export async function createServer() {
       actions: event.actions.map((action, index) =>
         index === event.actions.length - 1
           ? {
-              ...action,
-              status: ActionStatus.Accepted,
-              ...(actionType === ActionType.REGISTER && response.source
-                ? {
-                    registrationNumber: (
-                      response.source as { registrationNumber: string }
-                    ).registrationNumber
-                  }
-                : {})
-            }
+            ...action,
+            status: ActionStatus.Accepted,
+            ...(actionType === ActionType.REGISTER && response.source
+              ? {
+                registrationNumber: (
+                  response.source as { registrationNumber: string }
+                ).registrationNumber
+              }
+              : {})
+          }
           : action
       ) as ActionDocument[]
     }
@@ -731,16 +721,16 @@ export async function createServer() {
         actions: event.actions.map((action, index) =>
           index === event.actions.length - 1
             ? {
-                ...action,
-                status: ActionStatus.Accepted,
-                ...(actionType === ActionType.REGISTER
-                  ? {
-                      registrationNumber: (
-                        response.source as { registrationNumber: string }
-                      ).registrationNumber
-                    }
-                  : {})
-              }
+              ...action,
+              status: ActionStatus.Accepted,
+              ...(actionType === ActionType.REGISTER
+                ? {
+                  registrationNumber: (
+                    response.source as { registrationNumber: string }
+                  ).registrationNumber
+                }
+                : {})
+            }
             : action
         ) as ActionDocument[]
       }

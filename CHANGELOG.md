@@ -93,7 +93,6 @@ The default values for these variables have been added to the `docker-compose.de
 - **Upgrade node version to 22**
 
   This version enforces environment to have Node 22 installed (supported until 30 April 2027) and removes support for Node 18 for better performance and using [new features](https://github.com/nodejs/node/releases/tag/v22.0.0) offered by NodeJS
-
   - Use nvm to upgrade your local development environment to use node version `22.x.x.`
   - Add conditions for the certified copy certificate to ensure it's only available to children who are 1 year or older. [#9684](https://github.com/opencrvs/opencrvs-core/issues/9684)
   - Available disk space in root file system alert adjusted to fire when 20GB are remaining, rather than when diskspace usage is at 70%.
@@ -278,18 +277,6 @@ changeModal.title,The title for change modal,Edit declaration?
 config.emailAllUsers.subtitle,Subtitle for email all users,This email will be sent to all users who are active. Emails will be sent over the next 24 hours. Only one email can be sent per day
 constants.humanName,Formatted full name, {lastName} {middleName} {firstName}
 event.history.timeFormat,"MMMM dd, yyyy · hh.mm a","MMMM dd, yyyy · hh.mm a"
-event.tennis-club-membership.action.declare.form.label,This is what this form is referred as in the system,Tennis club membership application
-event.tennis-club-membership.action.declare.form.section.recommender.field.firstname.label,This is the label for the field,Recommender's first name
-event.tennis-club-membership.action.declare.form.section.recommender.field.id.label,This is the label for the field,Recommender's membership ID
-event.tennis-club-membership.action.declare.form.section.recommender.field.surname.label,This is the label for the field,Recommender's surname
-event.tennis-club-membership.action.declare.form.section.recommender.title,This is the title of the section,Who is recommending the applicant?
-event.tennis-club-membership.action.declare.form.section.who.field.dob.label,This is the label for the field,Applicant's date of birth
-event.tennis-club-membership.action.declare.form.section.who.field.firstname.label,This is the label for the field,Applicant's first name
-event.tennis-club-membership.action.declare.form.section.who.field.surname.label,This is the label for the field,Applicant's surname
-event.tennis-club-membership.action.declare.form.section.who.title,This is the title of the section,Who is applying for the membership?
-event.tennis-club-membership.action.declare.form.version.1,This is the first version of the form,Version 1
-event.tennis-club-membership.action.declare.label,This is shown as the action name anywhere the user can trigger the action from,Send an application
-event.tennis-club-membership.label,This is what this event is referred as in the system,Tennis club membership application
 exitModal.cancel,The label for cancel button in exit modal,Cancel
 exitModal.exitWithoutSaving,The title for exit without saving modal,Exit without saving changes?
 exitModal.exitWithoutSavingDescription,The description for exit without saving modal,You have unsaved changes on your declaration form. Are you sure you want to exit without saving?
@@ -428,7 +415,6 @@ wq.noRecords.draft,No records messages for empty draft tab,No records in my draf
 - Introduce a new certificate handlebar "preview" which can be used to conditionally render some svg element when previewing the certificate e.g. background image similar to security paper
 
 - **Notification flags**: Added notification flags for `BIRTH`, `DEATH`, and `MARRIAGE` events, including:
-
   - `sent-notification`
   - `sent-notification-for-review`
   - `sent-for-approval`
@@ -471,7 +457,6 @@ INSERT CSV ROWS IN ENGLISH ONLY
 - **Upgrade node version to 18**
 
   This version enforces environment to have Node 18 installed (supported until April 2025) and removes support for Node 16
-
   - Use nvm to upgrade your local development environment to use node version `18.19.x.`
   - Specified operating systems in js modules as `darwin, linux`
   - Dev scripts and Vite run with an environment variable `NODE_OPTIONS=--dns-result-order=ipv4first` to resolve ipv4 addresses for `localhost` to support systems that resolves ipv6 addresses by default in Node versions >=17
@@ -693,7 +678,6 @@ In the next OpenCRVS release v1.5.0, there will be two significant changes:
 
   Below is a list of all the new handlebars that are meant to be used with the
   "location" handlebar helper.
-
   - statePrimaryInformantId
   - districtPrimaryInformantId
   - statePlaceofbirthId

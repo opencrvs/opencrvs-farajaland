@@ -54,7 +54,7 @@ export const birthEvent = defineConfig({
     id: 'event.birth.title'
   },
   fallbackTitle: {
-    id: 'event.tennis-club-membership.fallbackTitle',
+    id: 'event.birth.fallbackTitle',
     defaultMessage: 'No name provided',
     description:
       'This is a fallback title if actual title resolves to empty string'

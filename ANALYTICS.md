@@ -2,7 +2,8 @@
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+**Table of Contents** _generated with [DocToc](https://github.com/thlorenz/doctoc)_
 
 - [Overview](#overview)
 - [Architecture](#architecture)
@@ -22,6 +23,7 @@
 OpenCRVS provides comprehensive analytics capabilities through **Metabase**, an open-source business intelligence platform. This system allows stakeholders to visualize and analyze civil registration data through interactive dashboards, charts, and reports.
 
 The analytics system is designed to:
+
 - Track vital events (births, deaths, etc.) and registration statistics
 - Provide insights for decision-making and reporting
 - Support data-driven improvements to civil registration processes
@@ -47,15 +49,17 @@ The analytics system consists of several key components:
 OpenCRVS collects analytics data from multiple sources:
 
 ### Event Data
+
 - **Birth registrations**: Demographics, locations, registration timing
 - **Death registrations**: Cause of death, demographics, locations
-- **Custom events**: Additional event types (e.g., tennis club memberships in the example)
+- **Custom events**: Additional event types
 - **Registration status**: Draft, registered, certified states
 - **Action history**: Workflow actions and state transitions
 
 Country config receives full event documents and can decide which fields should be written into the analytics database and which are PII.
 
 ### Configuration-Driven Analytics
+
 The example country config implementation uses configurable analytics fields marked with `analytics: true` in form configurations:
 
 ```typescript
@@ -84,6 +88,7 @@ field: {
 ## Deployment
 
 ### Production Deployment
+
 Metabase is deployed as a Docker service defined in `infrastructure/docker-compose.deploy.yml`:
 
 ```yaml
@@ -102,7 +107,9 @@ dashboards:
 ```
 
 ### Environment Configuration
+
 The deployment uses environment-specific configurations:
+
 - `infrastructure/metabase/environment-configuration.sql`: Database connections and admin users. **This file does not need to be changed**.
 - Environment variables for database credentials and site settings
 - Map configurations for geographic visualizations
@@ -148,14 +155,17 @@ yarn metabase
 # Clear all analytics data
 yarn db:clear:all
 ```
+
 ## Why Analytics Data is Not Backed Up
 
 Analytics data in OpenCRVS is **intentionally not included in backup procedures** for several important reasons:
 
 ### 1. **Regenerative Nature**
+
 Analytics data can be completely regenerated from the primary data sources. The analytics tables are derived views of the operational data, not the source of truth.
 
 ### 2. **Performance Considerations**
+
 - Analytics databases can be very large (GB to TB scale)
 - Including them in backups would significantly increase backup time and storage requirements
 - Restore operations would be much slower
@@ -163,7 +173,9 @@ Analytics data can be completely regenerated from the primary data sources. The 
 ## Configuration
 
 ### Database Connection
+
 Metabase connects to PostgreSQL using these environment variables:
+
 - `METABASE_DATABASE_HOST`: Database host (default: postgres)
 - `METABASE_DATABASE_PORT`: Database port (default: 5432)
 - `METABASE_DATABASE_NAME`: Database name (default: events)
@@ -171,11 +183,15 @@ Metabase connects to PostgreSQL using these environment variables:
 - `METABASE_DATABASE_PASSWORD`: Database password
 
 ### Analytics Schema
+
 The analytics data is stored in the PostgreSQL `analytics` schema, primarily in:
+
 - `analytics.event_actions`: Main table containing processed event data and action histories
 
 ### Map Visualizations
+
 Geographic visualizations use:
+
 - `OPENCRVS_METABASE_MAP_NAME`: Map display name
 - `OPENCRVS_METABASE_MAP_URL`: GeoJSON source URL
 - `OPENCRVS_METABASE_MAP_REGION_KEY`: Key field for geographic regions
