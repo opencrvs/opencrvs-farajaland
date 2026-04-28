@@ -55,7 +55,7 @@ test.describe.serial('Certified copies', () => {
     })
 
     test('2.3 Click continue after selecting requester type and template type', async () => {
-      await page.reload({ waitUntil: 'networkidle' })
+      await page.reload()
       await page.locator('#collector____requesterId').click()
 
       const selectOptionsLabels = [
@@ -134,7 +134,7 @@ test.describe.serial('Certified copies renders spouse age correctly', () => {
 
   test.describe('2.0 Validate "Certify record" page', async () => {
     test('2.1 Ensure data content is visible for spouse', async () => {
-      await page.reload({ waitUntil: 'networkidle' })
+      await page.reload()
       await page.locator('#collector____requesterId').click()
       const selectOptionsLabels = [
         'Print and issue to Informant (Spouse)',
@@ -226,7 +226,7 @@ test.describe
 
   test.describe('2.0 Validate "Certify record" page', async () => {
     test('2.1 Ensure data content is visible for informant', async () => {
-      await page.reload({ waitUntil: 'networkidle' })
+      await page.reload()
       await page.locator('#collector____requesterId').click()
       const selectOptionsLabels = [
         'Print and issue to Informant (Son)',

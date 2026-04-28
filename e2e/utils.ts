@@ -140,6 +140,13 @@ export async function ensureInExternalValidationIsEmpty(page: Page) {
   })
 }
 
+export async function selectLocationOption(page: Page, locationName: string) {
+  await page
+    .locator('[id^="locationOption"]')
+    .getByText(locationName)
+    .click()
+}
+
 export async function type(page: Page, locator: string, text: string) {
   await page.locator(locator).fill(text)
   await page.locator(locator).blur()
