@@ -119,7 +119,7 @@ export const correctionFormRequesters: FieldConfig[] = [
     type: FieldType.SELECT,
     required: true,
     label: {
-      defaultMessage: 'Type of ID',
+      defaultMessage: 'Form of ID',
       description: 'This is the label for the field',
       id: 'event.death.action.correction.form.section.requester.idType.label'
     },
@@ -172,25 +172,6 @@ export const correctionFormRequesters: FieldConfig[] = [
     parent: field('informant.relation')
   },
   {
-    id: 'requester.brn',
-    type: FieldType.TEXT,
-    required: true,
-    label: {
-      defaultMessage: 'ID Number',
-      description: 'This is the label for the field',
-      id: 'event.death.action.correction.form.section.requester.brn.label'
-    },
-    conditionals: [
-      {
-        type: ConditionalType.SHOW,
-        conditional: and(
-          field('requester.type').isEqualTo('SOMEONE_ELSE'),
-          field('requester.idType').isEqualTo(IdType.BIRTH_REGISTRATION_NUMBER)
-        )
-      }
-    ]
-  },
-  {
     id: 'requester.name',
     type: FieldType.NAME,
     required: true,
@@ -213,7 +194,7 @@ export const correctionFormRequesters: FieldConfig[] = [
     required: true,
     label: {
       id: 'event.death.action.correction.form.section.requester.relationship.label',
-      defaultMessage: 'Relationship to child',
+      defaultMessage: 'Informant type',
       description: 'This is the label for the field'
     },
     placeholder: {

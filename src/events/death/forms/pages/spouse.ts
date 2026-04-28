@@ -268,7 +268,7 @@ export const spouse = defineFormPage({
         type: FieldType.SELECT,
         required: true,
         label: {
-          defaultMessage: 'Type of ID',
+          defaultMessage: 'Form of ID',
           description: 'This is the label for the field',
           id: 'event.death.action.declare.form.section.spouse.field.idType.label'
         },
@@ -352,73 +352,6 @@ export const spouse = defineFormPage({
         disableIf: ['pending', 'verified']
       }
     ),
-    connectToMOSIPIdReader(
-      {
-        id: 'spouse.brn',
-        type: FieldType.TEXT,
-        required: true,
-        label: {
-          defaultMessage: 'ID Number',
-          description: 'This is the label for the field',
-          id: 'event.death.action.declare.form.section.spouse.field.brn.label'
-        },
-        conditionals: [
-          {
-            type: ConditionalType.SHOW,
-            conditional: and(
-              field('spouse.idType').isEqualTo(
-                IdType.BIRTH_REGISTRATION_NUMBER
-              ),
-              requireSpouseDetails
-            )
-          }
-        ]
-      },
-      {
-        valuePath: 'data.brn',
-        hideIf: ['authenticated'],
-        disableIf: ['pending', 'verified']
-      }
-    ),
-    {
-      id: 'spouse.addressDivider1',
-      type: FieldType.DIVIDER,
-      label: emptyMessage,
-      conditionals: [
-        {
-          type: ConditionalType.SHOW,
-          conditional: and(
-            field('spouse.idType').isEqualTo(IdType.BIRTH_REGISTRATION_NUMBER),
-            requireSpouseDetails
-          )
-        }
-      ]
-    },
-    {
-      id: 'spouse.addressHelper',
-      type: FieldType.HEADING,
-      label: {
-        defaultMessage: 'Usual place of residence',
-        description: 'This is the label for the field',
-        id: 'event.death.action.declare.form.section.spouse.field.addressHelper.label'
-      },
-      configuration: {
-        styles: { fontVariant: 'h3' }
-      },
-      conditionals: [
-        {
-          type: ConditionalType.DISPLAY_ON_REVIEW,
-          conditional: never()
-        },
-        {
-          type: ConditionalType.SHOW,
-          conditional: and(
-            field('spouse.idType').isEqualTo(IdType.BIRTH_REGISTRATION_NUMBER),
-            requireSpouseDetails
-          )
-        }
-      ]
-    },
     {
       id: 'spouse.addressSameAs',
       type: FieldType.RADIO_GROUP,
@@ -447,7 +380,7 @@ export const spouse = defineFormPage({
       required: true,
       hideLabel: true,
       label: {
-        defaultMessage: 'Usual place of residence',
+        defaultMessage: 'Place of residence',
         description: 'This is the label for the field',
         id: 'event.death.action.declare.form.section.spouse.field.address.label'
       },

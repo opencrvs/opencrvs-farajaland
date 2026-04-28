@@ -270,11 +270,10 @@ export const issueBirthCredentialAction = {
       label: requesterLabel
     },
     ...getFieldConfigForInformant(InformantType.OTHER),
-    ...getFieldConfigForInformant(InformantType.BROTHER),
     ...getFieldConfigForInformant(InformantType.GRANDFATHER),
     ...getFieldConfigForInformant(InformantType.GRANDMOTHER),
-    ...getFieldConfigForInformant(InformantType.SISTER),
     ...getFieldConfigForInformant(InformantType.LEGAL_GUARDIAN),
+    ...getFieldConfigForInformant(InformantType.SELF),
     {
       parent: field('requester.type'),
       id: 'padding-for-layout-1',

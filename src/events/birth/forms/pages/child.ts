@@ -220,19 +220,13 @@ export const child = defineFormPage({
         description: 'This is the label for the field',
         id: 'event.birth.action.declare.form.section.child.field.name.label'
       },
-      validation: [invalidNameValidator('child.name')]
-    },
-    {
-      id: 'child.gender',
-      analytics: true,
-      type: FieldType.SELECT,
-      required: true,
-      label: {
-        defaultMessage: 'Sex',
-        description: 'This is the label for the field',
-        id: 'event.birth.action.declare.form.section.child.field.gender.label'
-      },
-      options: genderOptions
+      validation: [invalidNameValidator('child.name')],
+      conditionals: [
+        {
+          type: ConditionalType.SHOW,
+          conditional: not(user.hasRole('HOSPITAL_CLERK'))
+        }
+      ]
     },
     {
       id: 'child.dob',
@@ -281,6 +275,18 @@ export const child = defineFormPage({
       ]
     },
     {
+      id: 'child.gender',
+      analytics: true,
+      type: FieldType.SELECT,
+      required: true,
+      label: {
+        defaultMessage: 'Sex',
+        description: 'This is the label for the field',
+        id: 'event.birth.action.declare.form.section.child.field.gender.label'
+      },
+      options: genderOptions
+    },
+    {
       id: 'child.divider1',
       type: FieldType.DIVIDER,
       label: emptyMessage
@@ -292,7 +298,7 @@ export const child = defineFormPage({
       required: true,
       secured: true,
       label: {
-        defaultMessage: 'Place of delivery',
+        defaultMessage: 'Place of birth',
         description: 'This is the label for the field',
         id: 'event.birth.action.declare.form.section.child.field.placeOfBirth.label'
       },
@@ -312,11 +318,44 @@ export const child = defineFormPage({
       conditionals: [
         {
           type: ConditionalType.SHOW,
-          conditional: field('child.placeOfBirth').isEqualTo(
-            PlaceOfBirth.HEALTH_FACILITY
+          conditional: and(
+            field('child.placeOfBirth').isEqualTo(
+              PlaceOfBirth.HEALTH_FACILITY
+            ),
+            not(user.hasRole('HOSPITAL_CLERK'))
           )
         }
       ],
+      configuration: {
+        locationTypes: ['HEALTH_FACILITY'],
+        allowedLocations: user.jurisdiction(
+          user.scope('record.create').attribute('placeOfEvent')
+        )
+      }
+    },
+    {
+      id: 'child.birthLocation',
+      analytics: true,
+      type: FieldType.LOCATION,
+      required: true,
+      secured: true,
+      label: {
+        defaultMessage: 'Health Institution',
+        description: 'This is the label for the field',
+        id: 'event.birth.action.declare.form.section.child.field.birthLocation.label'
+      },
+      conditionals: [
+        {
+          type: ConditionalType.SHOW,
+          conditional: and(
+            field('child.placeOfBirth').isEqualTo(
+              PlaceOfBirth.HEALTH_FACILITY
+            ),
+            user.hasRole('HOSPITAL_CLERK')
+          )
+        }
+      ],
+      defaultValue: user('primaryOfficeId'),
       configuration: {
         locationTypes: ['HEALTH_FACILITY'],
         allowedLocations: user.jurisdiction(

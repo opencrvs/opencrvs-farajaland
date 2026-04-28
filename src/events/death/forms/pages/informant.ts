@@ -325,7 +325,7 @@ export const informant = defineFormPage({
         type: FieldType.SELECT,
         required: true,
         label: {
-          defaultMessage: 'Type of ID',
+          defaultMessage: 'Form of ID',
           description: 'This is the label for the field',
           id: 'event.death.action.declare.form.section.informant.field.idType.label'
         },
@@ -412,35 +412,6 @@ export const informant = defineFormPage({
         disableIf: ['pending', 'verified']
       }
     ),
-    connectToMOSIPIdReader(
-      {
-        id: 'informant.brn',
-        type: FieldType.TEXT,
-        required: true,
-        label: {
-          defaultMessage: 'ID Number',
-          description: 'This is the label for the field',
-          id: 'event.death.action.declare.form.section.informant.field.brn.label'
-        },
-        conditionals: [
-          {
-            type: ConditionalType.SHOW,
-            conditional: and(
-              field('informant.idType').isEqualTo(
-                IdType.BIRTH_REGISTRATION_NUMBER
-              ),
-              informantOtherThanSpouse
-            )
-          }
-        ],
-        parent: field('informant.relation')
-      },
-      {
-        valuePath: 'data.brn',
-        hideIf: ['authenticated'],
-        disableIf: ['pending', 'verified']
-      }
-    ),
     {
       id: 'informant.addressSameAs',
       type: FieldType.RADIO_GROUP,
@@ -485,7 +456,7 @@ export const informant = defineFormPage({
       id: 'informant.addressHelper',
       type: FieldType.HEADING,
       label: {
-        defaultMessage: 'Usual place of residence',
+        defaultMessage: 'Place of residence',
         description: 'This is the label for the field',
         id: 'event.death.action.declare.form.section.informant.field.addressHelper.label'
       },
@@ -513,7 +484,7 @@ export const informant = defineFormPage({
       required: true,
       hideLabel: true,
       label: {
-        defaultMessage: 'Usual place of residence',
+        defaultMessage: 'Place of residence',
         description: 'This is the label for the field',
         id: 'event.death.action.declare.form.section.informant.field.address.label'
       },

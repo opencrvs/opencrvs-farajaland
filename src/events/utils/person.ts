@@ -15,29 +15,23 @@ import { createSelectOptions } from '../utils'
 export const IdType = {
   NATIONAL_ID: 'NATIONAL_ID',
   PASSPORT: 'PASSPORT',
-  BIRTH_REGISTRATION_NUMBER: 'BIRTH_REGISTRATION_NUMBER',
   NONE: 'NONE'
 } as const
 
 const idTypeMessageDescriptors = {
   NATIONAL_ID: {
     defaultMessage: 'National ID',
-    description: 'Option for form field: Type of ID',
+    description: 'Option for form field: Form of ID',
     id: 'form.field.label.iDTypeNationalID'
   },
   PASSPORT: {
     defaultMessage: 'Passport',
-    description: 'Option for form field: Type of ID',
+    description: 'Option for form field: Form of ID',
     id: 'form.field.label.iDTypePassport'
   },
-  BIRTH_REGISTRATION_NUMBER: {
-    defaultMessage: 'Birth Registration Number',
-    description: 'Option for form field: Type of ID',
-    id: 'form.field.label.iDTypeBRN'
-  },
   NONE: {
-    defaultMessage: 'None',
-    description: 'Option for form field: Type of ID',
+    defaultMessage: 'No ID',
+    description: 'Option for form field: Form of ID',
     id: 'form.field.label.iDTypeNone'
   }
 } satisfies Record<keyof typeof IdType, TranslationConfig>

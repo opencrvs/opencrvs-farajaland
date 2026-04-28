@@ -11,6 +11,7 @@
 
 import { createSelectOptions } from '@countryconfig/events/utils'
 import {
+  and,
   ConditionalType,
   defineFormPage,
   DocumentMimeType,
@@ -20,7 +21,8 @@ import {
   not,
   or,
   PageTypes,
-  TranslationConfig
+  TranslationConfig,
+  user
 } from '@opencrvs/toolkit/events'
 import { requireMotherDetails } from './mother'
 import { requireFatherDetails } from './father'
@@ -29,30 +31,18 @@ import { InformantType } from './informant'
 const IdType = {
   NATIONAL_ID: 'NATIONAL_ID',
   PASSPORT: 'PASSPORT',
-  BIRTH_CERTIFICATE: 'BIRTH_CERTIFICATE',
-  OTHER: 'OTHER'
 } as const
 
 const idTypeMessageDescriptors = {
   NATIONAL_ID: {
     defaultMessage: 'National ID',
-    description: 'Option for form field: Type of ID',
+    description: 'Option for form field: Form of ID',
     id: 'form.field.label.iDTypeNationalID'
   },
   PASSPORT: {
     defaultMessage: 'Passport',
-    description: 'Option for form field: Type of ID',
+    description: 'Option for form field: Form of ID',
     id: 'form.field.label.iDTypePassport'
-  },
-  BIRTH_CERTIFICATE: {
-    defaultMessage: 'Birth Certificate',
-    description: 'Option for form field: Type of ID',
-    id: 'form.field.label.iDTypeBirthCertificate'
-  },
-  OTHER: {
-    defaultMessage: 'Other',
-    description: 'Option for form field: Type of ID',
-    id: 'form.field.label.iDTypeOther'
   }
 } satisfies Record<keyof typeof IdType, TranslationConfig>
 
@@ -96,6 +86,7 @@ export const documents = defineFormPage({
     description: 'Form section title for documents',
     id: 'form.section.documents.title'
   },
+  conditional: not(user.hasRole('HOSPITAL_CLERK')),
   fields: [
     {
       id: 'documents.proofOfBirth',
@@ -108,7 +99,7 @@ export const documents = defineFormPage({
           width: 'full'
         },
         fileName: {
-          defaultMessage: 'Notification of birth',
+          defaultMessage: 'Proof of birth',
           description: 'This is the label for the file name',
           id: 'form.field.label.proofOfBirth.fileName'
         }
@@ -134,7 +125,12 @@ export const documents = defineFormPage({
       conditionals: [
         {
           type: ConditionalType.SHOW,
-          conditional: requireMotherDetails
+          conditional: and(
+            requireMotherDetails,
+            not(field('mother.verified').isEqualTo('authenticated')),
+            not(field('mother.verified').isEqualTo('pending')),
+            not(field('mother.idType').isEqualTo('NONE'))
+          )
         }
       ]
     },
@@ -154,7 +150,12 @@ export const documents = defineFormPage({
       conditionals: [
         {
           type: ConditionalType.SHOW,
-          conditional: requireFatherDetails
+          conditional: and(
+            requireFatherDetails,
+            not(field('father.verified').isEqualTo('authenticated')),
+            not(field('father.verified').isEqualTo('pending')),
+            not(field('father.idType').isEqualTo('NONE'))
+          )
         }
       ]
     },
@@ -176,35 +177,70 @@ export const documents = defineFormPage({
           conditional: not(
             or(
               field('informant.relation').isEqualTo(InformantType.MOTHER),
-              field('informant.relation').isEqualTo(InformantType.FATHER)
+              field('informant.relation').isEqualTo(InformantType.FATHER),
+              field('informant.verified').isEqualTo('authenticated'),
+              field('informant.verified').isEqualTo('pending'),
+              field('informant.idType').isEqualTo('NONE')
             )
           )
         }
       ]
     },
     {
-      id: 'documents.proofOther',
-      type: FieldType.FILE_WITH_OPTIONS,
+      id: 'documents.proofOfAssignResponsibility',
+      type: FieldType.FILE,
       required: false,
       uncorrectable: true,
-      label: {
-        defaultMessage: 'Other',
-        description: 'This is the label for the field',
-        id: 'event.birth.action.declare.form.section.documents.field.proofOther.label'
+      configuration: {
+        ...DEFAULT_FILE_CONFIGURATION,
+        style: {
+          width: 'full'
+        },
+        fileName: {
+          defaultMessage: 'Proof of assigned responsibility',
+          description: 'This is the label for the file name',
+          id: 'form.field.label.proofOfAssignResponsibility.fileName'
+        }
       },
-      configuration: DEFAULT_FILE_CONFIGURATION,
-      options: otherOptions,
+      label: {
+        defaultMessage: 'Proof of assigned responsibility',
+        description: 'This is the label for the field',
+        id: 'event.birth.action.declare.form.section.documents.field.proofOfAssignResponsibility.label'
+      },
       conditionals: [
         {
           type: ConditionalType.SHOW,
-          conditional: not(
-            or(
-              field('informant.relation').isEqualTo(InformantType.MOTHER),
-              field('informant.relation').isEqualTo(InformantType.FATHER)
-            )
-          )
+          conditional: field('informant.relation').isEqualTo(InformantType.LEGAL_GUARDIAN)
         }
       ]
-    }
+    },
+    {
+      id: 'documents.acquiredChildCourtDocument',
+      type: FieldType.FILE,
+      required: false,
+      uncorrectable: true,
+      configuration: {
+        ...DEFAULT_FILE_CONFIGURATION,
+        style: {
+          width: 'full'
+        },
+        fileName: {
+          defaultMessage: 'Acquired child court document',
+          description: 'This is the label for the file name',
+          id: 'form.field.label.acquiredChildCourtDocument.fileName'
+        }
+      },
+      label: {
+        defaultMessage: 'Acquired child court document',
+        description: 'This is the label for the field',
+        id: 'event.birth.action.declare.form.section.documents.field.acquiredChildCourtDocument.label'
+      },
+      conditionals: [
+        {
+          type: ConditionalType.SHOW,
+          conditional: field('informant.relation').isEqualTo(InformantType.LEGAL_GUARDIAN)
+        }
+      ]
+    },
   ]
 })

@@ -30,8 +30,6 @@ import { InformantType } from './informant'
 import {
   IdType,
   idTypeOptions,
-  educationalAttainmentOptions,
-  maritalStatusOptions,
   emptyMessage,
   defaultStreetAddressConfiguration,
   getNestedFieldValidators
@@ -60,15 +58,16 @@ export const mother = defineFormPage({
       id: 'mother.detailsNotAvailable',
       type: FieldType.CHECKBOX,
       label: {
-        defaultMessage: "Mother's details are not available",
+        defaultMessage: "Mother's details unavailable",
         description: 'This is the label for the field',
         id: 'event.birth.action.declare.form.section.mother.field.detailsNotAvailable.label'
       },
       conditionals: [
         {
           type: ConditionalType.SHOW,
-          conditional: not(
-            field('informant.relation').isEqualTo(InformantType.MOTHER)
+          conditional: and(
+            not(field('informant.relation').isEqualTo(InformantType.MOTHER)),
+            not(user.hasRole('HOSPITAL_CLERK'))
           )
         },
         {
@@ -84,8 +83,9 @@ export const mother = defineFormPage({
       conditionals: [
         {
           type: ConditionalType.SHOW,
-          conditional: not(
-            field('informant.relation').isEqualTo(InformantType.MOTHER)
+          conditional: and(
+            not(field('informant.relation').isEqualTo(InformantType.MOTHER)),
+            not(user.hasRole('HOSPITAL_CLERK'))
           )
         }
       ]
@@ -109,6 +109,53 @@ export const mother = defineFormPage({
         }
       ]
     },
+    {
+      id: 'mother.nationality',
+      type: FieldType.COUNTRY,
+      required: true,
+      label: {
+        defaultMessage: 'Nationality',
+        description: 'This is the label for the field',
+        id: 'event.birth.action.declare.form.section.person.field.nationality.label'
+      },
+      conditionals: [
+        {
+          type: ConditionalType.SHOW,
+          conditional: and(
+            requireMotherDetails,
+            not(user.hasRole('HOSPITAL_CLERK'))
+          )
+        }
+      ],
+      defaultValue: 'FAR'
+    },
+    connectToMOSIPIdReader(
+      {
+        id: 'mother.idType',
+        type: FieldType.SELECT,
+        required: true,
+        label: {
+          defaultMessage: 'Form of ID',
+          description: 'This is the label for the field',
+          id: 'event.birth.action.declare.form.section.person.field.idType.label'
+        },
+        options: idTypeOptions,
+        conditionals: [
+          {
+            type: ConditionalType.SHOW,
+            conditional: and(
+              requireMotherDetails,
+              not(user.hasRole('HOSPITAL_CLERK'))
+            )
+          }
+        ]
+      },
+      {
+        valuePath: 'data.idType',
+        hideIf: ['authenticated'],
+        disableIf: ['pending', 'verified']
+      }
+    ),
     // fields:
     // mother.verified, mother.query-params, mother.verify-nid-http-fetch,
     // mother.fetch-loader, mother.id-reader
@@ -116,10 +163,82 @@ export const mother = defineFormPage({
       existingConditionals: [
         {
           type: ConditionalType.SHOW,
-          conditional: requireMotherDetails
+          conditional: and(
+            requireMotherDetails,
+            field('mother.nationality').isEqualTo('FAR'),
+            not(user.hasRole('HOSPITAL_CLERK'))
+          )
         }
       ]
     }),
+    connectToMOSIPIdReader(
+      {
+        id: 'mother.nid',
+        type: FieldType.ID,
+        required: true,
+        label: {
+          defaultMessage: 'National ID no.',
+          description: 'This is the label for the field',
+          id: 'event.birth.action.declare.form.section.person.field.nid.label'
+        },
+        conditionals: [
+          {
+            type: ConditionalType.SHOW,
+            conditional: and(
+              field('mother.idType').isEqualTo(IdType.NATIONAL_ID),
+              requireMotherDetails,
+              not(user.hasRole('HOSPITAL_CLERK'))
+            )
+          }
+        ],
+        validation: [
+          nationalIdValidator('mother.nid'),
+          {
+            message: {
+              defaultMessage: 'National id must be unique',
+              description: 'This is the error message for non-unique ID Number',
+              id: 'event.birth.action.declare.form.nid.unique'
+            },
+            validator: and(
+              not(field('mother.nid').isEqualTo(field('father.nid'))),
+              not(field('mother.nid').isEqualTo(field('informant.nid')))
+            )
+          }
+        ]
+      },
+      {
+        valuePath: 'data.nid',
+        hideIf: ['authenticated'],
+        disableIf: ['pending', 'verified']
+      }
+    ),
+    connectToMOSIPIdReader(
+      {
+        id: 'mother.passport',
+        type: FieldType.TEXT,
+        required: false,
+        label: {
+          defaultMessage: 'Passport No.',
+          description: 'This is the label for the field',
+          id: 'event.birth.action.declare.form.section.person.field.passport.label'
+        },
+        conditionals: [
+          {
+            type: ConditionalType.SHOW,
+            conditional: and(
+              field('mother.idType').isEqualTo(IdType.PASSPORT),
+              requireMotherDetails,
+              not(user.hasRole('HOSPITAL_CLERK'))
+            )
+          }
+        ]
+      },
+      {
+        valuePath: 'data.passport',
+        hideIf: ['authenticated'],
+        disableIf: ['pending', 'verified']
+      }
+    ),
     connectToMOSIPIdReader(
       {
         id: 'mother.name',
@@ -183,217 +302,13 @@ export const mother = defineFormPage({
         conditionals: [
           {
             type: ConditionalType.SHOW,
-            conditional: and(
-              not(field('mother.dobUnknown').isEqualTo(true)),
-              requireMotherDetails
-            )
+            conditional: requireMotherDetails
           }
         ]
       },
       {
         valuePath: 'data.birthDate',
         disableIf: ['pending', 'verified', 'authenticated']
-      }
-    ),
-    connectToMOSIPIdReader(
-      {
-        id: 'mother.dobUnknown',
-        type: FieldType.CHECKBOX,
-        label: {
-          defaultMessage: 'Exact date of birth unknown',
-          description: 'This is the label for the field',
-          id: 'event.birth.action.declare.form.section.person.field.age.checkbox.label'
-        },
-        conditionals: [
-          {
-            type: ConditionalType.SHOW,
-            conditional: requireMotherDetails
-          },
-          {
-            type: ConditionalType.DISPLAY_ON_REVIEW,
-            conditional: never()
-          }
-        ]
-      },
-      {
-        valuePath: 'data.dobUnknown',
-        disableIf: ['pending', 'verified', 'authenticated']
-      }
-    ),
-    connectToMOSIPVerificationStatus(
-      {
-        id: 'mother.age',
-        type: FieldType.AGE,
-        required: true,
-        analytics: true,
-        label: {
-          defaultMessage: 'Age of mother (at the time of event)',
-          description: 'This is the label for the field',
-          id: 'event.birth.action.declare.form.section.mother.field.age.label'
-        },
-        configuration: {
-          asOfDate: field('child.dob'),
-          postfix: {
-            defaultMessage: 'years',
-            description: 'This is the postfix for age field',
-            id: 'event.birth.action.declare.form.section.person.field.age.postfix'
-          }
-        },
-        conditionals: [
-          {
-            type: ConditionalType.SHOW,
-            conditional: and(
-              field('mother.dobUnknown').isEqualTo(true),
-              requireMotherDetails
-            )
-          }
-        ],
-        validation: [
-          {
-            validator: field('mother.age').asAge().isBetween(12, 120),
-            message: {
-              defaultMessage: 'Age must be between 12 and 120',
-              description: 'Error message for invalid age',
-              id: 'event.action.declare.form.section.person.field.age.error'
-            }
-          }
-        ]
-      },
-      { disableIf: ['pending', 'verified', 'authenticated'] }
-    ),
-    {
-      id: 'mother.nationality',
-      type: FieldType.COUNTRY,
-      required: true,
-      label: {
-        defaultMessage: 'Nationality',
-        description: 'This is the label for the field',
-        id: 'event.birth.action.declare.form.section.person.field.nationality.label'
-      },
-      conditionals: [
-        {
-          type: ConditionalType.SHOW,
-          conditional: requireMotherDetails
-        }
-      ],
-      defaultValue: 'FAR'
-    },
-    connectToMOSIPIdReader(
-      {
-        id: 'mother.idType',
-        type: FieldType.SELECT,
-        required: true,
-        label: {
-          defaultMessage: 'Type of ID',
-          description: 'This is the label for the field',
-          id: 'event.birth.action.declare.form.section.person.field.idType.label'
-        },
-        options: idTypeOptions,
-        conditionals: [
-          {
-            type: ConditionalType.SHOW,
-            conditional: requireMotherDetails
-          }
-        ]
-      },
-      {
-        valuePath: 'data.idType',
-        hideIf: ['authenticated'],
-        disableIf: ['pending', 'verified']
-      }
-    ),
-    connectToMOSIPIdReader(
-      {
-        id: 'mother.nid',
-        type: FieldType.ID,
-        required: true,
-        label: {
-          defaultMessage: 'ID Number',
-          description: 'This is the label for the field',
-          id: 'event.birth.action.declare.form.section.person.field.nid.label'
-        },
-        conditionals: [
-          {
-            type: ConditionalType.SHOW,
-            conditional: and(
-              field('mother.idType').isEqualTo(IdType.NATIONAL_ID),
-              requireMotherDetails
-            )
-          }
-        ],
-        validation: [
-          nationalIdValidator('mother.nid'),
-          {
-            message: {
-              defaultMessage: 'National id must be unique',
-              description: 'This is the error message for non-unique ID Number',
-              id: 'event.birth.action.declare.form.nid.unique'
-            },
-            validator: and(
-              not(field('mother.nid').isEqualTo(field('father.nid'))),
-              not(field('mother.nid').isEqualTo(field('informant.nid')))
-            )
-          }
-        ]
-      },
-      {
-        valuePath: 'data.nid',
-        hideIf: ['authenticated'],
-        disableIf: ['pending', 'verified']
-      }
-    ),
-    connectToMOSIPIdReader(
-      {
-        id: 'mother.passport',
-        type: FieldType.TEXT,
-        required: true,
-        label: {
-          defaultMessage: 'ID Number',
-          description: 'This is the label for the field',
-          id: 'event.birth.action.declare.form.section.person.field.passport.label'
-        },
-        conditionals: [
-          {
-            type: ConditionalType.SHOW,
-            conditional: and(
-              field('mother.idType').isEqualTo(IdType.PASSPORT),
-              requireMotherDetails
-            )
-          }
-        ]
-      },
-      {
-        valuePath: 'data.passport',
-        hideIf: ['authenticated'],
-        disableIf: ['pending', 'verified']
-      }
-    ),
-    connectToMOSIPIdReader(
-      {
-        id: 'mother.brn',
-        type: FieldType.TEXT,
-        required: true,
-        label: {
-          defaultMessage: 'ID Number',
-          description: 'This is the label for the field',
-          id: 'event.birth.action.declare.form.section.person.field.brn.label'
-        },
-        conditionals: [
-          {
-            type: ConditionalType.SHOW,
-            conditional: and(
-              field('mother.idType').isEqualTo(
-                IdType.BIRTH_REGISTRATION_NUMBER
-              ),
-              requireMotherDetails
-            )
-          }
-        ]
-      },
-      {
-        valuePath: 'data.brn',
-        hideIf: ['authenticated'],
-        disableIf: ['pending', 'verified']
       }
     ),
     {
@@ -411,7 +326,7 @@ export const mother = defineFormPage({
       id: 'mother.addressHelper',
       type: FieldType.HEADING,
       label: {
-        defaultMessage: 'Usual place of residence',
+        defaultMessage: 'Place of residence',
         description: 'This is the label for the field',
         id: 'event.birth.action.declare.form.section.person.field.addressHelper.label'
       },
@@ -425,7 +340,10 @@ export const mother = defineFormPage({
         },
         {
           type: ConditionalType.SHOW,
-          conditional: requireMotherDetails
+          conditional: and(
+            requireMotherDetails,
+            not(user.hasRole('HOSPITAL_CLERK'))
+          )
         }
       ]
     },
@@ -436,14 +354,17 @@ export const mother = defineFormPage({
       secured: true,
       hideLabel: true,
       label: {
-        defaultMessage: 'Usual place of residence',
+        defaultMessage: 'Place of residence',
         description: 'This is the label for the field',
         id: 'event.birth.action.declare.form.section.person.field.address.label'
       },
       conditionals: [
         {
           type: ConditionalType.SHOW,
-          conditional: requireMotherDetails
+          conditional: and(
+            requireMotherDetails,
+            not(user.hasRole('HOSPITAL_CLERK'))
+          )
         }
       ],
       validation: [
@@ -476,60 +397,10 @@ export const mother = defineFormPage({
       conditionals: [
         {
           type: ConditionalType.SHOW,
-          conditional: requireMotherDetails
-        }
-      ]
-    },
-    {
-      id: 'mother.maritalStatus',
-      type: FieldType.SELECT,
-      analytics: true,
-      required: false,
-      label: {
-        defaultMessage: 'Marital Status',
-        description: 'This is the label for the field',
-        id: 'event.birth.action.declare.form.section.person.field.maritalStatus.label'
-      },
-      options: maritalStatusOptions,
-      conditionals: [
-        {
-          type: ConditionalType.SHOW,
-          conditional: requireMotherDetails
-        }
-      ]
-    },
-    {
-      id: 'mother.educationalAttainment',
-      type: FieldType.SELECT,
-      required: false,
-      analytics: true,
-      label: {
-        defaultMessage: 'Level of education',
-        description: 'This is the label for the field',
-        id: 'event.birth.action.declare.form.section.person.field.educationalAttainment.label'
-      },
-      options: educationalAttainmentOptions,
-      conditionals: [
-        {
-          type: ConditionalType.SHOW,
-          conditional: requireMotherDetails
-        }
-      ]
-    },
-    {
-      id: 'mother.occupation',
-      type: FieldType.TEXT,
-      required: false,
-      analytics: true,
-      label: {
-        defaultMessage: 'Occupation',
-        description: 'This is the label for the field',
-        id: 'event.birth.action.declare.form.section.person.field.occupation.label'
-      },
-      conditionals: [
-        {
-          type: ConditionalType.SHOW,
-          conditional: requireMotherDetails
+          conditional: and(
+            requireMotherDetails,
+            not(user.hasRole('HOSPITAL_CLERK'))
+          )
         }
       ]
     },
