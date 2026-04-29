@@ -954,7 +954,7 @@ services:
     volumes:
       - /data/sqlite:/data/sqlite
       - /certs:/certs:ro
-    image: ghcr.io/opencrvs/mosip-api:2.0.0-rc.5
+    image: ghcr.io/opencrvs/mosip-api:2.0.0-rc.6
     environment:
       - NODE_ENV=production
       - OPENCRVS_GATEWAY_URL=http://gateway:7070
@@ -1017,7 +1017,7 @@ services:
         tag: 'mosip-api'
 
   mosip-mock:
-    image: ghcr.io/opencrvs/mosip-mock:2.0.0-rc.5
+    image: ghcr.io/opencrvs/mosip-mock:2.0.0-rc.6
     depends_on:
       - mosip-api
     environment:
@@ -1041,7 +1041,7 @@ services:
         tag: 'mosip-mock'
 
   esignet-mock:
-    image: ghcr.io/opencrvs/esignet-mock:2.0.0-rc.5
+    image: ghcr.io/opencrvs/esignet-mock:2.0.0-rc.6
     volumes:
       - /certs:/certs:ro
     environment:
