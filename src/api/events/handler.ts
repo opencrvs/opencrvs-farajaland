@@ -23,7 +23,11 @@ import {
   NameFieldValue
 } from '@opencrvs/toolkit/events'
 import { MOSIP_INTEROP_URL, NO_MOSIP } from '@countryconfig/constants'
-import { shouldForwardBirthRegistrationToMosip } from '../../events/mosip'
+import {
+  getBirthInformantSection,
+  getInformantPsut,
+  shouldForwardBirthRegistrationToMosip
+} from '../../events/mosip'
 import { logger } from '@countryconfig/logger'
 
 export function getEventsHandler(_: Hapi.Request, h: Hapi.ResponseToolkit) {
@@ -153,7 +157,7 @@ export async function onBirthCorrectionActionHandler(
 
   const childHasNid = Boolean(declaration['child.nid'])
   const shouldForwardToMosip =
-    shouldForwardBirthRegistrationToMosip(declaration) && !childHasNid
+    shouldForwardBirthRegistrationToMosip(declaration)
 
   if (!shouldForwardToMosip) {
     logger.info(
@@ -175,26 +179,74 @@ export async function onBirthCorrectionActionHandler(
   )
   const childName = declaration['child.name'] as NameFieldValue
 
+  const childIdentifier = declaration['child.nid'] as string | undefined
+  const birthInformantSection = getBirthInformantSection(
+    declaration['informant.relation'] as string
+  )
+  const introducerInfoToken = getInformantPsut(
+    declaration,
+    birthInformantSection
+  )
+
   try {
-    await mosipInteropClient.register({
-      trackingId: event.trackingId,
-      requestFields: {
-        birthCertificateNumber,
-        fullName: [childName.firstname, childName.middlename, childName.surname]
-          .filter(Boolean)
-          .join(' '),
-        dateOfBirth: declaration['child.dob'],
-        gender: declaration['child.gender']
-      },
-      notification: {
-        recipientEmail: '@TODO',
-        recipientFullName: '@TODO',
-        recipientPhone: '@TODO'
-      },
-      metaInfo: {},
-      audit: {}
-    })
-    return h.response({}).code(202)
+    if (!childHasNid) {
+      await mosipInteropClient.register({
+        trackingId: event.trackingId,
+        requestFields: {
+          birthCertificateNumber,
+          fullName: [
+            childName.firstname,
+            childName.middlename,
+            childName.surname
+          ]
+            .filter(Boolean)
+            .join(' '),
+          dateOfBirth: declaration['child.dob'],
+          gender: declaration['child.gender']
+        },
+        notification: {
+          recipientEmail: '@TODO',
+          recipientFullName: '@TODO',
+          recipientPhone: '@TODO'
+        },
+        metaInfo: {},
+        audit: {}
+      })
+      return h.response({}).code(202)
+    }
+
+    await mosipInteropClient
+      .updateBiographics({
+        trackingId: event.trackingId,
+        requestFields: {
+          VID: childIdentifier!,
+          fullName: [
+            childName.firstname,
+            childName.middlename,
+            childName.surname
+          ]
+            .filter(Boolean)
+            .join(' '),
+          dateOfBirth: declaration['child.dob'] as string,
+          gender: declaration['child.gender'] as string,
+          introducerInfoToken
+        },
+        notification: {
+          recipientEmail: '@TODO',
+          recipientFullName: '@TODO',
+          recipientPhone: '@TODO'
+        },
+        metaInfo: {},
+        audit: {}
+      })
+      .catch((error) => {
+        logger.error(
+          { eventId: event.id, err: error },
+          'Failed to send birth correction biographic update to MOSIP'
+        )
+      })
+
+    return h.response({}).code(200)
   } catch (error) {
     logger.error(
       { eventId: event.id, err: error },
