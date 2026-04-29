@@ -91,6 +91,7 @@ export const getMOSIPIntegrationFields = (
     {
       id: `${page}.verified`,
       type: FieldType.VERIFICATION_STATUS,
+      required: true,
       parent: [
         field(`${page}.verify-nid-http-fetch`),
         field(`${page}.id-reader`)
@@ -111,7 +112,7 @@ export const getMOSIPIntegrationFields = (
         description: {
           id: 'verified.status.description',
           defaultMessage:
-            "{value, select, authenticated {This identity has been successfully authenticated with the Farajaland’s National ID System. To make edits, please remove the authentication first.} verified {This identity data has been successfully verified with the Farajaland’s National ID System. Please note that their identity has not been authenticated using the individual's biometrics. To make edits, please remove the verification first.} pending {Identity pending verification with Farajaland’s National ID system} failed {The identity data does not match an entry in Farajaland’s National ID System} other {Invalid value}}",
+            '{value, select, authenticated {This identity has been successfully authenticated with the Farajaland’s National ID system. To make edits, please remove the authentication first.} verified {Individual biographic details validated via National ID system} pending {Individual biographic details pending validation by National ID system} failed {Individual biographic details failed validation by National ID system. No match found} other {Invalid value}}',
           description: 'Description text of the status'
         }
       },
@@ -231,7 +232,7 @@ export const getMOSIPIntegrationFields = (
     {
       id: `${page}.id-reader`,
       type: FieldType.ID_READER,
-      required: false,
+      required: true,
       label: {
         defaultMessage: 'Identity status',
         description: 'Label for ID Reader field',
