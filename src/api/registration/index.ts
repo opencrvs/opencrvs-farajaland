@@ -24,22 +24,11 @@ import { logger } from '@countryconfig/logger'
 import { createMosipInteropClient } from '@opencrvs/mosip/api'
 import {
   shouldForwardBirthRegistrationToMosip,
-  shouldForwardDeathRegistrationToMosip
+  shouldForwardDeathRegistrationToMosip,
+  getBirthInformantSection,
+  getInformantPsut
 } from '@countryconfig/events/mosip'
-import { InformantType as BirthInformantType } from '@countryconfig/events/birth/forms/pages/informant'
 import { InformantType as DeathInformantType } from '@countryconfig/events/death/forms/pages/informant'
-
-interface HttpFetchValue {
-  data?: { sub?: string }
-}
-
-function getInformantPsut(
-  declaration: Record<string, any>,
-  section: string
-): string | undefined {
-  return (declaration[`${section}.verify-nid-http-fetch`] as HttpFetchValue)
-    ?.data?.sub
-}
 
 export interface ActionConfirmationRequest extends Hapi.Request {
   payload: EventDocument
@@ -195,11 +184,9 @@ export async function onMosipBirthRegisterHandler(
     )
     const childName = declaration['child.name'] as NameFieldValue | undefined
 
-    const birthInformantSection =
-      {
-        [BirthInformantType.MOTHER]: 'mother',
-        [BirthInformantType.FATHER]: 'father'
-      }[declaration['informant.relation'] as string] ?? 'informant'
+    const birthInformantSection = getBirthInformantSection(
+      declaration['informant.relation'] as string
+    )
     const informantPsut = getInformantPsut(declaration, birthInformantSection)
 
     // @TODO: Check whether this might crash country-config if MOSIP doesn't respond

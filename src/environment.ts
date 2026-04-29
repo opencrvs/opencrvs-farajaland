@@ -65,7 +65,7 @@ export const env = cleanEnv(process.env, {
     desc: 'URL for signing raw JWTs for verifiable credentials issuance'
   }),
   NO_MOSIP: bool({
-    devDefault: true,
+    devDefault: false,
     default: false,
     desc: 'Used in local development to disable MOSIP registration dependency'
   }),
