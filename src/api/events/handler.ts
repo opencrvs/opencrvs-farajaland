@@ -215,7 +215,7 @@ export async function onBirthCorrectionActionHandler(
       return h.response({}).code(202)
     }
 
-    mosipInteropClient
+    await mosipInteropClient
       .updateBiographics({
         trackingId: event.trackingId,
         requestFields: {
