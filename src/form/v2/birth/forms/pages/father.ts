@@ -408,7 +408,7 @@ export const father = defineFormPage({
     },
     {
       id: 'father.addressHelper',
-      type: FieldType.PARAGRAPH,
+      type: FieldType.HEADING,
       label: {
         defaultMessage: 'Usual place of residence',
         description: 'This is the label for the field',

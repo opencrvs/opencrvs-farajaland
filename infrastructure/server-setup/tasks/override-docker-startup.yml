@@ -1,6 +1,6 @@
 - name: Create systemd service file for mount script
   copy:
-    dest: "/etc/systemd/system/{{ mount_service_name }}.service"
+    dest: '/etc/systemd/system/{{ mount_service_name }}.service'
     content: |
       [Unit]
       Description=OpenCRVS Mount CryptFS service
@@ -22,9 +22,9 @@
     mode: '0644'
     backup: yes
   vars:
-    mount_service_name: "opencrvs-mount-cryptfs"  
-    mount_script_path: "/opt/opencrvs/infrastructure/cryptfs/mount.sh"
-    key_file_path: "/root/disk-encryption-key.txt"
+    mount_service_name: 'opencrvs-mount-cryptfs'
+    mount_script_path: '/opt/opencrvs/infrastructure/cryptfs/mount.sh'
+    key_file_path: '/root/disk-encryption-key.txt'
 
 - name: Reload the daemon
   systemd:
@@ -32,14 +32,14 @@
 
 - name: Enable mount service
   systemd:
-    name: "{{ mount_service_name }}.service"
+    name: '{{ mount_service_name }}.service'
     enabled: yes
   vars:
-    mount_service_name: "opencrvs-mount-cryptfs"
-  
+    mount_service_name: 'opencrvs-mount-cryptfs'
+
 - name: Create docker service override directory
   file:
-    path: "/etc/systemd/system/docker.service.d"
+    path: '/etc/systemd/system/docker.service.d'
     state: directory
     owner: root
     group: root
@@ -47,8 +47,8 @@
 
 - name: Create docker service override configuration
   copy:
-    dest: "/etc/systemd/system/docker.service.d/override.conf"
-    content: | 
+    dest: '/etc/systemd/system/docker.service.d/override.conf'
+    content: |
       [Unit]
       After=opencrvs-mount-cryptfs.service
       Requires=opencrvs-mount-cryptfs.service
@@ -59,11 +59,11 @@
 
 - name: Reload systemd daemon to apply changes
   systemd:
-    daemon_reload: yes  
-  
+    daemon_reload: yes
+
 - name: Verify Docker service dependency on mount service
   command: systemctl show -p After docker.service
   register: docker_after_status
   failed_when: "'opencrvs-mount-cryptfs.service' not in docker_after_status.stdout"
   vars:
-    mount_service_name: "opencrvs-mount-cryptfs"
+    mount_service_name: 'opencrvs-mount-cryptfs'

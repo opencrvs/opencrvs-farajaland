@@ -26,13 +26,7 @@ export const Workqueues = defineWorkqueues([
       defaultMessage: 'In progress',
       description: 'Title of in progress workqueue'
     },
-    query: {},
-    actions: [
-      {
-        type: 'VALIDATE',
-        conditionals: []
-      }
-    ]
+    query: {}
   },
   {
     slug: 'correction-requested',
@@ -43,12 +37,9 @@ export const Workqueues = defineWorkqueues([
       description: 'Title of correction requested workqueue'
     },
     query: {},
-    actions: [
-      {
-        type: 'READ',
-        conditionals: []
-      }
-    ]
+    action: {
+      type: 'READ'
+    }
   },
   {
     slug: 'waiting-for-attestation',
@@ -77,7 +68,6 @@ export const Workqueues = defineWorkqueues([
         value: event.field('status')
       }
     ],
-    actions: [],
     query: {}
   },
   {
@@ -90,13 +80,7 @@ export const Workqueues = defineWorkqueues([
     },
     query: {
       assignedTo: { type: 'exact', term: user('id') }
-    },
-    actions: [
-      {
-        type: 'DEFAULT',
-        conditionals: []
-      }
-    ]
+    }
   },
   {
     slug: 'recent',
@@ -113,12 +97,6 @@ export const Workqueues = defineWorkqueues([
         term: 'last7Days'
       }
     },
-    actions: [
-      {
-        type: 'DEFAULT',
-        conditionals: []
-      }
-    ],
     emptyMessage: {
       id: 'workqueues.recent.emptyMessage',
       defaultMessage: 'No recent records',
@@ -140,12 +118,6 @@ export const Workqueues = defineWorkqueues([
       },
       updatedAtLocation: { type: 'exact', term: user('primaryOfficeId') }
     },
-    actions: [
-      {
-        type: 'DEFAULT',
-        conditionals: []
-      }
-    ],
     emptyMessage: {
       id: 'workqueues.notifications.emptyMessage',
       defaultMessage: 'No notifications',
@@ -170,7 +142,6 @@ export const Workqueues = defineWorkqueues([
       },
       createdBy: { type: 'exact', term: user('id') }
     },
-    actions: [],
     columns: [
       DATE_OF_EVENT_COLUMN,
       {
@@ -198,12 +169,6 @@ export const Workqueues = defineWorkqueues([
       },
       updatedAtLocation: { type: 'exact', term: user('primaryOfficeId') }
     },
-    actions: [
-      {
-        type: 'DEFAULT',
-        conditionals: []
-      }
-    ],
     columns: [
       DATE_OF_EVENT_COLUMN,
       {
@@ -230,10 +195,11 @@ export const Workqueues = defineWorkqueues([
         {
           status: {
             type: 'anyOf',
-            terms: ['DECLARED', 'VALIDATED']
+            terms: ['DECLARED']
           },
           flags: {
-            noneOf: [InherentFlags.REJECTED]
+            noneOf: [InherentFlags.REJECTED],
+            anyOf: ['validated']
           },
           updatedAtLocation: { type: 'exact', term: user('primaryOfficeId') }
         },
@@ -245,12 +211,6 @@ export const Workqueues = defineWorkqueues([
         }
       ]
     },
-    actions: [
-      {
-        type: 'DEFAULT',
-        conditionals: []
-      }
-    ],
     columns: [
       DATE_OF_EVENT_COLUMN,
       {
@@ -278,12 +238,6 @@ export const Workqueues = defineWorkqueues([
       },
       createdBy: { type: 'exact', term: user('id') }
     },
-    actions: [
-      {
-        type: 'DEFAULT',
-        conditionals: []
-      }
-    ],
     columns: [
       DATE_OF_EVENT_COLUMN,
       {
@@ -310,12 +264,6 @@ export const Workqueues = defineWorkqueues([
       },
       updatedAtLocation: { type: 'exact', term: user('primaryOfficeId') }
     },
-    actions: [
-      {
-        type: 'DEFAULT',
-        conditionals: []
-      }
-    ],
     columns: [
       DATE_OF_EVENT_COLUMN,
       {
@@ -341,9 +289,9 @@ export const Workqueues = defineWorkqueues([
       clauses: [
         {
           updatedBy: { type: 'exact', term: user('id') },
-          status: { type: 'exact', term: 'VALIDATED' },
           flags: {
-            noneOf: [InherentFlags.REJECTED]
+            noneOf: [InherentFlags.REJECTED],
+            anyOf: ['validated']
           }
         },
         {
@@ -354,7 +302,6 @@ export const Workqueues = defineWorkqueues([
         }
       ]
     },
-    actions: [],
     columns: [
       DATE_OF_EVENT_COLUMN,
       {
@@ -382,13 +329,7 @@ export const Workqueues = defineWorkqueues([
         ]
       },
       updatedAtLocation: { type: 'exact', term: user('primaryOfficeId') }
-    },
-    actions: [
-      {
-        type: 'DEFAULT',
-        conditionals: []
-      }
-    ]
+    }
   },
   {
     slug: 'ready-to-print',
@@ -401,17 +342,11 @@ export const Workqueues = defineWorkqueues([
     query: {
       flags: {
         noneOf: [InherentFlags.CORRECTION_REQUESTED],
-        anyOf: [InherentFlags.PENDING_CERTIFICATION]
+        anyOf: ['pending-first-certificate-issuance']
       },
       status: { type: 'exact', term: 'REGISTERED' },
       updatedAtLocation: { type: 'exact', term: user('primaryOfficeId') }
     },
-    actions: [
-      {
-        type: 'PRINT_CERTIFICATE',
-        conditionals: []
-      }
-    ],
     columns: [
       DATE_OF_EVENT_COLUMN,
       {
@@ -422,6 +357,9 @@ export const Workqueues = defineWorkqueues([
         },
         value: event.field('updatedAt')
       }
-    ]
+    ],
+    action: {
+      type: 'PRINT_CERTIFICATE'
+    }
   }
 ])

@@ -28,7 +28,6 @@ filter:
             rule.name.keyword:
               value: 'Error while backup  '
 
-
 alert: post2
 http_post2_url: 'http://countryconfig:3040/email'
 http_post2_payload:

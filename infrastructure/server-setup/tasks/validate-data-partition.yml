@@ -14,7 +14,7 @@
 
     - name: Display success message
       debug:
-        msg: "✓ LUKS passphrase test successful - the disk encryption key is valid: {{ luks_test.stdout }}"
+        msg: '✓ LUKS passphrase test successful - the disk encryption key is valid: {{ luks_test.stdout }}'
   rescue:
     - name: DO NOT REBOOT the SERVER
       fail:

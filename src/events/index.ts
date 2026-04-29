@@ -8,9 +8,8 @@
  *
  * Copyright (C) The OpenCRVS Authors located at https://github.com/opencrvs/opencrvs-core/blob/master/AUTHORS.
  */
-import { roles } from './roles'
-import { Request, ResponseToolkit } from '@hapi/hapi'
+import { tennisClubMembershipEvent } from '../form/tennis-club-membership'
+import { birthEvent } from '../form/v2/birth'
+import { deathEvent } from '../form/v2/death'
 
-export async function rolesHandler(_: Request, h: ResponseToolkit) {
-  return h.response(roles)
-}
+export const eventConfigs = [tennisClubMembershipEvent, birthEvent, deathEvent]

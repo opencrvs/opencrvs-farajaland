@@ -10,7 +10,6 @@
  */
 
 import fetch from 'node-fetch'
-import { APPLICATION_CONFIG_URL, FHIR_URL } from '@countryconfig/constants'
 import { callingCountries } from 'country-data'
 import csv2json from 'csv2json'
 import { createReadStream } from 'fs'
@@ -26,6 +25,7 @@ export const OPENCRVS_SPECIFICATION_URL = 'http://opencrvs.org/specs/'
 import { join } from 'path'
 import { stringify } from 'csv-stringify/sync'
 import { promisify } from 'util'
+import { applicationConfig } from '@countryconfig/api/application/application-config'
 
 export interface ILocation {
   id?: string
@@ -130,42 +130,6 @@ export function getTrackingIdFromTaskResource(taskResource: fhir.Task) {
   return trackingIdentifier.value
 }
 
-export const getFromFhir = (suffix: string) => {
-  return fetch(`${FHIR_URL}${suffix.startsWith('/') ? '' : '/'}${suffix}`, {
-    headers: {
-      'Content-Type': 'application/json+fhir'
-    }
-  })
-    .then((response) => {
-      return response.json()
-    })
-    .catch((error) => {
-      return Promise.reject(new Error(`FHIR request failed: ${error.message}`))
-    })
-}
-
-export async function updateResourceInHearth(resource: fhir.ResourceBase) {
-  const res = await fetch(
-    `${FHIR_URL}/${resource.resourceType}/${resource.id}`,
-    {
-      method: 'PUT',
-      body: JSON.stringify(resource),
-      headers: {
-        'Content-Type': 'application/fhir+json'
-      }
-    }
-  )
-  if (!res.ok) {
-    throw new Error(
-      `FHIR update to ${resource.resourceType} failed with [${
-        res.status
-      }] body: ${await res.text()}`
-    )
-  }
-
-  return res.text()
-}
-
 export const convertToMSISDN = (phone: string, countryAlpha3: string) => {
   const countryCode = callingCountries[countryAlpha3.toUpperCase()].alpha2
 
@@ -210,15 +174,7 @@ export async function readCSVToJSON<T>(filename: string) {
 }
 
 export async function getApplicationConfig() {
-  const configURL = new URL('publicConfig', APPLICATION_CONFIG_URL).toString()
-  const res = await fetch(configURL, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  })
-  const configData = (await res.json()) as IApplicationConfigResponse
-  return configData.config
+  return applicationConfig
 }
 
 export const buildTypeScriptToJavaScript = memoize(async (path: string) => {
