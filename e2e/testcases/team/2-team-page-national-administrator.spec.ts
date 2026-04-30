@@ -61,7 +61,7 @@ test('User Account Actions', async ({ browser }) => {
   let phoneNumber: string
 
   await test.step('Change Phone Number', async () => {
-    phoneNumber = '0785963' + Math.floor(Math.random() * 900) + 100
+    phoneNumber = '0785963' + (Math.floor(Math.random() * 900) + 100)
     await page.getByTestId('change-button-phoneNumber').click()
     await page.locator('input[name="phoneNumber"]').fill(phoneNumber)
     await continueUntilReview(page)
