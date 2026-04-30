@@ -15,7 +15,8 @@ import {
   never,
   or,
   FieldReference,
-  window
+  window,
+  TranslationConfig
 } from '@opencrvs/toolkit/events'
 import { addYears, isAfter } from 'date-fns'
 
@@ -54,9 +55,9 @@ const upsertConditional = (
     return conditionals.map((c, i) =>
       i === existingIndex
         ? {
-            ...c,
-            conditional: and(c.conditional, newConditional.conditional)
-          }
+          ...c,
+          conditional: and(c.conditional, newConditional.conditional)
+        }
         : c
     )
   }
@@ -99,8 +100,9 @@ export const getMOSIPIntegrationFields = (
   page: string,
   {
     existingConditionals,
-    esignet = true
-  }: { existingConditionals: FieldConditional[]; esignet?: boolean }
+    esignet = true,
+    helperText
+  }: { existingConditionals: FieldConditional[]; esignet?: boolean; helperText?: TranslationConfig }
 ): FieldConfigInput[] => {
   const existingShowConditional = existingConditionals.find(
     (c) => c.type === ConditionalType.SHOW
@@ -144,107 +146,107 @@ export const getMOSIPIntegrationFields = (
     },
     ...(esignet
       ? ([
-          /*
-           * @opencrvs/mosip: MOSIP / E-Signet
-           */
-          {
-            id: `${page}.query-params`,
-            type: FieldType.QUERY_PARAM_READER,
-            conditionals: [
-              {
-                type: ConditionalType.DISPLAY_ON_REVIEW,
-                conditional: never()
-              }
-            ],
-            label: {
-              id: 'form.query-params.label',
-              defaultMessage: 'Query param reader',
-              description:
-                'This is the label for the query param reader field - usually this is hidden'
-            },
-            configuration: {
-              pickParams: ['code', 'state']
+        /*
+         * @opencrvs/mosip: MOSIP / E-Signet
+         */
+        {
+          id: `${page}.query-params`,
+          type: FieldType.QUERY_PARAM_READER,
+          conditionals: [
+            {
+              type: ConditionalType.DISPLAY_ON_REVIEW,
+              conditional: never()
             }
+          ],
+          label: {
+            id: 'form.query-params.label',
+            defaultMessage: 'Query param reader',
+            description:
+              'This is the label for the query param reader field - usually this is hidden'
           },
+          configuration: {
+            pickParams: ['code', 'state']
+          }
+        },
 
-          /*
-           * @opencrvs/mosip: MOSIP / E-Signet
-           */
-          {
-            id: `${page}.verify-nid-http-fetch`,
-            type: FieldType.HTTP,
-            conditionals: [
-              {
-                type: ConditionalType.DISPLAY_ON_REVIEW,
-                conditional: never()
-              }
-            ],
-            label: {
-              defaultMessage: 'Fetch applicant information',
-              description: 'Fetch applicant information',
-              id: 'applicant.http-fetch.label'
-            },
-            configuration: {
-              trigger: field(`${page}.query-params`),
-              url: MOSIP_API_USERINFO_URL,
-              timeout: 5000,
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              body: {
-                clientId: OPENID_PROVIDER_CLIENT_ID,
-                redirectUri: window().location.get('href')
-              },
-              params: {
-                code: field(`${page}.query-params`).get('data.code'),
-                state: field(`${page}.query-params`).get('data.state')
-              },
-              errorValue: {
-                verificationStatus: 'failed'
-              }
+        /*
+         * @opencrvs/mosip: MOSIP / E-Signet
+         */
+        {
+          id: `${page}.verify-nid-http-fetch`,
+          type: FieldType.HTTP,
+          conditionals: [
+            {
+              type: ConditionalType.DISPLAY_ON_REVIEW,
+              conditional: never()
             }
+          ],
+          label: {
+            defaultMessage: 'Fetch applicant information',
+            description: 'Fetch applicant information',
+            id: 'applicant.http-fetch.label'
           },
-
-          /*
-           * @opencrvs/mosip: MOSIP / E-Signet
-           */
-          {
-            id: `${page}.fetch-loader`,
-            type: FieldType.LOADER,
-            parent: field(`${page}.verify-nid-http-fetch`),
-            variant: 'highlighted',
-            hideLabel: false,
-            conditionals: [
-              {
-                type: ConditionalType.SHOW,
-                conditional: not(
-                  field(`${page}.verify-nid-http-fetch`)
-                    .get('loading')
-                    .isFalsy()
-                )
-              },
-              {
-                type: ConditionalType.DISPLAY_ON_REVIEW,
-                conditional: never()
-              }
-            ],
-            label: {
-              id: 'form.fetch-loader.label',
-              defaultMessage: 'Identity status',
-              description:
-                'This is the label for the fetch individual information loader'
+          configuration: {
+            trigger: field(`${page}.query-params`),
+            url: MOSIP_API_USERINFO_URL,
+            timeout: 5000,
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
             },
-            configuration: {
-              text: {
-                id: 'form.fetch-loader.label',
-                defaultMessage: "Fetching the person's data from E-Signet",
-                description:
-                  'This is the label for the fetch individual information loader'
-              }
+            body: {
+              clientId: OPENID_PROVIDER_CLIENT_ID,
+              redirectUri: window().location.get('href')
+            },
+            params: {
+              code: field(`${page}.query-params`).get('data.code'),
+              state: field(`${page}.query-params`).get('data.state')
+            },
+            errorValue: {
+              verificationStatus: 'failed'
             }
           }
-        ] satisfies FieldConfigInput[])
+        },
+
+        /*
+         * @opencrvs/mosip: MOSIP / E-Signet
+         */
+        {
+          id: `${page}.fetch-loader`,
+          type: FieldType.LOADER,
+          parent: field(`${page}.verify-nid-http-fetch`),
+          variant: 'highlighted',
+          hideLabel: false,
+          conditionals: [
+            {
+              type: ConditionalType.SHOW,
+              conditional: not(
+                field(`${page}.verify-nid-http-fetch`)
+                  .get('loading')
+                  .isFalsy()
+              )
+            },
+            {
+              type: ConditionalType.DISPLAY_ON_REVIEW,
+              conditional: never()
+            }
+          ],
+          label: {
+            id: 'form.fetch-loader.label',
+            defaultMessage: 'Identity status',
+            description:
+              'This is the label for the fetch individual information loader'
+          },
+          configuration: {
+            text: {
+              id: 'form.fetch-loader.label',
+              defaultMessage: "Fetching the person's data from E-Signet",
+              description:
+                'This is the label for the fetch individual information loader'
+            }
+          }
+        }
+      ] satisfies FieldConfigInput[])
       : []),
     /*
      * @opencrvs/mosip: MOSIP / E-Signet
@@ -263,28 +265,28 @@ export const getMOSIPIntegrationFields = (
           type: ConditionalType.SHOW,
           conditional: existingShowConditional?.conditional
             ? and(
-                existingShowConditional?.conditional,
-                field(`${page}.verify-nid-http-fetch`).get('loading').isFalsy(),
-                not(
-                  or(
-                    field(`${page}.verified`).isEqualTo('pending'),
-                    field(`${page}.verified`).isEqualTo('verified'),
-                    field(`${page}.verified`).isEqualTo('authenticated'),
-                    field(`${page}.verified`).isEqualTo('failed')
-                  )
+              existingShowConditional?.conditional,
+              field(`${page}.verify-nid-http-fetch`).get('loading').isFalsy(),
+              not(
+                or(
+                  field(`${page}.verified`).isEqualTo('pending'),
+                  field(`${page}.verified`).isEqualTo('verified'),
+                  field(`${page}.verified`).isEqualTo('authenticated'),
+                  field(`${page}.verified`).isEqualTo('failed')
                 )
               )
+            )
             : and(
-                field(`${page}.verify-nid-http-fetch`).get('loading').isFalsy(),
-                not(
-                  or(
-                    field(`${page}.verified`).isEqualTo('pending'),
-                    field(`${page}.verified`).isEqualTo('verified'),
-                    field(`${page}.verified`).isEqualTo('authenticated'),
-                    field(`${page}.verified`).isEqualTo('failed')
-                  )
+              field(`${page}.verify-nid-http-fetch`).get('loading').isFalsy(),
+              not(
+                or(
+                  field(`${page}.verified`).isEqualTo('pending'),
+                  field(`${page}.verified`).isEqualTo('verified'),
+                  field(`${page}.verified`).isEqualTo('authenticated'),
+                  field(`${page}.verified`).isEqualTo('failed')
                 )
               )
+            )
         },
         {
           type: ConditionalType.DISPLAY_ON_REVIEW,
@@ -294,37 +296,29 @@ export const getMOSIPIntegrationFields = (
       methods: [
         ...(esignet
           ? [
-              {
-                id: `${page}.verify`,
-                type: FieldType.LINK_BUTTON,
-                label: {
+            {
+              id: `${page}.verify`,
+              type: FieldType.LINK_BUTTON,
+              label: {
+                id: 'verify.label',
+                defaultMessage: 'Authenticate',
+                description: 'The title for the E-Signet verification button'
+              },
+              configuration: {
+                icon: 'Fingerprint',
+                url: `${ESIGNET_REDIRECT_URL}?client_id=${OPENID_PROVIDER_CLIENT_ID}&response_type=code&scope=openid%20profile&acr_values=mosip%3Aidp%3Aacr%3Agenerated-code&claims=%7B%22userinfo%22%3A%7B%22name%22%3A%7B%22essential%22%3Atrue%7D%2C%22birthdate%22%3A%7B%22essential%22%3Atrue%7D%2C%22address%22%3A%7B%22essential%22%3Atrue%7D%7D%2C%22id_token%22%3A%7B%7D%7D`,
+                text: {
                   id: 'verify.label',
-                  defaultMessage: 'Authenticate',
-                  description: 'The title for the E-Signet verification button'
-                },
-                configuration: {
-                  icon: 'Fingerprint',
-                  url: `${ESIGNET_REDIRECT_URL}?client_id=${OPENID_PROVIDER_CLIENT_ID}&response_type=code&scope=openid%20profile&acr_values=mosip%3Aidp%3Aacr%3Agenerated-code&claims=%7B%22userinfo%22%3A%7B%22name%22%3A%7B%22essential%22%3Atrue%7D%2C%22birthdate%22%3A%7B%22essential%22%3Atrue%7D%2C%22address%22%3A%7B%22essential%22%3Atrue%7D%7D%2C%22id_token%22%3A%7B%7D%7D`,
-                  text: {
-                    id: 'verify.label',
-                    defaultMessage: 'Authenticate with National ID system',
-                    description:
-                      'The title for the E-Signet verification button'
-                  }
+                  defaultMessage: 'Authenticate with National ID system',
+                  description:
+                    'The title for the E-Signet verification button'
                 }
               }
-            ]
-          : []),
-        {
-          type: FieldType.QR_READER,
-          label: {
-            id: `event.birth.action.declare.form.section.${page}.field.qr.label`,
-            defaultMessage: 'Scan QR code',
-            description: 'This is the label for the field'
-          },
-          id: `${page}.id-reader`
-        }
-      ]
+            }
+          ]
+          : [])
+      ],
+      helperText
     }
   ]
 }

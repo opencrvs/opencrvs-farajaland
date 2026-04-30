@@ -107,6 +107,12 @@ const informantOtherThanParent = and(
   not(field('informant.relation').isFalsy())
 )
 
+export const idReaderHelperText = {
+  id: 'event.birth.id-reader.helper-text',
+  defaultMessage: "Authentication isn't required to register. To issue a UIN for the child, at least one parent must be authenticated",
+  description: 'Helper text'
+}
+
 export const informant = defineFormPage({
   id: 'informant',
   title: {
@@ -250,7 +256,8 @@ export const informant = defineFormPage({
           type: ConditionalType.SHOW,
           conditional: informantOtherThanParent
         }
-      ]
+      ],
+      helperText: idReaderHelperText
     }),
     connectToMOSIPIdReader(
       {

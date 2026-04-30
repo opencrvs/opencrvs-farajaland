@@ -25,7 +25,7 @@ import {
   nationalIdValidator,
   farajalandNameConfig
 } from '@countryconfig/events/birth/validators'
-import { InformantType } from './informant'
+import { idReaderHelperText, InformantType } from './informant'
 
 import {
   IdType,
@@ -169,7 +169,8 @@ export const mother = defineFormPage({
             not(user.hasRole('HOSPITAL_CLERK'))
           )
         }
-      ]
+      ],
+      helperText: idReaderHelperText
     }),
     connectToMOSIPIdReader(
       {
