@@ -95,6 +95,7 @@ jobs:
                 actor: '${{ github.actor }}',
                 'core-image-tag': '${{ env.CORE_COMMIT_HASH }}',
                 'countryconfig-image-tag': '${{ env.HEAD_COMMIT_HASH }}',
+                'reset': 'true',
                 stack: slugify('${{ env.BRANCH_NAME }}')
               }
             });
