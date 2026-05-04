@@ -248,7 +248,10 @@ export const birthEvent = defineConfig({
         },
         query: dedupConfig
       },
-      flags: [{ id: 'pending-first-certificate-issuance', operation: 'add' }]
+      flags: [
+        { id: 'pending-first-certificate-issuance', operation: 'add' },
+        { id: 'validated', operation: 'remove' }
+      ]
     },
     {
       type: ActionType.PRINT_CERTIFICATE,
