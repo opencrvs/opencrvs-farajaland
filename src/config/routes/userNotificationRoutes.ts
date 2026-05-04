@@ -26,6 +26,16 @@ export default function getUserNotificationRoutes(): ServerRoute<ReqRefDefaults>
     },
     {
       method: 'POST',
+      path: '/triggers/user/resend-invite',
+      handler: makeNotificationHandler('resend-invite'),
+      options: {
+        auth: false,
+        tags: ['api'],
+        description: 'Handles notification for resent user invite'
+      }
+    },
+    {
+      method: 'POST',
       path: '/triggers/user/user-updated',
       handler: makeNotificationHandler('user-updated'),
       options: {

@@ -247,7 +247,8 @@ export const birthEvent = defineConfig({
           id: 'event.birth.action.detect-duplicate.label'
         },
         query: dedupConfig
-      }
+      },
+      flags: [{ id: 'pending-first-certificate-issuance', operation: 'add' }]
     },
     {
       type: ActionType.PRINT_CERTIFICATE,
@@ -257,7 +258,8 @@ export const birthEvent = defineConfig({
           'This is shown as the action name anywhere the user can trigger the action from',
         id: 'event.birth.action.collect-certificate.label'
       },
-      printForm: BIRTH_CERTIFICATE_COLLECTOR_FORM
+      printForm: BIRTH_CERTIFICATE_COLLECTOR_FORM,
+      flags: [{ id: 'pending-first-certificate-issuance', operation: 'remove' }]
     },
     {
       type: ActionType.REQUEST_CORRECTION,
@@ -278,6 +280,15 @@ export const birthEvent = defineConfig({
         id: 'event.unknown.flag.validated',
         defaultMessage: 'Validated',
         description: 'Flag label for validated'
+      },
+      requiresAction: true
+    },
+    {
+      id: 'pending-first-certificate-issuance',
+      label: {
+        id: 'event.birth.flag.pending-first-certificate-issuance',
+        defaultMessage: 'Pending first certificate issuance',
+        description: 'Flag label for first certificate issuance'
       },
       requiresAction: true
     }

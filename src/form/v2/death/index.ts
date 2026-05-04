@@ -250,7 +250,8 @@ export const deathEvent = defineConfig({
           id: 'event.death.action.detect-duplicate.label'
         },
         query: dedupConfig
-      }
+      },
+      flags: [{ id: 'pending-first-certificate-issuance', operation: 'add' }]
     },
     {
       type: ActionType.PRINT_CERTIFICATE,
@@ -260,7 +261,8 @@ export const deathEvent = defineConfig({
           'This is shown as the action name anywhere the user can trigger the action from',
         id: 'event.death.action.collect-certificate.label'
       },
-      printForm: DEATH_CERTIFICATE_COLLECTOR_FORM
+      printForm: DEATH_CERTIFICATE_COLLECTOR_FORM,
+      flags: [{ id: 'pending-first-certificate-issuance', operation: 'remove' }]
     },
     {
       type: ActionType.REQUEST_CORRECTION,
@@ -281,6 +283,15 @@ export const deathEvent = defineConfig({
         id: 'event.unknown.flag.validated',
         defaultMessage: 'Validated',
         description: 'Flag label for validated'
+      },
+      requiresAction: true
+    },
+    {
+      id: 'pending-first-certificate-issuance',
+      label: {
+        id: 'event.death.flag.pending-first-certificate-issuance',
+        defaultMessage: 'Pending first certificate issuance',
+        description: 'Flag label for first certificate issuance'
       },
       requiresAction: true
     }

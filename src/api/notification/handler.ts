@@ -258,6 +258,15 @@ function convertPayloadToVariable({
         loginURL: LOGIN_URL
       }
 
+    case TriggerEvent.RESEND_INVITE:
+      return {
+        firstname,
+        username: payload.username,
+        temporaryPassword: payload.temporaryPassword,
+        completeSetupUrl: LOGIN_URL,
+        loginURL: LOGIN_URL
+      }
+
     case TriggerEvent.USER_UPDATED:
       return {
         firstname,

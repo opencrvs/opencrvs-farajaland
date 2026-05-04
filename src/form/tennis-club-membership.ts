@@ -1175,7 +1175,8 @@ export const tennisClubMembershipEvent = defineConfig({
         description:
           'This is shown as the action name anywhere the user can trigger the action from',
         id: 'event.tennis-club-membership.action.register.label'
-      }
+      },
+      flags: [{ id: 'pending-first-certificate-issuance', operation: 'add' }]
     },
     {
       type: ActionType.PRINT_CERTIFICATE,
@@ -1185,7 +1186,8 @@ export const tennisClubMembershipEvent = defineConfig({
           'This is shown as the action name anywhere the user can trigger the action from',
         id: 'event.tennis-club-membership.action.collect-certificate.label'
       },
-      printForm: TENNIS_CLUB_MEMBERSHIP_CERTIFICATE_COLLECTOR_FORM
+      printForm: TENNIS_CLUB_MEMBERSHIP_CERTIFICATE_COLLECTOR_FORM,
+      flags: [{ id: 'pending-first-certificate-issuance', operation: 'remove' }]
     },
     {
       type: ActionType.REQUEST_CORRECTION,
@@ -1471,6 +1473,15 @@ export const tennisClubMembershipEvent = defineConfig({
         id: 'event.unknown.flag.validated',
         defaultMessage: 'Validated',
         description: 'Flag label for validated'
+      },
+      requiresAction: true
+    },
+    {
+      id: 'pending-first-certificate-issuance',
+      label: {
+        id: 'event.tennis_club_membership.flag.pending-first-certificate-issuance',
+        defaultMessage: 'Pending first certificate issuance',
+        description: 'Flag label for first certificate issuance'
       },
       requiresAction: true
     }
