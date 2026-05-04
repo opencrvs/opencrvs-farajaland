@@ -32,7 +32,6 @@ import {
   AUTH_URL,
   DEFAULT_TIMEOUT
 } from '@countryconfig/constants'
-import { statisticsHandler } from '@countryconfig/api/data-generator/handler'
 import {
   contentHandler,
   countryLogoHandler
@@ -88,6 +87,10 @@ import {
 } from './analytics/analytics'
 import { getClient } from './analytics/postgres'
 import { createClient } from '@opencrvs/toolkit/api'
+import { clientConfig } from './client-config'
+import { clientConfigProd } from './client-config.prod'
+import { loginConfig } from './login-config'
+import { loginConfigProd } from './login-config.prod'
 
 export interface ITokenPayload {
   sub: string
@@ -219,6 +222,11 @@ export async function createServer() {
     }
   })
 
+  // If these are not here, the streaming pipeline for /reindex
+  // will be killed after 30 seconds, which is the default timeout for node.js HTTP server.
+  server.listener.requestTimeout = 0
+  server.listener.headersTimeout = 0
+
   await server.register(getPlugins())
 
   let publicKey = await getPublicKey()
@@ -318,12 +326,11 @@ export async function createServer() {
     method: 'GET',
     path: '/client-config.js',
     handler: async (request, h) => {
-      const file =
-        process.env.NODE_ENV === 'production'
-          ? '/client-config.prod.js'
-          : '/client-config.js'
-
-      return h.file(join(__dirname, file))
+      const config =
+        process.env.NODE_ENV === 'production' ? clientConfigProd : clientConfig
+      return h
+        .response(`window.config = ${JSON.stringify(config)}`)
+        .type('application/javascript')
     },
     options: {
       auth: false,
@@ -335,12 +342,12 @@ export async function createServer() {
   server.route({
     method: 'GET',
     path: '/login-config.js',
-    handler: (request, h) => {
-      const file =
-        process.env.NODE_ENV === 'production'
-          ? '/login-config.prod.js'
-          : '/login-config.js'
-      return h.file(join(__dirname, file))
+    handler: async (request, h) => {
+      const config =
+        process.env.NODE_ENV === 'production' ? loginConfigProd : loginConfig
+      return h
+        .response(`window.config = ${JSON.stringify(config)}`)
+        .type('application/javascript')
     },
     options: {
       auth: false,
@@ -459,18 +466,6 @@ export async function createServer() {
       description: 'Serves country wise crude death rate'
     }
   })
-
-  server.route({
-    method: 'GET',
-    path: '/statistics',
-    handler: statisticsHandler,
-    options: {
-      tags: ['api'],
-      description:
-        'Returns population and crude birth rate statistics for each location'
-    }
-  })
-
   server.route({
     method: 'POST',
     path: '/email',
@@ -491,7 +486,7 @@ export async function createServer() {
 
   server.route({
     method: 'GET',
-    path: '/application-config',
+    path: '/config/application',
     handler: applicationConfigHandler,
     options: {
       auth: false,
@@ -502,7 +497,7 @@ export async function createServer() {
 
   server.route({
     method: 'GET',
-    path: '/workqueue',
+    path: '/config/workqueues',
     handler: workqueueconfigHandler,
     options: {
       auth: false,
@@ -513,7 +508,7 @@ export async function createServer() {
 
   server.route({
     method: 'GET',
-    path: '/locations',
+    path: '/config/locations',
     handler: locationsHandler,
     options: {
       auth: false,
@@ -524,7 +519,7 @@ export async function createServer() {
 
   server.route({
     method: 'GET',
-    path: '/roles',
+    path: '/config/roles',
     handler: rolesHandler,
     options: {
       auth: false,
@@ -535,7 +530,7 @@ export async function createServer() {
 
   server.route({
     method: 'GET',
-    path: '/users',
+    path: '/config/users',
     handler: usersHandler,
     options: {
       tags: ['api', 'users'],
@@ -622,7 +617,9 @@ export async function createServer() {
       auth: false,
       payload: {
         output: 'stream',
-        parse: false
+        parse: false,
+        maxBytes: Number.MAX_SAFE_INTEGER,
+        timeout: false
       }
     },
     handler: async (req, h) => {
@@ -649,12 +646,14 @@ export async function createServer() {
             queue.push(value)
 
             if (queue.length >= BATCH_SIZE) {
+              logger.info(`Importing batch of ${queue.length} events...`)
               const batch = queue.splice(0, queue.length)
               await importEvents(batch, trx)
             }
           }
 
           if (queue.length > 0) {
+            logger.info(`Importing remaining ${queue.length} events...`)
             await importEvents(queue, trx)
           }
 
@@ -681,7 +680,7 @@ export async function createServer() {
 
   server.route({
     method: 'GET',
-    path: '/events',
+    path: '/config/events',
     handler: getCustomEventsHandler,
     options: {
       auth: false,

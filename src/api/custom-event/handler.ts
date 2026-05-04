@@ -8,9 +8,6 @@
  *
  * Copyright (C) The OpenCRVS Authors located at https://github.com/opencrvs/opencrvs-core/blob/master/AUTHORS.
  */
-import { tennisClubMembershipEvent } from '@countryconfig/form/tennis-club-membership'
-import { birthEvent } from '@countryconfig/form/v2/birth'
-import { deathEvent } from '@countryconfig/form/v2/death'
 import * as Hapi from '@hapi/hapi'
 import { sendInformantNotification } from '../notification/informantNotification'
 import { ActionConfirmationRequest } from '../registration'
@@ -21,14 +18,13 @@ import {
   getPendingAction
 } from '@opencrvs/toolkit/events'
 import { MOSIP_INTEROP_URL } from '@countryconfig/constants'
+import { eventConfigs } from '@countryconfig/events'
 
 export function getCustomEventsHandler(
   _: Hapi.Request,
   h: Hapi.ResponseToolkit
 ) {
-  return h
-    .response([tennisClubMembershipEvent, birthEvent, deathEvent])
-    .code(200)
+  return h.response(eventConfigs).code(200)
 }
 
 export async function onAnyActionHandler(

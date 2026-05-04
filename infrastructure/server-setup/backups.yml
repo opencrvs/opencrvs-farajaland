@@ -11,7 +11,7 @@
   tasks:
     - name: Remove existing SSH keypair if present
       file:
-        path: "{{ item }}"
+        path: '{{ item }}'
         state: absent
       loop:
         - /tmp/backup_ssh_key

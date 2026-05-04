@@ -1,7 +1,7 @@
 - name: Apply security sysctl settings
   sysctl:
-    name: "{{ item.name }}"
-    value: "{{ item.value }}"
+    name: '{{ item.name }}'
+    value: '{{ item.value }}'
     state: present
     reload: yes
     sysctl_file: /etc/sysctl.d/99-security.conf

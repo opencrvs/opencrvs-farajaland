@@ -27,7 +27,7 @@ module.exports = (mongo, fhirResources) => {
             )
 
             const id = resource.identifier.find(
-              identifier =>
+              (identifier) =>
                 identifier.system ===
                   'http://opencrvs.org/specs/id/birth-tracking-id' ||
                 identifier.system ===

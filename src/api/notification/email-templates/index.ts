@@ -84,6 +84,13 @@ export const TriggerVariable = {
   [TriggerEvent.CHANGE_PHONE_NUMBER]: z.object({
     firstname: z.string(),
     code: z.string()
+  }),
+  [TriggerEvent.RESEND_INVITE]: z.object({
+    firstname: z.string(),
+    username: z.string(),
+    temporaryPassword: z.string(),
+    completeSetupUrl: z.string(),
+    loginURL: z.string()
   })
 } as const
 
@@ -173,6 +180,12 @@ const templates = {
     subject: 'Welcome to OpenCRVS!',
     template:
       readOtherTemplate<TriggerVariable['user-created']>('onboarding-invite')
+  },
+  [TriggerEvent.RESEND_INVITE]: {
+    type: 'resend-invite',
+    subject: 'Your OpenCRVS account invitation',
+    template:
+      readOtherTemplate<TriggerVariable['resend-invite']>('resend-invite')
   },
   [TriggerEvent.TWO_FA]: {
     type: '2-factor-authentication',

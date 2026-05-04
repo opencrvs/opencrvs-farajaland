@@ -37,6 +37,7 @@ export type InformantTemplateType =
 const otherTemplates = {
   authenticationCodeNotification: 'authenticationCodeNotification',
   userCredentialsNotification: 'userCredentialsNotification',
+  resendInviteNotification: 'resendInviteNotification',
   retieveUserNameNotification: 'retieveUserNameNotification',
   updateUserNameNotification: 'updateUserNameNotification',
   resetUserPasswordNotification: 'resetUserPasswordNotification',
@@ -126,6 +127,7 @@ const compileMessages = async (
 
 export const TriggerToSMSTemplate = {
   ['user-created']: 'userCredentialsNotification',
+  ['resend-invite']: 'resendInviteNotification',
   ['user-updated']: 'updateUserNameNotification',
   ['username-reminder']: 'retieveUserNameNotification',
   ['reset-password']: 'resetUserPasswordNotification',

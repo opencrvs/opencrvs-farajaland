@@ -100,28 +100,6 @@ function checkIfUserExists {
 
 # Rotate passwords to match the ones given to this script or create new users
 
-CONFIG_USER=$(echo $(checkIfUserExists "config"))
-if [[ $CONFIG_USER != "FOUND" ]]; then
-  echo "config user not found"
-  mongo $(mongo_credentials) --host $HOST <<EOF
-  use application-config
-  db.createUser({
-    user: 'config',
-    pwd: '$CONFIG_MONGODB_PASSWORD',
-    roles: [{ role: 'readWrite', db: 'application-config' }]
-  })
-EOF
-else
-  echo "config user exists"
-  mongo $(mongo_credentials) --host $HOST <<EOF
-  use application-config
-  db.updateUser('config', {
-    pwd: '$CONFIG_MONGODB_PASSWORD',
-    roles: [{ role: 'readWrite', db: 'application-config' }]
-  })
-EOF
-fi
-
 HEARTH_USER=$(echo $(checkIfUserExists "hearth"))
 if [[ $HEARTH_USER != "FOUND" ]]; then
   echo "hearth user not found"
@@ -228,50 +206,6 @@ else
   db.updateUser('metrics', {
     pwd: '$METRICS_MONGODB_PASSWORD',
     roles: [{ role: 'readWrite', db: 'metrics' }]
-  })
-EOF
-fi
-
-WEBHOOKS_USER=$(echo $(checkIfUserExists "webhooks"))
-if [[ $WEBHOOKS_USER != "FOUND" ]]; then
-  echo "webhooks user not found"
-  mongo $(mongo_credentials) --host $HOST <<EOF
-  use webhooks
-  db.createUser({
-    user: 'webhooks',
-    pwd: '$WEBHOOKS_MONGODB_PASSWORD',
-    roles: [{ role: 'readWrite', db: 'webhooks' }]
-  })
-EOF
-else
-  echo "webhooks user exists"
-  mongo $(mongo_credentials) --host $HOST <<EOF
-  use webhooks
-  db.updateUser('webhooks', {
-    pwd: '$WEBHOOKS_MONGODB_PASSWORD',
-    roles: [{ role: 'readWrite', db: 'webhooks' }]
-  })
-EOF
-fi
-
-NOTIFICATION_USER=$(echo $(checkIfUserExists "notification"))
-if [[ $NOTIFICATION_USER != "FOUND" ]]; then
-  echo "notification user not found"
-  mongo $(mongo_credentials) --host $HOST <<EOF
-  use notification
-  db.createUser({
-    user: 'notification',
-    pwd: '$NOTIFICATION_MONGODB_PASSWORD',
-    roles: [{ role: 'readWrite', db: 'notification' }]
-  })
-EOF
-else
-  echo "notification user exists"
-  mongo $(mongo_credentials) --host $HOST <<EOF
-  use notification
-  db.updateUser('notification', {
-    pwd: '$NOTIFICATION_MONGODB_PASSWORD',
-    roles: [{ role: 'readWrite', db: 'notification' }]
   })
 EOF
 fi
