@@ -1743,10 +1743,10 @@
   resolved "https://registry.yarnpkg.com/@opencrvs/mosip/-/mosip-1.9.0.tgz#453ee10f97bbbd5e8249604ee826d195f5843a14"
   integrity sha512-oY/Y+MfRKN+FZJLrtx4LJ2xIBKxs4iwRZxhiOSX1DDktifyKFvSd5v9rg0xlkiS5BXlzrL8Yz/xIheMm94DncQ==
 
-"@opencrvs/toolkit@1.9.12-rc.ca9336d":
-  version "1.9.12-rc.ca9336d"
-  resolved "https://registry.yarnpkg.com/@opencrvs/toolkit/-/toolkit-1.9.12-rc.ca9336d.tgz#3d2fb836eaa25efb90f9f4fb5a74c61230da0a14"
-  integrity sha512-pZb7e4+AB6buRnUaAC0dYjxNCUqMmdm6WQ7wdxmp3tKZiQUWg0n06Z4EwifUNvaZnrun66w0tmxrJywY2f22qw==
+"@opencrvs/toolkit@2.0.0-rc.6af5f78":
+  version "2.0.0-rc.6af5f78"
+  resolved "https://registry.yarnpkg.com/@opencrvs/toolkit/-/toolkit-2.0.0-rc.6af5f78.tgz#e4e5e4c9f85c1d36ff0a18ec0fba43980b7bd325"
+  integrity sha512-smtJrZPcaXzrjkVJJIX5cpaVbme8sP2WyZHOaJTdfR6vGcTI4y0GAs92L8FBmP0vPwt/Sset2ufdA4mSTJdpPQ==
   dependencies:
     "@trpc/client" "11.4.3"
     "@trpc/server" "^11.8.0"
@@ -8670,11 +8670,6 @@ zod-openapi@^5.4.6:
   version "5.4.6"
   resolved "https://registry.yarnpkg.com/zod-openapi/-/zod-openapi-5.4.6.tgz#000bedda0843c2ff1af3d7236e8d52d831115de4"
   integrity sha512-P2jsOOBAq/6hCwUsMCjUATZ8szkMsV5VAwZENfyxp2Hc/XPJQpVwAgevWZc65xZauCwWB9LAn7zYeiCJFAEL+A==
-
-zod@^3.24.1:
-  version "3.24.1"
-  resolved "https://registry.yarnpkg.com/zod/-/zod-3.24.1.tgz#27445c912738c8ad1e9de1bea0359fa44d9d35ee"
-  integrity sha512-muH7gBL9sI1nciMZV67X5fTKKBLtwpZ5VBp1vsOQzj1MhrBZ4wlVCm3gedKZWLp0Oyel8sIGfeiz54Su+OVT+A==
 
 zod@^4.2.1:
   version "4.3.6"
