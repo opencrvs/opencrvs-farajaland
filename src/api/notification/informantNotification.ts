@@ -81,7 +81,7 @@ async function getNotificationParams(
   event: EventDocument,
   token: string,
   registrationNumber?: string
-): Promise<NotificationParams> {
+): Promise<NotificationParams | undefined> {
   const pendingAction = getPendingAction(event.actions)
   const locations = await getLocations(token)
 
@@ -118,7 +118,7 @@ async function getNotificationParams(
       trackingId: event.trackingId,
       crvsOffice:
         (locations ?? []).find(
-          ({ id }: { id: string }) => id === pendingAction.createdAtLocation
+          ({ id }) => id === pendingAction.createdAtLocation
         )?.name || '',
       registrationLocation: '',
       applicationName: applicationConfig.APPLICATION_NAME,
@@ -185,7 +185,7 @@ async function getNotificationParams(
     }
   }
 
-  throw new Error(`Invalid action type "${pendingAction.type}"`)
+  return
 }
 
 export async function sendInformantNotification({
@@ -204,8 +204,13 @@ export async function sendInformantNotification({
       registrationNumber
     )
 
+    if (!notificationParams) {
+      return
+    }
+
     await notify(notificationParams)
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.log(error)
   }
 }

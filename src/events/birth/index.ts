@@ -32,6 +32,7 @@ import { BIRTH_CERTIFICATE_COLLECTOR_FORM } from './forms/printForm'
 import { PlaceOfBirth } from './forms/pages/child'
 import { CORRECTION_FORM } from './forms/correctionForm'
 import { dedupConfig } from './dedupConfig'
+import * as verifiableCredentialActions from '@countryconfig/verifiable-credentials/issue-birth-credential-action'
 import {
   Event,
   BIRTH_LATE_REGISTRATION_TARGET_DAYS
@@ -122,10 +123,28 @@ export const birthEvent = defineConfig({
         description: 'Flag label for revoked'
       },
       requiresAction: true
+    },
+    {
+      id: 'vc-issued',
+      label: {
+        defaultMessage: 'Verifiable Credential issued',
+        description: 'Flag label for verifiable credential issued',
+        id: 'event.birth.flag.vc-issued'
+      },
+      requiresAction: false
     }
   ],
   summary: {
     fields: [
+      {
+        fieldId: 'child.nid',
+        conditionals: [
+          {
+            type: ConditionalType.SHOW,
+            conditional: not(field('child.nid').isFalsy())
+          }
+        ]
+      },
       {
         fieldId: 'child.dob',
         emptyValueMessage: {
@@ -257,6 +276,7 @@ export const birthEvent = defineConfig({
     ActionType.REQUEST_CORRECTION,
     'REVOKE_REGISTRATION',
     'REINSTATE_REVOKE_REGISTRATION',
+    'ISSUE_VERIFIABLE_CREDENTIAL',
     ActionType.UNASSIGN
   ],
   actions: [
@@ -941,7 +961,8 @@ export const birthEvent = defineConfig({
           'Archiving will remove this declaration from active processing while retaining it for record purposes. Archived declarations cannot be modified unless reinstated.',
         description: 'Confirmation body for archiving a declaration'
       }
-    }
+    },
+    verifiableCredentialActions.issueBirthCredentialAction
   ],
   advancedSearch: advancedSearchBirth
 })

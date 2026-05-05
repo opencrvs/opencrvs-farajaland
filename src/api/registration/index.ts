@@ -12,13 +12,23 @@ import * as Hapi from '@hapi/hapi'
 import { generateRegistrationNumber } from './registrationNumber'
 import { createClient } from '@opencrvs/toolkit/api'
 import {
-  ActionInput,
+  aggregateActionDeclarations,
   EventDocument,
-  getPendingAction
+  getPendingAction,
+  NameFieldValue
 } from '@opencrvs/toolkit/events'
-import { GATEWAY_URL } from '@countryconfig/constants'
+import { GATEWAY_URL, MOSIP_INTEROP_URL } from '@countryconfig/constants'
 import { v4 as uuidv4 } from 'uuid'
 import { sendInformantNotification } from '../notification/informantNotification'
+import { logger } from '@countryconfig/logger'
+import { createMosipInteropClient } from '@opencrvs/mosip/api'
+import {
+  shouldForwardBirthRegistrationToMosip,
+  shouldForwardDeathRegistrationToMosip,
+  getBirthInformantSection,
+  getInformantPsut
+} from '@countryconfig/events/mosip'
+import { InformantType as DeathInformantType } from '@countryconfig/events/death/forms/pages/informant'
 
 export interface ActionConfirmationRequest extends Hapi.Request {
   payload: EventDocument
@@ -99,25 +109,25 @@ export async function onRegisterHandler(
  * For registration actions specifically, you must provide a registration number when accepting.
  * See the Action Confirmation documentation for more details on asynchronous confirmation flows.
  */
-async function acceptRequestedRegistration(
-  token: string,
-  eventId: string,
-  actionId: string,
-  action: ActionInput
-) {
-  const url = new URL('events', GATEWAY_URL).toString()
-  const client = createClient(url, `Bearer ${token}`)
+// async function acceptRequestedRegistration(
+//   token: string,
+//   eventId: string,
+//   actionId: string,
+//   action: ActionInput
+// ) {
+//   const url = new URL('events', GATEWAY_URL).toString()
+//   const client = createClient(url, `Bearer ${token}`)
 
-  const event = await client.event.actions.register.accept.mutate({
-    ...action,
-    transactionId: uuidv4(),
-    eventId,
-    actionId,
-    registrationNumber: generateRegistrationNumber()
-  })
+//   const event = await client.event.actions.register.accept.mutate({
+//     ...action,
+//     transactionId: uuidv4(),
+//     eventId,
+//     actionId,
+//     registrationNumber: generateRegistrationNumber()
+//   })
 
-  return event
-}
+//   return event
+// }
 
 /**
  * Example function for asynchronously rejecting a registration action.
@@ -141,4 +151,146 @@ async function rejectRequestedRegistration(
   })
 
   return event
+}
+
+export async function onMosipBirthRegisterHandler(
+  request: ActionConfirmationRequest,
+  h: Hapi.ResponseToolkit
+) {
+  const token = request.auth.artifacts.token as string
+  const event = request.payload
+  const declaration = aggregateActionDeclarations(event)
+
+  const registrationNumber = generateRegistrationNumber()
+
+  if (!shouldForwardBirthRegistrationToMosip(declaration)) {
+    logger.info(
+      'Birth registration will not be forwarded to MOSIP based on custom logic.'
+    )
+    await sendInformantNotification({ event, token, registrationNumber })
+    return h
+      .response({ registrationNumber: generateRegistrationNumber() })
+      .code(200)
+  }
+
+  try {
+    logger.info(
+      'Passed country specified custom logic check for id creation. Forwarding to MOSIP...'
+    )
+
+    const mosipInteropClient = createMosipInteropClient(
+      MOSIP_INTEROP_URL,
+      `Bearer ${token}`
+    )
+    const childName = declaration['child.name'] as NameFieldValue | undefined
+
+    const birthInformantSection = getBirthInformantSection(
+      declaration['informant.relation'] as string
+    )
+    const informantPsut = getInformantPsut(declaration, birthInformantSection)
+
+    // @TODO: Check whether this might crash country-config if MOSIP doesn't respond
+    mosipInteropClient.register({
+      trackingId: event.trackingId,
+      requestFields: {
+        birthCertificateNumber: registrationNumber,
+        fullName: [
+          childName?.firstname,
+          childName?.middlename,
+          childName?.surname
+        ]
+          .filter(Boolean)
+          .join(' '),
+        dateOfBirth: declaration['child.dob'],
+        gender: declaration['child.gender']
+      },
+      notification: {
+        recipientEmail: '@TODO',
+        recipientFullName: '@TODO',
+        recipientPhone: '@TODO'
+      },
+      metaInfo: { informantPsut },
+      audit: {}
+    })
+
+    return h.response().code(202)
+  } catch (error) {
+    return h
+      .response({
+        reason: 'Unexpected error in OpenCRVS-MOSIP interoperability layer'
+      })
+      .code(400)
+  }
+}
+
+export async function onMosipDeathRegisterHandler(
+  request: ActionConfirmationRequest,
+  h: Hapi.ResponseToolkit
+) {
+  const token = request.auth.artifacts.token as string
+  const event = request.payload
+  const declaration = aggregateActionDeclarations(event)
+
+  const registrationNumber = generateRegistrationNumber()
+
+  if (!shouldForwardDeathRegistrationToMosip(declaration)) {
+    await sendInformantNotification({ event, token, registrationNumber })
+    return h
+      .response({ registrationNumber: generateRegistrationNumber() })
+      .code(200)
+  }
+
+  try {
+    logger.info(
+      'Passed country specified custom logic check for id creation. Forwarding to MOSIP...'
+    )
+
+    const mosipInteropClient = createMosipInteropClient(
+      MOSIP_INTEROP_URL,
+      `Bearer ${token}`
+    )
+
+    const deceasedName = declaration['deceased.name'] as
+      | NameFieldValue
+      | undefined
+
+    const deathInformantSection =
+      declaration['informant.relation'] === DeathInformantType.SPOUSE
+        ? 'spouse'
+        : 'informant'
+    const informantPsut = getInformantPsut(declaration, deathInformantSection)
+
+    // @TODO: Check whether this might crash country-config if MOSIP doesn't respond
+    mosipInteropClient.register({
+      trackingId: event.trackingId,
+      requestFields: {
+        deathCertificateNumber: registrationNumber,
+        fullName: [
+          deceasedName?.firstname,
+          deceasedName?.middlename,
+          deceasedName?.surname
+        ]
+          .filter(Boolean)
+          .join(' '),
+        dateOfBirth: declaration['deceased.dob'],
+        gender: declaration['deceased.gender'],
+        nationalIdNumber: declaration['deceased.nid']
+      },
+      notification: {
+        recipientEmail: '@TODO',
+        recipientFullName: '@TODO',
+        recipientPhone: '@TODO'
+      },
+      metaInfo: { informantPsut },
+      audit: {}
+    })
+
+    return h.response().code(202)
+  } catch (error) {
+    return h
+      .response({
+        reason: 'Unexpected error in OpenCRVS-MOSIP interoperability layer'
+      })
+      .code(400)
+  }
 }

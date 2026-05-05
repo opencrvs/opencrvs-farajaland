@@ -20,6 +20,7 @@ import {
   PageTypes,
   field,
   user,
+  never,
   SelectOption
 } from '@opencrvs/toolkit/events'
 import { not } from '@opencrvs/toolkit/conditionals'
@@ -226,6 +227,21 @@ export const child = defineFormPage({
   },
   fields: [
     {
+      id: 'child.nid',
+      type: FieldType.TEXT,
+      label: {
+        defaultMessage: 'National ID',
+        description: 'Label for national ID field for child',
+        id: 'event.birth.action.declare.form.section.child.field.nid.label'
+      },
+      conditionals: [
+        {
+          type: ConditionalType.SHOW,
+          conditional: never()
+        }
+      ]
+    },
+    {
       id: 'child.name',
       type: FieldType.NAME,
       required: true,
@@ -426,7 +442,7 @@ export const child = defineFormPage({
       defaultValue: {
         country: 'FAR',
         addressType: AddressType.DOMESTIC,
-        administrativeArea: user('primaryOfficeId').locationLevel('district')
+        administrativeArea: user('administrativeAreaId')
       },
       configuration: {
         streetAddressForm: defaultStreetAddressConfiguration,

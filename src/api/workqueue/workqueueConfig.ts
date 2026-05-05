@@ -22,21 +22,21 @@ const DATE_OF_EVENT_COLUMN = {
 const createdInMyAdminArea = {
   createdAtLocation: {
     type: 'within',
-    location: user('primaryOfficeId')
+    location: user('administrativeAreaId')
   }
 } as const
 
 const declaredInMyAdminArea = {
   ['legalStatuses.DECLARED.createdAtLocation']: {
     type: 'within',
-    location: user('primaryOfficeId')
+    location: user('administrativeAreaId')
   }
 } as const
 
 const registeredInMyAdminArea = {
   ['legalStatuses.REGISTERED.createdAtLocation']: {
     type: 'within',
-    location: user('primaryOfficeId')
+    location: user('administrativeAreaId')
   }
 } as const
 
@@ -84,7 +84,10 @@ export const Workqueues = defineWorkqueues([
         anyOf: [InherentFlags.INCOMPLETE],
         noneOf: [InherentFlags.REJECTED]
       },
-      updatedAtLocation: { type: 'within', location: user('primaryOfficeId') }
+      updatedAtLocation: {
+        type: 'within',
+        location: user('administrativeAreaId')
+      }
     },
     action: { type: ActionType.READ },
     emptyMessage: {
@@ -256,7 +259,10 @@ export const Workqueues = defineWorkqueues([
           `${ActionType.REGISTER}:${ActionStatus.Requested}`.toLowerCase()
         ]
       },
-      updatedAtLocation: { type: 'within', location: user('primaryOfficeId') }
+      updatedAtLocation: {
+        type: 'within',
+        location: user('administrativeAreaId')
+      }
     },
     action: { type: ActionType.READ }
   },

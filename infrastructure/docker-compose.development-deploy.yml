@@ -6,9 +6,6 @@ services:
       - jwt-public-key.{{ts}}
     environment:
       - NODE_ENV=production
-      - TWO_FA_ENABLED=false
-      - OPENCRVS_ENVIRONMENT=development
-      - AUTH_URL=http://auth:4040
       - MONGO_URL=mongodb://mongo1/user-mgnt?replicaSet=rs0
       - SENTRY_DSN=${SENTRY_DSN:-}
       - SENDER_EMAIL_ADDRESS=${SENDER_EMAIL_ADDRESS}
@@ -18,6 +15,7 @@ services:
       - SMTP_USERNAME=${SMTP_USERNAME}
       - SMTP_PASSWORD=${SMTP_PASSWORD}
       - SMTP_SECURE=${SMTP_SECURE}
+      - V2_EVENTS=true
     deploy:
       replicas: 1
     networks:
@@ -33,6 +31,7 @@ services:
       - SENTRY_DSN=${SENTRY_DSN:-}
       - TWO_FA_ENABLED=false
       - NODE_ENV=production
+      - DISABLE_RATE_LIMIT=true
 
   auth:
     environment:
@@ -41,15 +40,18 @@ services:
       - NODE_ENV=production
 
   events:
+    secrets:
+      - jwt-public-key.{{ts}}
     environment:
       - NODE_ENV=production
       - TWO_FA_ENABLED=false
+      - CERT_PUBLIC_KEY_PATH=/run/secrets/jwt-public-key.{{ts}}
+      - DEFAULT_USER_PASSWORD=test
 
   user-mgnt:
     environment:
       - SENTRY_DSN=${SENTRY_DSN:-}
       - NODE_ENV=production
-      - DEFAULT_USER_PASSWORD=test
 
   documents:
     environment:
