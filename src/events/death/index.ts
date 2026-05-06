@@ -124,7 +124,7 @@ export const deathEvent = defineConfig({
           {
             type: ConditionalType.SHOW,
             conditional: field('eventDetails.placeOfDeath').isEqualTo(
-              PlaceOfDeath.DECEASED_USUAL_RESIDENCE
+              PlaceOfDeath.RESIDENTIAL_ADDRESS
             )
           }
         ]

@@ -27,16 +27,6 @@ export const DEATH_DECLARATION_REVIEW = {
   },
   fields: [
     {
-      id: 'review.comment',
-      type: FieldType.TEXTAREA,
-      label: {
-        defaultMessage: 'Comment',
-        id: 'event.death.action.declare.form.review.comment.label',
-        description: 'Label for the comment field in the review section'
-      },
-      required: true
-    },
-    {
       type: FieldType.SIGNATURE,
       id: 'review.signature',
       required: true,
@@ -63,10 +53,10 @@ export const DEATH_DECLARATION_FORM = defineDeclarationForm({
 
   pages: [
     deathIntroduction,
+    informant,
     deceased,
     eventDetails,
     causeOfDeathDetails,
-    informant,
     spouse,
     documents
   ]

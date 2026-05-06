@@ -75,10 +75,8 @@ export const deathcorrectionRequesterIdentityVerify: FieldConfig[] = [
         { fieldId: 'informant.idType' },
         { fieldId: 'informant.nid' },
         { fieldId: 'informant.passport' },
-        { fieldId: 'informant.brn' },
         { fieldId: 'informant.name' },
         { fieldId: 'informant.dob' },
-        { fieldId: 'informant.age' },
         { fieldId: 'informant.nationality' }
       ]
     }

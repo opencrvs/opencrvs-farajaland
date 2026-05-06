@@ -1306,14 +1306,14 @@ form.field.label.nationality,,Nationality,Nationalité
 form.field.label.occupation,,Occupation,Profession
 form.field.label.optionalLabel,,Optional,Facultatif
 form.field.label.otherBirthSupportingDocuments,,Other,Autre
-form.field.label.otherInstitution,Select item for Other location,Other,Autre
+form.field.label.otherInstitution,Select item for Other location,Other address,Autre adresse
 form.field.label.otherOption,,Other,Autre
 form.field.label.phoneNumber,,Phone number,Numéro de téléphone
 form.field.label.physician,,Physician,Médecin
 form.field.label.placeOfBirth,,Location,Lieu
 form.field.label.placeOfBirthPreview,,Place of birth,Lieu de l'accouchement
 form.field.label.placeOfDeath,,Place of death,Où le décès s'est-il produit ?
-form.field.label.placeOfDeathSameAsPrimary,,Deceased's usual place of residence,Lieu de résidence habituel du défunt
+form.field.label.placeOfDeathSameAsPrimary,,Residential address,Adresse de résidence
 form.field.label.placeOfMarriage,,Place of marriage,Lieu du mariage
 form.field.label.polygamy,,Polygamous,Polygame
 form.field.label.primaryAddress,,Place of residence,Lieu de résidence habituel

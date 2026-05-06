@@ -18,7 +18,8 @@ import {
   AddressType,
   PageTypes,
   field,
-  user
+  user,
+  defineConditional
 } from '@opencrvs/toolkit/events'
 import { not, never } from '@opencrvs/toolkit/conditionals'
 import {
@@ -28,7 +29,8 @@ import {
   createSelectOptions,
   emptyMessage,
   defaultStreetAddressConfiguration,
-  getNestedFieldValidators
+  getNestedFieldValidators,
+  idTypeOptionsForeigner
 } from '@countryconfig/events/utils'
 import {
   farajalandNameConfig,
@@ -76,13 +78,321 @@ export const deceased = defineFormPage({
     id: 'form.death.deceased.title'
   },
   fields: [
+    {
+      id: `deceased.nationality`,
+      type: FieldType.COUNTRY,
+      required: true,
+      label: {
+        defaultMessage: 'Nationality',
+        description: 'This is the label for the field',
+        id: `v2.event.death.action.declare.form.section.person.field.nationality.label`
+      },
+      defaultValue: 'FAR'
+    },
+    /**
+     *  {
+          id: 'recommender.search',
+          type: FieldType.SEARCH,
+          label: {
+            defaultMessage: 'Registration Number of recommender',
+            description: 'This is the label for the field',
+            id: 'event.tennis-club-membership.action.declare.form.section.recommender.field.search.label'
+          },
+          helperText: {
+            defaultMessage:
+              'You can search tennis records created on Farajaland since beginning of 2023',
+            description: 'This is the helper text for the field',
+            id: 'tennis-club-membership.searchField.helperText'
+          },
+          configuration: {
+            query: {
+              type: 'or',
+              clauses: [
+                {
+                  'legalStatuses.REGISTERED.registrationNumber': {
+                    term: '{term}',
+                    type: 'exact'
+                  }
+                }
+              ]
+            },
+            limit: 10,
+            offset: 0,
+            validation: {
+              validator: defineConditional({
+                type: 'string',
+                pattern: '^[A-Za-z0-9]{12}$',
+                description: 'Must be alpha-numeric and 12 characters long'
+              }),
+              message: {
+                defaultMessage:
+                  'Invalid value: Must be alpha-numeric and 12 characters long',
+                description: 'Error message for invalid value',
+                id: 'tennis-club-membership.searchField.validation.invalid'
+              }
+            },
+            indicators: {
+              ok: {
+                defaultMessage: 'Recommender found',
+                description: 'OK button text',
+                id: 'tennis-club-membership.searchField.indicators.ok'
+              },
+              clearModal: {
+                title: {
+                  defaultMessage: 'Clear recommender?',
+                  description: 'Title for the clear confirmation modal',
+                  id: 'tennis-club-membership.searchField.indicators.clearModal.title'
+                },
+                description: {
+                  defaultMessage:
+                    'This will remove the details of the current recommender.',
+                  description: 'Description for the clear confirmation modal',
+                  id: 'tennis-club-membership.searchField.indicators.clearModal.description'
+                }
+              }
+            }
+          },
+          conditionals: [
+            {
+              type: ConditionalType.SHOW,
+              conditional: field('recommender.none').isFalsy()
+            },
+            {
+              type: ConditionalType.DISPLAY_ON_REVIEW,
+              conditional: never()
+            }
+          ]
+        },
+        {
+          id: 'recommender1.heading',
+          type: FieldType.HEADING,
+          label: {
+            defaultMessage: 'Recommender 1',
+            description: 'This is the label for the field',
+            id: `recommender1.heading.label`
+          },
+          configuration: { styles: { fontVariant: 'h3' } }
+        },
+        {
+          id: 'recommender.name',
+          configuration: { maxLength: MAX_NAME_LENGTH },
+          type: FieldType.NAME,
+          required: true,
+          parent: field('recommender.search'),
+          defaultValue: {
+            firstname: user('firstname'),
+            middlename: user('middlename'),
+            surname: user('surname')
+          },
+     */
+    {
+      id: `deceased.brn.search`,
+      type: FieldType.SEARCH,
+      label: {
+        defaultMessage: 'Search BRN',
+        description: 'Search BRN',
+        id: 'form.field.label.searchBRN'
+      },
+      configuration: {
+        query: {
+          type: 'and',
+          clauses: [
+            {
+              'legalStatuses.REGISTERED.registrationNumber': {
+                term: '{term}',
+                type: 'exact'
+              }
+            }
+          ]
+        },
+        limit: 10,
+        offset: 0,
+        validation: {
+          validator: defineConditional({
+            type: 'string',
+            pattern: '^[A-Za-z0-9]{12}$',
+            description: 'Must be alpha-numeric and 12 characters long'
+          }),
+          message: {
+            defaultMessage:
+              'Invalid value: Must be alpha-numeric and 12 characters long',
+            description: 'Error message for invalid value',
+            id: 'tennis-club-membership.searchField.validation.invalid'
+          }
+        },
+        indicators: {
+          ok: {
+            defaultMessage: 'BRN found',
+            description: 'OK button text',
+            id: 'form.field.label.searchBRN.indicators.ok'
+          },
+          clearModal: {
+            title: {
+              defaultMessage: 'Clear BRN?',
+              description: 'Title for the clear confirmation modal',
+              id: 'form.field.label.searchBRN.indicators.clearModal.title'
+            },
+            description: {
+              defaultMessage:
+                'This will remove the BRN.',
+              description: 'Description for the clear confirmation modal',
+              id: 'form.field.label.searchBRN.indicators.clearModal.description'
+            }
+          }
+        }
+      },
+      conditionals: [
+        {
+          type: ConditionalType.SHOW,
+          conditional: field('deceased.nationality').isEqualTo('FAR')
+        }
+      ],
+    },
+    {
+      id: `deceased.brn`,
+      type: FieldType.TEXT,
+      required: true,
+      parent: field('deceased.brn.search'),
+      value: field('deceased.brn.search').getByPath([
+        'data',
+        'firstResult',
+        'legalStatuses',
+        'REGISTERED',
+        'registrationNumber'
+      ]),
+      label: {
+        defaultMessage: 'Birth registration no.',
+        description: 'Birth Registration Number',
+        id: 'form.field.label.brn'
+      },
+      conditionals: [
+        {
+          type: ConditionalType.SHOW,
+          conditional: field('deceased.nationality').isEqualTo('FAR')
+        }
+      ]
+    },
+    connectToMOSIPIdReader(
+      {
+        id: `deceased.idType`,
+        type: FieldType.SELECT,
+        required: true,
+        label: {
+          defaultMessage: 'Form of ID',
+          description: 'This is the label for the field',
+          id: `v2.event.death.action.declare.form.section.person.field.idType.label`
+        },
+        options: idTypeOptions,
+        conditionals: [
+          {
+            type: ConditionalType.SHOW,
+            conditional: field('deceased.nationality').isEqualTo('FAR')
+          }
+        ]
+      },
+      {
+        valuePath: 'data.idType',
+        hideIf: ['authenticated'],
+        disableIf: ['pending', 'verified']
+      }
+    ),
+    connectToMOSIPIdReader(
+      {
+        id: `deceased.idType`,
+        type: FieldType.SELECT,
+        required: true,
+        label: {
+          defaultMessage: 'Form of ID',
+          description: 'This is the label for the field',
+          id: `v2.event.death.action.declare.form.section.person.field.idType.label`
+        },
+        options: idTypeOptionsForeigner,
+        conditionals: [
+          {
+            type: ConditionalType.SHOW,
+            conditional: not(field('deceased.nationality').isEqualTo('FAR'))
+          }
+        ]
+      },
+      {
+        valuePath: 'data.idType',
+        hideIf: ['authenticated'],
+        disableIf: ['pending', 'verified']
+      }
+    ),
     // fields:
     // deceased.verified, deceased.query-params, deceased.verify-nid-http-fetch,
     // deceased.fetch-loader, deceased.id-reader
     ...getMOSIPIntegrationFields('deceased', {
-      existingConditionals: [],
-      esignet: false
+      existingConditionals: [
+        {
+          type: ConditionalType.SHOW,
+          conditional: field('deceased.nationality').isEqualTo('FAR')
+        }
+      ]
     }),
+    connectToMOSIPIdReader(
+      {
+        id: 'deceased.nid',
+        type: FieldType.ID,
+        required: true,
+        label: {
+          defaultMessage: 'National ID no.',
+          description: 'This is the label for the field',
+          id: `v2.event.death.action.declare.form.section.person.field.nid.label`
+        },
+        conditionals: [
+          {
+            type: ConditionalType.SHOW,
+            conditional: and(
+              field('deceased.idType').isEqualTo(IdType.NATIONAL_ID),
+              field('deceased.nationality').isEqualTo('FAR')
+            )
+          }
+        ],
+        validation: [
+          nationalIdValidator('deceased.nid'),
+          {
+            message: {
+              defaultMessage: 'National id must be unique',
+              description: 'This is the error message for non-unique ID Number',
+              id: 'event.death.action.declare.form.nid.unique'
+            },
+            validator: and(
+              not(field('deceased.nid').isEqualTo(field('informant.nid')))
+            )
+          }
+        ]
+      },
+      {
+        valuePath: 'data.nid',
+        hideIf: ['authenticated'],
+        disableIf: ['pending', 'verified']
+      }
+    ),
+    connectToMOSIPIdReader(
+      {
+        id: `deceased.passport`,
+        type: FieldType.TEXT,
+        required: true,
+        label: {
+          defaultMessage: 'Passport no.',
+          description: 'This is the label for the field',
+          id: `v2.event.death.action.declare.form.section.person.field.passport.label`
+        },
+        conditionals: [
+          {
+            type: ConditionalType.SHOW,
+            conditional: field(`deceased.idType`).isEqualTo(IdType.PASSPORT)
+          }
+        ]
+      },
+      {
+        valuePath: 'data.passport',
+        hideIf: ['authenticated'],
+        disableIf: ['pending', 'verified']
+      }
+    ),
     connectToMOSIPIdReader(
       {
         id: 'deceased.name',
@@ -99,23 +409,6 @@ export const deceased = defineFormPage({
       },
       {
         valuePath: 'data.name',
-        disableIf: ['pending', 'verified', 'authenticated']
-      }
-    ),
-    connectToMOSIPIdReader(
-      {
-        id: 'deceased.gender',
-        type: FieldType.SELECT,
-        required: true,
-        label: {
-          defaultMessage: 'Sex',
-          description: 'This is the label for the field',
-          id: 'event.death.action.declare.form.section.deceased.field.gender.label'
-        },
-        options: genderOptions
-      },
-      {
-        valuePath: 'data.gender',
         disableIf: ['pending', 'verified', 'authenticated']
       }
     ),
@@ -162,152 +455,6 @@ export const deceased = defineFormPage({
         disableIf: ['pending', 'verified', 'authenticated']
       }
     ),
-    connectToMOSIPIdReader(
-      {
-        id: `deceased.dobUnknown`,
-        type: FieldType.CHECKBOX,
-        label: {
-          defaultMessage: 'Exact date of birth unknown',
-          description: 'This is the label for the field',
-          id: `v2.event.death.action.declare.form.section.deceased.field.age.checkbox.label`
-        },
-        conditionals: [
-          {
-            type: ConditionalType.DISPLAY_ON_REVIEW,
-            conditional: never()
-          }
-        ]
-      },
-      {
-        valuePath: 'data.dobUnknown',
-        disableIf: ['pending', 'verified', 'authenticated']
-      }
-    ),
-    connectToMOSIPVerificationStatus(
-      {
-        id: `deceased.age`,
-        type: FieldType.AGE,
-        required: true,
-        label: {
-          defaultMessage: `Age of deceased (at the time of event)`,
-          description: 'This is the label for the field',
-          id: 'event.death.action.declare.form.section.deceased.field.age.label'
-        },
-        configuration: {
-          asOfDate: field('eventDetails.date'),
-          postfix: {
-            defaultMessage: 'years',
-            description: 'This is the postfix for age field',
-            id: `v2.event.death.action.declare.form.section.deceased.field.age.postfix`
-          }
-        },
-        conditionals: [
-          {
-            type: ConditionalType.SHOW,
-            conditional: field(`deceased.dobUnknown`).isEqualTo(true)
-          }
-        ],
-        validation: [
-          {
-            validator: field('deceased.age').asAge().isBetween(0, 120),
-            message: {
-              defaultMessage: 'Age must be between 0 and 120',
-              description: 'Error message for invalid age',
-              id: 'event.death.action.declare.form.section.deceased.field.age.error'
-            }
-          }
-        ]
-      },
-      { disableIf: ['pending', 'verified', 'authenticated'] }
-    ),
-    {
-      id: `deceased.nationality`,
-      type: FieldType.COUNTRY,
-      required: true,
-      label: {
-        defaultMessage: 'Nationality',
-        description: 'This is the label for the field',
-        id: `v2.event.death.action.declare.form.section.person.field.nationality.label`
-      },
-      defaultValue: 'FAR'
-    },
-    connectToMOSIPIdReader(
-      {
-        id: `deceased.idType`,
-        type: FieldType.SELECT,
-        required: true,
-        label: {
-          defaultMessage: 'Form of ID',
-          description: 'This is the label for the field',
-          id: `v2.event.death.action.declare.form.section.person.field.idType.label`
-        },
-        options: idTypeOptions
-      },
-      {
-        valuePath: 'data.idType',
-        hideIf: ['authenticated'],
-        disableIf: ['pending', 'verified']
-      }
-    ),
-    connectToMOSIPIdReader(
-      {
-        id: 'deceased.nid',
-        type: FieldType.ID,
-        required: true,
-        label: {
-          defaultMessage: 'ID Number',
-          description: 'This is the label for the field',
-          id: `v2.event.death.action.declare.form.section.person.field.nid.label`
-        },
-        conditionals: [
-          {
-            type: ConditionalType.SHOW,
-            conditional: field('deceased.idType').isEqualTo(IdType.NATIONAL_ID)
-          }
-        ],
-        validation: [
-          nationalIdValidator('deceased.nid'),
-          {
-            message: {
-              defaultMessage: 'National id must be unique',
-              description: 'This is the error message for non-unique ID Number',
-              id: 'event.death.action.declare.form.nid.unique'
-            },
-            validator: and(
-              not(field('deceased.nid').isEqualTo(field('informant.nid')))
-            )
-          }
-        ]
-      },
-      {
-        valuePath: 'data.nid',
-        hideIf: ['authenticated'],
-        disableIf: ['pending', 'verified']
-      }
-    ),
-    connectToMOSIPIdReader(
-      {
-        id: `deceased.passport`,
-        type: FieldType.TEXT,
-        required: true,
-        label: {
-          defaultMessage: 'ID Number',
-          description: 'This is the label for the field',
-          id: `v2.event.death.action.declare.form.section.person.field.passport.label`
-        },
-        conditionals: [
-          {
-            type: ConditionalType.SHOW,
-            conditional: field(`deceased.idType`).isEqualTo(IdType.PASSPORT)
-          }
-        ]
-      },
-      {
-        valuePath: 'data.passport',
-        hideIf: ['authenticated'],
-        disableIf: ['pending', 'verified']
-      }
-    ),
     {
       id: 'deceased.maritalStatus',
       type: FieldType.SELECT,
@@ -318,19 +465,6 @@ export const deceased = defineFormPage({
         id: `v2.event.death.action.declare.form.section.deceased.field.maritalStatus.label`
       },
       options: maritalStatusOptions
-    },
-    {
-      id: `deceased.numberOfDependants`,
-      type: FieldType.NUMBER,
-      required: false,
-      label: {
-        defaultMessage: 'No. of dependants',
-        description: 'This is the label for the field',
-        id: 'event.death.action.declare.form.section.deceased.field.numberOfDependants.label'
-      },
-      configuration: {
-        min: 0
-      }
     },
     {
       id: `deceased.addressDivider`,
