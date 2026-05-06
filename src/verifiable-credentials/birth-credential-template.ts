@@ -1,6 +1,8 @@
 import { EventIndex, NameFieldValue } from '@opencrvs/toolkit/events'
 import type { BirthCredentialData } from './birth-credential-definition'
 
+const BIRTH_ISSUER_DID = 'did:web:issuer.opencrvs.dev'
+
 export const birthCredentialTemplate = (event: EventIndex) => {
   const childName = event.declaration['child.name'] as NameFieldValue
   const registrationNumber = event.legalStatuses.REGISTERED!.registrationNumber // non-null assertion is safe because this template should only be used for registered events
@@ -15,6 +17,7 @@ export const birthCredentialTemplate = (event: EventIndex) => {
     (event.declaration['child.gender'] as string) === 'male' ? 1 : 2
 
   return {
+    issuerDid: BIRTH_ISSUER_DID,
     credentialConfigurationId: 'crvs_birth_v1',
     credentialData: {
       given_name: childName.firstname,
