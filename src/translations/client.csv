@@ -1026,7 +1026,7 @@ event.death.action.declare.form.section.spouse.field.age.checkbox.label,This is 
 event.death.action.declare.form.section.spouse.field.age.label,This is the label for the field,Age of spouse (at the time of event),Âge du conjoint (au moment de l'événement)
 event.death.action.declare.form.section.spouse.field.age.postfix,This is the postfix for age field,years,ans
 event.death.action.declare.form.section.spouse.field.brn.label,This is the label for the field,ID Number,Numéro d'identité
-event.death.action.declare.form.section.spouse.field.detailsNotAvailable.label,This is the label for the field,Spouse's details are not available,Les informations du conjoint ne sont pas disponibles
+event.death.action.declare.form.section.spouse.field.detailsNotAvailable.label,This is the label for the field,Deceased had no spouse,Le défunt n'avait pas de conjoint
 event.death.action.declare.form.section.spouse.field.dob.error,This is the error message for invalid date,Must be a valid Birthdate,Doit être une date de naissance valide
 event.death.action.declare.form.section.spouse.field.dob.label,This is the label for the field,Date of birth,Date de naissance
 event.death.action.declare.form.section.spouse.field.idType.label,This is the label for the field,Form of ID,Type d'identité

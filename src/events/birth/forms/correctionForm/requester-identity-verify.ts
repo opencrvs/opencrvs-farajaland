@@ -64,10 +64,8 @@ export const correctionRequesterIdentityVerify: FieldConfig[] = [
         { fieldId: 'mother.idType' },
         { fieldId: 'mother.nid' },
         { fieldId: 'mother.passport' },
-        { fieldId: 'mother.brn' },
         { fieldId: 'mother.name' },
         { fieldId: 'mother.dob' },
-        { fieldId: 'mother.age' },
         { fieldId: 'mother.nationality' }
       ]
     }
@@ -97,10 +95,8 @@ export const correctionRequesterIdentityVerify: FieldConfig[] = [
         { fieldId: 'father.idType' },
         { fieldId: 'father.nid' },
         { fieldId: 'father.passport' },
-        { fieldId: 'father.brn' },
         { fieldId: 'father.name' },
         { fieldId: 'father.dob' },
-        { fieldId: 'father.age' },
         { fieldId: 'father.nationality' }
       ]
     }
@@ -128,10 +124,8 @@ export const correctionRequesterIdentityVerify: FieldConfig[] = [
         { fieldId: 'informant.idType' },
         { fieldId: 'informant.nid' },
         { fieldId: 'informant.passport' },
-        { fieldId: 'informant.brn' },
         { fieldId: 'informant.name' },
         { fieldId: 'informant.dob' },
-        { fieldId: 'informant.age' },
         { fieldId: 'informant.other.relation' },
         { fieldId: 'informant.nationality' }
       ]
