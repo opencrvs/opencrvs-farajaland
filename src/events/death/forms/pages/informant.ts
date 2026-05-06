@@ -24,26 +24,13 @@ import {
 import { not } from '@opencrvs/toolkit/conditionals'
 
 import {
-  farajalandNameConfig,
-  invalidNameValidator,
-  nationalIdValidator
-} from '@countryconfig/events/birth/validators'
-
-import {
-  IdType,
-  idTypeOptions,
-  yesNoRadioOptions,
   YesNoTypes,
   defaultStreetAddressConfiguration,
   getNestedFieldValidators,
   createSelectOptions,
-  emptyMessage
+  emptyMessage,
+  getIdentityFields
 } from '@countryconfig/events/utils'
-import {
-  getMOSIPIntegrationFields,
-  connectToMOSIPIdReader,
-  connectToMOSIPVerificationStatus
-} from '@countryconfig/events/mosip'
 
 export const InformantType = {
   SPOUSE: 'SPOUSE',
@@ -161,282 +148,12 @@ export const informant = defineFormPage({
       ],
       parent: field('informant.relation')
     },
-    // fields:
-    // informant.verified, informant.query-params, informant.verify-nid-http-fetch,
-    // informant.fetch-loader, informant.id-reader
-    ...getMOSIPIntegrationFields('informant', {
-      existingConditionals: [
-        {
-          type: ConditionalType.SHOW,
-          conditional: informantOtherThanSpouse
-        }
-      ]
+    ...getIdentityFields({
+      prefix: 'informant',
+      showConditional: informantOtherThanSpouse,
+      parent: field('informant.relation'),
+      uniqueNidAgainst: ['spouse.nid', 'deceased.nid']
     }),
-    connectToMOSIPIdReader(
-      {
-        id: 'informant.name',
-        configuration: farajalandNameConfig,
-        type: FieldType.NAME,
-        required: true,
-        hideLabel: true,
-        label: {
-          defaultMessage: "Informant's name",
-          description: 'This is the label for the field',
-          id: 'event.death.action.declare.form.section.informant.field.name.label'
-        },
-        conditionals: [
-          {
-            type: ConditionalType.SHOW,
-            conditional: informantOtherThanSpouse
-          }
-        ],
-        validation: [invalidNameValidator('informant.name')],
-        parent: field('informant.relation')
-      },
-      {
-        valuePath: 'data.name',
-        disableIf: ['pending', 'verified', 'authenticated']
-      }
-    ),
-    connectToMOSIPIdReader(
-      {
-        id: 'informant.dob',
-        type: FieldType.DATE,
-        required: true,
-        validation: [
-          {
-            message: {
-              defaultMessage: 'Must be a valid Birthdate',
-              description: 'This is the error message for invalid date',
-              id: 'event.death.action.declare.form.section.informant.field.dob.error'
-            },
-            validator: field('informant.dob').isBefore().now()
-          }
-        ],
-        label: {
-          defaultMessage: 'Date of birth',
-          description: 'This is the label for the field',
-          id: 'event.death.action.declare.form.section.informant.field.dob.label'
-        },
-        conditionals: [
-          {
-            type: ConditionalType.SHOW,
-            conditional: and(
-              not(field('informant.dobUnknown').isEqualTo(true)),
-              informantOtherThanSpouse
-            )
-          }
-        ],
-        parent: field('informant.relation')
-      },
-      {
-        valuePath: 'data.birthDate',
-        disableIf: ['pending', 'verified', 'authenticated']
-      }
-    ),
-    connectToMOSIPIdReader(
-      {
-        id: 'informant.dobUnknown',
-        type: FieldType.CHECKBOX,
-        label: {
-          defaultMessage: 'Exact date of birth unknown',
-          description: 'This is the label for the field',
-          id: 'event.death.action.declare.form.section.informant.field.age.checkbox.label'
-        },
-        conditionals: [
-          {
-            type: ConditionalType.SHOW,
-            conditional: informantOtherThanSpouse
-          },
-          {
-            type: ConditionalType.DISPLAY_ON_REVIEW,
-            conditional: never()
-          }
-        ],
-        parent: field('informant.relation')
-      },
-      {
-        valuePath: 'data.dobUnknown',
-        disableIf: ['pending', 'verified', 'authenticated']
-      }
-    ),
-    connectToMOSIPVerificationStatus(
-      {
-        id: 'informant.age',
-        type: FieldType.AGE,
-        required: true,
-        label: {
-          defaultMessage: 'Age of informant (at the time of event)',
-          description: 'This is the label for the field',
-          id: 'event.death.action.declare.form.section.informant.field.age.label'
-        },
-        configuration: {
-          asOfDate: field('eventDetails.date'),
-          postfix: {
-            defaultMessage: 'years',
-            description: 'This is the postfix for age field',
-            id: 'event.death.action.declare.form.section.informant.field.age.postfix'
-          }
-        },
-        conditionals: [
-          {
-            type: ConditionalType.SHOW,
-            conditional: and(
-              field('informant.dobUnknown').isEqualTo(true),
-              informantOtherThanSpouse
-            )
-          }
-        ],
-        validation: [
-          {
-            validator: field('informant.age').asAge().isBetween(12, 120),
-            message: {
-              defaultMessage: 'Age must be between 12 and 120',
-              description: 'Error message for invalid age',
-              id: 'event.action.declare.form.section.person.field.age.error'
-            }
-          }
-        ],
-        parent: field('informant.relation')
-      },
-      { disableIf: ['pending', 'verified', 'authenticated'] }
-    ),
-    {
-      id: 'informant.nationality',
-      type: FieldType.COUNTRY,
-      required: true,
-      label: {
-        defaultMessage: 'Nationality',
-        description: 'This is the label for the field',
-        id: 'event.death.action.declare.form.section.informant.field.nationality.label'
-      },
-      conditionals: [
-        {
-          type: ConditionalType.SHOW,
-          conditional: informantOtherThanSpouse
-        }
-      ],
-      defaultValue: 'FAR',
-      parent: field('informant.relation')
-    },
-    connectToMOSIPIdReader(
-      {
-        id: 'informant.idType',
-        type: FieldType.SELECT,
-        required: true,
-        label: {
-          defaultMessage: 'Form of ID',
-          description: 'This is the label for the field',
-          id: 'event.death.action.declare.form.section.informant.field.idType.label'
-        },
-        options: idTypeOptions,
-        conditionals: [
-          {
-            type: ConditionalType.SHOW,
-            conditional: informantOtherThanSpouse
-          }
-        ],
-        parent: field('informant.relation')
-      },
-      {
-        valuePath: 'data.idType',
-        hideIf: ['authenticated'],
-        disableIf: ['pending', 'verified']
-      }
-    ),
-    connectToMOSIPIdReader(
-      {
-        id: 'informant.nid',
-        type: FieldType.ID,
-        required: true,
-        label: {
-          defaultMessage: 'ID Number',
-          description: 'This is the label for the field',
-          id: 'event.death.action.declare.form.section.informant.field.nid.label'
-        },
-        conditionals: [
-          {
-            type: ConditionalType.SHOW,
-            conditional: and(
-              field('informant.idType').isEqualTo(IdType.NATIONAL_ID),
-              informantOtherThanSpouse
-            )
-          }
-        ],
-        validation: [
-          nationalIdValidator('informant.nid'),
-          {
-            message: {
-              defaultMessage: 'National id must be unique',
-              description: 'This is the error message for non-unique ID Number',
-              id: 'event.death.action.declare.form.nid.unique'
-            },
-            validator: and(
-              not(field('informant.nid').isEqualTo(field('spouse.nid'))),
-              not(field('informant.nid').isEqualTo(field('deceased.nid')))
-            )
-          }
-        ],
-        parent: field('informant.relation')
-      },
-      {
-        valuePath: 'data.nid',
-        hideIf: ['authenticated'],
-        disableIf: ['pending', 'verified']
-      }
-    ),
-    connectToMOSIPIdReader(
-      {
-        id: 'informant.passport',
-        type: FieldType.TEXT,
-        required: true,
-        label: {
-          defaultMessage: 'ID Number',
-          description: 'This is the label for the field',
-          id: 'event.death.action.declare.form.section.informant.field.passport.label'
-        },
-        conditionals: [
-          {
-            type: ConditionalType.SHOW,
-            conditional: and(
-              field('informant.idType').isEqualTo(IdType.PASSPORT),
-              informantOtherThanSpouse
-            )
-          }
-        ],
-        parent: field('informant.relation')
-      },
-      {
-        valuePath: 'data.passport',
-        hideIf: ['authenticated'],
-        disableIf: ['pending', 'verified']
-      }
-    ),
-    {
-      id: 'informant.addressSameAs',
-      type: FieldType.RADIO_GROUP,
-      options: yesNoRadioOptions,
-      required: true,
-      label: {
-        defaultMessage: "Same as deceased's usual place of residence?",
-        description: 'This is the label for the field',
-        id: 'event.death.action.declare.form.section.informant.field.address.addressSameAs.label'
-      },
-      defaultValue: YesNoTypes.YES,
-      conditionals: [
-        {
-          type: ConditionalType.SHOW,
-          conditional: informantOtherThanSpouse
-        },
-        {
-          type: ConditionalType.DISPLAY_ON_REVIEW,
-          conditional: field('informant.addressSameAs').isEqualTo(
-            YesNoTypes.YES
-          )
-        }
-      ],
-      parent: field('informant.relation')
-    },
     {
       id: 'informant.addressDivider1',
       type: FieldType.DIVIDER,
@@ -470,10 +187,7 @@ export const informant = defineFormPage({
         },
         {
           type: ConditionalType.SHOW,
-          conditional: and(
-            informantOtherThanSpouse,
-            field('informant.addressSameAs').isEqualTo(YesNoTypes.NO)
-          )
+          conditional: informantOtherThanSpouse
         }
       ],
       parent: field('informant.relation')
@@ -491,10 +205,7 @@ export const informant = defineFormPage({
       conditionals: [
         {
           type: ConditionalType.SHOW,
-          conditional: and(
-            informantOtherThanSpouse,
-            field('informant.addressSameAs').isEqualTo(YesNoTypes.NO)
-          )
+          conditional: informantOtherThanSpouse
         }
       ],
       validation: [

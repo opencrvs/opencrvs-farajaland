@@ -17,17 +17,6 @@ const similarAgedMother = or(
   field('mother.dob').dateRangeMatches({
     days: 365
   }),
-  field('mother.age').dateRangeMatches({
-    days: 365
-  }),
-  field('mother.dob').dateRangeMatches({
-    days: 365,
-    matchAgainst: 'mother.age'
-  }),
-  field('mother.age').dateRangeMatches({
-    days: 365,
-    matchAgainst: 'mother.dob'
-  })
 )
 
 const differentMotherIdTypes = not(field('mother.idType').strictMatches())
@@ -39,7 +28,6 @@ const motherIdMatchesIfGiven = or(
   motherIdNotProvided,
   field('mother.nid').strictMatches(),
   field('mother.passport').strictMatches(),
-  field('mother.brn').strictMatches(),
   field('mother.verified').strictMatches({
     value: 'authenticated'
   })

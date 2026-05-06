@@ -106,7 +106,7 @@ const sourceCauseDeathOptions = createSelectOptions(
 
 export const PlaceOfDeath = {
   HEALTH_FACILITY: 'HEALTH_FACILITY',
-  DECEASED_USUAL_RESIDENCE: 'DECEASED_USUAL_RESIDENCE',
+  RESIDENTIAL_ADDRESS: 'RESIDENTIAL_ADDRESS',
   OTHER: 'OTHER'
 } as const
 
@@ -116,7 +116,7 @@ const placeOfDeathMessageDescriptors = {
     description: 'Select item for Health Institution',
     id: 'form.field.label.healthInstitution'
   },
-  DECEASED_USUAL_RESIDENCE: {
+  RESIDENTIAL_ADDRESS: {
     defaultMessage: "Deceased's usual place of residence",
     description:
       'Option for place of occurrence of death same as deceased primary address',
@@ -132,6 +132,10 @@ const placeOfDeathMessageDescriptors = {
 const placeOfDeathOptions = createSelectOptions(
   PlaceOfDeath,
   placeOfDeathMessageDescriptors
+)
+
+const placeOfDeathOptionsWithoutHealthFacility = placeOfDeathOptions.filter(
+  (option) => option.value !== PlaceOfDeath.HEALTH_FACILITY
 )
 
 export const eventDetails = defineFormPage({
@@ -211,7 +215,39 @@ export const eventDetails = defineFormPage({
         description: 'This is the label for the field',
         id: 'event.death.action.declare.form.section.deceased.field.placeOfDeath.label'
       },
-      options: placeOfDeathOptions
+      options: placeOfDeathOptions,
+      conditionals: [
+        {
+          type: ConditionalType.SHOW,
+          conditional: not(
+            or(
+              user.hasRole('EMBASSY_OFFICIAL'),
+              user.hasRole('COMMUNITY_LEADER')
+            )
+          )
+        }
+      ]
+    },
+    {
+      id: 'eventDetails.placeOfDeath',
+      type: FieldType.SELECT,
+      required: true,
+      secured: true,
+      label: {
+        defaultMessage: 'Place of death',
+        description: 'This is the label for the field',
+        id: 'event.death.action.declare.form.section.deceased.field.placeOfDeath.label'
+      },
+      options: placeOfDeathOptionsWithoutHealthFacility,
+      conditionals: [
+        {
+          type: ConditionalType.SHOW,
+          conditional: or(
+            user.hasRole('EMBASSY_OFFICIAL'),
+            user.hasRole('COMMUNITY_LEADER')
+          )
+        }
+      ]
     },
     {
       id: 'eventDetails.deathLocation',
@@ -233,6 +269,53 @@ export const eventDetails = defineFormPage({
       ],
       configuration: {
         locationTypes: ['HEALTH_FACILITY'],
+        allowedLocations: user.jurisdiction(
+          user.scope('record.create').attribute('placeOfEvent')
+        )
+      }
+    },
+    {
+      id: 'eventDetails.deathLocationResidential',
+      type: FieldType.ADDRESS,
+      required: true,
+      hideLabel: true,
+      secured: true,
+      label: {
+        defaultMessage: 'Death location address',
+        description: 'This is the label for the field',
+        id: 'event.death.action.declare.form.section.deceased.field.deathLocationResidential.label'
+      },
+      conditionals: [
+        {
+          type: ConditionalType.SHOW,
+          conditional: field('eventDetails.placeOfDeath').isEqualTo(
+            PlaceOfDeath.RESIDENTIAL_ADDRESS
+          )
+        }
+      ],
+      validation: [
+        {
+          message: {
+            defaultMessage: 'Invalid input',
+            description: 'Error message when generic field is invalid',
+            id: 'error.invalidInput'
+          },
+          validator: field(
+            'eventDetails.deathLocationResidential'
+          ).isValidAdministrativeLeafLevel()
+        },
+        ...getNestedFieldValidators(
+          'eventDetails.deathLocationResidential',
+          defaultStreetAddressConfiguration
+        )
+      ],
+      defaultValue: {
+        country: 'FAR',
+        addressType: AddressType.DOMESTIC,
+        administrativeArea: user('administrativeAreaId')
+      },
+      configuration: {
+        streetAddressForm: defaultStreetAddressConfiguration,
         allowedLocations: user.jurisdiction(
           user.scope('record.create').attribute('placeOfEvent')
         )

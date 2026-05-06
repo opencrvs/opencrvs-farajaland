@@ -9,8 +9,11 @@
  * Copyright (C) The OpenCRVS Authors located at https://github.com/opencrvs/opencrvs-core/blob/master/AUTHORS.
  */
 
-import { TranslationConfig } from '@opencrvs/toolkit/events'
+import { and, ConditionalType, field, FieldConditional, FieldConfig, FieldConfigInput, FieldReference, FieldType, TranslationConfig } from '@opencrvs/toolkit/events'
 import { createSelectOptions } from '../utils'
+import { connectToMOSIPIdReader, getMOSIPIntegrationFields } from '../mosip'
+import { farajalandNameConfig, invalidNameValidator, nationalIdValidator } from '../birth/validators'
+import { not } from '@opencrvs/toolkit/conditionals'
 
 export const IdType = {
   NATIONAL_ID: 'NATIONAL_ID',
@@ -40,6 +43,10 @@ export const idTypeOptions = createSelectOptions(
   IdType,
   idTypeMessageDescriptors
 )
+export const idTypeOptionsForeigner = createSelectOptions(
+  IdType,
+  idTypeMessageDescriptors
+).filter((option) => option.value !== IdType.NATIONAL_ID)
 
 // @TODO: Consider whether these can become boolean fields
 export const YesNoTypes = {
@@ -64,3 +71,225 @@ export const yesNoRadioOptions = createSelectOptions(
   YesNoTypes,
   yesNoMessageDescriptors
 )
+
+export const getIdentityFields = (
+  {
+    prefix,
+    showConditional,
+    parent,
+    uniqueNidAgainst = []
+  }:
+    {
+      prefix: string,
+      showConditional: any,
+      parent?: FieldReference,
+      uniqueNidAgainst?: string[]
+    }): FieldConfigInput[] => {
+  const conditionals = [
+    {
+      type: ConditionalType.SHOW,
+      conditional: showConditional
+    }
+  ]
+
+  return [
+    {
+      id: `${prefix}.nationality`,
+      type: FieldType.COUNTRY,
+      required: true,
+      label: {
+        defaultMessage: 'Nationality',
+        description: 'This is the label for the field',
+        id: 'event.death.action.declare.form.section.informant.field.nationality.label'
+      },
+      conditionals,
+      defaultValue: 'FAR',
+      parent
+    },
+    connectToMOSIPIdReader(
+      {
+        id: `${prefix}.idType`,
+        type: FieldType.SELECT,
+        required: true,
+        label: {
+          defaultMessage: 'Form of ID',
+          description: 'This is the label for the field',
+          id: 'event.death.action.declare.form.section.informant.field.idType.label'
+        },
+        options: idTypeOptions,
+        conditionals: [
+          {
+            type: ConditionalType.SHOW,
+            conditional: and(showConditional,
+              field(`${prefix}.nationality`).isEqualTo('FAR')
+            )
+          }
+        ],
+        parent
+      },
+      {
+        valuePath: 'data.idType',
+        hideIf: ['authenticated'],
+        disableIf: ['pending', 'verified']
+      }
+    ),
+    connectToMOSIPIdReader(
+      {
+        id: `${prefix}.idType`,
+        type: FieldType.SELECT,
+        required: true,
+        label: {
+          defaultMessage: 'Form of ID',
+          description: 'This is the label for the field',
+          id: 'event.death.action.declare.form.section.informant.field.idType.label'
+        },
+        options: idTypeOptionsForeigner,
+        conditionals: [
+          {
+            type: ConditionalType.SHOW,
+            conditional: and(showConditional,
+              not(field(`${prefix}.nationality`).isEqualTo('FAR'))
+            )
+          }
+        ],
+        parent
+      },
+      {
+        valuePath: 'data.idType',
+        hideIf: ['authenticated'],
+        disableIf: ['pending', 'verified']
+      }
+    ),
+    // fields:
+    // ${prefix}.verified, ${prefix}.query-params, ${prefix}.verify-nid-http-fetch,
+    // ${prefix}.fetch-loader, ${prefix}.id-reader
+    ...getMOSIPIntegrationFields(prefix, {
+      existingConditionals: [
+        {
+          type: ConditionalType.SHOW,
+          conditional: and(
+            showConditional,
+            field(`${prefix}.nationality`).isEqualTo('FAR')
+          )
+        }
+      ]
+    }),
+    connectToMOSIPIdReader(
+      {
+        id: `${prefix}.nid`,
+        type: FieldType.ID,
+        required: true,
+        label: {
+          defaultMessage: 'National ID no.',
+          description: 'This is the label for the field',
+          id: 'event.birth.action.declare.form.section.person.field.nid.label'
+        },
+        conditionals: [
+          {
+            type: ConditionalType.SHOW,
+            conditional: and(
+              field(`${prefix}.idType`).isEqualTo(IdType.NATIONAL_ID),
+              field(`${prefix}.nationality`).isEqualTo('FAR'),
+              showConditional
+            )
+          }
+        ],
+        validation: [
+          nationalIdValidator(`${prefix}.nid`),
+          ...(uniqueNidAgainst.length > 0 ? [{
+            message: {
+              defaultMessage: 'National id must be unique',
+              description: 'This is the error message for non-unique ID Number',
+              id: 'event.death.action.declare.form.nid.unique'
+            },
+            validator: and(
+              ...uniqueNidAgainst.map((otherId) => not(field(`${prefix}.nid`).isEqualTo(field(otherId))))
+            )
+          }] : [])
+        ],
+        parent
+      },
+      {
+        valuePath: 'data.nid',
+        hideIf: ['authenticated'],
+        disableIf: ['pending', 'verified']
+      }
+    ),
+    connectToMOSIPIdReader(
+      {
+        id: `${prefix}.passport`,
+        type: FieldType.TEXT,
+        required: true,
+        label: {
+          defaultMessage: 'Passport No',
+          description: 'This is the label for the field',
+          id: 'event.birth.action.declare.form.section.person.field.passport.label'
+        },
+        conditionals: [
+          {
+            type: ConditionalType.SHOW,
+            conditional: and(
+              field(`${prefix}.idType`).isEqualTo(IdType.PASSPORT),
+              showConditional
+            )
+          }
+        ],
+        parent
+      },
+      {
+        valuePath: 'data.passport',
+        hideIf: ['authenticated'],
+        disableIf: ['pending', 'verified']
+      }
+    ),
+    connectToMOSIPIdReader(
+      {
+        id: `${prefix}.name`,
+        configuration: farajalandNameConfig,
+        type: FieldType.NAME,
+        required: true,
+        hideLabel: true,
+        label: {
+          defaultMessage: "Full name",
+          description: 'This is the label for the field',
+          id: 'event.death.action.declare.form.section.informant.field.name.label'
+        },
+        conditionals,
+        validation: [invalidNameValidator(`${prefix}.name`)],
+        parent
+      },
+      {
+        valuePath: 'data.name',
+        disableIf: ['pending', 'verified', 'authenticated']
+      }
+    ),
+    connectToMOSIPIdReader(
+      {
+        id: `${prefix}.dob`,
+        type: FieldType.DATE,
+        required: true,
+        validation: [
+          {
+            message: {
+              defaultMessage: 'Must be a valid Birthdate',
+              description: 'This is the error message for invalid date',
+              id: 'event.death.action.declare.form.section.informant.field.dob.error'
+            },
+            validator: field(`${prefix}.dob`).isBefore().now()
+          }
+        ],
+        label: {
+          defaultMessage: 'Date of birth',
+          description: 'This is the label for the field',
+          id: 'event.death.action.declare.form.section.informant.field.dob.label'
+        },
+        conditionals,
+        parent
+      },
+      {
+        valuePath: 'data.birthDate',
+        disableIf: ['pending', 'verified', 'authenticated']
+      }
+    ),
+  ]
+}
