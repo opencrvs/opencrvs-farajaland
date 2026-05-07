@@ -179,7 +179,7 @@ export const roles: Role[] = [
       { type: 'performance.read-dashboards' },
       { type: 'profile.electronic-signature' },
       { type: 'record.search', options: { placeOfEvent: 'administrativeArea' } },
-      { type: 'workqueue', options: { ids: ['recent', 'pending-feedback-provincinal-registrar', 'pending-approval', 'correction-requested'] } },
+      { type: 'workqueue', options: { ids: ['assigned-to-you', 'recent', 'pending-feedback-provincinal-registrar', 'pending-approval', 'correction-requested'] } },
       { type: 'record.read', options: { placeOfEvent: 'administrativeArea' } },
       { type: 'record.reject', options: { placeOfEvent: 'administrativeArea' } },
       { type: 'record.register', options: { declaredIn: 'administrativeArea' } },
