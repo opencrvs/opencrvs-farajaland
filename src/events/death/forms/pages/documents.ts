@@ -11,21 +11,22 @@
 
 import { createSelectOptions } from '@countryconfig/events/utils'
 import {
+  and,
   ConditionalType,
   defineFormPage,
   DocumentMimeType,
   field,
   FieldType,
   ImageMimeType,
+  not,
   PageTypes,
   TranslationConfig
 } from '@opencrvs/toolkit/events'
+import { InformantType } from './informant'
 
 const IdType = {
   NATIONAL_ID: 'NATIONAL_ID',
-  PASSPORT: 'PASSPORT',
-  BIRTH_CERTIFICATE: 'BIRTH_CERTIFICATE',
-  OTHER: 'OTHER'
+  PASSPORT: 'PASSPORT'
 } as const
 
 const idTypeMessageDescriptors = {
@@ -38,16 +39,6 @@ const idTypeMessageDescriptors = {
     defaultMessage: 'Passport',
     description: 'Option for form field: Form of ID',
     id: 'form.field.label.iDTypePassport'
-  },
-  BIRTH_CERTIFICATE: {
-    defaultMessage: 'Birth Certificate',
-    description: 'Option for form field: Form of ID',
-    id: 'form.field.label.iDTypeBirthCertificate'
-  },
-  OTHER: {
-    defaultMessage: 'Other',
-    description: 'Option for form field: Form of ID',
-    id: 'form.field.label.iDTypeOther'
   }
 } satisfies Record<keyof typeof IdType, TranslationConfig>
 
@@ -148,41 +139,6 @@ export const documents = defineFormPage({
   },
   fields: [
     {
-      id: 'documents.helper',
-      type: FieldType.PARAGRAPH,
-      label: {
-        defaultMessage: 'The following documents are required',
-        description: 'The following documents are required',
-        id: 'form.field.label.proofOfBirth.fileName'
-      }
-    },
-    {
-      id: 'documents.proofOfDeceased',
-      type: FieldType.FILE_WITH_OPTIONS,
-      uncorrectable: true,
-      required: false,
-      label: {
-        defaultMessage: "Proof of deceased's ID",
-        description: 'This is the label for the field',
-        id: 'event.death.action.declare.form.section.documents.field.proofOfDeceased.label'
-      },
-      configuration: DEFAULT_FILE_CONFIGURATION,
-      options: idTypeOptions
-    },
-    {
-      id: 'documents.proofOfInformant',
-      type: FieldType.FILE_WITH_OPTIONS,
-      required: false,
-      uncorrectable: true,
-      label: {
-        defaultMessage: "Proof of informant's ID",
-        description: 'This is the label for the field',
-        id: 'event.death.action.declare.form.section.documents.field.proofOfInformant.label'
-      },
-      configuration: DEFAULT_FILE_CONFIGURATION,
-      options: idTypeOptions
-    },
-    {
       id: 'documents.proofOfDeath',
       type: FieldType.FILE_WITH_OPTIONS,
       uncorrectable: true,
@@ -212,6 +168,67 @@ export const documents = defineFormPage({
           type: ConditionalType.SHOW,
           conditional: field('eventDetails.causeOfDeathEstablished').isEqualTo(
             true
+          )
+        }
+      ]
+    },
+    {
+      id: 'documents.proofOfDeceased',
+      type: FieldType.FILE_WITH_OPTIONS,
+      uncorrectable: true,
+      required: false,
+      label: {
+        defaultMessage: "Proof of deceased's ID",
+        description: 'This is the label for the field',
+        id: 'event.death.action.declare.form.section.documents.field.proofOfDeceased.label'
+      },
+      configuration: DEFAULT_FILE_CONFIGURATION,
+      options: idTypeOptions
+    },
+    {
+      id: 'documents.proofOfSpouse',
+      type: FieldType.FILE_WITH_OPTIONS,
+      required: false,
+      uncorrectable: true,
+      label: {
+        defaultMessage: "Proof of spouse's ID",
+        description: 'This is the label for the field',
+        id: 'event.death.action.declare.form.section.documents.field.proofOfSpouse.label'
+      },
+      configuration: DEFAULT_FILE_CONFIGURATION,
+      options: idTypeOptions,
+      conditionals: [
+        {
+          type: ConditionalType.SHOW,
+          conditional: and(
+            not(field('spouse.detailsNotAvailable').isEqualTo(true)),
+            not(field('spouse.verified').isEqualTo('authenticated')),
+            not(field('spouse.verified').isEqualTo('pending')),
+            not(field('spouse.idType').isEqualTo('NONE'))
+          )
+        }
+      ]
+    },
+    {
+      id: 'documents.proofOfInformant',
+      type: FieldType.FILE_WITH_OPTIONS,
+      required: false,
+      uncorrectable: true,
+      label: {
+        defaultMessage: "Proof of informant's ID",
+        description: 'This is the label for the field',
+        id: 'event.death.action.declare.form.section.documents.field.proofOfInformant.label'
+      },
+      configuration: DEFAULT_FILE_CONFIGURATION,
+      options: idTypeOptions,
+      conditionals: [
+        {
+          type: ConditionalType.SHOW,
+          conditional: and(
+            not(field('informant.relation').isEqualTo(InformantType.SPOUSE)),
+            not(field('informant.verified').isEqualTo('authenticated')),
+            not(field('informant.verified').isEqualTo('pending')),
+            not(field('informant.idType').isEqualTo('NONE'))
           )
         }
       ]

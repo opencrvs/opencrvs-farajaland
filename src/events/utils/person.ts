@@ -9,7 +9,7 @@
  * Copyright (C) The OpenCRVS Authors located at https://github.com/opencrvs/opencrvs-core/blob/master/AUTHORS.
  */
 
-import { and, ConditionalType, field, FieldConditional, FieldConfig, FieldConfigInput, FieldReference, FieldType, TranslationConfig } from '@opencrvs/toolkit/events'
+import { and, ConditionalType, field, FieldConditional, FieldConfig, FieldConfigInput, FieldReference, FieldType, or, TranslationConfig } from '@opencrvs/toolkit/events'
 import { createSelectOptions } from '../utils'
 import { connectToMOSIPIdReader, getMOSIPIntegrationFields } from '../mosip'
 import { farajalandNameConfig, invalidNameValidator, nationalIdValidator } from '../birth/validators'
@@ -106,60 +106,54 @@ export const getIdentityFields = (
       defaultValue: 'FAR',
       parent
     },
-    connectToMOSIPIdReader(
-      {
-        id: `${prefix}.idType`,
-        type: FieldType.SELECT,
-        required: true,
-        label: {
-          defaultMessage: 'Form of ID',
-          description: 'This is the label for the field',
-          id: 'event.death.action.declare.form.section.informant.field.idType.label'
-        },
-        options: idTypeOptions,
-        conditionals: [
-          {
-            type: ConditionalType.SHOW,
-            conditional: and(showConditional,
-              field(`${prefix}.nationality`).isEqualTo('FAR')
-            )
-          }
-        ],
-        parent
+    {
+      id: `${prefix}.idType`,
+      type: FieldType.SELECT,
+      required: true,
+      label: {
+        defaultMessage: 'Form of ID',
+        description: 'This is the label for the field',
+        id: 'event.death.action.declare.form.section.informant.field.idType.label'
       },
-      {
-        valuePath: 'data.idType',
-        hideIf: ['authenticated'],
-        disableIf: ['pending', 'verified']
-      }
-    ),
-    connectToMOSIPIdReader(
-      {
-        id: `${prefix}.idType`,
-        type: FieldType.SELECT,
-        required: true,
-        label: {
-          defaultMessage: 'Form of ID',
-          description: 'This is the label for the field',
-          id: 'event.death.action.declare.form.section.informant.field.idType.label'
+      options: idTypeOptions,
+      conditionals: [
+        {
+          type: ConditionalType.SHOW,
+          conditional: and(showConditional,
+            field(`${prefix}.nationality`).isEqualTo('FAR')
+          )
         },
-        options: idTypeOptionsForeigner,
-        conditionals: [
-          {
-            type: ConditionalType.SHOW,
-            conditional: and(showConditional,
-              not(field(`${prefix}.nationality`).isEqualTo('FAR'))
-            )
-          }
-        ],
-        parent
+        {
+          type: ConditionalType.ENABLE,
+          conditional: and(
+            not(field(`${prefix}.verified`).isEqualTo('verified')),
+            not(field(`${prefix}.verified`).isEqualTo('authenticated')),
+            not(field(`${prefix}.verified`).isEqualTo('pending'))
+          )
+        }
+      ],
+      parent
+    },
+    {
+      id: `${prefix}.idType`,
+      type: FieldType.SELECT,
+      required: true,
+      label: {
+        defaultMessage: 'Form of ID',
+        description: 'This is the label for the field',
+        id: 'event.death.action.declare.form.section.informant.field.idType.label'
       },
-      {
-        valuePath: 'data.idType',
-        hideIf: ['authenticated'],
-        disableIf: ['pending', 'verified']
-      }
-    ),
+      options: idTypeOptionsForeigner,
+      conditionals: [
+        {
+          type: ConditionalType.SHOW,
+          conditional: and(showConditional,
+            not(field(`${prefix}.nationality`).isEqualTo('FAR'))
+          )
+        }
+      ],
+      parent
+    },
     // fields:
     // ${prefix}.verified, ${prefix}.query-params, ${prefix}.verify-nid-http-fetch,
     // ${prefix}.fetch-loader, ${prefix}.id-reader
@@ -169,7 +163,9 @@ export const getIdentityFields = (
           type: ConditionalType.SHOW,
           conditional: and(
             showConditional,
-            field(`${prefix}.nationality`).isEqualTo('FAR')
+            field(`${prefix}.nationality`).isEqualTo('FAR'),
+            field(`${prefix}.idType`).isEqualTo(IdType.NATIONAL_ID),
+
           )
         }
       ]
