@@ -16,6 +16,7 @@ services:
       - SMTP_PASSWORD=${SMTP_PASSWORD}
       - SMTP_SECURE=${SMTP_SECURE}
       - V2_EVENTS=true
+      - REFERENCE_DATA_DATABASE_URL=${REFERENCE_DATA_DATABASE_URL}
     deploy:
       replicas: 1
     networks:
