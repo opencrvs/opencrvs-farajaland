@@ -12,7 +12,7 @@
 import { and, ConditionalType, field, FieldConditional, FieldConfig, FieldConfigInput, FieldReference, FieldType, or, TranslationConfig } from '@opencrvs/toolkit/events'
 import { createSelectOptions } from '../utils'
 import { connectToMOSIPIdReader, getMOSIPIntegrationFields } from '../mosip'
-import { farajalandNameConfig, invalidNameValidator, nationalIdValidator } from '../birth/validators'
+import { farajalandNameConfig, invalidNameValidator, nationalIdValidator, passportValidator } from '../birth/validators'
 import { not } from '@opencrvs/toolkit/conditionals'
 
 export const IdType = {
@@ -229,6 +229,9 @@ export const getIdentityFields = (
               showConditional
             )
           }
+        ],
+        validation: [
+          passportValidator(`${prefix}.passport`)
         ],
         parent
       },

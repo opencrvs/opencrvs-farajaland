@@ -35,7 +35,8 @@ import {
 import {
   farajalandNameConfig,
   invalidNameValidator,
-  nationalIdValidator
+  nationalIdValidator,
+  passportValidator
 } from '@countryconfig/events/birth/validators'
 import {
   connectToMOSIPIdReader,
@@ -269,6 +270,9 @@ export const deceased = defineFormPage({
           type: ConditionalType.SHOW,
           conditional: field(`deceased.idType`).isEqualTo(IdType.PASSPORT)
         }
+      ],
+      validation: [
+        passportValidator('deceased.passport')
       ]
     },
     {

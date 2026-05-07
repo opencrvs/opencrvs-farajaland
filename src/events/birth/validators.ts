@@ -46,6 +46,25 @@ export const nationalIdValidator = (fieldId: string) => ({
   })
 })
 
+export const passportValidator = (fieldId: string) => ({
+  message: {
+    defaultMessage:
+      'The passport can only be numeric',
+    description: 'This is the error message for an invalid passport',
+    id: 'error.invalidPassport'
+  },
+  validator: defineFormConditional({
+    type: 'object',
+    properties: {
+      [fieldId]: {
+        type: 'string',
+        pattern: '^[0-9]+$',
+        description: 'Must be numeric.'
+      }
+    }
+  })
+})
+
 export const farajalandNameConfig = {
   name: {
     firstname: { required: true },
