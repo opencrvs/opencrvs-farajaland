@@ -149,6 +149,10 @@ export const deceased = defineFormPage({
         {
           type: ConditionalType.SHOW,
           conditional: field('deceased.nationality').isEqualTo('FAR')
+        },
+        {
+          type: ConditionalType.DISPLAY_ON_REVIEW,
+          conditional: never()
         }
       ],
     },
@@ -172,7 +176,11 @@ export const deceased = defineFormPage({
       conditionals: [
         {
           type: ConditionalType.SHOW,
-          conditional: field('deceased.nationality').isEqualTo('FAR')
+          conditional:
+            and(
+              not(field('deceased.brn.search').getByPath(['data', 'firstResult']).isFalsy()),
+              field('deceased.nationality').isEqualTo('FAR'),
+            )
         },
         {
           type: ConditionalType.ENABLE,
