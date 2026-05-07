@@ -482,8 +482,8 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
 
     await page.getByText('Notified').click()
     const modal = await page.getByTestId('event-history-modal')
-    expect(modal).toContainText('Notified')
-    expect(modal).toContainText(clientName)
+    await expect(modal).toContainText('Notified')
+    await expect(modal).toContainText(clientName)
 
     await page.locator('#close-btn').click()
 
@@ -810,17 +810,16 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
       await page.getByPlaceholder('Search').fill(trackingId)
       await page.getByRole('button', { name: 'Search' }).click()
       await page
-        .getByText(await formatV2ChildName({ 'child.name': childName }))
+        .getByText(formatV2ChildName({ 'child.name': childName }))
         .click()
     })
 
-    test('Assign event', async () => {
+    test('Audit event', async () => {
       await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
       await page.waitForTimeout(SAFE_IN_EXTERNAL_VALIDATION_MS)
-    })
 
-    test('Audit event', async () => {
       await switchEventTab(page, 'Audit')
+      await page.waitForLoadState('networkidle')
       await expect(page.locator('#row_0')).toContainText('Notified')
       await expect(page.locator('#row_0')).toContainText(clientName)
       await expect(page.locator('#row_3')).toContainText('Rejected')
