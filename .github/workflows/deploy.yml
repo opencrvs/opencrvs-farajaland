@@ -58,7 +58,6 @@ jobs:
       environment: ${{ inputs.environment }}
     secrets: inherit
   deploy:
-    needs: reset
     environment: ${{ inputs.environment }}
     runs-on: ubuntu-24.04
     outputs:
