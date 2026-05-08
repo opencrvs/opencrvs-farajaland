@@ -1,3 +1,4 @@
+#!/bin/bash
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
@@ -6,11 +7,12 @@
 # & Healthcare Disclaimer located at http://opencrvs.org/license.
 #
 # Copyright (C) The OpenCRVS Authors located at https://github.com/opencrvs/opencrvs-core/blob/master/AUTHORS.
-echo "Waiting for 30 seconds before running migrations..."
+
+echo "Waiting for 30 seconds before running migrations... This is to ensure that postgres-on-deploy has finished."
 sleep 30
 
-# run migration by restarting migration service
 docker service update --force --update-parallelism 1 --update-delay 30s opencrvs_migration
+echo "Docker service update returned $?"
 
 # wait for migration service to finish before continuing
 while true; do
@@ -26,6 +28,4 @@ while true; do
     echo "Migration failed ❌"
     exit 1
   fi
-
-  sleep 5
 done
