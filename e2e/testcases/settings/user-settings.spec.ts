@@ -35,7 +35,7 @@ test.describe.serial('1. Settings Page', () => {
         desktopView.filter({ hasText: 'Kennedy Mweene' }).first()
       ).toBeVisible()
       await expect(
-        desktopView.filter({ hasText: '+260921381238' }).first()
+        desktopView.filter({ hasText: '0923232323' }).first()
       ).toBeVisible()
       await expect(
         desktopView.filter({ hasText: 'kalushabwa.lya17@gmail.com' }).first()
