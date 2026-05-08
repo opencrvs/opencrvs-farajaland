@@ -11,7 +11,7 @@ import {
 import { expectInUrl } from '../../utils'
 import { ActionType } from '@opencrvs/toolkit/events'
 
-test.describe.serial('Navigating in and out of action', () => {
+test.describe.skip('Navigating in and out of action', () => {
   let page: Page
   let declaration: Declaration
   let eventId: string

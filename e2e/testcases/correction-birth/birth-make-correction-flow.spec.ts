@@ -235,7 +235,6 @@ test.describe.serial('Birth Record correction flow', () => {
   })
 
   test('Record correction action appears in audit history', async () => {
-    await page.reload()
     await page
       .getByRole('button', { name: formatV2ChildName(declaration) })
       .click()

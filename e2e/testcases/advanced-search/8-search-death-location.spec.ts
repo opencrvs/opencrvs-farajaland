@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 import { login } from '../../helpers'
-import { assertTexts } from '../../utils'
+import { assertTexts, selectLocationOption } from '../../utils'
 
 test.describe("Advanced Search 8 - Death - Deceased's place of death", () => {
   test.beforeEach(async ({ page }) => {
@@ -34,7 +34,7 @@ test.describe("Advanced Search 8 - Death - Deceased's place of death", () => {
     await expect(page.getByText('Country')).not.toBeVisible()
 
     await page.locator('#eventDetails____deathLocation').fill('water')
-    await page.getByText('Water FallsRural Health Centre').click()
+    await selectLocationOption(page, 'Water FallsRural Health Centre')
 
     await page.getByTestId('search').click()
     await expect(page.getByText(/Search results\s*\(\d+\)/)).toBeVisible()
