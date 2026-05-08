@@ -6,29 +6,26 @@
 # & Healthcare Disclaimer located at http://opencrvs.org/license.
 #
 # Copyright (C) The OpenCRVS Authors located at https://github.com/opencrvs/opencrvs-core/blob/master/AUTHORS.
-
-echo "Waiting for 30 seconds before running migrations... This is to ensure that postgres-on-deploy has finished."
+echo "Waiting for 30 seconds before running migrations..."
 sleep 30
 
+# run migration by restarting migration service
 docker service update --force --update-parallelism 1 --update-delay 30s opencrvs_migration
-echo "Docker service update returned $?"
 
+# wait for migration service to finish before continuing
 while true; do
-  status=$(docker service inspect opencrvs_migration --format '{{.UpdateStatus.State}}')
-  message=$(docker service inspect opencrvs_migration --format '{{.UpdateStatus.Message}}')
+  # Get current state of the task(s)
+  state=$(docker service ps --format "{{.CurrentState}}" opencrvs_migration | head -n1)
 
-  echo "Update status: $status - $message"
+  echo "Current state: $state"
 
-  case "$status" in
-    completed)
-      echo "Migration finished successfully ✅"
-      exit 0
-      ;;
-    paused|rollback_paused)
-      echo "Migration failed ❌"
-      exit 1
-      ;;
-  esac
+  if [[ "$state" == *"Complete"* ]]; then
+    echo "Migration finished successfully ✅"
+    break
+  elif [[ "$state" == *"Failed"* ]] || [[ "$state" == *"Rejected"* ]]; then
+    echo "Migration failed ❌"
+    exit 1
+  fi
 
   sleep 5
 done
