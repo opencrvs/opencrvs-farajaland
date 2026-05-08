@@ -59,6 +59,7 @@ jobs:
     secrets: inherit
   deploy:
     needs: reset
+    if: ${{ !cancelled() }}
     environment: ${{ inputs.environment }}
     runs-on: ubuntu-24.04
     outputs:
