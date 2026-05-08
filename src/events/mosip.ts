@@ -21,6 +21,27 @@ import { addYears, isAfter } from 'date-fns'
 
 const CHILD_MAX_AGE_YEARS_FOR_MOSIP = 10
 
+interface HttpFetchValue {
+  data?: { sub?: string }
+}
+
+export function getBirthInformantSection(informantRelation?: string): string {
+  return (
+    {
+      MOTHER: 'mother',
+      FATHER: 'father'
+    }[informantRelation ?? ''] ?? 'informant'
+  )
+}
+
+export function getInformantPsut(
+  declaration: Record<string, any>,
+  section: string
+): string | undefined {
+  return (declaration[`${section}.verify-nid-http-fetch`] as HttpFetchValue)
+    ?.data?.sub
+}
+
 const upsertConditional = (
   conditionals: FieldConditional[],
   newConditional: FieldConditional

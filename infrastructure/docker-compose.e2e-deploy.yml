@@ -47,12 +47,12 @@ services:
       - NODE_ENV=production
       - TWO_FA_ENABLED=false
       - CERT_PUBLIC_KEY_PATH=/run/secrets/jwt-public-key.{{ts}}
+      - DEFAULT_USER_PASSWORD=test
 
   user-mgnt:
     environment:
       - SENTRY_DSN=${SENTRY_DSN:-}
       - NODE_ENV=production
-      - DEFAULT_USER_PASSWORD=test
 
   documents:
     environment:
