@@ -35,11 +35,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Full history is needed for git operations below.
+      # GH_TOKEN (PAT) is used instead of GITHUB_TOKEN so that git push has
+      # write access — GITHUB_TOKEN may be read-only depending on repo settings.
       - name: Checkout the repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GH_TOKEN }}
 
       # Derive base_branch and target_branch from the version number.
       #   - patch (z > 0): base = release/<x>.<y>.<z-1>, target = master
@@ -118,4 +120,4 @@ jobs:
             --title "chore: merge release v${{ inputs.version }} back to develop" \
             --body "Merge release branch back to develop to keep develop in sync with any release-branch fixes."
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
