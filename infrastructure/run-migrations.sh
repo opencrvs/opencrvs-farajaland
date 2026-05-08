@@ -28,4 +28,6 @@ while true; do
     echo "Migration failed ❌"
     exit 1
   fi
+
+  sleep 5
 done
