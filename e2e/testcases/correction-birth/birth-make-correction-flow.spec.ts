@@ -65,7 +65,7 @@ test.describe.serial('Birth Record correction flow', () => {
 
   test('Fill in the supporting documents form', async () => {
     const path = require('path')
-    const attachmentPath = path.join(__dirname, '../../test-data/image.png')
+    const attachmentPath = path.join(__dirname, '../test-data/image.png')
     const inputFile = await page.locator(
       'input[name="documents____supportingDocs"][type="file"]'
     )
