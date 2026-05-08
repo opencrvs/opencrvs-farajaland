@@ -25,8 +25,11 @@ elasticsearch_host() {
   fi
 }
 
+echo "Waiting for 30 seconds before running migrations..."
+sleep 30
+
 # run migration by restarting migration service
-docker service update --force --update-parallelism 1 --update-delay 200s opencrvs_migration
+docker service update --force --update-parallelism 1 --update-delay 30s opencrvs_migration
 
 # wait for migration service to finish before continuing
 while true; do
