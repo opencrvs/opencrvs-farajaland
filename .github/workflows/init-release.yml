@@ -33,12 +33,6 @@ on:
 jobs:
   release_workflow:
     runs-on: ubuntu-latest
-    # Explicitly declare required permissions as a safety net — org-level
-    # defaults may vary. contents: write for git push; pull-requests: write
-    # for gh pr create.
-    permissions:
-      contents: write
-      pull-requests: write
     steps:
       # Full history is needed for git operations below.
       - name: Checkout the repository
@@ -92,6 +86,8 @@ jobs:
       # Skipped if the release branch was already created by a previous run.
       - name: Create release branch
         if: steps.check_branch.outputs.exists == 'false'
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASE_AUTOMATION_PAT }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -147,4 +143,4 @@ jobs:
             echo "PR release/${{ inputs.version }} → develop already exists (#$EXISTING_DEVELOP_PR), skipping."
           fi
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.RELEASE_AUTOMATION_PAT }}
