@@ -36,6 +36,12 @@ on:
 jobs:
   release_workflow:
     runs-on: ubuntu-latest
+    # Explicitly declare required permissions as a safety net — org-level
+    # defaults may vary. contents: write for git push; pull-requests: write
+    # for gh pr create.
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       # Derive base_branch and target_branch from the version number.
       #   - patch (z > 0): base = release/<x>.<y>.<z-1>, target = master
@@ -62,14 +68,11 @@ jobs:
           echo "base_branch=$base_branch" >> $GITHUB_OUTPUT
 
       # Full history is required so yarn can traverse the commit graph.
-      # GH_TOKEN (PAT) is used instead of GITHUB_TOKEN so that git push has
-      # write access — GITHUB_TOKEN may be read-only depending on repo settings.
       - name: Checkout ${{ steps.get_base_branch.outputs.base_branch }}
         uses: actions/checkout@v4
         with:
           ref: ${{ steps.get_base_branch.outputs.base_branch }}
           fetch-depth: 0
-          token: ${{ secrets.GH_TOKEN }}
 
       # Create the release branch, bump package.json, and update the
       # CHANGELOG — then push. The PRs are opened only after these commits
@@ -140,7 +143,7 @@ jobs:
             --title "chore: merge release v${{ inputs.version }} back to develop" \
             --body "Merge release branch back to develop to include version bump and changelog updates."
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # Create a draft release so the release notes page exists immediately.
       # The tag is deleted right after: the publish workflow re-creates it when
@@ -157,7 +160,7 @@ jobs:
             --notes "$NOTES" \
             --draft
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Delete the tag
         run: |
