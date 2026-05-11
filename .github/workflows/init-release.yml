@@ -67,6 +67,7 @@ jobs:
         with:
           ref: ${{ steps.get_base_branch.outputs.base_branch }}
           fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Check if release branch already exists
         id: check_branch
@@ -85,8 +86,6 @@ jobs:
       # Skipped if the release branch was already created by a previous run.
       - name: Create release branch and update version numbers and CHANGELOG
         if: steps.check_branch.outputs.exists == 'false'
-        env:
-          GITHUB_TOKEN: ${{ secrets.RELEASE_AUTOMATION_PAT }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -163,7 +162,7 @@ jobs:
             echo "PR release/${{ inputs.version }} → develop already exists (#$EXISTING_DEVELOP_PR), skipping."
           fi
         env:
-          GITHUB_TOKEN: ${{ secrets.RELEASE_AUTOMATION_PAT }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # Create a draft release so the release notes page exists immediately.
       # The tag is deleted right after: the publish workflow re-creates it when
