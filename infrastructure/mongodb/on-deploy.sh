@@ -144,28 +144,6 @@ else
 EOF
 fi
 
-OPENHIM_USER=$(echo $(checkIfUserExists "openhim"))
-if [[ $OPENHIM_USER != "FOUND" ]]; then
-  echo "openhim user not found"
-  mongo $(mongo_credentials) --host $HOST <<EOF
-  use openhim-dev
-  db.createUser({
-    user: 'openhim',
-    pwd: '$OPENHIM_MONGODB_PASSWORD',
-    roles: [{ role: 'readWrite', db: 'openhim' }, { role: 'readWrite', db: 'openhim-dev' }]
-  })
-EOF
-else
-  echo "openhim user exists"
-  mongo $(mongo_credentials) --host $HOST <<EOF
-  use openhim-dev
-  db.updateUser('openhim', {
-    pwd: '$OPENHIM_MONGODB_PASSWORD',
-    roles: [{ role: 'readWrite', db: 'openhim' }, { role: 'readWrite', db: 'openhim-dev' }]
-  })
-EOF
-fi
-
 PERFORMANCE_USER=$(echo $(checkIfUserExists "performance"))
 if [[ $PERFORMANCE_USER != "FOUND" ]]; then
   echo "performance user not found"
@@ -184,50 +162,6 @@ else
   db.updateUser('performance', {
     pwd: '$PERFORMANCE_MONGODB_PASSWORD',
     roles: [{ role: 'readWrite', db: 'performance' }]
-  })
-EOF
-fi
-
-METRICS_USER=$(echo $(checkIfUserExists "metrics"))
-if [[ $METRICS_USER != "FOUND" ]]; then
-  echo "metrics user not found"
-  mongo $(mongo_credentials) --host $HOST <<EOF
-  use metrics
-  db.createUser({
-    user: 'metrics',
-    pwd: '$METRICS_MONGODB_PASSWORD',
-    roles: [{ role: 'readWrite', db: 'metrics' }]
-  })
-EOF
-else
-  echo "metrics user exists"
-  mongo $(mongo_credentials) --host $HOST <<EOF
-  use metrics
-  db.updateUser('metrics', {
-    pwd: '$METRICS_MONGODB_PASSWORD',
-    roles: [{ role: 'readWrite', db: 'metrics' }]
-  })
-EOF
-fi
-
-NOTIFICATION_USER=$(echo $(checkIfUserExists "notification"))
-if [[ $NOTIFICATION_USER != "FOUND" ]]; then
-  echo "notification user not found"
-  mongo $(mongo_credentials) --host $HOST <<EOF
-  use notification
-  db.createUser({
-    user: 'notification',
-    pwd: '$NOTIFICATION_MONGODB_PASSWORD',
-    roles: [{ role: 'readWrite', db: 'notification' }]
-  })
-EOF
-else
-  echo "notification user exists"
-  mongo $(mongo_credentials) --host $HOST <<EOF
-  use notification
-  db.updateUser('notification', {
-    pwd: '$NOTIFICATION_MONGODB_PASSWORD',
-    roles: [{ role: 'readWrite', db: 'notification' }]
   })
 EOF
 fi
