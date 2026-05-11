@@ -68,12 +68,6 @@ test.describe('Birth form - child place of birth jurisdiction restrictions', () 
     await page.locator('#child____placeOfBirth').click()
     await page.getByText('Residential address', { exact: true }).click()
 
-    await page.locator('#province').click()
-    await page.getByText('Central', { exact: true }).click()
-
-    await page.locator('#district').click()
-    await page.getByText('Ibombo', { exact: true }).click()
-
     await expect(
       page.locator(
         '#child____birthLocation____privateHome-form-input #province'
@@ -101,12 +95,6 @@ test.describe('Birth form - child place of birth jurisdiction restrictions', () 
 
     await page.locator('#child____placeOfBirth').click()
     await page.getByText('Other', { exact: true }).click()
-
-    await page.locator('#province').click()
-    await page.getByText('Central', { exact: true }).click()
-
-    await page.locator('#district').click()
-    await page.getByText('Ibombo', { exact: true }).click()
 
     await expect(
       page.locator('#child____birthLocation____other-form-input #province')

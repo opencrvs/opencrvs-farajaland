@@ -271,12 +271,6 @@ test.describe
         .getByText('Farajaland', { exact: true })
         .click()
 
-      await page.locator('#province').click()
-      await page.getByText('Central', { exact: true }).click()
-
-      await page.locator('#district').click()
-      await page.getByText('Ibombo', { exact: true }).click()
-
       await page.locator('#village').click()
       await page.getByText('Klow', { exact: true }).click()
 

@@ -538,7 +538,7 @@ services:
     deploy:
       labels:
         - 'traefik.enable=true'
-        - 'traefik.http.routers.countryconfig.rule=(Host(`countryconfig.{{hostname}}`)|| Host(`registry.{{hostname}}`)) && !Path(`/reindex`) && !Path(`/email`) && !Path(`/notification`) && !Path(`/dashboards/queries.json`)'
+        - 'traefik.http.routers.countryconfig.rule=(Host(`countryconfig.{{hostname}}`)|| Host(`registry.{{hostname}}`)) && !Path(`/reindex`) && !Path(`/email`) && !Path(`/dashboards/queries.json`)'
         - 'traefik.http.services.countryconfig.loadbalancer.server.port=3040'
         - 'traefik.http.routers.countryconfig.tls=true'
         - 'traefik.http.routers.countryconfig.tls.certresolver=certResolver'
@@ -558,8 +558,6 @@ services:
         - 'traefik.http.routers.block-email.middlewares=block-internal-routes'
         - 'traefik.http.routers.block-reindex.rule=Host(`countryconfig.{{hostname}}`) && Path(`/reindex`)'
         - 'traefik.http.routers.block-reindex.middlewares=block-internal-routes'
-        - 'traefik.http.routers.block-notification.rule=Host(`countryconfig.{{hostname}}`) && Path(`/notification`)'
-        - 'traefik.http.routers.block-notification.middlewares=block-internal-routes'
         - 'traefik.http.routers.block-dashboard-queries.rule=Host(`countryconfig.{{hostname}}`) && Path(`/dashboards/queries.json`)'
         - 'traefik.http.routers.block-dashboard-queries.middlewares=block-internal-routes'
       replicas: 1
@@ -956,7 +954,7 @@ services:
     volumes:
       - /data/sqlite:/data/sqlite
       - /certs:/certs:ro
-    image: ghcr.io/opencrvs/mosip-api:2.0.0-rc.4
+    image: ghcr.io/opencrvs/mosip-api:2.0.0-rc.6
     environment:
       - NODE_ENV=production
       - OPENCRVS_GATEWAY_URL=http://gateway:7070
@@ -1019,7 +1017,7 @@ services:
         tag: 'mosip-api'
 
   mosip-mock:
-    image: ghcr.io/opencrvs/mosip-mock:2.0.0-rc.4
+    image: ghcr.io/opencrvs/mosip-mock:2.0.0-rc.6
     depends_on:
       - mosip-api
     environment:
@@ -1043,7 +1041,7 @@ services:
         tag: 'mosip-mock'
 
   esignet-mock:
-    image: ghcr.io/opencrvs/esignet-mock:2.0.0-rc.4
+    image: ghcr.io/opencrvs/esignet-mock:2.0.0-rc.6
     volumes:
       - /certs:/certs:ro
     environment:

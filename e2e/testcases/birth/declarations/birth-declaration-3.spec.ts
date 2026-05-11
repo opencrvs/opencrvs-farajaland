@@ -742,9 +742,12 @@ test.describe.serial('3. Birth declaration case - 3', () => {
   })
 
   test.describe('3.2 Declaration Review by Registrar', async () => {
-    test('3.2.1 Navigate to the declaration "Record" -tab', async () => {
+    test.beforeAll(async () => {
       await logout(page)
       await login(page, CREDENTIALS.REGISTRAR)
+    })
+
+    test('3.2.1 Navigate to the declaration "Record" -tab', async () => {
       await page.getByText('Pending registration').click()
 
       await page
@@ -754,6 +757,7 @@ test.describe.serial('3. Birth declaration case - 3', () => {
         .click()
 
       await switchEventTab(page, 'Record')
+      await page.waitForLoadState('networkidle')
     })
 
     test('3.2.2 Verify information on "Record" -tab', async () => {

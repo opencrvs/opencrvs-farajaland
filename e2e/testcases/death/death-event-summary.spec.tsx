@@ -106,14 +106,6 @@ test.describe.serial('Death event summary', () => {
       .getByText(declaration.eventDetails.placeOfDeath, { exact: true })
       .click()
 
-    await page.locator('#province').click()
-    await page
-      .getByText(declaration.eventDetails.address.province, { exact: true })
-      .click()
-    await page.locator('#district').click()
-    await page
-      .getByText(declaration.eventDetails.address.district, { exact: true })
-      .click()
     await page.locator('#village').click()
     await page
       .getByText(declaration.eventDetails.address.village, { exact: true })

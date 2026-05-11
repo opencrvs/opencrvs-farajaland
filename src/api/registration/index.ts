@@ -24,8 +24,11 @@ import { logger } from '@countryconfig/logger'
 import { createMosipInteropClient } from '@opencrvs/mosip/api'
 import {
   shouldForwardBirthRegistrationToMosip,
-  shouldForwardDeathRegistrationToMosip
+  shouldForwardDeathRegistrationToMosip,
+  getBirthInformantSection,
+  getInformantPsut
 } from '@countryconfig/events/mosip'
+import { InformantType as DeathInformantType } from '@countryconfig/events/death/forms/pages/informant'
 
 export interface ActionConfirmationRequest extends Hapi.Request {
   payload: EventDocument
@@ -181,6 +184,11 @@ export async function onMosipBirthRegisterHandler(
     )
     const childName = declaration['child.name'] as NameFieldValue | undefined
 
+    const birthInformantSection = getBirthInformantSection(
+      declaration['informant.relation'] as string
+    )
+    const informantPsut = getInformantPsut(declaration, birthInformantSection)
+
     // @TODO: Check whether this might crash country-config if MOSIP doesn't respond
     mosipInteropClient.register({
       trackingId: event.trackingId,
@@ -201,7 +209,7 @@ export async function onMosipBirthRegisterHandler(
         recipientFullName: '@TODO',
         recipientPhone: '@TODO'
       },
-      metaInfo: {},
+      metaInfo: { informantPsut },
       audit: {}
     })
 
@@ -246,6 +254,12 @@ export async function onMosipDeathRegisterHandler(
       | NameFieldValue
       | undefined
 
+    const deathInformantSection =
+      declaration['informant.relation'] === DeathInformantType.SPOUSE
+        ? 'spouse'
+        : 'informant'
+    const informantPsut = getInformantPsut(declaration, deathInformantSection)
+
     // @TODO: Check whether this might crash country-config if MOSIP doesn't respond
     mosipInteropClient.register({
       trackingId: event.trackingId,
@@ -267,7 +281,7 @@ export async function onMosipDeathRegisterHandler(
         recipientFullName: '@TODO',
         recipientPhone: '@TODO'
       },
-      metaInfo: {},
+      metaInfo: { informantPsut },
       audit: {}
     })
 
