@@ -12,15 +12,20 @@
 # Triggered by opencrvs-core's init-release workflow (or manually) with a
 # semver version string (e.g. 1.7.2).
 #
-# Farajaland only maintains release branches — no versioned packages or
-# CHANGELOG are managed here. What this workflow does, in order:
+# Farajaland is a mirror of opencrvs-countryconfig with farajaland-specific
+# modifications on top. Version bumps and CHANGELOG entries live in
+# countryconfig; farajaland inherits them by merging countryconfig's release
+# branch. What this workflow does, in order:
 #   1. Derives the base branch:
 #        - patch release (z > 0)  → release/<x>.<y>.<z-1>  (must already exist)
 #        - minor/major (z = 0)    → develop
-#   2. Creates a release branch (release/<version>) from the base branch.
-#   3. Opens two PRs:
-#        a. release/<version> → master   (the release PR)
-#        b. release/<version> → develop  (merge-back PR, keeps develop in sync)
+#   2. Waits for countryconfig's release/<version> branch to appear (both
+#      workflows are triggered in parallel by core's init-release).
+#   3. Creates a release branch from the farajaland base branch, then merges
+#      countryconfig's release branch in to inherit version-bump commits.
+#   4. Opens two PRs:
+#        a. release/<version> → master                          (the release PR)
+#        b. merge-back/release-<version>-to-develop → develop  (merge-back PR)
 name: Release - Start a new release
 on:
   workflow_dispatch:
@@ -82,8 +87,33 @@ jobs:
             echo "exists=false" >> $GITHUB_OUTPUT
           fi
 
-      # Create the release branch from the base and push it immediately.
-      # PRs are opened only after the branch exists on the remote.
+      # Poll for countryconfig's release branch before creating farajaland's.
+      # Both workflows are triggered at the same time by core's init-release,
+      # so countryconfig may not have pushed its branch yet.
+      # Skipped if the farajaland release branch was already created by a
+      # previous run (countryconfig's branch must exist at that point already).
+      - name: Wait for countryconfig release branch
+        if: steps.check_branch.outputs.exists == 'false'
+        run: |
+          RELEASE_BRANCH="release/${{ inputs.version }}"
+          for i in $(seq 1 20); do
+            if git ls-remote --exit-code --heads \
+                https://github.com/opencrvs/opencrvs-countryconfig.git \
+                "$RELEASE_BRANCH" > /dev/null 2>&1; then
+              echo "countryconfig/$RELEASE_BRANCH is available."
+              exit 0
+            fi
+            if [ "$i" -eq 20 ]; then
+              echo "Timed out waiting for countryconfig/$RELEASE_BRANCH." >&2
+              exit 1
+            fi
+            echo "Attempt $i/20: waiting 30s for countryconfig/$RELEASE_BRANCH..."
+            sleep 30
+          done
+
+      # Create farajaland's release branch from its own base, then merge
+      # countryconfig's release branch in. This brings version-bump commits
+      # into farajaland so PRs have a real diff.
       # Skipped if the release branch was already created by a previous run.
       - name: Create release branch
         if: steps.check_branch.outputs.exists == 'false'
@@ -93,6 +123,11 @@ jobs:
 
           git checkout "${{ steps.get_base_branch.outputs.base_branch }}"
           git checkout -b "release/${{ inputs.version }}"
+
+          git remote add countryconfig https://github.com/opencrvs/opencrvs-countryconfig.git
+          git fetch countryconfig "release/${{ inputs.version }}"
+          git merge --no-edit "countryconfig/release/${{ inputs.version }}"
+
           git push origin "release/${{ inputs.version }}"
 
       # A dedicated merge-back branch is used for the develop PR so that any
