@@ -201,7 +201,7 @@
   </text>
   <g clip-path="url(#clip9_948_2918)">
     <text fill="#222222" xml:space="preserve" style="white-space: pre" font-family="Noto Sans" font-size="8" letter-spacing="0px">
-      <tspan x="312" y="404.104">{{$join ", " ($lookup $metadata 'legalStatuses.REGISTERED.createdAtLocation.district') ($lookup $metadata 'legalStatuses.REGISTERED.createdAtLocation.province') ($lookup $metadata 'legalStatuses.REGISTERED.createdAtLocation.country')}}</tspan>
+      <tspan x="312" y="404.104">{{$join ", " ($lookup $metadata 'legalStatuses.REGISTERED.createdAtLocation.name') ($lookup $metadata 'legalStatuses.REGISTERED.createdAtLocation.district') ($lookup $metadata 'legalStatuses.REGISTERED.createdAtLocation.province') ($lookup $metadata 'legalStatuses.REGISTERED.createdAtLocation.country')}}</tspan>
     </text>
   </g>
   <line x1="70" y1="410.5" x2="514" y2="410.5" stroke="#ECECEC" />
