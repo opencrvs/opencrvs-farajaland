@@ -107,6 +107,9 @@ export const deceased = defineFormPage({
                 term: '{term}',
                 type: 'exact'
               }
+            },
+            {
+              eventType: 'birth'
             }
           ]
         },
