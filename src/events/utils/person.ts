@@ -9,7 +9,7 @@
  * Copyright (C) The OpenCRVS Authors located at https://github.com/opencrvs/opencrvs-core/blob/master/AUTHORS.
  */
 
-import { and, ConditionalType, field, FieldConditional, FieldConfig, FieldConfigInput, FieldReference, FieldType, or, TranslationConfig } from '@opencrvs/toolkit/events'
+import { and, ConditionalType, field, FieldConditional, FieldConfig, FieldConfigInput, FieldReference, FieldType, or, TranslationConfig, ValidationConfig } from '@opencrvs/toolkit/events'
 import { createSelectOptions } from '../utils'
 import { connectToMOSIPIdReader, getMOSIPIntegrationFields } from '../mosip'
 import { farajalandNameConfig, invalidNameValidator, nationalIdValidator, passportValidator } from '../birth/validators'
@@ -77,13 +77,15 @@ export const getIdentityFields = (
     prefix,
     showConditional,
     parent,
-    uniqueNidAgainst = []
+    uniqueNidAgainst = [],
+    dobValidation = []
   }:
     {
       prefix: string,
       showConditional: any,
       parent?: FieldReference,
-      uniqueNidAgainst?: string[]
+      uniqueNidAgainst?: string[],
+      dobValidation?: ValidationConfig[]
     }): FieldConfigInput[] => {
   const conditionals = [
     {
@@ -268,6 +270,7 @@ export const getIdentityFields = (
         type: FieldType.DATE,
         required: true,
         validation: [
+          ...dobValidation,
           {
             message: {
               defaultMessage: 'Must be a valid Birthdate',

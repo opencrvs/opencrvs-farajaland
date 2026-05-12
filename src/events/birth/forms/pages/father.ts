@@ -102,7 +102,17 @@ export const father = defineFormPage({
     ...getIdentityFields({
       prefix: 'father',
       showConditional: requireFatherDetails,
-      uniqueNidAgainst: ['mother.nid', 'informant.nid']
+      uniqueNidAgainst: ['mother.nid', 'informant.nid'],
+      dobValidation: [
+        {
+          message: {
+            defaultMessage: "Birth date must be before child's birth date",
+            description:
+              "This is the error message for a birth date after child's birth date",
+            id: 'event.birth.action.declare.form.section.person.dob.afterChild'
+          },
+          validator: field('father.dob').isBefore().date(field('child.dob'))
+        }]
     }),
     {
       id: 'father.addressDivider',
