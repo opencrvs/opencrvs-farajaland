@@ -287,22 +287,6 @@ export async function onDeathActionHandler(
 
   const updatedFields: Record<string, 'verified' | 'failed'> = {}
 
-  const isDeceasedAvailable =
-    declaration['deceased.dob'] &&
-    declaration['deceased.nid'] &&
-    declaration['deceased.name']
-
-  if (
-    isDeceasedAvailable &&
-    declaration['deceased.verified'] !== 'authenticated'
-  )
-    updatedFields['deceased.verified'] = await mosipInteropClient.verifyNid({
-      dob: declaration['deceased.dob'],
-      nid: declaration['deceased.nid'],
-      name: declaration['deceased.name'],
-      gender: declaration['deceased.gender']
-    })
-
   const isInformantAvailable =
     declaration['informant.dob'] &&
     declaration['informant.nid'] &&
