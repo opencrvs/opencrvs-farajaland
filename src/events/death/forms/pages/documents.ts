@@ -85,26 +85,14 @@ const proofOfDeathMessageDescriptors = {
 } satisfies Record<keyof typeof ProofOfDeathType, TranslationConfig>
 
 const ProofOfCauseOfDeathType = {
-  VERBAL_AUTOPSY: 'VERBAL_AUTOPSY',
   MEDICALLY_CERTIFIED: 'MEDICALLY_CERTIFIED',
-  OTHER: 'OTHER'
 } as const
 
 const proofOfCauseOfDeathMessageDescriptors = {
-  VERBAL_AUTOPSY: {
-    defaultMessage: 'Verbal autopsy report',
-    description: 'Option for form field: verbalAutopsy',
-    id: 'form.field.label.verbalAutopsyReport'
-  },
   MEDICALLY_CERTIFIED: {
     defaultMessage: 'Medically Certified Cause of Death',
     description: 'Option for form field: medicallyCertified',
     id: 'form.field.label.medicallyCertified'
-  },
-  OTHER: {
-    defaultMessage: 'Other',
-    description: 'Option for form field: Other',
-    id: 'form.field.label.docTypeOther'
   }
 } satisfies Record<keyof typeof ProofOfCauseOfDeathType, TranslationConfig>
 
