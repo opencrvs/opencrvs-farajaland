@@ -160,17 +160,33 @@ export const getIdentityFields = (
     // ${prefix}.verified, ${prefix}.query-params, ${prefix}.verify-nid-http-fetch,
     // ${prefix}.fetch-loader, ${prefix}.id-reader
     ...getMOSIPIntegrationFields(prefix, {
-      existingConditionals: [
-        {
-          type: ConditionalType.SHOW,
-          conditional: and(
-            showConditional,
-            field(`${prefix}.nationality`).isEqualTo('FAR'),
-            field(`${prefix}.idType`).isEqualTo(IdType.NATIONAL_ID),
+      existingConditionals: {
+        status: [
+          {
+            type: ConditionalType.SHOW,
+            conditional: and(
+              showConditional,
+              field(`${prefix}.nationality`).isEqualTo('FAR'),
+              or(
+                field(`${prefix}.idType`).isEqualTo(IdType.NATIONAL_ID),
+                field(`${prefix}.idType`).isEqualTo(IdType.PASSPORT)
+              )
 
-          )
-        }
-      ]
+            )
+          }
+        ],
+        idReader: [
+          {
+            type: ConditionalType.SHOW,
+            conditional: and(
+              showConditional,
+              field(`${prefix}.nationality`).isEqualTo('FAR'),
+              field(`${prefix}.idType`).isEqualTo(IdType.NATIONAL_ID),
+
+            )
+          }
+        ]
+      }
     }),
     connectToMOSIPIdReader(
       {
