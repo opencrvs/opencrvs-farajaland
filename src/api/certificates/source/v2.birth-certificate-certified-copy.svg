@@ -256,7 +256,7 @@
       <tspan x="307" y="326.104">{{$lookup $declaration 'mother.nationality'}}</tspan>
     </text>
   </g>
-  <line x1="65" y1="332.5" x2="533" y2="332.5" stroke="#ECECEC" />
+  <!-- <line x1="65" y1="332.5" x2="533" y2="332.5" stroke="#ECECEC" />
   <text fill="#222222" xml:space="preserve" style="white-space: pre" font-family="Noto Sans"
     font-size="8" font-weight="bold" letter-spacing="0px">
     <tspan x="65" y="346.104">9.</tspan>
@@ -270,7 +270,7 @@
       font-size="8" letter-spacing="0px">
       <tspan x="307" y="346.104">{{$lookup $declaration 'mother.occupation'}}</tspan>
     </text>
-  </g>
+  </g> -->
   <line x1="65" y1="358.5" x2="533" y2="358.5" stroke="#222222" />
   <text fill="black" xml:space="preserve" style="white-space: pre" font-family="Noto Sans"
     font-size="10" font-weight="bold" letter-spacing="0px">
@@ -345,7 +345,7 @@
       <tspan x="307" y="452.104">{{$lookup $declaration 'father.nationality'}}</tspan>
     </text>
   </g>
-  <line x1="65" y1="458.5" x2="533" y2="458.5" stroke="#ECECEC" />
+  <!-- <line x1="65" y1="458.5" x2="533" y2="458.5" stroke="#ECECEC" />
   <text fill="#222222" xml:space="preserve" style="white-space: pre" font-family="Noto Sans"
     font-size="8" font-weight="bold" letter-spacing="0px">
     <tspan x="65" y="472.104">14.</tspan>
@@ -359,7 +359,7 @@
       font-size="8" letter-spacing="0px">
       <tspan x="307" y="472.104">{{$lookup $declaration 'father.occupation'}}</tspan>
     </text>
-  </g>
+  </g> -->
   <line x1="65" y1="484.5" x2="533" y2="484.5" stroke="#222222" />
   <text fill="black" xml:space="preserve" style="white-space: pre" font-family="Noto Sans"
     font-size="10" font-weight="bold" letter-spacing="0px">
