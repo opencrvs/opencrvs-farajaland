@@ -204,6 +204,7 @@ export const documents = defineFormPage({
             not(field('spouse.detailsNotAvailable').isEqualTo(true)),
             not(field('spouse.verified').isEqualTo('authenticated')),
             not(field('spouse.verified').isEqualTo('pending')),
+            not(field('spouse.verified').isFalsy()),
             not(field('spouse.idType').isEqualTo('NONE'))
           )
         }
@@ -228,6 +229,7 @@ export const documents = defineFormPage({
             not(field('informant.relation').isEqualTo(InformantType.SPOUSE)),
             not(field('informant.verified').isEqualTo('authenticated')),
             not(field('informant.verified').isEqualTo('pending')),
+            not(field('informant.verified').isFalsy()),
             not(field('informant.idType').isEqualTo('NONE'))
           )
         }
