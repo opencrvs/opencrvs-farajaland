@@ -91,25 +91,6 @@ export const spouse = defineFormPage({
         }
       ]
     },
-    {
-      id: 'spouse.reason',
-      type: FieldType.TEXT,
-      required: true,
-      label: {
-        defaultMessage: 'Reason',
-        description: 'This is the label for the field',
-        id: 'event.death.action.declare.form.section.spouse.field.reason.label'
-      },
-      conditionals: [
-        {
-          type: ConditionalType.SHOW,
-          conditional: and(
-            field('spouse.detailsNotAvailable').isEqualTo(true),
-            not(field('informant.relation').isEqualTo(InformantType.SPOUSE))
-          )
-        }
-      ]
-    },
     ...getIdentityFields({
       prefix: 'spouse',
       showConditional: requireSpouseDetails,
