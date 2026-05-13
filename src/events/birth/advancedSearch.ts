@@ -79,10 +79,6 @@ export const advancedSearchBirth = [
         validations: [],
         conditionals: []
       }).fuzzy(),
-      field('child.nid', {
-        searchCriteriaLabelPrefix: childPrefix,
-        conditionals: []
-      }).exact(),
       field('child.gender', {
         searchCriteriaLabelPrefix: childPrefix
       }).exact()
