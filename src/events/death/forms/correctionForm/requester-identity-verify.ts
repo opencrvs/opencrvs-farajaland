@@ -45,10 +45,8 @@ export const deathcorrectionRequesterIdentityVerify: FieldConfig[] = [
         { fieldId: 'spouse.idType' },
         { fieldId: 'spouse.nid' },
         { fieldId: 'spouse.passport' },
-        { fieldId: 'spouse.brn' },
         { fieldId: 'spouse.name' },
         { fieldId: 'spouse.dob' },
-        { fieldId: 'spouse.age' },
         { fieldId: 'spouse.nationality' }
       ]
     }
