@@ -269,7 +269,7 @@ export const getIdentityFields = (
         label: {
           defaultMessage: "Full name",
           description: 'This is the label for the field',
-          id: 'event.death.action.declare.form.section.informant.field.name.label'
+          id: `event.birth.action.declare.form.section.${prefix}.field.name.label`
         },
         conditionals,
         validation: [invalidNameValidator(`${prefix}.name`)],
