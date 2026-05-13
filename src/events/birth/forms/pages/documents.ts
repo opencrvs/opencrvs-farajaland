@@ -128,7 +128,6 @@ export const documents = defineFormPage({
           conditional: and(
             requireMotherDetails,
             not(field('mother.verified').isEqualTo('authenticated')),
-            not(field('mother.verified').isEqualTo('pending')),
             not(field('mother.idType').isEqualTo('NONE'))
           )
         }
@@ -153,7 +152,6 @@ export const documents = defineFormPage({
           conditional: and(
             requireFatherDetails,
             not(field('father.verified').isEqualTo('authenticated')),
-            not(field('father.verified').isEqualTo('pending')),
             not(field('father.idType').isEqualTo('NONE'))
           )
         }
@@ -179,7 +177,6 @@ export const documents = defineFormPage({
               field('informant.relation').isEqualTo(InformantType.MOTHER),
               field('informant.relation').isEqualTo(InformantType.FATHER),
               field('informant.verified').isEqualTo('authenticated'),
-              field('informant.verified').isEqualTo('pending'),
               field('informant.idType').isEqualTo('NONE')
             )
           )
