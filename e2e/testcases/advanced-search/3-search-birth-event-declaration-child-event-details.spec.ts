@@ -4,7 +4,7 @@ import { createDeclaration } from '../test-data/birth-declaration-with-father-br
 import { CREDENTIALS } from '../../constants'
 import { faker } from '@faker-js/faker'
 import { getIdByName, getAdministrativeAreas } from '../birth/helpers'
-import { assertTexts, type } from '../../utils'
+import { assertTexts, selectLocationOption, type } from '../../utils'
 
 test.describe
   .serial("Advanced Search - Birth Event Declaration - Child's details", () => {
@@ -78,8 +78,7 @@ test.describe
       await page.getByText('Health Institution', { exact: true }).click()
 
       await page.locator('#child____birthLocation').fill('Klow Village')
-      await expect(page.getByText('Klow Village Hospital')).toBeVisible()
-      await page.getByText('Klow Village Hospital').click()
+      await selectLocationOption(page, 'Klow Village Hospital')
     })
 
     test('3.1.2 - Validate search and show results', async () => {

@@ -27,7 +27,12 @@ test.describe.serial('4(a) Validate "Pending updates"-workqueue for HO', () => {
 
   test.beforeAll(async ({ browser }) => {
     const token = await getToken(CREDENTIALS.HOSPITAL_OFFICIAL)
-    const res = await createDeclaration(token, undefined, ActionType.DECLARE)
+    const res = await createDeclaration(
+      token,
+      undefined,
+      ActionType.DECLARE,
+      'HEALTH_FACILITY'
+    )
     declaration = res.declaration
     eventId = res.eventId
     formattedChildName = formatV2ChildName(declaration)

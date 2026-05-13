@@ -113,7 +113,7 @@ export async function onRegisterHandler(
 //   token: string,
 //   eventId: string,
 //   actionId: string,
-//   action: ActionInput
+//   action: Extract<ActionInput, { type?: 'REGISTER' }>
 // ) {
 //   const url = new URL('events', GATEWAY_URL).toString()
 //   const client = createClient(url, `Bearer ${token}`)
