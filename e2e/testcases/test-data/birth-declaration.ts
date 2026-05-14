@@ -58,7 +58,8 @@ export async function getPlaceOfBirth(
 
     return {
       'child.placeOfBirth': 'HEALTH_FACILITY',
-      'child.birthLocation': locationId
+      'child.birthLocation': locationId,
+      'child.birthLocationId': locationId
     }
   }
 
@@ -73,7 +74,8 @@ export async function getPlaceOfBirth(
         country: 'FAR',
         addressType: AddressType.DOMESTIC,
         administrativeArea: village
-      }
+      },
+      'child.birthLocationId': village
     }
   }
 

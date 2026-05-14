@@ -25,7 +25,8 @@ async function getPlaceOfDeath(
     const locationId = getIdByName(locations, 'Klow Village Hospital')
 
     return {
-      'deceased.deathLocation': locationId
+      'deceased.deathLocation': locationId,
+      'eventDetails.deathLocationId': locationId
     }
   }
 
@@ -39,7 +40,8 @@ async function getPlaceOfDeath(
         country: 'FAR',
         addressType: AddressType.DOMESTIC,
         administrativeArea: village
-      }
+      },
+      'eventDetails.deathLocationId': village
     }
   }
 

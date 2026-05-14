@@ -26,7 +26,9 @@ test.describe.serial('1. Create user -1', () => {
     test.beforeAll(async () => {
       await login(page, CREDENTIALS.NATIONAL_SYSTEM_ADMIN)
       await page.getByRole('button', { name: 'Team' }).click()
-      await expect(page.getByText('HQ Office')).toBeVisible()
+      await expect(
+        page.locator('#location-range-picker-action').getByText('HQ Office')
+      ).toBeVisible()
 
       await page.getByRole('button', { name: /HQ Office/ }).click()
       await page.getByTestId('locationSearchInput').fill('Klow')
