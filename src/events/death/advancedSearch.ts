@@ -20,7 +20,7 @@ import { createSelectOptions } from '../utils'
 
 const PlaceOfDeath = {
   HEALTH_FACILITY: 'HEALTH_FACILITY',
-  DECEASED_USUAL_RESIDENCE: 'DECEASED_USUAL_RESIDENCE',
+  DECEASED_USUAL_RESIDENCE: 'RESIDENTIAL_ADDRESS',
   OTHER: 'OTHER'
 } as const
 
