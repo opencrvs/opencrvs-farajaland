@@ -141,8 +141,7 @@ export const deceased = defineFormPage({
               id: 'form.field.label.searchBRN.indicators.clearModal.title'
             },
             description: {
-              defaultMessage:
-                'This will remove the BRN.',
+              defaultMessage: 'This will remove the BRN.',
               description: 'Description for the clear confirmation modal',
               id: 'form.field.label.searchBRN.indicators.clearModal.description'
             }
@@ -158,7 +157,7 @@ export const deceased = defineFormPage({
           type: ConditionalType.DISPLAY_ON_REVIEW,
           conditional: never()
         }
-      ],
+      ]
     },
     {
       id: `deceased.brn`,
@@ -180,11 +179,14 @@ export const deceased = defineFormPage({
       conditionals: [
         {
           type: ConditionalType.SHOW,
-          conditional:
-            and(
-              not(field('deceased.brn.search').getByPath(['data', 'firstResult']).isFalsy()),
-              field('deceased.nationality').isEqualTo('FAR'),
-            )
+          conditional: and(
+            not(
+              field('deceased.brn.search')
+                .getByPath(['data', 'firstResult'])
+                .isFalsy()
+            ),
+            field('deceased.nationality').isEqualTo('FAR')
+          )
         },
         {
           type: ConditionalType.ENABLE,
@@ -273,9 +275,7 @@ export const deceased = defineFormPage({
           conditional: field(`deceased.idType`).isEqualTo(IdType.PASSPORT)
         }
       ],
-      validation: [
-        passportValidator('deceased.passport')
-      ]
+      validation: [passportValidator('deceased.passport')]
     },
     {
       id: 'deceased.name',
@@ -299,7 +299,9 @@ export const deceased = defineFormPage({
       conditionals: [
         {
           type: ConditionalType.ENABLE,
-          conditional: field('deceased.brn.search').getByPath(['data', 'firstResult']).isFalsy()
+          conditional: field('deceased.brn.search')
+            .getByPath(['data', 'firstResult'])
+            .isFalsy()
         }
       ]
     },
@@ -343,7 +345,9 @@ export const deceased = defineFormPage({
       conditionals: [
         {
           type: ConditionalType.ENABLE,
-          conditional: field('deceased.brn.search').getByPath(['data', 'firstResult']).isFalsy()
+          conditional: field('deceased.brn.search')
+            .getByPath(['data', 'firstResult'])
+            .isFalsy()
         }
       ]
     },

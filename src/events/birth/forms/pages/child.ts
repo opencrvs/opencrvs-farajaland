@@ -99,7 +99,6 @@ const typeOfBirthMessageDescriptors = {
 } satisfies Record<keyof typeof TypeOfBirth, TranslationConfig>
 
 const attendantAtBirthMessageDescriptors = {
-
   NURSE: {
     defaultMessage: 'Nurse',
     description: 'Label for nurse attendant',
@@ -321,9 +320,7 @@ export const child = defineFormPage({
         {
           type: ConditionalType.SHOW,
           conditional: and(
-            field('child.placeOfBirth').isEqualTo(
-              PlaceOfBirth.HEALTH_FACILITY
-            ),
+            field('child.placeOfBirth').isEqualTo(PlaceOfBirth.HEALTH_FACILITY),
             not(user.hasRole('HOSPITAL_CLERK'))
           )
         }
@@ -350,9 +347,7 @@ export const child = defineFormPage({
         {
           type: ConditionalType.SHOW,
           conditional: and(
-            field('child.placeOfBirth').isEqualTo(
-              PlaceOfBirth.HEALTH_FACILITY
-            ),
+            field('child.placeOfBirth').isEqualTo(PlaceOfBirth.HEALTH_FACILITY),
             user.hasRole('HOSPITAL_CLERK')
           )
         }
