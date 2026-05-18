@@ -9,10 +9,27 @@
  * Copyright (C) The OpenCRVS Authors located at https://github.com/opencrvs/opencrvs-core/blob/master/AUTHORS.
  */
 
-import { and, ConditionalType, field, FieldConditional, FieldConfig, FieldConfigInput, FieldReference, FieldType, or, TranslationConfig, ValidationConfig } from '@opencrvs/toolkit/events'
+import {
+  and,
+  ConditionalType,
+  field,
+  FieldConditional,
+  FieldConfig,
+  FieldConfigInput,
+  FieldReference,
+  FieldType,
+  or,
+  TranslationConfig,
+  ValidationConfig
+} from '@opencrvs/toolkit/events'
 import { createSelectOptions } from '../utils'
 import { connectToMOSIPIdReader, getMOSIPIntegrationFields } from '../mosip'
-import { farajalandNameConfig, invalidNameValidator, nationalIdValidator, passportValidator } from '../birth/validators'
+import {
+  farajalandNameConfig,
+  invalidNameValidator,
+  nationalIdValidator,
+  passportValidator
+} from '../birth/validators'
 import { not } from '@opencrvs/toolkit/conditionals'
 
 export const IdType = {
@@ -72,21 +89,19 @@ export const yesNoRadioOptions = createSelectOptions(
   yesNoMessageDescriptors
 )
 
-export const getIdentityFields = (
-  {
-    prefix,
-    showConditional,
-    parent,
-    uniqueNidAgainst = [],
-    dobValidation = []
-  }:
-    {
-      prefix: string,
-      showConditional: any,
-      parent?: FieldReference,
-      uniqueNidAgainst?: string[],
-      dobValidation?: ValidationConfig[]
-    }): FieldConfigInput[] => {
+export const getIdentityFields = ({
+  prefix,
+  showConditional,
+  parent,
+  uniqueNidAgainst = [],
+  dobValidation = []
+}: {
+  prefix: string
+  showConditional: any
+  parent?: FieldReference
+  uniqueNidAgainst?: string[]
+  dobValidation?: ValidationConfig[]
+}): FieldConfigInput[] => {
   const conditionals = [
     {
       type: ConditionalType.SHOW,
@@ -109,7 +124,7 @@ export const getIdentityFields = (
       parent
     },
     {
-      id: `${prefix}.idType`,
+      id: `${prefix}.idTypeLocal`,
       type: FieldType.SELECT,
       required: true,
       label: {
@@ -121,7 +136,8 @@ export const getIdentityFields = (
       conditionals: [
         {
           type: ConditionalType.SHOW,
-          conditional: and(showConditional,
+          conditional: and(
+            showConditional,
             field(`${prefix}.nationality`).isEqualTo('FAR')
           )
         },
@@ -137,7 +153,7 @@ export const getIdentityFields = (
       parent
     },
     {
-      id: `${prefix}.idType`,
+      id: `${prefix}.idTypeForeigner`,
       type: FieldType.SELECT,
       required: true,
       label: {
@@ -149,12 +165,32 @@ export const getIdentityFields = (
       conditionals: [
         {
           type: ConditionalType.SHOW,
-          conditional: and(showConditional,
+          conditional: and(
+            showConditional,
             not(field(`${prefix}.nationality`).isEqualTo('FAR'))
           )
         }
       ],
       parent
+    },
+    {
+      id: `${prefix}.idType`,
+      type: FieldType.ALPHA_HIDDEN,
+      required: false,
+      label: {
+        defaultMessage: 'Form of ID meh',
+        description: 'This is the label for the field',
+        id: 'event.death.action.declare.form.section.informant.field.idType.label'
+      },
+      parent: [
+        ...(parent ? [parent] : []),
+        field(`${prefix}.idTypeLocal`),
+        field(`${prefix}.idTypeForeigner`)
+      ],
+      value: [
+        field(`${prefix}.idTypeLocal`),
+        field(`${prefix}.idTypeForeigner`)
+      ]
     },
     // fields:
     // ${prefix}.verified, ${prefix}.query-params, ${prefix}.verify-nid-http-fetch,
@@ -171,7 +207,6 @@ export const getIdentityFields = (
                 field(`${prefix}.idType`).isEqualTo(IdType.NATIONAL_ID),
                 field(`${prefix}.idType`).isEqualTo(IdType.PASSPORT)
               )
-
             )
           }
         ],
@@ -181,8 +216,7 @@ export const getIdentityFields = (
             conditional: and(
               showConditional,
               field(`${prefix}.nationality`).isEqualTo('FAR'),
-              field(`${prefix}.idType`).isEqualTo(IdType.NATIONAL_ID),
-
+              field(`${prefix}.idType`).isEqualTo(IdType.NATIONAL_ID)
             )
           }
         ]
@@ -210,16 +244,23 @@ export const getIdentityFields = (
         ],
         validation: [
           nationalIdValidator(`${prefix}.nid`),
-          ...(uniqueNidAgainst.length > 0 ? [{
-            message: {
-              defaultMessage: 'National id must be unique',
-              description: 'This is the error message for non-unique ID Number',
-              id: 'event.death.action.declare.form.nid.unique'
-            },
-            validator: and(
-              ...uniqueNidAgainst.map((otherId) => not(field(`${prefix}.nid`).isEqualTo(field(otherId))))
-            )
-          }] : [])
+          ...(uniqueNidAgainst.length > 0
+            ? [
+                {
+                  message: {
+                    defaultMessage: 'National id must be unique',
+                    description:
+                      'This is the error message for non-unique ID Number',
+                    id: 'event.death.action.declare.form.nid.unique'
+                  },
+                  validator: and(
+                    ...uniqueNidAgainst.map((otherId) =>
+                      not(field(`${prefix}.nid`).isEqualTo(field(otherId)))
+                    )
+                  )
+                }
+              ]
+            : [])
         ],
         parent
       },
@@ -248,9 +289,7 @@ export const getIdentityFields = (
             )
           }
         ],
-        validation: [
-          passportValidator(`${prefix}.passport`)
-        ],
+        validation: [passportValidator(`${prefix}.passport`)],
         parent
       },
       {
@@ -267,7 +306,7 @@ export const getIdentityFields = (
         required: true,
         hideLabel: true,
         label: {
-          defaultMessage: "Full name",
+          defaultMessage: 'Full name',
           description: 'This is the label for the field',
           id: `event.birth.action.declare.form.section.${prefix}.field.name.label`
         },
@@ -308,6 +347,6 @@ export const getIdentityFields = (
         valuePath: 'data.birthDate',
         disableIf: ['pending', 'verified', 'authenticated']
       }
-    ),
+    )
   ]
 }
