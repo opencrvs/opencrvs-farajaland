@@ -236,7 +236,6 @@ export const child = defineFormPage({
       analytics: true,
       type: 'DATE',
       required: true,
-      secured: true,
       validation: [
         {
           message: {

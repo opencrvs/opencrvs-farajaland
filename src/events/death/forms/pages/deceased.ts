@@ -189,7 +189,6 @@ export const deceased = defineFormPage({
         {
           type: ConditionalType.ENABLE,
           conditional: never()
-
         }
       ]
     },
@@ -289,7 +288,20 @@ export const deceased = defineFormPage({
         description: 'This is the label for the field',
         id: 'event.death.action.declare.form.section.deceased.field.name.label'
       },
-      validation: [invalidNameValidator('deceased.name')]
+      parent: field('deceased.brn.search'),
+      value: field('deceased.brn.search').getByPath([
+        'data',
+        'firstResult',
+        'declaration',
+        'child.name'
+      ]),
+      validation: [invalidNameValidator('deceased.name')],
+      conditionals: [
+        {
+          type: ConditionalType.ENABLE,
+          conditional: field('deceased.brn.search').getByPath(['data', 'firstResult']).isFalsy()
+        }
+      ]
     },
     {
       id: 'deceased.dob',
@@ -321,10 +333,17 @@ export const deceased = defineFormPage({
         description: 'This is the label for the field',
         id: 'event.death.action.declare.form.section.deceased.field.dob.label'
       },
+      parent: field('deceased.brn.search'),
+      value: field('deceased.brn.search').getByPath([
+        'data',
+        'firstResult',
+        'declaration',
+        'child.dob'
+      ]),
       conditionals: [
         {
-          type: ConditionalType.SHOW,
-          conditional: not(field(`deceased.dobUnknown`).isEqualTo(true))
+          type: ConditionalType.ENABLE,
+          conditional: field('deceased.brn.search').getByPath(['data', 'firstResult']).isFalsy()
         }
       ]
     },
