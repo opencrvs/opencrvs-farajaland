@@ -36,7 +36,8 @@ test('Record declared in one administrative area should not appear for users in 
           country: 'FAR',
           addressType: AddressType.DOMESTIC,
           administrativeArea: village
-        }
+        },
+        'child.birthLocationId': village
       }
     })
 
