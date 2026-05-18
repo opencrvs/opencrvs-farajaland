@@ -236,15 +236,16 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
     )
   })
 
-  test('HTTP 404 when trying to notify a non-existing event', async () => {
+  test('HTTP 200 when direct-notifying an event', async () => {
     const response = await fetchClientAPI(
       '/api/events/events/notify',
       'POST',
       clientToken,
       {
-        eventId: uuidv4(),
         transactionId: uuidv4(),
         type: 'NOTIFY',
+        createdAtLocation: healthFacilityId,
+        eventType: 'birth',
         declaration: {
           'child.name': {
             firstname: faker.person.firstName(),
@@ -255,8 +256,7 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
         annotation: {}
       }
     )
-
-    expect(response.status).toBe(404)
+    expect(response.status).toBe(200)
   })
 
   test('HTTP 400 when trying to notify an event without createdAtLocation', async () => {
