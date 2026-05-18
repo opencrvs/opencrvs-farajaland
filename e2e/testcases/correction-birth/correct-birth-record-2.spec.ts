@@ -170,7 +170,7 @@ test.describe.serial('Correct record - 2', () => {
 
       await page.locator('#informant____brn').fill(updatedInformantDetails.brn)
 
-      await page.getByRole('button', { name: 'Back to review' }).click()
+      await page.getByRole('button', { name: 'Go to review' }).click()
 
       await expectInUrl(page, `/events/request-correction/${eventId}/review`)
 
@@ -214,7 +214,7 @@ test.describe.serial('Correct record - 2', () => {
       await page.getByTestId('text__town').fill(faker.location.city())
       await page.getByTestId('text__street').fill(faker.location.street())
 
-      await page.getByRole('button', { name: 'Back to review' }).click()
+      await page.getByRole('button', { name: 'Go to review' }).click()
     })
   })
 

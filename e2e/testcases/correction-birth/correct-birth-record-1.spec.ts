@@ -320,7 +320,7 @@ test.describe('1. Correct record - 1', () => {
         await page.getByTestId('select__child____gender').locator('svg').click()
         await page.getByText('Male', { exact: true }).click()
 
-        await page.getByRole('button', { name: 'Back to review' }).click()
+        await page.getByRole('button', { name: 'Go to review' }).click()
 
         /*
          * Expected result: should
@@ -361,7 +361,7 @@ test.describe('1. Correct record - 1', () => {
         await page.getByPlaceholder('mm').fill(birthDay[1])
         await page.getByPlaceholder('yyyy').fill(birthDay[0])
 
-        await page.getByRole('button', { name: 'Back to review' }).click()
+        await page.getByRole('button', { name: 'Go to review' }).click()
 
         /*
          * Expected result: should
@@ -401,7 +401,7 @@ test.describe('1. Correct record - 1', () => {
           .fill(updatedChildDetails.birthLocation.slice(0, 2))
         await page.getByText(updatedChildDetails.birthLocation).click()
 
-        await page.getByRole('button', { name: 'Back to review' }).click()
+        await page.getByRole('button', { name: 'Go to review' }).click()
 
         /*
          * Expected result: should
@@ -448,7 +448,7 @@ test.describe('1. Correct record - 1', () => {
         await page.getByTestId('select__child____attendantAtBirth').click()
         await page.getByText(updatedChildDetails.attendantAtBirth).click()
 
-        await page.getByRole('button', { name: 'Back to review' }).click()
+        await page.getByRole('button', { name: 'Go to review' }).click()
 
         /*
          * Expected result: should
@@ -489,7 +489,7 @@ test.describe('1. Correct record - 1', () => {
         await page.getByTestId('select__child____birthType').click()
         await page.getByText(updatedChildDetails.typeOfBirth).click()
 
-        await page.getByRole('button', { name: 'Back to review' }).click()
+        await page.getByRole('button', { name: 'Go to review' }).click()
 
         /*
          * Expected result: should
@@ -551,7 +551,7 @@ test.describe('1. Correct record - 1', () => {
           .locator('#child____weightAtBirth')
           .fill(updatedChildDetails.weightAtBirth)
 
-        await page.getByRole('button', { name: 'Back to review' }).click()
+        await page.getByRole('button', { name: 'Go to review' }).click()
 
         /*
          * Expected result: should

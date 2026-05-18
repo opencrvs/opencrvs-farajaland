@@ -113,7 +113,7 @@ test.describe.serial('Birth correction flow - Mobile', () => {
       .fill(reasonForDelayedRegistration)
 
     await type(page, '#firstname', newFirstName)
-    await page.getByRole('button', { name: 'Back to review' }).click()
+    await page.getByRole('button', { name: 'Go to review' }).click()
     await expect(page.getByRole('button', { name: 'Continue' })).toBeEnabled()
   })
 

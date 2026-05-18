@@ -332,7 +332,7 @@ test.describe.serial(' Correct record - 3', () => {
           .locator('#mother____age')
           .fill(updatedMotherDetails.age.toString())
 
-        await page.getByRole('button', { name: 'Back to review' }).click()
+        await page.getByRole('button', { name: 'Go to review' }).click()
 
         /*
          * Expected result: should
@@ -369,7 +369,7 @@ test.describe.serial(' Correct record - 3', () => {
         await page.locator('#mother____nationality').click()
         await page.getByText(updatedMotherDetails.nationality).click()
 
-        await page.getByRole('button', { name: 'Back to review' }).click()
+        await page.getByRole('button', { name: 'Go to review' }).click()
 
         /*
          * Expected result: should
@@ -408,7 +408,7 @@ test.describe.serial(' Correct record - 3', () => {
         await page.locator('#mother____idType').click()
         await page.getByText(updatedMotherDetails.idType).click()
 
-        await page.getByRole('button', { name: 'Back to review' }).click()
+        await page.getByRole('button', { name: 'Go to review' }).click()
 
         /*
          * Expected result: should
@@ -454,7 +454,7 @@ test.describe.serial(' Correct record - 3', () => {
           .locator('#mother____passport')
           .fill(updatedMotherDetails.passport)
 
-        await page.getByRole('button', { name: 'Back to review' }).click()
+        await page.getByRole('button', { name: 'Go to review' }).click()
 
         /*
          * Expected result: should
@@ -586,7 +586,7 @@ test.describe.serial(' Correct record - 3', () => {
         await page.locator('#mother____maritalStatus').click()
         await page.getByText(updatedMotherDetails.maritalStatus).click()
 
-        await page.getByRole('button', { name: 'Back to review' }).click()
+        await page.getByRole('button', { name: 'Go to review' }).click()
 
         /*
          * Expected result: should
@@ -632,7 +632,7 @@ test.describe.serial(' Correct record - 3', () => {
         await page.locator('#mother____educationalAttainment').click()
         await page.getByText(updatedMotherDetails.educationLevel).click()
 
-        await page.getByRole('button', { name: 'Back to review' }).click()
+        await page.getByRole('button', { name: 'Go to review' }).click()
 
         /*
          * Expected result: should
@@ -695,7 +695,7 @@ test.describe.serial(' Correct record - 3', () => {
         .locator('#zipCode')
         .fill(updatedChildDetails.birthLocation.zipCode)
 
-      await page.getByRole('button', { name: 'Back to review' }).click()
+      await page.getByRole('button', { name: 'Go to review' }).click()
 
       /*
        * Expected result: should
