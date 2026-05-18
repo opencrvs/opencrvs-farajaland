@@ -31,7 +31,6 @@ import { advancedSearchBirth } from './advancedSearch'
 import { BIRTH_CERTIFICATE_COLLECTOR_FORM } from './forms/printForm'
 import { PlaceOfBirth } from './forms/pages/child'
 import { CORRECTION_FORM } from './forms/correctionForm'
-import { dedupConfig } from './dedupConfig'
 import * as verifiableCredentialActions from '@countryconfig/verifiable-credentials/issue-birth-credential-action'
 import {
   Event,
@@ -299,16 +298,16 @@ export const birthEvent = defineConfig({
         id: 'event.birth.action.declare.label'
       },
       review: BIRTH_DECLARATION_REVIEW,
-      deduplication: {
-        id: 'birth-deduplication',
-        label: {
-          defaultMessage: 'Detect duplicate',
-          description:
-            'This is shown as the action name anywhere the user can trigger the action from',
-          id: 'event.birth.action.detect-duplicate.label'
-        },
-        query: dedupConfig
-      },
+      // deduplication: {
+      //   id: 'birth-deduplication',
+      //   label: {
+      //     defaultMessage: 'Detect duplicate',
+      //     description:
+      //       'This is shown as the action name anywhere the user can trigger the action from',
+      //     id: 'event.birth.action.detect-duplicate.label'
+      //   },
+      //   query: dedupConfig
+      // },
       flags: [
         {
           id: 'approval-required-for-late-registration',
@@ -891,17 +890,17 @@ export const birthEvent = defineConfig({
             not(flag('escalated-to-registrar-general'))
           )
         }
-      ],
-      deduplication: {
-        id: 'birth-deduplication',
-        label: {
-          defaultMessage: 'Detect duplicate',
-          description:
-            'This is shown as the action name anywhere the user can trigger the action from',
-          id: 'event.birth.action.detect-duplicate.label'
-        },
-        query: dedupConfig
-      }
+      ]
+      // deduplication: {
+      //   id: 'birth-deduplication',
+      //   label: {
+      //     defaultMessage: 'Detect duplicate',
+      //     description:
+      //       'This is shown as the action name anywhere the user can trigger the action from',
+      //     id: 'event.birth.action.detect-duplicate.label'
+      //   },
+      //   query: dedupConfig
+      // }
     },
     {
       type: ActionType.PRINT_CERTIFICATE,
