@@ -524,7 +524,7 @@ test.describe('1. Correct record - 1', () => {
         await expectInUrl(page, `/events/request-correction/${eventId}/summary`)
 
         await page
-          .getByRole('button', { name: 'Back to review', exact: true })
+          .getByRole('button', { name: 'Go to review', exact: true })
           .click()
 
         /* Expected result: should

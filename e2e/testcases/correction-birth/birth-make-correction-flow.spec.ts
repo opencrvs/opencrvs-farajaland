@@ -180,7 +180,7 @@ test.describe.serial('Birth Record correction flow', () => {
     await page.getByRole('button', { name: 'Continue' }).click()
     await expectInUrl(page, `/events/request-correction/${eventId}/summary`)
     await expect(
-      page.getByRole('button', { name: 'Back to review' })
+      page.getByRole('button', { name: 'Go to review' })
     ).toBeEnabled()
     await expect(
       page.getByRole('button', { name: 'Correct record' })
