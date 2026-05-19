@@ -167,6 +167,7 @@ export async function createDeclaration(
     eventId: eventId,
     transactionId: uuidv4(),
     declaration,
+    waitFor: true,
     annotation
   })
 

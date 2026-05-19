@@ -228,7 +228,8 @@ export async function createDeclaration(
     eventId,
     transactionId: uuidv4(),
     declaration,
-    annotation
+    annotation,
+    waitFor: true
   })
 
   const registerAction = registerRes.actions.find(
