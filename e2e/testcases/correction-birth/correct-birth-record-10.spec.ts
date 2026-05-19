@@ -636,6 +636,12 @@ test.describe('10. Correct record', () => {
       })
       test.describe('10.1.6.4 Validate history in record audit', async () => {
         test('10.1.6.4.0 Ensure record is assigned', async () => {
+          // Wait for the correction approval to fully complete before checking
+          // assignment. The approval triggers an auto-unassign — if we call
+          // ensureAssignedToUser before that unassign lands, we may skip
+          // re-assigning (record appears still assigned), then the unassign
+          // fires late and leaves the record unassigned for the audit steps.
+          await page.waitForTimeout(3000)
           await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
         })
         test('10.1.6.4.1 Validate correction requested modal', async () => {
