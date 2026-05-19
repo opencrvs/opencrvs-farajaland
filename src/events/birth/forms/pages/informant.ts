@@ -24,7 +24,7 @@ import {
 import { not } from '@opencrvs/toolkit/conditionals'
 import {
   farajalandNameConfig,
-  invalidNameValidator,
+  invalidNameValidator
 } from '@countryconfig/events/birth/validators'
 
 import {
@@ -102,7 +102,8 @@ const informantOtherThanParent = and(
 
 export const idReaderHelperText = {
   id: 'event.birth.id-reader.helper-text',
-  defaultMessage: "Authentication isn't required to register. To issue a UIN for the child, at least one parent must be authenticated",
+  defaultMessage:
+    "Authentication isn't required to register. To issue a UIN for the child, at least one parent must be authenticated",
   description: 'Helper text'
 }
 
@@ -118,7 +119,7 @@ export const informant = defineFormPage({
       id: 'informant.notifyingOfficialHelper',
       type: FieldType.HEADING,
       label: {
-        defaultMessage: "Notifying Official",
+        defaultMessage: 'Notifying Official',
         description: 'This is the label for the field',
         id: 'event.birth.action.declare.form.section.informant.field.notifyingOfficialName.label'
       },
@@ -146,7 +147,7 @@ export const informant = defineFormPage({
       configuration: farajalandNameConfig,
       hideLabel: true,
       label: {
-        defaultMessage: "Notifying Official",
+        defaultMessage: 'Notifying Official',
         description: 'This is the label for the field',
         id: 'event.birth.action.declare.form.section.informant.field.notifyingOfficialName.label'
       },
@@ -168,7 +169,7 @@ export const informant = defineFormPage({
         firstname: user('firstname'),
         middlename: user('middlename'),
         surname: user('surname')
-      },
+      }
     },
     {
       id: 'informant.relation',
@@ -220,9 +221,7 @@ export const informant = defineFormPage({
               "This is the error message for a birth date after child's birth date",
             id: 'event.birth.action.declare.form.section.person.dob.afterChild'
           },
-          validator: field('informant.dob')
-            .isBefore()
-            .date(field('child.dob'))
+          validator: field('informant.dob').isBefore().date(field('child.dob'))
         }
       ]
     }),
@@ -348,8 +347,7 @@ export const informant = defineFormPage({
             field('informant.phoneNo').isFalsy()
           )
         }
-      ],
-      parent: field('informant.relation')
+      ]
     },
     {
       id: 'informant.email',
@@ -363,8 +361,7 @@ export const informant = defineFormPage({
       },
       configuration: {
         maxLength: 255
-      },
-      parent: field('informant.relation')
+      }
     }
   ]
 })
