@@ -105,7 +105,7 @@ test.describe.serial('4(b) Validate "Pending updates"-workqueue for RO', () => {
   test('4.5 Complete declare with edits action', async () => {
     await page.getByTestId('change-button-child.weightAtBirth').click()
     await page.getByTestId('number__child____weightAtBirth').fill('2.6')
-    await page.getByRole('button', { name: 'Back to review' }).click()
+    await page.getByRole('button', { name: 'Go to review' }).click()
 
     await selectDeclarationAction(page, 'Declare with edits')
 

@@ -171,7 +171,7 @@ test.describe
     })
 
     test('Go back to review', async () => {
-      await page.getByRole('button', { name: 'Back to review' }).click()
+      await page.getByRole('button', { name: 'Go to review' }).click()
     })
 
     test('Declare with edits', async () => {
@@ -348,7 +348,7 @@ test.describe
     })
 
     test('Go back to review', async () => {
-      await page.getByRole('button', { name: 'Back to review' }).click()
+      await page.getByRole('button', { name: 'Go to review' }).click()
     })
 
     test('Register with edits should be unavailable', async () => {
