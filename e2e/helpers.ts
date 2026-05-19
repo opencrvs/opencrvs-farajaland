@@ -243,7 +243,7 @@ export async function continueForm(page: Page, label: string = 'Continue') {
 
 export async function goBackToReview(page: Page) {
   await page.waitForTimeout(SAFE_INPUT_CHANGE_TIMEOUT_MS)
-  await page.getByRole('button', { name: 'Back to review' }).click()
+  await page.getByRole('button', { name: 'Go to review' }).click()
 }
 
 export const joinValuesWith = (
