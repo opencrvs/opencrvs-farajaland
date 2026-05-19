@@ -246,7 +246,7 @@ test.describe.serial('Correct record - change informant type', () => {
   })
 
   test('Go back to review, expect to not see any validation errors', async () => {
-    await page.getByRole('button', { name: 'Back to review' }).click()
+    await page.getByRole('button', { name: 'Go to review' }).click()
     await expect(page.getByText(REQUIRED_VALIDATION_ERROR)).not.toBeVisible()
   })
 

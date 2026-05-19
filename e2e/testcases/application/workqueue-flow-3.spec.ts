@@ -316,7 +316,7 @@ test.describe.serial('3. Workqueue flow - 3', () => {
     })
 
     test('3.3.6 Send for review', async () => {
-      await continueForm(page, 'Back to review')
+      await continueForm(page, 'Go to review')
 
       await expect(page.getByRole('dialog')).not.toBeVisible()
 
