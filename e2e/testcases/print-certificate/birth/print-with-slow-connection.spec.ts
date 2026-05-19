@@ -11,23 +11,18 @@ import {
   selectCertificationType,
   navigateToCertificatePrintAction
 } from './helpers'
-import { ensureAssigned, expectInUrl } from '../../../utils'
+import { expectInUrl } from '../../../utils'
 import { mockNetworkConditions } from '../../../mock-network-conditions'
 
 test.describe
   .serial('User should not be able to press print button twice', () => {
   let declaration: Declaration
   let page: Page
-  let eventId: string
 
   test.beforeAll(async ({ browser }) => {
-    const token = await getToken(
-      CREDENTIALS.LOCAL_REGISTRAR.USERNAME,
-      CREDENTIALS.LOCAL_REGISTRAR.PASSWORD
-    )
+    const token = await getToken(CREDENTIALS.REGISTRAR)
     const res = await createDeclaration(token)
     declaration = res.declaration
-    eventId = res.eventId
     page = await browser.newPage()
   })
 
@@ -40,8 +35,12 @@ test.describe
   })
 
   test('Navigate to certificate print action', async () => {
-    await page.getByRole('button', { name: 'Ready to print' }).click()
-    await navigateToCertificatePrintAction(page, declaration)
+    await page.getByRole('button', { name: 'Pending certification' }).click()
+    await navigateToCertificatePrintAction(
+      page,
+      declaration,
+      CREDENTIALS.REGISTRAR
+    )
   })
 
   test('Fill details', async () => {
@@ -73,6 +72,6 @@ test.describe
     // Check that the popup URL contains PDF content
     await expect(popup.url()).toBe('about:blank')
     await expect(download.suggestedFilename()).toMatch(/^.*\.pdf$/)
-    await expectInUrl(page, `/workqueue/ready-to-print`)
+    await expectInUrl(page, `/workqueue/pending-certification`)
   })
 })

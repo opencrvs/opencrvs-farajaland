@@ -5,10 +5,10 @@ import {
   createDeclaration as createDeclarationV2,
   Declaration as DeclarationV2
 } from '../test-data/birth-declaration-with-mother-father'
-import { format, subYears } from 'date-fns'
+import { format, subDays, subYears } from 'date-fns'
 import { CREDENTIALS, SAFE_OUTBOX_TIMEOUT_MS } from '../../constants'
 import { formatV2ChildName } from '../birth/helpers'
-import { ensureAssigned } from '../../utils'
+import { ensureAssignedToUser, selectAction } from '../../utils'
 
 test.describe.serial('Direct correction offline', () => {
   let declaration: DeclarationV2
@@ -26,10 +26,7 @@ test.describe.serial('Direct correction offline', () => {
   })
 
   test('Shortcut declaration', async () => {
-    let token = await getToken(
-      CREDENTIALS.NATIONAL_REGISTRAR.USERNAME,
-      CREDENTIALS.NATIONAL_REGISTRAR.PASSWORD
-    )
+    let token = await getToken(CREDENTIALS.REGISTRAR)
 
     const res = await createDeclarationV2(
       token,
@@ -39,8 +36,7 @@ test.describe.serial('Direct correction offline', () => {
           surname: faker.person.lastName()
         },
         'child.gender': 'male',
-        'child.dob': format(subYears(new Date(), 1), 'yyyy-MM-dd'),
-        'child.reason': 'Late',
+        'child.dob': format(subDays(new Date(), 2), 'yyyy-MM-dd'),
         'child.placeOfBirth': 'PRIVATE_HOME',
         'child.attendantAtBirth': 'PHYSICIAN',
         'child.birthType': 'SINGLE',
@@ -83,30 +79,21 @@ test.describe.serial('Direct correction offline', () => {
     )
     trackingId = res.trackingId!
     eventId = res.eventId
-    token = await getToken('k.mweene', 'test')
+    token = await getToken(CREDENTIALS.REGISTRAR)
     declaration = res.declaration
   })
 
   test('Navigate to record correction', async () => {
-    await login(page, CREDENTIALS.LOCAL_REGISTRAR)
+    await login(page, CREDENTIALS.REGISTRAR)
 
     await auditRecord({
       page,
       name: formatV2ChildName(declaration),
       trackingId
     })
-    await ensureAssigned(page)
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
 
-    await page.getByRole('button', { name: 'Action', exact: true }).click()
-
-    /*
-     * Expected result: should show correct record button in action menu
-     */
-    await expect(
-      page.getByText('Correct record', { exact: true })
-    ).toBeVisible()
-
-    await page.getByText('Correct record', { exact: true }).click()
+    await selectAction(page, 'Correct')
   })
 
   test('Add correction requester', async () => {
@@ -157,7 +144,7 @@ test.describe.serial('Direct correction offline', () => {
     await page.getByRole('button', { name: 'Correct record' }).click()
     await page.getByRole('button', { name: 'Confirm' }).click()
 
-    expect(page.url().includes(`events/overview/${eventId}`)).toBeTruthy()
+    expect(page.url().includes(`events/${eventId}`)).toBeTruthy()
 
     // We expect to see the optimistically updated new child name instead of the old one
     await expect(
@@ -165,6 +152,8 @@ test.describe.serial('Direct correction offline', () => {
         hasText: formatV2ChildName({ 'child.name': updatedChildDetails })
       })
     ).toBeVisible()
+
+    await page.getByTestId('exit-event').click()
 
     await page.getByRole('button', { name: 'Outbox' }).click()
     await expect(page.getByText('Offline')).toBeVisible()

@@ -1,25 +1,25 @@
 name: Destroy Hetzner Server
 run-name: Destroy server for ${{ github.event.inputs.environment }} environment
 on:
-    workflow_dispatch:
-      inputs:
-        environment:
-          description: "Short server name (3–5 letters)"
-          required: true
-        type:
-          description: "Environment type (single or multi node)"
-          required: false
-          type: choice
-          default: 'single-node'
-          options:
-            - single-node
-            - multi-node
-    workflow_call:
-      inputs:
-        environment:
-          type: string
-          description: Environment to deploy to
-          required: true
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Short server name (3–5 letters)'
+        required: true
+      type:
+        description: 'Environment type (single or multi node)'
+        required: false
+        type: choice
+        default: 'single-node'
+        options:
+          - single-node
+          - multi-node
+  workflow_call:
+    inputs:
+      environment:
+        type: string
+        description: Environment to deploy to
+        required: true
 
 env:
   GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
@@ -42,7 +42,7 @@ jobs:
     environment: ${{ github.event.inputs.environment }}
     steps:
       - name: Checkout repo ${{ github.repository }}
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           # Token permissions:  read:org, read:public_key, repo, workflow
           token: ${{ secrets.GH_TOKEN }}
@@ -51,7 +51,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
       - name: Checkout repo ${{ env.TERRAFORM_REPO }}
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: ${{ env.TERRAFORM_REPO }}
           ref: main
@@ -82,7 +82,7 @@ jobs:
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.5.7
-  
+
       - name: Terraform Init
         working-directory: ${{ env.TF_PATH }}
         run: terraform init
@@ -155,7 +155,7 @@ jobs:
         run: |
           grep -vE '${{ env.HOST_IP }}|${{ env.HOSTNAME }}' infrastructure/known-hosts > infrastructure/known-hosts.tmp
           mv infrastructure/known-hosts.tmp infrastructure/known-hosts
-  
+
       - name: Commit and push changes to ${{ github.repository }}
         run: |
           git add infrastructure/server-setup/inventory/* \

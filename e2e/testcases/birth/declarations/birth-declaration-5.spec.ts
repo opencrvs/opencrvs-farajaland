@@ -6,7 +6,8 @@ import {
   formatName,
   getRandomDate,
   goToSection,
-  login
+  login,
+  selectDeclarationAction
 } from '../../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../../constants'
@@ -29,8 +30,8 @@ test.describe.serial('5. Birth declaration case - 5', () => {
     placeOfBirth: 'Other',
     birthLocation: {
       country: 'Farajaland',
-      province: 'Pualula',
-      district: 'Funabuli',
+      province: 'Central',
+      district: 'Ibombo',
       town: faker.location.city(),
       residentialArea: faker.location.county(),
       street: faker.location.street(),
@@ -97,9 +98,9 @@ test.describe.serial('5. Birth declaration case - 5', () => {
     await page.close()
   })
 
-  test.describe('5.1 Declaration started by Local Registrar', async () => {
+  test.describe('5.1 Declaration started by Registrar', async () => {
     test.beforeAll(async () => {
-      await login(page, CREDENTIALS.LOCAL_REGISTRAR)
+      await login(page, CREDENTIALS.REGISTRAR_VILLAGE)
       await page.click('#header-new-event')
       await page.getByLabel('Birth').click()
       await page.getByRole('button', { name: 'Continue' }).click()
@@ -125,19 +126,18 @@ test.describe.serial('5. Birth declaration case - 5', () => {
         })
         .click()
 
-      await page.locator('#province').click()
-      await page
-        .getByText(declaration.birthLocation.province, {
-          exact: true
-        })
-        .click()
+      // Province and district are disabled because the user jurisdiction is limited to user's administrative area
+      await expect(
+        page.locator('#child____birthLocation____other-form-input #province')
+      ).toBeDisabled()
 
-      await page.locator('#district').click()
-      await page
-        .getByText(declaration.birthLocation.district, {
-          exact: true
-        })
-        .click()
+      await expect(
+        page.locator('#child____birthLocation____other-form-input #district')
+      ).toBeDisabled()
+
+      await expect(
+        page.locator('#child____birthLocation____other-form-input #village')
+      ).toBeDisabled()
 
       await page.locator('#town').fill(declaration.birthLocation.town)
       await page
@@ -512,12 +512,10 @@ test.describe.serial('5. Birth declaration case - 5', () => {
     })
 
     test('5.1.8 Register', async () => {
-      await page.getByRole('button', { name: 'Register' }).click()
-      await page.locator('#confirm_Declare').click()
-
+      await selectDeclarationAction(page, 'Register')
       await ensureOutboxIsEmpty(page)
 
-      await page.getByText('Ready to print').click()
+      await page.getByText('Pending certification').click()
 
       await expect(
         page.getByRole('button', {

@@ -48,7 +48,7 @@ jobs:
     needs: check_farajaland_branch
     steps:
       - name: Checkout OpenCRVS Farajaland repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
           repository: '${{ vars.FORK_REPOSITORY_ORGANISATION }}/${{ vars.FORK_REPOSITORY_NAME }}'

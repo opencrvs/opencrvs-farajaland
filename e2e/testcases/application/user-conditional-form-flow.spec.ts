@@ -1,9 +1,14 @@
 import { test, expect, type Page } from '@playwright/test'
-import { continueForm, formatName, getRandomDate, login } from '../../helpers'
+import {
+  continueForm,
+  formatName,
+  getRandomDate,
+  login,
+  selectDeclarationAction
+} from '../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../constants'
-
-import { ensureOutboxIsEmpty, selectAction } from '../../utils'
+import { ensureOutboxIsEmpty } from '../../utils'
 
 test.describe.serial('1. User conditional form flow', () => {
   let page: Page
@@ -33,9 +38,9 @@ test.describe.serial('1. User conditional form flow', () => {
     await page.close()
   })
 
-  test.describe('1.1 Declaration started by FA', async () => {
+  test.describe('1.1 Declaration started by HO', async () => {
     test.beforeAll(async () => {
-      await login(page, CREDENTIALS.FIELD_AGENT)
+      await login(page, CREDENTIALS.HOSPITAL_OFFICIAL)
       await page.click('#header-new-event')
       await page.getByLabel('Tennis club membership application').click()
       await page.getByRole('button', { name: 'Continue' }).click()
@@ -99,49 +104,24 @@ test.describe.serial('1. User conditional form flow', () => {
       ).toHaveText('Yes')
     })
 
-    test('1.1.5 Send for review', async () => {
-      await page.getByRole('button', { name: 'Send for review' }).click()
-      await expect(page.getByText('Send for review?')).toBeVisible()
-      await page.getByRole('button', { name: 'Confirm' }).click()
+    test('1.1.5 Declare', async () => {
+      await selectDeclarationAction(page, 'Declare')
 
       await ensureOutboxIsEmpty(page)
-
-      await page.getByText('Sent for review').click()
-      await expect(
-        page.getByRole('button', {
-          name: formatName(declaration.applicant.name)
-        })
-      ).toBeVisible()
-    })
-
-    test('1.1.6 Navigate to the declaration "read-only" page', async () => {
-      await page
-        .getByRole('button', {
-          name: formatName(declaration.applicant.name)
-        })
-        .click()
-
-      await selectAction(page, 'View')
-
-      await expect(
-        page.getByText(
-          'Field shown when field agent is submitting application.'
-        )
-      ).toBeVisible()
     })
   })
 
-  test.describe('1.2 Declaration Review by RA', async () => {
-    test('1.2.1 Navigate to the declaration "read-only" page', async () => {
-      await login(page, CREDENTIALS.REGISTRATION_AGENT)
-      await page.getByText('Ready for review').click()
+  test.describe('1.2 Declaration Review by Registration Officer', async () => {
+    test('1.2.1 Navigate to the declaration "Pending validation"-tab', async () => {
+      await login(page, CREDENTIALS.REGISTRATION_OFFICER)
+      await page.getByText('Pending validation').click()
       await page
         .getByRole('button', {
           name: formatName(declaration.applicant.name)
         })
         .click()
 
-      await selectAction(page, 'View')
+      await page.getByRole('button', { name: 'Record', exact: true }).click()
 
       await expect(
         page.getByText(
@@ -149,24 +129,7 @@ test.describe.serial('1. User conditional form flow', () => {
         )
       ).not.toBeVisible()
 
-      await page.getByTestId('exit-button').click()
-    })
-
-    test('1.2.2 Navigate to the declaration "Review" page', async () => {
-      await page.getByText('Ready for review').click()
-      await page
-        .getByRole('button', {
-          name: formatName(declaration.applicant.name)
-        })
-        .click()
-
-      await selectAction(page, 'Review')
-
-      await expect(
-        page.getByText(
-          'Field shown when field agent is submitting application.'
-        )
-      ).not.toBeVisible()
+      await page.getByTestId('exit-event').click()
     })
   })
 })

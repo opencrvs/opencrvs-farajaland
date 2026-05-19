@@ -2,13 +2,13 @@ import { expect, test, type Page } from '@playwright/test'
 import {
   formatDateTo_dMMMMyyyy,
   formatName,
-  getLocationNameFromFhirId,
+  getLocationNameFromId,
   getToken,
   goBackToReview,
   login,
   uploadImage
 } from '../../helpers'
-import { faker } from '@faker-js/faker'
+import { en, faker } from '@faker-js/faker'
 import { format, parseISO, subDays } from 'date-fns'
 import { CREDENTIALS } from '../../constants'
 import {
@@ -16,7 +16,7 @@ import {
   Declaration
 } from '../test-data/birth-declaration-with-mother-father'
 import {
-  ensureAssigned,
+  ensureAssignedToUser,
   ensureOutboxIsEmpty,
   expectInUrl,
   selectAction,
@@ -28,6 +28,7 @@ test.describe('1. Correct record - 1', () => {
   let declaration: Declaration
   let trackingId: string | undefined
   let eventId: string
+  let token: string
 
   const updatedChildDetails = {
     firstNames: faker.person.firstName('male'),
@@ -37,17 +38,14 @@ test.describe('1. Correct record - 1', () => {
       subDays(new Date(), Math.ceil(15 * Math.random()) + 5),
       'yyyy-MM-dd'
     ),
-    birthLocation: 'Tembwe Rural Health Centre',
+    birthLocation: 'Ibombo District Hospital',
     attendantAtBirth: 'Nurse',
     typeOfBirth: 'Twin',
     weightAtBirth: '3.1'
   }
 
   test.beforeAll(async () => {
-    const token = await getToken(
-      CREDENTIALS.LOCAL_REGISTRAR.USERNAME,
-      CREDENTIALS.LOCAL_REGISTRAR.PASSWORD
-    )
+    token = await getToken(CREDENTIALS.REGISTRAR)
     const res = await createDeclaration(
       token,
       undefined,
@@ -61,12 +59,13 @@ test.describe('1. Correct record - 1', () => {
 
   test.describe('1.1 Validate verbiage', async () => {
     test.beforeEach(async ({ page }) => {
-      await login(page, CREDENTIALS.REGISTRATION_AGENT)
-      await page.getByRole('button', { name: 'Ready to print' }).click()
+      await login(page, CREDENTIALS.REGISTRATION_OFFICER)
+      await page.getByRole('button', { name: 'Pending certification' }).click()
       await page
         .getByRole('button', { name: formatV2ChildName(declaration) })
         .click()
-      await ensureAssigned(page)
+
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
     })
 
     test('1.1.1 Validate record audit page', async ({ page }) => {
@@ -76,12 +75,15 @@ test.describe('1. Correct record - 1', () => {
        * - Navigate to record audit page
        * - See status, event, trackingId, BRN, DOB, Place of birth, Informant contact
        */
-      await expect(page.getByText(formatV2ChildName(declaration))).toBeVisible()
+      await expect(page.locator('#content-name')).toHaveText(
+        formatV2ChildName(declaration),
+        { timeout: 60_000 }
+      )
       await expect(
         page.getByRole('button', { name: 'Action' }).first()
       ).toBeVisible()
 
-      expect(page.url().includes(`/events/overview/${eventId}`)).toBeTruthy()
+      expect(page.url().includes(`/events/${eventId}`)).toBeTruthy()
 
       await expect(page.getByText(`StatusRegistered`)).toBeVisible()
       await expect(page.getByText(`EventBirth`)).toBeVisible()
@@ -100,8 +102,10 @@ test.describe('1. Correct record - 1', () => {
         throw new Error('Birth location ID is undefined')
       }
 
-      const childBirthLocationName =
-        await getLocationNameFromFhirId(birthLocationId)
+      const childBirthLocationName = await getLocationNameFromId(
+        birthLocationId,
+        token
+      )
       await expect(
         page.getByText(`Place of birth${childBirthLocationName}`)
       ).toBeVisible()
@@ -109,11 +113,11 @@ test.describe('1. Correct record - 1', () => {
         page.getByText(`Contact${declaration['informant.email']}`)
       ).toBeVisible()
 
-      await selectAction(page, 'Correct record')
+      await selectAction(page, 'Correct')
     })
 
     test('1.1.2 Validate correction requester page', async ({ page }) => {
-      await selectAction(page, 'Correct record')
+      await selectAction(page, 'Correct')
 
       /*
        * Expected result: should
@@ -132,7 +136,7 @@ test.describe('1. Correct record - 1', () => {
     test('1.1.3 Validate identity verification page for Mother', async ({
       page
     }) => {
-      await selectAction(page, 'Correct record')
+      await selectAction(page, 'Correct')
 
       await page.locator('#requester____type').click()
       await page.getByText('Informant (Mother)', { exact: true }).click()
@@ -185,20 +189,23 @@ test.describe('1. Correct record - 1', () => {
 
     test.beforeAll(async ({ browser }) => {
       page = await browser.newPage()
-      await login(page, CREDENTIALS.REGISTRATION_AGENT)
+      await login(page, CREDENTIALS.REGISTRATION_OFFICER)
     })
 
     test.afterAll(async () => {
       await page.close()
     })
 
-    test('1.2.0 Navigate to record correction', async () => {
-      await page.getByRole('button', { name: 'Ready to print' }).click()
+    test('Navigate to record and assign', async () => {
+      await page.getByRole('button', { name: 'Pending certification' }).click()
       await page
         .getByRole('button', { name: formatV2ChildName(declaration) })
         .click()
-      await ensureAssigned(page)
-      await selectAction(page, 'Correct record')
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
+    })
+
+    test('1.2.0 Navigate to record correction', async () => {
+      await selectAction(page, 'Correct')
 
       await page.locator('#requester____type').click()
       await page.getByText('Informant (Mother)', { exact: true }).click()
@@ -267,7 +274,7 @@ test.describe('1. Correct record - 1', () => {
          */
         await expectInUrl(
           page,
-          `/events/request-correction/${eventId}/pages/child?from=review&workqueue=ready-to-print#child____name`
+          `/events/request-correction/${eventId}/pages/child?from=review&workqueue=pending-certification#child____name`
         )
 
         await page
@@ -314,7 +321,7 @@ test.describe('1. Correct record - 1', () => {
 
         await expectInUrl(
           page,
-          `/events/request-correction/${eventId}/pages/child?from=review&workqueue=ready-to-print#child____gender`
+          `/events/request-correction/${eventId}/pages/child?from=review&workqueue=pending-certification#child____gender`
         )
 
         await page.getByTestId('select__child____gender').locator('svg').click()
@@ -352,7 +359,7 @@ test.describe('1. Correct record - 1', () => {
          */
         await expectInUrl(
           page,
-          `/events/request-correction/${eventId}/pages/child?from=review&workqueue=ready-to-print#child____dob`
+          `/events/request-correction/${eventId}/pages/child?from=review&workqueue=pending-certification#child____dob`
         )
 
         const birthDay = updatedChildDetails.birthDate.split('-')
@@ -393,11 +400,11 @@ test.describe('1. Correct record - 1', () => {
          */
         await expectInUrl(
           page,
-          `/events/request-correction/${eventId}/pages/child?from=review&workqueue=ready-to-print#child____placeOfBirth`
+          `/events/request-correction/${eventId}/pages/child?from=review&workqueue=pending-certification#child____placeOfBirth`
         )
 
         await page
-          .getByTestId('child____birthLocation')
+          .locator('#searchable-select-child____birthLocation input')
           .fill(updatedChildDetails.birthLocation.slice(0, 2))
         await page.getByText(updatedChildDetails.birthLocation).click()
 
@@ -412,8 +419,9 @@ test.describe('1. Correct record - 1', () => {
 
         await expectInUrl(page, `/events/request-correction/${eventId}/review`)
 
-        childBirthLocationName = await getLocationNameFromFhirId(
-          declaration['child.birthLocation']!
+        childBirthLocationName = await getLocationNameFromId(
+          declaration['child.birthLocation']!,
+          token
         )
         expect(childBirthLocationName).toBeDefined()
 
@@ -442,7 +450,7 @@ test.describe('1. Correct record - 1', () => {
 
         await expectInUrl(
           page,
-          `/events/request-correction/${eventId}/pages/child?from=review&workqueue=ready-to-print#child____attendantAtBirth`
+          `/events/request-correction/${eventId}/pages/child?from=review&workqueue=pending-certification#child____attendantAtBirth`
         )
 
         await page.getByTestId('select__child____attendantAtBirth').click()
@@ -483,7 +491,7 @@ test.describe('1. Correct record - 1', () => {
 
         await expectInUrl(
           page,
-          `/events/request-correction/${eventId}/pages/child?from=review&workqueue=ready-to-print#child____birthType`
+          `/events/request-correction/${eventId}/pages/child?from=review&workqueue=pending-certification#child____birthType`
         )
 
         await page.getByTestId('select__child____birthType').click()
@@ -544,7 +552,7 @@ test.describe('1. Correct record - 1', () => {
 
         await expectInUrl(
           page,
-          `/events/request-correction/${eventId}/pages/child?from=review&workqueue=ready-to-print#child____weightAtBirth`
+          `/events/request-correction/${eventId}/pages/child?from=review&workqueue=pending-certification#child____weightAtBirth`
         )
 
         await page
@@ -618,7 +626,7 @@ test.describe('1. Correct record - 1', () => {
         await expect(
           page.locator('#listTable-corrections-table-child')
         ).toContainText(
-          `Location of birth${await getLocationNameFromFhirId(declaration['child.birthLocation']!)}`
+          `Location of birth${await getLocationNameFromId(declaration['child.birthLocation']!, token)}`
         )
 
         await expect(
@@ -650,14 +658,9 @@ test.describe('1. Correct record - 1', () => {
         /*
          * Expected result: should be navigated to event overview
          */
-        await expectInUrl(page, `/workqueue/ready-to-print`)
+        await expectInUrl(page, `/workqueue/pending-certification`)
 
-        /*
-         * Expected result: should
-         * - be navigated to Sent for approval workqueue
-         * - include the declaration in this tab
-         */
-        await page.getByTestId('navigation_workqueue_sent-for-approval').click()
+        await page.getByText('Recent').click()
         await ensureOutboxIsEmpty(page)
         await expect(
           page.getByRole('button', { name: formatV2ChildName(declaration) })
@@ -669,10 +672,10 @@ test.describe('1. Correct record - 1', () => {
       test.beforeAll(async ({ browser }) => {
         await page.close()
         page = await browser.newPage()
-        await login(page, CREDENTIALS.LOCAL_REGISTRAR)
+        await login(page, CREDENTIALS.REGISTRAR)
       })
 
-      test('1.2.6.1 Record audit by local registrar', async () => {
+      test('1.2.6.1 Record audit by Registrar', async () => {
         if (!trackingId) {
           throw new Error('Tracking ID is required')
         }
@@ -685,7 +688,8 @@ test.describe('1. Correct record - 1', () => {
       })
 
       test('1.2.6.2 Correction review', async () => {
-        await selectAction(page, 'Review')
+        await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
+        await selectAction(page, 'Review correction request')
 
         await expect(
           page.getByText('Requester' + 'Informant (Mother)')
@@ -720,33 +724,13 @@ test.describe('1. Correct record - 1', () => {
         await page.getByRole('button', { name: 'Approve', exact: true }).click()
         await page.getByRole('button', { name: 'Confirm', exact: true }).click()
 
-        await expectInUrl(page, `/events/overview/${eventId}`)
+        await expectInUrl(page, `/events/${eventId}`)
       })
 
       test.describe('1.2.6.4 Validate history in record audit', async () => {
-        test('1.2.6.4.1 Validate entries in record audit', async () => {
-          if (!trackingId) {
-            throw new Error('Tracking ID is required')
-          }
-
-          await type(page, '#searchText', trackingId)
-          await page.locator('#searchIconButton').click()
-          await page
-            .getByRole('button', {
-              name: formatV2ChildName({
-                'child.name': {
-                  firstname: updatedChildDetails.firstNames,
-                  surname: updatedChildDetails.familyName
-                }
-              })
-            })
-            .click()
-
-          await ensureAssigned(page)
-        })
-
-        test('1.2.6.4.2 Validate correction requested modal', async () => {
-          await page.getByRole('button', { name: 'Next page' }).click()
+        test('1.2.6.4.1 Validate correction requested modal', async () => {
+          await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
+          await page.getByRole('button', { name: 'Audit' }).click()
 
           await page
             .getByRole('button', { name: 'Correction requested', exact: true })
@@ -780,7 +764,8 @@ test.describe('1. Correct record - 1', () => {
           await page.locator('#close-btn').click()
         })
 
-        test('1.2.6.4.3 Validate correction approved modal', async () => {
+        test('1.2.6.4.2 Validate correction approved modal', async () => {
+          await page.getByRole('button', { name: 'Next page' }).click()
           await page
             .getByRole('button', { name: 'Correction approved', exact: true })
             .click()
