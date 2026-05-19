@@ -170,6 +170,39 @@ export async function type(page: Page, locator: string, text: string) {
   await page.locator(locator).blur()
 }
 
+/**
+ * Clicks a button by name in the audit history table, searching across all pages.
+ * Use this instead of directly calling getByRole('button', ...) on an audit entry,
+ * since the number of history items (and therefore which page a given entry lands on)
+ * varies between environments.
+ */
+export async function clickAuditHistoryButton(
+  page: Page,
+  buttonName: string
+): Promise<void> {
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    const button = page.getByRole('button', { name: buttonName, exact: true })
+    const found = await button
+      .waitFor({ state: 'visible', timeout: 3000 })
+      .then(() => true)
+      .catch(() => false)
+
+    if (found) {
+      await button.click()
+      return
+    }
+
+    const nextPageButton = page.getByRole('button', { name: 'Next page' })
+    if (!(await nextPageButton.isVisible())) {
+      throw new Error(
+        `Audit history button "${buttonName}" not found on any page`
+      )
+    }
+    await nextPageButton.click()
+  }
+}
+
 export const assertTexts = async ({
   root,
   texts,
