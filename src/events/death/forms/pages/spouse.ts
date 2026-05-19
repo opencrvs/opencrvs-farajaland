@@ -61,7 +61,7 @@ export const spouse = defineFormPage({
       id: 'spouse.detailsNotAvailable',
       type: FieldType.CHECKBOX,
       label: {
-        defaultMessage: "Deceased had no spouse",
+        defaultMessage: 'Deceased had no spouse',
         description: 'This is the label for the field',
         id: 'event.death.action.declare.form.section.spouse.field.detailsNotAvailable.label'
       },
@@ -94,7 +94,6 @@ export const spouse = defineFormPage({
     ...getIdentityFields({
       prefix: 'spouse',
       showConditional: requireSpouseDetails,
-      parent: field('informant.relation'),
       uniqueNidAgainst: ['informant.nid', 'deceased.nid']
     }),
     {
