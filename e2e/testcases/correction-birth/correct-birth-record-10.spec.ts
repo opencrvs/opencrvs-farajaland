@@ -16,7 +16,6 @@ import {
   Declaration
 } from '../test-data/birth-declaration-with-mother-father'
 import {
-  clickAuditHistoryButton,
   ensureAssignedToUser,
   expectInUrl,
   selectAction,
@@ -641,7 +640,9 @@ test.describe('10. Correct record', () => {
         })
         test('10.1.6.4.1 Validate correction requested modal', async () => {
           await page.getByRole('button', { name: 'Audit' }).click()
-          await clickAuditHistoryButton(page, 'Correction requested')
+          await page
+            .getByRole('button', { name: 'Correction requested', exact: true })
+            .click()
 
           await expect(
             page.getByText('Requester' + 'Someone else')
@@ -685,7 +686,11 @@ test.describe('10. Correct record', () => {
         })
 
         test('10.1.6.4.2 Validate correction approved modal', async () => {
-          await clickAuditHistoryButton(page, 'Correction approved')
+          await page.getByRole('button', { name: 'Next page' }).click()
+          await page
+            .getByRole('button', { name: 'Correction approved', exact: true })
+            .click()
+
           await page.locator('#close-btn').click()
         })
       })
