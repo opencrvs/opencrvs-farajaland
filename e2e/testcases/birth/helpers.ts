@@ -93,11 +93,16 @@ export const assertRecordInWorkqueue = async ({
   }
 }
 
-export const assignFromWorkqueue = async (page: Page, name: string) => {
-  await getRowByTitle(page, name)
-    .getByRole('button', { name: 'Assign record' })
-    .click()
+export const ensureAssignedFromWorkqueue = async (page: Page, name: string) => {
+  const assignButton = await getRowByTitle(page, name).getByRole('button', {
+    name: 'Assign record'
+  })
 
+  if (!(await assignButton.isVisible())) {
+    return
+  }
+
+  await assignButton.click()
   await page.getByRole('button', { name: 'Assign', exact: true }).click()
 
   await expect(

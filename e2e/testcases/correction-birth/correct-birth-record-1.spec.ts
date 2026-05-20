@@ -8,7 +8,7 @@ import {
   login,
   uploadImage
 } from '../../helpers'
-import { en, faker } from '@faker-js/faker'
+import { faker } from '@faker-js/faker'
 import { format, parseISO, subDays } from 'date-fns'
 import { CREDENTIALS } from '../../constants'
 import {
