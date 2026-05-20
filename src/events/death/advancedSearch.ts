@@ -84,7 +84,11 @@ export const advancedSearchDeath = [
       field('deceased.name', {
         validations: [],
         conditionals: []
-      }).fuzzy()
+      }).fuzzy(),
+      field('deceased.gender', {
+        validations: [],
+        conditionals: []
+      }).exact()
     ]
   },
   {

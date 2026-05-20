@@ -352,6 +352,32 @@ export const deceased = defineFormPage({
       ]
     },
     {
+      id: 'deceased.gender',
+      type: FieldType.SELECT,
+      required: true,
+      label: {
+        defaultMessage: 'Sex',
+        description: 'This is the label for the field',
+        id: `v2.event.death.action.declare.form.section.deceased.field.gender.label`
+      },
+      options: genderOptions,
+      parent: field('deceased.brn.search'),
+      value: field('deceased.brn.search').getByPath([
+        'data',
+        'firstResult',
+        'declaration',
+        'child.gender'
+      ]),
+      conditionals: [
+        {
+          type: ConditionalType.ENABLE,
+          conditional: field('deceased.brn.search')
+            .getByPath(['data', 'firstResult'])
+            .isFalsy()
+        }
+      ]
+    },
+    {
       id: 'deceased.maritalStatus',
       type: FieldType.SELECT,
       required: false,
