@@ -37,6 +37,10 @@ const EMPLOYEES_OUT = path.join(
   __dirname,
   'data-seeding/employees/source/default-employees.csv'
 )
+const STATISTICS_OUT = path.join(
+  __dirname,
+  'data-seeding/locations/source/statistics.csv'
+)
 
 const STATES = 10
 const DISTRICTS_PER_STATE = 100
@@ -156,6 +160,32 @@ outer: for (const state of states) {
 }
 
 fs.writeFileSync(LOCATIONS_OUT, locRows.join('\n') + '\n', 'utf8')
+
+// ── Write statistics.csv ─────────────────────────────────────────────────────
+// The seeder requires statistics for every top-level (state) location.
+// We use the same placeholder values as the existing Farajaland data.
+
+const STAT_YEARS = Array.from({ length: 19 }, (_, i) => 2007 + i)
+const STAT_PLACEHOLDER = '20000,20000,40000,10'
+
+const statsHeader =
+  'adminPcode,name,' +
+  STAT_YEARS.map(
+    (y) =>
+      `male_population_${y},female_population_${y},population_${y},crude_birth_rate_${y}`
+  ).join(',')
+
+const statsRows: string[] = [statsHeader]
+
+for (const state of states) {
+  statsRows.push(
+    [state.pcode, state.name, ...STAT_YEARS.map(() => STAT_PLACEHOLDER)].join(
+      ','
+    )
+  )
+}
+
+fs.writeFileSync(STATISTICS_OUT, statsRows.join('\n') + '\n', 'utf8')
 
 // ── Write default-employees.csv ──────────────────────────────────────────────
 // Keeps the same cast of employees but maps their offices to valid generated IDs.
@@ -637,6 +667,7 @@ process.stdout.write(
   [
     `Wrote ${adminRows.length - 1} rows → ${ADMIN_AREAS_OUT}`,
     `Wrote ${locRows.length - 1} rows → ${LOCATIONS_OUT}`,
+    `Wrote ${statsRows.length - 1} rows → ${STATISTICS_OUT}`,
     `Wrote ${empRows.length - 1} rows → ${EMPLOYEES_OUT}`,
     '',
     `Admin areas : ${totalAdminAreas.toLocaleString()}`,
