@@ -30,7 +30,7 @@ import { InformantType } from './informant'
 
 const IdType = {
   NATIONAL_ID: 'NATIONAL_ID',
-  PASSPORT: 'PASSPORT',
+  PASSPORT: 'PASSPORT'
 } as const
 
 const idTypeMessageDescriptors = {
@@ -82,7 +82,7 @@ export const documents = defineFormPage({
   id: 'documents',
   type: PageTypes.enum.FORM,
   title: {
-    defaultMessage: 'Upload supporting documents',
+    defaultMessage: 'Supporting documents',
     description: 'Form section title for documents',
     id: 'form.section.documents.title'
   },
@@ -207,7 +207,9 @@ export const documents = defineFormPage({
       conditionals: [
         {
           type: ConditionalType.SHOW,
-          conditional: field('informant.relation').isEqualTo(InformantType.LEGAL_GUARDIAN)
+          conditional: field('informant.relation').isEqualTo(
+            InformantType.LEGAL_GUARDIAN
+          )
         }
       ]
     },
@@ -235,9 +237,11 @@ export const documents = defineFormPage({
       conditionals: [
         {
           type: ConditionalType.SHOW,
-          conditional: field('informant.relation').isEqualTo(InformantType.LEGAL_GUARDIAN)
+          conditional: field('informant.relation').isEqualTo(
+            InformantType.LEGAL_GUARDIAN
+          )
         }
       ]
-    },
+    }
   ]
 })
