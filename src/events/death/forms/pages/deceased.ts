@@ -24,13 +24,12 @@ import {
 import { not, never } from '@opencrvs/toolkit/conditionals'
 import {
   IdType,
-  idTypeOptions,
   maritalStatusOptions,
   createSelectOptions,
   emptyMessage,
   defaultStreetAddressConfiguration,
   getNestedFieldValidators,
-  idTypeOptionsForeigner
+  getIdTypeOptions
 } from '@countryconfig/events/utils'
 import {
   farajalandNameConfig,
@@ -38,11 +37,6 @@ import {
   nationalIdValidator,
   passportValidator
 } from '@countryconfig/events/birth/validators'
-import {
-  connectToMOSIPIdReader,
-  connectToMOSIPVerificationStatus,
-  getMOSIPIntegrationFields
-} from '@countryconfig/events/mosip'
 
 const GenderTypes = {
   MALE: 'male',
@@ -203,30 +197,7 @@ export const deceased = defineFormPage({
         description: 'This is the label for the field',
         id: `v2.event.death.action.declare.form.section.person.field.idType.label`
       },
-      options: idTypeOptions,
-      conditionals: [
-        {
-          type: ConditionalType.SHOW,
-          conditional: field('deceased.nationality').isEqualTo('FAR')
-        }
-      ]
-    },
-    {
-      id: `deceased.idType`,
-      type: FieldType.SELECT,
-      required: true,
-      label: {
-        defaultMessage: 'Form of ID',
-        description: 'This is the label for the field',
-        id: `v2.event.death.action.declare.form.section.person.field.idType.label`
-      },
-      options: idTypeOptionsForeigner,
-      conditionals: [
-        {
-          type: ConditionalType.SHOW,
-          conditional: not(field('deceased.nationality').isEqualTo('FAR'))
-        }
-      ]
+      options: getIdTypeOptions('deceased')
     },
     {
       id: 'deceased.nid',

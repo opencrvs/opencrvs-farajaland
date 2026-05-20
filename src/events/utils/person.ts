@@ -19,6 +19,7 @@ import {
   FieldReference,
   FieldType,
   or,
+  SelectOption,
   TranslationConfig,
   ValidationConfig
 } from '@opencrvs/toolkit/events'
@@ -60,10 +61,28 @@ export const idTypeOptions = createSelectOptions(
   IdType,
   idTypeMessageDescriptors
 )
-export const idTypeOptionsForeigner = createSelectOptions(
-  IdType,
-  idTypeMessageDescriptors
-).filter((option) => option.value !== IdType.NATIONAL_ID)
+
+export const getIdTypeOptions = (prefix: string) =>
+  [
+    {
+      value: IdType.NATIONAL_ID,
+      label: idTypeMessageDescriptors.NATIONAL_ID,
+      conditionals: [
+        {
+          type: ConditionalType.SHOW,
+          conditional: field(`${prefix}.nationality`).isEqualTo('FAR')
+        }
+      ]
+    },
+    {
+      value: IdType.PASSPORT,
+      label: idTypeMessageDescriptors.PASSPORT
+    },
+    {
+      value: IdType.NONE,
+      label: idTypeMessageDescriptors.NONE
+    }
+  ] satisfies SelectOption[]
 
 // @TODO: Consider whether these can become boolean fields
 export const YesNoTypes = {
@@ -124,7 +143,7 @@ export const getIdentityFields = ({
       parent
     },
     {
-      id: `${prefix}.idTypeLocal`,
+      id: `${prefix}.idType`,
       type: FieldType.SELECT,
       required: true,
       label: {
@@ -132,14 +151,11 @@ export const getIdentityFields = ({
         description: 'This is the label for the field',
         id: 'event.death.action.declare.form.section.informant.field.idType.label'
       },
-      options: idTypeOptions,
+      options: getIdTypeOptions(prefix),
       conditionals: [
         {
           type: ConditionalType.SHOW,
-          conditional: and(
-            showConditional,
-            field(`${prefix}.nationality`).isEqualTo('FAR')
-          )
+          conditional: showConditional
         },
         {
           type: ConditionalType.ENABLE,
@@ -150,46 +166,9 @@ export const getIdentityFields = ({
           )
         }
       ],
-      parent
-    },
-    {
-      id: `${prefix}.idTypeForeigner`,
-      type: FieldType.SELECT,
-      required: true,
-      label: {
-        defaultMessage: 'Form of ID',
-        description: 'This is the label for the field',
-        id: 'event.death.action.declare.form.section.informant.field.idType.label'
-      },
-      options: idTypeOptionsForeigner,
-      conditionals: [
-        {
-          type: ConditionalType.SHOW,
-          conditional: and(
-            showConditional,
-            not(field(`${prefix}.nationality`).isEqualTo('FAR'))
-          )
-        }
-      ],
-      parent
-    },
-    {
-      id: `${prefix}.idType`,
-      type: FieldType.ALPHA_HIDDEN,
-      required: false,
-      label: {
-        defaultMessage: 'Form of ID meh',
-        description: 'This is the label for the field',
-        id: 'event.death.action.declare.form.section.informant.field.idType.label'
-      },
       parent: [
-        ...(parent ? [parent] : []),
-        field(`${prefix}.idTypeLocal`),
-        field(`${prefix}.idTypeForeigner`)
-      ],
-      value: [
-        field(`${prefix}.idTypeLocal`),
-        field(`${prefix}.idTypeForeigner`)
+        ...(Array.isArray(parent) ? parent : parent ? [parent] : []),
+        field(`${prefix}.nationality`)
       ]
     },
     // fields:
