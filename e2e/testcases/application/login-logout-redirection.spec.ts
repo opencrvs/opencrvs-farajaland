@@ -23,7 +23,7 @@ test.describe('Desktop', () => {
     const url = new URL(page.url())
 
     await page.waitForURL((url) => {
-      return url.origin + '/' === LOGIN_URL
+      return url.origin === LOGIN_URL
     })
 
     const redirectTo = url.searchParams.get('redirectTo')
