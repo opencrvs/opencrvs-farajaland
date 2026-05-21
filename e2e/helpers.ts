@@ -50,6 +50,9 @@ export async function logout(page: Page) {
 export async function login(
   page: Page,
   username: (typeof CREDENTIALS)[keyof typeof CREDENTIALS] = CREDENTIALS.REGISTRAR,
+  /**
+   * Set to true to skip PIN creation, e.g. when the test context already has pin saved locally.
+   */
   skipPin?: boolean
 ) {
   const token = await getToken(username)
