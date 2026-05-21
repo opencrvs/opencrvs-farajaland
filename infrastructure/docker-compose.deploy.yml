@@ -678,26 +678,6 @@ services:
       options:
         gelf-address: 'udp://127.0.0.1:12201'
         tag: 'auth'
-  user-mgnt:
-    secrets:
-      - jwt-public-key.{{ts}}
-    environment:
-      - NODE_ENV=production
-      - SENTRY_DSN=${SENTRY_DSN:-}
-      - APN_SERVICE_URL=http://apm-server:8200
-      - CERT_PUBLIC_KEY_PATH=/run/secrets/jwt-public-key.{{ts}}
-      - MONGO_URL=mongodb://user-mgnt:${USER_MGNT_MONGODB_PASSWORD}@mongo1/user-mgnt?replicaSet=rs0
-    deploy:
-      labels:
-        - 'traefik.enable=false'
-      replicas: 1
-    networks:
-      - overlay_net
-    logging:
-      driver: gelf
-      options:
-        gelf-address: 'udp://127.0.0.1:12201'
-        tag: 'user-mgnt'
   events:
     secrets:
       - jwt-public-key.{{ts}}
