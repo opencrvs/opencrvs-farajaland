@@ -2,7 +2,7 @@ import { test, type Page, expect } from '@playwright/test'
 import { login, logout } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
 import { setMobileViewport } from '../../mobile-helpers'
-import { LOGIN_URL } from '@countryconfig/constants'
+import { LOGIN_URL } from '../../constants'
 
 test.describe('Desktop', () => {
   let page: Page
