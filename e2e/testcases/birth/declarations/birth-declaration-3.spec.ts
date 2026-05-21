@@ -757,7 +757,11 @@ test.describe.serial('3. Birth declaration case - 3', () => {
         .click()
 
       await switchEventTab(page, 'Record')
-      await page.waitForLoadState('networkidle')
+
+      await page.waitForResponse(
+        (resp) =>
+          resp.url().includes('/api/events/event.get') && resp.status() === 200
+      )
     })
 
     test('3.2.2 Verify information on "Record" -tab', async () => {

@@ -63,7 +63,10 @@ test.describe
     await expect
       .poll(
         async () => {
-          const event = await client.event.get.query({ eventId })
+          const event = await client.event.get.query({
+            eventId,
+            waitFor: false
+          })
           const aggregated = aggregateActionDeclarations(event)
           childNid = aggregated['child.nid'] as string
           return Boolean(childNid)

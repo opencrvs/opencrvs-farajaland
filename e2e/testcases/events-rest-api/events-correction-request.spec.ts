@@ -70,7 +70,10 @@ test.describe
       `Bearer ${registrarToken}`
     )
 
-    const eventDocument = await client.event.get.query({ eventId })
+    const eventDocument = await client.event.get.query({
+      eventId,
+      waitFor: false
+    })
     const { trackingId } = eventDocument
 
     await type(page, '#searchText', trackingId)

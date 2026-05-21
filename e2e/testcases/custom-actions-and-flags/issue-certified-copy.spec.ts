@@ -61,7 +61,10 @@ test.describe.serial('Issue Certified Copy', () => {
     })
 
     test('Clicking continue after selecting requester type and template type', async () => {
-      await page.reload({ waitUntil: 'networkidle' })
+      await expect(
+        page.locator('#certificateTemplateId').getByText('Birth Certificate')
+      ).toBeVisible()
+
       await page.locator('#collector____requesterId').click()
       const selectOptionsLabels = [
         'Print and issue to Informant (Mother)',
