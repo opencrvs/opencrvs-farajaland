@@ -94,22 +94,19 @@ export const advancedSearchDeath = [
       id: 'advancedSearch.form.eventDetails'
     },
     fields: [
-      field('eventDetails.placeOfDeath', {
-        options: placeOfDeathOptions
-      }).exact(),
+      field('eventDetails.placeOfDeath').exact(),
       field('eventDetails.deathLocation', {
-        searchCriteriaLabelPrefix: deceasedPrefix
-      }).exact(),
-      field('deceased.address', {
+        searchCriteriaLabelPrefix: deceasedPrefix,
         conditionals: [
           {
             type: ConditionalType.SHOW,
             conditional: field('eventDetails.placeOfDeath').isEqualTo(
-              PlaceOfDeath.DECEASED_USUAL_RESIDENCE
+              PlaceOfDeath.HEALTH_FACILITY
             )
           }
         ]
       }).exact(),
+      field('eventDetails.deathLocationResidential').exact(),
       field('eventDetails.deathLocationOther', {}).exact()
     ]
   },

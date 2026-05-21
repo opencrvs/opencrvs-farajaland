@@ -18,6 +18,7 @@ import {
   not,
   or,
   PageTypes,
+  SelectOption,
   TranslationConfig,
   user
 } from '@opencrvs/toolkit/events'
@@ -129,14 +130,41 @@ const placeOfDeathMessageDescriptors = {
   }
 } satisfies Record<keyof typeof PlaceOfDeath, TranslationConfig>
 
-const placeOfDeathOptions = createSelectOptions(
-  PlaceOfDeath,
-  placeOfDeathMessageDescriptors
-)
-
-const placeOfDeathOptionsWithoutHealthFacility = placeOfDeathOptions.filter(
-  (option) => option.value !== PlaceOfDeath.HEALTH_FACILITY
-)
+const placeOfDeathOptions = [
+  {
+    value: PlaceOfDeath.HEALTH_FACILITY,
+    label: placeOfDeathMessageDescriptors.HEALTH_FACILITY,
+    conditionals: [
+      {
+        type: ConditionalType.SHOW,
+        conditional: and(
+          not(user.hasRole('EMBASSY_OFFICIAL')),
+          not(user.hasRole('COMMUNITY_LEADER'))
+        )
+      }
+    ]
+  },
+  {
+    value: PlaceOfDeath.RESIDENTIAL_ADDRESS,
+    label: placeOfDeathMessageDescriptors.RESIDENTIAL_ADDRESS,
+    conditionals: [
+      {
+        type: ConditionalType.SHOW,
+        conditional: not(user.hasRole('HOSPITAL_CLERK'))
+      }
+    ]
+  },
+  {
+    value: PlaceOfDeath.OTHER,
+    label: placeOfDeathMessageDescriptors.OTHER,
+    conditionals: [
+      {
+        type: ConditionalType.SHOW,
+        conditional: not(user.hasRole('HOSPITAL_CLERK'))
+      }
+    ]
+  }
+] satisfies SelectOption[]
 
 export const eventDetails = defineFormPage({
   id: 'eventDetails',
@@ -215,39 +243,7 @@ export const eventDetails = defineFormPage({
         description: 'This is the label for the field',
         id: 'event.death.action.declare.form.section.deceased.field.placeOfDeath.label'
       },
-      options: placeOfDeathOptions,
-      conditionals: [
-        {
-          type: ConditionalType.SHOW,
-          conditional: not(
-            or(
-              user.hasRole('EMBASSY_OFFICIAL'),
-              user.hasRole('COMMUNITY_LEADER')
-            )
-          )
-        }
-      ]
-    },
-    {
-      id: 'eventDetails.placeOfDeath',
-      type: FieldType.SELECT,
-      required: true,
-      secured: true,
-      label: {
-        defaultMessage: 'Place of death',
-        description: 'This is the label for the field',
-        id: 'event.death.action.declare.form.section.deceased.field.placeOfDeath.label'
-      },
-      options: placeOfDeathOptionsWithoutHealthFacility,
-      conditionals: [
-        {
-          type: ConditionalType.SHOW,
-          conditional: or(
-            user.hasRole('EMBASSY_OFFICIAL'),
-            user.hasRole('COMMUNITY_LEADER')
-          )
-        }
-      ]
+      options: placeOfDeathOptions
     },
     {
       id: 'eventDetails.deathLocation',

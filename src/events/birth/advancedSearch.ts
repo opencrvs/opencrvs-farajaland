@@ -9,7 +9,12 @@
  * Copyright (C) The OpenCRVS Authors located at https://github.com/opencrvs/opencrvs-core/blob/master/AUTHORS.
  */
 
-import { AdvancedSearchConfig, event, field } from '@opencrvs/toolkit/events'
+import {
+  AdvancedSearchConfig,
+  ConditionalType,
+  event,
+  field
+} from '@opencrvs/toolkit/events'
 import { SelectOption } from '@opencrvs/toolkit/events'
 import {
   PlaceOfBirth,
@@ -91,11 +96,17 @@ export const advancedSearchBirth = [
       id: 'advancedSearch.form.eventDetails'
     },
     fields: [
-      field('child.placeOfBirth', {
-        options: placeOfBirthOptions
-      }).exact(),
+      field('child.placeOfBirth').exact(),
       field('child.birthLocation', {
-        searchCriteriaLabelPrefix: childPrefix
+        searchCriteriaLabelPrefix: childPrefix,
+        conditionals: [
+          {
+            type: ConditionalType.SHOW,
+            conditional: field('child.placeOfBirth').isEqualTo(
+              PlaceOfBirth.HEALTH_FACILITY
+            )
+          }
+        ]
       }).exact(),
       field('child.birthLocation.privateHome').exact(),
       field('child.birthLocation.other').exact()
