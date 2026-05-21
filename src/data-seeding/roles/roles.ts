@@ -17,7 +17,7 @@ export const roles: Role[] = [
     },
     scopes: defineScopes([
       { type: 'performance.read' },
-      { type: 'organisation.read-locations', options: { accessLevel: 'administrativeArea' } },
+      { type: 'organisation.read-locations', options: { accessLevel: 'location' } },
       { type: 'user.read', options: { accessLevel: 'administrativeArea' } },
       { type: 'user.search', options: { accessLevel: 'administrativeArea' } },
       { type: 'performance.read-dashboards' },
