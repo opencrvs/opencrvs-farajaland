@@ -161,6 +161,7 @@ export const roles: Role[] = [
       { type: 'record.correct' },
       { type: 'record.custom-action', options: { event: ['birth'], customActionTypes: ['REGISTRAR_GENERAL_FEEDBACK', 'REVOKE_REGISTRATION', 'REINSTATE_REVOKE_REGISTRATION', 'APPROVE_DECLARATION'] } },
       { type: 'record.custom-action', options: { event: ['death'], customActionTypes: ['APPROVE_DECLARATION'] } },
+      { type: 'record.custom-action', options: { event: ['birth', 'death'], customActionTypes: ['ISSUE_VERIFIABLE_CREDENTIAL'] } },
       { type: 'record.unassign-others' }
     ])
   },
