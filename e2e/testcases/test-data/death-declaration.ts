@@ -148,8 +148,7 @@ export async function createDeclaration(
     transactionId: uuidv4(),
     declaration,
     annotation,
-    keepAssignment: action !== ActionType.DECLARE,
-    waitFor: true
+    keepAssignment: action !== ActionType.DECLARE
   })
 
   if (action === ActionType.DECLARE) {
@@ -168,7 +167,6 @@ export async function createDeclaration(
     eventId: eventId,
     transactionId: uuidv4(),
     declaration,
-    waitFor: true,
     annotation
   })
 

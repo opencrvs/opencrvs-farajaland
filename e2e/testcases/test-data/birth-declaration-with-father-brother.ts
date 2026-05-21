@@ -182,8 +182,7 @@ export async function createDeclaration(
     transactionId: uuidv4(),
     declaration,
     annotation,
-    keepAssignment: true,
-    waitFor: true
+    keepAssignment: true
   })
 
   if (action === ActionType.DECLARE) {
@@ -206,8 +205,7 @@ export async function createDeclaration(
     eventId: eventId,
     transactionId: uuidv4(),
     declaration,
-    annotation,
-    waitFor: true
+    annotation
   })
 
   const registerAction = registerRes.actions.find(

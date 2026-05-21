@@ -61,14 +61,12 @@ test.describe
       eventId,
       transactionId: uuidv4(),
       type: ActionType.ASSIGN,
-      waitFor: true,
       assignedTo: userId
     })
 
     const signature = await uploadFile(getSignatureFile(), provincialToken)
 
     const registerRes = await client.event.actions.register.request.mutate({
-      waitFor: true,
       eventId,
       transactionId: uuidv4(),
       declaration: dec,
