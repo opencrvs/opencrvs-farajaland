@@ -56,7 +56,7 @@ test.describe('Mobile', () => {
     await logout(page)
 
     await page.waitForURL((url) => {
-      return url.origin + '/' === LOGIN_URL
+      return url.origin === LOGIN_URL
     })
 
     const url = new URL(page.url())
