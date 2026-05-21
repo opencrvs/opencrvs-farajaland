@@ -76,7 +76,12 @@ test.describe.serial('1. Settings Page', () => {
 
       await page.getByRole('button', { name: 'Apply' }).click()
 
-      await page.waitForLoadState('networkidle')
+      await page.waitForResponse(
+        (resp) =>
+          resp.url().includes('/users/') &&
+          resp.url().endsWith('.jpeg') &&
+          resp.status() === 200
+      )
 
       await page.getByText('Profile image successfully updated')
 

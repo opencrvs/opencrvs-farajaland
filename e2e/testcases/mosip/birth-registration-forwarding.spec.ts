@@ -11,7 +11,7 @@ import {
 
 async function getEventById(eventId: string, token: string) {
   const client = createClient(`${GATEWAY_HOST}/events`, `Bearer ${token}`)
-  return client.event.get.query({ eventId })
+  return client.event.get.query({ eventId, waitFor: false })
 }
 
 test.describe.serial('Birth registration forwarding to MOSIP', () => {
