@@ -17,7 +17,7 @@ import {
 } from '../../utils'
 import {
   assertRecordInWorkqueue,
-  assignFromWorkqueue,
+  ensureAssignedFromWorkqueue,
   fillDate
 } from '../birth/helpers'
 import { getRowByTitle } from '../print-certificate/birth/helpers'
@@ -207,7 +207,7 @@ test.describe.serial('5. Workqueue flow - 5', () => {
 
     test('5.3.2 Go to edit', async () => {
       await page.getByText('Pending updates').click()
-      await assignFromWorkqueue(page, childName)
+      await ensureAssignedFromWorkqueue(page, childName)
       await getRowByTitle(page, childName)
         .getByRole('button', { name: 'Review' })
         .click()
@@ -332,7 +332,7 @@ test.describe.serial('5. Workqueue flow - 5', () => {
     test('5.4.2 Reject', async () => {
       await page.getByText('Pending registration').click()
 
-      await assignFromWorkqueue(page, childName)
+      await ensureAssignedFromWorkqueue(page, childName)
       await getRowByTitle(page, childName)
         .getByRole('button', { name: 'Review' })
         .click()
@@ -388,7 +388,7 @@ test.describe.serial('5. Workqueue flow - 5', () => {
 
     test('5.5.2 Go to edit', async () => {
       await page.getByText('Pending updates').click()
-      await assignFromWorkqueue(page, childName)
+      await ensureAssignedFromWorkqueue(page, childName)
       await getRowByTitle(page, childName)
         .getByRole('button', { name: 'Review' })
         .click()
@@ -458,7 +458,7 @@ test.describe.serial('5. Workqueue flow - 5', () => {
     test('5.6.2 Register', async () => {
       await page.getByText('Pending registration').click()
 
-      await assignFromWorkqueue(page, childName)
+      await ensureAssignedFromWorkqueue(page, childName)
       await getRowByTitle(page, childName)
         .getByRole('button', { name: 'Review' })
         .click()

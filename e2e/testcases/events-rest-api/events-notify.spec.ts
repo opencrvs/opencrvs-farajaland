@@ -816,10 +816,9 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
 
     test('Audit event', async () => {
       await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
-      await page.waitForTimeout(SAFE_IN_EXTERNAL_VALIDATION_MS)
 
       await switchEventTab(page, 'Audit')
-      await page.waitForLoadState('networkidle')
+
       await expect(page.locator('#row_0')).toContainText('Notified')
       await expect(page.locator('#row_0')).toContainText(clientName)
       await expect(page.locator('#row_3')).toContainText('Rejected')
