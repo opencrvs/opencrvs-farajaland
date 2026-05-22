@@ -426,3 +426,22 @@ export function shouldForwardDeathRegistrationToMosip(
     declaration['informant.verified'] === 'authenticated'
   )
 }
+
+/**
+ * When a birth declaration is submitted where the child has no father or mother
+ * details available and only informant information is provided, and the
+ * informant's identity has been authenticated via e-Signet — the record should be
+ * forwarded to the external validation workqueue.
+ * Reference: https://github.com/opencrvs/opencrvs-core/issues/12731
+ * @param declaration The declaration object containing event data.
+ * @returns True if the registration should be forwarded to external validation, false otherwise.
+ */
+export function shouldForwardToExternalValidation(
+  declaration: Record<string, any>
+): boolean {
+  return (
+    declaration['mother.detailsNotAvailable'] &&
+    declaration['father.detailsNotAvailable'] &&
+    declaration['informant.verified'] === 'authenticated'
+  )
+}
