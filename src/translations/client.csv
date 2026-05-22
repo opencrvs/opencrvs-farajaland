@@ -2321,3 +2321,4 @@ event.birth.action.declare.form.section.documents.field.acquiredChildCourtDocume
 event.birth.action.declare.form.review.print.label,Label for the print button in the review section,Print certificate inadvance of registration,Imprimer le certificat avant l'enregistrement
 form.field.label.informantRelation.self,Label for option self,Self,Soi-même
 event.birth.id-reader.helper-text,Helper text,"Authentication isn't required to register. To issue a UIN for the child, at least one parent must be authenticated","L'authentification n'est pas requise pour l'enregistrement. Pour délivrer un UIN à l'enfant, au moins un parent doit être authentifié"
+form.field.label.collector.others,Label for someone else,Someone else,Quelqu'un d'autre

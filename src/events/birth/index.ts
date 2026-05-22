@@ -518,6 +518,12 @@ export const birthEvent = defineConfig({
                 id: 'form.field.label.app.whoContDet.mother',
                 description: 'Label for mother'
               },
+              conditionals: [
+                {
+                  type: ConditionalType.SHOW,
+                  conditional: field('mother.detailsNotAvailable').isFalsy()
+                }
+              ],
               value: 'MOTHER'
             },
             {
@@ -526,12 +532,18 @@ export const birthEvent = defineConfig({
                 id: 'form.field.label.informantRelation.father',
                 description: 'Label for father'
               },
+              conditionals: [
+                {
+                  type: ConditionalType.SHOW,
+                  conditional: field('father.detailsNotAvailable').isFalsy()
+                }
+              ],
               value: 'FATHER'
             },
             {
               label: {
                 defaultMessage: 'Someone else',
-                id: 'form.field.label.informantRelation.others',
+                id: 'form.field.label.collector.others',
                 description: 'Label for someone else'
               },
               value: 'SOMEONE_ELSE'
