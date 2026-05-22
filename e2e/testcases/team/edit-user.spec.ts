@@ -5,7 +5,9 @@ import { createClient } from '@opencrvs/toolkit/api'
 import { faker } from '@faker-js/faker'
 import { getIdByName, getLocations } from '../birth/helpers'
 
-test("Can update user's location and role", async ({ browser }) => {
+test("Can update newly created user's location and role", async ({
+  browser
+}) => {
   const page = await browser.newPage()
 
   const name = {
@@ -60,10 +62,22 @@ test("Can update user's location and role", async ({ browser }) => {
   })
 
   await test.step('Can update user role', async () => {
-    await page.getByText('Continue ').click()
+    await page.getByText('Continue').click()
     await page.locator('#role').click()
+
+    for (const role of [
+      'Registration Officer',
+      'Registrar',
+      'Provincial Registrar',
+      'Hospital Official'
+    ]) {
+      await expect(page.getByText(role, { exact: true })).toBeVisible()
+    }
+    await expect(
+      page.getByText('Community Leader', { exact: true })
+    ).toHaveCount(2)
     await page.getByText('Hospital Official').click()
-    await page.getByText('Continue ').click()
+    await page.getByText('Continue').click()
   })
 
   await test.step('Verify user details', async () => {
