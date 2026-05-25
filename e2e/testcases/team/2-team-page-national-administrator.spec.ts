@@ -1,6 +1,11 @@
 import { expect, test } from '@playwright/test'
 import { CREDENTIALS } from '../../constants'
-import { continueUntilReview, login } from '../../helpers'
+import {
+  continueForm,
+  continueUntilReview,
+  drawSignature,
+  login
+} from '../../helpers'
 
 test('Basic UI check', async ({ browser }) => {
   const page = await browser.newPage()
@@ -64,6 +69,16 @@ test('User Account Actions', async ({ browser }) => {
     phoneNumber = '0785963' + (Math.floor(Math.random() * 900) + 100)
     await page.getByTestId('change-button-phoneNumber').click()
     await page.locator('input[name="phoneNumber"]').fill(phoneNumber)
+    await continueForm(page)
+  })
+
+  await test.step('Add signature', async () => {
+    await page.getByRole('button', { name: 'Sign', exact: true }).click()
+    await drawSignature(page, 'signature_canvas_element', false)
+    await page.getByRole('button', { name: 'Apply' }).click()
+  })
+
+  await test.step('Submit the form', async () => {
     await continueUntilReview(page)
     await page.getByRole('button', { name: 'Confirm' }).click()
     expect(page.url()).toContain('view')
