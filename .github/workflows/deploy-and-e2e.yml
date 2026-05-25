@@ -29,6 +29,13 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  wait-30s:
+    name: wait 30s
+    runs-on: ubuntu-latest
+    steps:
+      - name: wait 30s
+        run: sleep 30
+
   get-core-commit:
     name: Resolve latest core tag
     runs-on: ubuntu-latest
