@@ -30,6 +30,8 @@ concurrency:
 
 jobs:
   wait-30s:
+    # Avoid a race condition when PRs exist in both farajaland and core.
+    # The delay gives the other PR time to merge before reading develop.
     name: wait 30s
     runs-on: ubuntu-latest
     steps:
