@@ -274,6 +274,7 @@ export const drawSignature = async (
     | 'review____signature_canvas_element'
     | 'brideSignature_modal'
     | 'groomSignature_modal'
+    | 'signature_canvas_element'
     | 'witnessOneSignature_modal'
     | 'witnessTwoSignature_modal'
     | 'informantSignature_modal' = 'informantSignature_modal',
