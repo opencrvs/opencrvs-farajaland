@@ -591,9 +591,11 @@ test.describe.serial('8. Validate declaration review page', () => {
     test.describe('8.1.3 Validate supporting document', async () => {
       test('8.1.3.0 Go to upload supporting document page', async () => {
         await page
-          .locator('#document_section')
-          .getByRole('button', { name: 'Upload', exact: true })
+          .locator('#Accordion_documents-accordion')
+          .getByRole('button', { name: 'Change all', exact: true })
           .click()
+
+        await page.getByRole('button', { name: 'Continue' }).click()
       })
 
       test('8.1.3.1 Upload proof for deceased', async () => {
