@@ -593,11 +593,14 @@ export const birthEvent = defineConfig({
       conditionals: [
         {
           type: ConditionalType.SHOW,
-          conditional: not(
-            or(
-              flag('escalated-to-provincial-registrar'),
-              flag('escalated-to-registrar-general')
-            )
+          conditional: and(
+            not(
+              or(
+                flag('escalated-to-provincial-registrar'),
+                flag('escalated-to-registrar-general')
+              )
+            ),
+            not(status('CREATED'))
           )
         }
       ],
