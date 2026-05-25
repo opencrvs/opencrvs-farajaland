@@ -24,6 +24,7 @@
 
 import * as fs from 'fs'
 import * as path from 'path'
+import { execSync } from 'child_process'
 
 const ADMIN_AREAS_OUT = path.join(
   __dirname,
@@ -41,6 +42,19 @@ const STATISTICS_OUT = path.join(
   __dirname,
   'data-seeding/locations/source/statistics.csv'
 )
+
+const REPO_ROOT = path.join(__dirname, '..')
+
+function originalDataRows(repoRelPath: string): string[] {
+  try {
+    const content = execSync(`git show HEAD:${repoRelPath}`, {
+      cwd: REPO_ROOT
+    }).toString()
+    return content.trim().split('\n').slice(1) // drop header
+  } catch {
+    return []
+  }
+}
 
 const STATES = 10
 const DISTRICTS_PER_STATE = 100
@@ -103,7 +117,10 @@ for (let s = 0; s < STATES; s++) {
 // ── Write administrative-areas.csv ───────────────────────────────────────────
 
 const adminRows: string[] = [
-  'admin3Name_en,admin3Name_alias,admin3Pcode,admin2Name_en,admin2Name_alias,admin2Pcode,admin1Name_en,admin1Name_alias,admin1Pcode,admin0Name_en,admin0Name_alias,admin0Pcode'
+  'admin3Name_en,admin3Name_alias,admin3Pcode,admin2Name_en,admin2Name_alias,admin2Pcode,admin1Name_en,admin1Name_alias,admin1Pcode,admin0Name_en,admin0Name_alias,admin0Pcode',
+  ...originalDataRows(
+    'src/data-seeding/locations/source/administrative-areas.csv'
+  )
 ]
 
 for (const state of states) {
@@ -135,7 +152,10 @@ fs.writeFileSync(ADMIN_AREAS_OUT, adminRows.join('\n') + '\n', 'utf8')
 // One CRVS_OFFICE per sub-area for the first FACILITIES sub-areas,
 // referencing that sub-area's pcode so the relationship is intact.
 
-const locRows: string[] = ['id,name,partOf,locationType']
+const locRows: string[] = [
+  'id,name,partOf,locationType',
+  ...originalDataRows('src/data-seeding/locations/source/locations.csv')
+]
 const generatedOfficeIds: string[] = []
 
 let facilityCount = 0
@@ -175,7 +195,10 @@ const statsHeader =
       `male_population_${y},female_population_${y},population_${y},crude_birth_rate_${y}`
   ).join(',')
 
-const statsRows: string[] = [statsHeader]
+const statsRows: string[] = [
+  statsHeader,
+  ...originalDataRows('src/data-seeding/locations/source/statistics.csv')
+]
 
 for (const state of states) {
   statsRows.push(
@@ -649,6 +672,9 @@ const employees: string[][] = [
 
 const empRows = [
   'primaryOfficeId,givenNames,familyName,role,mobile,username,email,password',
+  ...originalDataRows(
+    'src/data-seeding/employees/source/default-employees.csv'
+  ),
   ...employees.map((row) =>
     [`CRVS_OFFICE_${row[0]}`, ...row.slice(1)].join(',')
   )
