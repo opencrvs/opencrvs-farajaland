@@ -40,8 +40,7 @@ import {
 
 const GenderTypes = {
   MALE: 'male',
-  FEMALE: 'female',
-  UNKNOWN: 'unknown'
+  FEMALE: 'female'
 } as const
 
 const genderMessageDescriptors = {
@@ -54,11 +53,6 @@ const genderMessageDescriptors = {
     defaultMessage: 'Female',
     description: 'Label for option female',
     id: 'form.field.label.sexFemale'
-  },
-  UNKNOWN: {
-    defaultMessage: 'Unknown',
-    description: 'Label for option unknown',
-    id: 'form.field.label.sexUnknown'
   }
 } satisfies Record<keyof typeof GenderTypes, TranslationConfig>
 
