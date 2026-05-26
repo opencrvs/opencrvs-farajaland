@@ -189,8 +189,7 @@ export async function onMosipBirthRegisterHandler(
     )
     const informantPsut = getInformantPsut(declaration, birthInformantSection)
 
-    // @TODO: Check whether this might crash country-config if MOSIP doesn't respond
-    mosipInteropClient.register({
+    await mosipInteropClient.register({
       trackingId: event.trackingId,
       requestFields: {
         birthCertificateNumber: registrationNumber,
