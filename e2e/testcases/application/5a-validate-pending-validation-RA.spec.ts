@@ -73,7 +73,10 @@ test.describe
       .getByRole('button', { name: formatV2ChildName(declaration) })
       .click()
 
-    await expectInUrl(page, `events/${eventId}?workqueue=pending-validation`)
+    await expectInUrl(
+      page,
+      `events/${eventId}?backTo=%2Fworkqueue%2Fpending-validation`
+    )
   })
 
   test('5.4 Click "Validate"-action', async () => {
