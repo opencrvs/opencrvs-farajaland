@@ -15,6 +15,7 @@ import fetch from 'node-fetch'
 import { isMobile } from './mobile-helpers'
 import { createClient } from '@opencrvs/toolkit/api'
 import { UUID } from 'crypto'
+import { faker } from '@faker-js/faker'
 
 export async function createPIN(page: Page) {
   await page.click('#pin-input')
@@ -515,3 +516,19 @@ export const formatDateObjectTo_dMMMMyyyy = ({
   mm: string
   dd: string
 }) => format(new Date(Number(yyyy), Number(mm) - 1, Number(dd)), 'd MMMM yyyy')
+
+export const dateToIsoDateString = (date: Date) =>
+  date.toISOString().split('T')[0]
+/**
+ *  Useful for generating child.dob and others.
+ *
+ * @param daysBack how many days in the past the range takes a sample from
+ * @returns date in DATE format
+ */
+export const randomPastDate = (daysBack = 14) => {
+  const today = new Date()
+  const pastDate = new Date()
+  pastDate.setDate(today.getDate() - daysBack)
+
+  return dateToIsoDateString(faker.date.between({ from: pastDate, to: today }))
+}
