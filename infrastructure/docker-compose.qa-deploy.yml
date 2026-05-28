@@ -28,12 +28,6 @@ services:
       - --accesslog.format=json
       - --ping=true
 
-  notification:
-    environment:
-      - LANGUAGES=en,fr
-      - SENTRY_DSN=${SENTRY_DSN:-}
-      - NODE_ENV=production
-
   countryconfig:
     image: ${DOCKERHUB_ACCOUNT}/${DOCKERHUB_REPO}:${COUNTRY_CONFIG_VERSION}
     restart: unless-stopped
@@ -69,11 +63,6 @@ services:
       - TWO_FA_ENABLED=false
       - NODE_ENV=production
 
-  metrics:
-    environment:
-      - SENTRY_DSN=${SENTRY_DSN:-}
-      - NODE_ENV=production
-
   auth:
     environment:
       - SENTRY_DSN=${SENTRY_DSN:-}
@@ -84,17 +73,6 @@ services:
     environment:
       - NODE_ENV=production
       - TWO_FA_ENABLED=false
-
-  user-mgnt:
-    environment:
-      - SENTRY_DSN=${SENTRY_DSN:-}
-      - NODE_ENV=production
-      - DEFAULT_USER_PASSWORD=test
-
-  webhooks:
-    environment:
-      - SENTRY_DSN=${SENTRY_DSN:-}
-      - NODE_ENV=production
 
   documents:
     environment:
