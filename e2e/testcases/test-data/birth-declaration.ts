@@ -176,8 +176,6 @@ export async function createDeclaration(
     transactionId: uuidv4()
   })
 
-  console.log('createResponse', createResponse)
-
   const eventId = createResponse.id as string
 
   const filename = await uploadFile(getSignatureFile(), token)
@@ -216,9 +214,6 @@ export async function createDeclaration(
     annotation,
     keepAssignment: action !== ActionType.DECLARE
   })
-  console.log('keepAssignment', action !== ActionType.DECLARE)
-
-  console.log('declareRes', declareRes)
 
   if (action === ActionType.DECLARE) {
     const declareAction = declareRes.actions.find(
@@ -236,16 +231,12 @@ export async function createDeclaration(
     }
   }
 
-  console.log('Registering declaration with action:', action)
-
   const registerRes = await client.event.actions.register.request.mutate({
     eventId,
     transactionId: uuidv4(),
     declaration,
     annotation
   })
-
-  console.log('registerRes', registerRes)
 
   const registerAction = registerRes.actions.find(
     (action: ActionDocument) => action.type === ActionType.REGISTER
