@@ -134,8 +134,7 @@ test.describe('E-Signet PSUT persistence', () => {
       .poll(
         async () => {
           const eventDocument = await client.event.get.query({
-            eventId,
-            waitFor: false
+            eventId
           })
           const declareAction = eventDocument.actions.find(
             (action) =>
