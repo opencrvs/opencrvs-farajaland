@@ -8,7 +8,7 @@
 core_images_tag = os.getenv("OPENCRVS_CORE_IMAGE_TAG", "v2.0.0-beta")
 
 # FIXME: Put release version
-core_ref = os.getenv("OPENCRVS_CORE_REF", "add-helm-charts")
+core_ref = os.getenv("OPENCRVS_CORE_REF", "release-v2.0.0")
 
 # Build countryconfig image in local registry (use any name and tag you want)
 countryconfig_image_name="opencrvs/ocrvs-countryconfig"

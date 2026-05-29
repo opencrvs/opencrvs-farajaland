@@ -83,6 +83,7 @@ minikube
 
 > [!NOTE]
 > Other local Kubernetes engines may also work, for example:
+> - Docker Desktop
 > - OrbStack
 > - kind
 > - k3d
