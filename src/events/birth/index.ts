@@ -271,12 +271,12 @@ export const birthEvent = defineConfig({
     ActionType.REJECT,
     ActionType.ARCHIVE,
     ActionType.DELETE,
+    'ISSUE_VERIFIABLE_CREDENTIAL',
     ActionType.PRINT_CERTIFICATE,
     'ISSUE_CERTIFIED_COPY',
     ActionType.REQUEST_CORRECTION,
     'REVOKE_REGISTRATION',
     'REINSTATE_REVOKE_REGISTRATION',
-    'ISSUE_VERIFIABLE_CREDENTIAL',
     ActionType.UNASSIGN
   ],
   actions: [
