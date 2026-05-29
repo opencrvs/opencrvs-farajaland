@@ -28,7 +28,6 @@ service:
 ports:
   web:
     port: 8000
-    hostPort: 80
     protocol: TCP
     nodePort: 30080
 
