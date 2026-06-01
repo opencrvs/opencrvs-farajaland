@@ -119,8 +119,6 @@ export async function ensureAssignedToUser(
   // Wait for the assign modal to appear
   await page.getByRole('button', { name: 'Assign', exact: true }).click()
 
-  await expect(page.locator(`#undefined-download-loading`)).not.toBeVisible()
-
   await expect(
     page.getByTestId('assignedTo-value').locator('span')
   ).toContainText(userFullName, { timeout: SAFE_OUTBOX_TIMEOUT_MS })
