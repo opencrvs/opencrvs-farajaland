@@ -17,7 +17,7 @@
 <br>
 <br>
 
-**This repository uses the fictional country "Farajaland" as an example OpenCRVS country configuration for [OpenCRVS](https://github.com/opencrvs/opencrvs-core). You should fork this repository to create your own country configuration.**
+**This repository uses the fictional country "Farajaland" as an example country configuration for [OpenCRVS](https://github.com/opencrvs/opencrvs-core). You should fork this repository to create your own country configuration.**
 
 <a href="https://documentation.opencrvs.org/setup/3.-installation/3.2-set-up-your-own-country-configuration">Read our documentation</a> to learn how to set up your own country configuration using this repo as an example.
 
