@@ -228,7 +228,8 @@ export const roles: Role[] = [
       { type: 'record.create', options: { placeOfEvent: 'administrativeArea' } },
       { type: 'record.read', options: { placeOfEvent: 'administrativeArea' } },
       { type: 'record.edit', options: { placeOfEvent: 'administrativeArea' } },
-      { type: 'record.notify', options: { placeOfEvent: 'administrativeArea' } }
+      { type: 'record.notify', options: { placeOfEvent: 'administrativeArea' } },
+      { type: 'record.declare', options: { placeOfEvent: 'administrativeArea' } }
     ])
   },
   {
