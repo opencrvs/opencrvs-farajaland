@@ -6,6 +6,7 @@ import {
   drawSignature,
   login
 } from '../../helpers'
+import { expectInUrl } from '../../utils'
 
 test('Basic UI check', async ({ browser }) => {
   const page = await browser.newPage()
@@ -81,7 +82,7 @@ test('User Account Actions', async ({ browser }) => {
   await test.step('Submit the form', async () => {
     await continueUntilReview(page)
     await page.getByRole('button', { name: 'Confirm' }).click()
-    expect(page.url()).toContain('view')
+    expectInUrl(page, 'view')
   })
 
   await test.step('Verify Phone Number Changed', async () => {
