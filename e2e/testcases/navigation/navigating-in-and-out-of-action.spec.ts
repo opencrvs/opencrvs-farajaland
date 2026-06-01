@@ -91,7 +91,7 @@ test.describe.serial('Navigating in and out of action', () => {
     await page.goForward()
     await expectInUrl(
       page,
-      `/events/${eventId}?workqueue=pending-certification`
+      `/events/${eventId}?backTo=%2Fworkqueue%2Fpending-certification`
     )
   })
 })

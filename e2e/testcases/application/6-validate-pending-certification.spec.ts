@@ -69,7 +69,10 @@ test.describe.serial('6 Validate "Pending certification"-workqueue', () => {
       .getByRole('button', { name: formatV2ChildName(declaration) })
       .click()
 
-    await expectInUrl(page, `events/${eventId}?workqueue=pending-certification`)
+    await expectInUrl(
+      page,
+      `events/${eventId}?backTo=%2Fworkqueue%2Fpending-certification`
+    )
   })
 
   test('6.5 Click Print action', async () => {
@@ -78,7 +81,7 @@ test.describe.serial('6 Validate "Pending certification"-workqueue', () => {
     await expect(page.locator('#content-name')).toHaveText('Certify record')
     await expectInUrl(
       page,
-      `/events/print-certificate/${eventId}/pages/collector?workqueue=pending-certification`
+      `/events/print-certificate/${eventId}/pages/collector?backTo=%2Fworkqueue%2Fpending-certification`
     )
   })
 })

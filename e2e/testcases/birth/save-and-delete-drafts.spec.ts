@@ -64,7 +64,7 @@ test.describe('Save and delete drafts', () => {
       await page.getByRole('button', { name: 'Confirm' }).click()
 
       await ensureOutboxIsEmpty(page)
-      await page.getByText('Drafts').click()
+      await expect(page.getByText('No records in drafts')).toBeVisible()
 
       await expect(
         page.getByRole('button', { name: childName, exact: true })
