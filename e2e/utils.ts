@@ -125,7 +125,7 @@ export async function ensureAssignedToUser(
 }
 
 export async function expectInUrl(page: Page, assertionString: string) {
-  await expect(page.url().includes(assertionString)).toBeTruthy()
+  await expect(page).toHaveURL((url) => url.href.includes(assertionString))
 }
 
 /**
