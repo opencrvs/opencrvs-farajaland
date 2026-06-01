@@ -172,7 +172,7 @@ test.describe.serial("Correct record - Change father's ID number", () => {
     await page.getByRole('button', { name: 'Continue', exact: true }).click()
 
     await expectInUrl(page, 'correction')
-    await expectInUrl(page, 'review')
+    await expectInUrl(page, 'summary')
 
     await expect(page.getByText("Child's details")).not.toBeVisible()
     await expect(page.getByText("Mother's details")).not.toBeVisible()

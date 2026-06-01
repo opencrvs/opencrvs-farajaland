@@ -729,7 +729,7 @@ test.describe.serial('Correct record - 4', () => {
      */
 
     await expectInUrl(page, 'correction')
-    await expectInUrl(page, 'review')
+    await expectInUrl(page, 'summary')
 
     await expect(
       page.getByRole('button', { name: 'Correct record' })
