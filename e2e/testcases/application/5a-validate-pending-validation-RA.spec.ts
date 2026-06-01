@@ -75,7 +75,7 @@ test.describe
 
     await expectInUrl(
       page,
-      `events/${eventId}?backTo=%2Fworkqueue%2Fpending-validation`
+      `events/${eventId}?backTo=/workqueue/pending-validation`
     )
   })
 

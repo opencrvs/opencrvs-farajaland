@@ -71,7 +71,7 @@ test.describe.serial('6 Validate "Pending certification"-workqueue', () => {
 
     await expectInUrl(
       page,
-      `events/${eventId}?backTo=%2Fworkqueue%2Fpending-certification`
+      `events/${eventId}?backTo=/workqueue/pending-certification`
     )
   })
 
@@ -81,7 +81,7 @@ test.describe.serial('6 Validate "Pending certification"-workqueue', () => {
     await expect(page.locator('#content-name')).toHaveText('Certify record')
     await expectInUrl(
       page,
-      `/events/print-certificate/${eventId}/pages/collector?backTo=%2Fworkqueue%2Fpending-certification`
+      `/events/print-certificate/${eventId}/pages/collector?backTo=/workqueue/pending-certification`
     )
   })
 })
