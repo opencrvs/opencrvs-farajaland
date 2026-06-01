@@ -523,7 +523,7 @@ export const dateToIsoDateString = (date: Date) =>
  *  Useful for generating child.dob and others.
  *
  * @param daysBack how many days in the past the range takes a sample from
- * @returns date in DATE format
+ * @returns date in ISO format
  */
 export const randomPastDate = (daysBack = 14) => {
   const today = new Date()
