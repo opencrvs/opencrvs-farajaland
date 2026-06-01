@@ -83,7 +83,7 @@ test.describe('1. Correct record - 1', () => {
         page.getByRole('button', { name: 'Action' }).first()
       ).toBeVisible()
 
-      expect(page.url().includes(`/events/${eventId}`)).toBeTruthy()
+      await expectInUrl(page, `/events/${eventId}`)
 
       await expect(page.getByText(`StatusRegistered`)).toBeVisible()
       await expect(page.getByText(`EventBirth`)).toBeVisible()

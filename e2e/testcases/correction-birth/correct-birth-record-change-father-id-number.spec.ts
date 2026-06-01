@@ -14,7 +14,7 @@ import {
 import { format, subDays, subYears } from 'date-fns'
 import { CREDENTIALS } from '../../constants'
 import { formatV2ChildName } from '../birth/helpers'
-import { ensureAssignedToUser, selectAction } from '../../utils'
+import { ensureAssignedToUser, expectInUrl, selectAction } from '../../utils'
 
 test.describe.serial("Correct record - Change father's ID number", () => {
   let declaration: DeclarationV2
@@ -120,9 +120,8 @@ test.describe.serial("Correct record - Change father's ID number", () => {
   })
 
   test('Upload supporting documents', async () => {
-    expect(page.url().includes('correction')).toBeTruthy()
-
-    expect(page.url().includes('onboarding/documents')).toBeTruthy()
+    await expectInUrl(page, 'correction')
+    await expectInUrl(page, 'onboarding/documents')
 
     await expect(page.getByRole('button', { name: 'Continue' })).toBeEnabled()
 
@@ -147,8 +146,8 @@ test.describe.serial("Correct record - Change father's ID number", () => {
 
     await page.getByRole('button', { name: 'Continue' }).click()
 
-    expect(page.url().includes('correction')).toBeTruthy()
-    expect(page.url().includes('review')).toBeTruthy()
+    await expectInUrl(page, 'correction')
+    await expectInUrl(page, 'review')
   })
 
   test('Change father id number', async () => {
@@ -172,8 +171,8 @@ test.describe.serial("Correct record - Change father's ID number", () => {
   test('Correction summary', async () => {
     await page.getByRole('button', { name: 'Continue', exact: true }).click()
 
-    expect(page.url().includes('correction')).toBeTruthy()
-    expect(page.url().includes('summary')).toBeTruthy()
+    await expectInUrl(page, 'correction')
+    await expectInUrl(page, 'review')
 
     await expect(page.getByText("Child's details")).not.toBeVisible()
     await expect(page.getByText("Mother's details")).not.toBeVisible()

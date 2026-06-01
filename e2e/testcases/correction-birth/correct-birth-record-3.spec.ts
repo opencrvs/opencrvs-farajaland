@@ -254,8 +254,8 @@ test.describe.serial(' Correct record - 3', () => {
     /*
      * Expected result: should navigate to review page
      */
-    expect(page.url().includes('correction')).toBeTruthy()
-    expect(page.url().includes('review')).toBeTruthy()
+    await expectInUrl(page, 'correction')
+    await expectInUrl(page, 'review')
   })
 
   test.describe('3.4 Make correction', async () => {
@@ -268,9 +268,9 @@ test.describe.serial(' Correct record - 3', () => {
          * - redirect to mother's details page
          * - focus on mother's family name
          */
-        expect(page.url().includes('correction')).toBeTruthy()
-        expect(page.url().includes('mother')).toBeTruthy()
-        expect(page.url().includes('#mother____name')).toBeTruthy()
+        await expectInUrl(page, 'correction')
+        await expectInUrl(page, 'mother')
+        await expectInUrl(page, '#mother____name')
 
         await page.locator('#firstname').fill(updatedMotherDetails.firstNames)
         await page.locator('#surname').fill(updatedMotherDetails.familyName)
@@ -283,8 +283,8 @@ test.describe.serial(' Correct record - 3', () => {
          * - show previous name with strikethrough
          * - show updated name
          */
-        expect(page.url().includes('correction')).toBeTruthy()
-        expect(page.url().includes('review')).toBeTruthy()
+        await expectInUrl(page, 'correction')
+        await expectInUrl(page, 'review')
 
         await expect(
           await page.getByTestId('row-value-mother.name').getByRole('deletion')
@@ -312,9 +312,9 @@ test.describe.serial(' Correct record - 3', () => {
          * - redirect to mother's details page
          * - focus on mother's age
          */
-        expect(page.url().includes('correction')).toBeTruthy()
-        expect(page.url().includes('mother')).toBeTruthy()
-        expect(page.url().includes('#mother____dob')).toBeTruthy()
+        await expectInUrl(page, 'correction')
+        await expectInUrl(page, 'mother')
+        await expectInUrl(page, '#mother____dob')
 
         await page.locator('#mother____dobUnknown').click()
         await page
@@ -329,8 +329,8 @@ test.describe.serial(' Correct record - 3', () => {
          * - show previous gender with strikethrough
          * - show updated gender
          */
-        expect(page.url().includes('correction')).toBeTruthy()
-        expect(page.url().includes('review')).toBeTruthy()
+        await expectInUrl(page, 'correction')
+        await expectInUrl(page, 'review')
 
         await expect(
           await page
@@ -351,9 +351,9 @@ test.describe.serial(' Correct record - 3', () => {
          * - redirect to mother's details page
          * - focus on mother's nationality
          */
-        expect(page.url().includes('correction')).toBeTruthy()
-        expect(page.url().includes('mother')).toBeTruthy()
-        expect(page.url().includes('#mother____nationality')).toBeTruthy()
+        await expectInUrl(page, 'correction')
+        await expectInUrl(page, 'mother')
+        await expectInUrl(page, '#mother____nationality')
 
         await page.locator('#mother____nationality').click()
         await page.getByText(updatedMotherDetails.nationality).click()
@@ -366,8 +366,8 @@ test.describe.serial(' Correct record - 3', () => {
          * - show previous nationality with strikethrough
          * - show updated nationality
          */
-        expect(page.url().includes('correction')).toBeTruthy()
-        expect(page.url().includes('review')).toBeTruthy()
+        await expectInUrl(page, 'correction')
+        await expectInUrl(page, 'review')
 
         await expect(
           await page
@@ -390,9 +390,9 @@ test.describe.serial(' Correct record - 3', () => {
          * - redirect to mother's details page
          * - focus on mother's id type
          */
-        expect(page.url().includes('correction')).toBeTruthy()
-        expect(page.url().includes('mother')).toBeTruthy()
-        expect(page.url().includes('#mother____idType')).toBeTruthy()
+        await expectInUrl(page, 'correction')
+        await expectInUrl(page, 'mother')
+        await expectInUrl(page, '#mother____idType')
 
         await page.locator('#mother____idType').click()
         await page.getByText(updatedMotherDetails.idType).click()
@@ -405,8 +405,8 @@ test.describe.serial(' Correct record - 3', () => {
          * - show previous id type with strikethrough
          * - show updated id type
          */
-        expect(page.url().includes('correction')).toBeTruthy()
-        expect(page.url().includes('review')).toBeTruthy()
+        await expectInUrl(page, 'correction')
+        await expectInUrl(page, 'review')
 
         await expect(
           await page
@@ -435,9 +435,9 @@ test.describe.serial(' Correct record - 3', () => {
          * - redirect to mother's details page
          * - focus on mother's id
          */
-        expect(page.url().includes('correction')).toBeTruthy()
-        expect(page.url().includes('mother')).toBeTruthy()
-        expect(page.url().includes('#mother____passport')).toBeTruthy()
+        await expectInUrl(page, 'correction')
+        await expectInUrl(page, 'mother')
+        await expectInUrl(page, '#mother____passport')
 
         await page
           .locator('#mother____passport')
@@ -451,8 +451,8 @@ test.describe.serial(' Correct record - 3', () => {
          * - show previous id with strikethrough
          * - show updated id
          */
-        expect(page.url().includes('correction')).toBeTruthy()
-        expect(page.url().includes('review')).toBeTruthy()
+        await expectInUrl(page, 'correction')
+        await expectInUrl(page, 'review')
 
         await expect(
           await page
@@ -475,9 +475,9 @@ test.describe.serial(' Correct record - 3', () => {
          * - redirect to mother's details page
          * - focus on mother's Usual place of resiedence
          */
-        expect(page.url().includes('correction')).toBeTruthy()
-        expect(page.url().includes('mother')).toBeTruthy()
-        expect(page.url().includes('#mother____address')).toBeTruthy()
+        await expectInUrl(page, 'correction')
+        await expectInUrl(page, 'mother')
+        await expectInUrl(page, '#mother____address')
 
         await page.locator('#country').click()
         await page
@@ -526,8 +526,8 @@ test.describe.serial(' Correct record - 3', () => {
          * - show updated Usual place of resiedence
          */
 
-        expect(page.url().includes('correction')).toBeTruthy()
-        expect(page.url().includes('review')).toBeTruthy()
+        await expectInUrl(page, 'correction')
+        await expectInUrl(page, 'review')
 
         await expect(
           await page
@@ -592,9 +592,9 @@ test.describe.serial(' Correct record - 3', () => {
          * - redirect to mother's details page
          * - focus on mother's marital status
          */
-        expect(page.url().includes('correction')).toBeTruthy()
-        expect(page.url().includes('mother')).toBeTruthy()
-        expect(page.url().includes('#mother____maritalStatus')).toBeTruthy()
+        await expectInUrl(page, 'correction')
+        await expectInUrl(page, 'mother')
+        await expectInUrl(page, '#mother____maritalStatus')
 
         await page.locator('#mother____maritalStatus').click()
         await page.getByText(updatedMotherDetails.maritalStatus).click()
@@ -607,9 +607,8 @@ test.describe.serial(' Correct record - 3', () => {
          * - show previous marital status with strikethrough
          * - show updated marital status
          */
-
-        expect(page.url().includes('correction')).toBeTruthy()
-        expect(page.url().includes('review')).toBeTruthy()
+        await expectInUrl(page, 'correction')
+        await expectInUrl(page, 'review')
 
         await expect(
           await page
@@ -636,11 +635,9 @@ test.describe.serial(' Correct record - 3', () => {
          * - redirect to mother's details page
          * - focus on mother's level of education
          */
-        expect(page.url().includes('correction')).toBeTruthy()
-        expect(page.url().includes('mother')).toBeTruthy()
-        expect(
-          page.url().includes('#mother____educationalAttainment')
-        ).toBeTruthy()
+        await expectInUrl(page, 'correction')
+        await expectInUrl(page, 'mother')
+        await expectInUrl(page, '#mother____educationalAttainment')
 
         await page.locator('#mother____educationalAttainment').click()
         await page.getByText(updatedMotherDetails.educationLevel).click()
@@ -653,8 +650,8 @@ test.describe.serial(' Correct record - 3', () => {
          * - show previous level of education with strikethrough
          * - show updated level of education
          */
-        expect(page.url().includes('correction')).toBeTruthy()
-        expect(page.url().includes('review')).toBeTruthy()
+        await expectInUrl(page, 'correction')
+        await expectInUrl(page, 'review')
 
         await expect(
           await page
@@ -677,9 +674,9 @@ test.describe.serial(' Correct record - 3', () => {
        * - redirect to child's details page
        * - focus on childType
        */
-      expect(page.url().includes('correction')).toBeTruthy()
-      expect(page.url().includes('child')).toBeTruthy()
-      expect(page.url().includes('#child____placeOfBirth')).toBeTruthy()
+      await expectInUrl(page, 'correction')
+      await expectInUrl(page, 'child')
+      await expectInUrl(page, '#child____placeOfBirth')
 
       await page.locator('#child____placeOfBirth').click()
       await page.getByText(updatedChildDetails.placeOfBirth).click()
@@ -713,8 +710,8 @@ test.describe.serial(' Correct record - 3', () => {
        * - show previous place of birth with strikethrough
        * - show updated place of birth
        */
-      expect(page.url().includes('correction')).toBeTruthy()
-      expect(page.url().includes('review')).toBeTruthy()
+      await expectInUrl(page, 'correction')
+      await expectInUrl(page, 'review')
 
       await expect(
         page
@@ -765,8 +762,8 @@ test.describe.serial(' Correct record - 3', () => {
      * - Send for approval button is disabled
      */
 
-    expect(page.url().includes('correction')).toBeTruthy()
-    expect(page.url().includes('summary')).toBeTruthy()
+    await expectInUrl(page, 'correction')
+    await expectInUrl(page, 'summary')
 
     await expect(
       page.getByRole('button', { name: 'Submit correction request' })
@@ -914,7 +911,7 @@ test.describe.serial(' Correct record - 3', () => {
       .click()
     await page.getByRole('button', { name: 'Confirm' }).click()
 
-    expect(page.url().includes(`events/${eventId}`)).toBeTruthy()
+    await expectInUrl(page, `events/${eventId}`)
 
     await page.getByTestId('exit-event').click()
     await page.getByRole('button', { name: 'Outbox' }).click()
@@ -1112,7 +1109,7 @@ test.describe.serial(' Correct record - 3', () => {
       await page.getByRole('button', { name: 'Approve', exact: true }).click()
       await page.getByRole('button', { name: 'Confirm', exact: true }).click()
 
-      expect(page.url().includes(`events/${eventId}`)).toBeTruthy()
+      await expectInUrl(page, `events/${eventId}`)
     })
 
     test('3.8.4 Assign record', async () => {

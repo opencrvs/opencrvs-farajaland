@@ -8,7 +8,12 @@ import {
   SAFE_OUTBOX_TIMEOUT_MS
 } from '../../constants'
 import { getToken, login } from '../../helpers'
-import { ensureAssignedToUser, selectAction, type } from '../../utils'
+import {
+  ensureAssignedToUser,
+  expectInUrl,
+  selectAction,
+  type
+} from '../../utils'
 import {
   createDeclaration,
   type Declaration
@@ -74,7 +79,7 @@ test('Escalating a rejected record preserves the Rejected flag', async ({
       .getByRole('button', { name: formatV2ChildName(declaration) })
       .click()
 
-    expect(page.url().includes(`events/${eventId}`)).toBeTruthy()
+    await expectInUrl(page, `events/${eventId}`)
 
     await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
   })

@@ -17,6 +17,7 @@ import { CREDENTIALS } from '../../constants'
 import {
   ensureAssignedToUser,
   ensureOutboxIsEmpty,
+  expectInUrl,
   selectAction
 } from '../../utils'
 
@@ -692,7 +693,7 @@ test.describe.serial('8. Validate declaration review page', () => {
       /*
        * Expected result: should redirect to assigned to you workqueue
        */
-      expect(page.url().includes('assigned-to-you')).toBeTruthy()
+      await expectInUrl(page, 'assigned-to-you')
 
       await page.getByText('Recent').click()
       /*
