@@ -248,7 +248,7 @@ export const roles: Role[] = [
       { type: 'record.custom-action', options: { event: ['birth'], customActionTypes: ['ESCALATE'], placeOfEvent: 'location' } },
       { type: 'record.custom-action', options: { event: ['birth'], customActionTypes: ['ISSUE_CERTIFIED_COPY'], placeOfEvent: 'location' } },
       { type: 'record.print-certified-copies', options: { placeOfEvent: 'location' } },
-      { type: 'record.correct', options: { placeOfEvent: 'location' } }
+      { type: 'record.request-correction', options: { placeOfEvent: 'location' } }
     ])
   }
 ]
