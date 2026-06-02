@@ -183,7 +183,6 @@ export const roles: Role[] = [
       { type: 'workqueue', options: { ids: ['assigned-to-you', 'recent', 'pending-feedback-provincinal-registrar', 'pending-approval', 'correction-requested'] } },
       { type: 'record.read', options: { placeOfEvent: 'administrativeArea' } },
       { type: 'record.reject', options: { placeOfEvent: 'administrativeArea' } },
-      { type: 'record.register', options: { declaredIn: 'administrativeArea' } },
       { type: 'record.archive', options: { placeOfEvent: 'administrativeArea' } },
       { type: 'record.custom-action', options: { event: ['birth'], customActionTypes: ['PROVINCIAL_REGISTER_FEEDBACK', 'REINSTATE_REVOKE_REGISTRATION', 'ESCALATE'], placeOfEvent: 'administrativeArea' } },
       { type: 'record.custom-action', options: { event: ['birth', 'death'], customActionTypes: ['APPROVE_DECLARATION'], declaredIn: 'administrativeArea' } },
