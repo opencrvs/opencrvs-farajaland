@@ -27,7 +27,6 @@ import { createSelectOptions } from '../utils'
 import { connectToMOSIPIdReader, getMOSIPIntegrationFields } from '../mosip'
 import {
   farajalandNameConfig,
-  invalidNameValidator,
   nationalIdValidator,
   passportValidator
 } from '../birth/validators'
@@ -290,7 +289,6 @@ export const getIdentityFields = ({
           id: `event.birth.action.declare.form.section.${prefix}.field.name.label`
         },
         conditionals,
-        validation: [invalidNameValidator(`${prefix}.name`)],
         parent
       },
       {

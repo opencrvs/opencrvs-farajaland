@@ -17,7 +17,6 @@ import {
 } from '@opencrvs/toolkit/events'
 import {
   farajalandNameConfig,
-  invalidNameValidator,
   nationalIdValidator
 } from '@countryconfig/events/birth/validators'
 
@@ -295,8 +294,7 @@ export const printCertificateCollectorOther: FieldConfig[] = [
           CollectorType.SOMEONE_ELSE
         )
       }
-    ],
-    validation: [invalidNameValidator('collector.OTHER.name')]
+    ]
   },
   {
     id: 'collector.OTHER.relationshipToDeceased',

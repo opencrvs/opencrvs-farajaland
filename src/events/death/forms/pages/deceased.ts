@@ -33,7 +33,6 @@ import {
 } from '@countryconfig/events/utils'
 import {
   farajalandNameConfig,
-  invalidNameValidator,
   nationalIdValidator,
   passportValidator
 } from '@countryconfig/events/birth/validators'
@@ -260,7 +259,6 @@ export const deceased = defineFormPage({
         'declaration',
         'child.name'
       ]),
-      validation: [invalidNameValidator('deceased.name')],
       conditionals: [
         {
           type: ConditionalType.ENABLE,
