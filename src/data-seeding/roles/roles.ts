@@ -183,9 +183,8 @@ export const roles: Role[] = [
       { type: 'workqueue', options: { ids: ['assigned-to-you', 'recent', 'pending-feedback-provincinal-registrar', 'pending-approval', 'correction-requested'] } },
       { type: 'record.read', options: { placeOfEvent: 'administrativeArea' } },
       { type: 'record.reject', options: { placeOfEvent: 'administrativeArea' } },
-      { type: 'record.register', options: { declaredIn: 'administrativeArea' } },
       { type: 'record.archive', options: { placeOfEvent: 'administrativeArea' } },
-      { type: 'record.custom-action', options: { event: ['birth'], customActionTypes: ['PROVINCIAL_REGISTER_FEEDBACK', 'REINSTATE_REVOKE_REGISTRATION', 'ESCALATE'], placeOfEvent: 'administrativeArea' } },
+      { type: 'record.custom-action', options: { event: ['birth'], customActionTypes: ['PROVINCIAL_REGISTER_FEEDBACK', 'REINSTATE_REVOKE_REGISTRATION', 'ESCALATE', 'ISSUE_VERIFIABLE_CREDENTIAL'], placeOfEvent: 'administrativeArea' } },
       { type: 'record.custom-action', options: { event: ['birth', 'death'], customActionTypes: ['APPROVE_DECLARATION'], declaredIn: 'administrativeArea' } },
       { type: 'record.print-certified-copies', options: { registeredIn: 'administrativeArea' } },
       { type: 'record.correct', options: { registeredIn: 'administrativeArea' } },
@@ -250,7 +249,7 @@ export const roles: Role[] = [
       { type: 'record.custom-action', options: { event: ['birth'], customActionTypes: ['ESCALATE'], placeOfEvent: 'location' } },
       { type: 'record.custom-action', options: { event: ['birth'], customActionTypes: ['ISSUE_CERTIFIED_COPY'], placeOfEvent: 'location' } },
       { type: 'record.print-certified-copies', options: { placeOfEvent: 'location' } },
-      { type: 'record.correct', options: { placeOfEvent: 'location' } }
+      { type: 'record.request-correction', options: { placeOfEvent: 'location' } }
     ])
   }
 ]

@@ -404,52 +404,6 @@ export const eventDetails = defineFormPage({
         description: 'This is the label for the field',
         id: 'event.death.action.declare.form.section.event.field.causeOfDeath.label'
       }
-    },
-    {
-      id: 'eventDetails.sourceCauseDeath',
-      type: FieldType.SELECT,
-      required: true,
-      label: {
-        defaultMessage: 'Source of cause of death',
-        description: 'This is the label for the field',
-        id: 'event.death.action.declare.form.section.event.field.sourceCauseDeath.label'
-      },
-      options: sourceCauseDeathOptions,
-      conditionals: [
-        {
-          type: ConditionalType.SHOW,
-          conditional: field('eventDetails.causeOfDeathEstablished').isEqualTo(
-            true
-          )
-        }
-      ]
-    },
-    {
-      id: 'eventDetails.description',
-      type: FieldType.TEXTAREA,
-      required: true,
-      label: {
-        defaultMessage: 'Description',
-        description:
-          'Description of cause of death by lay person or verbal autopsy',
-        id: 'event.death.action.declare.form.section.event.field.description.label'
-      },
-      conditionals: [
-        {
-          type: ConditionalType.SHOW,
-          conditional: and(
-            or(
-              field('eventDetails.sourceCauseDeath').isEqualTo(
-                SourceCauseDeathType.LAY_REPORTED
-              ),
-              field('eventDetails.sourceCauseDeath').isEqualTo(
-                SourceCauseDeathType.VERBAL_AUTOPSY
-              )
-            ),
-            field('eventDetails.causeOfDeathEstablished').isEqualTo(true)
-          )
-        }
-      ]
     }
   ]
 })

@@ -15,11 +15,7 @@ import {
   FieldConfig,
   FieldType
 } from '@opencrvs/toolkit/events'
-import {
-  farajalandNameConfig,
-  invalidNameValidator,
-  nationalIdValidator
-} from '../../validators'
+import { farajalandNameConfig, nationalIdValidator } from '../../validators'
 
 const otherIdType = {
   PASSPORT: 'PASSPORT',
@@ -287,8 +283,7 @@ export const printCertificateCollectorOther: FieldConfig[] = [
         type: ConditionalType.SHOW,
         conditional: field('collector.requesterId').isEqualTo('SOMEONE_ELSE')
       }
-    ],
-    validation: [invalidNameValidator('collector.OTHER.name')]
+    ]
   },
   {
     id: 'collector.OTHER.relationshipToChild',
