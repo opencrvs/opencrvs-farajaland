@@ -70,7 +70,7 @@ test.describe
 
     await expectInUrl(
       page,
-      `events/${eventId}?backTo=%2Fworkqueue%2Fpending-registration`
+      `events/${eventId}?backTo=/workqueue/pending-registration`
     )
   })
 

@@ -64,8 +64,7 @@ test.describe
       .poll(
         async () => {
           const event = await client.event.get.query({
-            eventId,
-            waitFor: false
+            eventId
           })
           const aggregated = aggregateActionDeclarations(event)
           childNid = aggregated['child.nid'] as string

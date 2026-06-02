@@ -8,7 +8,12 @@ import {
 import { format, subDays, subYears } from 'date-fns'
 import { CREDENTIALS, SAFE_OUTBOX_TIMEOUT_MS } from '../../constants'
 import { formatV2ChildName } from '../birth/helpers'
-import { ensureAssignedToUser, selectAction, type } from '../../utils'
+import {
+  ensureAssignedToUser,
+  expectInUrl,
+  selectAction,
+  type
+} from '../../utils'
 
 test('Request correction, escalate, then approve as Local Registrar', async ({
   page
@@ -103,10 +108,9 @@ test('Request correction, escalate, then approve as Local Registrar', async ({
     await page.getByText('Legal Guardian', { exact: true }).click()
     await page.locator('#reason____option').click()
     await page
-      .getByText(
-        'Informant provided incorrect information (Material error)',
-        { exact: true }
-      )
+      .getByText('Informant provided incorrect information (Material error)', {
+        exact: true
+      })
       .click()
     await page.getByRole('button', { name: 'Continue' }).click()
   })
@@ -142,7 +146,7 @@ test('Request correction, escalate, then approve as Local Registrar', async ({
       .click()
     await page.getByRole('button', { name: 'Confirm' }).click()
 
-    expect(page.url().includes(`events/${eventId}`)).toBeTruthy()
+    await expectInUrl(page, `events/${eventId}`)
 
     await expect(
       page.locator('#content-name', {
@@ -169,9 +173,7 @@ test('Request correction, escalate, then approve as Local Registrar', async ({
   })
 
   await test.step("Event should not yet have an 'Escalated' flag", async () => {
-    await expect(
-      page.getByText('Escalated', { exact: true })
-    ).not.toBeVisible()
+    await expect(page.getByText('Escalated', { exact: true })).not.toBeVisible()
   })
 
   await test.step('Escalate from the action menu', async () => {
@@ -264,7 +266,7 @@ test('Request correction, escalate, then approve as Local Registrar', async ({
     await page.getByRole('button', { name: 'Approve', exact: true }).click()
     await page.getByRole('button', { name: 'Confirm', exact: true }).click()
 
-    expect(page.url().includes(`events/${eventId}`)).toBeTruthy()
+    await expectInUrl(page, `events/${eventId}`)
 
     await expect(
       page.locator('#content-name', {
@@ -275,6 +277,7 @@ test('Request correction, escalate, then approve as Local Registrar', async ({
 
   await test.step('Audit history records the correction request and approval', async () => {
     await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
+
     await page.getByRole('button', { name: 'Audit' }).click()
 
     await expect(
@@ -285,5 +288,9 @@ test('Request correction, escalate, then approve as Local Registrar', async ({
     await expect(
       page.getByRole('button', { name: 'Correction approved', exact: true })
     ).toBeVisible()
-  })
+  }),
+    {
+      // Explicit longer timeout. test.step pattern seems to behave differently with respect to timeouts and kill the test before all steps have completed.
+      timeout: 120_000
+    }
 })

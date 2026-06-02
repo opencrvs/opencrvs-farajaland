@@ -96,7 +96,7 @@ test.describe.serial('4(b) Validate "Pending updates"-workqueue for RO', () => {
     // User should navigate to record audit page
     await expectInUrl(
       page,
-      `events/${eventId}?backTo=%2Fworkqueue%2Fpending-updates`
+      `events/${eventId}?backTo=/workqueue/pending-updates`
     )
   })
 

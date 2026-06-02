@@ -119,13 +119,22 @@ export async function ensureAssignedToUser(
   // Wait for the assign modal to appear
   await page.getByRole('button', { name: 'Assign', exact: true }).click()
 
+  // Wait for the assignment API call to complete and the UI to update.
+  await page.waitForResponse(
+    (res) =>
+      res.url().includes('event.actions.assignment.assign') &&
+      res.status() === 200
+  )
+
   await expect(
     page.getByTestId('assignedTo-value').locator('span')
   ).toContainText(userFullName, { timeout: SAFE_OUTBOX_TIMEOUT_MS })
 }
 
 export async function expectInUrl(page: Page, assertionString: string) {
-  await expect(page.url().includes(assertionString)).toBeTruthy()
+  await expect(page).toHaveURL((url) =>
+    decodeURIComponent(url.toString()).includes(assertionString)
+  )
 }
 
 /**

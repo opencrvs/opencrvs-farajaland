@@ -1,7 +1,7 @@
 import { expect, test, type Page } from '@playwright/test'
 import { joinValuesWith, login } from '../../helpers'
 import { faker } from '@faker-js/faker'
-import { ensureOutboxIsEmpty, type } from '../../utils'
+import { ensureOutboxIsEmpty, expectInUrl, type } from '../../utils'
 
 test.describe
   .serial("Advanced Search - Birth Event Declaration - Informant's details", () => {
@@ -73,7 +73,8 @@ test.describe
     const searchResult = await page.locator('#content-name').textContent()
     const searchResultCountNumberInBracketsRegex = /\((\d+)\)$/
     expect(searchResult).toMatch(searchResultCountNumberInBracketsRegex)
-    expect(page.url()).toContain(`event.status=ALL`)
+    expectInUrl(page, 'event.status=ALL')
+
     expect(page.url()).toContain(
       `child.name=${encodeURIComponent(JSON.stringify({ firstname, surname }))}`
     )

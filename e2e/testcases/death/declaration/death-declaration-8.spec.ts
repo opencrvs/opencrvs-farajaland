@@ -12,6 +12,7 @@ import { CREDENTIALS } from '../../../constants'
 import {
   ensureAssignedToUser,
   ensureOutboxIsEmpty,
+  expectInUrl,
   selectAction
 } from '../../../utils'
 import { REQUIRED_VALIDATION_ERROR } from '../../birth/helpers'
@@ -268,7 +269,7 @@ test.describe.serial('8. Death declaration case - 8', () => {
       /*
        * Expected result: should redirect to assigned to you workqueue
        */
-      expect(page.url().includes('assigned-to-you')).toBeTruthy()
+      await expectInUrl(page, 'assigned-to-you')
 
       await page.getByText('Recent').click()
 

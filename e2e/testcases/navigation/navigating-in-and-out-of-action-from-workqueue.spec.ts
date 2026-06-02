@@ -66,7 +66,7 @@ test.describe.skip('Navigating in and out of action', () => {
     await page.goBack()
     await expectInUrl(
       page,
-      `/events/${eventId}/record?backTo=%2Fworkqueue%2Fpending-registration`
+      `/events/${eventId}/record?backTo=/workqueue/pending-registration`
     )
   })
 
@@ -107,7 +107,7 @@ test.describe.skip('Navigating in and out of action', () => {
     await page.waitForURL(/\/review/)
     await expectInUrl(
       page,
-      `/events/print-certificate/${eventId}/review?templateId=v2.birth-certificate&backTo=%2Fworkqueue%2Fpending-certification`
+      `/events/print-certificate/${eventId}/review?templateId=v2.birth-certificate&backTo=/workqueue/pending-certification`
     )
   })
 

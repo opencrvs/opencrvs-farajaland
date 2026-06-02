@@ -12,7 +12,11 @@ import {
 } from '../../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../../constants'
-import { ensureAssignedToUser, ensureOutboxIsEmpty } from '../../../utils'
+import {
+  ensureAssignedToUser,
+  ensureOutboxIsEmpty,
+  expectInUrl
+} from '../../../utils'
 
 test.describe.serial('6. Death declaration case - 6', () => {
   let page: Page
@@ -535,7 +539,7 @@ test.describe.serial('6. Death declaration case - 6', () => {
       /*
        * Expected result: should redirect to assigned to you workqueue
        */
-      expect(page.url().includes('assigned-to-you')).toBeTruthy()
+      await expectInUrl(page, 'assigned-to-you')
 
       await page.getByText('Pending certification').click()
 

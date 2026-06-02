@@ -8,7 +8,7 @@ import {
 import { format, subDays, subYears } from 'date-fns'
 import { CREDENTIALS, SAFE_OUTBOX_TIMEOUT_MS } from '../../constants'
 import { formatV2ChildName } from '../birth/helpers'
-import { ensureAssignedToUser, selectAction } from '../../utils'
+import { ensureAssignedToUser, expectInUrl, selectAction } from '../../utils'
 
 test.describe.serial('Direct correction offline', () => {
   let declaration: DeclarationV2
@@ -144,7 +144,7 @@ test.describe.serial('Direct correction offline', () => {
     await page.getByRole('button', { name: 'Correct record' }).click()
     await page.getByRole('button', { name: 'Confirm' }).click()
 
-    expect(page.url().includes(`events/${eventId}`)).toBeTruthy()
+    await expectInUrl(page, `events/${eventId}`)
 
     // We expect to see the optimistically updated new child name instead of the old one
     await expect(
