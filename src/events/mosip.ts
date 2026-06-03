@@ -402,7 +402,7 @@ export function shouldForwardBirthRegistrationToMosip(
     declaration['informant.verified'] !== 'authenticated'
   ) {
     logger.info(
-      'Neither mother, father not informant is verified or authenticated, cannot forward to MOSIP'
+      'Neither mother, father nor informant is verified or authenticated, cannot forward to MOSIP'
     )
     return false
   }
