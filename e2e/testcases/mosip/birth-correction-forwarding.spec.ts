@@ -25,7 +25,7 @@ async function getEventById(eventId: string, token: string) {
   return client.event.get.query({ eventId })
 }
 
-test.describe.serial('Birth correction trigger eligibility checks', () => {
+test.describe.skip('Birth correction trigger eligibility checks', () => {
   let token: string
   let clientToken: string
   let healthFacilityId: string

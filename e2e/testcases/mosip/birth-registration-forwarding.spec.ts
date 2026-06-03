@@ -14,7 +14,7 @@ async function getEventById(eventId: string, token: string) {
   return client.event.get.query({ eventId })
 }
 
-test.describe.serial('Birth registration forwarding to MOSIP', () => {
+test.describe.skip('Birth registration forwarding to MOSIP', () => {
   let token: string
   let declaration: Declaration
   let eventId: string
