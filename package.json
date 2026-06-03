@@ -82,7 +82,7 @@
     "@hapi/hapi": "^20.0.1",
     "@hapi/inert": "^6.0.3",
     "@opencrvs/mosip": "2.0.0-rc.9",
-    "@opencrvs/toolkit": "2.0.0-rc.a6e6000",
+    "@opencrvs/toolkit": "2.0.0-rc.d65ff1b",
     "@types/chalk": "^2.2.0",
     "@types/code": "^4.0.3",
     "@types/csv2json": "^1.4.0",
