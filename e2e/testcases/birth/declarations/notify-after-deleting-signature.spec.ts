@@ -8,7 +8,6 @@ import {
   selectDeclarationAction
 } from '../../../helpers'
 import { CREDENTIALS } from '../../../constants'
-import { ensureOutboxIsEmpty } from '../../../utils'
 
 test('Community leader can notify a birth after uploading and deleting the informant signature', async ({
   page
