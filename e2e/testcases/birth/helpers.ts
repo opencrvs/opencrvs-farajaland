@@ -102,7 +102,13 @@ export const ensureAssignedFromWorkqueue = async (page: Page, name: string) => {
     return
   }
 
-  await assignButton.click()
+  // Since tests are running in parallel, we want the fresh state to ensure no order has changed between the visibility check and the click action.
+  await getRowByTitle(page, name)
+    .getByRole('button', {
+      name: 'Assign record'
+    })
+    .click()
+
   await page.getByRole('button', { name: 'Assign', exact: true }).click()
 
   await expect(
