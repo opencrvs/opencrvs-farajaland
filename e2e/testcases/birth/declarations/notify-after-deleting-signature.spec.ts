@@ -60,9 +60,6 @@ test('Community leader can notify a birth after uploading and deleting the infor
   await test.step('Notify without a signature', async () => {
     await selectDeclarationAction(page, 'Notify')
 
-    // Pre-fix this assertion times out: the record gets stuck in outbox
-    // because the annotation { 'review.signature': null } is rejected by
-    // the server and the mutation never completes.
     await ensureOutboxIsEmpty(page)
   })
 
