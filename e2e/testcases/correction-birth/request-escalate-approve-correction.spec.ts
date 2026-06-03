@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test'
+import { expect, Page, test } from '@playwright/test'
 import { auditRecord, getToken, goBackToReview, login } from '../../helpers'
 import { faker } from '@faker-js/faker'
 import {
@@ -15,9 +15,11 @@ import {
   type
 } from '../../utils'
 
-test('Request correction, escalate, then approve as Local Registrar', async ({
-  page
-}) => {
+test.describe
+  .serial('Request correction, escalate, then approve as Local Registrar', () => {
+  // Explicit longer timeout. test.step pattern seems to behave differently with respect to timeouts and kill the test before all steps have completed.
+  test.setTimeout(120_000)
+  let page: Page
   let declaration: DeclarationV2
   let trackingId = ''
   let eventId: string
@@ -30,7 +32,15 @@ test('Request correction, escalate, then approve as Local Registrar', async ({
   const escalationReason =
     'Escalating this correction to Provincial Registrar for further review.'
 
-  await test.step('Shortcut declaration', async () => {
+  test.beforeAll(async ({ browser }) => {
+    page = await browser.newPage()
+  })
+
+  test.afterAll(async () => {
+    await page.close()
+  })
+
+  test('Shortcut declaration', async () => {
     const token = await getToken(CREDENTIALS.REGISTRAR)
 
     const res = await createDeclarationV2(
@@ -88,11 +98,11 @@ test('Request correction, escalate, then approve as Local Registrar', async ({
     declaration = res.declaration
   })
 
-  await test.step('Login as Registration Agent', async () => {
+  test('Login as Registration Agent', async () => {
     await login(page, CREDENTIALS.REGISTRATION_OFFICER)
   })
 
-  await test.step('Navigate to record correction', async () => {
+  test('Navigate to record correction', async () => {
     await auditRecord({
       page,
       name: formatV2ChildName(declaration),
@@ -103,7 +113,7 @@ test('Request correction, escalate, then approve as Local Registrar', async ({
     await selectAction(page, 'Correct')
   })
 
-  await test.step('Add correction requester and reason', async () => {
+  test('Add correction requester and reason', async () => {
     await page.locator('#requester____type').click()
     await page.getByText('Legal Guardian', { exact: true }).click()
     await page.locator('#reason____option').click()
@@ -115,20 +125,20 @@ test('Request correction, escalate, then approve as Local Registrar', async ({
     await page.getByRole('button', { name: 'Continue' }).click()
   })
 
-  await test.step('Verify identity', async () => {
+  test('Verify identity', async () => {
     await page.getByRole('button', { name: 'Verified' }).click()
   })
 
-  await test.step('Skip uploading documents', async () => {
+  test('Skip uploading documents', async () => {
     await page.getByRole('button', { name: 'Continue' }).click()
   })
 
-  await test.step('Add correction fee', async () => {
+  test('Add correction fee', async () => {
     await page.locator('#fees____amount').fill(correctionFee.toString())
     await page.getByRole('button', { name: 'Continue' }).click()
   })
 
-  await test.step('Change child name', async () => {
+  test('Change child name', async () => {
     await page.getByTestId('change-button-child.name').click()
 
     await page
@@ -140,7 +150,7 @@ test('Request correction, escalate, then approve as Local Registrar', async ({
     await page.getByRole('button', { name: 'Continue' }).click()
   })
 
-  await test.step('Submit correction request', async () => {
+  test('Submit correction request', async () => {
     await page
       .getByRole('button', { name: 'Submit correction request' })
       .click()
@@ -163,7 +173,7 @@ test('Request correction, escalate, then approve as Local Registrar', async ({
     )
   })
 
-  await test.step('Navigate back to the record', async () => {
+  test('Navigate back to the record', async () => {
     await auditRecord({
       page,
       name: formatV2ChildName(declaration),
@@ -172,11 +182,11 @@ test('Request correction, escalate, then approve as Local Registrar', async ({
     await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
   })
 
-  await test.step("Event should not yet have an 'Escalated' flag", async () => {
+  test("Event should not yet have an 'Escalated' flag", async () => {
     await expect(page.getByText('Escalated', { exact: true })).not.toBeVisible()
   })
 
-  await test.step('Escalate from the action menu', async () => {
+  test('Escalate from the action menu', async () => {
     await selectAction(page, 'Escalate')
 
     await expect(page.getByText('Escalate to')).toBeVisible()
@@ -203,11 +213,11 @@ test('Request correction, escalate, then approve as Local Registrar', async ({
     )
   })
 
-  await test.step('Login as Local Registrar', async () => {
+  test('Login as Local Registrar', async () => {
     await login(page, CREDENTIALS.REGISTRAR)
   })
 
-  await test.step('Navigate to the record by tracking ID', async () => {
+  test('Navigate to the record by tracking ID', async () => {
     await type(page, '#searchText', trackingId)
     await page.locator('#searchIconButton').click()
     await page
@@ -217,17 +227,17 @@ test('Request correction, escalate, then approve as Local Registrar', async ({
     await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
   })
 
-  await test.step('Record carries the Escalated to Provincial Registrar flag', async () => {
+  test('Record carries the Escalated to Provincial Registrar flag', async () => {
     await expect(
       page.getByText('Escalated to Provincial Registrar')
     ).toBeVisible()
   })
 
-  await test.step('Open the correction approval page', async () => {
+  test('Open the correction approval page', async () => {
     await selectAction(page, 'Review correction request')
   })
 
-  await test.step('Approval page shows requester, reason and fee', async () => {
+  test('Approval page shows requester, reason and fee', async () => {
     await expect(page.getByText('RequesterLegal Guardian')).toBeVisible()
     await expect(
       page.getByText(
@@ -237,7 +247,7 @@ test('Request correction, escalate, then approve as Local Registrar', async ({
     await expect(page.getByText(`Fee total$${correctionFee}`)).toBeVisible()
   })
 
-  await test.step('Approval page shows the corrected child name (original vs updated)', async () => {
+  test('Approval page shows the corrected child name (original vs updated)', async () => {
     await expect(
       page.getByRole('heading', { name: "Child's details" })
     ).toBeVisible()
@@ -253,7 +263,7 @@ test('Request correction, escalate, then approve as Local Registrar', async ({
     ).toBeVisible()
   })
 
-  await test.step('Approval page exposes Approve and Reject buttons', async () => {
+  test('Approval page exposes Approve and Reject buttons', async () => {
     await expect(
       page.getByRole('button', { name: 'Approve', exact: true })
     ).toBeEnabled()
@@ -262,7 +272,7 @@ test('Request correction, escalate, then approve as Local Registrar', async ({
     ).toBeEnabled()
   })
 
-  await test.step('Approve the correction', async () => {
+  test('Approve the correction', async () => {
     await page.getByRole('button', { name: 'Approve', exact: true }).click()
     await page.getByRole('button', { name: 'Confirm', exact: true }).click()
 
@@ -275,7 +285,7 @@ test('Request correction, escalate, then approve as Local Registrar', async ({
     ).toBeVisible({ timeout: 60_000 })
   })
 
-  await test.step('Audit history records the correction request and approval', async () => {
+  test('Audit history records the correction request and approval', async () => {
     await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
 
     await page.getByRole('button', { name: 'Audit' }).click()
@@ -288,9 +298,5 @@ test('Request correction, escalate, then approve as Local Registrar', async ({
     await expect(
       page.getByRole('button', { name: 'Correction approved', exact: true })
     ).toBeVisible()
-  }),
-    {
-      // Explicit longer timeout. test.step pattern seems to behave differently with respect to timeouts and kill the test before all steps have completed.
-      timeout: 120_000
-    }
+  })
 })
