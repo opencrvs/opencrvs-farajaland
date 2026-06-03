@@ -10,19 +10,6 @@ import {
 import { CREDENTIALS } from '../../../constants'
 import { ensureOutboxIsEmpty } from '../../../utils'
 
-/**
- * Regression test for https://github.com/opencrvs/opencrvs-core/issues/12803
- *
- * When the informant signature is uploaded in the review page and then
- * deleted before submission, the annotation payload ends up containing
- * `{ "review.signature": null }`. The server rejects `null` as a value for
- * the signature field, so the mutation never succeeds and the record stays
- * stuck in the outbox.
- *
- * After the fix in `packages/client/.../procedures/actions/action.ts`
- * (`deepDropNulls` applied to the annotation), the `review.signature` key
- * is omitted entirely and the record is notified normally.
- */
 test('Community leader can notify a birth after uploading and deleting the informant signature', async ({
   page
 }) => {
