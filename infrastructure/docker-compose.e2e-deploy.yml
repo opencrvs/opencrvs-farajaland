@@ -82,12 +82,11 @@ services:
 
   postgres-on-update:
     image: postgres:17.6
-    command:
-      [
-        "bash",
-        "-c",
-        "bash /on-deploy.sh && bash /setup-analytics.sh && bash
-          /setup-reference-data.sh",
+    command: [
+        'bash',
+        '-c',
+        'bash /on-deploy.sh && bash /setup-analytics.sh && bash
+        /setup-reference-data.sh'
       ]
     configs:
       - source: postgres-reference-data-on-deploy.{{ts}}
@@ -111,6 +110,11 @@ services:
       - KEEP_ALIVE_SECONDS=10
     networks:
       - overlay_net
+
+  mosip-mock:
+    environment:
+      # dev environments use localhost as SMTP_HOST which is handled gracefully. In Mosip, SMPT_HOST is used to determine whether to send emails or not. Use empty string as falsy
+      - SMTP_HOST=""
 
 configs:
   postgres-reference-data-on-deploy.{{ts}}:
