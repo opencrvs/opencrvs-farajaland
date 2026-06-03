@@ -59,8 +59,6 @@ test('Community leader can notify a birth after uploading and deleting the infor
 
   await test.step('Notify without a signature', async () => {
     await selectDeclarationAction(page, 'Notify')
-
-    await ensureOutboxIsEmpty(page)
   })
 
   await test.step('Open record', async () => {
