@@ -624,7 +624,9 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
     test("Navigate to event via 'Notifications' -workqueue", async () => {
       await page.getByRole('button', { name: 'Notifications' }).click()
       await page
-        .getByText(await formatV2ChildName({ 'child.name': childName }))
+        .getByRole('button', {
+          name: await formatV2ChildName({ 'child.name': childName })
+        })
         .click()
     })
 
@@ -686,7 +688,9 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
     test("Navigate to event via 'Pending certification' -workqueue", async () => {
       await page.getByRole('button', { name: 'Pending certification' }).click()
       await page
-        .getByText(await formatV2ChildName({ 'child.name': newChildName }))
+        .getByRole('button', {
+          name: await formatV2ChildName({ 'child.name': newChildName })
+        })
         .click()
     })
 
@@ -794,7 +798,9 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
     test("Navigate to event via 'Notifications' -workqueue", async () => {
       await page.getByRole('button', { name: 'Notifications' }).click()
       await page
-        .getByText(await formatV2ChildName({ 'child.name': childName }))
+        .getByRole('button', {
+          name: await formatV2ChildName({ 'child.name': childName })
+        })
         .click()
     })
 
@@ -809,8 +815,11 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
       await page.getByRole('button', { name: 'Search' }).click()
       await page.getByPlaceholder('Search').fill(trackingId)
       await page.getByRole('button', { name: 'Search' }).click()
+
       await page
-        .getByText(formatV2ChildName({ 'child.name': childName }))
+        .getByRole('button', {
+          name: await formatV2ChildName({ 'child.name': childName })
+        })
         .click()
     })
 

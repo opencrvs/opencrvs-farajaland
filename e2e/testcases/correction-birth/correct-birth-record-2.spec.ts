@@ -155,7 +155,7 @@ test.describe.serial('Correct record - 2', () => {
 
       await expectInUrl(
         page,
-        `/events/request-correction/${eventId}/pages/informant?from=review&workqueue=pending-certification#informant____relation`
+        `/events/request-correction/${eventId}/pages/informant?from=review&backTo=/workqueue/pending-certification#informant____relation`
       )
 
       await page.locator('#informant____relation').click()
@@ -202,7 +202,7 @@ test.describe.serial('Correct record - 2', () => {
 
       await expectInUrl(
         page,
-        `/events/request-correction/${eventId}/pages/child?from=review&workqueue=pending-certification#child____placeOfBirth`
+        `/events/request-correction/${eventId}/pages/child?from=review&backTo=/workqueue/pending-certification#child____placeOfBirth`
       )
 
       await page.locator('#child____placeOfBirth').click()

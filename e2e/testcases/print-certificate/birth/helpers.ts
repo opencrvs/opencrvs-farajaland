@@ -37,13 +37,9 @@ export async function navigateToCertificatePrintAction(
 }
 
 export function getRowByTitle(page: Page, title: string) {
-  const button = page.getByRole('button', {
-    name: title
-  })
-  const parentRow = button.locator(
-    'xpath=ancestor::*[starts-with(@id, "row_")]'
-  )
-  return parentRow
+  return page
+    .locator('[id^="row_"]')
+    .filter({ has: page.getByRole('button', { name: title }) })
 }
 
 export async function printAndExpectPopup(page: Page) {

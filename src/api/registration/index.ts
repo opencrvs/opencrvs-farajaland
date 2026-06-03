@@ -189,8 +189,7 @@ export async function onMosipBirthRegisterHandler(
     )
     const informantPsut = getInformantPsut(declaration, birthInformantSection)
 
-    // @TODO: Check whether this might crash country-config if MOSIP doesn't respond
-    mosipInteropClient.register({
+    await mosipInteropClient.register({
       trackingId: event.trackingId,
       requestFields: {
         birthCertificateNumber: registrationNumber,
@@ -260,8 +259,7 @@ export async function onMosipDeathRegisterHandler(
         : 'informant'
     const informantPsut = getInformantPsut(declaration, deathInformantSection)
 
-    // @TODO: Check whether this might crash country-config if MOSIP doesn't respond
-    mosipInteropClient.register({
+    await mosipInteropClient.register({
       trackingId: event.trackingId,
       requestFields: {
         deathCertificateNumber: registrationNumber,
@@ -285,7 +283,7 @@ export async function onMosipDeathRegisterHandler(
       audit: {}
     })
 
-    return h.response().code(202)
+    return h.response({ registrationNumber }).code(200)
   } catch (error) {
     return h
       .response({

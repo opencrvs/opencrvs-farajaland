@@ -17,6 +17,7 @@ import { CREDENTIALS } from '../../constants'
 import {
   ensureAssignedToUser,
   ensureOutboxIsEmpty,
+  expectInUrl,
   selectAction
 } from '../../utils'
 
@@ -591,9 +592,11 @@ test.describe.serial('8. Validate declaration review page', () => {
     test.describe('8.1.3 Validate supporting document', async () => {
       test('8.1.3.0 Go to upload supporting document page', async () => {
         await page
-          .locator('#document_section')
-          .getByRole('button', { name: 'Upload', exact: true })
+          .locator('#Accordion_documents-accordion')
+          .getByRole('button', { name: 'Change all', exact: true })
           .click()
+
+        await page.getByRole('button', { name: 'Continue' }).click()
       })
 
       test('8.1.3.1 Upload proof for deceased', async () => {
@@ -690,7 +693,7 @@ test.describe.serial('8. Validate declaration review page', () => {
       /*
        * Expected result: should redirect to assigned to you workqueue
        */
-      expect(page.url().includes('assigned-to-you')).toBeTruthy()
+      await expectInUrl(page, 'assigned-to-you')
 
       await page.getByText('Recent').click()
       /*

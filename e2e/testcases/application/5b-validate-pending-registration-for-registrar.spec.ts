@@ -68,7 +68,10 @@ test.describe
       .getByRole('button', { name: formatV2ChildName(declaration) })
       .click()
 
-    await expectInUrl(page, `events/${eventId}?workqueue=pending-registration`)
+    await expectInUrl(
+      page,
+      `events/${eventId}?backTo=/workqueue/pending-registration`
+    )
   })
 
   test('5.5 Register action should be available for declared and validated record', async () => {

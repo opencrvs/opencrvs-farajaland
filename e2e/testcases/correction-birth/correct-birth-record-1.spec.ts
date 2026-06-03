@@ -83,7 +83,7 @@ test.describe('1. Correct record - 1', () => {
         page.getByRole('button', { name: 'Action' }).first()
       ).toBeVisible()
 
-      expect(page.url().includes(`/events/${eventId}`)).toBeTruthy()
+      await expectInUrl(page, `/events/${eventId}`)
 
       await expect(page.getByText(`StatusRegistered`)).toBeVisible()
       await expect(page.getByText(`EventBirth`)).toBeVisible()
@@ -274,7 +274,7 @@ test.describe('1. Correct record - 1', () => {
          */
         await expectInUrl(
           page,
-          `/events/request-correction/${eventId}/pages/child?from=review&workqueue=pending-certification#child____name`
+          `/events/request-correction/${eventId}/pages/child?from=review&backTo=/workqueue/pending-certification#child____name`
         )
 
         await page
@@ -321,7 +321,7 @@ test.describe('1. Correct record - 1', () => {
 
         await expectInUrl(
           page,
-          `/events/request-correction/${eventId}/pages/child?from=review&workqueue=pending-certification#child____gender`
+          `/events/request-correction/${eventId}/pages/child?from=review&backTo=/workqueue/pending-certification#child____gender`
         )
 
         await page.getByTestId('select__child____gender').locator('svg').click()
@@ -359,7 +359,7 @@ test.describe('1. Correct record - 1', () => {
          */
         await expectInUrl(
           page,
-          `/events/request-correction/${eventId}/pages/child?from=review&workqueue=pending-certification#child____dob`
+          `/events/request-correction/${eventId}/pages/child?from=review&backTo=/workqueue/pending-certification#child____dob`
         )
 
         const birthDay = updatedChildDetails.birthDate.split('-')
@@ -400,7 +400,7 @@ test.describe('1. Correct record - 1', () => {
          */
         await expectInUrl(
           page,
-          `/events/request-correction/${eventId}/pages/child?from=review&workqueue=pending-certification#child____placeOfBirth`
+          `/events/request-correction/${eventId}/pages/child?from=review&backTo=/workqueue/pending-certification#child____placeOfBirth`
         )
 
         await page
@@ -450,7 +450,7 @@ test.describe('1. Correct record - 1', () => {
 
         await expectInUrl(
           page,
-          `/events/request-correction/${eventId}/pages/child?from=review&workqueue=pending-certification#child____attendantAtBirth`
+          `/events/request-correction/${eventId}/pages/child?from=review&backTo=/workqueue/pending-certification#child____attendantAtBirth`
         )
 
         await page.getByTestId('select__child____attendantAtBirth').click()
@@ -491,7 +491,7 @@ test.describe('1. Correct record - 1', () => {
 
         await expectInUrl(
           page,
-          `/events/request-correction/${eventId}/pages/child?from=review&workqueue=pending-certification#child____birthType`
+          `/events/request-correction/${eventId}/pages/child?from=review&backTo=/workqueue/pending-certification#child____birthType`
         )
 
         await page.getByTestId('select__child____birthType').click()
@@ -552,7 +552,7 @@ test.describe('1. Correct record - 1', () => {
 
         await expectInUrl(
           page,
-          `/events/request-correction/${eventId}/pages/child?from=review&workqueue=pending-certification#child____weightAtBirth`
+          `/events/request-correction/${eventId}/pages/child?from=review&backTo=/workqueue/pending-certification#child____weightAtBirth`
         )
 
         await page

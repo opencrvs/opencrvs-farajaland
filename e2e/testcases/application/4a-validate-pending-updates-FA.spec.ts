@@ -100,7 +100,10 @@ test.describe.serial('4(a) Validate "Pending updates"-workqueue for HO', () => {
     await page.getByRole('button', { name: formattedChildName }).click()
 
     // User should navigate to record audit page
-    await expectInUrl(page, `events/${eventId}?workqueue=pending-updates`)
+    await expectInUrl(
+      page,
+      `events/${eventId}?backTo=/workqueue/pending-updates`
+    )
   })
 
   test('4.5 Acting directly from workqueue should redirect to the same workqueue', async () => {

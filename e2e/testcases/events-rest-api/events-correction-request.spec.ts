@@ -71,8 +71,7 @@ test.describe
     )
 
     const eventDocument = await client.event.get.query({
-      eventId,
-      waitFor: false
+      eventId
     })
     const { trackingId } = eventDocument
 

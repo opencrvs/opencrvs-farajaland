@@ -4,7 +4,7 @@ import { createDeclaration } from '../test-data/birth-declaration-with-father-br
 import { CREDENTIALS } from '../../constants'
 import { faker } from '@faker-js/faker'
 import { getMonthFormatted } from './helper'
-import { assertTexts, type } from '../../utils'
+import { assertTexts, expectInUrl, type } from '../../utils'
 
 test.describe
   .serial("Advanced Search - Birth Event Declaration - Child's details", () => {
@@ -35,7 +35,8 @@ test.describe
   test('2.1 - Validate log in and load search page', async () => {
     await login(page)
     await page.click('#searchType')
-    await expect(page).toHaveURL(/.*\/advanced-search/)
+    await expectInUrl(page, 'advanced-search')
+
     await page.getByText('Birth').click()
   })
 
