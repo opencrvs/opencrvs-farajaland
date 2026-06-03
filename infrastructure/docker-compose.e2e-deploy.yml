@@ -114,7 +114,7 @@ services:
   mosip-mock:
     environment:
       # dev environments use localhost as SMTP_HOST which is handled gracefully. In Mosip, SMPT_HOST is used to determine whether to send emails or not. Use empty string as falsy
-      - SMTP_HOST=""
+      SMTP_HOST: ''
 
 configs:
   postgres-reference-data-on-deploy.{{ts}}:
