@@ -377,12 +377,12 @@ export const eventDetails = defineFormPage({
         field('eventDetails.placeOfDeath'),
         field('eventDetails.deathLocation'),
         field('eventDetails.deathLocationOther'),
-        field('deceased.address')
+        field('eventDetails.deathLocationResidential')
       ],
       value: [
         field('eventDetails.deathLocation'),
         field('eventDetails.deathLocationOther').get('administrativeArea'),
-        field('deceased.address').get('administrativeArea')
+        field('eventDetails.deathLocationResidential').get('administrativeArea')
       ]
     },
     {
