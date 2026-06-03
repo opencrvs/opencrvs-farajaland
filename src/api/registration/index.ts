@@ -26,8 +26,7 @@ import {
   shouldForwardBirthRegistrationToMosip,
   shouldForwardDeathRegistrationToMosip,
   getBirthInformantSection,
-  getInformantPsut,
-  shouldForwardToExternalValidation
+  getInformantPsut
 } from '@countryconfig/events/mosip'
 import { InformantType as DeathInformantType } from '@countryconfig/events/death/forms/pages/informant'
 
@@ -164,9 +163,6 @@ export async function onMosipBirthRegisterHandler(
 
   const registrationNumber = generateRegistrationNumber()
 
-  if (shouldForwardToExternalValidation(declaration)) {
-    return h.response().code(202)
-  }
   if (!shouldForwardBirthRegistrationToMosip(declaration)) {
     logger.info(
       'Birth registration will not be forwarded to MOSIP based on custom logic.'
