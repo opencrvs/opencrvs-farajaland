@@ -1714,10 +1714,10 @@
   dependencies:
     "@octokit/openapi-types" "^18.0.0"
 
-"@opencrvs/mosip@2.0.0-rc.6":
-  version "2.0.0-rc.6"
-  resolved "https://registry.yarnpkg.com/@opencrvs/mosip/-/mosip-2.0.0-rc.6.tgz#b70f40d684221bca1f0fbca4fff50802b39d90e4"
-  integrity sha512-lS9FnczllLYPcui3LusynEqOUwR8BUXS2wajzUTlSes5sNhh05fob75ozvWtFtdd7RoIUCGywBaHHGs1AMzS/Q==
+"@opencrvs/mosip@2.0.0-rc.10":
+  version "2.0.0-rc.10"
+  resolved "https://registry.yarnpkg.com/@opencrvs/mosip/-/mosip-2.0.0-rc.10.tgz#2d7176cc58cd3cec2d17fdbfd7c32801869c46c0"
+  integrity sha512-0bHupXowFrIpkC17JgbH4SzocMml2FN/orYbK9fzSPRwweC8ehPQNmSqVwuXRi+MC35JLnjRrjMC+zmcRCQTNw==
   dependencies:
     zod "^4.1.12"
 
