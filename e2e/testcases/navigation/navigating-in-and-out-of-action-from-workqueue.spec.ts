@@ -1,4 +1,4 @@
-import { test, type Page } from '@playwright/test'
+import { test, type Page } from '../../test'
 
 import { login, getToken, formatName } from '../../helpers'
 import { CREDENTIALS } from '../../constants'

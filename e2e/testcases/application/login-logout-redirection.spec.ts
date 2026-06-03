@@ -1,4 +1,4 @@
-import { test, type Page, expect } from '@playwright/test'
+import { test, type Page, expect } from '../../test'
 import { login, logout } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
 import { setMobileViewport } from '../../mobile-helpers'

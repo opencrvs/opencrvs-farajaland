@@ -1,4 +1,4 @@
-import { test } from '@playwright/test'
+import { test } from '../../test'
 import { getToken } from '../../helpers'
 import { CREDENTIALS, GATEWAY_HOST } from '../../constants'
 import { createClient } from '@opencrvs/toolkit/api'

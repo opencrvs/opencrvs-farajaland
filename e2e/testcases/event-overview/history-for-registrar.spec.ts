@@ -1,4 +1,4 @@
-import { test, expect, Page } from '@playwright/test'
+import { test, expect, Page } from '../../test'
 import { createDeclaration, Declaration } from '../test-data/birth-declaration'
 import { getToken, login, switchEventTab } from '../../helpers'
 import { CREDENTIALS, SAFE_WORKQUEUE_TIMEOUT_MS } from '../../constants'

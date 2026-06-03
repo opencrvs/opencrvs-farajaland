@@ -1,4 +1,4 @@
-import { test, expect, Page } from '@playwright/test'
+import { test, expect, Page } from '../../test'
 import { goToSection, login } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
 import { trackAndDeleteCreatedEvents } from '../test-data/eventDeletion'

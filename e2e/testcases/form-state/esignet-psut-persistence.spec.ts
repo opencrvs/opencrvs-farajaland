@@ -1,4 +1,4 @@
-import { Page, expect, test } from '@playwright/test'
+import { Page, expect, test } from '../../test'
 import { createClient } from '@opencrvs/toolkit/api'
 import {
   continueForm,

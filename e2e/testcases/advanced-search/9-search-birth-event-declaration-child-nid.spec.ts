@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test'
+import { expect, test, type Page } from '../../test'
 import { createClient } from '@opencrvs/toolkit/api'
 import { aggregateActionDeclarations } from '@opencrvs/toolkit/events'
 import { omit } from 'lodash'

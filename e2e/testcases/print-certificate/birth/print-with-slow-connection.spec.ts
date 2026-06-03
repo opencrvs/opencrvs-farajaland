@@ -1,4 +1,4 @@
-import { test, type Page, expect } from '@playwright/test'
+import { test, type Page, expect } from '../../../test'
 import { CREDENTIALS } from '../../../constants'
 import { login } from '../../../helpers'
 import { getToken } from '../../../helpers'

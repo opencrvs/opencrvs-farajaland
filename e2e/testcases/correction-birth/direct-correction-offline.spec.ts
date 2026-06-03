@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test'
+import { expect, test, type Page } from '../../test'
 import { auditRecord, getToken, goBackToReview, login } from '../../helpers'
 import { faker } from '@faker-js/faker'
 import {

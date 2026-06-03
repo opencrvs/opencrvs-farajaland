@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test'
+import { expect, test } from '../../test'
 import { createClient } from '@opencrvs/toolkit/api'
 import { omit } from 'lodash'
 import { CREDENTIALS, GATEWAY_HOST } from '../../constants'

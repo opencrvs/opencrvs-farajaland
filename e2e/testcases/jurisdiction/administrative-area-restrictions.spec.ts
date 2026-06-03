@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+import { test, expect } from '../../test'
 import { getToken, login, searchFromSearchBar } from '../../helpers'
 import { CLIENT_URL, CREDENTIALS } from '../../constants'
 import {

@@ -1,4 +1,4 @@
-import { expect, Page, test } from '@playwright/test'
+import { expect, Page, test } from '../../test'
 import { v4 as uuidv4 } from 'uuid'
 import { addDays, format, subDays } from 'date-fns'
 import { faker } from '@faker-js/faker'

@@ -1,4 +1,4 @@
-import { test, type Page, expect } from '@playwright/test'
+import { test, type Page, expect } from '../../../test'
 import { v4 as uuidv4 } from 'uuid'
 import {
   Declaration,

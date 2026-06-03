@@ -1,4 +1,4 @@
-import { expect, Page, test } from '@playwright/test'
+import { expect, Page, test } from '../../test'
 import { v4 as uuidv4 } from 'uuid'
 import { faker } from '@faker-js/faker'
 import {

@@ -1,4 +1,4 @@
-import { expect, Page, test } from '@playwright/test'
+import { expect, Page, test } from '../../test'
 
 import { formatName, login } from '../../helpers'
 import { mockNetworkConditions } from '../../mock-network-conditions'

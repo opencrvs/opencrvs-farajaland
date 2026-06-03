@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test'
+import { expect, test } from '../../test'
 import { createIntegrationContext, fetchClientAPI } from './helpers'
 
 test.describe('GET /api/events/locations', () => {

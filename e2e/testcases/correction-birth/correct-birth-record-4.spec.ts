@@ -1,4 +1,4 @@
-import { expect, Locator, test, type Page } from '@playwright/test'
+import { expect, Locator, test, type Page } from '../../test'
 import {
   auditRecord,
   formatDateTo_dMMMMyyyy,

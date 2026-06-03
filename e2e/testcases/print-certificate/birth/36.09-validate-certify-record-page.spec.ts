@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test'
+import { expect, test, type Page } from '../../../test'
 
 import { Declaration } from '../../test-data/birth-declaration'
 import { getToken } from '../../../helpers'

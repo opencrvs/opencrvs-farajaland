@@ -1,4 +1,4 @@
-import { test, expect, type Page } from '@playwright/test'
+import { test, expect, type Page } from '../../test'
 import { login } from '../../helpers'
 
 test.describe.serial('Death form - date validations', () => {

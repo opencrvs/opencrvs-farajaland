@@ -1,4 +1,4 @@
-import { Page, expect, test } from '@playwright/test'
+import { Page, expect, test } from '../../test'
 import { goToSection, login } from '../../helpers'
 import { openBirthDeclaration } from '../birth/helpers'
 import { CREDENTIALS } from '../../constants'

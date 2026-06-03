@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+import { test, expect } from '../../test'
 import { CREDENTIALS, LOGIN_URL, TEST_USER_PASSWORD } from '../../constants'
 import { ensureLoginPageReady } from '../../helpers'
 

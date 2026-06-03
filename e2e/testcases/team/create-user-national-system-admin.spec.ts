@@ -1,4 +1,4 @@
-import { test, expect, type Page } from '@playwright/test'
+import { test, expect, type Page } from '../../test'
 import path from 'path'
 import { continueForm, login, loginWithNewUser } from '../../helpers'
 import { faker } from '@faker-js/faker'

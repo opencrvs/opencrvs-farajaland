@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test'
+import { expect, test } from '../../test'
 import { CREDENTIALS } from '../../constants'
 import { getToken, login, switchEventTab } from '../../helpers'
 import { createDeclaration } from '../test-data/birth-declaration'
