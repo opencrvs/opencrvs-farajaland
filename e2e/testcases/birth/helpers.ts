@@ -93,6 +93,9 @@ export const assertRecordInWorkqueue = async ({
   }
 }
 
+/**
+ * @deprecated. Ever since we started polling for events, this has grown unreliable. Consider if you need to assign from workqueue.
+ */
 export const ensureAssignedFromWorkqueue = async (page: Page, name: string) => {
   const assignButton = await getRowByTitle(page, name).getByRole('button', {
     name: 'Assign record'
