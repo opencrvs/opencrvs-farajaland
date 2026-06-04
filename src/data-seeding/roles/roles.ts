@@ -209,7 +209,9 @@ export const roles: Role[] = [
       { type: 'record.create', options: { placeOfEvent: 'location' } },
       { type: 'record.read', options: { placeOfEvent: 'location' } },
       { type: 'record.notify', options: { placeOfEvent: 'location' } },
-      { type: 'record.edit', options: { placeOfEvent: 'location', declaredBy: 'user' } },
+      // The edit scope should have the notifiedBy: 'user' option after its implemented on
+      // https://github.com/opencrvs/opencrvs-core/issues/11875
+      { type: 'record.edit', options: { placeOfEvent: 'location' } },
       { type: 'record.print-certified-copies', options: { registeredIn: 'location' } }
     ])
   },
