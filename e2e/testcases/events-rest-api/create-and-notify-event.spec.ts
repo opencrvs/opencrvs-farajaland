@@ -833,7 +833,7 @@ test.describe('Events REST API', () => {
 
     test('Change child surname', async () => {
       await page.getByTestId('text__surname').fill(newChildName.surname)
-      await page.getByRole('button', { name: 'Back to review' }).click()
+      await page.getByRole('button', { name: 'Go to review' }).click()
 
       await expect(page.getByTestId('row-value-child.dob')).not.toHaveText(
         REQUIRED_VALIDATION_ERROR

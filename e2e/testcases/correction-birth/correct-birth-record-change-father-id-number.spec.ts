@@ -167,7 +167,7 @@ test.describe.serial("Correct record - Change father's ID number", () => {
     await page.getByTestId('text__father____nid').fill(newIdNumber)
 
     await page
-      .getByRole('button', { name: 'Back to review', exact: true })
+      .getByRole('button', { name: 'Go to review', exact: true })
       .click()
 
     await expect(

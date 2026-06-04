@@ -44,7 +44,7 @@ test.describe('4. Validate the informants details pages', () => {
     })
 
     test('4.1.4 Navigate to review page and check that error does not appear', async () => {
-      await page.getByRole('button', { name: 'Back to review' }).click()
+      await page.getByRole('button', { name: 'Go to review' }).click()
       await expect(page.getByTestId('row-value-informant.phoneNo')).toBeEmpty()
     })
   })

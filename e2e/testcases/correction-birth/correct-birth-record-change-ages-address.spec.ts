@@ -189,7 +189,7 @@ test.describe.serial('Correct record - Change ages', () => {
     await page.getByTestId('age__informant____age').fill(informantAgeAfter)
 
     await page
-      .getByRole('button', { name: 'Back to review', exact: true })
+      .getByRole('button', { name: 'Go to review', exact: true })
       .click()
 
     await expect(
@@ -206,7 +206,7 @@ test.describe.serial('Correct record - Change ages', () => {
     await page.getByTestId('location__country').click()
     await page.getByText('Ethiopia').click()
     await page
-      .getByRole('button', { name: 'Back to review', exact: true })
+      .getByRole('button', { name: 'Go to review', exact: true })
       .click()
     await expect(page.getByTestId('row-value-mother.address')).toHaveText(
       'State is required'
@@ -216,7 +216,7 @@ test.describe.serial('Correct record - Change ages', () => {
 
     await page.getByTestId('text__state').fill('Oromia')
     await page
-      .getByRole('button', { name: 'Back to review', exact: true })
+      .getByRole('button', { name: 'Go to review', exact: true })
       .click()
     await expect(page.getByTestId('row-value-mother.address')).toHaveText(
       'District is required'
@@ -225,7 +225,7 @@ test.describe.serial('Correct record - Change ages', () => {
     await page.getByTestId('change-button-mother.address').click()
     await page.getByTestId('text__district2').fill('Woreda')
     await page
-      .getByRole('button', { name: 'Back to review', exact: true })
+      .getByRole('button', { name: 'Go to review', exact: true })
       .click()
 
     await expect(page.getByTestId('row-value-mother.address')).toHaveText(
@@ -239,7 +239,7 @@ test.describe.serial('Correct record - Change ages', () => {
     await page.getByTestId('age__mother____age').fill(motherAgeAfter)
 
     await page
-      .getByRole('button', { name: 'Back to review', exact: true })
+      .getByRole('button', { name: 'Go to review', exact: true })
       .click()
 
     await expect(
