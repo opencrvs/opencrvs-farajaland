@@ -1400,6 +1400,8 @@ form.field.label.typeOfDocument,,Choose type of supporting document,Choisissez l
 form.field.label.typeOfId,,Type of ID,Type d'identification
 form.field.label.typeOfMarriage,,Type of marriage,Type de mariage
 form.field.label.updatingUser,,Updating user,Mise à jour de l'utilisateur
+form.field.label.changeOfficeWarningTitle,,Change office?,Changer de bureau ?
+form.field.label.changeOfficeWarningBody,,Changing this user's office will remove their in-progress drafts. Do you want to continue?,Changer le bureau de cet utilisateur supprimera ses brouillons en cours. Voulez-vous continuer ?
 form.field.label.uploadDocForMother,,Mother,Mère
 form.field.label.uploadFile,,Upload,Télécharger
 form.field.label.urban,,Urban,Urbain
