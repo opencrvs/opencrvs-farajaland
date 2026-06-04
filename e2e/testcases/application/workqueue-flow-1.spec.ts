@@ -256,7 +256,7 @@ test.describe.serial('1. Workqueue flow - 1', () => {
         .click()
 
       await page.locator('#father____addressSameAs_YES').click()
-      await page.getByRole('button', { name: 'Back to review' }).click()
+      await page.getByRole('button', { name: 'Go to review' }).click()
     })
 
     test('1.2.6 Declare with edits', async () => {

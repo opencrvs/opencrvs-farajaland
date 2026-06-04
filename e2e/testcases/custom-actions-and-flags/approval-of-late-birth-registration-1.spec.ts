@@ -524,7 +524,7 @@ test.describe
       await page.getByPlaceholder('mm').fill(recentMonth)
       await page.getByPlaceholder('yyyy').fill(recentYear)
 
-      await page.getByRole('button', { name: 'Back to review' }).click()
+      await page.getByRole('button', { name: 'Go to review' }).click()
     })
 
     test('Direct registration should be available', async () => {
