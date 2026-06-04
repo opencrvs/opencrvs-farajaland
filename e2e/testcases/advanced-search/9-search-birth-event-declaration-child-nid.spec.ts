@@ -134,7 +134,7 @@ test.describe
         },
         {
           timeout: 60_000,
-          intervals: [...Array(5).fill(1_000), Array(5).fill(2_000), 5_000]
+          intervals: [...Array(5).fill(1_000), ...Array(5).fill(2_000), 5_000]
         }
       )
       .toBe(true)
