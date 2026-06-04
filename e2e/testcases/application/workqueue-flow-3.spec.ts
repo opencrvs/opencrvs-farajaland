@@ -439,10 +439,6 @@ test.describe.serial('3. Workqueue flow - 3', () => {
 
       await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
 
-      await getRowByTitle(page, childName)
-        .getByRole('button', { name: 'Review' })
-        .click()
-
       await selectAction(page, 'Edit')
     })
 
