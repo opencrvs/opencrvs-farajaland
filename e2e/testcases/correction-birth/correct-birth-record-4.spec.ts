@@ -221,7 +221,7 @@ test.describe.serial('Correct record - 4', () => {
     test('Mark father details as not available to ensure data persists', async () => {
       await page.getByTestId('change-button-father.name').click()
       await page.getByLabel("Father's details are not available").check()
-      await page.getByRole('button', { name: 'Back to review' }).click()
+      await page.getByRole('button', { name: 'Go to review' }).click()
       await expect(page.getByTestId('row-value-father.reason')).toHaveText(
         REQUIRED_VALIDATION_ERROR
       )
@@ -236,7 +236,7 @@ test.describe.serial('Correct record - 4', () => {
         father['father.name'].firstname
       )
 
-      await page.getByRole('button', { name: 'Back to review' }).click()
+      await page.getByRole('button', { name: 'Go to review' }).click()
     })
 
     test.describe('4.4.1 Make correction on father details page', async () => {
@@ -299,7 +299,7 @@ test.describe.serial('Correct record - 4', () => {
         await page.getByTestId('father____dob-mm').fill(birthDay[1])
         await page.getByTestId('father____dob-yyyy').fill(birthDay[0])
 
-        await page.getByRole('button', { name: 'Back to review' }).click()
+        await page.getByRole('button', { name: 'Go to review' }).click()
 
         /*
          * Expected result: should
@@ -338,7 +338,7 @@ test.describe.serial('Correct record - 4', () => {
         await page.locator('#father____nationality').click()
         await page.getByText(updatedFatherDetails.nationality).click()
 
-        await page.getByRole('button', { name: 'Back to review' }).click()
+        await page.getByRole('button', { name: 'Go to review' }).click()
 
         /*
          * Expected result: should
@@ -379,7 +379,7 @@ test.describe.serial('Correct record - 4', () => {
         await page.locator('#father____idType').click()
         await page.getByText(updatedFatherDetails.idType).click()
 
-        await page.getByRole('button', { name: 'Back to review' }).click()
+        await page.getByRole('button', { name: 'Go to review' }).click()
 
         /*
          * Expected result: should
@@ -420,7 +420,7 @@ test.describe.serial('Correct record - 4', () => {
           .locator('#father____passport')
           .fill(updatedFatherDetails.passport)
 
-        await page.getByRole('button', { name: 'Back to review' }).click()
+        await page.getByRole('button', { name: 'Go to review' }).click()
 
         /*
          * Expected result: should
@@ -585,7 +585,7 @@ test.describe.serial('Correct record - 4', () => {
         await page.locator('#father____maritalStatus').click()
         await page.getByText(updatedFatherDetails.maritalStatus).click()
 
-        await page.getByRole('button', { name: 'Back to review' }).click()
+        await page.getByRole('button', { name: 'Go to review' }).click()
 
         /*
          * Expected result: should
@@ -627,7 +627,7 @@ test.describe.serial('Correct record - 4', () => {
         await page.locator('#father____educationalAttainment').click()
         await page.getByText(updatedFatherDetails.educationLevel).click()
 
-        await page.getByRole('button', { name: 'Back to review' }).click()
+        await page.getByRole('button', { name: 'Go to review' }).click()
 
         /*
          * Expected result: should
@@ -675,7 +675,7 @@ test.describe.serial('Correct record - 4', () => {
         .fill(updatedChildDetails.birthFacility.slice(0, 4))
       await page.getByText(updatedChildDetails.birthFacility).click()
 
-      await page.getByRole('button', { name: 'Back to review' }).click()
+      await page.getByRole('button', { name: 'Go to review' }).click()
 
       /*
        * Expected result: should

@@ -113,6 +113,7 @@ buttons.finish,The label for finish printing certificate button,Finish,Terminer
 buttons.forgotPassword,The label for forgot password button,Forgot password,Mot de passe oublié
 buttons.forgottenPIN,The label for forgotten pin button,Forgotten pin,Code d'accès oublié
 buttons.goToHomePage,Label for Go to Homepage button,Back to home,Retour à la page d'accueil
+buttons.goToReview,Go to review button text,Go to review,Aller à la révision
 buttons.issue,Button for issuing,Issue,Délivrer
 buttons.login,Login button on session expire modal,Login,Connexion
 buttons.logout,logout title,Logout,Déconnexion
@@ -1937,6 +1938,7 @@ register.selectInformant.newMarriageRegistration,The title that appears for new 
 register.selectInformant.parents,The description that appears when selecting the parent as informant,Mother & Father,Mère et père
 register.selectVitalEvent.backToReviewButton,,Back to review,Retour à l'examen
 register.selectVitalEvent.errorMessage,Error Message to show when no event is being selected,Please select the type of event,Veuillez sélectionner le type d'événement
+register.selectVitalEvent.goToReviewButton,,Go to review,Aller à la révision
 register.selectVitalEvent.registerNewEventHeader,The section heading on the page,What type of event do you want to declare?,What type of event do you want to declare?
 register.selectVitalEvent.registerNewEventHeading,The section heading on the page,Event type,Quel type d'événement voulez-vous déclarer ?
 register.selectVitalEvent.registerNewEventTitle,The title that appears on the select vital event page,New declaration,Nouvelle déclaration
@@ -1946,6 +1948,7 @@ rejectModal.markAsDuplicate,The label for mark as duplicate checkbox of reject m
 rejectModal.sendForUpdate,The label for send For Update button of reject modal,Send For Update,Envoyer pour mise à jour
 rejectModal.title,The title for reject modal,Reason for rejection?,Quelle mise à jour la déclaration nécessite-t-elle ?
 reloadmodal.body,Body of reload modal,There’s a new version of {app_name} available. Please update to continue.,Une nouvelle version de {app_name} est disponible. Veuillez effectuer la mise à jour pour continuer.
+reloadmodal.button.loginAgain,Label of log in again button after version update,Log in again,Se reconnecter
 reloadmodal.button.update,Label of update button,Update,Mise à jour
 reloadmodal.title,Title when update is available,Update available,Mise à jour disponible
 review.actions.desc.regConfComp,,"By clicking register, you confirm that the information entered is correct and the vital event can be registered.","En cliquant sur Enregistrer, vous confirmez que les informations sont correctes et ont été vérifiées par l'informateur. L'informateur comprend qu'elles seront utilisées pour enregistrer la naissance et à des fins de planification. En enregistrant cette naissance, un certificat de naissance sera généré avec votre signature pour être délivré."
