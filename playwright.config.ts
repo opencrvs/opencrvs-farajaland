@@ -1,7 +1,8 @@
 import { defineConfig, devices } from '@playwright/test'
 
-// Bumped from 90_000 → 300_000 for the cellular2G throttling experiment
-// (issue #12837). Restore when the experiment ends.
+// Bumped from 90_000 → 300_000 for the intermittent-connectivity experiment
+// (issue #12837). Retries during random offline pulses make tests slower.
+// Restore when the experiment ends.
 const TEST_TIMEOUT = 300000
 
 const subdomains = ['register'] // TODO: Add more subdomains if needed
