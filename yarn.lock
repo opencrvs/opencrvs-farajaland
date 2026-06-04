@@ -1721,10 +1721,10 @@
   dependencies:
     zod "^4.1.12"
 
-"@opencrvs/toolkit@2.0.0-rc.61bee9f":
-  version "2.0.0-rc.61bee9f"
-  resolved "https://registry.yarnpkg.com/@opencrvs/toolkit/-/toolkit-2.0.0-rc.61bee9f.tgz#3614c1ebd1549c54cbd5704e84057ce244a4d316"
-  integrity sha512-xHFeWRX/R78LnTjGI3knj1Y8KrjDHW+8c4cXlH16DEOvAAwGnWHn5RcSTjSdjH5myoAsGjjHYbO7EDAtdLww4A==
+"@opencrvs/toolkit@2.0.0-rc.941dbd9":
+  version "2.0.0-rc.941dbd9"
+  resolved "https://registry.yarnpkg.com/@opencrvs/toolkit/-/toolkit-2.0.0-rc.941dbd9.tgz#ef7d342277f890e65190b8f65d08f33c929176eb"
+  integrity sha512-mHzAJJuq4X+se8DX2XTlHW6Hyuh/AD1gm2kXSNRLEz2Y56kgWN0d/Q0g8W29e2WwDIGlNBLAVbgnX1KHkkAx/g==
   dependencies:
     "@trpc/client" "11.4.3"
     "@trpc/server" "^11.8.0"
@@ -1734,7 +1734,7 @@
     jwt-decode "^3.0.0"
     lodash "^4.17.10"
     object-hash "^3.0.0"
-    qs "6.14.0"
+    qs "6.15.2"
     superjson "1.9.0-0"
     ts-morph "^27.0.2"
     uuid "^9.0.0"
@@ -6712,10 +6712,10 @@ qrcode@^1.5.4:
     pngjs "^5.0.0"
     yargs "^15.3.1"
 
-qs@6.14.0:
-  version "6.14.0"
-  resolved "https://registry.npmjs.org/qs/-/qs-6.14.0.tgz"
-  integrity sha512-YWWTjgABSKcvs/nWBi9PycY/JiPJqOD4JA6o9Sej2AtvSGarXxKC3OQSk4pAarbdQlKAh5D4FCQkJNkW+GAn3w==
+qs@6.15.2:
+  version "6.15.2"
+  resolved "https://registry.yarnpkg.com/qs/-/qs-6.15.2.tgz#fd55426d710403ddccc45e0f9eab16db7727ece9"
+  integrity sha512-Rzq0KEyX/w/tEybncDgdkZrJgVUsUMk3xjh3t5bv3S1HTAtg+uOYt72+ZfwiQwKdysThkTBdL/rTi6HDmX9Ddw==
   dependencies:
     side-channel "^1.1.0"
 

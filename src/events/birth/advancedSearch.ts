@@ -13,7 +13,8 @@ import {
   AdvancedSearchConfig,
   ConditionalType,
   event,
-  field
+  field,
+  user
 } from '@opencrvs/toolkit/events'
 import { SelectOption } from '@opencrvs/toolkit/events'
 import {
@@ -106,7 +107,10 @@ export const advancedSearchBirth = [
               PlaceOfBirth.HEALTH_FACILITY
             )
           }
-        ]
+        ],
+        allowedLocations: user.jurisdiction(
+          user.scope('record.search').attribute('placeOfEvent')
+        )
       }).exact(),
       field('child.birthLocation.privateHome').exact(),
       field('child.birthLocation.other').exact()
