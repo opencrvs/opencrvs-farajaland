@@ -802,10 +802,10 @@
   dependencies:
     "@octokit/openapi-types" "^18.0.0"
 
-"@opencrvs/toolkit@2.0.0-rc.7590175":
-  version "2.0.0-rc.7590175"
-  resolved "https://registry.yarnpkg.com/@opencrvs/toolkit/-/toolkit-2.0.0-rc.7590175.tgz#ae6379fc75351edfcc3f5d40a9c1da1a2085f62f"
-  integrity sha512-hUhe7ikA6Eetgme6uIGDzqc6eVoEu+NDIBekODPiRwbc63yvZBil6kNy6s/rYPT4svJ/XFvBR5cVQqWp8zS4Lw==
+"@opencrvs/toolkit@2.0.0-rc.7694150":
+  version "2.0.0-rc.7694150"
+  resolved "https://registry.yarnpkg.com/@opencrvs/toolkit/-/toolkit-2.0.0-rc.7694150.tgz#fd44d9e74b18c339c584169a46fa829410b732f7"
+  integrity sha512-+cnQkV0YztnVJQ1Isd3N9oR/7lQNdL3/8et6xeVHgEtpywlY6ILj8sZ7sPIkW7t1P43XIKyVheuAYD+Jc22CCw==
   dependencies:
     "@trpc/client" "11.4.3"
     "@trpc/server" "^11.8.0"
