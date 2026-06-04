@@ -32,6 +32,8 @@
 
 The default values for these variables have been added to the `docker-compose.deploy.yml` file. They should work out of the box for most deployments, but please ensure to set them correctly if you have a custom MongoDB setup.
 
+- The auth service is no longer published on its own `auth.{{hostname}}` subdomain — it is reachable only through the gateway at `gateway.{{hostname}}/auth/*`. The auth Traefik route and the `LOGIN_URL`, `COUNTRY_CONFIG_URL_EXTERNAL`, and `CLIENT_APP_URL` env vars have been removed from the `auth` service, `AUTH_HOST` is no longer provisioned (including the provision-server env templates), and the data generator now authenticates through the gateway. Remove the `auth.*` DNS record and TLS certificate from your deployment.
+
 ### New features
 
 - V2 certificate SVG templates now use the `$join` helper for location hierarchies, replacing hardcoded comma separators. Empty/undefined levels are automatically filtered, preventing leading or trailing commas.
