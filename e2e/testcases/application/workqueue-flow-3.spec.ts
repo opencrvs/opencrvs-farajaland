@@ -235,10 +235,12 @@ test.describe.serial('3. Workqueue flow - 3', () => {
 
   test.describe('3.3 Re-declare and validate by RO', async () => {
     test('3.3.1 Go to edit', async () => {
-      await ensureAssignedFromWorkqueue(page, childName)
       await getRowByTitle(page, childName)
         .getByRole('button', { name: 'Review' })
         .click()
+
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
+
       await selectAction(page, 'Edit')
     })
 
