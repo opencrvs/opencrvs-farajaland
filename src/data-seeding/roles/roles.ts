@@ -70,7 +70,8 @@ export const roles: Role[] = [
       { type: 'record.register', options: { placeOfEvent: 'administrativeArea' } },
       { type: 'record.print-certified-copies', options: { registeredIn: 'administrativeArea' } },
       { type: 'record.correct', options: { registeredIn: 'administrativeArea' } },
-      { type: 'record.custom-action', options: { event: ['birth'], customActionTypes: ['ESCALATE, REINSTATE_REVOKE_REGISTRATION'], placeOfEvent: 'administrativeArea' } },
+      { type: 'record.custom-action', options: { event: ['birth'], customActionTypes: ['ESCALATE'], placeOfEvent: 'administrativeArea' } },
+      { type: 'record.custom-action', options: { event: ['birth'], customActionTypes: ['REINSTATE_REVOKE_REGISTRATION'], placeOfEvent: 'administrativeArea' } },
       { type: 'record.custom-action', options: { event: ['birth'], customActionTypes: ['ISSUE_CERTIFIED_COPY', 'ISSUE_VERIFIABLE_CREDENTIAL'], registeredIn: 'administrativeArea' } },
       { type: 'record.unassign-others' },
       {
