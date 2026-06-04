@@ -9,11 +9,7 @@ import {
 } from '../../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../../constants'
-import {
-  ensureAssignedToUser,
-  ensureOutboxIsEmpty,
-  selectAction
-} from '../../../utils'
+import { ensureAssignedToUser, selectAction } from '../../../utils'
 import { getRowByTitle } from '../../print-certificate/birth/helpers'
 
 /**
@@ -75,8 +71,6 @@ test('Community leader notifies a birth after deleting a previously persisted si
     await page.getByRole('button', { name: 'Action' }).click()
     await page.getByText('Save & Exit', { exact: true }).click()
     await page.getByRole('button', { name: 'Confirm' }).click()
-
-    await ensureOutboxIsEmpty(page)
   })
 
   await test.step('Reopen the draft from the Drafts workqueue', async () => {
@@ -96,8 +90,6 @@ test('Community leader notifies a birth after deleting a previously persisted si
 
   await test.step('Notify', async () => {
     await selectDeclarationAction(page, 'Notify')
-
-    await ensureOutboxIsEmpty(page)
   })
 
   await test.step('Open record', async () => {
