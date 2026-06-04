@@ -125,7 +125,7 @@ test.describe.serial('4(a) Validate "Pending updates"-workqueue for HO', () => {
       familyName: newSurname
     })
 
-    await page.getByRole('button', { name: 'Back to review' }).click()
+    await page.getByRole('button', { name: 'Go to review' }).click()
 
     await selectDeclarationAction(page, 'Declare with edits')
 

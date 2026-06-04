@@ -295,7 +295,7 @@ test.describe.serial('5. Workqueue flow - 5', () => {
         .click()
 
       await page.locator('#father____addressSameAs_YES').click()
-      await continueForm(page, 'Back to review')
+      await continueForm(page, 'Go to review')
     })
 
     test('5.3.5 Declare with edits', async () => {
@@ -409,7 +409,7 @@ test.describe.serial('5. Workqueue flow - 5', () => {
       await page.locator('#informant____email').fill(faker.internet.email())
 
       await page
-        .getByRole('button', { name: 'Back to review', exact: true })
+        .getByRole('button', { name: 'Go to review', exact: true })
         .click()
     })
 
