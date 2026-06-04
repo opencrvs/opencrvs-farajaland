@@ -15,13 +15,14 @@
 import { test as base, type Page } from '@playwright/test'
 import { mockNetworkConditions } from './mock-network-conditions'
 
-// Tunables. Online windows are several seconds (long enough for most user
-// actions to complete) and offline windows are short (long enough to abort
-// an in-flight request but not so long that the app gives up entirely).
+// Tunables. Online windows give the user time to complete actions; offline
+// windows are now long enough that the app should perceive a real
+// disconnect, not just a transient blip — any retry/queue/timeout logic that
+// only handles fast hiccups should now be exercised.
 const ONLINE_MIN_MS = 4_000
 const ONLINE_MAX_MS = 10_000
-const OFFLINE_MIN_MS = 500
-const OFFLINE_MAX_MS = 2_000
+const OFFLINE_MIN_MS = 30_000
+const OFFLINE_MAX_MS = 120_000
 
 function randomBetween(min: number, max: number): number {
   return Math.floor(min + Math.random() * (max - min))
