@@ -91,6 +91,7 @@ test("Can update newly created user's location and role", async ({
 
   await test.step('Confirm user update', async () => {
     await page.getByRole('button', { name: 'Confirm' }).click()
+    await page.locator('#confirm_office_change').click()
     await expect(page.locator('#content-name')).toHaveText(fullName)
     await expect(page.getByTestId('office-link-value')).toHaveText(
       'Ezhi District Hospital'
