@@ -8,7 +8,7 @@ export const LOGIN_URL =
 export const AUTH_URL =
   process.env.NODE_ENV === 'development'
     ? 'http://localhost:4040'
-    : SCHEME + '://auth.' + DOMAIN
+    : SCHEME + '://gateway.' + DOMAIN + '/auth'
 
 export const CLIENT_URL =
   process.env.NODE_ENV === 'development'
