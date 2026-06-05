@@ -11,7 +11,7 @@ services:
   # Note: these published port will override UFW rules as Docker manages it's own iptables
   # Only publish the exact ports that are required for OpenCRVS to work
   traefik:
-    image: "traefik:v2.11"
+    image: 'traefik:v2.11'
     ports:
       - target: 80
         published: 80
@@ -46,16 +46,16 @@ services:
     deploy:
       replicas: 1
       labels:
-        - "traefik.http.services.traefik.loadbalancer.server.port=80"
-        - "traefik.http.middlewares.gzip-compression.compress=true"
+        - 'traefik.http.services.traefik.loadbalancer.server.port=80'
+        - 'traefik.http.middlewares.gzip-compression.compress=true'
       placement:
         constraints:
           - node.role == manager
     logging:
       driver: gelf
       options:
-        gelf-address: "udp://127.0.0.1:12201"
-        tag: "traefik"
+        gelf-address: 'udp://127.0.0.1:12201'
+        tag: 'traefik'
     networks:
       - overlay_net
 
@@ -78,11 +78,11 @@ services:
       - ELASTICSEARCH_USERNAME=elastic
       - ELASTICSEARCH_PASSWORD=${ELASTICSEARCH_SUPERUSER_PASSWORD}
       - KIBANA_HOST=kibana:5601
-    command: ["--strict.perms=false"]
+    command: ['--strict.perms=false']
     deploy:
       mode: global
       labels:
-        - "traefik.enable=false"
+        - 'traefik.enable=false'
 
   metricbeat:
     image: ghcr.io/opencrvs/metricbeat:8.16.4
@@ -103,13 +103,13 @@ services:
       - KIBANA_PASSWORD=${KIBANA_PASSWORD}
       - BEATS_USERNAME=beats_system
       - BEATS_PASSWORD=${ROTATING_METRICBEAT_ELASTIC_PASSWORD}
-    command: ["--strict.perms=false", "-system.hostfs=/hostfs"]
-    hostname: "metricbeat-{{.Node.Hostname}}"
+    command: ['--strict.perms=false', '-system.hostfs=/hostfs']
+    hostname: 'metricbeat-{{.Node.Hostname}}'
     restart: always
     deploy:
       mode: global
       labels:
-        - "traefik.enable=false"
+        - 'traefik.enable=false'
     networks:
       - overlay_net
     configs:
@@ -120,32 +120,32 @@ services:
     logging:
       driver: gelf
       options:
-        gelf-address: "udp://127.0.0.1:12201"
-        tag: "metricbeat"
+        gelf-address: 'udp://127.0.0.1:12201'
+        tag: 'metricbeat'
   setup-kibana-config:
     image: curlimages/curl:7.88.1
     entrypoint:
       [
-        "curl",
-        "-u",
-        "kibana_system:${KIBANA_SYSTEM_PASSWORD}",
-        "-X",
-        "POST",
-        "http://kibana:5601/api/saved_objects/_import?overwrite=true",
-        "-H",
-        "kbn-xsrf: true",
-        "--form",
-        "file=@/config.ndjson",
+        'curl',
+        '-u',
+        'kibana_system:${KIBANA_SYSTEM_PASSWORD}',
+        '-X',
+        'POST',
+        'http://kibana:5601/api/saved_objects/_import?overwrite=true',
+        '-H',
+        'kbn-xsrf: true',
+        '--form',
+        'file=@/config.ndjson'
       ]
     restart: on-failure
     volumes:
       # Exceed Docker config file 500 kb file limit, thus a volume mount
-      - "/opt/opencrvs/infrastructure/monitoring/kibana/config.ndjson:/config.ndjson"
+      - '/opt/opencrvs/infrastructure/monitoring/kibana/config.ndjson:/config.ndjson'
     networks:
       - overlay_net
     deploy:
       labels:
-        - "traefik.enable=false"
+        - 'traefik.enable=false'
       replicas: 1
       placement:
         constraints:
@@ -153,23 +153,23 @@ services:
     logging:
       driver: gelf
       options:
-        gelf-address: "udp://127.0.0.1:12201"
-        tag: "setup-kibana-config"
+        gelf-address: 'udp://127.0.0.1:12201'
+        tag: 'setup-kibana-config'
   kibana:
     image: ghcr.io/opencrvs/kibana:8.16.4
     restart: always
     deploy:
       labels:
-        - "traefik.enable=true"
-        - "traefik.http.routers.kibana.rule=Host(`kibana.{{hostname}}`)"
-        - "traefik.http.services.kibana.loadbalancer.server.port=5601"
-        - "traefik.http.routers.kibana.tls=true"
-        - "traefik.http.routers.kibana.tls.certresolver=certResolver"
-        - "traefik.http.routers.kibana.entrypoints=web,websecure"
-        - "traefik.docker.network=opencrvs_overlay_net"
-        - "traefik.http.middlewares.traefik.headers.stsseconds=31536000"
-        - "traefik.http.middlewares.traefik.headers.stsincludesubdomains=true"
-        - "traefik.http.middlewares.traefik.headers.stspreload=true"
+        - 'traefik.enable=true'
+        - 'traefik.http.routers.kibana.rule=Host(`kibana.{{hostname}}`)'
+        - 'traefik.http.services.kibana.loadbalancer.server.port=5601'
+        - 'traefik.http.routers.kibana.tls=true'
+        - 'traefik.http.routers.kibana.tls.certresolver=certResolver'
+        - 'traefik.http.routers.kibana.entrypoints=web,websecure'
+        - 'traefik.docker.network=opencrvs_overlay_net'
+        - 'traefik.http.middlewares.traefik.headers.stsseconds=31536000'
+        - 'traefik.http.middlewares.traefik.headers.stsincludesubdomains=true'
+        - 'traefik.http.middlewares.traefik.headers.stspreload=true'
     networks:
       - overlay_net
     environment:
@@ -181,15 +181,15 @@ services:
     logging:
       driver: gelf
       options:
-        gelf-address: "udp://127.0.0.1:12201"
-        tag: "kibana"
+        gelf-address: 'udp://127.0.0.1:12201'
+        tag: 'kibana'
   # Configure mongo nodes as a replica set
   mongo1:
     command: mongod --auth --replSet rs0 --keyFile /etc/mongodb-keyfile
-    hostname: "mongo1"
+    hostname: 'mongo1'
     volumes:
-      - "/data/mongo:/data/db"
-      - "/mongodb-keyfile:/mongodb-keyfile"
+      - '/data/mongo:/data/db'
+      - '/mongodb-keyfile:/mongodb-keyfile'
     # https://github.com/docker-library/mongo/issues/475
     entrypoint:
       - bash
@@ -205,7 +205,7 @@ services:
     deploy:
       replicas: 1
       labels:
-        - "traefik.enable=false"
+        - 'traefik.enable=false'
       placement:
         constraints:
           - node.labels.data1 == true
@@ -214,8 +214,8 @@ services:
     logging:
       driver: gelf
       options:
-        gelf-address: "udp://127.0.0.1:12201"
-        tag: "mongo1"
+        gelf-address: 'udp://127.0.0.1:12201'
+        tag: 'mongo1'
   mongo-on-update:
     image: mongo:4.4
     command: bash /on-deploy.sh
@@ -244,11 +244,11 @@ services:
     logging:
       driver: gelf
       options:
-        gelf-address: "udp://127.0.0.1:12201"
-        tag: "mongo-on-update"
+        gelf-address: 'udp://127.0.0.1:12201'
+        tag: 'mongo-on-update'
   # Configure redis
   redis:
-    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
+    command: ['redis-server', '/usr/local/etc/redis/redis.conf']
     secrets:
       - source: redis-acl.{{ts}}
         target: /usr/local/etc/redis/users.acl
@@ -263,14 +263,14 @@ services:
     logging:
       driver: gelf
       options:
-        gelf-address: "udp://127.0.0.1:12201"
-        tag: "redis"
+        gelf-address: 'udp://127.0.0.1:12201'
+        tag: 'redis'
   # Configure elasticsearch
   elasticsearch:
     image: ghcr.io/opencrvs/elasticsearch:8.16.4
     volumes:
-      - "/data/elasticsearch:/usr/share/elasticsearch/data"
-      - "/data/backups/elasticsearch:/data/backups/elasticsearch"
+      - '/data/elasticsearch:/usr/share/elasticsearch/data'
+      - '/data/backups/elasticsearch:/data/backups/elasticsearch'
     configs:
       - source: jvm-options.{{ts}}
         target: /usr/share/elasticsearch/config/jvm.options.d/jvm.options
@@ -280,7 +280,7 @@ services:
           memory: 8G
       replicas: 1
       labels:
-        - "traefik.enable=false"
+        - 'traefik.enable=false'
       placement:
         constraints:
           - node.labels.data1 == true
@@ -297,8 +297,8 @@ services:
     logging:
       driver: gelf
       options:
-        gelf-address: "udp://127.0.0.1:12201"
-        tag: "elasticsearch"
+        gelf-address: 'udp://127.0.0.1:12201'
+        tag: 'elasticsearch'
 
   # Configure elasticsearch
   minio:
@@ -309,7 +309,7 @@ services:
       - MINIO_SERVER_URL=http://minio:9000
       - MINIO_BROWSER_REDIRECT_URL=https://minio-console.{{hostname}}
     volumes:
-      - "/data/minio:/data"
+      - '/data/minio:/data'
     command: server --console-address ":9001" /data
     deploy:
       replicas: 1
@@ -317,23 +317,23 @@ services:
         constraints:
           - node.labels.data1 == true
       labels:
-        - "traefik.enable=true"
-        - "traefik.docker.network=opencrvs_overlay_net"
+        - 'traefik.enable=true'
+        - 'traefik.docker.network=opencrvs_overlay_net'
         # Console
-        - "traefik.http.routers.minio-console.rule=Host(`minio-console.{{hostname}}`)"
-        - "traefik.http.routers.minio-console.entrypoints=websecure"
-        - "traefik.http.routers.minio-console.tls.certresolver=certResolver"
-        - "traefik.http.routers.minio-console.service=minio-console"
-        - "traefik.http.services.minio-console.loadbalancer.server.port=9001"
+        - 'traefik.http.routers.minio-console.rule=Host(`minio-console.{{hostname}}`)'
+        - 'traefik.http.routers.minio-console.entrypoints=websecure'
+        - 'traefik.http.routers.minio-console.tls.certresolver=certResolver'
+        - 'traefik.http.routers.minio-console.service=minio-console'
+        - 'traefik.http.services.minio-console.loadbalancer.server.port=9001'
         # API
-        - "traefik.http.routers.minio.rule=Host(`minio.{{hostname}}`)"
-        - "traefik.http.routers.minio.entrypoints=websecure,web"
-        - "traefik.http.routers.minio.tls.certresolver=certResolver"
-        - "traefik.http.routers.minio.tls=true"
-        - "traefik.http.routers.minio.service=minio"
-        - "traefik.http.routers.minio.middlewares=minio-https-redirect"
-        - "traefik.http.middlewares.minio-https-redirect.redirectscheme.scheme=https"
-        - "traefik.http.services.minio.loadbalancer.server.port=9000"
+        - 'traefik.http.routers.minio.rule=Host(`minio.{{hostname}}`)'
+        - 'traefik.http.routers.minio.entrypoints=websecure,web'
+        - 'traefik.http.routers.minio.tls.certresolver=certResolver'
+        - 'traefik.http.routers.minio.tls=true'
+        - 'traefik.http.routers.minio.service=minio'
+        - 'traefik.http.routers.minio.middlewares=minio-https-redirect'
+        - 'traefik.http.middlewares.minio-https-redirect.redirectscheme.scheme=https'
+        - 'traefik.http.services.minio.loadbalancer.server.port=9000'
     networks:
       - overlay_net
 
@@ -350,19 +350,19 @@ services:
       - overlay_net
     deploy:
       labels:
-        - "traefik.enable=false"
+        - 'traefik.enable=false'
       placement:
         constraints:
           - node.role == manager
     logging:
       driver: gelf
       options:
-        gelf-address: "udp://127.0.0.1:12201"
-        tag: "minio"
+        gelf-address: 'udp://127.0.0.1:12201'
+        tag: 'minio'
 
   setup-elasticsearch-users:
     image: ubuntu:bionic
-    entrypoint: ["bash", "/usr/app/setup.sh"]
+    entrypoint: ['bash', '/usr/app/setup.sh']
     restart: on-failure
     environment:
       - ELASTICSEARCH_HOST=elasticsearch
@@ -375,12 +375,12 @@ services:
       - KIBANA_USERNAME=${KIBANA_USERNAME}
       - KIBANA_PASSWORD=${KIBANA_PASSWORD}
     volumes:
-      - "/opt/opencrvs/infrastructure/elasticsearch:/usr/app"
+      - '/opt/opencrvs/infrastructure/elasticsearch:/usr/app'
     networks:
       - overlay_net
     deploy:
       labels:
-        - "traefik.enable=false"
+        - 'traefik.enable=false'
       replicas: 1
       placement:
         constraints:
@@ -388,8 +388,8 @@ services:
     logging:
       driver: gelf
       options:
-        gelf-address: "udp://127.0.0.1:12201"
-        tag: "setup-elasticsearch-users"
+        gelf-address: 'udp://127.0.0.1:12201'
+        tag: 'setup-elasticsearch-users'
   elastalert:
     image: jertel/elastalert2:2.19.0
     restart: unless-stopped
@@ -397,13 +397,13 @@ services:
       - ES_USERNAME=elastic
       - ES_PASSWORD=${ELASTICSEARCH_SUPERUSER_PASSWORD}
     volumes:
-      - "/opt/opencrvs/infrastructure/monitoring/elastalert/elastalert.yaml:/opt/elastalert/config.yaml"
-      - "/opt/opencrvs/infrastructure/monitoring/elastalert/rules:/opt/elastalert/rules"
+      - '/opt/opencrvs/infrastructure/monitoring/elastalert/elastalert.yaml:/opt/elastalert/config.yaml'
+      - '/opt/opencrvs/infrastructure/monitoring/elastalert/rules:/opt/elastalert/rules'
     networks:
       - overlay_net
     deploy:
       labels:
-        - "traefik.enable=false"
+        - 'traefik.enable=false'
       replicas: 1
       placement:
         constraints:
@@ -411,15 +411,15 @@ services:
     logging:
       driver: gelf
       options:
-        gelf-address: "udp://127.0.0.1:12201"
-        tag: "elastalert"
+        gelf-address: 'udp://127.0.0.1:12201'
+        tag: 'elastalert'
 
   logstash:
     image: logstash:8.16.4
     command: logstash -f /etc/logstash/logstash.conf --verbose
     ports:
-      - "12201:12201"
-      - "12201:12201/udp"
+      - '12201:12201'
+      - '12201:12201/udp'
     configs:
       - source: logstash-pipeline.{{ts}}
         target: /etc/logstash/logstash.conf
@@ -435,33 +435,33 @@ services:
     restart: always
     deploy:
       labels:
-        - "traefik.enable=false"
+        - 'traefik.enable=false'
       replicas: 1
   apm-server:
     image: ghcr.io/opencrvs/apm-server:7.17.22
-    cap_add: ["CHOWN", "DAC_OVERRIDE", "SETGID", "SETUID"]
-    cap_drop: ["ALL"]
+    cap_add: ['CHOWN', 'DAC_OVERRIDE', 'SETGID', 'SETUID']
+    cap_drop: ['ALL']
     restart: always
     networks:
       - overlay_net
     deploy:
       labels:
-        - "traefik.enable=false"
+        - 'traefik.enable=false'
       replicas: 1
     command:
       [
-        "apm-server",
-        "-e",
-        "-c",
-        "apm-server.yml",
-        "-E",
-        "output.elasticsearch.username=elastic",
-        "-E",
-        "output.elasticsearch.password=${ELASTICSEARCH_SUPERUSER_PASSWORD}",
-        "-E",
-        "kibana.username=${KIBANA_USERNAME}",
-        "-E",
-        "kibana.password=${KIBANA_PASSWORD}",
+        'apm-server',
+        '-e',
+        '-c',
+        'apm-server.yml',
+        '-E',
+        'output.elasticsearch.username=elastic',
+        '-E',
+        'output.elasticsearch.password=${ELASTICSEARCH_SUPERUSER_PASSWORD}',
+        '-E',
+        'kibana.username=${KIBANA_USERNAME}',
+        '-E',
+        'kibana.password=${KIBANA_PASSWORD}'
       ]
     configs:
       - source: apm.{{ts}}
@@ -469,17 +469,17 @@ services:
     logging:
       driver: gelf
       options:
-        gelf-address: "udp://127.0.0.1:12201"
-        tag: "apm-server"
+        gelf-address: 'udp://127.0.0.1:12201'
+        tag: 'apm-server'
   # Configure influxdb
   influxdb:
     volumes:
-      - "/data/influxdb:/var/lib/influxdb"
-      - "/data/backups/influxdb:/data/backups/influxdb"
+      - '/data/influxdb:/var/lib/influxdb'
+      - '/data/backups/influxdb:/data/backups/influxdb'
     deploy:
       replicas: 1
       labels:
-        - "traefik.enable=false"
+        - 'traefik.enable=false'
       placement:
         constraints:
           - node.labels.data1 == true
@@ -491,8 +491,8 @@ services:
     logging:
       driver: gelf
       options:
-        gelf-address: "udp://127.0.0.1:12201"
-        tag: "influxdb"
+        gelf-address: 'udp://127.0.0.1:12201'
+        tag: 'influxdb'
   # Configure webapps and add traefik config
   client:
     environment:
@@ -505,61 +505,61 @@ services:
       - CONTENT_SECURITY_POLICY_WILDCARD=${CONTENT_SECURITY_POLICY_WILDCARD}
     deploy:
       labels:
-        - "traefik.enable=true"
-        - "traefik.http.routers.client.rule=Host(`register.{{hostname}}`,`{{hostname}}`)"
-        - "traefik.http.routers.client.middlewares=test-replacepathregex,gzip-compression"
-        - "traefik.http.routers.client.service=client"
-        - "traefik.http.services.client.loadbalancer.server.port=3000"
-        - "traefik.http.routers.client.tls=true"
-        - "traefik.http.routers.client.tls.certresolver=certResolver"
-        - "traefik.http.routers.client.entrypoints=web,websecure"
-        - "traefik.docker.network=opencrvs_overlay_net"
+        - 'traefik.enable=true'
+        - 'traefik.http.routers.client.rule=Host(`register.{{hostname}}`,`{{hostname}}`)'
+        - 'traefik.http.routers.client.middlewares=test-replacepathregex,gzip-compression'
+        - 'traefik.http.routers.client.service=client'
+        - 'traefik.http.services.client.loadbalancer.server.port=3000'
+        - 'traefik.http.routers.client.tls=true'
+        - 'traefik.http.routers.client.tls.certresolver=certResolver'
+        - 'traefik.http.routers.client.entrypoints=web,websecure'
+        - 'traefik.docker.network=opencrvs_overlay_net'
 
-        - "traefik.http.middlewares.test-replacepathregex.redirectregex.permanent=true"
-        - "traefik.http.middlewares.test-replacepathregex.redirectregex.regex=^https?://{{hostname}}/(.*)"
-        - "traefik.http.middlewares.test-replacepathregex.redirectregex.replacement=https://register.{{hostname}}/$${1}"
+        - 'traefik.http.middlewares.test-replacepathregex.redirectregex.permanent=true'
+        - 'traefik.http.middlewares.test-replacepathregex.redirectregex.regex=^https?://{{hostname}}/(.*)'
+        - 'traefik.http.middlewares.test-replacepathregex.redirectregex.replacement=https://register.{{hostname}}/$${1}'
 
-        - "traefik.http.middlewares.client.headers.customresponseheaders.Pragma=no-cache"
-        - "traefik.http.middlewares.client.headers.customresponseheaders.Cache-control=no-store"
-        - "traefik.http.middlewares.client.headers.customresponseheaders.X-Robots-Tag=none"
-        - "traefik.http.middlewares.client.headers.stsseconds=31536000"
-        - "traefik.http.middlewares.client.headers.stsincludesubdomains=true"
-        - "traefik.http.middlewares.client.headers.stspreload=true"
+        - 'traefik.http.middlewares.client.headers.customresponseheaders.Pragma=no-cache'
+        - 'traefik.http.middlewares.client.headers.customresponseheaders.Cache-control=no-store'
+        - 'traefik.http.middlewares.client.headers.customresponseheaders.X-Robots-Tag=none'
+        - 'traefik.http.middlewares.client.headers.stsseconds=31536000'
+        - 'traefik.http.middlewares.client.headers.stsincludesubdomains=true'
+        - 'traefik.http.middlewares.client.headers.stspreload=true'
       replicas: 1
     networks:
       - overlay_net
     logging:
       driver: gelf
       options:
-        gelf-address: "udp://127.0.0.1:12201"
-        tag: "client"
+        gelf-address: 'udp://127.0.0.1:12201'
+        tag: 'client'
 
   countryconfig:
     deploy:
       labels:
-        - "traefik.enable=true"
-        - "traefik.http.routers.countryconfig.rule=(Host(`countryconfig.{{hostname}}`)|| Host(`registry.{{hostname}}`)) && !Path(`/reindex`) && !Path(`/email`) && !Path(`/dashboards/queries.json`)"
-        - "traefik.http.services.countryconfig.loadbalancer.server.port=3040"
-        - "traefik.http.routers.countryconfig.tls=true"
-        - "traefik.http.routers.countryconfig.tls.certresolver=certResolver"
-        - "traefik.http.routers.countryconfig.entrypoints=web,websecure"
-        - "traefik.http.routers.countryconfig.middlewares=gzip-compression"
-        - "traefik.docker.network=opencrvs_overlay_net"
-        - "traefik.http.middlewares.countryconfig.headers.customresponseheaders.Pragma=no-cache"
-        - "traefik.http.middlewares.countryconfig.headers.customresponseheaders.Cache-control=no-store"
-        - "traefik.http.middlewares.countryconfig.headers.customresponseheaders.X-Robots-Tag=none"
-        - "traefik.http.middlewares.countryconfig.headers.stsseconds=31536000"
-        - "traefik.http.middlewares.countryconfig.headers.stsincludesubdomains=true"
-        - "traefik.http.middlewares.countryconfig.headers.stspreload=true"
+        - 'traefik.enable=true'
+        - 'traefik.http.routers.countryconfig.rule=(Host(`countryconfig.{{hostname}}`)|| Host(`registry.{{hostname}}`)) && !Path(`/reindex`) && !Path(`/email`) && !Path(`/dashboards/queries.json`)'
+        - 'traefik.http.services.countryconfig.loadbalancer.server.port=3040'
+        - 'traefik.http.routers.countryconfig.tls=true'
+        - 'traefik.http.routers.countryconfig.tls.certresolver=certResolver'
+        - 'traefik.http.routers.countryconfig.entrypoints=web,websecure'
+        - 'traefik.http.routers.countryconfig.middlewares=gzip-compression'
+        - 'traefik.docker.network=opencrvs_overlay_net'
+        - 'traefik.http.middlewares.countryconfig.headers.customresponseheaders.Pragma=no-cache'
+        - 'traefik.http.middlewares.countryconfig.headers.customresponseheaders.Cache-control=no-store'
+        - 'traefik.http.middlewares.countryconfig.headers.customresponseheaders.X-Robots-Tag=none'
+        - 'traefik.http.middlewares.countryconfig.headers.stsseconds=31536000'
+        - 'traefik.http.middlewares.countryconfig.headers.stsincludesubdomains=true'
+        - 'traefik.http.middlewares.countryconfig.headers.stspreload=true'
         # This is an invalid IP range, effectively blocking all IPs from accessing below paths.
         # It's only meant to be accessed from the internal docker network.
-        - "traefik.http.middlewares.block-internal-routes.ipwhitelist.sourcerange=255.255.255.255"
-        - "traefik.http.routers.block-email.rule=Host(`countryconfig.{{hostname}}`) && Path(`/email`)"
-        - "traefik.http.routers.block-email.middlewares=block-internal-routes"
-        - "traefik.http.routers.block-reindex.rule=Host(`countryconfig.{{hostname}}`) && Path(`/reindex`)"
-        - "traefik.http.routers.block-reindex.middlewares=block-internal-routes"
-        - "traefik.http.routers.block-dashboard-queries.rule=Host(`countryconfig.{{hostname}}`) && Path(`/dashboards/queries.json`)"
-        - "traefik.http.routers.block-dashboard-queries.middlewares=block-internal-routes"
+        - 'traefik.http.middlewares.block-internal-routes.ipwhitelist.sourcerange=255.255.255.255'
+        - 'traefik.http.routers.block-email.rule=Host(`countryconfig.{{hostname}}`) && Path(`/email`)'
+        - 'traefik.http.routers.block-email.middlewares=block-internal-routes'
+        - 'traefik.http.routers.block-reindex.rule=Host(`countryconfig.{{hostname}}`) && Path(`/reindex`)'
+        - 'traefik.http.routers.block-reindex.middlewares=block-internal-routes'
+        - 'traefik.http.routers.block-dashboard-queries.rule=Host(`countryconfig.{{hostname}}`) && Path(`/dashboards/queries.json`)'
+        - 'traefik.http.routers.block-dashboard-queries.middlewares=block-internal-routes'
       replicas: 1
     environment:
       - NODE_ENV=production
@@ -596,8 +596,8 @@ services:
     logging:
       driver: gelf
       options:
-        gelf-address: "udp://127.0.0.1:12201"
-        tag: "countryconfig"
+        gelf-address: 'udp://127.0.0.1:12201'
+        tag: 'countryconfig'
   login:
     environment:
       - COUNTRY_CONFIG_URL=https://countryconfig.{{hostname}}
@@ -608,28 +608,28 @@ services:
       - CONTENT_SECURITY_POLICY_WILDCARD=${CONTENT_SECURITY_POLICY_WILDCARD}
     deploy:
       labels:
-        - "traefik.enable=true"
-        - "traefik.http.routers.login.rule=Host(`login.{{hostname}}`)"
-        - "traefik.http.services.login.loadbalancer.server.port=3020"
-        - "traefik.http.routers.login.tls=true"
-        - "traefik.http.routers.login.tls.certresolver=certResolver"
-        - "traefik.http.routers.login.entrypoints=web,websecure"
-        - "traefik.http.routers.login.middlewares=gzip-compression"
-        - "traefik.docker.network=opencrvs_overlay_net"
-        - "traefik.http.middlewares.login.headers.customresponseheaders.Pragma=no-cache"
-        - "traefik.http.middlewares.login.headers.customresponseheaders.Cache-control=no-store"
-        - "traefik.http.middlewares.login.headers.customresponseheaders.X-Robots-Tag=none"
-        - "traefik.http.middlewares.login.headers.stsseconds=31536000"
-        - "traefik.http.middlewares.login.headers.stsincludesubdomains=true"
-        - "traefik.http.middlewares.login.headers.stspreload=true"
+        - 'traefik.enable=true'
+        - 'traefik.http.routers.login.rule=Host(`login.{{hostname}}`)'
+        - 'traefik.http.services.login.loadbalancer.server.port=3020'
+        - 'traefik.http.routers.login.tls=true'
+        - 'traefik.http.routers.login.tls.certresolver=certResolver'
+        - 'traefik.http.routers.login.entrypoints=web,websecure'
+        - 'traefik.http.routers.login.middlewares=gzip-compression'
+        - 'traefik.docker.network=opencrvs_overlay_net'
+        - 'traefik.http.middlewares.login.headers.customresponseheaders.Pragma=no-cache'
+        - 'traefik.http.middlewares.login.headers.customresponseheaders.Cache-control=no-store'
+        - 'traefik.http.middlewares.login.headers.customresponseheaders.X-Robots-Tag=none'
+        - 'traefik.http.middlewares.login.headers.stsseconds=31536000'
+        - 'traefik.http.middlewares.login.headers.stsincludesubdomains=true'
+        - 'traefik.http.middlewares.login.headers.stspreload=true'
       replicas: 1
     networks:
       - overlay_net
     logging:
       driver: gelf
       options:
-        gelf-address: "udp://127.0.0.1:12201"
-        tag: "login"
+        gelf-address: 'udp://127.0.0.1:12201'
+        tag: 'login'
   # Configure other service with deployment specifc details
   auth:
     secrets:
@@ -646,15 +646,15 @@ services:
       - REDIS_PASSWORD=${AUTH_REDIS_PASSWORD}
     deploy:
       labels:
-        - "traefik.enable=false"
+        - 'traefik.enable=false'
       replicas: 1
     networks:
       - overlay_net
     logging:
       driver: gelf
       options:
-        gelf-address: "udp://127.0.0.1:12201"
-        tag: "auth"
+        gelf-address: 'udp://127.0.0.1:12201'
+        tag: 'auth'
   events:
     secrets:
       - jwt-public-key.{{ts}}
@@ -668,15 +668,15 @@ services:
       - CERT_PUBLIC_KEY_PATH=/run/secrets/jwt-public-key.{{ts}}
     deploy:
       labels:
-        - "traefik.enable=false"
+        - 'traefik.enable=false'
       replicas: 1
     networks:
       - overlay_net
     logging:
       driver: gelf
       options:
-        gelf-address: "udp://127.0.0.1:12201"
-        tag: "events"
+        gelf-address: 'udp://127.0.0.1:12201'
+        tag: 'events'
   gateway:
     secrets:
       - jwt-public-key.{{ts}}
@@ -694,33 +694,33 @@ services:
       - REDIS_PASSWORD=${GATEWAY_REDIS_PASSWORD}
     deploy:
       labels:
-        - "traefik.enable=true"
-        - "traefik.http.routers.gateway.rule=Host(`gateway.{{hostname}}`)"
-        - "traefik.http.services.gateway.loadbalancer.server.port=7070"
-        - "traefik.http.routers.gateway.tls=true"
-        - "traefik.http.routers.gateway.tls.certresolver=certResolver"
-        - "traefik.http.routers.gateway.entrypoints=web,websecure"
-        - "traefik.http.routers.gateway.middlewares=gzip-compression"
-        - "traefik.docker.network=opencrvs_overlay_net"
-        - "traefik.http.middlewares.gateway.headers.customresponseheaders.Pragma=no-cache"
-        - "traefik.http.middlewares.gateway.headers.customresponseheaders.Cache-control=no-store"
-        - "traefik.http.middlewares.gateway.headers.customresponseheaders.X-Robots-Tag=none"
-        - "traefik.http.middlewares.gateway.headers.stsseconds=31536000"
-        - "traefik.http.middlewares.gateway.headers.stsincludesubdomains=true"
-        - "traefik.http.middlewares.gateway.headers.stspreload=true"
+        - 'traefik.enable=true'
+        - 'traefik.http.routers.gateway.rule=Host(`gateway.{{hostname}}`)'
+        - 'traefik.http.services.gateway.loadbalancer.server.port=7070'
+        - 'traefik.http.routers.gateway.tls=true'
+        - 'traefik.http.routers.gateway.tls.certresolver=certResolver'
+        - 'traefik.http.routers.gateway.entrypoints=web,websecure'
+        - 'traefik.http.routers.gateway.middlewares=gzip-compression'
+        - 'traefik.docker.network=opencrvs_overlay_net'
+        - 'traefik.http.middlewares.gateway.headers.customresponseheaders.Pragma=no-cache'
+        - 'traefik.http.middlewares.gateway.headers.customresponseheaders.Cache-control=no-store'
+        - 'traefik.http.middlewares.gateway.headers.customresponseheaders.X-Robots-Tag=none'
+        - 'traefik.http.middlewares.gateway.headers.stsseconds=31536000'
+        - 'traefik.http.middlewares.gateway.headers.stsincludesubdomains=true'
+        - 'traefik.http.middlewares.gateway.headers.stspreload=true'
       replicas: 1
     networks:
       - overlay_net
     logging:
       driver: gelf
       options:
-        gelf-address: "udp://127.0.0.1:12201"
-        tag: "gateway"
+        gelf-address: 'udp://127.0.0.1:12201'
+        tag: 'gateway'
   documents:
     deploy:
       replicas: 1
       labels:
-        - "traefik.enable=false"
+        - 'traefik.enable=false'
     secrets:
       - jwt-public-key.{{ts}}
     environment:
@@ -738,8 +738,8 @@ services:
     logging:
       driver: gelf
       options:
-        gelf-address: "udp://127.0.0.1:12201"
-        tag: "documents"
+        gelf-address: 'udp://127.0.0.1:12201'
+        tag: 'documents'
   migration:
     environment:
       - USER_MGNT_MONGO_URL=mongodb://user-mgnt:${USER_MGNT_MONGODB_PASSWORD}@mongo1/user-mgnt?replicaSet=rs0
@@ -756,7 +756,7 @@ services:
       - SUPER_USER_PASSWORD=${SUPER_USER_PASSWORD}
     deploy:
       labels:
-        - "traefik.enable=false"
+        - 'traefik.enable=false'
       replicas: 1
       restart_policy:
         condition: on-failure
@@ -765,13 +765,13 @@ services:
     logging:
       driver: gelf
       options:
-        gelf-address: "udp://127.0.0.1:12201"
-        tag: "migration"
+        gelf-address: 'udp://127.0.0.1:12201'
+        tag: 'migration'
 
   legacy-data-migration:
     image: ghcr.io/opencrvs/ocrvs-migration:${VERSION}
     command:
-      ["/bin/sh", "-c", "/app/wait && yarn start:prod --migrate-legacy-data"]
+      ['/bin/sh', '-c', '/app/wait && yarn start:prod --migrate-legacy-data']
     environment:
       - USER_MGNT_MONGO_URL=mongodb://user-mgnt:${USER_MGNT_MONGODB_PASSWORD}@mongo1/user-mgnt?replicaSet=rs0
       - DASHBOARD_MONGO_URL=mongodb://performance:${PERFORMANCE_MONGODB_PASSWORD}@mongo1/performance?replicaSet=rs0
@@ -797,7 +797,7 @@ services:
       - MONGO_REPLICA_SET=rs0
     deploy:
       labels:
-        - "traefik.enable=false"
+        - 'traefik.enable=false'
       replicas: 1
       restart_policy:
         condition: on-failure
@@ -806,8 +806,8 @@ services:
     logging:
       driver: gelf
       options:
-        gelf-address: "udp://127.0.0.1:12201"
-        tag: "legacy-data-migration"
+        gelf-address: 'udp://127.0.0.1:12201'
+        tag: 'legacy-data-migration'
 
   postgres:
     image: docker.io/chumaky/postgres_mongo_fdw:17.6_fdw5.5.2
@@ -822,7 +822,7 @@ services:
     deploy:
       replicas: 1
       labels:
-        - "traefik.enable=false"
+        - 'traefik.enable=false'
       placement:
         constraints:
           - node.labels.data1 == true
@@ -831,9 +831,9 @@ services:
     image: postgres:17.6
     command:
       [
-        "bash",
-        "-c",
-        "bash /on-deploy.sh && bash /setup-analytics.sh && bash /setup-reference-data.sh",
+        'bash',
+        '-c',
+        'bash /on-deploy.sh && bash /setup-analytics.sh && bash /setup-reference-data.sh'
       ]
     configs:
       - source: postgres-on-deploy.{{ts}}
@@ -874,7 +874,7 @@ services:
       - /opt/opencrvs/infrastructure/metabase/initialize-database.sh:/initialize-database.sh
       - /opt/opencrvs/infrastructure/metabase/update-database.sh:/update-database.sh
       - /opt/opencrvs/infrastructure/metabase/environment-configuration.sql:/environment-configuration.sql
-    entrypoint: ["/bin/sh", "/run.sh"]
+    entrypoint: ['/bin/sh', '/run.sh']
     networks:
       - overlay_net
     environment:
@@ -901,19 +901,19 @@ services:
 
     deploy:
       labels:
-        - "traefik.enable=true"
-        - "traefik.http.routers.metabase.rule=Host(`metabase.{{hostname}}`)"
-        - "traefik.http.services.metabase.loadbalancer.server.port=4444"
-        - "traefik.http.routers.metabase.tls=true"
-        - "traefik.http.routers.metabase.tls.certresolver=certResolver"
-        - "traefik.http.routers.metabase.entrypoints=web,websecure"
-        - "traefik.docker.network=opencrvs_overlay_net"
-        - "traefik.http.middlewares.metabase.headers.customresponseheaders.Pragma=no-cache"
-        - "traefik.http.middlewares.metabase.headers.customresponseheaders.Cache-control=no-store"
-        - "traefik.http.middlewares.metabase.headers.customresponseheaders.X-Robots-Tag=none"
-        - "traefik.http.middlewares.metabase.headers.stsseconds=31536000"
-        - "traefik.http.middlewares.metabase.headers.stsincludesubdomains=true"
-        - "traefik.http.middlewares.metabase.headers.stspreload=true"
+        - 'traefik.enable=true'
+        - 'traefik.http.routers.metabase.rule=Host(`metabase.{{hostname}}`)'
+        - 'traefik.http.services.metabase.loadbalancer.server.port=4444'
+        - 'traefik.http.routers.metabase.tls=true'
+        - 'traefik.http.routers.metabase.tls.certresolver=certResolver'
+        - 'traefik.http.routers.metabase.entrypoints=web,websecure'
+        - 'traefik.docker.network=opencrvs_overlay_net'
+        - 'traefik.http.middlewares.metabase.headers.customresponseheaders.Pragma=no-cache'
+        - 'traefik.http.middlewares.metabase.headers.customresponseheaders.Cache-control=no-store'
+        - 'traefik.http.middlewares.metabase.headers.customresponseheaders.X-Robots-Tag=none'
+        - 'traefik.http.middlewares.metabase.headers.stsseconds=31536000'
+        - 'traefik.http.middlewares.metabase.headers.stsincludesubdomains=true'
+        - 'traefik.http.middlewares.metabase.headers.stspreload=true'
       replicas: 1
       placement:
         constraints:
@@ -963,27 +963,27 @@ services:
     deploy:
       replicas: 1
       labels:
-        - "traefik.enable=true"
-        - "traefik.http.routers.mosip-api.rule=Host(`mosip-api.{{hostname}}`)"
-        - "traefik.http.services.mosip-api.loadbalancer.server.port=2024"
-        - "traefik.http.routers.mosip-api.tls=true"
-        - "traefik.http.routers.mosip-api.tls.certresolver=certResolver"
-        - "traefik.http.routers.mosip-api.entrypoints=web,websecure"
-        - "traefik.http.routers.mosip-api.middlewares=gzip-compression"
-        - "traefik.docker.network=opencrvs_overlay_net"
-        - "traefik.http.middlewares.mosip-api.headers.customresponseheaders.Pragma=no-cache"
-        - "traefik.http.middlewares.mosip-api.headers.customresponseheaders.Cache-control=no-store"
-        - "traefik.http.middlewares.mosip-api.headers.customresponseheaders.X-Robots-Tag=none"
-        - "traefik.http.middlewares.mosip-api.headers.stsseconds=31536000"
-        - "traefik.http.middlewares.mosip-api.headers.stsincludesubdomains=true"
-        - "traefik.http.middlewares.mosip-api.headers.stspreload=true"
+        - 'traefik.enable=true'
+        - 'traefik.http.routers.mosip-api.rule=Host(`mosip-api.{{hostname}}`)'
+        - 'traefik.http.services.mosip-api.loadbalancer.server.port=2024'
+        - 'traefik.http.routers.mosip-api.tls=true'
+        - 'traefik.http.routers.mosip-api.tls.certresolver=certResolver'
+        - 'traefik.http.routers.mosip-api.entrypoints=web,websecure'
+        - 'traefik.http.routers.mosip-api.middlewares=gzip-compression'
+        - 'traefik.docker.network=opencrvs_overlay_net'
+        - 'traefik.http.middlewares.mosip-api.headers.customresponseheaders.Pragma=no-cache'
+        - 'traefik.http.middlewares.mosip-api.headers.customresponseheaders.Cache-control=no-store'
+        - 'traefik.http.middlewares.mosip-api.headers.customresponseheaders.X-Robots-Tag=none'
+        - 'traefik.http.middlewares.mosip-api.headers.stsseconds=31536000'
+        - 'traefik.http.middlewares.mosip-api.headers.stsincludesubdomains=true'
+        - 'traefik.http.middlewares.mosip-api.headers.stspreload=true'
     networks:
       - overlay_net
     logging:
       driver: gelf
       options:
-        gelf-address: "udp://127.0.0.1:12201"
-        tag: "mosip-api"
+        gelf-address: 'udp://127.0.0.1:12201'
+        tag: 'mosip-api'
 
   mosip-mock:
     image: ghcr.io/opencrvs/mosip-mock:2.0.0-rc.11
@@ -1006,8 +1006,8 @@ services:
     logging:
       driver: gelf
       options:
-        gelf-address: "udp://127.0.0.1:12201"
-        tag: "mosip-mock"
+        gelf-address: 'udp://127.0.0.1:12201'
+        tag: 'mosip-mock'
 
   esignet-mock:
     image: ghcr.io/opencrvs/esignet-mock:2.0.0-rc.11
@@ -1020,27 +1020,27 @@ services:
     deploy:
       replicas: 1
       labels:
-        - "traefik.enable=true"
-        - "traefik.http.routers.esignet-mock.rule=Host(`esignet-mock.{{hostname}}`)"
-        - "traefik.http.services.esignet-mock.loadbalancer.server.port=20260"
-        - "traefik.http.routers.esignet-mock.tls=true"
-        - "traefik.http.routers.esignet-mock.tls.certresolver=certResolver"
-        - "traefik.http.routers.esignet-mock.entrypoints=web,websecure"
-        - "traefik.http.routers.esignet-mock.middlewares=gzip-compression"
-        - "traefik.docker.network=opencrvs_overlay_net"
-        - "traefik.http.middlewares.esignet-mock.headers.customresponseheaders.Pragma=no-cache"
-        - "traefik.http.middlewares.esignet-mock.headers.customresponseheaders.Cache-control=no-store"
-        - "traefik.http.middlewares.esignet-mock.headers.customresponseheaders.X-Robots-Tag=none"
-        - "traefik.http.middlewares.esignet-mock.headers.stsseconds=31536000"
-        - "traefik.http.middlewares.esignet-mock.headers.stsincludesubdomains=true"
-        - "traefik.http.middlewares.esignet-mock.headers.stspreload=true"
+        - 'traefik.enable=true'
+        - 'traefik.http.routers.esignet-mock.rule=Host(`esignet-mock.{{hostname}}`)'
+        - 'traefik.http.services.esignet-mock.loadbalancer.server.port=20260'
+        - 'traefik.http.routers.esignet-mock.tls=true'
+        - 'traefik.http.routers.esignet-mock.tls.certresolver=certResolver'
+        - 'traefik.http.routers.esignet-mock.entrypoints=web,websecure'
+        - 'traefik.http.routers.esignet-mock.middlewares=gzip-compression'
+        - 'traefik.docker.network=opencrvs_overlay_net'
+        - 'traefik.http.middlewares.esignet-mock.headers.customresponseheaders.Pragma=no-cache'
+        - 'traefik.http.middlewares.esignet-mock.headers.customresponseheaders.Cache-control=no-store'
+        - 'traefik.http.middlewares.esignet-mock.headers.customresponseheaders.X-Robots-Tag=none'
+        - 'traefik.http.middlewares.esignet-mock.headers.stsseconds=31536000'
+        - 'traefik.http.middlewares.esignet-mock.headers.stsincludesubdomains=true'
+        - 'traefik.http.middlewares.esignet-mock.headers.stspreload=true'
     networks:
       - overlay_net
     logging:
       driver: gelf
       options:
-        gelf-address: "udp://127.0.0.1:12201"
-        tag: "esignet-mock"
+        gelf-address: 'udp://127.0.0.1:12201'
+        tag: 'esignet-mock'
 secrets:
   redis-acl.{{ts}}:
     external: true
