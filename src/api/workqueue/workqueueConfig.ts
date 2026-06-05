@@ -147,6 +147,7 @@ export const Workqueues = defineWorkqueues([
       status: {
         type: 'anyOf',
         terms: [
+          EventStatus.enum.CREATED,
           EventStatus.enum.DECLARED,
           EventStatus.enum.NOTIFIED,
           EventStatus.enum.REGISTERED
