@@ -439,11 +439,14 @@ test('1. Correct record - 1', async ({ page }) => {
       `Date of birth${formatDateTo_dMMMMyyyy(declaration['child.dob'])}${formatDateTo_dMMMMyyyy(updatedChildDetails.birthDate)}`
     )
 
+    const childBirthLocationName = await getLocationNameFromId(
+      declaration['child.birthLocation']!,
+      token
+    )
+
     await expect(
       page.locator('#listTable-corrections-table-child')
-    ).toContainText(
-      `Location of birth${await getLocationNameFromId(declaration['child.birthLocation']!, token)}`
-    )
+    ).toContainText(`Location of birth${childBirthLocationName}`)
 
     await expect(
       page.locator('#listTable-corrections-table-child')
