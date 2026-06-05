@@ -43,6 +43,9 @@ test.describe.serial('1. Settings Page', () => {
       await expect(
         desktopView.filter({ hasText: 'Registrar' }).first()
       ).toBeVisible()
+      await expect(
+        desktopView.filter({ hasText: 'Ibombo District Office' }).first()
+      ).toBeVisible()
 
       // Editable fields
       await expect(
