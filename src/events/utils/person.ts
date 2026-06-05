@@ -139,7 +139,8 @@ export const getIdentityFields = ({
           id: 'event.death.action.declare.form.section.informant.field.nationality.label'
         },
         conditionals,
-        defaultValue: 'FAR'
+        defaultValue: 'FAR',
+        parent
       },
       {
         valuePath: 'data.nationality',
