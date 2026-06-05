@@ -128,19 +128,25 @@ export const getIdentityFields = ({
   ]
 
   return [
-    {
-      id: `${prefix}.nationality`,
-      type: FieldType.COUNTRY,
-      required: true,
-      label: {
-        defaultMessage: 'Nationality',
-        description: 'This is the label for the field',
-        id: 'event.death.action.declare.form.section.informant.field.nationality.label'
+    connectToMOSIPIdReader(
+      {
+        id: `${prefix}.nationality`,
+        type: FieldType.COUNTRY,
+        required: true,
+        label: {
+          defaultMessage: 'Nationality',
+          description: 'This is the label for the field',
+          id: 'event.death.action.declare.form.section.informant.field.nationality.label'
+        },
+        conditionals,
+        defaultValue: 'FAR',
+        parent
       },
-      conditionals,
-      defaultValue: 'FAR',
-      parent
-    },
+      {
+        valuePath: 'data.nationality',
+        disableIf: ['authenticated']
+      }
+    ),
     {
       id: `${prefix}.idType`,
       type: FieldType.SELECT,
