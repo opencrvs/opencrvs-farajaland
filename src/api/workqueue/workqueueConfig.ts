@@ -143,7 +143,16 @@ export const Workqueues = defineWorkqueues([
     },
     query: {
       ...createdInMyAdminArea,
-      flags: { anyOf: [InherentFlags.REJECTED] }
+      flags: { anyOf: [InherentFlags.REJECTED] },
+      status: {
+        type: 'anyOf',
+        terms: [
+          EventStatus.enum.CREATED,
+          EventStatus.enum.DECLARED,
+          EventStatus.enum.NOTIFIED,
+          EventStatus.enum.REGISTERED
+        ]
+      }
     },
     action: { type: ActionType.READ }
   },
