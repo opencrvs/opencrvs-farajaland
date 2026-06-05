@@ -334,9 +334,7 @@ test('1. Correct record - 1', async ({ page }) => {
     await expectInUrl(page, `/events/request-correction/${eventId}/review`)
 
     await expect(
-      page
-        .getByTestId('row-value-child.attendantAtBirth')
-        .getByRole('deletion')
+      page.getByTestId('row-value-child.attendantAtBirth').getByRole('deletion')
     ).toHaveText('-')
 
     await expect(
@@ -575,6 +573,7 @@ test('1. Correct record - 1', async ({ page }) => {
   })
 
   await test.step('1.2.6.4.2 Validate correction approved modal', async () => {
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
     await page.getByRole('button', { name: 'Next page' }).click()
     await page
       .getByRole('button', { name: 'Correction approved', exact: true })
