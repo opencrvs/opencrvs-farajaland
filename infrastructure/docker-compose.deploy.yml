@@ -641,35 +641,12 @@ services:
       - APN_SERVICE_URL=http://apm-server:8200
       - CERT_PRIVATE_KEY_PATH=/run/secrets/jwt-private-key.{{ts}}
       - CERT_PUBLIC_KEY_PATH=/run/secrets/jwt-public-key.{{ts}}
-      - LOGIN_URL=https://login.{{hostname}}
-      - COUNTRY_CONFIG_URL_EXTERNAL=https://countryconfig.{{hostname}}
-      - CLIENT_APP_URL=https://register.{{hostname}}
       - DOMAIN={{hostname}}
       - REDIS_USERNAME=${AUTH_REDIS_USERNAME}
       - REDIS_PASSWORD=${AUTH_REDIS_PASSWORD}
     deploy:
       labels:
-        - 'traefik.enable=true'
-        - 'traefik.http.routers.auth.rule=Host(`auth.{{hostname}}`) && !Path(`/internal/reindexing-token`)'
-        - 'traefik.http.services.auth.loadbalancer.server.port=4040'
-        - 'traefik.http.routers.auth.tls=true'
-        - 'traefik.http.routers.auth.tls.certresolver=certResolver'
-        - 'traefik.http.routers.auth.entrypoints=web,websecure'
-        - 'traefik.docker.network=opencrvs_overlay_net'
-        - 'traefik.http.middlewares.auth.headers.customresponseheaders.Pragma=no-cache'
-        - 'traefik.http.middlewares.auth.headers.customresponseheaders.Cache-control=no-store'
-        - 'traefik.http.middlewares.auth.headers.customresponseheaders.X-Robots-Tag=none'
-        - 'traefik.http.middlewares.auth.headers.stsseconds=31536000'
-        - 'traefik.http.middlewares.auth.headers.stsincludesubdomains=true'
-        - 'traefik.http.middlewares.auth.headers.stspreload=true'
-        # This is an invalid IP range, effectively blocking all IPs from accessing below paths.
-        # It's only meant to be accessed from the internal docker network.
-        - 'traefik.http.middlewares.block-internal-routes.ipwhitelist.sourcerange=255.255.255.255'
-        - 'traefik.http.routers.block-internal.rule=Host(`countryconfig.{{hostname}}`) && PathPrefix(`/internal`)'
-        - 'traefik.http.routers.block-internal.middlewares=block-internal-routes'
-        # Block /internal/reindexing-token from external access (only reachable internally via overlay network)
-        - 'traefik.http.routers.block-auth-reindexing-token.rule=Host(`auth.{{hostname}}`) && Path(`/internal/reindexing-token`)'
-        - 'traefik.http.routers.block-auth-reindexing-token.middlewares=block-internal-routes'
+        - 'traefik.enable=false'
       replicas: 1
     networks:
       - overlay_net
