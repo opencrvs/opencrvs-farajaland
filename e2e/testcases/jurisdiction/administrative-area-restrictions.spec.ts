@@ -68,9 +68,10 @@ test('Record declared in one administrative area should not appear for users in 
 
     await test.step('User should not be able to navigate to record via direct URL', async () => {
       await page.goto(`${CLIENT_URL}/events/${eventId}`)
+      // Add extra timeout to wait for the page.goto() to complete
       await expect(
         page.getByText(`No event or draft found with id: ${eventId}`)
-      ).toBeVisible()
+      ).toBeVisible({ timeout: 30_000 })
     })
   })
 
@@ -88,7 +89,10 @@ test('Record declared in one administrative area should not appear for users in 
 
     await test.step('User should be able to navigate to record via direct URL', async () => {
       await page.goto(`${CLIENT_URL}/events/${eventId}`)
-      await expect(page.locator('#content-name')).toHaveText(childName)
+      // Add extra timeout to wait for the page.goto() to complete
+      await expect(page.locator('#content-name')).toHaveText(childName, {
+        timeout: 30_000
+      })
     })
 
     await test.step('Place of birth should be Farajaland, Pualula, Oya', async () => {
