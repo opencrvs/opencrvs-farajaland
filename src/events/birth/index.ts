@@ -847,7 +847,10 @@ export const birthEvent = defineConfig({
           conditional: flag('revoked')
         }
       ],
-      flags: [{ id: 'revoked', operation: 'remove' }],
+      flags: [
+        { id: 'revoked', operation: 'remove' },
+        { id: 'pending-first-certificate-issuance', operation: 'add' }
+      ],
       form: [
         {
           id: 'reason',
