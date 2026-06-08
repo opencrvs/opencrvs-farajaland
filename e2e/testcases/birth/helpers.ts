@@ -93,36 +93,6 @@ export const assertRecordInWorkqueue = async ({
   }
 }
 
-/**
- * @deprecated. Ever since we started polling for events, this has grown unreliable. Consider if you need to assign from workqueue.
- */
-export const ensureAssignedFromWorkqueue = async (page: Page, name: string) => {
-  const assignButton = await getRowByTitle(page, name).getByRole('button', {
-    name: 'Assign record'
-  })
-
-  if (!(await assignButton.isVisible())) {
-    return
-  }
-
-  // Since tests are running in parallel, we want the fresh state to ensure no order has changed between the visibility check and the click action.
-  await getRowByTitle(page, name)
-    .getByRole('button', {
-      name: 'Assign record'
-    })
-    .click()
-
-  await page.getByRole('button', { name: 'Assign', exact: true }).click()
-
-  await expect(
-    getRowByTitle(page, name)
-      .getByRole('button', { name: 'User avatar' })
-      .locator('img')
-  ).toBeVisible({
-    timeout: SAFE_OUTBOX_TIMEOUT_MS
-  })
-}
-
 export async function getLocations(
   type: 'HEALTH_FACILITY' | 'CRVS_OFFICE',
   token: string
