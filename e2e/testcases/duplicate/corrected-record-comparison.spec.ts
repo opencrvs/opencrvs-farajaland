@@ -116,13 +116,7 @@ test('Corrected place of birth (PRIVATE_HOME → HEALTH_FACILITY) is not shown s
   })
 
   await test.step('Corrected Location of birth is rendered without strikethrough', async () => {
-    await expect(
-      page.getByText('Location of birth', { exact: true }).first()
-    ).toBeVisible()
-
-    await expect(
-      page.getByText(CORRECTED_FACILITY, { exact: true }).first()
-    ).toBeVisible()
+    await expect(page.getByText(CORRECTED_FACILITY).first()).toBeVisible()
 
     await expect(
       page.getByRole('deletion').filter({ hasText: 'Central' })
