@@ -58,6 +58,7 @@ export async function selectAction(
     | 'Reinstate registration'
     | 'Update'
     | 'Issue certified copy'
+    | 'Review potential duplicates'
 ) {
   await page.getByRole('button', { name: 'Action', exact: true }).click()
 
