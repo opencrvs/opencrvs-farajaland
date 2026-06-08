@@ -100,7 +100,7 @@ test('Duplicate overview', async ({ page }) => {
     await switchEventTab(page, 'Audit')
 
     await expect(
-      page.getByRole('button', { name: 'Marked as duplicate', exact: true })
+      page.getByRole('button', { name: 'Marked as a duplicate', exact: true })
     ).toBeVisible()
   })
 })
