@@ -11,9 +11,11 @@
 import {
   and,
   ConditionalType,
+  DocumentMimeType,
   field,
   FieldConfig,
-  FieldType
+  FieldType,
+  ImageMimeType
 } from '@opencrvs/toolkit/events'
 import { farajalandNameConfig, nationalIdValidator } from '../../validators'
 
@@ -312,7 +314,12 @@ export const printCertificateCollectorOther: FieldConfig[] = [
     },
     configuration: {
       maxFileSize: 5 * 1024 * 1024, // 5 MB
-      acceptedFileTypes: ['image/png', 'image/jpg', 'image/jpeg'],
+      acceptedFileTypes: [
+        ImageMimeType.enum['image/jpeg'],
+        ImageMimeType.enum['image/png'],
+        ImageMimeType.enum['image/jpg'],
+        DocumentMimeType.enum['application/pdf']
+      ],
       fileName: {
         defaultMessage: 'Signed Affidavit',
         description: 'This is the label for the file name',
