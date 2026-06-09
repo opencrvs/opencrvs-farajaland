@@ -975,7 +975,8 @@ export const birthEvent = defineConfig({
         defaultMessage:
           'Archiving will remove this declaration from active processing while retaining it for record purposes. Archived declarations cannot be modified unless reinstated.',
         description: 'Confirmation body for archiving a declaration'
-      }
+      },
+      flags: [{ id: InherentFlags.REJECTED, operation: 'remove' }]
     },
     verifiableCredentialActions.issueBirthCredentialAction
   ],
