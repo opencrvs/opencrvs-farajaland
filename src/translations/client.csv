@@ -1030,7 +1030,7 @@ event.death.action.declare.form.section.spouse.field.detailsNotAvailable.label,T
 event.death.action.declare.form.section.spouse.field.dob.error,This is the error message for invalid date,Must be a valid Birthdate,Doit être une date de naissance valide
 event.death.action.declare.form.section.spouse.field.dob.label,This is the label for the field,Date of birth,Date de naissance
 event.death.action.declare.form.section.spouse.field.idType.label,This is the label for the field,Form of ID,Type d'identité
-event.death.action.declare.form.section.spouse.field.name.label,This is the label for the field,Spouse's name,Nom du conjoint
+event.birth.action.declare.form.section.spouse.field.name.label,This is the label for the field,Spouse's name,Nom du conjoint
 event.death.action.declare.form.section.spouse.field.nationality.label,This is the label for the field,Nationality,Nationalité
 event.death.action.declare.form.section.spouse.field.nid.label,This is the label for the field,ID Number,Numéro d'identité
 event.death.action.declare.form.section.spouse.field.passport.label,This is the label for the field,ID Number,Numéro d'identité
