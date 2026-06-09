@@ -18,7 +18,7 @@ export const roles: Role[] = [
     scopes: defineScopes([
       { type: 'performance.read' },
       { type: 'organisation.read-locations', options: { accessLevel: 'location' } },
-      { type: 'user.read', options: { accessLevel: 'administrativeArea' } },
+      { type: 'user.read-only-my-audit' },
       { type: 'user.search', options: { accessLevel: 'administrativeArea' } },
       { type: 'performance.read-dashboards' },
       { type: 'workqueue', options: { ids: ['assigned-to-you', 'recent', 'requires-completion', 'in-external-validation', 'escalated', 'pending-validation', 'pending-updates', 'pending-approval', 'pending-certification', 'pending-issuance', 'correction-requested'] } },
