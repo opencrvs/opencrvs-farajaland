@@ -1065,7 +1065,7 @@ event.death.action.form.section.signedAffidavit.fileName,This is the label for t
 event.death.action.form.section.signedAffidavit.label,This is the label for uploading a signed affidavit,Signed Affidavit (Optional),Déclaration signée (Optionnel)
 event.death.action.register.label,This is shown as the action name anywhere the user can trigger the action from,Register,Enregistrer
 event.death.action.register.supportingCopy,The description for registration action when form is complete,Registering this death event will create an official civil registration record. Please ensure all details are correct before proceeding.,L'enregistrement de cet événement de décès créera un dossier officiel d'état civil. Veuillez vous assurer que tous les détails sont corrects avant de continuer.
-event.death.action.request-correction.label,This is shown as the action name anywhere the user can trigger the action from,Correct record,Corriger l'enregistrement
+event.death.action.request-correction.label,This is shown as the action name anywhere the user can trigger the action from,Correct record for {deceased.name.firstname} {deceased.name.surname},Enregistrement correct pour {deceased.name.firstname} {deceased.name.surname}
 event.death.action.validate.label,This is shown as the action name anywhere the user can trigger the action from,Validate,Valider
 event.death.custom.action.validate-declaration.label,This is shown as the action name anywhere the user can trigger the action from,Validate,Valider
 event.death.label,This is what this event is referred as in the system,Death,Décès
