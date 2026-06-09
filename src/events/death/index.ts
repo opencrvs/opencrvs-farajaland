@@ -389,7 +389,8 @@ export const deathEvent = defineConfig({
     {
       type: ActionType.REQUEST_CORRECTION,
       label: {
-        defaultMessage: 'Correct record',
+        defaultMessage:
+          'Correct record for {deceased.name.firstname} {deceased.name.surname}',
         description:
           'This is shown as the action name anywhere the user can trigger the action from',
         id: 'event.death.action.request-correction.label'
