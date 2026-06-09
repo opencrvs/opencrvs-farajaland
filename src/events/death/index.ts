@@ -241,7 +241,8 @@ export const deathEvent = defineConfig({
           operation: 'add',
           conditional: or(
             user.hasRole('REGISTRATION_AGENT'),
-            user.hasRole('LOCAL_REGISTRAR')
+            user.hasRole('LOCAL_REGISTRAR'),
+            user.hasRole('EMBASSY_OFFICIAL')
           )
         }
       ]
