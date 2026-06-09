@@ -307,6 +307,7 @@ export const getIdentityFields = ({
         id: `${prefix}.dob`,
         type: FieldType.DATE,
         required: true,
+        analytics: true,
         validation: [
           ...dobValidation,
           {
