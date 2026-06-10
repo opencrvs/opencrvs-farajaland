@@ -149,3 +149,46 @@ test.describe.serial('Can view downloaded event offline', () => {
     await expect(page.getByTestId('row-value-child.name')).toHaveText(childName)
   })
 })
+
+test('Spinner switches to offline icon when network drops mid-assign', async ({
+  browser
+}) => {
+  const page = await browser.newPage()
+  const token = await getToken(CREDENTIALS.REGISTRATION_OFFICER)
+  const { declaration } = await createDeclaration(
+    token,
+    undefined,
+    ActionType.DECLARE
+  )
+  const childName = formatV2ChildName(declaration)
+
+  await test.step('Login and open the workqueue', async () => {
+    await login(page, CREDENTIALS.REGISTRAR)
+    await page.getByRole('button', { name: 'Pending registration' }).click()
+  })
+
+  await test.step('Spinner swaps to offline icon on network drop', async () => {
+    await page.route(/event\.actions\.assignment\.assign/, () => {
+      // Intentionally never resolve.
+    })
+
+    const row = page.getByTestId('row-item').filter({ hasText: childName })
+
+    await row
+      .getByRole('button', { name: 'Assign record', exact: true })
+      .click()
+    await page.getByRole('button', { name: 'Assign', exact: true }).click()
+
+    // Spinner appears while the assign mutation is pending.
+    await expect(row.locator('[id$="-download-loading"]')).toBeVisible()
+
+    // Go offline
+    await mockNetworkConditions(page, 'offline')
+
+    await expect(row.locator('[id$="_noConnection"]')).toBeVisible()
+
+    await expect(row.locator('[id$="-download-loading"]')).not.toBeVisible()
+
+    await page.unroute(/event\.actions\.assignment\.assign/)
+  })
+})
