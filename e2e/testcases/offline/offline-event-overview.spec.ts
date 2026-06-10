@@ -87,8 +87,10 @@ test.describe.serial('Can partially view non-downloaded event offline', () => {
     )
   })
 
-  test('Verify user can not access "Record"-tab details', async () => {
+  test('Verify user sees offline message on "Record"-tab', async () => {
     await page.getByRole('button', { name: 'Record', exact: true }).click()
+    await expect(page.getByTestId('record-offline-message')).toBeVisible()
+    await expect(page.getByText('No connection')).toBeVisible()
     await expect(page.getByTestId('row-value-child.name')).not.toBeVisible()
   })
 })
