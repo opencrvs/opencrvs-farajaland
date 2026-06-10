@@ -2322,3 +2322,5 @@ event.birth.action.declare.form.review.print.label,Label for the print button in
 form.field.label.informantRelation.self,Label for option self,Self,Soi-même
 event.birth.id-reader.helper-text,Helper text,"Authentication isn't required to register. To issue a UIN for the child, at least one parent must be authenticated","L'authentification n'est pas requise pour l'enregistrement. Pour délivrer un UIN à l'enfant, au moins un parent doit être authentifié"
 form.field.label.collector.others,Label for someone else,Someone else,Quelqu'un d'autre
+v2.event.record.offline.title,Title shown on the Record page when the user is offline,No connection,Pas de connexion
+v2.event.record.offline.description,Message shown on the Record page when the user is offline and the record has not been cached locally,This record has not been downloaded yet so it cannot be opened offline. Please reconnect to the internet to view it.,Cet enregistrement n’a pas encore été téléchargé et ne peut donc pas être ouvert hors ligne. Veuillez vous reconnecter à Internet pour le consulter.
