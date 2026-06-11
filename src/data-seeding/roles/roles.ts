@@ -213,8 +213,9 @@ export const roles: Role[] = [
       { type: 'record.search', options: { placeOfEvent: 'location' } },
       { type: 'workqueue', options: { ids: ['assigned-to-you', 'recent', 'pending-updates'] } },
       { type: 'record.create', options: { placeOfEvent: 'location' } },
+      { type: 'record.declare', options: { placeOfEvent: 'location', event: ['death'] } },
       { type: 'record.read', options: { placeOfEvent: 'location' } },
-      { type: 'record.notify', options: { placeOfEvent: 'location' } },
+      { type: 'record.notify', options: { placeOfEvent: 'location', event: ['birth'] } },
       // The edit scope should have the notifiedBy: 'user' option after its implemented on
       // https://github.com/opencrvs/opencrvs-core/issues/11875
       { type: 'record.edit', options: { placeOfEvent: 'location' } },
@@ -248,9 +249,10 @@ export const roles: Role[] = [
     },
     scopes: defineScopes([
       { type: 'user.read-only-my-audit' },
-      { type: 'record.search', options: { placeOfEvent: 'location' } },
+      { type: 'record.search', options: { placeOfEvent: 'location', event: ['death'] } },
       { type: 'workqueue', options: { ids: ['assigned-to-you', 'recent', 'ready-for-attestation'] } },
-      { type: 'record.read', options: { placeOfEvent: 'location' } },
+      { type: 'record.read', options: { placeOfEvent: 'location', event: ['death'] } },
+      { type: 'record.reject', options: { placeOfEvent: 'location', event: ['death'] } },
       { type: 'record.custom-action', options: { event: ['death'], customActionTypes: ['ATTEST'] } }
     ])
   },
