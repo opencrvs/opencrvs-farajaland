@@ -180,14 +180,13 @@ test('Spinner switches to offline icon when network drops mid-assign', async ({
     await page.getByRole('button', { name: 'Assign', exact: true }).click()
 
     // Spinner appears while the assign mutation is pending.
-    await expect(row.locator('[id$="-download-loading"]')).toBeVisible()
+    await expect(row.getByTestId('download-loading-icon')).toBeVisible()
 
     // Go offline
     await mockNetworkConditions(page, 'offline')
 
-    await expect(row.locator('[id$="_noConnection"]')).toBeVisible()
-
-    await expect(row.locator('[id$="-download-loading"]')).not.toBeVisible()
+    await expect(row.getByTestId('no-connection-icon')).toBeVisible()
+    await expect(row.getByTestId('download-loading-icon')).not.toBeVisible()
 
     await page.unroute(/event\.actions\.assignment\.assign/)
   })
