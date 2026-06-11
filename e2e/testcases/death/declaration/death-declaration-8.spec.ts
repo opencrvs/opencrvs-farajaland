@@ -16,6 +16,7 @@ import {
   selectAction
 } from '../../../utils'
 import { REQUIRED_VALIDATION_ERROR } from '../../birth/helpers'
+import { openRecordByTitle } from '../../print-certificate/birth/helpers'
 
 test.describe.serial('8. Death declaration case - 8', () => {
   let page: Page
@@ -291,14 +292,12 @@ test.describe.serial('8. Death declaration case - 8', () => {
       await ensureOutboxIsEmpty(page)
       await page.getByText('Notifications').click()
 
-      await page
-        .getByRole('button', {
-          name:
-            declaration.deceased.name.firstname +
-            ' ' +
-            declaration.deceased.name.surname
-        })
-        .click()
+      await openRecordByTitle(
+        page,
+        declaration.deceased.name.firstname +
+          ' ' +
+          declaration.deceased.name.surname
+      )
 
       await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
       await selectAction(page, 'Edit')

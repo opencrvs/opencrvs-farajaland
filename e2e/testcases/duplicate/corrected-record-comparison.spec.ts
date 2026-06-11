@@ -9,6 +9,7 @@ import { createDeclaration } from '../test-data/birth-declaration-with-mother-fa
 import { formatV2ChildName } from '../birth/helpers'
 import { getLocations, getIdByName } from '../birth/helpers'
 import { ensureAssignedToUser, selectAction } from '../../utils'
+import { openRecordByTitle } from '../print-certificate/birth/helpers'
 
 /**
  * Regression test for opencrvs-core#12848.
@@ -104,9 +105,7 @@ test('Corrected place of birth (PRIVATE_HOME → HEALTH_FACILITY) is not shown s
   await test.step('Open the duplicate record in the comparison view', async () => {
     await login(page, CREDENTIALS.REGISTRAR)
     await page.getByRole('button', { name: 'Potential duplicate' }).click()
-    await page
-      .getByRole('button', { name: formatV2ChildName(sharedDetails) })
-      .click()
+    await openRecordByTitle(page, formatV2ChildName(sharedDetails))
     await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
     await selectAction(page, 'Review potential duplicates')
   })

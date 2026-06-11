@@ -18,6 +18,7 @@ import {
 } from '../../utils'
 import { selectDeclarationAction } from '../../helpers'
 import { format, subDays } from 'date-fns'
+import { openRecordByTitle } from '../print-certificate/birth/helpers'
 
 const recentDate = subDays(new Date(), 2)
 const recentDay = format(recentDate, 'dd')
@@ -153,8 +154,8 @@ test.describe.serial('Approval of late birth registration', () => {
     test('Navigate to the declaration review page', async () => {
       await login(page, CREDENTIALS.REGISTRATION_OFFICER)
       await page.getByText('Pending approval').click()
-      await page.getByRole('button', { name: childNameFormatted }).click()
 
+      await openRecordByTitle(page, childNameFormatted)
       await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
     })
 
@@ -197,7 +198,7 @@ test.describe.serial('Approval of late birth registration', () => {
     test('Navigate to the declaration review page', async () => {
       await login(page, CREDENTIALS.PROVINCIAL_REGISTRAR)
       await page.getByText('Pending approval').first().click()
-      await page.getByRole('button', { name: childNameFormatted }).click()
+      await openRecordByTitle(page, childNameFormatted)
     })
 
     test('Approve action should be disabled before assignment', async () => {

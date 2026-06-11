@@ -7,6 +7,7 @@ import { CREDENTIALS } from '../../../constants'
 import { login } from '../../../helpers'
 import {
   navigateToCertificatePrintAction,
+  openRecordByTitle,
   selectRequesterType
 } from './helpers'
 import { ensureAssignedToUser, selectAction } from '../../../utils'
@@ -68,13 +69,7 @@ test.describe.serial('44.14.0 Validate "Certified copy" option', () => {
       .fill(formatV2ChildName(declaration))
 
     await page.getByRole('button', { name: 'Search' }).click()
-    await page
-      .getByRole('button', {
-        name: formatV2ChildName(declaration),
-        exact: true
-      })
-      .click()
-
+    await openRecordByTitle(page, formatV2ChildName(declaration))
     await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
     await selectAction(page, 'Print')
     await page.locator('#certificateTemplateId svg').click()

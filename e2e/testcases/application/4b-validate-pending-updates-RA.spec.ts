@@ -11,7 +11,10 @@ import {
   navigateToWorkqueue,
   selectAction
 } from '../../utils'
-import { getRowByTitle } from '../print-certificate/birth/helpers'
+import {
+  getRowByTitle,
+  openRecordByTitle
+} from '../print-certificate/birth/helpers'
 import { faker } from '@faker-js/faker'
 
 test.describe.serial('4(b) Validate "Pending updates"-workqueue for RO', () => {
@@ -38,10 +41,7 @@ test.describe.serial('4(b) Validate "Pending updates"-workqueue for RO', () => {
 
   test('4.0.2 Navigate to record audit', async () => {
     await page.getByText('Pending registration').click()
-
-    await page
-      .getByRole('button', { name: formatV2ChildName(declaration) })
-      .click()
+    await openRecordByTitle(page, formatV2ChildName(declaration))
   })
 
   test('4.0.3 Reject a declaration', async () => {

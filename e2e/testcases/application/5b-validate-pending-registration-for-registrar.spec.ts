@@ -6,7 +6,10 @@ import { createDeclaration, Declaration } from '../test-data/birth-declaration'
 import { ActionType } from '@opencrvs/toolkit/events'
 import { formatV2ChildName } from '../birth/helpers'
 import { ensureAssignedToUser, expectInUrl } from '../../utils'
-import { getRowByTitle } from '../print-certificate/birth/helpers'
+import {
+  getRowByTitle,
+  openRecordByTitle
+} from '../print-certificate/birth/helpers'
 
 test.describe
   .serial('5(b) Validate "Pending registration"-workqueue for Registrar', () => {
@@ -64,9 +67,7 @@ test.describe
   })
 
   test('5.4 Click a name', async () => {
-    await page
-      .getByRole('button', { name: formatV2ChildName(declaration) })
-      .click()
+    await openRecordByTitle(page, formatV2ChildName(declaration))
 
     await expectInUrl(
       page,

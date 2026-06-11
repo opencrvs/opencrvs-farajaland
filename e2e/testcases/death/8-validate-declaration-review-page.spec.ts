@@ -20,6 +20,7 @@ import {
   expectInUrl,
   selectAction
 } from '../../utils'
+import { openRecordByTitle } from '../print-certificate/birth/helpers'
 
 test.describe.serial('8. Validate declaration review page', () => {
   let page: Page
@@ -717,14 +718,12 @@ test.describe.serial('8. Validate declaration review page', () => {
       await ensureOutboxIsEmpty(page)
       await page.getByText('Notifications').click()
 
-      await page
-        .getByRole('button', {
-          name:
-            declaration.deceased.name.firstname +
-            ' ' +
-            declaration.deceased.name.surname
-        })
-        .click()
+      await openRecordByTitle(
+        page,
+        declaration.deceased.name.firstname +
+          ' ' +
+          declaration.deceased.name.surname
+      )
     })
 
     test('8.2.1.1 Verify information added on previous pages', async () => {
@@ -1172,14 +1171,12 @@ test.describe.serial('8. Validate declaration review page', () => {
       await ensureOutboxIsEmpty(page)
       await page.getByText('Pending registration').click()
 
-      await page
-        .getByRole('button', {
-          name:
-            declaration.deceased.name.firstname +
-            ' ' +
-            declaration.deceased.name.surname
-        })
-        .click()
+      await openRecordByTitle(
+        page,
+        declaration.deceased.name.firstname +
+          ' ' +
+          declaration.deceased.name.surname
+      )
 
       await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
       await switchEventTab(page, 'Record')

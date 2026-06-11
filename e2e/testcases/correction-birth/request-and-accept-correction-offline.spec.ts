@@ -14,6 +14,7 @@ import {
   selectAction,
   type
 } from '../../utils'
+import { openRecordByTitle } from '../print-certificate/birth/helpers'
 
 test.describe.serial('Request and accept correction (offline)', () => {
   let declaration: DeclarationV2
@@ -182,9 +183,8 @@ test.describe.serial('Request and accept correction (offline)', () => {
     test('Navigate to correction review', async () => {
       await type(page, '#searchText', trackingId)
       await page.locator('#searchIconButton').click()
-      await page
-        .getByRole('button', { name: formatV2ChildName(declaration) })
-        .click()
+
+      await openRecordByTitle(page, formatV2ChildName(declaration))
 
       await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
       await selectAction(page, 'Review correction request')

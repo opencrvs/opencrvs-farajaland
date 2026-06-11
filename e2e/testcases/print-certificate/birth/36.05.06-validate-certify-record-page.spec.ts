@@ -10,7 +10,8 @@ import {
   selectRequesterType,
   selectCertificationType,
   navigateToCertificatePrintAction,
-  printAndExpectPopup
+  printAndExpectPopup,
+  openRecordByTitle
 } from './helpers'
 import { ensureAssignedToUser, type, expectInUrl } from '../../../utils'
 import { REQUIRED_VALIDATION_ERROR } from '../../birth/helpers'
@@ -152,9 +153,8 @@ test.describe.serial('Validate collect payment page', () => {
     }
     await type(page, '#searchText', trackingId)
     await page.locator('#searchIconButton').click()
-    await page
-      .getByRole('button', { name: formatV2ChildName(declaration) })
-      .click()
+    await openRecordByTitle(page, formatV2ChildName(declaration))
+
     await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
     await page.getByRole('button', { name: 'Audit' }).click()
     await page.getByRole('button', { name: 'Certified', exact: true }).click()

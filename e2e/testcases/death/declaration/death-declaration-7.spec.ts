@@ -17,6 +17,7 @@ import {
   ensureOutboxIsEmpty,
   expectInUrl
 } from '../../../utils'
+import { openRecordByTitle } from '../../print-certificate/birth/helpers'
 
 test.describe.serial('7. Death declaration case - 7', () => {
   let page: Page
@@ -558,14 +559,12 @@ test.describe.serial('7. Death declaration case - 7', () => {
       ).toBeVisible()
     })
     test('7.1.8 Verify information on "Record" tab', async () => {
-      await page
-        .getByRole('button', {
-          name:
-            declaration.deceased.name.firstname +
-            ' ' +
-            declaration.deceased.name.surname
-        })
-        .click()
+      await openRecordByTitle(
+        page,
+        declaration.deceased.name.firstname +
+          ' ' +
+          declaration.deceased.name.surname
+      )
 
       await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
       await switchEventTab(page, 'Record')

@@ -16,7 +16,10 @@ import {
   navigateToWorkqueue,
   selectAction
 } from '../../utils'
-import { getRowByTitle } from '../print-certificate/birth/helpers'
+import {
+  getRowByTitle,
+  openRecordByTitle
+} from '../print-certificate/birth/helpers'
 import { faker } from '@faker-js/faker'
 
 test.describe.serial('4(a) Validate "Pending updates"-workqueue for HO', () => {
@@ -50,7 +53,7 @@ test.describe.serial('4(a) Validate "Pending updates"-workqueue for HO', () => {
   test('4.0.2 Navigate to record audit', async () => {
     await page.getByText('Pending validation').click()
 
-    await page.getByRole('button', { name: formattedChildName }).click()
+    await openRecordByTitle(page, formattedChildName)
   })
 
   test('4.0.3 Reject a declaration', async () => {
