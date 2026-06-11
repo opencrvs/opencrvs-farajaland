@@ -370,7 +370,8 @@ test.describe('1. Death event declaration', () => {
 
     test.describe('1.9 Validate "Save & Exit" Button  ', async () => {
       test('1.9.1 Click the "Save & Exit" button from any page', async () => {
-        await selectDeclarationAction(page, 'Save & Exit', false)
+        await page.getByRole('button', { name: 'Action', exact: true }).click()
+        await page.getByText('Save & Exit', { exact: true }).click()
 
         /*
          * Expected result: should open modal with:
