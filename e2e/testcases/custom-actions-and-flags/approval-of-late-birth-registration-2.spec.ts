@@ -18,6 +18,7 @@ import {
 } from '../../utils'
 import { selectDeclarationAction } from '../../helpers'
 import { format, subDays } from 'date-fns'
+import { openRecordByTitle } from '../print-certificate/birth/helpers'
 
 const recentDate = subDays(new Date(), 2)
 const recentDay = format(recentDate, 'dd')
@@ -145,7 +146,7 @@ test.describe
     test('Navigate to the declaration review page', async () => {
       await login(page, CREDENTIALS.REGISTRATION_OFFICER)
       await page.getByText('Pending approval').click()
-      await page.getByRole('button', { name: childNameFormatted }).click()
+      await openRecordByTitle(page, childNameFormatted)
     })
 
     test('Assign', async () => {
@@ -321,7 +322,7 @@ test.describe
     test('Navigate to the declaration review page', async () => {
       await login(page, CREDENTIALS.REGISTRAR)
       await page.getByText('Pending registration').click()
-      await page.getByRole('button', { name: childNameFormatted }).click()
+      await openRecordByTitle(page, childNameFormatted)
     })
 
     test('Assign', async () => {
@@ -362,7 +363,8 @@ test.describe
 
     test('Go to record', async () => {
       await page.getByText('Recent').click()
-      await page.getByRole('button', { name: childNameFormatted }).click()
+
+      await openRecordByTitle(page, childNameFormatted)
       await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
     })
 

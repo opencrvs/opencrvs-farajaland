@@ -3,6 +3,8 @@ import { createDeclaration, Declaration } from '../test-data/birth-declaration'
 import { getToken, login, switchEventTab } from '../../helpers'
 import { CREDENTIALS, SAFE_WORKQUEUE_TIMEOUT_MS } from '../../constants'
 import { ensureAssignedToUser } from '../../utils'
+import { openRecordByTitle } from '../print-certificate/birth/helpers'
+import { formatV2ChildName } from '../birth/helpers'
 
 test.describe
   .serial('History rows when Registrar registers a birth from scratch', () => {
@@ -27,8 +29,8 @@ test.describe
     await page.waitForTimeout(SAFE_WORKQUEUE_TIMEOUT_MS) // wait for the event to be in the workqueue.
     await page.getByText('Pending certification').click()
 
-    const childName = `${declaration['child.name'].firstname} ${declaration['child.name'].surname}`
-    await page.getByRole('button', { name: childName }).click()
+    await openRecordByTitle(page, formatV2ChildName(declaration))
+
     await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
     await expect(page.getByTestId('assignedTo-value')).toHaveText(
       'Kennedy Mweene'
