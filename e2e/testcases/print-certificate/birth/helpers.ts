@@ -56,9 +56,9 @@ export async function openRecordByTitle(page: Page, title: string) {
       .getByRole('button', { name: title })
       .click()
     try {
-      // target the event overview title.
+      // target the event overview title to make sure this is the right one.
       await expect(
-        page.getByTestId('record-header').getByText(title)
+        page.getByRole('heading', { name: title, level: 1 })
       ).toBeVisible({ timeout: 3_000 })
     } catch (error) {
       await page.goBack()
