@@ -296,7 +296,11 @@ test.describe
     })
 
     test('30.1.8 Declare', async () => {
-      await selectDeclarationAction(page, 'Declare')
+      await page.getByRole('button', { name: 'Action', exact: true }).click()
+
+      await page.getByText('Declare', { exact: true }).click()
+
+      await page.getByRole('button', { name: 'Declare', exact: true }).click()
     })
   })
 
