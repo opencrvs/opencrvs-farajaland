@@ -32,10 +32,7 @@ import {
   defaultStreetAddressConfiguration,
   getNestedFieldValidators
 } from '@countryconfig/events/utils'
-import {
-  farajalandNameConfig,
-  invalidNameValidator
-} from '@countryconfig/events/birth/validators'
+import { farajalandNameConfig } from '@countryconfig/events/birth/validators'
 
 const GenderTypes = {
   MALE: 'male',
@@ -222,7 +219,6 @@ export const child = defineFormPage({
         description: 'This is the label for the field',
         id: 'event.birth.action.declare.form.section.child.field.name.label'
       },
-      validation: [invalidNameValidator('child.name')],
       conditionals: [
         {
           type: ConditionalType.SHOW,

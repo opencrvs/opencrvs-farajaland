@@ -111,8 +111,12 @@ export const father = defineFormPage({
               "This is the error message for a birth date after child's birth date",
             id: 'event.birth.action.declare.form.section.person.dob.afterChild'
           },
-          validator: field('father.dob').isBefore().date(field('child.dob'))
-        }]
+          validator: or(
+            field('child.dob').isFalsy(),
+            field('father.dob').isBefore().date(field('child.dob'))
+          )
+        }
+      ]
     }),
     {
       id: 'father.addressDivider',

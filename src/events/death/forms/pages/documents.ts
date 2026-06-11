@@ -85,7 +85,7 @@ const proofOfDeathMessageDescriptors = {
 } satisfies Record<keyof typeof ProofOfDeathType, TranslationConfig>
 
 const ProofOfCauseOfDeathType = {
-  MEDICALLY_CERTIFIED: 'MEDICALLY_CERTIFIED',
+  MEDICALLY_CERTIFIED: 'MEDICALLY_CERTIFIED'
 } as const
 
 const proofOfCauseOfDeathMessageDescriptors = {
@@ -121,7 +121,7 @@ export const documents = defineFormPage({
   id: 'documents',
   type: PageTypes.enum.FORM,
   title: {
-    defaultMessage: 'Upload supporting documents',
+    defaultMessage: 'Supporting documents',
     description: 'Form section title for documents',
     id: 'form.section.documents.title'
   },

@@ -172,7 +172,7 @@ export const issueBirthCredentialAction = {
   conditionals: [
     {
       type: ConditionalType.ENABLE,
-      conditional: not(flag('vc-issued'))
+      conditional: and(not(flag('vc-issued')), not(flag('revoked')))
     },
     {
       type: ConditionalType.SHOW,

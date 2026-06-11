@@ -18,6 +18,7 @@ import {
   not,
   or,
   PageTypes,
+  SelectOption,
   TranslationConfig,
   user
 } from '@opencrvs/toolkit/events'
@@ -129,14 +130,41 @@ const placeOfDeathMessageDescriptors = {
   }
 } satisfies Record<keyof typeof PlaceOfDeath, TranslationConfig>
 
-const placeOfDeathOptions = createSelectOptions(
-  PlaceOfDeath,
-  placeOfDeathMessageDescriptors
-)
-
-const placeOfDeathOptionsWithoutHealthFacility = placeOfDeathOptions.filter(
-  (option) => option.value !== PlaceOfDeath.HEALTH_FACILITY
-)
+const placeOfDeathOptions = [
+  {
+    value: PlaceOfDeath.HEALTH_FACILITY,
+    label: placeOfDeathMessageDescriptors.HEALTH_FACILITY,
+    conditionals: [
+      {
+        type: ConditionalType.SHOW,
+        conditional: and(
+          not(user.hasRole('EMBASSY_OFFICIAL')),
+          not(user.hasRole('COMMUNITY_LEADER'))
+        )
+      }
+    ]
+  },
+  {
+    value: PlaceOfDeath.RESIDENTIAL_ADDRESS,
+    label: placeOfDeathMessageDescriptors.RESIDENTIAL_ADDRESS,
+    conditionals: [
+      {
+        type: ConditionalType.SHOW,
+        conditional: not(user.hasRole('HOSPITAL_CLERK'))
+      }
+    ]
+  },
+  {
+    value: PlaceOfDeath.OTHER,
+    label: placeOfDeathMessageDescriptors.OTHER,
+    conditionals: [
+      {
+        type: ConditionalType.SHOW,
+        conditional: not(user.hasRole('HOSPITAL_CLERK'))
+      }
+    ]
+  }
+] satisfies SelectOption[]
 
 export const eventDetails = defineFormPage({
   id: 'eventDetails',
@@ -215,39 +243,7 @@ export const eventDetails = defineFormPage({
         description: 'This is the label for the field',
         id: 'event.death.action.declare.form.section.deceased.field.placeOfDeath.label'
       },
-      options: placeOfDeathOptions,
-      conditionals: [
-        {
-          type: ConditionalType.SHOW,
-          conditional: not(
-            or(
-              user.hasRole('EMBASSY_OFFICIAL'),
-              user.hasRole('COMMUNITY_LEADER')
-            )
-          )
-        }
-      ]
-    },
-    {
-      id: 'eventDetails.placeOfDeath',
-      type: FieldType.SELECT,
-      required: true,
-      secured: true,
-      label: {
-        defaultMessage: 'Place of death',
-        description: 'This is the label for the field',
-        id: 'event.death.action.declare.form.section.deceased.field.placeOfDeath.label'
-      },
-      options: placeOfDeathOptionsWithoutHealthFacility,
-      conditionals: [
-        {
-          type: ConditionalType.SHOW,
-          conditional: or(
-            user.hasRole('EMBASSY_OFFICIAL'),
-            user.hasRole('COMMUNITY_LEADER')
-          )
-        }
-      ]
+      options: placeOfDeathOptions
     },
     {
       id: 'eventDetails.deathLocation',
@@ -381,12 +377,12 @@ export const eventDetails = defineFormPage({
         field('eventDetails.placeOfDeath'),
         field('eventDetails.deathLocation'),
         field('eventDetails.deathLocationOther'),
-        field('deceased.address')
+        field('eventDetails.deathLocationResidential')
       ],
       value: [
         field('eventDetails.deathLocation'),
         field('eventDetails.deathLocationOther').get('administrativeArea'),
-        field('deceased.address').get('administrativeArea')
+        field('eventDetails.deathLocationResidential').get('administrativeArea')
       ]
     },
     {
@@ -408,52 +404,6 @@ export const eventDetails = defineFormPage({
         description: 'This is the label for the field',
         id: 'event.death.action.declare.form.section.event.field.causeOfDeath.label'
       }
-    },
-    {
-      id: 'eventDetails.sourceCauseDeath',
-      type: FieldType.SELECT,
-      required: true,
-      label: {
-        defaultMessage: 'Source of cause of death',
-        description: 'This is the label for the field',
-        id: 'event.death.action.declare.form.section.event.field.sourceCauseDeath.label'
-      },
-      options: sourceCauseDeathOptions,
-      conditionals: [
-        {
-          type: ConditionalType.SHOW,
-          conditional: field('eventDetails.causeOfDeathEstablished').isEqualTo(
-            true
-          )
-        }
-      ]
-    },
-    {
-      id: 'eventDetails.description',
-      type: FieldType.TEXTAREA,
-      required: true,
-      label: {
-        defaultMessage: 'Description',
-        description:
-          'Description of cause of death by lay person or verbal autopsy',
-        id: 'event.death.action.declare.form.section.event.field.description.label'
-      },
-      conditionals: [
-        {
-          type: ConditionalType.SHOW,
-          conditional: and(
-            or(
-              field('eventDetails.sourceCauseDeath').isEqualTo(
-                SourceCauseDeathType.LAY_REPORTED
-              ),
-              field('eventDetails.sourceCauseDeath').isEqualTo(
-                SourceCauseDeathType.VERBAL_AUTOPSY
-              )
-            ),
-            field('eventDetails.causeOfDeathEstablished').isEqualTo(true)
-          )
-        }
-      ]
     }
   ]
 })

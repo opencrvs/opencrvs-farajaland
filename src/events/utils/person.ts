@@ -19,6 +19,7 @@ import {
   FieldReference,
   FieldType,
   or,
+  SelectOption,
   TranslationConfig,
   ValidationConfig
 } from '@opencrvs/toolkit/events'
@@ -26,7 +27,6 @@ import { createSelectOptions } from '../utils'
 import { connectToMOSIPIdReader, getMOSIPIntegrationFields } from '../mosip'
 import {
   farajalandNameConfig,
-  invalidNameValidator,
   nationalIdValidator,
   passportValidator
 } from '../birth/validators'
@@ -60,10 +60,28 @@ export const idTypeOptions = createSelectOptions(
   IdType,
   idTypeMessageDescriptors
 )
-export const idTypeOptionsForeigner = createSelectOptions(
-  IdType,
-  idTypeMessageDescriptors
-).filter((option) => option.value !== IdType.NATIONAL_ID)
+
+export const getIdTypeOptions = (prefix: string) =>
+  [
+    {
+      value: IdType.NATIONAL_ID,
+      label: idTypeMessageDescriptors.NATIONAL_ID,
+      conditionals: [
+        {
+          type: ConditionalType.SHOW,
+          conditional: field(`${prefix}.nationality`).isEqualTo('FAR')
+        }
+      ]
+    },
+    {
+      value: IdType.PASSPORT,
+      label: idTypeMessageDescriptors.PASSPORT
+    },
+    {
+      value: IdType.NONE,
+      label: idTypeMessageDescriptors.NONE
+    }
+  ] satisfies SelectOption[]
 
 // @TODO: Consider whether these can become boolean fields
 export const YesNoTypes = {
@@ -110,21 +128,27 @@ export const getIdentityFields = ({
   ]
 
   return [
-    {
-      id: `${prefix}.nationality`,
-      type: FieldType.COUNTRY,
-      required: true,
-      label: {
-        defaultMessage: 'Nationality',
-        description: 'This is the label for the field',
-        id: 'event.death.action.declare.form.section.informant.field.nationality.label'
+    connectToMOSIPIdReader(
+      {
+        id: `${prefix}.nationality`,
+        type: FieldType.COUNTRY,
+        required: true,
+        label: {
+          defaultMessage: 'Nationality',
+          description: 'This is the label for the field',
+          id: 'event.death.action.declare.form.section.informant.field.nationality.label'
+        },
+        conditionals,
+        defaultValue: 'FAR',
+        parent
       },
-      conditionals,
-      defaultValue: 'FAR',
-      parent
-    },
+      {
+        valuePath: 'data.nationality',
+        disableIf: ['authenticated']
+      }
+    ),
     {
-      id: `${prefix}.idTypeLocal`,
+      id: `${prefix}.idType`,
       type: FieldType.SELECT,
       required: true,
       label: {
@@ -132,14 +156,11 @@ export const getIdentityFields = ({
         description: 'This is the label for the field',
         id: 'event.death.action.declare.form.section.informant.field.idType.label'
       },
-      options: idTypeOptions,
+      options: getIdTypeOptions(prefix),
       conditionals: [
         {
           type: ConditionalType.SHOW,
-          conditional: and(
-            showConditional,
-            field(`${prefix}.nationality`).isEqualTo('FAR')
-          )
+          conditional: showConditional
         },
         {
           type: ConditionalType.ENABLE,
@@ -150,46 +171,9 @@ export const getIdentityFields = ({
           )
         }
       ],
-      parent
-    },
-    {
-      id: `${prefix}.idTypeForeigner`,
-      type: FieldType.SELECT,
-      required: true,
-      label: {
-        defaultMessage: 'Form of ID',
-        description: 'This is the label for the field',
-        id: 'event.death.action.declare.form.section.informant.field.idType.label'
-      },
-      options: idTypeOptionsForeigner,
-      conditionals: [
-        {
-          type: ConditionalType.SHOW,
-          conditional: and(
-            showConditional,
-            not(field(`${prefix}.nationality`).isEqualTo('FAR'))
-          )
-        }
-      ],
-      parent
-    },
-    {
-      id: `${prefix}.idType`,
-      type: FieldType.ALPHA_HIDDEN,
-      required: false,
-      label: {
-        defaultMessage: 'Form of ID meh',
-        description: 'This is the label for the field',
-        id: 'event.death.action.declare.form.section.informant.field.idType.label'
-      },
       parent: [
-        ...(parent ? [parent] : []),
-        field(`${prefix}.idTypeLocal`),
-        field(`${prefix}.idTypeForeigner`)
-      ],
-      value: [
-        field(`${prefix}.idTypeLocal`),
-        field(`${prefix}.idTypeForeigner`)
+        ...(Array.isArray(parent) ? parent : parent ? [parent] : []),
+        field(`${prefix}.nationality`)
       ]
     },
     // fields:
@@ -311,7 +295,6 @@ export const getIdentityFields = ({
           id: `event.birth.action.declare.form.section.${prefix}.field.name.label`
         },
         conditionals,
-        validation: [invalidNameValidator(`${prefix}.name`)],
         parent
       },
       {
@@ -324,6 +307,7 @@ export const getIdentityFields = ({
         id: `${prefix}.dob`,
         type: FieldType.DATE,
         required: true,
+        analytics: true,
         validation: [
           ...dobValidation,
           {

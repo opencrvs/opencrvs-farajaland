@@ -11,15 +11,13 @@
 import {
   and,
   ConditionalType,
+  DocumentMimeType,
   field,
   FieldConfig,
-  FieldType
+  FieldType,
+  ImageMimeType
 } from '@opencrvs/toolkit/events'
-import {
-  farajalandNameConfig,
-  invalidNameValidator,
-  nationalIdValidator
-} from '../../validators'
+import { farajalandNameConfig, nationalIdValidator } from '../../validators'
 
 const otherIdType = {
   PASSPORT: 'PASSPORT',
@@ -287,8 +285,7 @@ export const printCertificateCollectorOther: FieldConfig[] = [
         type: ConditionalType.SHOW,
         conditional: field('collector.requesterId').isEqualTo('SOMEONE_ELSE')
       }
-    ],
-    validation: [invalidNameValidator('collector.OTHER.name')]
+    ]
   },
   {
     id: 'collector.OTHER.relationshipToChild',
@@ -317,7 +314,12 @@ export const printCertificateCollectorOther: FieldConfig[] = [
     },
     configuration: {
       maxFileSize: 5 * 1024 * 1024, // 5 MB
-      acceptedFileTypes: ['image/png', 'image/jpg', 'image/jpeg'],
+      acceptedFileTypes: [
+        ImageMimeType.enum['image/jpeg'],
+        ImageMimeType.enum['image/png'],
+        ImageMimeType.enum['image/jpg'],
+        DocumentMimeType.enum['application/pdf']
+      ],
       fileName: {
         defaultMessage: 'Signed Affidavit',
         description: 'This is the label for the file name',

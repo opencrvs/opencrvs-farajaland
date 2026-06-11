@@ -143,7 +143,16 @@ export const Workqueues = defineWorkqueues([
     },
     query: {
       ...createdInMyAdminArea,
-      flags: { anyOf: [InherentFlags.REJECTED] }
+      flags: { anyOf: [InherentFlags.REJECTED] },
+      status: {
+        type: 'anyOf',
+        terms: [
+          EventStatus.enum.CREATED,
+          EventStatus.enum.DECLARED,
+          EventStatus.enum.NOTIFIED,
+          EventStatus.enum.REGISTERED
+        ]
+      }
     },
     action: { type: ActionType.READ }
   },
@@ -196,7 +205,9 @@ export const Workqueues = defineWorkqueues([
     },
     query: {
       status: { type: 'exact', term: EventStatus.enum.DECLARED },
-      flags: { noneOf: [InherentFlags.POTENTIAL_DUPLICATE] },
+      flags: {
+        noneOf: [InherentFlags.POTENTIAL_DUPLICATE, InherentFlags.REJECTED]
+      },
       'legalStatuses.DECLARED.createdByRole': {
         type: 'anyOf',
         terms: ['EMBASSY_OFFICIAL']

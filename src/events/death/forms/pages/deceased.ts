@@ -24,30 +24,22 @@ import {
 import { not, never } from '@opencrvs/toolkit/conditionals'
 import {
   IdType,
-  idTypeOptions,
   maritalStatusOptions,
   createSelectOptions,
   emptyMessage,
   defaultStreetAddressConfiguration,
   getNestedFieldValidators,
-  idTypeOptionsForeigner
+  getIdTypeOptions
 } from '@countryconfig/events/utils'
 import {
   farajalandNameConfig,
-  invalidNameValidator,
   nationalIdValidator,
   passportValidator
 } from '@countryconfig/events/birth/validators'
-import {
-  connectToMOSIPIdReader,
-  connectToMOSIPVerificationStatus,
-  getMOSIPIntegrationFields
-} from '@countryconfig/events/mosip'
 
 const GenderTypes = {
   MALE: 'male',
-  FEMALE: 'female',
-  UNKNOWN: 'unknown'
+  FEMALE: 'female'
 } as const
 
 const genderMessageDescriptors = {
@@ -60,11 +52,6 @@ const genderMessageDescriptors = {
     defaultMessage: 'Female',
     description: 'Label for option female',
     id: 'form.field.label.sexFemale'
-  },
-  UNKNOWN: {
-    defaultMessage: 'Unknown',
-    description: 'Label for option unknown',
-    id: 'form.field.label.sexUnknown'
   }
 } satisfies Record<keyof typeof GenderTypes, TranslationConfig>
 
@@ -203,30 +190,7 @@ export const deceased = defineFormPage({
         description: 'This is the label for the field',
         id: `v2.event.death.action.declare.form.section.person.field.idType.label`
       },
-      options: idTypeOptions,
-      conditionals: [
-        {
-          type: ConditionalType.SHOW,
-          conditional: field('deceased.nationality').isEqualTo('FAR')
-        }
-      ]
-    },
-    {
-      id: `deceased.idType`,
-      type: FieldType.SELECT,
-      required: true,
-      label: {
-        defaultMessage: 'Form of ID',
-        description: 'This is the label for the field',
-        id: `v2.event.death.action.declare.form.section.person.field.idType.label`
-      },
-      options: idTypeOptionsForeigner,
-      conditionals: [
-        {
-          type: ConditionalType.SHOW,
-          conditional: not(field('deceased.nationality').isEqualTo('FAR'))
-        }
-      ]
+      options: getIdTypeOptions('deceased')
     },
     {
       id: 'deceased.nid',
@@ -295,7 +259,6 @@ export const deceased = defineFormPage({
         'declaration',
         'child.name'
       ]),
-      validation: [invalidNameValidator('deceased.name')],
       conditionals: [
         {
           type: ConditionalType.ENABLE,
@@ -341,6 +304,32 @@ export const deceased = defineFormPage({
         'firstResult',
         'declaration',
         'child.dob'
+      ]),
+      conditionals: [
+        {
+          type: ConditionalType.ENABLE,
+          conditional: field('deceased.brn.search')
+            .getByPath(['data', 'firstResult'])
+            .isFalsy()
+        }
+      ]
+    },
+    {
+      id: 'deceased.gender',
+      type: FieldType.SELECT,
+      required: true,
+      label: {
+        defaultMessage: 'Sex',
+        description: 'This is the label for the field',
+        id: `v2.event.death.action.declare.form.section.deceased.field.gender.label`
+      },
+      options: genderOptions,
+      parent: field('deceased.brn.search'),
+      value: field('deceased.brn.search').getByPath([
+        'data',
+        'firstResult',
+        'declaration',
+        'child.gender'
       ]),
       conditionals: [
         {

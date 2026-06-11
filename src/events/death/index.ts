@@ -108,7 +108,7 @@ export const deathEvent = defineConfig({
         ]
       },
       {
-        fieldId: 'deceased.address',
+        fieldId: 'eventDetails.deathLocationResidential',
         emptyValueMessage: {
           defaultMessage: 'No place of death',
           description:
@@ -251,7 +251,8 @@ export const deathEvent = defineConfig({
           operation: 'add',
           conditional: or(
             user.hasRole('REGISTRATION_AGENT'),
-            user.hasRole('LOCAL_REGISTRAR')
+            user.hasRole('LOCAL_REGISTRAR'),
+            user.hasRole('EMBASSY_OFFICIAL')
           )
         },
         {

@@ -271,12 +271,12 @@ export const birthEvent = defineConfig({
     ActionType.REJECT,
     ActionType.ARCHIVE,
     ActionType.DELETE,
+    'ISSUE_VERIFIABLE_CREDENTIAL',
     ActionType.PRINT_CERTIFICATE,
     'ISSUE_CERTIFIED_COPY',
     ActionType.REQUEST_CORRECTION,
     'REVOKE_REGISTRATION',
     'REINSTATE_REVOKE_REGISTRATION',
-    'ISSUE_VERIFIABLE_CREDENTIAL',
     ActionType.UNASSIGN
   ],
   actions: [
@@ -518,6 +518,12 @@ export const birthEvent = defineConfig({
                 id: 'form.field.label.app.whoContDet.mother',
                 description: 'Label for mother'
               },
+              conditionals: [
+                {
+                  type: ConditionalType.SHOW,
+                  conditional: field('mother.detailsNotAvailable').isFalsy()
+                }
+              ],
               value: 'MOTHER'
             },
             {
@@ -526,12 +532,18 @@ export const birthEvent = defineConfig({
                 id: 'form.field.label.informantRelation.father',
                 description: 'Label for father'
               },
+              conditionals: [
+                {
+                  type: ConditionalType.SHOW,
+                  conditional: field('father.detailsNotAvailable').isFalsy()
+                }
+              ],
               value: 'FATHER'
             },
             {
               label: {
                 defaultMessage: 'Someone else',
-                id: 'form.field.label.informantRelation.others',
+                id: 'form.field.label.collector.others',
                 description: 'Label for someone else'
               },
               value: 'SOMEONE_ELSE'
@@ -581,11 +593,14 @@ export const birthEvent = defineConfig({
       conditionals: [
         {
           type: ConditionalType.SHOW,
-          conditional: not(
-            or(
-              flag('escalated-to-provincial-registrar'),
-              flag('escalated-to-registrar-general')
-            )
+          conditional: and(
+            not(
+              or(
+                flag('escalated-to-provincial-registrar'),
+                flag('escalated-to-registrar-general')
+              )
+            ),
+            not(status('CREATED'))
           )
         }
       ],
@@ -960,7 +975,8 @@ export const birthEvent = defineConfig({
         defaultMessage:
           'Archiving will remove this declaration from active processing while retaining it for record purposes. Archived declarations cannot be modified unless reinstated.',
         description: 'Confirmation body for archiving a declaration'
-      }
+      },
+      flags: [{ id: InherentFlags.REJECTED, operation: 'remove' }]
     },
     verifiableCredentialActions.issueBirthCredentialAction
   ],

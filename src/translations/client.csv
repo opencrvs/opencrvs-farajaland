@@ -183,7 +183,7 @@ certificate.selectTemplate,Select certificate template,Type,Taper
 certificate.selectedTemplate,Selected certificate template,Selected certificate template,Modèle de certificat sélectionné
 certificates.birth.certificate,Birth Certificate,Birth Certificate,Acte de naissance
 certificates.birth.certificate.copy,Birth Certificate Certified Copy,Birth Certificate Certified Copy,Copie certifiée conforme de l'acte de naissance
-certificates.birth.printedCertificateCount,Number of printed copies, {copiesPrintedForTemplate, select, 0{} other{Copy #{copiesPrintedForTemplate}}}, {copiesPrintedForTemplate, select, 0{} other{Copie #{copiesPrintedForTemplate}}}
+certificates.birth.printedCertificateCount,Number of printed copies,"{copiesPrintedForTemplate, select, 0{} other{Copy #{copiesPrintedForTemplate}}}","{copiesPrintedForTemplate, select, 0{} other{Copie #{copiesPrintedForTemplate}}}"
 certificates.birth.registration.receipt,Birth Registration Receipt,Birth Registration Receipt,Reçu d'enregistrement de naissance
 certificates.death.certificate,Death Certificate,Death Certificate,Certificat de décès
 certificates.death.certificate.copy,Death Certificate Certified Copy,Death Certificate Certified Copy,Copie certifiée conforme du certificat de décès
@@ -1030,7 +1030,7 @@ event.death.action.declare.form.section.spouse.field.detailsNotAvailable.label,T
 event.death.action.declare.form.section.spouse.field.dob.error,This is the error message for invalid date,Must be a valid Birthdate,Doit être une date de naissance valide
 event.death.action.declare.form.section.spouse.field.dob.label,This is the label for the field,Date of birth,Date de naissance
 event.death.action.declare.form.section.spouse.field.idType.label,This is the label for the field,Form of ID,Type d'identité
-event.death.action.declare.form.section.spouse.field.name.label,This is the label for the field,Spouse's name,Nom du conjoint
+event.birth.action.declare.form.section.spouse.field.name.label,This is the label for the field,Spouse's name,Nom du conjoint
 event.death.action.declare.form.section.spouse.field.nationality.label,This is the label for the field,Nationality,Nationalité
 event.death.action.declare.form.section.spouse.field.nid.label,This is the label for the field,ID Number,Numéro d'identité
 event.death.action.declare.form.section.spouse.field.passport.label,This is the label for the field,ID Number,Numéro d'identité
@@ -1400,7 +1400,7 @@ form.section.declaration.name,,Declaration,Déclaration
 form.section.declaration.title,,Declaration details,Détails de la déclaration
 form.section.documents.birth.requirements,,The following documents are required,Les documents suivants sont requis
 form.section.documents.name,,Documents,Documents
-form.section.documents.title,Form section title for documents,Upload supporting documents,Joindre des documents justificatifs
+form.section.documents.title,Form section title for documents,Supporting documents,Documents justificatifs
 form.section.father.name,,Father,Père
 form.section.father.title,Form section title for fathers details,Father's details,Information du père
 form.section.groom.headOfGroomFamily,,Head of groom's family,Chef de la famille du marié
@@ -2321,3 +2321,4 @@ event.birth.action.declare.form.section.documents.field.acquiredChildCourtDocume
 event.birth.action.declare.form.review.print.label,Label for the print button in the review section,Print certificate inadvance of registration,Imprimer le certificat avant l'enregistrement
 form.field.label.informantRelation.self,Label for option self,Self,Soi-même
 event.birth.id-reader.helper-text,Helper text,"Authentication isn't required to register. To issue a UIN for the child, at least one parent must be authenticated","L'authentification n'est pas requise pour l'enregistrement. Pour délivrer un UIN à l'enfant, au moins un parent doit être authentifié"
+form.field.label.collector.others,Label for someone else,Someone else,Quelqu'un d'autre

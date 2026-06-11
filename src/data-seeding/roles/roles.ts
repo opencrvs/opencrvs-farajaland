@@ -17,8 +17,8 @@ export const roles: Role[] = [
     },
     scopes: defineScopes([
       { type: 'performance.read' },
-      { type: 'organisation.read-locations', options: { accessLevel: 'administrativeArea' } },
-      { type: 'user.read', options: { accessLevel: 'administrativeArea' } },
+      { type: 'organisation.read-locations', options: { accessLevel: 'location' } },
+      { type: 'user.read-only-my-audit' },
       { type: 'user.search', options: { accessLevel: 'administrativeArea' } },
       { type: 'performance.read-dashboards' },
       { type: 'workqueue', options: { ids: ['assigned-to-you', 'recent', 'requires-completion', 'in-external-validation', 'escalated', 'pending-validation', 'pending-updates', 'pending-approval', 'pending-certification', 'pending-issuance', 'correction-requested'] } },
@@ -70,7 +70,7 @@ export const roles: Role[] = [
       { type: 'record.register', options: { placeOfEvent: 'administrativeArea' } },
       { type: 'record.print-certified-copies', options: { registeredIn: 'administrativeArea' } },
       { type: 'record.correct', options: { registeredIn: 'administrativeArea' } },
-      { type: 'record.custom-action', options: { event: ['birth'], customActionTypes: ['ESCALATE, REINSTATE_REVOKE_REGISTRATION'], placeOfEvent: 'administrativeArea' } },
+      { type: 'record.custom-action', options: { event: ['birth'], customActionTypes: ['ESCALATE', 'REINSTATE_REVOKE_REGISTRATION'], placeOfEvent: 'administrativeArea' } },
       { type: 'record.custom-action', options: { event: ['birth'], customActionTypes: ['ISSUE_CERTIFIED_COPY', 'ISSUE_VERIFIABLE_CREDENTIAL'], registeredIn: 'administrativeArea' } },
       { type: 'record.unassign-others' },
       {
@@ -167,6 +167,7 @@ export const roles: Role[] = [
       { type: 'record.correct' },
       { type: 'record.custom-action', options: { event: ['birth'], customActionTypes: ['REGISTRAR_GENERAL_FEEDBACK', 'REVOKE_REGISTRATION', 'REINSTATE_REVOKE_REGISTRATION', 'APPROVE_DECLARATION'] } },
       { type: 'record.custom-action', options: { event: ['death'], customActionTypes: ['APPROVE_DECLARATION'] } },
+      { type: 'record.custom-action', options: { event: ['birth', 'death'], customActionTypes: ['ISSUE_VERIFIABLE_CREDENTIAL'] } },
       { type: 'record.unassign-others' }
     ])
   },
@@ -188,9 +189,8 @@ export const roles: Role[] = [
       { type: 'workqueue', options: { ids: ['assigned-to-you', 'recent', 'pending-feedback-provincinal-registrar', 'pending-approval', 'correction-requested'] } },
       { type: 'record.read', options: { placeOfEvent: 'administrativeArea' } },
       { type: 'record.reject', options: { placeOfEvent: 'administrativeArea' } },
-      { type: 'record.register', options: { declaredIn: 'administrativeArea' } },
       { type: 'record.archive', options: { placeOfEvent: 'administrativeArea' } },
-      { type: 'record.custom-action', options: { event: ['birth'], customActionTypes: ['PROVINCIAL_REGISTER_FEEDBACK', 'REINSTATE_REVOKE_REGISTRATION', 'ESCALATE'], placeOfEvent: 'administrativeArea' } },
+      { type: 'record.custom-action', options: { event: ['birth'], customActionTypes: ['PROVINCIAL_REGISTER_FEEDBACK', 'REINSTATE_REVOKE_REGISTRATION', 'ESCALATE', 'ISSUE_VERIFIABLE_CREDENTIAL'], placeOfEvent: 'administrativeArea' } },
       { type: 'record.custom-action', options: { event: ['birth', 'death'], customActionTypes: ['APPROVE_DECLARATION'], declaredIn: 'administrativeArea' } },
       { type: 'record.print-certified-copies', options: { registeredIn: 'administrativeArea' } },
       { type: 'record.correct', options: { registeredIn: 'administrativeArea' } },
@@ -215,7 +215,9 @@ export const roles: Role[] = [
       { type: 'record.create', options: { placeOfEvent: 'location' } },
       { type: 'record.read', options: { placeOfEvent: 'location' } },
       { type: 'record.notify', options: { placeOfEvent: 'location' } },
-      { type: 'record.edit', options: { placeOfEvent: 'location', declaredBy: 'user' } },
+      // The edit scope should have the notifiedBy: 'user' option after its implemented on
+      // https://github.com/opencrvs/opencrvs-core/issues/11875
+      { type: 'record.edit', options: { placeOfEvent: 'location' } },
       { type: 'record.print-certified-copies', options: { registeredIn: 'location' } }
     ])
   },
@@ -233,7 +235,8 @@ export const roles: Role[] = [
       { type: 'record.create', options: { placeOfEvent: 'administrativeArea' } },
       { type: 'record.read', options: { placeOfEvent: 'administrativeArea' } },
       { type: 'record.edit', options: { placeOfEvent: 'administrativeArea' } },
-      { type: 'record.notify', options: { placeOfEvent: 'administrativeArea' } }
+      { type: 'record.notify', options: { placeOfEvent: 'administrativeArea' } },
+      { type: 'record.declare', options: { placeOfEvent: 'administrativeArea' } }
     ])
   },
   {
@@ -269,7 +272,7 @@ export const roles: Role[] = [
       { type: 'record.custom-action', options: { event: ['birth'], customActionTypes: ['ESCALATE'], placeOfEvent: 'location' } },
       { type: 'record.custom-action', options: { event: ['birth'], customActionTypes: ['ISSUE_CERTIFIED_COPY'], placeOfEvent: 'location' } },
       { type: 'record.print-certified-copies', options: { placeOfEvent: 'location' } },
-      { type: 'record.correct', options: { placeOfEvent: 'location' } }
+      { type: 'record.request-correction', options: { placeOfEvent: 'location' } }
     ])
   }
 ]

@@ -332,15 +332,5 @@ export const causeOfDeathDetails = defineFormPage({
     },
     ...otherSignificantSymptoms
   ],
-  conditional: and(
-    field('eventDetails.causeOfDeathEstablished').isEqualTo(true),
-    or(
-      field('eventDetails.sourceCauseDeath').isEqualTo(
-        SourceCauseDeathType.PHYSICIAN
-      ),
-      field('eventDetails.sourceCauseDeath').isEqualTo(
-        SourceCauseDeathType.MEDICALLY_CERTIFIED
-      )
-    )
-  )
+  conditional: field('eventDetails.causeOfDeathEstablished').isEqualTo(true)
 })
