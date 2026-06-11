@@ -17,6 +17,7 @@ import { getAdministrativeAreas, getIdByName } from '../birth/helpers'
 import { formatV2ChildName, REQUIRED_VALIDATION_ERROR } from '../birth/helpers'
 import { getDeclaration } from '../test-data/birth-declaration'
 import {
+  openRecordByTitle,
   printAndExpectPopup,
   selectRequesterType
 } from '../print-certificate/birth/helpers'
@@ -27,7 +28,7 @@ import {
   NON_EXISTING_UUID
 } from './helpers'
 
-import { CREDENTIALS, SAFE_IN_EXTERNAL_VALIDATION_MS } from '../../constants'
+import { CREDENTIALS } from '../../constants'
 
 test.describe('POST /api/events/events/{eventId}/notify', () => {
   let clientToken: string
@@ -470,7 +471,7 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
 
     await page.getByRole('button', { name: 'Notifications' }).click()
 
-    await page.getByText(await formatName(childName)).click()
+    await openRecordByTitle(page, formatName(childName))
 
     await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
 
@@ -623,11 +624,10 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
 
     test("Navigate to event via 'Notifications' -workqueue", async () => {
       await page.getByRole('button', { name: 'Notifications' }).click()
-      await page
-        .getByRole('button', {
-          name: await formatV2ChildName({ 'child.name': childName })
-        })
-        .click()
+      await openRecordByTitle(
+        page,
+        formatV2ChildName({ 'child.name': childName })
+      )
     })
 
     test('Edit event', async () => {
@@ -687,11 +687,10 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
 
     test("Navigate to event via 'Pending certification' -workqueue", async () => {
       await page.getByRole('button', { name: 'Pending certification' }).click()
-      await page
-        .getByRole('button', {
-          name: await formatV2ChildName({ 'child.name': newChildName })
-        })
-        .click()
+      await openRecordByTitle(
+        page,
+        formatV2ChildName({ 'child.name': newChildName })
+      )
     })
 
     test('Print certificate', async () => {
@@ -797,11 +796,10 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
 
     test("Navigate to event via 'Notifications' -workqueue", async () => {
       await page.getByRole('button', { name: 'Notifications' }).click()
-      await page
-        .getByRole('button', {
-          name: await formatV2ChildName({ 'child.name': childName })
-        })
-        .click()
+      await openRecordByTitle(
+        page,
+        formatV2ChildName({ 'child.name': childName })
+      )
     })
 
     test('Reject event', async () => {
@@ -816,11 +814,10 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
       await page.getByPlaceholder('Search').fill(trackingId)
       await page.getByRole('button', { name: 'Search' }).click()
 
-      await page
-        .getByRole('button', {
-          name: await formatV2ChildName({ 'child.name': childName })
-        })
-        .click()
+      await openRecordByTitle(
+        page,
+        formatV2ChildName({ 'child.name': childName })
+      )
     })
 
     test('Audit event', async () => {

@@ -11,6 +11,7 @@ import { createDeclaration } from '../test-data/birth-declaration-with-mother-fa
 import { formatV2ChildName } from '../birth/helpers'
 import { ActionType } from '@opencrvs/toolkit/events'
 import { ensureAssignedToUser, selectAction } from '../../utils'
+import { openRecordByTitle } from '../print-certificate/birth/helpers'
 
 test('Duplicate overview', async ({ page }) => {
   const details = {
@@ -92,7 +93,7 @@ test('Duplicate overview', async ({ page }) => {
 
   await test.step("Navigate back to duplicate's overview and validate audit", async () => {
     await searchFromSearchBar(page, duplicateTrackingId, false)
-    await page.getByRole('button', { name }).click()
+    await openRecordByTitle(page, name)
     await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
     await expect(page.getByTestId('status-value')).toHaveText('Archived')
 

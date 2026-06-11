@@ -19,6 +19,7 @@ import {
   type Declaration
 } from '../test-data/birth-declaration'
 import { formatV2ChildName } from '../birth/helpers'
+import { openRecordByTitle } from '../print-certificate/birth/helpers'
 
 test('Escalating a rejected record preserves the Rejected flag', async ({
   page
@@ -75,9 +76,7 @@ test('Escalating a rejected record preserves the Rejected flag', async ({
   await test.step('Find the rejected record by tracking ID', async () => {
     await type(page, '#searchText', trackingId)
     await page.locator('#searchIconButton').click()
-    await page
-      .getByRole('button', { name: formatV2ChildName(declaration) })
-      .click()
+    await openRecordByTitle(page, formatV2ChildName(declaration))
 
     await expectInUrl(page, `events/${eventId}`)
 

@@ -18,6 +18,7 @@ import {
   ensureOutboxIsEmpty,
   expectInUrl
 } from '../../../utils'
+import { openRecordByTitle } from '../../print-certificate/birth/helpers'
 
 test.describe.serial('5. Death declaration case - 5', () => {
   let page: Page
@@ -559,14 +560,12 @@ test.describe.serial('5. Death declaration case - 5', () => {
       await ensureOutboxIsEmpty(page)
       await page.getByText('Pending registration').click()
 
-      await page
-        .getByRole('button', {
-          name:
-            declaration.deceased.name.firstname +
-            ' ' +
-            declaration.deceased.name.surname
-        })
-        .click()
+      await openRecordByTitle(
+        page,
+        declaration.deceased.name.firstname +
+          ' ' +
+          declaration.deceased.name.surname
+      )
 
       await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
       await switchEventTab(page, 'Record')

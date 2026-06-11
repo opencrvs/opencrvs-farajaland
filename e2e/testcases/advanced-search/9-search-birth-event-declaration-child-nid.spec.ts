@@ -11,6 +11,7 @@ import {
 import { CREDENTIALS, GATEWAY_HOST } from '../../constants'
 import { assertTexts, ensureAssignedToUser, type } from '../../utils'
 import { formatV2ChildName } from '../birth/helpers'
+import { openRecordByTitle } from '../print-certificate/birth/helpers'
 
 /*
  * Female identity from mock-identities.json (Sahara Wendy Moyo, NID: 1234567899).
@@ -179,7 +180,7 @@ test.describe
 
   test('Open record from search results and verify NID is visible in summary', async () => {
     const childName = formatV2ChildName(declaration)
-    await page.getByRole('button', { name: childName }).click()
+    await openRecordByTitle(page, childName)
 
     await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
 

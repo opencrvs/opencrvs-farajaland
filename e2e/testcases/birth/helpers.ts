@@ -3,7 +3,6 @@ import { omit } from 'lodash'
 import { formatName, joinValuesWith } from '../../helpers'
 import { faker } from '@faker-js/faker'
 import { ensureOutboxIsEmpty } from '../../utils'
-import { getRowByTitle } from '../print-certificate/birth/helpers'
 import { SAFE_OUTBOX_TIMEOUT_MS } from '../../constants'
 import { GATEWAY_HOST } from '../../constants'
 import { createClient } from '@opencrvs/toolkit/api'
@@ -62,6 +61,10 @@ export const formatV2ChildName = (obj: {
   ])
 }
 
+/**
+ * @deprecated - causes flakiness on tests that use it, and forcing us to keep retrying.
+ *
+ */
 export const assertRecordInWorkqueue = async ({
   page,
   name,

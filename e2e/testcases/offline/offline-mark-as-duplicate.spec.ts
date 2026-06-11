@@ -8,6 +8,7 @@ import { ActionType } from '@opencrvs/toolkit/events'
 import { ensureAssignedToUser, selectAction } from '../../utils'
 import { createClient } from '@opencrvs/toolkit/api'
 import { v4 as uuidv4 } from 'uuid'
+import { openRecordByTitle } from '../print-certificate/birth/helpers'
 
 test('Mark as duplicate while offline', async ({ page }) => {
   const details = {
@@ -55,7 +56,7 @@ test('Mark as duplicate while offline', async ({ page }) => {
   await test.step("Navigate to potential duplicate's overview", async () => {
     await login(page, CREDENTIALS.REGISTRAR)
     await page.getByRole('button', { name: 'Potential duplicate' }).click()
-    await page.getByRole('button', { name }).click()
+    await openRecordByTitle(page, name)
   })
 
   await test.step('Go to duplicate review', async () => {
