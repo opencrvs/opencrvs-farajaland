@@ -322,7 +322,9 @@ test.describe
       await goToSection(page, 'review')
     })
     test('30.2.2 Notify', async () => {
-      await selectDeclarationAction(page, 'Notify')
+      await page.getByRole('button', { name: 'Action', exact: true }).click()
+      await page.getByText('Notify', { exact: true }).click()
+      await page.getByRole('button', { name: 'Notify', exact: true }).click()
     })
   })
 
@@ -344,7 +346,9 @@ test.describe
       await goToSection(page, 'review')
     })
     test('30.3.2 Notify', async () => {
-      await selectDeclarationAction(page, 'Notify')
+      await page.getByRole('button', { name: 'Action', exact: true }).click()
+      await page.getByText('Notify', { exact: true }).click()
+      await page.getByRole('button', { name: 'Notify', exact: true }).click()
     })
   })
 
