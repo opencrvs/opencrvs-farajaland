@@ -16,7 +16,6 @@ import {
   selectAction
 } from '../../utils'
 import { assertRecordInWorkqueue, fillDate } from '../birth/helpers'
-import { getRowByTitle } from '../print-certificate/birth/helpers'
 
 // HO Notifies => RO Rejects => RO Re-declares and validates => Registrar rejects
 // => RO Re-declares again => Registrar registers

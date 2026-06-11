@@ -14,6 +14,7 @@ import {
   selectAction
 } from '../../utils'
 import { createDeclaration } from '../test-data/birth-declaration-with-father-brother'
+import { openRecordByTitle } from '../print-certificate/birth/helpers'
 
 test.describe.serial('Escalation of birth registration by Registrar', () => {
   let page: Page
@@ -65,9 +66,7 @@ test.describe.serial('Escalation of birth registration by Registrar', () => {
   test.describe('Escalate to Provincial Registrar', async () => {
     test('Registrar assigns birth registration', async () => {
       await page.getByText('Pending certification').click()
-      await page
-        .getByRole('button', { name: childNameForProvincialFormatted })
-        .click()
+      await openRecordByTitle(page, childNameForProvincialFormatted)
       await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
     })
 
@@ -104,9 +103,7 @@ test.describe.serial('Escalation of birth registration by Registrar', () => {
 
   test.describe('Escalate to Registrar General', () => {
     test('Registrar assigns birth registration', async () => {
-      await page
-        .getByRole('button', { name: childNameForRegGeneralFormatted })
-        .click()
+      await openRecordByTitle(page, childNameForRegGeneralFormatted)
       await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
     })
 
@@ -142,9 +139,8 @@ test.describe.serial('Escalation of birth registration by Registrar', () => {
     test('Verify Registrar General Escalated Status', async () => {
       await login(page, CREDENTIALS.REGISTRAR_GENERAL)
       await page.getByText('Pending feedback').click()
-      await page
-        .getByRole('button', { name: childNameForRegGeneralFormatted })
-        .click()
+
+      await openRecordByTitle(page, childNameForRegGeneralFormatted)
     })
 
     test('Assign', async () => {
@@ -179,9 +175,7 @@ test.describe.serial('Escalation of birth registration by Registrar', () => {
     test('Verify Provincial Registrar Escalated Status', async () => {
       await login(page, CREDENTIALS.PROVINCIAL_REGISTRAR)
       await page.getByText('Pending feedback').click()
-      await page
-        .getByRole('button', { name: childNameForProvincialFormatted })
-        .click()
+      await openRecordByTitle(page, childNameForProvincialFormatted)
     })
 
     test('Assign', async () => {

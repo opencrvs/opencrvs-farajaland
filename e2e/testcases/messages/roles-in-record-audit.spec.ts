@@ -40,11 +40,22 @@ test.describe('Roles in Record Audit', () => {
         }
       )
 
-      await page
-        .getByRole('textbox', { name: 'Search for a record' })
-        .fill(formatV2ChildName(res.declaration))
+      await expect(async () => {
+        await page
+          .getByRole('textbox', { name: 'Search for a record' })
+          .fill(formatV2ChildName(res.declaration))
+        await page.getByRole('button', { name: 'Search' }).click()
+        await expect(
+          page.getByRole('button', {
+            name: formatV2ChildName(res.declaration),
+            exact: true
+          })
+        ).toBeVisible({ timeout: 5_000 })
+      }).toPass({
+        timeout: 60_000,
+        intervals: [...Array(5).fill(1_000), ...Array(5).fill(2_000), 5_000]
+      })
 
-      await page.getByRole('button', { name: 'Search' }).click()
       await page
         .getByRole('button', {
           name: formatV2ChildName(res.declaration),

@@ -42,6 +42,35 @@ export function getRowByTitle(page: Page, title: string) {
     .filter({ has: page.getByRole('button', { name: title }) })
 }
 
+/**
+ * Opens a record from a workqueue list by its title (e.g. formatted child name) and **verifies it**
+ *
+ * NOTE:
+ * Application polls continuously for updates. E2E tests are run in parallel.
+ * It is likely that the same workqueue will get updated, and **during** the time we select a row, and click it, it actually has diffrent user and the test fails down the line.
+ *
+ */
+export async function openRecordByTitle(page: Page, title: string) {
+  await expect(async () => {
+    await getRowByTitle(page, title)
+      .getByRole('button', { name: title })
+      .click()
+    try {
+      // target the event overview title.
+      await expect(
+        page.getByTestId('record-header').getByText(title)
+      ).toBeVisible({ timeout: 3_000 })
+    } catch (error) {
+      await page.goBack()
+      // This triggers toPass retry loop if the updated happened and we picked wrong one.
+      throw error
+    }
+  }).toPass({
+    timeout: 60_000,
+    intervals: [...Array(5).fill(1_000), ...Array(5).fill(2_000), 5_000]
+  })
+}
+
 export async function printAndExpectPopup(page: Page) {
   await page.getByRole('button', { name: 'Yes, print certificate' }).click()
   const popupPromise = page.waitForEvent('popup')
