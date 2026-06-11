@@ -103,6 +103,9 @@ export async function ensureAssignedToUser(
 
   const assignedTo = page.getByTestId('assignedTo-value').locator('span')
 
+  // Wait for the value to actually render before deciding
+  await assignedTo.first().waitFor({ state: 'visible' })
+
   if (await assignedTo.filter({ hasText: userFullName }).isVisible()) {
     return
   }
@@ -115,17 +118,19 @@ export async function ensureAssignedToUser(
     .first()
 
   await assignAction.waitFor({ state: 'visible' })
-
   await assignAction.click()
-  // Wait for the assign modal to appear
-  await page.getByRole('button', { name: 'Assign', exact: true }).click()
 
-  // Wait for the assignment API call to complete and the UI to update.
-  await page.waitForResponse(
+  // Setup the listener before clicking.
+  const assignResponse = page.waitForResponse(
     (res) =>
       res.url().includes('event.actions.assignment.assign') &&
       res.status() === 200
   )
+  // Wait for the assign modal to appear
+  await page.getByRole('button', { name: 'Assign', exact: true }).click()
+
+  // Wait for the assignment API call to complete and the UI to update.
+  await assignResponse
 
   await expect(
     page.getByTestId('assignedTo-value').locator('span')
