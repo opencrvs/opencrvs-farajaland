@@ -255,7 +255,7 @@ export async function certificateHandler(
       },
       svgUrl:
         '/api/countryconfig/certificates/v2.birth-certificate-certified-copy.svg',
-      fonts: libreBaskervilleFont,
+      fonts: notoSansFont,
       conditionals: [
         {
           type: 'SHOW',
@@ -283,7 +283,7 @@ export async function certificateHandler(
         delayed: 18
       },
       svgUrl: '/api/countryconfig/certificates/v2.death-certificate.svg',
-      fonts: libreBaskervilleFont
+      fonts: notoSansFont
     },
     {
       id: 'v2.death-certified-certificate',
@@ -302,7 +302,7 @@ export async function certificateHandler(
       },
       svgUrl:
         '/api/countryconfig/certificates/v2.death-certificate-certified-copy.svg',
-      fonts: libreBaskervilleFont
+      fonts: { ...notoSansFont, ...libreBaskervilleFont }
     }
   ]
   return certificateConfigs
