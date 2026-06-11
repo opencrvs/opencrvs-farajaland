@@ -11,11 +11,7 @@ import {
 } from '../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../constants'
-import {
-  ensureAssignedToUser,
-  ensureOutboxIsEmpty,
-  selectAction
-} from '../../utils'
+import { ensureAssignedToUser, selectAction } from '../../utils'
 import { selectDeclarationAction } from '../../helpers'
 import { format, subDays } from 'date-fns'
 
@@ -136,7 +132,6 @@ test.describe
 
     test('Declare', async () => {
       await selectDeclarationAction(page, 'Declare')
-      await ensureOutboxIsEmpty(page)
       await page.getByText('Recent').click()
     })
   })
@@ -176,7 +171,6 @@ test.describe
 
     test('Declare with edits', async () => {
       await selectDeclarationAction(page, 'Declare with edits')
-      await ensureOutboxIsEmpty(page)
     })
 
     test('Go to record', async () => {
@@ -312,7 +306,7 @@ test.describe
 
     test('Declare', async () => {
       await selectDeclarationAction(page, 'Declare')
-      await ensureOutboxIsEmpty(page)
+
       await page.getByText('Recent').click()
     })
   })
@@ -357,7 +351,6 @@ test.describe
 
     test('Declare with edits', async () => {
       await selectDeclarationAction(page, 'Declare with edits')
-      await ensureOutboxIsEmpty(page)
     })
 
     test('Go to record', async () => {

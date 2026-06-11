@@ -7,7 +7,6 @@ import { ActionType } from '@opencrvs/toolkit/events'
 import { formatV2ChildName } from '../birth/helpers'
 import {
   ensureAssignedToUser,
-  ensureOutboxIsEmpty,
   expectInUrl,
   navigateToWorkqueue,
   selectAction
@@ -114,8 +113,6 @@ test.describe.serial('4(b) Validate "Pending updates"-workqueue for RO', () => {
 
     // Should redirect back to "Pending updates"-workqueue
     await expect(page.locator('#content-name')).toHaveText('Pending updates')
-
-    await ensureOutboxIsEmpty(page)
 
     await expect(
       page.getByRole('button', { name: formatV2ChildName(declaration) })

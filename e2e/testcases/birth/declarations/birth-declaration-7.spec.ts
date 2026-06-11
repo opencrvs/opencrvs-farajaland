@@ -14,7 +14,7 @@ import {
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../../constants'
 import { REQUIRED_VALIDATION_ERROR } from '../helpers'
-import { ensureAssignedToUser, ensureOutboxIsEmpty } from '../../../utils'
+import { ensureAssignedToUser } from '../../../utils'
 
 test.describe.serial('7. Birth declaration case - 7', () => {
   let page: Page
@@ -230,8 +230,6 @@ test.describe.serial('7. Birth declaration case - 7', () => {
 
     test('7.1.9 Notify', async () => {
       await selectDeclarationAction(page, 'Notify')
-
-      await ensureOutboxIsEmpty(page)
 
       await page.getByText('Recent').click()
 

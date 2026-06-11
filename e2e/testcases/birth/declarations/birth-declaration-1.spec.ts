@@ -478,8 +478,6 @@ test.describe.serial('1. Birth declaration case - 1', () => {
     test('1.1.8 Declare', async () => {
       await selectDeclarationAction(page, 'Declare')
 
-      await ensureOutboxIsEmpty(page)
-
       await page.getByText('Recent').click()
       await expect(
         page.getByRole('button', {

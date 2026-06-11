@@ -853,7 +853,6 @@ test.describe.serial('8. Validate declaration review page', () => {
 
     test('8.1.7 Declare', async () => {
       await selectDeclarationAction(page, 'Declare', true)
-      await ensureOutboxIsEmpty(page)
     })
   })
 

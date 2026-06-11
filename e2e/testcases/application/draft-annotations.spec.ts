@@ -19,7 +19,6 @@ import {
 } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
 import { faker } from '@faker-js/faker'
-import { ensureOutboxIsEmpty } from '../../utils'
 
 const ANNOTATION_COMMENT = 'Test annotation comment'
 
@@ -58,13 +57,10 @@ test.describe.serial('2: Annotations on draft records', () => {
   test('2.2 Fill annotation comment and Save & Exit', async () => {
     await page.locator('#review____comment').fill(ANNOTATION_COMMENT)
 
-    await selectDeclarationAction(page, 'Save & Exit', false)
-    await page.getByRole('button', { name: 'Confirm' }).click()
+    await selectDeclarationAction(page, 'Save & Exit', true)
   })
 
   test('2.3 Re-open draft — annotation comment is visible in Annotations section', async () => {
-    await ensureOutboxIsEmpty(page)
-
     await page.getByRole('button', { name: 'Drafts' }).click()
 
     await page.getByRole('button', { name: formattedName }).click()

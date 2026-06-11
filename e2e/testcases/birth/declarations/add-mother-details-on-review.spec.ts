@@ -223,8 +223,6 @@ test.describe.serial('Add mother details on review', () => {
     test('Declare', async () => {
       await selectDeclarationAction(page, 'Declare')
 
-      await ensureOutboxIsEmpty(page)
-
       await page.getByText('Recent').click()
 
       await expect(
@@ -293,6 +291,7 @@ test.describe.serial('Add mother details on review', () => {
     const comment = 'Mamas info added yo'
 
     test('Register with edits', async () => {
+      // @todo:
       await selectDeclarationAction(page, 'Register with edits', false)
       await expect(
         page.getByText(

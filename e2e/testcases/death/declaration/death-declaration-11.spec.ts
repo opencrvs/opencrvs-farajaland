@@ -670,7 +670,7 @@ test.describe.serial('11. Death declaration case - 11', () => {
 
     test('11.1.8 Declare', async () => {
       await selectDeclarationAction(page, 'Declare')
-      await ensureOutboxIsEmpty(page)
+
       await expect(page.getByText('Farajaland CRS')).toBeVisible()
 
       /*

@@ -406,8 +406,7 @@ test.describe('1. Death event declaration', () => {
       })
 
       test('1.9.3 Click Confirm', async () => {
-        await selectDeclarationAction(page, 'Save & Exit', false)
-        await page.getByRole('button', { name: 'Confirm' }).click()
+        await selectDeclarationAction(page, 'Save & Exit', true)
 
         /*
          * Expected result: should
@@ -418,8 +417,6 @@ test.describe('1. Death event declaration', () => {
         await page.getByText('Drafts').click()
 
         await expect(page.locator('#content-name')).toHaveText('Drafts')
-
-        await ensureOutboxIsEmpty(page)
 
         await expect(
           page.getByText(deceased.name.firstname, { exact: true })

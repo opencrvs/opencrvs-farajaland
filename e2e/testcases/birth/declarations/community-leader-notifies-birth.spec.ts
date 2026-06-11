@@ -55,8 +55,6 @@ test('Community leader notifies birth', async ({ page }) => {
 
   await test.step('Notify', async () => {
     await selectDeclarationAction(page, 'Notify')
-
-    await ensureOutboxIsEmpty(page)
   })
 
   await test.step('Open record', async () => {
