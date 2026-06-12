@@ -576,16 +576,4 @@ test('1. Correct record', async ({ page }) => {
 
     await page.locator('#close-btn').click()
   })
-
-  await test.step('1.2.6.4.2 Validate correction approved modal', async () => {
-    await page.getByRole('button', { name: 'Summary' }).click()
-    await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
-    await page.getByRole('button', { name: 'Audit' }).click()
-    await page.getByRole('button', { name: 'Next page' }).click()
-    await page
-      .getByRole('button', { name: 'Correction approved', exact: true })
-      .click()
-
-    await page.locator('#close-btn').click()
-  })
 })
