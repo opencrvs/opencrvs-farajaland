@@ -538,6 +538,11 @@ test('1. Correct record', async ({ page }) => {
     await page.getByRole('button', { name: 'Confirm', exact: true }).click()
 
     await expectInUrl(page, `/events/${eventId}`)
+
+    // Wait until the actions have finished, which unassigns user
+    await expect(
+      page.getByRole('button', { name: 'Assign record' })
+    ).toBeVisible()
   })
 
   // 1.2.6.4 Validate history in record audit.
@@ -573,6 +578,15 @@ test('1. Correct record', async ({ page }) => {
     ).toBeVisible()
 
     await expect(page.getByText('Type of birth-Twin')).toBeVisible()
+
+    await page.locator('#close-btn').click()
+  })
+
+  await test.step('1.2.6.4.2 Validate correction approved modal', async () => {
+    await page.getByRole('button', { name: 'Next page' }).click()
+    await page
+      .getByRole('button', { name: 'Correction approved', exact: true })
+      .click()
 
     await page.locator('#close-btn').click()
   })
