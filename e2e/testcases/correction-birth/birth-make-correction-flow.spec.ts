@@ -8,6 +8,7 @@ import {
 } from '../test-data/birth-declaration-with-mother-father'
 import { ensureAssignedToUser, expectInUrl, selectAction } from '../../utils'
 import { formatV2ChildName, REQUIRED_VALIDATION_ERROR } from '../birth/helpers'
+import { openRecordByTitle } from '../print-certificate/birth/helpers'
 
 test.describe.serial('Birth Record correction flow', () => {
   let declaration: Declaration
@@ -31,9 +32,7 @@ test.describe.serial('Birth Record correction flow', () => {
 
   test('Navigate to the correction form', async () => {
     await page.getByRole('button', { name: 'Pending certification' }).click()
-    await page
-      .getByRole('button', { name: formatV2ChildName(declaration) })
-      .click()
+    await openRecordByTitle(page, formatV2ChildName(declaration))
     await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
     await selectAction(page, 'Correct')
   })
@@ -225,9 +224,7 @@ test.describe.serial('Birth Record correction flow', () => {
   })
 
   test('Assign', async () => {
-    await page
-      .getByRole('button', { name: formatV2ChildName(declaration) })
-      .click()
+    await openRecordByTitle(page, formatV2ChildName(declaration))
 
     await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
   })

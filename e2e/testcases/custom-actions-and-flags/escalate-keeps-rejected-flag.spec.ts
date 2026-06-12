@@ -114,9 +114,7 @@ test('Escalating a rejected record preserves the Rejected flag', async ({
   await test.step('Rejected flag is still present after escalation', async () => {
     await type(page, '#searchText', trackingId)
     await page.locator('#searchIconButton').click()
-    await page
-      .getByRole('button', { name: formatV2ChildName(declaration) })
-      .click()
+    await openRecordByTitle(page, formatV2ChildName(declaration))
 
     await expect(page.getByTestId('flags-value')).toContainText('Rejected')
     await expect(page.getByTestId('flags-value')).toContainText(

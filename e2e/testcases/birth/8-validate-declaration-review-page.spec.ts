@@ -19,6 +19,7 @@ import {
   ensureOutboxIsEmpty,
   selectAction
 } from '../../utils'
+import { openRecordByTitle } from '../print-certificate/birth/helpers'
 
 test.describe.serial('8. Validate declaration review page', () => {
   let page: Page
@@ -862,21 +863,15 @@ test.describe.serial('8. Validate declaration review page', () => {
 
       await page.getByText('Pending validation').click()
 
-      await page
-        .getByRole('button', {
-          name: formatName(declaration.child.name)
-        })
-        .click()
+      await openRecordByTitle(page, formatName(declaration.child.name))
     })
     test('8.2.2 Validate', async () => {
       await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
-      // @todo:
-      await selectAction(page, 'Validate')
-      await page.getByRole('button', { name: 'Confirm' }).click()
+
+      await selectDeclarationAction(page, 'Validate')
     })
 
     test('8.2.3 Confirm the declaration is in Recent-workqueue', async () => {
-      await ensureOutboxIsEmpty(page)
       await page.getByText('Recent').click()
 
       await expect(
@@ -893,11 +888,7 @@ test.describe.serial('8. Validate declaration review page', () => {
 
       await page.getByText('Pending registration').click()
 
-      await page
-        .getByRole('button', {
-          name: formatName(declaration.child.name)
-        })
-        .click()
+      await openRecordByTitle(page, formatName(declaration.child.name))
     })
 
     test('8.3.1.1 Assert values', async () => {

@@ -14,6 +14,7 @@ import {
   type
 } from '../../utils'
 import { formatV2ChildName, REQUIRED_VALIDATION_ERROR } from '../birth/helpers'
+import { openRecordByTitle } from '../print-certificate/birth/helpers'
 
 test.describe.serial('Birth correction flow', () => {
   let declaration: Declaration
@@ -37,9 +38,7 @@ test.describe.serial('Birth correction flow', () => {
 
   test('Navigate to the correction form', async () => {
     await page.getByRole('button', { name: 'Pending certification' }).click()
-    await page
-      .getByRole('button', { name: formatV2ChildName(declaration) })
-      .click()
+    await openRecordByTitle(page, formatV2ChildName(declaration))
     await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
     await selectAction(page, 'Correct')
   })

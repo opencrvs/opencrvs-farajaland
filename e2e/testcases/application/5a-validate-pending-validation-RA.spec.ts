@@ -96,12 +96,17 @@ test.describe
   })
 
   test('5.5 Complete validate action', async () => {
+    const validateResponse = page.waitForResponse(
+      (res) =>
+        res.url().includes('event.actions.custom') && res.status() === 200
+    )
+
     await page.getByRole('button', { name: 'Confirm' }).click()
+
+    await validateResponse
 
     // Should redirect back to "Pending validation"-workqueue
     await expect(page.locator('#content-name')).toHaveText('Pending validation')
-
-    await ensureOutboxIsEmpty(page)
 
     await expect(
       page.getByRole('button', { name: formatV2ChildName(declaration) })

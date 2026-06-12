@@ -14,6 +14,7 @@ import {
   selectAction,
   type
 } from '../../utils'
+import { openRecordByTitle } from '../print-certificate/birth/helpers'
 
 test.describe
   .serial('Request correction, escalate, then approve as Local Registrar', () => {
@@ -220,9 +221,7 @@ test.describe
   test('Navigate to the record by tracking ID', async () => {
     await type(page, '#searchText', trackingId)
     await page.locator('#searchIconButton').click()
-    await page
-      .getByRole('button', { name: formatV2ChildName(declaration) })
-      .click()
+    await openRecordByTitle(page, formatV2ChildName(declaration))
 
     await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
   })

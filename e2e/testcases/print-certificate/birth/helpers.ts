@@ -30,7 +30,8 @@ export async function navigateToCertificatePrintAction(
   username: (typeof CREDENTIALS)[keyof typeof CREDENTIALS]
 ) {
   const childName = formatV2ChildName(declaration)
-  await page.getByRole('button', { name: childName }).click()
+
+  await openRecordByTitle(page, childName)
 
   await ensureAssignedToUser(page, username)
   await selectAction(page, 'Print')

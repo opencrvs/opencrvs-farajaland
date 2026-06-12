@@ -24,6 +24,7 @@ import {
   type
 } from '../../utils'
 import { formatV2ChildName } from '../birth/helpers'
+import { openRecordByTitle } from '../print-certificate/birth/helpers'
 
 test('1. Correct record', async ({ page }) => {
   const updatedChildDetails = {
@@ -63,10 +64,7 @@ test('1. Correct record', async ({ page }) => {
   await test.step('Login as Registration Officer and open the record', async () => {
     await login(page, CREDENTIALS.REGISTRATION_OFFICER)
     await page.getByRole('button', { name: 'Pending certification' }).click()
-    await page
-      .getByRole('button', { name: formatV2ChildName(declaration) })
-      .click()
-
+    await openRecordByTitle(page, formatV2ChildName(declaration))
     await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
   })
 
@@ -493,9 +491,7 @@ test('1. Correct record', async ({ page }) => {
 
     await type(page, '#searchText', trackingId)
     await page.locator('#searchIconButton').click()
-    await page
-      .getByRole('button', { name: formatV2ChildName(declaration) })
-      .click()
+    await openRecordByTitle(page, formatV2ChildName(declaration))
   })
 
   await test.step('1.2.6.2 Correction review', async () => {

@@ -3,6 +3,7 @@ import { expect, Page, test } from '@playwright/test'
 import { formatName, login } from '../../helpers'
 import { mockNetworkConditions } from '../../mock-network-conditions'
 import { faker } from '@faker-js/faker'
+import { openRecordByTitle } from '../print-certificate/birth/helpers'
 
 test.describe.serial('Can Open Draft offline', () => {
   let page: Page
@@ -48,7 +49,9 @@ test.describe.serial('Can Open Draft offline', () => {
     await mockNetworkConditions(page, 'offline')
     await page.getByRole('button', { name: 'Drafts' }).click()
     await expect(page.locator('#content-name')).toHaveText('Drafts')
-    await page.getByRole('button', { name: formatName(name) }).click()
+
+    await openRecordByTitle(page, formatName(name))
+
     await expect(page.locator('#content-name')).toHaveText(formatName(name))
   })
 })

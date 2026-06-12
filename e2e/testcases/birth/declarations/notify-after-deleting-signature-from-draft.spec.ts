@@ -115,7 +115,7 @@ test('Community leader notifies a birth after deleting a previously persisted si
 
   await test.step('Open the notification and start the Declare flow', async () => {
     await page.getByText('Notifications').click()
-    await page.getByRole('button', { name: formattedChildName }).click()
+    await openRecordByTitle(page, formattedChildName)
 
     await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
     await selectAction(page, 'Edit')

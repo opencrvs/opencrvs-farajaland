@@ -16,6 +16,7 @@ import {
 } from '../../utils'
 import { formatV2ChildName } from '../birth/helpers'
 import { setMobileViewport } from '../../mobile-helpers'
+import { openRecordByTitle } from '../print-certificate/birth/helpers'
 
 test.describe.serial('Birth correction flow - Mobile', () => {
   let declaration: Declaration
@@ -43,9 +44,7 @@ test.describe.serial('Birth correction flow - Mobile', () => {
 
   test('Navigate to the correction form', async () => {
     await navigateToWorkqueue(page, 'Pending certification')
-    await page
-      .getByRole('button', { name: formatV2ChildName(declaration) })
-      .click()
+    await openRecordByTitle(page, formatV2ChildName(declaration))
 
     await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
     await selectAction(page, 'Correct')

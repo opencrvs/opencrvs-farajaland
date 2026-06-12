@@ -100,7 +100,7 @@ test.describe.serial('4(a) Validate "Pending updates"-workqueue for HO', () => {
   })
 
   test('4.4 Click a name', async () => {
-    await page.getByRole('button', { name: formattedChildName }).click()
+    await openRecordByTitle(page, formattedChildName)
 
     // User should navigate to record audit page
     await expectInUrl(
@@ -138,7 +138,7 @@ test.describe.serial('4(a) Validate "Pending updates"-workqueue for HO', () => {
 
   test('4.6 Assert record does not have "Edit in progress" flag', async () => {
     await navigateToWorkqueue(page, 'Recent')
-    await page.getByRole('button', { name: formattedChildName }).click()
+    await openRecordByTitle(page, formattedChildName)
     await expect(page.getByText('Edit in progress')).not.toBeVisible()
   })
 })

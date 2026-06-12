@@ -17,6 +17,7 @@ import { formatV2ChildName, getAdministrativeAreas } from '../birth/helpers'
 import { ensureAssignedToUser, expectInUrl, selectAction } from '../../utils'
 import { getIdByName } from '../birth/helpers'
 import { AddressType } from '@opencrvs/toolkit/events'
+import { openRecordByTitle } from '../print-certificate/birth/helpers'
 
 test.describe.serial('Correct record - Change ages', () => {
   let declaration: Declaration
@@ -297,9 +298,7 @@ test.describe.serial('Correct record - Change ages', () => {
   test('Find the event in the "Pending corrections" workqueue', async () => {
     await page.getByRole('button', { name: 'Pending corrections' }).click()
 
-    await page
-      .getByRole('button', { name: formatV2ChildName(declaration) })
-      .click()
+    await openRecordByTitle(page, formatV2ChildName(declaration))
   })
 
   test('Approve correction request', async () => {

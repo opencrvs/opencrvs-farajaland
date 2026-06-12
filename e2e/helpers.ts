@@ -413,6 +413,7 @@ const actionTitleToApiCallMap = {
   Notify: ['event.actions.notify'],
   Declare: ['event.actions.declare'],
   Register: ['event.actions.register'],
+  Validate: ['event.actions.custom'],
   'Delete declaration': ['event.delete'],
   'Save & Exit': ['event.draft.create'],
   'Declare with edits': ['event.actions.edit', 'event.actions.declare'],
@@ -429,6 +430,7 @@ export async function selectDeclarationAction(
     | 'Notify'
     | 'Declare'
     | 'Register'
+    | 'Validate'
     | 'Delete declaration'
     | 'Save & Exit'
     | 'Declare with edits'

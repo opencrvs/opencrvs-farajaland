@@ -175,7 +175,8 @@ test.describe.serial('Approval of late birth registration', () => {
     test('Navigate to the declaration review page', async () => {
       await login(page, CREDENTIALS.REGISTRAR)
       await page.getByText('Pending approval').click()
-      await page.getByRole('button', { name: childNameFormatted }).click()
+
+      await openRecordByTitle(page, childNameFormatted)
     })
 
     test('Unassign', async () => {

@@ -350,18 +350,15 @@ test.describe.serial('Archival of declaration pending validation', () => {
 
   test('Validate the declaration', async () => {
     await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
-    // @TODO
-    await selectAction(page, 'Validate')
-    await page.getByRole('button', { name: 'Confirm', exact: true }).click()
+
+    await selectDeclarationAction(page, 'Validate')
   })
 
   test('Confirm the declaration is in "Pending registration" -workqueue', async () => {
     await login(page, CREDENTIALS.REGISTRAR)
 
     await page.getByText('Pending registration').click()
-    await page
-      .getByRole('button', { name: formatV2ChildName(declaration) })
-      .click()
+    await openRecordByTitle(page, formatV2ChildName(declaration))
 
     await expect(page.getByTestId('status-value')).toHaveText('Declared')
     await expect(page.getByTestId('flags-value')).toHaveText('Validated')

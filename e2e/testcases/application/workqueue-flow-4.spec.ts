@@ -274,11 +274,8 @@ test.describe.serial('4. Workqueue flow - 4', () => {
       await openRecordByTitle(page, formatName(declaration.child.name))
 
       await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
-      // @†odo
-      // await selectDeclarationAction(page, 'Validate')
-      await selectAction(page, 'Validate')
 
-      await page.getByRole('button', { name: 'Confirm' }).click()
+      await selectDeclarationAction(page, 'Validate')
 
       await assertRecordInWorkqueue({
         page,

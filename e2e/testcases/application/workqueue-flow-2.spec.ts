@@ -12,6 +12,7 @@ import { CREDENTIALS } from '../../constants'
 import { ensureAssignedToUser, selectAction } from '../../utils'
 import { selectDeclarationAction } from '../../helpers'
 import { assertRecordInWorkqueue, fillDate } from '../birth/helpers'
+import { openRecordByTitle } from '../print-certificate/birth/helpers'
 
 // HO Notifies => Registrar Registers
 
@@ -163,11 +164,7 @@ test.describe.serial('2. Workqueue flow - 2', () => {
 
     test('2.2.2 Go to Edit', async () => {
       await page.getByText('Notifications').click()
-      await page
-        .getByRole('button', {
-          name: formatName(declaration.child.name)
-        })
-        .click()
+      await openRecordByTitle(page, formatName(declaration.child.name))
 
       await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
       await selectAction(page, 'Edit')
