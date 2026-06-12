@@ -20,6 +20,7 @@ import { ensureAssignedToUser, expectInUrl, selectAction } from '../../utils'
 test.describe.serial('Correct record - change informant type', () => {
   let declaration: DeclarationV2
   let trackingId = ''
+
   let eventId: string
   let page: Page
 
