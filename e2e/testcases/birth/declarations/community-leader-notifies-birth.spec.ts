@@ -8,7 +8,6 @@ import {
 } from '../../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../../constants'
-import { ensureOutboxIsEmpty } from '../../../utils'
 
 test('Community leader notifies birth', async ({ page }) => {
   const childName = {

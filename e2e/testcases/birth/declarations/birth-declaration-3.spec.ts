@@ -16,7 +16,6 @@ import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../../constants'
 import { fillDate, validateAddress } from '../helpers'
 import { selectDeclarationAction } from '../../../helpers'
-import { ensureOutboxIsEmpty } from '../../../utils'
 
 test.describe.serial('3. Birth declaration case - 3', () => {
   let page: Page

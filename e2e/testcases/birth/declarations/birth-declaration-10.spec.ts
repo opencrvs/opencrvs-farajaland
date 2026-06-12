@@ -11,7 +11,7 @@ import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../../constants'
 import { REQUIRED_VALIDATION_ERROR } from '../helpers'
 import { selectDeclarationAction } from '../../../helpers'
-import { ensureOutboxIsEmpty } from '../../../utils'
+
 test.describe.serial('10. Birth declaration case - 10', () => {
   let page: Page
   const declaration = {
