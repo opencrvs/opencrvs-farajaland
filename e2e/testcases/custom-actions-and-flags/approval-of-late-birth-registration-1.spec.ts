@@ -181,7 +181,8 @@ test.describe.serial('Approval of late birth registration', () => {
 
       const unassignResponse = page.waitForResponse(
         (response) =>
-          response.url().includes('event.actions.unassign') && response.ok()
+          response.url().includes('event.actions.assignment.unassign') &&
+          response.ok()
       )
 
       await page.getByRole('button', { name: 'Unassign', exact: true }).click()

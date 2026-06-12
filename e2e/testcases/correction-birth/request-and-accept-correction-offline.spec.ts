@@ -214,15 +214,14 @@ test.describe.serial('Request and accept correction (offline)', () => {
 
       const acceptResponse = page.waitForResponse(
         (response) =>
-          response.url().includes('event.actions.correction.accept') &&
+          response.url().includes('event.actions.correction.approve') &&
           response.ok()
       )
 
       await page.context().setOffline(false)
+      await acceptResponse
 
       await expect(page.getByText('Offline')).not.toBeVisible()
-
-      await acceptResponse
     })
   })
 })

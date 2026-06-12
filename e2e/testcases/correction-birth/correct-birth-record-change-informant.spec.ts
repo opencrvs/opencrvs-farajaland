@@ -322,6 +322,7 @@ test.describe.serial('Correct record - change informant type', () => {
     await correctionResponse
 
     await expectInUrl(page, `events/${eventId}`)
+    await page.getByTestId('exit-event').click()
   })
 
   test('Validate history in record audit', async () => {
