@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test'
-import { joinValuesWith, login } from '../../helpers'
+import { joinValuesWith, login, selectDeclarationAction } from '../../helpers'
 import { faker } from '@faker-js/faker'
 import { expectInUrl, type } from '../../utils'
 
@@ -33,11 +33,13 @@ test.describe
     await expect(
       page.getByRole('button', { name: 'Save & Exit' })
     ).toBeVisible()
-    await page.getByRole('button', { name: 'Save & Exit' }).click()
-    await page.getByRole('button', { name: 'Confirm' }).click()
-    await page.waitForResponse(
+
+    const draftResponse = page.waitForResponse(
       (res) => res.url().includes('event.draft.create') && res.ok()
     )
+    await page.getByRole('button', { name: 'Save & Exit' }).click()
+    await page.getByRole('button', { name: 'Confirm' }).click()
+    await draftResponse
 
     //@todo: The user should be navigated to "my-drafts" tab by default
     await page.getByText('Drafts').click()

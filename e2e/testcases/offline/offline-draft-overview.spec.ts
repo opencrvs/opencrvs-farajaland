@@ -3,7 +3,6 @@ import { expect, Page, test } from '@playwright/test'
 import { formatName, login } from '../../helpers'
 import { mockNetworkConditions } from '../../mock-network-conditions'
 import { faker } from '@faker-js/faker'
-import { ensureOutboxIsEmpty } from '../../utils'
 
 test.describe.serial('Can Open Draft offline', () => {
   let page: Page
@@ -36,10 +35,13 @@ test.describe.serial('Can Open Draft offline', () => {
     await page.locator('#firstname').fill(name.firstNames)
     await page.locator('#surname').fill(name.familyName)
 
+    const draftResponse = page.waitForResponse(
+      (res) => res.url().includes('event.draft.create') && res.ok()
+    )
     await page.getByRole('button', { name: 'Save & Exit' }).click()
     await page.getByRole('button', { name: 'Confirm' }).click()
 
-    await ensureOutboxIsEmpty(page)
+    await draftResponse
   })
 
   test('Open the draft offline', async () => {
