@@ -212,15 +212,18 @@ test.describe.serial('Birth Record correction flow', () => {
 
     await expect(page.getByText('Correct record?')).toBeVisible()
 
+    const correctionResponse = page.waitForResponse(
+      (response) =>
+        response
+          .url()
+          .includes('/api/events/event.actions.correction.approve.request') &&
+        response.ok()
+    )
+
     await page.getByRole('button', { name: 'Confirm', exact: true }).click()
 
+    await correctionResponse
     await expectInUrl(page, `/workqueue/pending-certification`)
-
-    await page.waitForResponse((response) =>
-      response
-        .url()
-        .includes('/api/events/event.actions.correction.approve.request')
-    )
   })
 
   test('Assign', async () => {

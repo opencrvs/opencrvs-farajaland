@@ -97,7 +97,7 @@ test('Escalating a rejected record preserves the Rejected flag', async ({
 
     await page.locator('#reason').fill(escalationReason)
 
-    const escalateResponse = await page.waitForResponse(
+    const escalateResponse = page.waitForResponse(
       (response) =>
         response.url().includes('event.actions.custom') && response.ok()
     )

@@ -873,6 +873,8 @@ test.describe.serial('Correct record - 4', () => {
     await correctionResponse
 
     await expectInUrl(page, `events/${eventId}`)
+
+    await page.getByTestId('exit-event').click()
   })
 
   test('4.8 Validate history in record audit', async () => {
