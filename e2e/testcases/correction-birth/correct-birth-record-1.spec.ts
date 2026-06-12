@@ -26,8 +26,6 @@ import {
 import { formatV2ChildName } from '../birth/helpers'
 
 test('1. Correct record', async ({ page }) => {
-  test.setTimeout(180_000)
-
   const updatedChildDetails = {
     firstNames: faker.person.firstName('male'),
     familyName: faker.person.firstName('male'),
@@ -538,6 +536,11 @@ test('1. Correct record', async ({ page }) => {
     await page.getByRole('button', { name: 'Confirm', exact: true }).click()
 
     await expectInUrl(page, `/events/${eventId}`)
+
+    // Wait until the actions have finished, which unassigns user
+    await expect(
+      page.getByRole('button', { name: 'Assign record' })
+    ).toBeVisible()
   })
 
   // 1.2.6.4 Validate history in record audit.
@@ -578,9 +581,6 @@ test('1. Correct record', async ({ page }) => {
   })
 
   await test.step('1.2.6.4.2 Validate correction approved modal', async () => {
-    await page.getByRole('button', { name: 'Summary' }).click()
-    await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
-    await page.getByRole('button', { name: 'Audit' }).click()
     await page.getByRole('button', { name: 'Next page' }).click()
     await page
       .getByRole('button', { name: 'Correction approved', exact: true })
