@@ -193,6 +193,7 @@ test.describe.serial('5. Workqueue flow - 5', () => {
     test('5.3.2 Go to edit', async () => {
       await page.getByText('Pending updates').click()
 
+      await openRecordByTitle(page, childName)
       await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
 
       await selectAction(page, 'Edit')
