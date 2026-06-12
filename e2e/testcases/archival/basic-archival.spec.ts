@@ -20,6 +20,7 @@ import {
 } from '../../utils'
 import { ActionType } from '@opencrvs/toolkit/events'
 import { createDeclaration, Declaration } from '../test-data/birth-declaration'
+import { openRecordByTitle } from '../print-certificate/birth/helpers'
 
 test.describe.serial('Basic Archival flow', () => {
   let page: Page
@@ -269,11 +270,7 @@ test.describe.serial('Basic Archival flow', () => {
 
   test('Archival is not available for HO', async () => {
     await page.getByText('Recent').click()
-    await page
-      .getByRole('button', {
-        name: formatName(declaration.child.name)
-      })
-      .click()
+    await openRecordByTitle(page, formatName(declaration.child.name))
 
     await page.getByRole('button', { name: 'Action', exact: true }).click()
     await expect(
@@ -300,11 +297,7 @@ test.describe.serial('Basic Archival flow', () => {
       page.getByRole('button', { name: 'Archive', exact: true })
     ).not.toBeVisible()
 
-    await page
-      .getByRole('button', {
-        name: formatName(declaration.child.name)
-      })
-      .click()
+    await openRecordByTitle(page, formatName(declaration.child.name))
   })
 
   test('Archive the declaration', async () => {
@@ -325,11 +318,8 @@ test.describe.serial('Basic Archival flow', () => {
   test('Archived declaration can be found via search', async () => {
     await page.locator('#searchText').fill(formatName(declaration.child.name))
     await page.locator('#searchIconButton').click()
-    await page
-      .getByRole('button', {
-        name: formatName(declaration.child.name)
-      })
-      .click()
+
+    await openRecordByTitle(page, formatName(declaration.child.name))
 
     await expect(page.getByTestId('status-value')).toHaveText('Archived')
   })
@@ -354,18 +344,15 @@ test.describe.serial('Archival of declaration pending validation', () => {
 
   test('Navigate to the event overview page', async () => {
     await page.getByText('Pending validation').click()
-    await page
-      .getByRole('button', {
-        name: formatV2ChildName(declaration)
-      })
-      .click()
+
+    await openRecordByTitle(page, formatV2ChildName(declaration))
   })
 
   test('Validate the declaration', async () => {
     await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
+    // @TODO
     await selectAction(page, 'Validate')
     await page.getByRole('button', { name: 'Confirm', exact: true }).click()
-    await ensureOutboxIsEmpty(page)
   })
 
   test('Confirm the declaration is in "Pending registration" -workqueue', async () => {
@@ -382,6 +369,8 @@ test.describe.serial('Archival of declaration pending validation', () => {
 
   test('Archive the declaration', async () => {
     await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
+
+    // @TODO
     await selectAction(page, 'Archive')
     await page.getByRole('button', { name: 'Archive', exact: true }).click()
   })

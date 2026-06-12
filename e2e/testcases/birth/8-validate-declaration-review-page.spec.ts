@@ -870,6 +870,7 @@ test.describe.serial('8. Validate declaration review page', () => {
     })
     test('8.2.2 Validate', async () => {
       await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
+      // @todo:
       await selectAction(page, 'Validate')
       await page.getByRole('button', { name: 'Confirm' }).click()
     })

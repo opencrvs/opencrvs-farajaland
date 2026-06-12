@@ -1,7 +1,7 @@
 import { expect, test, type Page } from '@playwright/test'
 import { joinValuesWith, login } from '../../helpers'
 import { faker } from '@faker-js/faker'
-import { ensureOutboxIsEmpty, expectInUrl, type } from '../../utils'
+import { expectInUrl, type } from '../../utils'
 
 test.describe
   .serial("Advanced Search - Birth Event Declaration - Informant's details", () => {
@@ -35,8 +35,9 @@ test.describe
     ).toBeVisible()
     await page.getByRole('button', { name: 'Save & Exit' }).click()
     await page.getByRole('button', { name: 'Confirm' }).click()
-
-    await ensureOutboxIsEmpty(page)
+    await page.waitForResponse(
+      (res) => res.url().includes('event.draft.create') && res.ok()
+    )
 
     //@todo: The user should be navigated to "my-drafts" tab by default
     await page.getByText('Drafts').click()

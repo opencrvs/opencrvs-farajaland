@@ -10,7 +10,10 @@ import {
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../../constants'
 import { ensureAssignedToUser, selectAction } from '../../../utils'
-import { getRowByTitle } from '../../print-certificate/birth/helpers'
+import {
+  getRowByTitle,
+  openRecordByTitle
+} from '../../print-certificate/birth/helpers'
 
 /**
  * Regression test for https://github.com/opencrvs/opencrvs-core/issues/12803
@@ -95,11 +98,7 @@ test('Community leader notifies a birth after deleting a previously persisted si
   await test.step('Open record', async () => {
     await page.getByText('Recent').click()
 
-    await page
-      .getByRole('button', {
-        name: formattedChildName
-      })
-      .click()
+    await openRecordByTitle(page, formattedChildName)
   })
 
   await test.step('Assert that record is notified', async () => {

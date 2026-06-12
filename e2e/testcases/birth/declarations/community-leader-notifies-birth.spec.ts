@@ -8,6 +8,7 @@ import {
 } from '../../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../../constants'
+import { openRecordByTitle } from '../../print-certificate/birth/helpers'
 
 test('Community leader notifies birth', async ({ page }) => {
   const childName = {
@@ -59,11 +60,7 @@ test('Community leader notifies birth', async ({ page }) => {
   await test.step('Open record', async () => {
     await page.getByText('Recent').click()
 
-    await page
-      .getByRole('button', {
-        name: formatName(childName)
-      })
-      .click()
+    await openRecordByTitle(page, formatName(childName))
   })
 
   await test.step('Assert that record is notified', async () => {

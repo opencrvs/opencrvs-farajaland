@@ -19,6 +19,7 @@ import {
 } from '../../../utils'
 import { REQUIRED_VALIDATION_ERROR } from '../helpers'
 import { selectDeclarationAction } from '../../../helpers'
+import { openRecordByTitle } from '../../print-certificate/birth/helpers'
 
 test.describe.serial('Add mother details on review', () => {
   let page: Page
@@ -225,11 +226,7 @@ test.describe.serial('Add mother details on review', () => {
 
       await page.getByText('Recent').click()
 
-      await expect(
-        page.getByRole('button', {
-          name: formatName(declaration.child.name)
-        })
-      ).toBeVisible()
+      await openRecordByTitle(page, formatName(declaration.child.name))
     })
   })
 
@@ -240,11 +237,7 @@ test.describe.serial('Add mother details on review', () => {
 
       await page.getByText('Pending registration').click()
 
-      await page
-        .getByRole('button', {
-          name: formatName(declaration.child.name)
-        })
-        .click()
+      await openRecordByTitle(page, formatName(declaration.child.name))
 
       await expect(page.getByTestId('status-value')).toHaveText('Declared')
 

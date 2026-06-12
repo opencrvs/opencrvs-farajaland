@@ -387,7 +387,8 @@ test.describe('Birth with non-late registration will not have flag or Approve-ac
 
     test('Navigate to the record', async () => {
       await page.getByText('Recent').click()
-      await page.getByRole('button', { name: childNameFormatted }).click()
+
+      await openRecordByTitle(page, childNameFormatted)
     })
 
     test("Record should not have the 'Approval required for late registration' -flag", async () => {

@@ -20,6 +20,7 @@ test.describe('Save and delete drafts', () => {
     })
 
     test('Save draft via Save & Exit', async () => {
+      // @todo:
       childName = await fillChildDetails(page)
       await page.getByRole('button', { name: 'Save & Exit' }).click()
       await expect(
@@ -76,6 +77,7 @@ test.describe('Save and delete drafts', () => {
       const childName = await fillChildDetails(page)
       await goToSection(page, 'review')
       await page.getByTestId('exit-button').click()
+      // @todo:
 
       await expect(
         page.getByText(
