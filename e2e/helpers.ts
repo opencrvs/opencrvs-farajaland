@@ -6,7 +6,6 @@ import {
   GATEWAY_HOST,
   LOGIN_URL,
   SAFE_INPUT_CHANGE_TIMEOUT_MS,
-  SAFE_OUTBOX_TIMEOUT_MS,
   TEST_USER_PASSWORD
 } from './constants'
 import { format, parseISO } from 'date-fns'
@@ -364,7 +363,7 @@ export async function expectRowValue(
 ) {
   await expect(page.getByTestId(`row-value-${fieldName}`)).toContainText(
     assertionText,
-    { timeout: SAFE_OUTBOX_TIMEOUT_MS }
+    { timeout: 30_000 }
   )
 }
 

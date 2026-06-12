@@ -220,7 +220,15 @@ test.describe.serial('Birth correction flow - Mobile', () => {
 
       await navigateToWorkqueue(page, 'Pending certification')
 
-      await openRecordByTitle(page, formatV2ChildName(declaration))
+      await openRecordByTitle(
+        page,
+        formatV2ChildName({
+          'child.name': {
+            firstname: newFirstName,
+            surname: declaration['child.name'].surname
+          }
+        })
+      )
     })
   })
 })

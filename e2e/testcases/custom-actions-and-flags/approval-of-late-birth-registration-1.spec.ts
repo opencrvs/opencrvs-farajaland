@@ -10,7 +10,7 @@ import {
   validateActionMenuButton
 } from '../../helpers'
 import { faker } from '@faker-js/faker'
-import { CREDENTIALS, SAFE_OUTBOX_TIMEOUT_MS } from '../../constants'
+import { CREDENTIALS } from '../../constants'
 import { ensureAssignedToUser, selectAction } from '../../utils'
 import { selectDeclarationAction } from '../../helpers'
 import { format, subDays } from 'date-fns'
@@ -178,11 +178,19 @@ test.describe.serial('Approval of late birth registration', () => {
     test('Unassign', async () => {
       await page.getByRole('button', { name: 'Action', exact: true }).click()
       await page.getByText('Unassign', { exact: true }).click()
+
+      const unassignResponse = page.waitForResponse(
+        (response) =>
+          response.url().includes('event.actions.unassign') && response.ok()
+      )
+
       await page.getByRole('button', { name: 'Unassign', exact: true }).click()
+
+      await unassignResponse
 
       await expect(
         page.getByTestId('assignedTo-value').locator('span')
-      ).toContainText('Not assigned', { timeout: SAFE_OUTBOX_TIMEOUT_MS })
+      ).toContainText('Not assigned')
     })
 
     test('LR should not have the option to Approve', async () => {

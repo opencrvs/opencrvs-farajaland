@@ -21,7 +21,6 @@ test.describe('Save and delete drafts', () => {
     })
 
     test('Save draft via Save & Exit', async () => {
-      // @todo:
       childName = await fillChildDetails(page)
       await page.getByRole('button', { name: 'Save & Exit' }).click()
       await expect(
@@ -83,10 +82,6 @@ test.describe('Save and delete drafts', () => {
       await goToSection(page, 'review')
       await page.getByTestId('exit-button').click()
 
-      const draftResponse = page.waitForResponse(
-        (res) => res.url().includes('event.draft.create') && res.ok()
-      )
-
       await expect(
         page.getByText(
           'You have unsaved changes on your declaration form. Are you sure you want to exit without saving?'
@@ -94,8 +89,6 @@ test.describe('Save and delete drafts', () => {
       ).toBeVisible()
 
       await page.getByRole('button', { name: 'Confirm', exact: true }).click()
-
-      await draftResponse
 
       await page.getByRole('button', { name: 'Assigned to you' }).click()
 

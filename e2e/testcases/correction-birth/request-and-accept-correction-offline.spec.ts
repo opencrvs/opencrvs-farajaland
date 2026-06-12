@@ -6,7 +6,7 @@ import {
   Declaration as DeclarationV2
 } from '../test-data/birth-declaration-with-mother-father'
 import { format, subDays, subYears } from 'date-fns'
-import { CREDENTIALS, SAFE_OUTBOX_TIMEOUT_MS } from '../../constants'
+import { CREDENTIALS } from '../../constants'
 import { formatV2ChildName } from '../birth/helpers'
 import {
   ensureAssignedToUser,
@@ -150,10 +150,17 @@ test.describe.serial('Request and accept correction (offline)', () => {
     })
 
     test('Request correction', async () => {
+      const correctionResponse = page.waitForResponse(
+        (res) =>
+          res.url().includes('event.actions.correction.request') && res.ok()
+      )
+
       await page
         .getByRole('button', { name: 'Submit correction request' })
         .click()
       await page.getByRole('button', { name: 'Confirm' }).click()
+
+      await correctionResponse
 
       await expectInUrl(page, `events/${eventId}`)
 
@@ -162,16 +169,6 @@ test.describe.serial('Request and accept correction (offline)', () => {
           hasText: formatV2ChildName(declaration)
         })
       ).toBeVisible()
-
-      await page.getByTestId('exit-event').click()
-
-      await page.getByRole('button', { name: 'Outbox' }).click()
-      await expect(await page.locator('#no-record')).toContainText(
-        'No records require processing',
-        {
-          timeout: SAFE_OUTBOX_TIMEOUT_MS
-        }
-      )
     })
   })
 
@@ -214,16 +211,18 @@ test.describe.serial('Request and accept correction (offline)', () => {
 
     test('Go back online', async () => {
       // Go back online
+
+      const acceptResponse = page.waitForResponse(
+        (response) =>
+          response.url().includes('event.actions.correction.accept') &&
+          response.ok()
+      )
+
       await page.context().setOffline(false)
 
       await expect(page.getByText('Offline')).not.toBeVisible()
 
-      await expect(await page.locator('#no-record')).toContainText(
-        'No records require processing',
-        {
-          timeout: SAFE_OUTBOX_TIMEOUT_MS
-        }
-      )
+      await acceptResponse
     })
   })
 })

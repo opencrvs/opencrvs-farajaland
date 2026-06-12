@@ -1,5 +1,5 @@
 import { Locator, Page, expect } from '@playwright/test'
-import { CLIENT_URL, SAFE_OUTBOX_TIMEOUT_MS } from './constants'
+import { CLIENT_URL } from './constants'
 import { isMobile } from './mobile-helpers'
 
 type Workqueue =
@@ -129,7 +129,7 @@ export async function ensureAssignedToUser(
 
   await expect(
     page.getByTestId('assignedTo-value').locator('span')
-  ).toContainText(userFullName, { timeout: SAFE_OUTBOX_TIMEOUT_MS })
+  ).toContainText(userFullName)
 }
 
 export async function expectInUrl(page: Page, assertionString: string) {

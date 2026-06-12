@@ -2,11 +2,7 @@ import { expect, test } from '@playwright/test'
 import { v4 as uuidv4 } from 'uuid'
 import { createClient } from '@opencrvs/toolkit/api'
 import { ActionType } from '@opencrvs/toolkit/events'
-import {
-  CREDENTIALS,
-  GATEWAY_HOST,
-  SAFE_OUTBOX_TIMEOUT_MS
-} from '../../constants'
+import { CREDENTIALS, GATEWAY_HOST } from '../../constants'
 import { getToken, login } from '../../helpers'
 import {
   ensureAssignedToUser,
@@ -101,14 +97,15 @@ test('Escalating a rejected record preserves the Rejected flag', async ({
 
     await page.locator('#reason').fill(escalationReason)
 
+    const escalateResponse = await page.waitForResponse(
+      (response) =>
+        response.url().includes('event.actions.custom') && response.ok()
+    )
+
     await expect(confirmButton).toBeEnabled()
     await confirmButton.click()
 
-    await page.getByRole('button', { name: 'Outbox' }).click()
-    await expect(page.locator('#no-record')).toContainText(
-      'No records require processing',
-      { timeout: SAFE_OUTBOX_TIMEOUT_MS }
-    )
+    await escalateResponse
   })
 
   await test.step('Rejected flag is still present after escalation', async () => {

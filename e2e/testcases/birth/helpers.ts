@@ -2,8 +2,6 @@ import { expect, type Page } from '@playwright/test'
 import { omit } from 'lodash'
 import { formatName, joinValuesWith } from '../../helpers'
 import { faker } from '@faker-js/faker'
-
-import { SAFE_OUTBOX_TIMEOUT_MS } from '../../constants'
 import { GATEWAY_HOST } from '../../constants'
 import { createClient } from '@opencrvs/toolkit/api'
 
@@ -91,7 +89,7 @@ export async function assertRecordInWorkqueue({
       await expect(async () => {
         await openWorkqueue(title)
         await expect(record).toBeVisible({ timeout: 1_500 })
-      }).toPass({ timeout: SAFE_OUTBOX_TIMEOUT_MS })
+      }).toPass({ timeout: 30_000 })
       settled = true
       continue
     }

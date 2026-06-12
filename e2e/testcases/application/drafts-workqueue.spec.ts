@@ -39,7 +39,13 @@ test.describe.serial('1: Validate my draft tab', () => {
     await page.locator('#firstname').fill(name.firstNames)
     await page.locator('#surname').fill(name.familyName)
 
-    await selectDeclarationAction(page, 'Save & Exit')
+    const draftResponse = page.waitForResponse(
+      (res) => res.url().includes('event.draft.create') && res.ok()
+    )
+    await page.getByRole('button', { name: 'Save & Exit' }).click()
+    await page.getByRole('button', { name: 'Confirm' }).click()
+
+    await draftResponse
   })
 
   test('1.3 Record appears in draft', async () => {

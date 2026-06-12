@@ -1,6 +1,6 @@
 import { expect, test, type Page } from '@playwright/test'
 
-import { formatName, login, selectDeclarationAction } from '../../helpers'
+import { formatName, login } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
 import { faker } from '@faker-js/faker'
 
@@ -41,7 +41,13 @@ test.describe.serial('Validate draft with partial name', () => {
 
     await page.locator('#firstname').fill(name1.firstNames)
 
-    await selectDeclarationAction(page, 'Save & Exit')
+    const draftResponse = page.waitForResponse(
+      (res) => res.url().includes('event.draft.create') && res.ok()
+    )
+    await page.getByRole('button', { name: 'Save & Exit' }).click()
+    await page.getByRole('button', { name: 'Confirm' }).click()
+
+    await draftResponse
   })
 
   test('Create a draft with only lastname', async () => {
@@ -52,7 +58,13 @@ test.describe.serial('Validate draft with partial name', () => {
 
     await page.locator('#surname').fill(name2.familyName)
 
-    await selectDeclarationAction(page, 'Save & Exit')
+    const draftResponse = page.waitForResponse(
+      (res) => res.url().includes('event.draft.create') && res.ok()
+    )
+    await page.getByRole('button', { name: 'Save & Exit' }).click()
+    await page.getByRole('button', { name: 'Confirm' }).click()
+
+    await draftResponse
   })
 
   test('Records appear in draft', async () => {
