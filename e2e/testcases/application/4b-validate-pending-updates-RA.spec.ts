@@ -1,7 +1,7 @@
 import { expect, test, type Page } from '@playwright/test'
 
 import { login, getToken, selectDeclarationAction } from '../../helpers'
-import { CREDENTIALS, SAFE_WORKQUEUE_TIMEOUT_MS } from '../../constants'
+import { CREDENTIALS } from '../../constants'
 import { createDeclaration, Declaration } from '../test-data/birth-declaration'
 import { ActionType } from '@opencrvs/toolkit/events'
 import { formatV2ChildName } from '../birth/helpers'
@@ -55,7 +55,7 @@ test.describe.serial('4(b) Validate "Pending updates"-workqueue for RO', () => {
 
   test('4.1 Go to "Pending updates"-workqueue', async () => {
     await login(page, CREDENTIALS.REGISTRATION_OFFICER)
-    await page.waitForTimeout(SAFE_WORKQUEUE_TIMEOUT_MS) // wait for the event to be in the workqueue.
+
     await page.getByText('Pending updates').click()
     await expect(
       page.getByRole('button', { name: formatV2ChildName(declaration) })

@@ -18,7 +18,6 @@ import {
 } from '../test-data/birth-declaration-with-mother-father'
 import {
   ensureAssignedToUser,
-  ensureOutboxIsEmpty,
   expectInUrl,
   selectAction,
   type
@@ -464,15 +463,21 @@ test('1. Correct record', async ({ page }) => {
       page.locator('#listTable-corrections-table-child')
     ).toContainText(`Weight at birth-${updatedChildDetails.weightAtBirth}`)
 
+    const correctionResponse = page.waitForResponse(
+      (res) =>
+        res.url().includes('event.actions.correction.request') && res.ok()
+    )
+
     await page
       .getByRole('button', { name: 'Submit correction request' })
       .click()
     await page.getByRole('button', { name: 'Confirm' }).click()
+    await correctionResponse
 
     await expectInUrl(page, `/workqueue/pending-certification`)
 
     await page.getByText('Recent').click()
-    await ensureOutboxIsEmpty(page)
+
     await expect(
       page.getByRole('button', { name: formatV2ChildName(declaration) })
     ).toBeVisible()

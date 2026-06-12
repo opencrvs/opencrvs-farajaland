@@ -14,12 +14,7 @@ import {
 } from '../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../constants'
-import {
-  ensureAssignedToUser,
-  ensureOutboxIsEmpty,
-  expectInUrl,
-  selectAction
-} from '../../utils'
+import { ensureAssignedToUser, expectInUrl, selectAction } from '../../utils'
 import { openRecordByTitle } from '../print-certificate/birth/helpers'
 
 test.describe.serial('8. Validate declaration review page', () => {
@@ -688,7 +683,6 @@ test.describe.serial('8. Validate declaration review page', () => {
     })
 
     test('8.1.8 Validate that declaration is available on "Recent"', async () => {
-      await ensureOutboxIsEmpty(page)
       await expect(page.getByText('Farajaland CRS')).toBeVisible()
 
       /*
@@ -715,7 +709,6 @@ test.describe.serial('8. Validate declaration review page', () => {
     test('8.2.1 Navigate to the declaration preview page', async () => {
       await login(page, CREDENTIALS.REGISTRATION_OFFICER)
 
-      await ensureOutboxIsEmpty(page)
       await page.getByText('Notifications').click()
 
       await openRecordByTitle(
@@ -1168,7 +1161,6 @@ test.describe.serial('8. Validate declaration review page', () => {
     test('8.3.1 Navigate to the declaration "Record" tab', async () => {
       await login(page, CREDENTIALS.REGISTRAR)
 
-      await ensureOutboxIsEmpty(page)
       await page.getByText('Pending registration').click()
 
       await openRecordByTitle(
@@ -1610,7 +1602,6 @@ test.describe.serial('8. Validate declaration review page', () => {
     })
 
     test('8.3.7 Confirm the declaration to "Pending certification"-workqueue', async () => {
-      await ensureOutboxIsEmpty(page)
       await page.getByText('Pending certification').click()
 
       await expect(

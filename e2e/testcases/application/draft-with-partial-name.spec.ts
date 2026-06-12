@@ -1,9 +1,8 @@
 import { expect, test, type Page } from '@playwright/test'
 
-import { formatName, login } from '../../helpers'
+import { formatName, login, selectDeclarationAction } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
 import { faker } from '@faker-js/faker'
-import { ensureOutboxIsEmpty } from '../../utils'
 
 test.describe.serial('Validate draft with partial name', () => {
   let page: Page
@@ -42,9 +41,7 @@ test.describe.serial('Validate draft with partial name', () => {
 
     await page.locator('#firstname').fill(name1.firstNames)
 
-    await page.getByRole('button', { name: 'Save & Exit' }).click()
-    await page.getByRole('button', { name: 'Confirm' }).click()
-    await ensureOutboxIsEmpty(page)
+    await selectDeclarationAction(page, 'Save & Exit')
   })
 
   test('Create a draft with only lastname', async () => {
@@ -55,9 +52,7 @@ test.describe.serial('Validate draft with partial name', () => {
 
     await page.locator('#surname').fill(name2.familyName)
 
-    await page.getByRole('button', { name: 'Save & Exit' }).click()
-    await page.getByRole('button', { name: 'Confirm' }).click()
-    await ensureOutboxIsEmpty(page)
+    await selectDeclarationAction(page, 'Save & Exit')
   })
 
   test('Records appear in draft', async () => {

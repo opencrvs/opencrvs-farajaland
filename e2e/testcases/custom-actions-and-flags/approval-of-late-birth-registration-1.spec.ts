@@ -11,11 +11,7 @@ import {
 } from '../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS, SAFE_OUTBOX_TIMEOUT_MS } from '../../constants'
-import {
-  ensureAssignedToUser,
-  ensureOutboxIsEmpty,
-  selectAction
-} from '../../utils'
+import { ensureAssignedToUser, selectAction } from '../../utils'
 import { selectDeclarationAction } from '../../helpers'
 import { format, subDays } from 'date-fns'
 import { openRecordByTitle } from '../print-certificate/birth/helpers'
@@ -232,12 +228,17 @@ test.describe.serial('Approval of late birth registration', () => {
         'Approving after verifying all late submission details.'
       )
 
+      const approveResponse = page.waitForResponse(
+        (response) =>
+          response.url().includes('event.actions.custom') && response.ok()
+      )
+
       await expect(confirmButton).toBeEnabled()
       await confirmButton.click()
+      await approveResponse
     })
 
     test("Validate that the 'Approval required for late registration' -flag is removed after approval", async () => {
-      await ensureOutboxIsEmpty(page)
       await searchFromSearchBar(page, childNameFormatted)
 
       await expect(

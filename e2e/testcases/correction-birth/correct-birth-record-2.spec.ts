@@ -20,6 +20,7 @@ import {
 } from '../../utils'
 import {
   navigateToCertificatePrintAction,
+  openRecordByTitle,
   selectCertificationType,
   selectRequesterType
 } from '../print-certificate/birth/helpers'
@@ -278,9 +279,8 @@ test.describe.serial('Correct record - 2', () => {
 
       await type(page, '#searchText', trackingId)
       await page.locator('#searchIconButton').click()
-      await page
-        .getByRole('button', { name: formatV2ChildName(declaration) })
-        .click()
+
+      await openRecordByTitle(page, formatV2ChildName(declaration))
     })
 
     test('2.8.2 Correction review page', async () => {

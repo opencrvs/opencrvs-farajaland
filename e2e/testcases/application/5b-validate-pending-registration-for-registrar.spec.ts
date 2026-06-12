@@ -1,7 +1,7 @@
 import { expect, test, type Page } from '@playwright/test'
 
 import { login, getToken, validateActionMenuButton } from '../../helpers'
-import { CREDENTIALS, SAFE_WORKQUEUE_TIMEOUT_MS } from '../../constants'
+import { CREDENTIALS } from '../../constants'
 import { createDeclaration, Declaration } from '../test-data/birth-declaration'
 import { ActionType } from '@opencrvs/toolkit/events'
 import { formatV2ChildName } from '../birth/helpers'
@@ -35,7 +35,6 @@ test.describe
   })
 
   test('5.1 Go to "Pending registration"-workqueue', async () => {
-    await page.waitForTimeout(SAFE_WORKQUEUE_TIMEOUT_MS) // wait for the event to be in the workqueue.
     await page.getByText('Pending registration').click()
     await expect(
       page.getByRole('button', { name: formatV2ChildName(declaration) })

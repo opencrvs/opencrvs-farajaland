@@ -13,12 +13,7 @@ import {
 } from '../../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../../constants'
-import {
-  ensureAssignedToUser,
-  ensureOutboxIsEmpty,
-  expectInUrl,
-  selectAction
-} from '../../../utils'
+import { ensureAssignedToUser, expectInUrl } from '../../../utils'
 import { openRecordByTitle } from '../../print-certificate/birth/helpers'
 
 test.describe.serial('4. Death declaration case - 4', () => {
@@ -827,7 +822,6 @@ test.describe.serial('4. Death declaration case - 4', () => {
     test('4.2.1 Navigate to the declaration "Record" -tab', async () => {
       await login(page, CREDENTIALS.REGISTRAR)
 
-      await ensureOutboxIsEmpty(page)
       await page.getByText('Pending registration').click()
 
       await openRecordByTitle(
@@ -1121,10 +1115,7 @@ test.describe.serial('4. Death declaration case - 4', () => {
     })
 
     test('4.2.3 Register', async () => {
-      await selectAction(page, 'Register')
-      await page.getByRole('button', { name: 'Confirm' }).click()
-
-      await ensureOutboxIsEmpty(page)
+      await selectDeclarationAction(page, 'Register')
 
       await page.getByText('Pending certification').click()
       await expect(

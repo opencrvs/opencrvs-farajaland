@@ -12,11 +12,7 @@ import {
 } from '../../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../../constants'
-import {
-  ensureAssignedToUser,
-  ensureOutboxIsEmpty,
-  expectInUrl
-} from '../../../utils'
+import { ensureAssignedToUser, expectInUrl } from '../../../utils'
 import { openRecordByTitle } from '../../print-certificate/birth/helpers'
 
 test.describe.serial('7. Death declaration case - 7', () => {

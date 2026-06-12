@@ -3,7 +3,7 @@ import { goToSection, login, logout } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
 import { fillChildDetails, openBirthDeclaration } from './helpers'
 import { selectDeclarationAction } from '../../helpers'
-import { ensureOutboxIsEmpty, selectAction } from '../../utils'
+import { selectAction } from '../../utils'
 import { openRecordByTitle } from '../print-certificate/birth/helpers'
 
 /**
@@ -82,7 +82,10 @@ test.describe('Save and delete drafts', () => {
       const childName = await fillChildDetails(page)
       await goToSection(page, 'review')
       await page.getByTestId('exit-button').click()
-      // @todo:
+
+      const draftResponse = page.waitForResponse(
+        (res) => res.url().includes('event.draft.create') && res.ok()
+      )
 
       await expect(
         page.getByText(
@@ -92,7 +95,8 @@ test.describe('Save and delete drafts', () => {
 
       await page.getByRole('button', { name: 'Confirm', exact: true }).click()
 
-      await ensureOutboxIsEmpty(page)
+      await draftResponse
+
       await page.getByRole('button', { name: 'Assigned to you' }).click()
 
       await expect(
