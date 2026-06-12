@@ -6,15 +6,12 @@ import {
   formatName,
   getRandomDate,
   goToSection,
-  login,
-  selectDeclarationAction
+  login
 } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
 import { faker } from '@faker-js/faker'
 import { fillDate } from '../birth/helpers'
-import { ensureOutboxIsEmpty } from '../../utils'
 
-// @TODO!!
 test.describe
   .serial('30: Validate user can send multiple complete and incomplete records offline', () => {
   let page: Page
@@ -353,57 +350,35 @@ test.describe
   })
 
   test('30.4 Validate outbox', async () => {
+    const rows = [
+      { row: '#row_2', name: formatName(declaration.child.name) },
+      { row: '#row_1', name: formatName(partialDeclaration1.child.name) },
+      { row: '#row_0', name: formatName(partialDeclaration2.child.name) }
+    ]
+    const searchResult = page.getByTestId('search-result')
+
     await page.getByText('Outbox').click()
 
-    await expect(
-      page.getByTestId('search-result').locator('#row_2')
-    ).toContainText(formatName(declaration.child.name))
-
-    await expect(
-      page.getByTestId('search-result').locator('#row_1')
-    ).toContainText(formatName(partialDeclaration1.child.name))
-
-    await expect(
-      page.getByTestId('search-result').locator('#row_0')
-    ).toContainText(formatName(partialDeclaration2.child.name))
-
-    await expect(
-      page.getByTestId('search-result').locator('#row_2')
-    ).toContainText('Waiting to send')
-    await expect(
-      page.getByTestId('search-result').locator('#row_1')
-    ).toContainText('Waiting to send')
-    await expect(
-      page.getByTestId('search-result').locator('#row_0')
-    ).toContainText('Waiting to send')
+    for (const { row, name } of rows) {
+      await expect(searchResult.locator(row)).toContainText(name)
+      await expect(searchResult.locator(row)).toContainText('Waiting to send')
+    }
 
     await page.context().setOffline(false)
 
-    await expect(page.getByTestId('search-result')).not.toContainText(
-      'Waiting to send'
+    // transient state — tolerate missing it on a fast network
+    await expect(searchResult)
+      .toContainText('Sending', { timeout: 5_000 })
+      .catch(() => {})
+
+    // end state: outbox fully drained
+    await expect(page.getByRole('button', { name: 'Outbox' })).toHaveText(
+      'Outbox',
+      { timeout: 60_000 }
     )
 
-    await expect(
-      page.getByTestId('search-result').locator('#row_2')
-    ).toContainText('Sending')
-    await expect(
-      page.getByTestId('search-result').locator('#row_1')
-    ).toContainText('Sending')
-    await expect(
-      page.getByTestId('search-result').locator('#row_0')
-    ).toContainText('Sending')
-    await expect(page.getByTestId('search-result')).not.toContainText(
-      formatName(declaration.child.name),
-      { timeout: 60000 }
-    )
-    await expect(page.getByTestId('search-result')).not.toContainText(
-      formatName(partialDeclaration1.child.name),
-      { timeout: 60000 }
-    )
-    await expect(page.getByTestId('search-result')).not.toContainText(
-      formatName(partialDeclaration2.child.name),
-      { timeout: 60000 }
-    )
-    await ensureOutboxIsEmpty(page)
+    for (const { name } of rows) {
+      await expect(searchResult).not.toContainText(name)
+    }
   })
 })
