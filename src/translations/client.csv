@@ -875,17 +875,31 @@ event.birth.action.edit.notify.copy,Description for `Notify with edits` in edit 
 event.birth.action.edit.register.copy,Description for `Register with edits` in edit action menu,You are about to register this birth event with your edits. Registering this event will create an official civil registration record.,Vous êtes sur le point d'enregistrer cet événement avec vos modifications. L'enregistrement de cet événement créera un dossier d'état civil officiel.
 event.birth.action.edit.register.copy,Description for `Register with edits` in edit action menu,You are about to register this birth event with your edits. Registering this event will create an official civil registration record.,Vous êtes sur le point d'enregistrer cet événement avec vos modifications. L'enregistrement de cet événement créera un dossier d'état civil officiel.
 event.birth.action.form.section.collector.other.field.name.label,This is the label for the name field of OTHER collector,Collector's name,Nom du collecteur
+event.birth.action.issue-vc.audit-history-label,Audit history label for issued verifiable credential,Verifiable Credential issued,Attestation vérifiable délivrée
+event.birth.action.issue-vc.label,Label for issue verifiable credential action,Issue a verifiable credential,Délivrer une attestation vérifiable
 event.birth.action.issued.audit-history-label,The label to show in audit history for the issued action,Issued,Émis
 event.birth.action.mark-as-duplicate.label,Label for review potential duplicate button in dropdown menu,Review potential duplicates,Examiner les doublons potentiels
 event.birth.action.provincial-registrar-feedback.label,This is shown when the provincial registrar feedback can be triggered from the action from,Provincial registrar feedback,Retour du registraire provincial
 event.birth.action.register.label,Label for review record button in dropdown menu,Register,Enregistrer
 event.birth.action.register.supportingCopy,The description for registration action when form is complete,"Registering this birth event will create an official civil registration record. Please ensure all details are correct before proceeding.<br></br><br></br><strong>WARNING!</strong>: By clicking 'Register', you confirm that you have reviewed the record alongside supporting documentation in the Record tab. The record will proceed to be <strong>legally registered</strong> via the outbox. Further amends after registration can only be made via a legal correction process.","L’enregistrement de cet événement de naissance créera un registre officiel d’état civil. Veuillez vous assurer que toutes les informations sont correctes avant de continuer.<br></br><br></br><strong>ATTENTION</strong> ! En cliquant sur « S’inscrire », vous confirmez avoir examiné l'enregistrement ainsi que les documents justificatifs dans l'onglet « Enregistrement ». L'enregistrement sera ensuite officiellement enregistré via la boîte d'envoi. Toute modification ultérieure ne pourra être effectuée que par le biais d'une procédure légale de correction."
 event.birth.action.registrar-general-feedback.label,This is shown when the registrar general feedback can be triggered from the action from,Registrar general feedback,Retour du registraire général
+event.birth.action.registrar-general-feedback.supportingCopy,Confirmation text for registrar general feedback action,Your feedback will be officially recorded and may influence the final decision on the declaration.,Votre retour sera officiellement enregistré et pourra influencer la décision finale concernant la déclaration.
 event.birth.action.reject.label,This is the label for the reject action,Reject,Rejeter
 event.birth.action.request-correction.label,This is shown as the action name anywhere the user can trigger the action from,Correct,Corriger
 event.birth.action.validate.label,This is shown as the action name anywhere the user can trigger the action from,Validate,Valider
 event.birth.custom.action.approve.field.collector.label,Label for collector field,Collector,le collectionneur
 event.birth.custom.action.approve.field.notes.label,This is the label for the field for a custom action,Comments,Commentaires
+event.birth.custom.action.issue-vc.field.accepted-vc-offer.error,Validation message for citizen acceptance checkbox,Please confirm that the citizen has accepted the verifiable credential offer,Veuillez confirmer que le citoyen a accepté l’offre d’attestation vérifiable
+event.birth.custom.action.issue-vc.field.accepted-vc-offer.label,Checkbox label to confirm citizen acceptance of VC offer,I confirm the verifiable credential has been accepted.,Je confirme que l'attestation vérifiable a été acceptée.
+event.birth.custom.action.issue-vc.field.get-credential-offer.label,Label for HTTP call to get VC offer,Get Credential Offer,Obtenir l’offre d’attestation vérifiable
+event.birth.custom.action.issue-vc.field.qr-code.configuration.alt,Alt text for VC QR image,QR Code,Code QR
+event.birth.custom.action.issue-vc.field.qr-code.configuration.text,Explanation text for VC QR code,Scan the QR code below with your digital wallet to receive your Verifiable Credential.,Scannez le code QR ci-dessous avec votre portefeuille numérique pour recevoir votre attestation vérifiable.
+event.birth.custom.action.issue-vc.field.request-credential-offer-button.configuration.text,Text for VC offer generation button,Generate,Générer
+event.birth.custom.action.issue-vc.field.request-credential-offer-button.label,Label for VC offer generation button section,Verifiable credential offer,Offre d’attestation vérifiable
+event.birth.custom.action.issue-vc.field.requester.label,Label for requester selection in VC action,Requester,Demandeur
+event.birth.custom.action.issue-vc.field.requester.option.father,Requester option father in VC action,Father,Père
+event.birth.custom.action.issue-vc.field.requester.option.mother,Requester option mother in VC action,Mother,Mère
+event.birth.custom.action.issue-vc.field.supporting-copy,Supporting copy shown before issuing verifiable credential,Select the requester you would like to issue this verifiable credential to.,Sélectionnez le demandeur à qui vous souhaitez délivrer cette attestation vérifiable.
 event.birth.custom.action.validate-declaration.audit-history-label,The label to show in audit history for the validate action,Validated,Validé
 event.birth.custom.action.validate-declaration.field.comments.label,This is the label for the comments field for the validate declaration action,Comments,Commentaires
 event.birth.custom.action.validate-declaration.label,This is shown as the action name anywhere the user can trigger the action from,Validate,Valider
@@ -899,7 +913,6 @@ event.birth.summary.informant.contact.empty,This is shown when there is no infor
 event.birth.summary.informant.contact.label,This is the label for the informant information,Contact,Contact
 event.birth.summary.informant.contact.value,This is the contact value of the informant,{informant.phoneNo} {informant.email},{informant.phoneNo} {informant.email}
 event.birth.title,This is the title of the summary,{child.name.firstname} {child.name.surname},{child.name.firstname} {child.name.surname}
-event.death.custom.action.validate-declaration.label,This is shown as the action name anywhere the user can trigger the action from,Validate,Valider
 event.death.action.Read.label,This is shown as the action name anywhere the user can trigger the action from,Read,Lire
 event.death.action.certificate.form.cancel,This is the label for the verification cancellation button,Identity does not match,L'identité ne correspond pas
 event.death.action.certificate.form.cancel.confirmation.body,This is the body for the verification cancellation modal,"Please be aware that if you proceed, you will be responsible for issuing a certificate without the necessary proof of ID from the collector","Veuillez noter que si vous continuez, vous serez responsable de la délivrance d'un certificat sans la preuve d'identité nécessaire du collecteur."
@@ -1069,6 +1082,7 @@ event.death.action.register.supportingCopy,The description for registration acti
 event.death.action.request-correction.label,This is shown as the action name anywhere the user can trigger the action from,Correct record,Corriger l'enregistrement
 event.death.action.validate.label,This is shown as the action name anywhere the user can trigger the action from,Validate,Valider
 event.death.custom.action.validate-declaration.label,This is shown as the action name anywhere the user can trigger the action from,Validate,Valider
+event.death.custom.action.validate-declaration.label,This is shown as the action name anywhere the user can trigger the action from,Validate,Valider
 event.death.label,This is what this event is referred as in the system,Death,Décès
 event.death.summary.eventDetails.date.empty,This is shown when there is no date of death information,No date of death,Aucune date de décès
 event.death.summary.eventDetails.deathLocation.empty,This is shown when there is no death location information,No place of death,Aucun lieu de décès
@@ -1079,6 +1093,7 @@ event.death.summary.informant.contact.empty,This is shown when there is no infor
 event.death.summary.informant.contact.label,This is the label for the informant information,Contact,Contact
 event.death.summary.informant.contact.value,This is the contact value of the informant,{informant.phoneNo} {informant.email},{informant.phoneNo} {informant.email}
 event.death.title,This is the title of the summary,{deceased.name.firstname} {deceased.name.surname},{deceased.name.firstname} {deceased.name.surname}
+event.declaration.potentialDuplicateDetected,Notification for potential duplicate declaration. Shown when a potential duplicate is detected after declaring an event.,{trackingId} is a potential duplicate. Record is ready for review.,{trackingId} est un doublon potentiel. L’enregistrement est prêt pour révision.
 event.default.action.certificate.template.type.label,Select certificate template,Type,Taper
 event.default.action.certificate.template.type.notFound,Select certificate template options not found,"No template available for this event, contact Admin","Aucun modèle disponible pour cette event, contactez l’admin"
 event.edit.comment.label,The label for the comment,Comments,Commentaires
@@ -1238,6 +1253,8 @@ form.field.label.causeOfDeathEstablished,,Cause of death has been established,La
 form.field.label.causeOfDeathMethod,,Source of cause of death,Source de la cause du décès
 form.field.label.causeOfDeathProof,,Proof of cause of death,Preuve de la cause du décès
 form.field.label.certificatePrintInAdvance,,Print in advance,Imprimer à l'avance pour les signatures et la collecte
+form.field.label.changeOfficeWarningBody,,Changing this user's office will remove their in-progress drafts. Do you want to continue?,Changer le bureau de cet utilisateur supprimera ses brouillons en cours. Voulez-vous continuer ?
+form.field.label.changeOfficeWarningTitle,,Change office?,Changer de bureau ?
 form.field.label.cityUrbanOption,Label for City,Town,Ville
 form.field.label.confirm,,Yes,Oui
 form.field.label.country,,Country,Pays
@@ -1400,8 +1417,6 @@ form.field.label.typeOfDocument,,Choose type of supporting document,Choisissez l
 form.field.label.typeOfId,,Type of ID,Type d'identification
 form.field.label.typeOfMarriage,,Type of marriage,Type de mariage
 form.field.label.updatingUser,,Updating user,Mise à jour de l'utilisateur
-form.field.label.changeOfficeWarningTitle,,Change office?,Changer de bureau ?
-form.field.label.changeOfficeWarningBody,,Changing this user's office will remove their in-progress drafts. Do you want to continue?,Changer le bureau de cet utilisateur supprimera ses brouillons en cours. Voulez-vous continuer ?
 form.field.label.uploadDocForMother,,Mother,Mère
 form.field.label.uploadFile,,Upload,Télécharger
 form.field.label.urban,,Urban,Urbain
@@ -2083,8 +2098,8 @@ sysAdHome.sendUsernameReminderInviteError,The label for error notification of se
 sysAdHome.sendUsernameReminderInviteModalMessage,Message for send username reminder,The user will receive a username reminder via an {deliveryMethod} sent to {recipient},L'utilisateur recevra un rappel de son nom d'utilisateur par un {deliveryMethod} envoyé à {recipient}.
 sysAdHome.sendUsernameReminderInviteModalTitle,Title for send username reminder,Send username reminder?,Envoyer un rappel de nom d'utilisateur ?
 sysAdHome.sendUsernameReminderInviteSuccess,The label for success notification of send username reminder,Username reminder sent to {name},Rappel de l'identifiant envoyé à {name}
-sysAdHome.toggleActivateStatusSuccess,The label for success notification when toggling user activate status,Updated {name}'s account status to "{status}",Statut du compte de {name} mis à jour en "{status}"
-sysAdHome.toggleActivateStatusError,The label for error notification when toggling user activate status,Failed to update {name}'s account status to "{status}",Échec de la mise à jour du statut du compte de {name} en "{status}"
+sysAdHome.toggleActivateStatusError,The label for error notification when toggling user activate status,"Failed to update {name}'s account status to ""{status}""","Échec de la mise à jour du statut du compte de {name} en ""{status}"""
+sysAdHome.toggleActivateStatusSuccess,The label for success notification when toggling user activate status,"Updated {name}'s account status to ""{status}""","Statut du compte de {name} mis à jour en ""{status}"""
 sysAdHome.user.audit.comments,The label for form field deactivate comments,Comments: ,Commentaires :
 sysAdHome.user.audit.deactiv.reasonInv,The label for radio option being investigated,Being investigated due to suspicious activity on their account,Fait l'objet d'une enquête en raison d'une activité suspecte sur son compte
 sysAdHome.user.audit.deactiv.reasonNotEmp,The label for radio option not employee,No longer an employee,N'est plus un employé
@@ -2230,6 +2245,8 @@ userSetup.type.healthSystem,The description for health system type,Health System
 userSetup.type.hospital,The description for HOSPITAL type,Hospital,Hôpital
 userSetup.type.system,The description for system type,System,Système
 userSetup.waiting,The message that displays when the user is waiting for the account to be created,Setting up your account,Configuration de votre compte
+v2.event.record.offline.description,Message shown on the Record page when the user is offline and the record has not been cached locally,This record has not been downloaded yet so it cannot be opened offline. Please reconnect to the internet to view it.,Cet enregistrement n’a pas encore été téléchargé et ne peut donc pas être ouvert hors ligne. Veuillez vous reconnecter à Internet pour le consulter.
+v2.event.record.offline.title,Title shown on the Record page when the user is offline,No connection,Pas de connexion
 validate.complete.declaration.action.description,,The informant will receive an with a registration number that they can use to collect the certificate.,"En envoyant pour approbation, vous confirmez que la déclaration est prête à être approuvée."
 validate.complete.declaration.action.title,,Declaration complete,Envoyer pour approbation ou rejeter ?
 validate.declaration.action.modal.description,,This declaration will be sent for approval prior to registration.,Cette déclaration sera envoyée pour approbation avant l'enregistrement.
@@ -2354,18 +2371,3 @@ wq.noRecords.readyToPrint,No records messages for ready to print tab,No records 
 wq.noRecords.requiresUpdate,No records messages for require updates tab,No records require updates,Aucun document ne nécessite de mise à jour
 wq.noRecords.sentForApproval,No records messages for sent for approval tab,No records sent for approval,Aucun document envoyé pour approbation
 wq.noRecords.sentForReview,No records messages for sent for review tab,No records sent for review,Aucun document envoyé pour examen
-event.birth.action.issue-vc.label,Label for issue verifiable credential action,Issue a verifiable credential,Délivrer une attestation vérifiable
-event.birth.action.issue-vc.audit-history-label,Audit history label for issued verifiable credential,Verifiable Credential issued,Attestation vérifiable délivrée
-event.birth.action.registrar-general-feedback.supportingCopy,Confirmation text for registrar general feedback action,Your feedback will be officially recorded and may influence the final decision on the declaration.,Votre retour sera officiellement enregistré et pourra influencer la décision finale concernant la déclaration.
-event.birth.custom.action.issue-vc.field.supporting-copy,Supporting copy shown before issuing verifiable credential,Select the requester you would like to issue this verifiable credential to.,Sélectionnez le demandeur à qui vous souhaitez délivrer cette attestation vérifiable.
-event.birth.custom.action.issue-vc.field.requester.label,Label for requester selection in VC action,Requester,Demandeur
-event.birth.custom.action.issue-vc.field.requester.option.mother,Requester option mother in VC action,Mother,Mère
-event.birth.custom.action.issue-vc.field.requester.option.father,Requester option father in VC action,Father,Père
-event.birth.custom.action.issue-vc.field.request-credential-offer-button.label,Label for VC offer generation button section,Verifiable credential offer,Offre d’attestation vérifiable
-event.birth.custom.action.issue-vc.field.request-credential-offer-button.configuration.text,Text for VC offer generation button,Generate,Générer
-event.birth.custom.action.issue-vc.field.get-credential-offer.label,Label for HTTP call to get VC offer,Get Credential Offer,Obtenir l’offre d’attestation vérifiable
-event.birth.custom.action.issue-vc.field.qr-code.configuration.text,Explanation text for VC QR code,Scan the QR code below with your digital wallet to receive your Verifiable Credential.,Scannez le code QR ci-dessous avec votre portefeuille numérique pour recevoir votre attestation vérifiable.
-event.birth.custom.action.issue-vc.field.qr-code.configuration.alt,Alt text for VC QR image,QR Code,Code QR
-event.birth.custom.action.issue-vc.field.accepted-vc-offer.label,Checkbox label to confirm citizen acceptance of VC offer,I confirm the verifiable credential has been accepted.,Je confirme que l'attestation vérifiable a été acceptée.
-event.birth.custom.action.issue-vc.field.accepted-vc-offer.error,Validation message for citizen acceptance checkbox,Please confirm that the citizen has accepted the verifiable credential offer,Veuillez confirmer que le citoyen a accepté l’offre d’attestation vérifiable
-event.declaration.potentialDuplicateDetected,Notification for potential duplicate declaration. Shown when a potential duplicate is detected after declaring an event.,{trackingId} is a potential duplicate. Record is ready for review.,{trackingId} est un doublon potentiel. L’enregistrement est prêt pour révision.
