@@ -43,6 +43,9 @@ test.describe.serial('1. Settings Page', () => {
       await expect(
         desktopView.filter({ hasText: 'Registrar' }).first()
       ).toBeVisible()
+      await expect(
+        desktopView.filter({ hasText: 'Ibombo District Office' }).first()
+      ).toBeVisible()
 
       // Editable fields
       await expect(
@@ -53,7 +56,7 @@ test.describe.serial('1. Settings Page', () => {
       ).toBeEnabled()
       await expect(page.getByTestId('change-avatar').first()).toBeEnabled()
       await expect(page.locator('#BtnChangeLanguage').first()).toBeEnabled()
-      await expect(page.locator('#BtnChangePassword').first()).toBeEnabled()
+      await expect(page.locator('#btnChangePassword').first()).toBeEnabled()
 
       await expect(
         page.locator('[data-testid="list-view-value"] img').first()
@@ -76,7 +79,12 @@ test.describe.serial('1. Settings Page', () => {
 
       await page.getByRole('button', { name: 'Apply' }).click()
 
-      await page.waitForLoadState('networkidle')
+      await page.waitForResponse(
+        (resp) =>
+          resp.url().includes('/users/') &&
+          resp.url().endsWith('.jpeg') &&
+          resp.status() === 200
+      )
 
       await page.getByText('Profile image successfully updated')
 

@@ -113,6 +113,7 @@ buttons.finish,The label for finish printing certificate button,Finish,Terminer
 buttons.forgotPassword,The label for forgot password button,Forgot password,Mot de passe oublié
 buttons.forgottenPIN,The label for forgotten pin button,Forgotten pin,Code d'accès oublié
 buttons.goToHomePage,Label for Go to Homepage button,Back to home,Retour à la page d'accueil
+buttons.goToReview,Go to review button text,Go to review,Aller à la révision
 buttons.issue,Button for issuing,Issue,Délivrer
 buttons.login,Login button on session expire modal,Login,Connexion
 buttons.logout,logout title,Logout,Déconnexion
@@ -1399,6 +1400,8 @@ form.field.label.typeOfDocument,,Choose type of supporting document,Choisissez l
 form.field.label.typeOfId,,Type of ID,Type d'identification
 form.field.label.typeOfMarriage,,Type of marriage,Type de mariage
 form.field.label.updatingUser,,Updating user,Mise à jour de l'utilisateur
+form.field.label.changeOfficeWarningTitle,,Change office?,Changer de bureau ?
+form.field.label.changeOfficeWarningBody,,Changing this user's office will remove their in-progress drafts. Do you want to continue?,Changer le bureau de cet utilisateur supprimera ses brouillons en cours. Voulez-vous continuer ?
 form.field.label.uploadDocForMother,,Mother,Mère
 form.field.label.uploadFile,,Upload,Télécharger
 form.field.label.urban,,Urban,Urbain
@@ -1935,6 +1938,7 @@ register.selectInformant.newMarriageRegistration,The title that appears for new 
 register.selectInformant.parents,The description that appears when selecting the parent as informant,Mother & Father,Mère et père
 register.selectVitalEvent.backToReviewButton,,Back to review,Retour à l'examen
 register.selectVitalEvent.errorMessage,Error Message to show when no event is being selected,Please select the type of event,Veuillez sélectionner le type d'événement
+register.selectVitalEvent.goToReviewButton,,Go to review,Aller à la révision
 register.selectVitalEvent.registerNewEventHeader,The section heading on the page,What type of event do you want to declare?,What type of event do you want to declare?
 register.selectVitalEvent.registerNewEventHeading,The section heading on the page,Event type,Quel type d'événement voulez-vous déclarer ?
 register.selectVitalEvent.registerNewEventTitle,The title that appears on the select vital event page,New declaration,Nouvelle déclaration
@@ -1944,6 +1948,7 @@ rejectModal.markAsDuplicate,The label for mark as duplicate checkbox of reject m
 rejectModal.sendForUpdate,The label for send For Update button of reject modal,Send For Update,Envoyer pour mise à jour
 rejectModal.title,The title for reject modal,Reason for rejection?,Quelle mise à jour la déclaration nécessite-t-elle ?
 reloadmodal.body,Body of reload modal,There’s a new version of {app_name} available. Please update to continue.,Une nouvelle version de {app_name} est disponible. Veuillez effectuer la mise à jour pour continuer.
+reloadmodal.button.loginAgain,Label of log in again button after version update,Log in again,Se reconnecter
 reloadmodal.button.update,Label of update button,Update,Mise à jour
 reloadmodal.title,Title when update is available,Update available,Mise à jour disponible
 review.actions.desc.regConfComp,,"By clicking register, you confirm that the information entered is correct and the vital event can be registered.","En cliquant sur Enregistrer, vous confirmez que les informations sont correctes et ont été vérifiées par l'informateur. L'informateur comprend qu'elles seront utilisées pour enregistrer la naissance et à des fins de planification. En enregistrant cette naissance, un certificat de naissance sera généré avec votre signature pour être délivré."
@@ -1961,7 +1966,6 @@ review.declare.confirmModal.title,The title for review action modal when declari
 review.declare.description.incomplete,The description for declare action when form is complete,The informant will receive an email with a tracking ID that they can use to provide the additional mandatory information required for registration,Cette déclaration sera envoyée au greffier pour être complétée. Veuillez informer l'informateur qu'il devra se présenter au bureau avec les informations manquantes et les documents justificatifs.
 review.declare.incomplete.confirmModal.title,The title for review action modal when declaring,Notify event?,Notifier l'événement?
 review.documentViewer.title,,Supporting documents,Documents d'appui
-review.documents.editDocuments,Edit documents text,Upload,Ajouter une pièce jointe
 review.documents.zeroDocumentsText,Zero documents text,"No supporting documents for {section, select, child {child} mother {mother} father {father} deceased {deceased} informant {informant} other {Parent}}","Aucune pièce justificative pour  {section, select, child {child} mother {mother} father {father} deceased {deceased} informant {informant} other {Parent}}"
 review.documents.zeroDocumentsTextForAnySection,Zero documents text,No supporting documents,Aucune pièce justificative
 review.edit.modal.backToPreview,Preview button on edit modal,Back to preview,Retour à l'aperçu
@@ -2353,7 +2357,7 @@ wq.noRecords.sentForReview,No records messages for sent for review tab,No record
 event.birth.action.issue-vc.label,Label for issue verifiable credential action,Issue a verifiable credential,Délivrer une attestation vérifiable
 event.birth.action.issue-vc.audit-history-label,Audit history label for issued verifiable credential,Verifiable Credential issued,Attestation vérifiable délivrée
 event.birth.action.registrar-general-feedback.supportingCopy,Confirmation text for registrar general feedback action,Your feedback will be officially recorded and may influence the final decision on the declaration.,Votre retour sera officiellement enregistré et pourra influencer la décision finale concernant la déclaration.
-event.birth.custom.action.issue-vc.field.supporting-copy,Supporting copy shown before issuing verifiable credential,Check the requesters details and issue the verifiable credential.,Vérifiez les informations du demandeur et délivrez l'attestation vérifiable.
+event.birth.custom.action.issue-vc.field.supporting-copy,Supporting copy shown before issuing verifiable credential,Select the requester you would like to issue this verifiable credential to.,Sélectionnez le demandeur à qui vous souhaitez délivrer cette attestation vérifiable.
 event.birth.custom.action.issue-vc.field.requester.label,Label for requester selection in VC action,Requester,Demandeur
 event.birth.custom.action.issue-vc.field.requester.option.mother,Requester option mother in VC action,Mother,Mère
 event.birth.custom.action.issue-vc.field.requester.option.father,Requester option father in VC action,Father,Père
@@ -2362,5 +2366,6 @@ event.birth.custom.action.issue-vc.field.request-credential-offer-button.configu
 event.birth.custom.action.issue-vc.field.get-credential-offer.label,Label for HTTP call to get VC offer,Get Credential Offer,Obtenir l’offre d’attestation vérifiable
 event.birth.custom.action.issue-vc.field.qr-code.configuration.text,Explanation text for VC QR code,Scan the QR code below with your digital wallet to receive your Verifiable Credential.,Scannez le code QR ci-dessous avec votre portefeuille numérique pour recevoir votre attestation vérifiable.
 event.birth.custom.action.issue-vc.field.qr-code.configuration.alt,Alt text for VC QR image,QR Code,Code QR
-event.birth.custom.action.issue-vc.field.accepted-vc-offer.label,Checkbox label to confirm citizen acceptance of VC offer,I confirm that the citizen has accepted the verifiable credential offer,Je confirme que le citoyen a accepté l’offre d’attestation vérifiable
+event.birth.custom.action.issue-vc.field.accepted-vc-offer.label,Checkbox label to confirm citizen acceptance of VC offer,I confirm the verifiable credential has been accepted.,Je confirme que l'attestation vérifiable a été acceptée.
 event.birth.custom.action.issue-vc.field.accepted-vc-offer.error,Validation message for citizen acceptance checkbox,Please confirm that the citizen has accepted the verifiable credential offer,Veuillez confirmer que le citoyen a accepté l’offre d’attestation vérifiable
+event.declaration.potentialDuplicateDetected,Notification for potential duplicate declaration. Shown when a potential duplicate is detected after declaring an event.,{trackingId} is a potential duplicate. Record is ready for review.,{trackingId} est un doublon potentiel. L’enregistrement est prêt pour révision.

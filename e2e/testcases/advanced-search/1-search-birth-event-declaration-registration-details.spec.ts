@@ -3,7 +3,7 @@ import { getToken, login } from '../../helpers'
 import { createDeclaration } from '../test-data/birth-declaration-with-father-brother'
 import { CREDENTIALS } from '../../constants'
 import { faker } from '@faker-js/faker'
-import { assertTexts, type } from '../../utils'
+import { assertTexts, selectLocationOption, type } from '../../utils'
 
 const todayDate = `${new Date().getDate() < 10 ? '0' : ''}${new Date().getDate().toString()}`
 const thisMonth = `${new Date().getMonth() < 9 ? '0' : ''}${(new Date().getMonth() + 1).toString()}`
@@ -18,7 +18,10 @@ test.describe
     const token = await getToken(CREDENTIALS.REGISTRAR)
 
     await createDeclaration(token, {
+      'mother.dob': '1995-09-12',
       'child.dob': faker.date
+        // DOB must be at least 18 years after mother.dob to pass validation
+        // Upper bound ensures the record appears on the first page of search results
         .between({ from: '2025-09-10', to: '2025-11-28' })
         .toISOString()
         .split('T')[0],
@@ -45,8 +48,7 @@ test.describe
       await page
         .locator('#event____legalStatuses____REGISTERED____createdAtLocation')
         .fill('Ibombo')
-      await expect(page.getByText('Ibombo District Office')).toBeVisible()
-      await page.getByText('Ibombo District Office').click()
+      await selectLocationOption(page, 'Ibombo District Office')
 
       await type(
         page,

@@ -108,22 +108,22 @@ test.describe.serial('Birth correction flow', () => {
       .click()
 
     await expect(
-      page.getByRole('button', { name: 'Back to review' })
+      page.getByRole('button', { name: 'Go to review' })
     ).toBeEnabled()
 
     await page.getByRole('button', { name: 'Continue' }).click()
     await expect(
-      page.getByRole('button', { name: 'Back to review' })
+      page.getByRole('button', { name: 'Go to review' })
     ).toBeEnabled()
 
     await page.getByRole('button', { name: 'Continue' }).click()
     await expect(
-      page.getByRole('button', { name: 'Back to review' })
+      page.getByRole('button', { name: 'Go to review' })
     ).toBeEnabled()
 
     await page.getByRole('button', { name: 'Continue' }).click()
     await expect(
-      page.getByRole('button', { name: 'Back to review' })
+      page.getByRole('button', { name: 'Go to review' })
     ).toBeEnabled()
 
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -141,7 +141,7 @@ test.describe.serial('Birth correction flow', () => {
       .getByTestId('text__informant____email')
       .fill(faker.internet.email())
 
-    await page.getByRole('button', { name: 'Back to review' }).click()
+    await page.getByRole('button', { name: 'Go to review' }).click()
     await expect(page.getByRole('button', { name: 'Continue' })).toBeEnabled()
   })
 
@@ -152,7 +152,7 @@ test.describe.serial('Birth correction flow', () => {
       .getByTestId('text__informant____email')
       .fill(declaration['informant.email'])
 
-    await page.getByRole('button', { name: 'Back to review' }).click()
+    await page.getByRole('button', { name: 'Go to review' }).click()
     await expect(page.getByRole('button', { name: 'Continue' })).toBeDisabled()
   })
 
@@ -160,7 +160,7 @@ test.describe.serial('Birth correction flow', () => {
     await page.getByTestId('change-button-child.dob').click()
     // Future date
     await page.getByTestId('child____dob-yyyy').fill('2045')
-    await page.getByRole('button', { name: 'Back to review' }).click()
+    await page.getByRole('button', { name: 'Go to review' }).click()
     await expect(page.getByRole('button', { name: 'Continue' })).toBeDisabled()
     await expect(page.getByText('Must be a valid birth date')).toBeVisible()
   })
@@ -178,7 +178,7 @@ test.describe.serial('Birth correction flow', () => {
       .fill(reasonForDelayedRegistration)
 
     await type(page, '#firstname', newFirstName)
-    await page.getByRole('button', { name: 'Back to review' }).click()
+    await page.getByRole('button', { name: 'Go to review' }).click()
     await expect(page.getByRole('button', { name: 'Continue' })).toBeEnabled()
   })
 
@@ -186,7 +186,7 @@ test.describe.serial('Birth correction flow', () => {
     await page.getByRole('button', { name: 'Continue' }).click()
     await expectInUrl(page, `/events/request-correction/${eventId}/summary`)
     await expect(
-      page.getByRole('button', { name: 'Back to review' })
+      page.getByRole('button', { name: 'Go to review' })
     ).toBeEnabled()
     await expect(
       page.getByRole('button', { name: 'Submit correction request' })

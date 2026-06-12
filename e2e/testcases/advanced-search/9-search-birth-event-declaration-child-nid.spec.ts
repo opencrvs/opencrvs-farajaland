@@ -11,6 +11,7 @@ import {
 import { CREDENTIALS, GATEWAY_HOST } from '../../constants'
 import { assertTexts, ensureAssignedToUser, type } from '../../utils'
 import { formatV2ChildName } from '../birth/helpers'
+import { openRecordByTitle } from '../print-certificate/birth/helpers'
 
 /*
  * Female identity from mock-identities.json (Sahara Wendy Moyo, NID: 1234567899).
@@ -19,11 +20,68 @@ import { formatV2ChildName } from '../birth/helpers'
  * hidden fields receiving values. Setting mother.verified = 'authenticated'
  * causes MOSIP to forward the birth registration and assign a child.nid.
  */
-const MOTHER_IDENTITY = {
-  firstName: 'Sahara',
-  familyName: 'Moyo',
-  birthDate: '1994-10-02'
-} as const
+const AVAILABLE_IDENTITIES = [
+  {
+    firstName: 'Jenny',
+    familyName: 'Doe',
+    birthDate: '2002-02-01',
+    nid: '1234567891'
+  },
+  {
+    firstName: 'Monica',
+    familyName: 'Geller',
+    birthDate: '2005-02-25',
+    nid: '1234567894'
+  },
+  {
+    firstName: 'Phoebe',
+    familyName: 'Buffay',
+    birthDate: '2002-02-24',
+    nid: '1234567896'
+  },
+  {
+    firstName: 'Saida',
+    familyName: 'Sharma',
+    birthDate: '1997-12-24',
+    nid: '1234567898'
+  },
+  {
+    firstName: 'Sahara',
+    familyName: 'Moyo',
+    birthDate: '1994-10-02',
+    nid: '1234567899'
+  },
+  {
+    firstName: 'Tharushi',
+    familyName: 'Perera',
+    birthDate: '1998-05-21',
+    nid: '1234567926'
+  },
+  {
+    firstName: 'Nadeesha',
+    familyName: 'Perera',
+    birthDate: '1991-10-19',
+    nid: '1234567931'
+  },
+  {
+    firstName: 'Kanchana',
+    familyName: 'Perera',
+    birthDate: '1998-09-13',
+    nid: '1234567937'
+  },
+  {
+    firstName: 'Amaya',
+    familyName: 'Senanayake',
+    birthDate: '1998-10-06',
+    nid: '1234567980'
+  },
+  {
+    firstName: 'Vishmi',
+    familyName: 'Senanayake',
+    birthDate: '1994-08-23',
+    nid: '1234567990'
+  }
+]
 
 test.describe
   .serial('Advanced Search - Birth Event Declaration - Child NID', () => {
@@ -35,6 +93,10 @@ test.describe
   test.beforeAll(async ({ browser }) => {
     page = await browser.newPage()
     const token = await getToken(CREDENTIALS.REGISTRAR)
+
+    // Having a single identity results to duplicate detected on problem situations. Pick randomly, removing it from the list.
+    const randomIndex = Math.floor(Math.random() * AVAILABLE_IDENTITIES.length)
+    const [MOTHER_IDENTITY] = AVAILABLE_IDENTITIES.splice(randomIndex, 1)
 
     const declData = await getDeclaration({
       token,
@@ -63,12 +125,18 @@ test.describe
     await expect
       .poll(
         async () => {
-          const event = await client.event.get.query({ eventId })
+          const event = await client.event.get.query({
+            eventId,
+            waitFor: false
+          })
           const aggregated = aggregateActionDeclarations(event)
           childNid = aggregated['child.nid'] as string
           return Boolean(childNid)
         },
-        { timeout: 30_000, intervals: [1_000, 2_000, 5_000] }
+        {
+          timeout: 60_000,
+          intervals: [...Array(5).fill(1_000), ...Array(5).fill(2_000), 5_000]
+        }
       )
       .toBe(true)
   })
@@ -112,7 +180,7 @@ test.describe
 
   test('Open record from search results and verify NID is visible in summary', async () => {
     const childName = formatV2ChildName(declaration)
-    await page.getByRole('button', { name: childName }).click()
+    await openRecordByTitle(page, childName)
 
     await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
 

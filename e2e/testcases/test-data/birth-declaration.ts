@@ -14,6 +14,7 @@ import {
   AddressType
 } from '@opencrvs/toolkit/events'
 import { getSignatureFile, uploadFile } from './utils'
+import { dateToIsoDateString, randomPastDate } from '../../helpers'
 
 type InformantRelation = 'MOTHER' | 'BROTHER'
 
@@ -58,7 +59,8 @@ export async function getPlaceOfBirth(
 
     return {
       'child.placeOfBirth': 'HEALTH_FACILITY',
-      'child.birthLocation': locationId
+      'child.birthLocation': locationId,
+      'child.birthLocationId': locationId
     }
   }
 
@@ -73,7 +75,8 @@ export async function getPlaceOfBirth(
         country: 'FAR',
         addressType: AddressType.DOMESTIC,
         administrativeArea: village
-      }
+      },
+      'child.birthLocationId': village
     }
   }
 
@@ -95,6 +98,9 @@ export async function getDeclaration({
 
   const village = getIdByName(administrativeAreas, 'Klow')
 
+  /**
+   * NOTE: This will inevitably result to duplicate detected, unless we introduce more randomness.
+   */
   const mockDeclaration = {
     'father.detailsNotAvailable': true,
     // Only include 'father.reason' if partialDeclaration doesn't have 'father.detailsNotAvailable'
@@ -105,7 +111,12 @@ export async function getDeclaration({
       firstname: faker.person.firstName(),
       surname: faker.person.lastName()
     },
-    'mother.dob': '1995-09-12',
+    'mother.dob': dateToIsoDateString(
+      faker.date
+        // DOB must be at least 18 years after mother.dob to pass validation
+        // Upper bound ensures the record appears on the first page of search results
+        .between({ from: '1995-09-12', to: '2000-11-28' })
+    ),
     'mother.nationality': 'FAR',
     'mother.idType': 'NATIONAL_ID',
     'mother.nid': faker.string.numeric(10),
@@ -119,9 +130,7 @@ export async function getDeclaration({
       surname: faker.person.lastName()
     },
     'child.gender': 'female',
-    'child.dob': new Date(Date.now() - 60 * 60 * 24 * 1000)
-      .toISOString()
-      .split('T')[0], // yesterday
+    'child.dob': randomPastDate(14),
     ...(await getPlaceOfBirth(placeOfBirthType, token)),
     ...getInformantDetails(informantRelation, village)
   }

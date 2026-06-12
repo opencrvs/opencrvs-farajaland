@@ -5,6 +5,7 @@ import { CREDENTIALS, SAFE_WORKQUEUE_TIMEOUT_MS } from '../../constants'
 import { createDeclaration, Declaration } from '../test-data/birth-declaration'
 import { formatV2ChildName } from '../birth/helpers'
 import { ensureAssignedToUser, expectInUrl, selectAction } from '../../utils'
+import { openRecordByTitle } from '../print-certificate/birth/helpers'
 
 test.describe.serial('6 Validate "Pending certification"-workqueue', () => {
   let page: Page
@@ -65,11 +66,12 @@ test.describe.serial('6 Validate "Pending certification"-workqueue', () => {
   })
 
   test('6.4 Click a name', async () => {
-    await page
-      .getByRole('button', { name: formatV2ChildName(declaration) })
-      .click()
+    await openRecordByTitle(page, formatV2ChildName(declaration))
 
-    await expectInUrl(page, `events/${eventId}?workqueue=pending-certification`)
+    await expectInUrl(
+      page,
+      `events/${eventId}?backTo=/workqueue/pending-certification`
+    )
   })
 
   test('6.5 Click Print action', async () => {
@@ -78,7 +80,7 @@ test.describe.serial('6 Validate "Pending certification"-workqueue', () => {
     await expect(page.locator('#content-name')).toHaveText('Certify record')
     await expectInUrl(
       page,
-      `/events/print-certificate/${eventId}/pages/collector?workqueue=pending-certification`
+      `/events/print-certificate/${eventId}/pages/collector?backTo=/workqueue/pending-certification`
     )
   })
 })

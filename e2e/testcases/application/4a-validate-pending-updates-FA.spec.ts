@@ -16,7 +16,10 @@ import {
   navigateToWorkqueue,
   selectAction
 } from '../../utils'
-import { getRowByTitle } from '../print-certificate/birth/helpers'
+import {
+  getRowByTitle,
+  openRecordByTitle
+} from '../print-certificate/birth/helpers'
 import { faker } from '@faker-js/faker'
 
 test.describe.serial('4(a) Validate "Pending updates"-workqueue for HO', () => {
@@ -27,7 +30,12 @@ test.describe.serial('4(a) Validate "Pending updates"-workqueue for HO', () => {
 
   test.beforeAll(async ({ browser }) => {
     const token = await getToken(CREDENTIALS.HOSPITAL_OFFICIAL)
-    const res = await createDeclaration(token, undefined, ActionType.DECLARE)
+    const res = await createDeclaration(
+      token,
+      undefined,
+      ActionType.DECLARE,
+      'HEALTH_FACILITY'
+    )
     declaration = res.declaration
     eventId = res.eventId
     formattedChildName = formatV2ChildName(declaration)
@@ -45,7 +53,7 @@ test.describe.serial('4(a) Validate "Pending updates"-workqueue for HO', () => {
   test('4.0.2 Navigate to record audit', async () => {
     await page.getByText('Pending validation').click()
 
-    await page.getByRole('button', { name: formattedChildName }).click()
+    await openRecordByTitle(page, formattedChildName)
   })
 
   test('4.0.3 Reject a declaration', async () => {
@@ -95,7 +103,10 @@ test.describe.serial('4(a) Validate "Pending updates"-workqueue for HO', () => {
     await page.getByRole('button', { name: formattedChildName }).click()
 
     // User should navigate to record audit page
-    await expectInUrl(page, `events/${eventId}?workqueue=pending-updates`)
+    await expectInUrl(
+      page,
+      `events/${eventId}?backTo=/workqueue/pending-updates`
+    )
   })
 
   test('4.5 Acting directly from workqueue should redirect to the same workqueue', async () => {
@@ -117,7 +128,7 @@ test.describe.serial('4(a) Validate "Pending updates"-workqueue for HO', () => {
       familyName: newSurname
     })
 
-    await page.getByRole('button', { name: 'Back to review' }).click()
+    await page.getByRole('button', { name: 'Go to review' }).click()
 
     await selectDeclarationAction(page, 'Declare with edits')
 

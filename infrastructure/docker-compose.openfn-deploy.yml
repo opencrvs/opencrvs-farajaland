@@ -66,11 +66,6 @@ services:
       - SENTRY_DSN=${SENTRY_DSN:-}
       - NODE_ENV=production
 
-  user-mgnt:
-    environment:
-      - SENTRY_DSN=${SENTRY_DSN:-}
-      - NODE_ENV=production
-
   documents:
     environment:
       - NODE_ENV=production

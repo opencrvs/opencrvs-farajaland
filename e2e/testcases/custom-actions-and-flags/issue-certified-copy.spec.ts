@@ -9,7 +9,10 @@ import {
 import { Declaration, createDeclaration } from '../test-data/birth-declaration'
 import { REQUIRED_VALIDATION_ERROR } from '../birth/helpers'
 import { formatV2ChildName } from '../birth/helpers'
-import { printAndExpectPopup } from '../print-certificate/birth/helpers'
+import {
+  openRecordByTitle,
+  printAndExpectPopup
+} from '../print-certificate/birth/helpers'
 
 test.describe.serial('Issue Certified Copy', () => {
   let page: Page
@@ -61,7 +64,10 @@ test.describe.serial('Issue Certified Copy', () => {
     })
 
     test('Clicking continue after selecting requester type and template type', async () => {
-      await page.reload({ waitUntil: 'networkidle' })
+      await expect(
+        page.locator('#certificateTemplateId').getByText('Birth Certificate')
+      ).toBeVisible()
+
       await page.locator('#collector____requesterId').click()
       const selectOptionsLabels = [
         'Print and issue to Informant (Mother)',
@@ -95,7 +101,7 @@ test.describe.serial('Issue Certified Copy', () => {
   test.describe('Print issuance', async () => {
     test('Navigate to the declaration review page', async () => {
       await navigateToWorkqueue(page, 'Pending issuance')
-      await page.getByRole('button', { name: childName }).click()
+      await openRecordByTitle(page, childName)
       await expect(page.getByText('Registered')).toBeVisible()
       await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
 

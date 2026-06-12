@@ -8,7 +8,13 @@ import {
 import { format, subDays, subYears } from 'date-fns'
 import { CREDENTIALS, SAFE_OUTBOX_TIMEOUT_MS } from '../../constants'
 import { formatV2ChildName } from '../birth/helpers'
-import { ensureAssignedToUser, selectAction, type } from '../../utils'
+import {
+  ensureAssignedToUser,
+  expectInUrl,
+  selectAction,
+  type
+} from '../../utils'
+import { openRecordByTitle } from '../print-certificate/birth/helpers'
 
 test.describe.serial('Request and accept correction (offline)', () => {
   let declaration: DeclarationV2
@@ -149,7 +155,7 @@ test.describe.serial('Request and accept correction (offline)', () => {
         .click()
       await page.getByRole('button', { name: 'Confirm' }).click()
 
-      expect(page.url().includes(`events/${eventId}`)).toBeTruthy()
+      await expectInUrl(page, `events/${eventId}`)
 
       await expect(
         page.locator('#content-name', {
@@ -177,9 +183,8 @@ test.describe.serial('Request and accept correction (offline)', () => {
     test('Navigate to correction review', async () => {
       await type(page, '#searchText', trackingId)
       await page.locator('#searchIconButton').click()
-      await page
-        .getByRole('button', { name: formatV2ChildName(declaration) })
-        .click()
+
+      await openRecordByTitle(page, formatV2ChildName(declaration))
 
       await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
       await selectAction(page, 'Review correction request')
@@ -192,7 +197,7 @@ test.describe.serial('Request and accept correction (offline)', () => {
       await page.getByRole('button', { name: 'Approve', exact: true }).click()
       await page.getByRole('button', { name: 'Confirm', exact: true }).click()
 
-      expect(page.url().includes(`events/${eventId}`)).toBeTruthy()
+      await expectInUrl(page, `events/${eventId}`)
 
       // We expect to see the optimistically updated new child name instead of the old one
       await expect(
@@ -204,14 +209,14 @@ test.describe.serial('Request and accept correction (offline)', () => {
       await page.getByTestId('exit-event').click()
 
       await page.getByRole('button', { name: 'Outbox' }).click()
-      await expect(page.locator('#wait-connection-text')).toBeVisible()
+      await expect(page.getByText('Offline')).toBeVisible()
     })
 
     test('Go back online', async () => {
       // Go back online
       await page.context().setOffline(false)
 
-      await expect(page.locator('#wait-connection-text')).not.toBeVisible()
+      await expect(page.getByText('Offline')).not.toBeVisible()
 
       await expect(await page.locator('#no-record')).toContainText(
         'No records require processing',

@@ -188,7 +188,7 @@ test.describe('10. Correct record', () => {
          */
         await expectInUrl(
           page,
-          `/events/request-correction/${eventId}/pages/child?from=review&workqueue=pending-certification#child____name`
+          `/events/request-correction/${eventId}/pages/child?from=review&backTo=/workqueue/pending-certification#child____name`
         )
 
         await page
@@ -235,13 +235,13 @@ test.describe('10. Correct record', () => {
 
         await expectInUrl(
           page,
-          `/events/request-correction/${eventId}/pages/child?from=review&workqueue=pending-certification#child____gender`
+          `/events/request-correction/${eventId}/pages/child?from=review&backTo=/workqueue/pending-certification#child____gender`
         )
 
         await page.getByTestId('select__child____gender').locator('svg').click()
         await page.getByText('Male', { exact: true }).click()
 
-        await page.getByRole('button', { name: 'Back to review' }).click()
+        await page.getByRole('button', { name: 'Go to review' }).click()
 
         /*
          * Expected result: should
@@ -273,7 +273,7 @@ test.describe('10. Correct record', () => {
          */
         await expectInUrl(
           page,
-          `/events/request-correction/${eventId}/pages/child?from=review&workqueue=pending-certification#child____dob`
+          `/events/request-correction/${eventId}/pages/child?from=review&backTo=/workqueue/pending-certification#child____dob`
         )
 
         const birthDay = updatedChildDetails.birthDate.split('-')
@@ -282,7 +282,7 @@ test.describe('10. Correct record', () => {
         await page.getByPlaceholder('mm').fill(birthDay[1])
         await page.getByPlaceholder('yyyy').fill(birthDay[0])
 
-        await page.getByRole('button', { name: 'Back to review' }).click()
+        await page.getByRole('button', { name: 'Go to review' }).click()
 
         /*
          * Expected result: should
@@ -314,7 +314,7 @@ test.describe('10. Correct record', () => {
          */
         await expectInUrl(
           page,
-          `/events/request-correction/${eventId}/pages/child?from=review&workqueue=pending-certification#child____placeOfBirth`
+          `/events/request-correction/${eventId}/pages/child?from=review&backTo=/workqueue/pending-certification#child____placeOfBirth`
         )
 
         await page
@@ -322,7 +322,7 @@ test.describe('10. Correct record', () => {
           .fill(updatedChildDetails.birthLocation.slice(0, 2))
         await page.getByText(updatedChildDetails.birthLocation).click()
 
-        await page.getByRole('button', { name: 'Back to review' }).click()
+        await page.getByRole('button', { name: 'Go to review' }).click()
 
         /*
          * Expected result: should
@@ -364,13 +364,13 @@ test.describe('10. Correct record', () => {
 
         await expectInUrl(
           page,
-          `/events/request-correction/${eventId}/pages/child?from=review&workqueue=pending-certification#child____attendantAtBirth`
+          `/events/request-correction/${eventId}/pages/child?from=review&backTo=/workqueue/pending-certification#child____attendantAtBirth`
         )
 
         await page.getByTestId('select__child____attendantAtBirth').click()
         await page.getByText(updatedChildDetails.attendantAtBirth).click()
 
-        await page.getByRole('button', { name: 'Back to review' }).click()
+        await page.getByRole('button', { name: 'Go to review' }).click()
 
         /*
          * Expected result: should
@@ -405,13 +405,13 @@ test.describe('10. Correct record', () => {
 
         await expectInUrl(
           page,
-          `/events/request-correction/${eventId}/pages/child?from=review&workqueue=pending-certification#child____birthType`
+          `/events/request-correction/${eventId}/pages/child?from=review&backTo=/workqueue/pending-certification#child____birthType`
         )
 
         await page.getByTestId('select__child____birthType').click()
         await page.getByText(updatedChildDetails.typeOfBirth).click()
 
-        await page.getByRole('button', { name: 'Back to review' }).click()
+        await page.getByRole('button', { name: 'Go to review' }).click()
 
         /*
          * Expected result: should
@@ -446,7 +446,7 @@ test.describe('10. Correct record', () => {
         await expectInUrl(page, `/events/request-correction/${eventId}/summary`)
 
         await page
-          .getByRole('button', { name: 'Back to review', exact: true })
+          .getByRole('button', { name: 'Go to review', exact: true })
           .click()
 
         /* Expected result: should
@@ -466,14 +466,14 @@ test.describe('10. Correct record', () => {
 
         await expectInUrl(
           page,
-          `/events/request-correction/${eventId}/pages/child?from=review&workqueue=pending-certification#child____weightAtBirth`
+          `/events/request-correction/${eventId}/pages/child?from=review&backTo=/workqueue/pending-certification#child____weightAtBirth`
         )
 
         await page
           .locator('#child____weightAtBirth')
           .fill(updatedChildDetails.weightAtBirth)
 
-        await page.getByRole('button', { name: 'Back to review' }).click()
+        await page.getByRole('button', { name: 'Go to review' }).click()
 
         /*
          * Expected result: should
@@ -636,6 +636,12 @@ test.describe('10. Correct record', () => {
       })
       test.describe('10.1.6.4 Validate history in record audit', async () => {
         test('10.1.6.4.0 Ensure record is assigned', async () => {
+          // Wait for the correction approval to fully complete before checking
+          // assignment. The approval triggers an auto-unassign — if we call
+          // ensureAssignedToUser before that unassign lands, we may skip
+          // re-assigning (record appears still assigned), then the unassign
+          // fires late and leaves the record unassigned for the audit steps.
+          await page.waitForTimeout(3000)
           await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
         })
         test('10.1.6.4.1 Validate correction requested modal', async () => {

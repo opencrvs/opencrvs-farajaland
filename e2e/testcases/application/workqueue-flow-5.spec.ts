@@ -15,12 +15,7 @@ import {
   ensureOutboxIsEmpty,
   selectAction
 } from '../../utils'
-import {
-  assertRecordInWorkqueue,
-  assignFromWorkqueue,
-  fillDate
-} from '../birth/helpers'
-import { getRowByTitle } from '../print-certificate/birth/helpers'
+import { assertRecordInWorkqueue, fillDate } from '../birth/helpers'
 
 // HO Notifies => RO Rejects => RO Declares and validates => Registrar rejects
 // => RO Re-declares again => Registrar registers
@@ -207,10 +202,14 @@ test.describe.serial('5. Workqueue flow - 5', () => {
 
     test('5.3.2 Go to edit', async () => {
       await page.getByText('Pending updates').click()
-      await assignFromWorkqueue(page, childName)
-      await getRowByTitle(page, childName)
-        .getByRole('button', { name: 'Review' })
+
+      await page
+        .getByRole('button', {
+          name: childName
+        })
         .click()
+
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
 
       await selectAction(page, 'Edit')
     })
@@ -296,7 +295,7 @@ test.describe.serial('5. Workqueue flow - 5', () => {
         .click()
 
       await page.locator('#father____addressSameAs_YES').click()
-      await continueForm(page, 'Back to review')
+      await continueForm(page, 'Go to review')
     })
 
     test('5.3.5 Declare with edits', async () => {
@@ -332,10 +331,13 @@ test.describe.serial('5. Workqueue flow - 5', () => {
     test('5.4.2 Reject', async () => {
       await page.getByText('Pending registration').click()
 
-      await assignFromWorkqueue(page, childName)
-      await getRowByTitle(page, childName)
-        .getByRole('button', { name: 'Review' })
+      await page
+        .getByRole('button', {
+          name: childName
+        })
         .click()
+
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
 
       await selectAction(page, 'Reject')
 
@@ -388,11 +390,13 @@ test.describe.serial('5. Workqueue flow - 5', () => {
 
     test('5.5.2 Go to edit', async () => {
       await page.getByText('Pending updates').click()
-      await assignFromWorkqueue(page, childName)
-      await getRowByTitle(page, childName)
-        .getByRole('button', { name: 'Review' })
+      await page
+        .getByRole('button', {
+          name: childName
+        })
         .click()
 
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
       await selectAction(page, 'Edit')
     })
 
@@ -405,7 +409,7 @@ test.describe.serial('5. Workqueue flow - 5', () => {
       await page.locator('#informant____email').fill(faker.internet.email())
 
       await page
-        .getByRole('button', { name: 'Back to review', exact: true })
+        .getByRole('button', { name: 'Go to review', exact: true })
         .click()
     })
 
@@ -458,10 +462,13 @@ test.describe.serial('5. Workqueue flow - 5', () => {
     test('5.6.2 Register', async () => {
       await page.getByText('Pending registration').click()
 
-      await assignFromWorkqueue(page, childName)
-      await getRowByTitle(page, childName)
-        .getByRole('button', { name: 'Review' })
+      await page
+        .getByRole('button', {
+          name: childName
+        })
         .click()
+
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
 
       await selectAction(page, 'Register')
       await page.getByRole('button', { name: 'Confirm' }).click()

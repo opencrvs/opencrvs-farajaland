@@ -17,6 +17,7 @@ import { getAdministrativeAreas, getIdByName } from '../birth/helpers'
 import { formatV2ChildName, REQUIRED_VALIDATION_ERROR } from '../birth/helpers'
 import { getDeclaration } from '../test-data/birth-declaration'
 import {
+  openRecordByTitle,
   printAndExpectPopup,
   selectRequesterType
 } from '../print-certificate/birth/helpers'
@@ -27,7 +28,7 @@ import {
   NON_EXISTING_UUID
 } from './helpers'
 
-import { CREDENTIALS, SAFE_IN_EXTERNAL_VALIDATION_MS } from '../../constants'
+import { CREDENTIALS } from '../../constants'
 
 test.describe('POST /api/events/events/{eventId}/notify', () => {
   let clientToken: string
@@ -236,15 +237,16 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
     )
   })
 
-  test('HTTP 404 when trying to notify a non-existing event', async () => {
+  test('HTTP 200 when direct-notifying an event', async () => {
     const response = await fetchClientAPI(
       '/api/events/events/notify',
       'POST',
       clientToken,
       {
-        eventId: uuidv4(),
         transactionId: uuidv4(),
         type: 'NOTIFY',
+        createdAtLocation: healthFacilityId,
+        eventType: 'birth',
         declaration: {
           'child.name': {
             firstname: faker.person.firstName(),
@@ -255,8 +257,7 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
         annotation: {}
       }
     )
-
-    expect(response.status).toBe(404)
+    expect(response.status).toBe(200)
   })
 
   test('HTTP 400 when trying to notify an event without createdAtLocation', async () => {
@@ -470,7 +471,7 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
 
     await page.getByRole('button', { name: 'Notifications' }).click()
 
-    await page.getByText(await formatName(childName)).click()
+    await openRecordByTitle(page, formatName(childName))
 
     await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
 
@@ -623,9 +624,10 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
 
     test("Navigate to event via 'Notifications' -workqueue", async () => {
       await page.getByRole('button', { name: 'Notifications' }).click()
-      await page
-        .getByText(await formatV2ChildName({ 'child.name': childName }))
-        .click()
+      await openRecordByTitle(
+        page,
+        formatV2ChildName({ 'child.name': childName })
+      )
     })
 
     test('Edit event', async () => {
@@ -662,7 +664,7 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
 
     test('Change child surname', async () => {
       await page.getByTestId('text__surname').fill(newChildName.surname)
-      await page.getByRole('button', { name: 'Back to review' }).click()
+      await page.getByRole('button', { name: 'Go to review' }).click()
 
       await expect(page.getByTestId('row-value-child.dob')).not.toHaveText(
         REQUIRED_VALIDATION_ERROR
@@ -685,9 +687,10 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
 
     test("Navigate to event via 'Pending certification' -workqueue", async () => {
       await page.getByRole('button', { name: 'Pending certification' }).click()
-      await page
-        .getByText(await formatV2ChildName({ 'child.name': newChildName }))
-        .click()
+      await openRecordByTitle(
+        page,
+        formatV2ChildName({ 'child.name': newChildName })
+      )
     })
 
     test('Print certificate', async () => {
@@ -793,9 +796,10 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
 
     test("Navigate to event via 'Notifications' -workqueue", async () => {
       await page.getByRole('button', { name: 'Notifications' }).click()
-      await page
-        .getByText(await formatV2ChildName({ 'child.name': childName }))
-        .click()
+      await openRecordByTitle(
+        page,
+        formatV2ChildName({ 'child.name': childName })
+      )
     })
 
     test('Reject event', async () => {
@@ -809,17 +813,18 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
       await page.getByRole('button', { name: 'Search' }).click()
       await page.getByPlaceholder('Search').fill(trackingId)
       await page.getByRole('button', { name: 'Search' }).click()
-      await page
-        .getByText(formatV2ChildName({ 'child.name': childName }))
-        .click()
+
+      await openRecordByTitle(
+        page,
+        formatV2ChildName({ 'child.name': childName })
+      )
     })
 
     test('Audit event', async () => {
       await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
-      await page.waitForTimeout(SAFE_IN_EXTERNAL_VALIDATION_MS)
 
       await switchEventTab(page, 'Audit')
-      await page.waitForLoadState('networkidle')
+
       await expect(page.locator('#row_0')).toContainText('Notified')
       await expect(page.locator('#row_0')).toContainText(clientName)
       await expect(page.locator('#row_3')).toContainText('Rejected')

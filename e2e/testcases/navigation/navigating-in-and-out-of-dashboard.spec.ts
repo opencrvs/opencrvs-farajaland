@@ -71,7 +71,7 @@ test.describe.serial('Navigating in and out of dashboard', () => {
       )
       await expectInUrl(
         page,
-        `/search-result/birth?child.dob=${declaration['child.dob']}&child.name=${encodeURIComponent(JSON.stringify({ firstname: declaration['child.name'].firstname, surname: declaration['child.name'].surname }))}`
+        `/search-result/birth?child.dob=${declaration['child.dob']}&child.name=${JSON.stringify({ firstname: declaration['child.name'].firstname, surname: declaration['child.name'].surname })}`
       )
     })
   })

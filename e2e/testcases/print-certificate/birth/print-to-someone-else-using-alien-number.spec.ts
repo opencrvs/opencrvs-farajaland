@@ -10,7 +10,8 @@ import {
   selectRequesterType,
   selectCertificationType,
   navigateToCertificatePrintAction,
-  printAndExpectPopup
+  printAndExpectPopup,
+  openRecordByTitle
 } from './helpers'
 import { ensureAssignedToUser, type } from '../../../utils'
 import { formatV2ChildName } from '../../birth/helpers'
@@ -76,9 +77,7 @@ test.describe
     }
     await type(page, '#searchText', trackingId)
     await page.locator('#searchIconButton').click()
-    await page
-      .getByRole('button', { name: formatV2ChildName(declaration) })
-      .click()
+    await openRecordByTitle(page, formatV2ChildName(declaration))
     await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
     await page.getByRole('button', { name: 'Audit' }).click()
     await page.getByRole('button', { name: 'Certified', exact: true }).click()

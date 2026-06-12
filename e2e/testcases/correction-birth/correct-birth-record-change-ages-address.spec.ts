@@ -14,7 +14,7 @@ import {
 } from '../test-data/birth-declaration'
 import { CREDENTIALS } from '../../constants'
 import { formatV2ChildName, getAdministrativeAreas } from '../birth/helpers'
-import { ensureAssignedToUser, selectAction } from '../../utils'
+import { ensureAssignedToUser, expectInUrl, selectAction } from '../../utils'
 import { getIdByName } from '../birth/helpers'
 import { AddressType } from '@opencrvs/toolkit/events'
 
@@ -144,9 +144,8 @@ test.describe.serial('Correct record - Change ages', () => {
   })
 
   test('Upload supporting documents', async () => {
-    expect(page.url().includes('correction')).toBeTruthy()
-
-    expect(page.url().includes('onboarding/documents')).toBeTruthy()
+    await expectInUrl(page, 'correction')
+    await expectInUrl(page, 'onboarding/documents')
 
     await expect(page.getByRole('button', { name: 'Continue' })).toBeEnabled()
 
@@ -171,8 +170,8 @@ test.describe.serial('Correct record - Change ages', () => {
 
     await page.getByRole('button', { name: 'Continue' }).click()
 
-    expect(page.url().includes('correction')).toBeTruthy()
-    expect(page.url().includes('review')).toBeTruthy()
+    await expectInUrl(page, 'correction')
+    await expectInUrl(page, 'review')
   })
 
   test('Change informant age', async () => {
@@ -181,7 +180,7 @@ test.describe.serial('Correct record - Change ages', () => {
     await page.getByTestId('age__informant____age').fill(informantAgeAfter)
 
     await page
-      .getByRole('button', { name: 'Back to review', exact: true })
+      .getByRole('button', { name: 'Go to review', exact: true })
       .click()
 
     await expect(
@@ -198,7 +197,7 @@ test.describe.serial('Correct record - Change ages', () => {
     await page.getByTestId('location__country').click()
     await page.getByText('Ethiopia').click()
     await page
-      .getByRole('button', { name: 'Back to review', exact: true })
+      .getByRole('button', { name: 'Go to review', exact: true })
       .click()
     await expect(page.getByTestId('row-value-mother.address')).toHaveText(
       'State is required'
@@ -208,7 +207,7 @@ test.describe.serial('Correct record - Change ages', () => {
 
     await page.getByTestId('text__state').fill('Oromia')
     await page
-      .getByRole('button', { name: 'Back to review', exact: true })
+      .getByRole('button', { name: 'Go to review', exact: true })
       .click()
     await expect(page.getByTestId('row-value-mother.address')).toHaveText(
       'District is required'
@@ -217,7 +216,7 @@ test.describe.serial('Correct record - Change ages', () => {
     await page.getByTestId('change-button-mother.address').click()
     await page.getByTestId('text__district2').fill('Woreda')
     await page
-      .getByRole('button', { name: 'Back to review', exact: true })
+      .getByRole('button', { name: 'Go to review', exact: true })
       .click()
 
     await expect(page.getByTestId('row-value-mother.address')).toHaveText(
@@ -231,7 +230,7 @@ test.describe.serial('Correct record - Change ages', () => {
     await page.getByTestId('age__mother____age').fill(motherAgeAfter)
 
     await page
-      .getByRole('button', { name: 'Back to review', exact: true })
+      .getByRole('button', { name: 'Go to review', exact: true })
       .click()
 
     await expect(
@@ -246,8 +245,8 @@ test.describe.serial('Correct record - Change ages', () => {
   test('Correction summary', async () => {
     await page.getByRole('button', { name: 'Continue', exact: true }).click()
 
-    expect(page.url().includes('correction')).toBeTruthy()
-    expect(page.url().includes('summary')).toBeTruthy()
+    await expectInUrl(page, 'correction')
+    await expectInUrl(page, 'summary')
 
     await expect(page.getByText("Father's details")).not.toBeVisible()
     await expect(page.getByText("Child's details")).not.toBeVisible()

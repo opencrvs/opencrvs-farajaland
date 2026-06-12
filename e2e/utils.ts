@@ -58,6 +58,7 @@ export async function selectAction(
     | 'Reinstate registration'
     | 'Update'
     | 'Issue certified copy'
+    | 'Review potential duplicates'
 ) {
   await page.getByRole('button', { name: 'Action', exact: true }).click()
 
@@ -102,6 +103,9 @@ export async function ensureAssignedToUser(
 
   const assignedTo = page.getByTestId('assignedTo-value').locator('span')
 
+  // Wait for the value to actually render before deciding
+  await assignedTo.first().waitFor({ state: 'visible' })
+
   if (await assignedTo.filter({ hasText: userFullName }).isVisible()) {
     return
   }
@@ -114,10 +118,19 @@ export async function ensureAssignedToUser(
     .first()
 
   await assignAction.waitFor({ state: 'visible' })
-
   await assignAction.click()
+
+  // Setup the listener before clicking.
+  const assignResponse = page.waitForResponse(
+    (res) =>
+      res.url().includes('event.actions.assignment.assign') &&
+      res.status() === 200
+  )
   // Wait for the assign modal to appear
   await page.getByRole('button', { name: 'Assign', exact: true }).click()
+
+  // Wait for the assignment API call to complete and the UI to update.
+  await assignResponse
 
   await expect(
     page.getByTestId('assignedTo-value').locator('span')
@@ -125,7 +138,9 @@ export async function ensureAssignedToUser(
 }
 
 export async function expectInUrl(page: Page, assertionString: string) {
-  await expect(page.url().includes(assertionString)).toBeTruthy()
+  await expect(page).toHaveURL((url) =>
+    decodeURIComponent(url.toString()).includes(assertionString)
+  )
 }
 
 /**
@@ -159,6 +174,10 @@ export async function ensureInExternalValidationIsEmpty(page: Page) {
   ).toHaveText('Pending external validation', {
     timeout: SAFE_IN_EXTERNAL_VALIDATION_MS
   })
+}
+
+export async function selectLocationOption(page: Page, locationName: string) {
+  await page.locator('[id^="locationOption"]').getByText(locationName).click()
 }
 
 export async function type(page: Page, locator: string, text: string) {

@@ -7,6 +7,8 @@ import {
 import { CREDENTIALS } from '../../constants'
 import { faker } from '@faker-js/faker'
 import { ensureAssignedToUser } from '../../utils'
+import { openRecordByTitle } from '../print-certificate/birth/helpers'
+import { formatV2ChildName } from '../birth/helpers'
 
 test.describe
   .serial("Quick Search - Birth Event Declaration - Child's details", () => {
@@ -55,11 +57,10 @@ test.describe
   })
 
   test('1.2 Should display informant email correctly in record details', async () => {
-    await page
-      .getByRole('button', {
-        name: getChildNameFromRecord(recordWithDefaultEmail)
-      })
-      .click()
+    await openRecordByTitle(
+      page,
+      getChildNameFromRecord(recordWithDefaultEmail)
+    )
     await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
     await expect(page.getByTestId('assignedTo-value')).toHaveText(
       'Kennedy Mweene'
@@ -113,11 +114,8 @@ test.describe
     const searchResult = await page.locator('#content-name').textContent()
     await expect(searchResult).toMatch(searchResultRegex)
     await expect(page.getByText(getChildNameFromRecord(record))).toBeVisible()
-    await page
-      .getByRole('button', {
-        name: getChildNameFromRecord(record)
-      })
-      .click()
+
+    await openRecordByTitle(page, getChildNameFromRecord(record))
 
     await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
     await expect(page.getByTestId('assignedTo-value')).toHaveText(

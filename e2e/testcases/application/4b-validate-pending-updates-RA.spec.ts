@@ -12,7 +12,10 @@ import {
   navigateToWorkqueue,
   selectAction
 } from '../../utils'
-import { getRowByTitle } from '../print-certificate/birth/helpers'
+import {
+  getRowByTitle,
+  openRecordByTitle
+} from '../print-certificate/birth/helpers'
 import { faker } from '@faker-js/faker'
 
 test.describe.serial('4(b) Validate "Pending updates"-workqueue for RO', () => {
@@ -39,10 +42,7 @@ test.describe.serial('4(b) Validate "Pending updates"-workqueue for RO', () => {
 
   test('4.0.2 Navigate to record audit', async () => {
     await page.getByText('Pending registration').click()
-
-    await page
-      .getByRole('button', { name: formatV2ChildName(declaration) })
-      .click()
+    await openRecordByTitle(page, formatV2ChildName(declaration))
   })
 
   test('4.0.3 Reject a declaration', async () => {
@@ -94,7 +94,10 @@ test.describe.serial('4(b) Validate "Pending updates"-workqueue for RO', () => {
       .click()
 
     // User should navigate to record audit page
-    await expectInUrl(page, `events/${eventId}?workqueue=pending-updates`)
+    await expectInUrl(
+      page,
+      `events/${eventId}?backTo=/workqueue/pending-updates`
+    )
   })
 
   test('4.4 Click Edit -action', async () => {
@@ -105,7 +108,7 @@ test.describe.serial('4(b) Validate "Pending updates"-workqueue for RO', () => {
   test('4.5 Complete declare with edits action', async () => {
     await page.getByTestId('change-button-child.weightAtBirth').click()
     await page.getByTestId('number__child____weightAtBirth').fill('2.6')
-    await page.getByRole('button', { name: 'Back to review' }).click()
+    await page.getByRole('button', { name: 'Go to review' }).click()
 
     await selectDeclarationAction(page, 'Declare with edits')
 
