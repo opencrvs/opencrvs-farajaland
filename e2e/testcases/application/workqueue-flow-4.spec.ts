@@ -10,11 +10,7 @@ import {
   selectDeclarationAction
 } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
-import {
-  ensureAssignedToUser,
-  ensureOutboxIsEmpty,
-  selectAction
-} from '../../utils'
+import { ensureAssignedToUser } from '../../utils'
 import { assertRecordInWorkqueue, fillDate } from '../birth/helpers'
 import { openRecordByTitle } from '../print-certificate/birth/helpers'
 

@@ -272,8 +272,15 @@ test.describe
   })
 
   test('Approve the correction', async () => {
+    const correctionApprovalResponse = page.waitForResponse(
+      (res) =>
+        res.url().includes('event.actions.correction.approve') && res.ok()
+    )
+
     await page.getByRole('button', { name: 'Approve', exact: true }).click()
     await page.getByRole('button', { name: 'Confirm', exact: true }).click()
+
+    await correctionApprovalResponse
 
     await expectInUrl(page, `events/${eventId}`)
 

@@ -7,7 +7,6 @@ import {
 } from '../../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../../constants'
-import { ensureOutboxIsEmpty } from '../../../utils'
 import { openRecordByTitle } from '../../print-certificate/birth/helpers'
 
 test.describe.serial('Submit and verify incomplete birth declaration', () => {
