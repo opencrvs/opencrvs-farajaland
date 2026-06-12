@@ -26,8 +26,6 @@ import {
 import { formatV2ChildName } from '../birth/helpers'
 
 test('1. Correct record', async ({ page }) => {
-  test.setTimeout(180_000)
-
   const updatedChildDetails = {
     firstNames: faker.person.firstName('male'),
     familyName: faker.person.firstName('male'),
