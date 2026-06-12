@@ -141,8 +141,13 @@ test.describe.serial('5. Workqueue flow - 5', () => {
       await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
       await selectAction(page, 'Reject')
       await page.getByTestId('reject-reason').fill(faker.lorem.sentence())
+
+      const rejectResponse = page.waitForResponse(
+        (res) => res.url().includes('event.actions.reject') && res.ok()
+      )
       await page.getByRole('button', { name: 'Send For Update' }).click()
-      // @todo
+
+      await rejectResponse
     })
 
     test('5.2.3 Ensure rejection is no longer available', async () => {
@@ -315,11 +320,7 @@ test.describe.serial('5. Workqueue flow - 5', () => {
     test('5.4.2 Reject', async () => {
       await page.getByText('Pending registration').click()
 
-      await page
-        .getByRole('button', {
-          name: childName
-        })
-        .click()
+      await openRecordByTitle(page, childName)
 
       await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
 
@@ -327,8 +328,12 @@ test.describe.serial('5. Workqueue flow - 5', () => {
 
       await page.getByTestId('reject-reason').fill(faker.lorem.sentence())
 
+      const rejectResponse = page.waitForResponse(
+        (res) => res.url().includes('event.actions.reject') && res.ok()
+      )
       await page.getByRole('button', { name: 'Send For Update' }).click()
-      // @todo:
+
+      await rejectResponse
 
       await assertRecordInWorkqueue({
         page,
