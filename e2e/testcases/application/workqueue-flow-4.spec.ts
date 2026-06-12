@@ -207,7 +207,6 @@ test.describe.serial('4. Workqueue flow - 4', () => {
 
     test('4.1.7 Declare', async () => {
       await selectDeclarationAction(page, 'Declare')
-      await ensureOutboxIsEmpty(page)
     })
 
     test('4.1.8 Verify workqueue', async () => {

@@ -143,8 +143,7 @@ test.describe.serial('Death event summary', () => {
   })
 
   test('Save draft and find it in workqueue', async () => {
-    await selectDeclarationAction(page, 'Save & Exit', false)
-    await page.getByText('Confirm', { exact: true }).click()
+    await selectDeclarationAction(page, 'Save & Exit', true)
 
     await page.getByRole('button', { name: 'Drafts' }).click()
 

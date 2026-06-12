@@ -145,7 +145,7 @@ test.describe.serial('Approval of late birth registration', () => {
 
     test('Declare', async () => {
       await selectDeclarationAction(page, 'Declare')
-      await ensureOutboxIsEmpty(page)
+
       await page.getByText('Recent').click()
     })
   })
@@ -383,7 +383,6 @@ test.describe('Birth with non-late registration will not have flag or Approve-ac
 
     test('Declare', async () => {
       await selectDeclarationAction(page, 'Declare')
-      await ensureOutboxIsEmpty(page)
     })
 
     test('Navigate to the record', async () => {

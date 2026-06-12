@@ -534,7 +534,7 @@ test.describe.serial('6. Death declaration case - 6', () => {
 
     test('6.1.8 Register', async () => {
       await selectDeclarationAction(page, 'Register')
-      await ensureOutboxIsEmpty(page)
+
       await expect(page.getByText('Farajaland CRS')).toBeVisible()
 
       /*

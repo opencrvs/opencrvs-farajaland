@@ -265,7 +265,6 @@ test.describe.serial('Basic Archival flow', () => {
 
   test('Declare', async () => {
     await selectDeclarationAction(page, 'Declare')
-    await ensureOutboxIsEmpty(page)
   })
 
   test('Archival is not available for HO', async () => {

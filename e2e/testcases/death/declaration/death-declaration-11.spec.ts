@@ -13,11 +13,7 @@ import {
 } from '../../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../../constants'
-import {
-  ensureAssignedToUser,
-  ensureOutboxIsEmpty,
-  expectInUrl
-} from '../../../utils'
+import { ensureAssignedToUser, expectInUrl } from '../../../utils'
 import { openRecordByTitle } from '../../print-certificate/birth/helpers'
 
 test.describe.serial('11. Death declaration case - 11', () => {
@@ -671,7 +667,7 @@ test.describe.serial('11. Death declaration case - 11', () => {
 
     test('11.1.8 Declare', async () => {
       await selectDeclarationAction(page, 'Declare')
-      await ensureOutboxIsEmpty(page)
+
       await expect(page.getByText('Farajaland CRS')).toBeVisible()
 
       /*

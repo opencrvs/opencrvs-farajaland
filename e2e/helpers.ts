@@ -409,12 +409,25 @@ export async function validateActionMenuButton(
   await page.getByRole('button', { name: 'Action', exact: true }).click()
 }
 
+const actionTitleToApiCallMap = {
+  Notify: ['event.actions.notify'],
+  Declare: ['event.actions.declare'],
+  Register: ['event.actions.register'],
+  'Delete declaration': ['event.delete'],
+  'Save & Exit': ['event.draft.create'],
+  'Declare with edits': ['event.actions.edit', 'event.actions.declare'],
+  'Notify with edits': ['event.actions.edit', 'event.actions.notify'],
+  'Register with edits': [
+    'event.actions.edit',
+    'event.actions.declare',
+    'event.actions.register'
+  ]
+}
 export async function selectDeclarationAction(
   page: Page,
   action:
     | 'Notify'
     | 'Declare'
-    | 'Validate'
     | 'Register'
     | 'Delete declaration'
     | 'Save & Exit'
@@ -426,6 +439,10 @@ export async function selectDeclarationAction(
   await page.getByRole('button', { name: 'Action', exact: true }).click()
   await page.getByText(action, { exact: true }).click()
 
+  const responses = actionTitleToApiCallMap[action].map((url) =>
+    page.waitForResponse((res) => res.url().includes(url) && res.ok())
+  )
+
   if (confirm) {
     const confirmBtn = page.getByRole('button', { name: 'Confirm' })
 
@@ -435,6 +452,8 @@ export async function selectDeclarationAction(
       await page.getByRole('button', { name: action, exact: true }).click()
     }
   }
+
+  await Promise.all(responses)
 }
 
 export async function searchFromSearchBar(

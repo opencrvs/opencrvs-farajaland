@@ -10,11 +10,7 @@ import {
   selectDeclarationAction
 } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
-import {
-  ensureAssignedToUser,
-  ensureOutboxIsEmpty,
-  selectAction
-} from '../../utils'
+import { ensureAssignedToUser, selectAction } from '../../utils'
 import { assertRecordInWorkqueue, fillDate } from '../birth/helpers'
 
 // HO Notifies => RO Rejects => RO Re-declares and validates => Registrar rejects
@@ -129,8 +125,6 @@ test.describe.serial('3. Workqueue flow - 3', () => {
 
     test('3.1.4 Notify', async () => {
       await selectDeclarationAction(page, 'Notify')
-
-      await ensureOutboxIsEmpty(page)
     })
 
     test('3.1.5 Verify workqueue', async () => {
@@ -329,7 +323,6 @@ test.describe.serial('3. Workqueue flow - 3', () => {
 
     test('3.3.5 Declare with edits', async () => {
       await selectDeclarationAction(page, 'Declare with edits')
-      await ensureOutboxIsEmpty(page)
     })
 
     test('3.3.6 Verify workqueue', async () => {

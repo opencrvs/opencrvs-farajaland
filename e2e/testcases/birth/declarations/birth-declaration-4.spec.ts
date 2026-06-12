@@ -14,7 +14,6 @@ import {
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../../constants'
 import { fillDate, validateAddress } from '../helpers'
-import { ensureOutboxIsEmpty } from '../../../utils'
 
 test.describe.serial('4. Birth declaration case - 4', () => {
   let page: Page
@@ -635,8 +634,6 @@ test.describe.serial('4. Birth declaration case - 4', () => {
     })
     test('4.1.8 Declare', async () => {
       await selectDeclarationAction(page, 'Declare')
-
-      await ensureOutboxIsEmpty(page)
 
       await page.getByText('Recent').click()
 
