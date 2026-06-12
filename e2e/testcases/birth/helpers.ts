@@ -72,20 +72,36 @@ export async function assertRecordInWorkqueue({
 }) {
   const record = page.getByRole('button', { name, exact: true })
 
-  // visit exists:true queues first — once the record lands there,
-  // the absence checks are settled and can use a short timeout
+  // if positive checks are done first, absence should be visible immediately.
   const ordered = [...workqueues].sort(
     (a, b) => Number(b.exists) - Number(a.exists)
   )
 
-  for (const { title, exists } of ordered) {
+  const openWorkqueue = async (title: string) => {
     await page.getByRole('button', { name: title }).click()
     await expect(page.getByTestId('search-result')).toContainText(title)
+  }
+
+  let settled = false
+
+  for (const { title, exists } of ordered) {
+    if (exists && !settled) {
+      // Re-click the queue to force a refetch
+      // instead of waiting for the next poll cycle
+      await expect(async () => {
+        await openWorkqueue(title)
+        await expect(record).toBeVisible({ timeout: 1_500 })
+      }).toPass({ timeout: SAFE_OUTBOX_TIMEOUT_MS })
+      settled = true
+      continue
+    }
+
+    await openWorkqueue(title)
 
     if (exists) {
-      await expect(record).toBeVisible({ timeout: SAFE_OUTBOX_TIMEOUT_MS })
+      await expect(record).toBeVisible()
     } else {
-      await expect(record).toBeHidden({ timeout: 3_000 })
+      await expect(record).toBeHidden()
     }
   }
 }
