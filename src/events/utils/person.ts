@@ -13,8 +13,6 @@ import {
   and,
   ConditionalType,
   field,
-  FieldConditional,
-  FieldConfig,
   FieldConfigInput,
   FieldReference,
   FieldType,
@@ -180,6 +178,7 @@ export const getIdentityFields = ({
     // ${prefix}.verified, ${prefix}.query-params, ${prefix}.verify-nid-http-fetch,
     // ${prefix}.fetch-loader, ${prefix}.id-reader
     ...getMOSIPIntegrationFields(prefix, {
+      resetParent: parent,
       existingConditionals: {
         status: [
           {
