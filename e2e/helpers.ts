@@ -15,6 +15,7 @@ import { isMobile } from './mobile-helpers'
 import { createClient } from '@opencrvs/toolkit/api'
 import { UUID } from 'crypto'
 import { faker } from '@faker-js/faker'
+import { openRecordByTitle } from './testcases/print-certificate/birth/helpers'
 
 export async function createPIN(page: Page) {
   await page.click('#pin-input')
@@ -467,8 +468,9 @@ export async function searchFromSearchBar(
   await page.locator('#searchIconButton').click()
   const searchResult = await page.locator('#content-name').textContent()
   expect(searchResult).toMatch(searchResultRegex)
+
   if (expectToBeFound) {
-    await page.getByRole('button', { name: searchText, exact: true }).click()
+    await openRecordByTitle(page, searchText)
   } else {
     await expect(
       page.getByRole('button', { name: searchText, exact: true })

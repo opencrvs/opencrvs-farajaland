@@ -143,7 +143,13 @@ test.describe('Action menu options', () => {
 
       await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
       await selectAction(page, 'Archive')
-      await page.getByRole('button', { name: 'Archive', exact: true }).click()
+
+      const archiveResponse = page.waitForResponse(
+        (res) => res.url().includes('event.actions.archive') && res.ok()
+      )
+
+      await page.getByRole('button', { name: 'Archive' }).click()
+      await archiveResponse
     })
 
     test('Registrar', async () => {
