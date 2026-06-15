@@ -39,6 +39,7 @@ jobs:
         run: sleep 30
 
   get-core-commit:
+    needs: wait-30s
     name: Resolve latest core tag
     runs-on: ubuntu-latest
     outputs:
