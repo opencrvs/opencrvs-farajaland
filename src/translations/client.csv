@@ -2099,6 +2099,8 @@ system.user.deactivated,Pill label for deactivated user,Deactivated,Désactivé
 system.user.disabled,Pill label for disabled user,Disabled,Handicapés
 system.user.duplicateEmailError,This error message shows when user tries to input an already existing email,{email} is already used by another user. Please use a different email,{email} est déjà utilisé par un autre utilisateur. Veuillez utiliser une autre adresse e-mail
 system.user.duplicateMobileError,This error messege shows when user try to input already exsisted mobile number,{number} is already used by another user. Please use a different phone number,{number} est déjà utilisé par un autre utilisateur. Veuillez utiliser un autre numéro de téléphone
+system.user.emailAddressUnchangedError,Email address unchanged error message,This is already your email address. Please enter a different email address,Ceci est déjà votre adresse e-mail. Veuillez saisir une autre adresse e-mail
+system.user.mobileNumberUnchangedError,Mobile number unchanged error message,This is already your phone number. Please enter a different phone number,Ceci est déjà votre numéro de téléphone. Veuillez saisir un autre numéro de téléphone
 system.user.newUser,This text will show to create new user button,New user,Nouvel utilisateur
 system.user.pending,Pill label for pending user,Pending,En attente
 system.user.queryError,The text when error ocurred loading system users,An error occurred while loading system users,Une erreur s'est produite lors du chargement des utilisateurs du système
