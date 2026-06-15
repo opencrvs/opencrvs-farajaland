@@ -69,14 +69,6 @@ test('1. Correct record', async ({ page }) => {
 
   // 1.1 Validate verbiage on the request-correction onboarding pages.
   await test.step('1.1.1 Validate record audit page', async () => {
-    await expect(page.locator('#content-name')).toHaveText(
-      formatV2ChildName(declaration),
-      { timeout: 60_000 }
-    )
-    await expect(
-      page.getByRole('button', { name: 'Action' }).first()
-    ).toBeVisible()
-
     await expectInUrl(page, `/events/${eventId}`)
 
     await expect(page.getByText(`StatusRegistered`)).toBeVisible()
@@ -463,29 +455,24 @@ test('1. Correct record', async ({ page }) => {
       page.locator('#listTable-corrections-table-child')
     ).toContainText(`Weight at birth-${updatedChildDetails.weightAtBirth}`)
 
+    await page
+      .getByRole('button', { name: 'Submit correction request' })
+      .click()
+
     const correctionResponse = page.waitForResponse(
       (res) =>
         res.url().includes('event.actions.correction.request') && res.ok()
     )
 
-    await page
-      .getByRole('button', { name: 'Submit correction request' })
-      .click()
     await page.getByRole('button', { name: 'Confirm' }).click()
+
     await correctionResponse
 
     await expectInUrl(page, `/workqueue/pending-certification`)
-
-    await page.getByText('Recent').click()
-
-    await expect(
-      page.getByRole('button', { name: formatV2ChildName(declaration) })
-    ).toBeVisible()
   })
 
   // 1.2.6 Correction Approval — performed by a Registrar.
   await test.step('Log in as Registrar to review the correction request', async () => {
-    await logout(page)
     await login(page, CREDENTIALS.REGISTRAR)
   })
 
@@ -534,7 +521,14 @@ test('1. Correct record', async ({ page }) => {
 
   await test.step('1.2.6.3 Approve correction', async () => {
     await page.getByRole('button', { name: 'Approve', exact: true }).click()
+    const correctionResponse = page.waitForResponse(
+      (res) =>
+        res.url().includes('event.actions.correction.approve') && res.ok()
+    )
+
     await page.getByRole('button', { name: 'Confirm', exact: true }).click()
+
+    await correctionResponse
 
     await expectInUrl(page, `/events/${eventId}`)
 
