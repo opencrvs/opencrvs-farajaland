@@ -475,8 +475,9 @@ export async function searchFromSearchBar(
   }
 }
 
+export const NEW_USER_PASSWORD = 'Bangladesh23'
+
 export async function loginWithNewUser(page: Page, username: string) {
-  const password = 'Bangladesh23'
   const question00 = 'What city were you born in?'
   const question01 = 'What is your favorite movie?'
   const question02 = 'What is your favorite food?'
@@ -495,8 +496,8 @@ export async function loginWithNewUser(page: Page, username: string) {
   await page.getByRole('button', { name: 'Start' }).click()
 
   // set up password
-  await page.fill('#NewPassword', password)
-  await page.fill('#ConfirmPassword', password)
+  await page.fill('#NewPassword', NEW_USER_PASSWORD)
+  await page.fill('#ConfirmPassword', NEW_USER_PASSWORD)
   await expect(page.getByText('Passwords match')).toBeVisible()
   await page.getByRole('button', { name: 'Continue' }).click()
 
