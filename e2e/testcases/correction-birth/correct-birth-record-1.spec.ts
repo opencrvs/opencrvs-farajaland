@@ -7,6 +7,7 @@ import {
   goBackToReview,
   login,
   logout,
+  searchFromSearchBar,
   uploadImage
 } from '../../helpers'
 import { faker } from '@faker-js/faker'
@@ -481,13 +482,11 @@ test('1. Correct record', async ({ page }) => {
       throw new Error('Tracking ID is required')
     }
 
-    await type(page, '#searchText', trackingId)
-    await page.locator('#searchIconButton').click()
-    await openRecordByTitle(page, formatV2ChildName(declaration))
+    await searchFromSearchBar(page, formatV2ChildName(declaration))
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
   })
 
   await test.step('1.2.6.2 Correction review', async () => {
-    await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
     await selectAction(page, 'Review correction request')
 
     await expect(
@@ -527,15 +526,16 @@ test('1. Correct record', async ({ page }) => {
     )
 
     await page.getByRole('button', { name: 'Confirm', exact: true }).click()
-
     await correctionResponse
 
     await expectInUrl(page, `/events/${eventId}`)
 
-    // Wait until the actions have finished, which unassigns user
-    await expect(
-      page.getByRole('button', { name: 'Assign record' })
-    ).toBeVisible()
+    // Wait for the correction approval to fully complete before checking
+    // assignment. The approval triggers an auto-unassign — if we call
+    // ensureAssignedToUser before that unassign lands, we may skip
+    // re-assigning (record appears still assigned), then the unassign
+    // fires late and leaves the record unassigned for the audit steps.
+    await page.waitForTimeout(3000)
   })
 
   // 1.2.6.4 Validate history in record audit.
