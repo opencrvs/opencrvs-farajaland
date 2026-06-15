@@ -91,8 +91,6 @@ test.describe.serial('1: Validate my draft tab', () => {
 
     await selectDeclarationAction(page, 'Notify')
 
-    await ensureOutboxIsEmpty(page)
-
     await expect(page.getByTestId('search-result')).toContainText('Drafts')
     await expect(page.getByTestId('search-result')).not.toContainText(
       formattedName

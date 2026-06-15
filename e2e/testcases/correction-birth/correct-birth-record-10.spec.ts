@@ -23,6 +23,7 @@ import {
 } from '../../utils'
 import { formatV2ChildName, REQUIRED_VALIDATION_ERROR } from '../birth/helpers'
 import { getMixedPath } from '@opencrvs/toolkit/events'
+import { openRecordByTitle } from '../print-certificate/birth/helpers'
 
 test.describe('10. Correct record', () => {
   let declaration: Declaration
@@ -82,9 +83,8 @@ test.describe('10. Correct record', () => {
 
     test('10.0.0 Navigate to record correction', async () => {
       await page.getByRole('button', { name: 'Pending certification' }).click()
-      await page
-        .getByRole('button', { name: formatV2ChildName(declaration) })
-        .click()
+
+      await openRecordByTitle(page, formatV2ChildName(declaration))
       await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
       await selectAction(page, 'Correct')
     })
@@ -594,9 +594,7 @@ test.describe('10. Correct record', () => {
 
         await type(page, '#searchText', trackingId)
         await page.locator('#searchIconButton').click()
-        await page
-          .getByRole('button', { name: formatV2ChildName(declaration) })
-          .click()
+        await openRecordByTitle(page, formatV2ChildName(declaration))
       })
 
       test('10.1.6.2 Correction review', async () => {

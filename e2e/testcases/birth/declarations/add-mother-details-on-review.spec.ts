@@ -223,8 +223,6 @@ test.describe.serial('Add mother details on review', () => {
     test('Declare', async () => {
       await selectDeclarationAction(page, 'Declare')
 
-      await ensureOutboxIsEmpty(page)
-
       await page.getByText('Recent').click()
 
       await expect(
@@ -293,7 +291,16 @@ test.describe.serial('Add mother details on review', () => {
     const comment = 'Mamas info added yo'
 
     test('Register with edits', async () => {
-      await selectDeclarationAction(page, 'Register with edits', false)
+      await page.getByRole('button', { name: 'Action', exact: true }).click()
+      await page.getByText('Register with edits', { exact: true }).click()
+
+      const responses = [
+        'event.actions.edit',
+        'event.actions.declare',
+        'event.actions.register'
+      ].map((url) =>
+        page.waitForResponse((res) => res.url().includes(url) && res.ok())
+      )
       await expect(
         page.getByText(
           'You are about to register this birth event with your edits. Registering this event will create an official civil registration record.'
@@ -303,6 +310,8 @@ test.describe.serial('Add mother details on review', () => {
       await page.getByTestId('edit-comment').fill(comment)
 
       await page.getByRole('button', { name: 'Confirm' }).click()
+
+      await Promise.all(responses)
     })
 
     test('Assert event is registered', async () => {

@@ -14,7 +14,7 @@ import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../../constants'
 import { fillDate, validateAddress } from '../helpers'
 import { selectDeclarationAction } from '../../../helpers'
-import { ensureAssignedToUser, ensureOutboxIsEmpty } from '../../../utils'
+import { ensureAssignedToUser } from '../../../utils'
 
 test.describe.serial('1. Birth declaration case - 1', () => {
   let page: Page
@@ -477,8 +477,6 @@ test.describe.serial('1. Birth declaration case - 1', () => {
 
     test('1.1.8 Declare', async () => {
       await selectDeclarationAction(page, 'Declare')
-
-      await ensureOutboxIsEmpty(page)
 
       await page.getByText('Recent').click()
       await expect(

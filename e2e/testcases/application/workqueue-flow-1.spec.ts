@@ -10,11 +10,7 @@ import {
   selectDeclarationAction
 } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
-import {
-  ensureAssignedToUser,
-  ensureOutboxIsEmpty,
-  selectAction
-} from '../../utils'
+import { ensureAssignedToUser, selectAction } from '../../utils'
 import { assertRecordInWorkqueue, fillDate } from '../birth/helpers'
 import { getRowByTitle } from '../print-certificate/birth/helpers'
 
@@ -125,7 +121,6 @@ test.describe.serial('1. Workqueue flow - 1', () => {
 
     test('1.1.4 Notify', async () => {
       await selectDeclarationAction(page, 'Notify')
-      await ensureOutboxIsEmpty(page)
     })
 
     test('1.1.5 Verify workqueue', async () => {
@@ -261,8 +256,6 @@ test.describe.serial('1. Workqueue flow - 1', () => {
 
     test('1.2.6 Declare with edits', async () => {
       await selectDeclarationAction(page, 'Declare with edits')
-
-      await ensureOutboxIsEmpty(page)
 
       await assertRecordInWorkqueue({
         page,

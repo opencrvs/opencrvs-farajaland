@@ -57,14 +57,7 @@ test.describe('Save and delete drafts', () => {
       await page.getByRole('button', { name: 'Drafts' }).click()
       await page.getByRole('button', { name: childName, exact: true }).click()
       await selectAction(page, 'Update')
-      await selectDeclarationAction(page, 'Delete declaration', false)
-      await expect(
-        page.getByText('Are you sure you want to delete this declaration?')
-      ).toBeVisible()
-      await page.getByRole('button', { name: 'Confirm' }).click()
-
-      await ensureOutboxIsEmpty(page)
-      await expect(page.getByText('No records in drafts')).toBeVisible()
+      await selectDeclarationAction(page, 'Delete declaration', true)
 
       await expect(
         page.getByRole('button', { name: childName, exact: true })

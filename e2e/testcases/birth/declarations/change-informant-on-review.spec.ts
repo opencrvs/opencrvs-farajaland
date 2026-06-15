@@ -13,11 +13,7 @@ import {
 } from '../../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../../constants'
-import {
-  ensureAssignedToUser,
-  ensureOutboxIsEmpty,
-  selectAction
-} from '../../../utils'
+import { ensureAssignedToUser, selectAction } from '../../../utils'
 import { REQUIRED_VALIDATION_ERROR } from '../helpers'
 
 test.describe.serial('Change informant on review', () => {
@@ -246,7 +242,6 @@ test.describe.serial('Change informant on review', () => {
 
     test('Declare', async () => {
       await selectDeclarationAction(page, 'Declare')
-      await ensureOutboxIsEmpty(page)
 
       await page.getByText('Recent').click()
 
@@ -333,17 +328,10 @@ test.describe.serial('Change informant on review', () => {
     })
 
     test('Register with edits', async () => {
-      await selectDeclarationAction(page, 'Register with edits', false)
-      await expect(
-        page.getByText(
-          'You are about to register this birth event with your edits. Registering this event will create an official civil registration record.'
-        )
-      ).toBeVisible()
-      await page.getByRole('button', { name: 'Confirm' }).click()
+      await selectDeclarationAction(page, 'Register with edits', true)
     })
 
     test('Assert event is registered', async () => {
-      await ensureOutboxIsEmpty(page)
       await page.getByText('Pending certification').click()
       await page
         .getByRole('button', { name: formatName(declaration.child.name) })
