@@ -530,12 +530,8 @@ test('1. Correct record', async ({ page }) => {
 
     await expectInUrl(page, `/events/${eventId}`)
 
-    // Wait for the correction approval to fully complete before checking
-    // assignment. The approval triggers an auto-unassign — if we call
-    // ensureAssignedToUser before that unassign lands, we may skip
-    // re-assigning (record appears still assigned), then the unassign
-    // fires late and leaves the record unassigned for the audit steps.
-    await page.waitForTimeout(3000)
+    // force reload to ensure we are seeing the latest data after approval.
+    await page.reload()
   })
 
   // 1.2.6.4 Validate history in record audit.
