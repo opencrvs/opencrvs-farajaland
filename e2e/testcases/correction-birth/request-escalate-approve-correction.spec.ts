@@ -272,17 +272,23 @@ test.describe
   })
 
   test('Approve the correction', async () => {
+    await page.getByRole('button', { name: 'Approve', exact: true }).click()
+
     const correctionApprovalResponse = page.waitForResponse(
       (res) =>
         res.url().includes('event.actions.correction.approve') && res.ok()
     )
 
-    await page.getByRole('button', { name: 'Approve', exact: true }).click()
+    const searchCacheRefetchResponse = page.waitForResponse(
+      (res) => res.url().includes(`event.search?batch=1`) && res.ok()
+    )
+
     await page.getByRole('button', { name: 'Confirm', exact: true }).click()
 
     await correctionApprovalResponse
+    await searchCacheRefetchResponse
 
-    await expectInUrl(page, `events/${eventId}`)
+    await expectInUrl(page, `/events/${eventId}`)
 
     await expect(
       page.locator('#content-name', {

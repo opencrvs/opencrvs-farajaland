@@ -62,7 +62,12 @@ test.describe.serial('4(a) Validate "Pending updates"-workqueue for HO', () => {
 
     await page.getByTestId('reject-reason').fill(faker.lorem.sentence())
 
+    const rejectResponse = page.waitForResponse(
+      (res) => res.url().includes('event.actions.reject.request') && res.ok()
+    )
+
     await page.getByRole('button', { name: 'Send For Update' }).click()
+    await rejectResponse
   })
 
   test('4.1 Go to "Pending updates"-workqueue', async () => {

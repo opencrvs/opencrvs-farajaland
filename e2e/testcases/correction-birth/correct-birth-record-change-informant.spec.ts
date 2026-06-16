@@ -312,17 +312,23 @@ test.describe.serial('Correct record - change informant type', () => {
       )
     )
 
+    await page.getByRole('button', { name: 'Correct record' }).click()
     const correctionResponse = page.waitForResponse(
       (res) =>
         res.url().includes('event.actions.correction.approve') && res.ok()
     )
 
-    await page.getByRole('button', { name: 'Correct record' }).click()
-    await page.getByRole('button', { name: 'Confirm' }).click()
+    const searchCacheRefetchResponse = page.waitForResponse(
+      (res) => res.url().includes(`event.search?batch=1`) && res.ok()
+    )
+
+    await page.getByRole('button', { name: 'Confirm', exact: true }).click()
 
     await correctionResponse
+    await searchCacheRefetchResponse
 
-    await expectInUrl(page, `events/${eventId}`)
+    await expectInUrl(page, `/events/${eventId}`)
+
     await page.getByTestId('exit-event').click()
   })
 

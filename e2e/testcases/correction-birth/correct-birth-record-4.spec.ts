@@ -868,8 +868,14 @@ test.describe.serial('Correct record - 4', () => {
     )
 
     await page.getByRole('button', { name: 'Correct record' }).click()
-    await page.getByRole('button', { name: 'Confirm' }).click()
 
+    const searchCacheRefetchResponse = page.waitForResponse(
+      (res) => res.url().includes(`event.search?batch=1`) && res.ok()
+    )
+
+    await page.getByRole('button', { name: 'Confirm', exact: true }).click()
+
+    await searchCacheRefetchResponse
     await correctionResponse
 
     await expectInUrl(page, `events/${eventId}`)

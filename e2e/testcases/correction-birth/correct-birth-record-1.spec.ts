@@ -6,7 +6,6 @@ import {
   getToken,
   goBackToReview,
   login,
-  logout,
   searchFromSearchBar,
   uploadImage
 } from '../../helpers'
@@ -17,12 +16,7 @@ import {
   createDeclaration,
   Declaration
 } from '../test-data/birth-declaration-with-mother-father'
-import {
-  ensureAssignedToUser,
-  expectInUrl,
-  selectAction,
-  type
-} from '../../utils'
+import { ensureAssignedToUser, expectInUrl, selectAction } from '../../utils'
 import { formatV2ChildName } from '../birth/helpers'
 import { openRecordByTitle } from '../print-certificate/birth/helpers'
 
@@ -525,17 +519,19 @@ test('1. Correct record', async ({ page }) => {
         res.url().includes('event.actions.correction.approve') && res.ok()
     )
 
+    const searchCacheRefetchResponse = page.waitForResponse(
+      (res) => res.url().includes(`event.search?batch=1`) && res.ok()
+    )
+
     await page.getByRole('button', { name: 'Confirm', exact: true }).click()
     await correctionResponse
+    await searchCacheRefetchResponse
 
     await expectInUrl(page, `/events/${eventId}`)
   })
 
-  // Skipped due to flakiness - needs investigation.
-  // Issue is with the overview not reflecting unassigned state after the approve action.
-
   // 1.2.6.4 Validate history in record audit.
-  test.skip('1.2.6.4.1 Validate correction requested modal', async () => {
+  await test.step('1.2.6.4.1 Validate correction requested modal', async () => {
     await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
     await page.getByRole('button', { name: 'Audit' }).click()
 
@@ -571,7 +567,7 @@ test('1. Correct record', async ({ page }) => {
     await page.locator('#close-btn').click()
   })
 
-  test.skip('1.2.6.4.2 Validate correction approved modal', async () => {
+  await test.step('1.2.6.4.2 Validate correction approved modal', async () => {
     await page.getByRole('button', { name: 'Next page' }).click()
     await page
       .getByRole('button', { name: 'Correction approved', exact: true })
