@@ -1,7 +1,7 @@
 import { expect, test, type Page } from '@playwright/test'
 import { login, selectDeclarationAction } from '../../helpers'
 import { faker } from '@faker-js/faker'
-import { ensureOutboxIsEmpty, expectInUrl, type } from '../../utils'
+import { expectInUrl, type } from '../../utils'
 const deceased = {
   name: {
     firstname: faker.person.firstName('male')
@@ -475,8 +475,6 @@ test.describe('1. Death event declaration', () => {
 
       await expect(page.locator('#content-name')).toHaveText('Assigned to you')
 
-      await ensureOutboxIsEmpty(page)
-
       await expect(
         page.getByText(deceased.name.firstname, { exact: true })
       ).toBeHidden()
@@ -530,15 +528,17 @@ test.describe('1. Death event declaration', () => {
     })
 
     test('1.11.3 Click Confirm', async ({ page }) => {
+      const deleteResponse = page.waitForResponse(
+        (response) => response.url().includes('event.delete') && response.ok()
+      )
       await page.getByRole('button', { name: 'Confirm' }).click()
+      await deleteResponse
 
       /*
        * Expected result: should be navigated to "my-drafts" tab but no draft will be saved
        */
 
       await expect(page.locator('#content-name')).toHaveText('Assigned to you')
-
-      await ensureOutboxIsEmpty(page)
 
       await expect(
         page.getByText(deceased.name.firstname, { exact: true })

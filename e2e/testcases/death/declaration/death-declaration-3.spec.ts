@@ -13,11 +13,7 @@ import {
 } from '../../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../../constants'
-import {
-  ensureAssignedToUser,
-  ensureOutboxIsEmpty,
-  expectInUrl
-} from '../../../utils'
+import { ensureAssignedToUser, expectInUrl } from '../../../utils'
 import { openRecordByTitle } from '../../print-certificate/birth/helpers'
 
 test.describe.serial('3. Death declaration case - 3', () => {
@@ -698,7 +694,6 @@ test.describe.serial('3. Death declaration case - 3', () => {
     test('3.2.1 Navigate to the declaration "Record" -tab', async () => {
       await login(page, CREDENTIALS.REGISTRATION_OFFICER)
 
-      await ensureOutboxIsEmpty(page)
       await page.getByText('Pending validation').click()
 
       await openRecordByTitle(

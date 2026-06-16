@@ -6,7 +6,7 @@ import {
   Declaration as DeclarationV2
 } from '../test-data/birth-declaration-with-mother-father'
 import { format, subDays, subYears } from 'date-fns'
-import { CREDENTIALS, SAFE_OUTBOX_TIMEOUT_MS } from '../../constants'
+import { CREDENTIALS } from '../../constants'
 import { formatV2ChildName } from '../birth/helpers'
 import {
   ensureAssignedToUser,
@@ -14,6 +14,7 @@ import {
   selectAction,
   type
 } from '../../utils'
+import { openRecordByTitle } from '../print-certificate/birth/helpers'
 
 test.describe
   .serial('Request correction, escalate, then approve as Local Registrar', () => {
@@ -151,11 +152,16 @@ test.describe
   })
 
   test('Submit correction request', async () => {
+    const correctionResponse = page.waitForResponse(
+      (res) =>
+        res.url().includes('event.actions.correction.request') && res.ok()
+    )
     await page
       .getByRole('button', { name: 'Submit correction request' })
       .click()
     await page.getByRole('button', { name: 'Confirm' }).click()
 
+    await correctionResponse
     await expectInUrl(page, `events/${eventId}`)
 
     await expect(
@@ -165,12 +171,6 @@ test.describe
     ).toBeVisible()
 
     await page.getByTestId('exit-event').click()
-
-    await page.getByRole('button', { name: 'Outbox' }).click()
-    await expect(page.locator('#no-record')).toContainText(
-      'No records require processing',
-      { timeout: SAFE_OUTBOX_TIMEOUT_MS }
-    )
   })
 
   test('Navigate back to the record', async () => {
@@ -203,14 +203,15 @@ test.describe
 
     await page.locator('#reason').fill(escalationReason)
 
+    const escalateResponse = page.waitForResponse(
+      (response) =>
+        response.url().includes('event.actions.custom') && response.ok()
+    )
+
     await expect(confirmButton).toBeEnabled()
     await confirmButton.click()
 
-    await page.getByRole('button', { name: 'Outbox' }).click()
-    await expect(page.locator('#no-record')).toContainText(
-      'No records require processing',
-      { timeout: SAFE_OUTBOX_TIMEOUT_MS }
-    )
+    await escalateResponse
   })
 
   test('Login as Local Registrar', async () => {
@@ -220,9 +221,7 @@ test.describe
   test('Navigate to the record by tracking ID', async () => {
     await type(page, '#searchText', trackingId)
     await page.locator('#searchIconButton').click()
-    await page
-      .getByRole('button', { name: formatV2ChildName(declaration) })
-      .click()
+    await openRecordByTitle(page, formatV2ChildName(declaration))
 
     await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
   })
@@ -274,9 +273,22 @@ test.describe
 
   test('Approve the correction', async () => {
     await page.getByRole('button', { name: 'Approve', exact: true }).click()
+
+    const correctionApprovalResponse = page.waitForResponse(
+      (res) =>
+        res.url().includes('event.actions.correction.approve') && res.ok()
+    )
+
+    const searchCacheRefetchResponse = page.waitForResponse(
+      (res) => res.url().includes(`event.search?batch=1`) && res.ok()
+    )
+
     await page.getByRole('button', { name: 'Confirm', exact: true }).click()
 
-    await expectInUrl(page, `events/${eventId}`)
+    await correctionApprovalResponse
+    await searchCacheRefetchResponse
+
+    await expectInUrl(page, `/events/${eventId}`)
 
     await expect(
       page.locator('#content-name', {

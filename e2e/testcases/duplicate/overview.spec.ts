@@ -53,7 +53,7 @@ test('Duplicate overview', async ({ page }) => {
   await test.step("Navigate to potential duplicate's overview", async () => {
     await login(page, CREDENTIALS.REGISTRAR)
     await page.getByRole('button', { name: 'Potential duplicate' }).click()
-    await page.getByRole('button', { name }).click()
+    await openRecordByTitle(page, name)
   })
 
   await test.step('Validate duplicate in overview page', async () => {

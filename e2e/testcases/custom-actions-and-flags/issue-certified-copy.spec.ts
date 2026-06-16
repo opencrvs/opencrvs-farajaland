@@ -33,7 +33,8 @@ test.describe.serial('Issue Certified Copy', () => {
     test('Navigate to the declaration review page', async () => {
       await login(page, CREDENTIALS.REGISTRATION_OFFICER)
       await navigateToWorkqueue(page, 'Pending certification')
-      await page.getByRole('button', { name: childName }).click()
+      await openRecordByTitle(page, childName)
+
       await expect(page.getByText('Registered')).toBeVisible()
       await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
 

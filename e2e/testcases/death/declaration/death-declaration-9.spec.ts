@@ -9,12 +9,7 @@ import {
 } from '../../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../../constants'
-import {
-  ensureAssignedToUser,
-  ensureOutboxIsEmpty,
-  expectInUrl,
-  selectAction
-} from '../../../utils'
+import { ensureAssignedToUser, expectInUrl, selectAction } from '../../../utils'
 import { REQUIRED_VALIDATION_ERROR } from '../../birth/helpers'
 import { openRecordByTitle } from '../../print-certificate/birth/helpers'
 
@@ -289,7 +284,6 @@ test.describe.serial('9. Death declaration case - 9', () => {
     test('9.2.1 Navigate to the declaration Edit-action', async () => {
       await login(page, CREDENTIALS.REGISTRATION_OFFICER)
 
-      await ensureOutboxIsEmpty(page)
       await page.getByText('Notifications').click()
 
       await openRecordByTitle(

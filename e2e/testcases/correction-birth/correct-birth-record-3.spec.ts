@@ -8,11 +8,7 @@ import {
   uploadImage
 } from '../../helpers'
 import { faker } from '@faker-js/faker'
-import {
-  CREDENTIALS,
-  SAFE_INPUT_CHANGE_TIMEOUT_MS,
-  SAFE_OUTBOX_TIMEOUT_MS
-} from '../../constants'
+import { CREDENTIALS } from '../../constants'
 import { random } from 'lodash'
 import {
   createDeclaration as createDeclarationV2,
@@ -906,28 +902,23 @@ test.describe.serial(' Correct record - 3', () => {
     /*
      * Expected result: should enable the Submit correction request button
      */
+
+    const correctionResponse = page.waitForResponse(
+      (response) =>
+        response.url().includes('event.actions.correction.request') &&
+        response.ok()
+    )
+
     await page
       .getByRole('button', { name: 'Submit correction request' })
       .click()
     await page.getByRole('button', { name: 'Confirm' }).click()
 
+    await correctionResponse
+
     await expectInUrl(page, `events/${eventId}`)
 
     await page.getByTestId('exit-event').click()
-    await page.getByRole('button', { name: 'Outbox' }).click()
-
-    /*
-     * This is to ensure the following condition is asserted
-     * after the outbox has the declaration
-     */
-    await page.waitForTimeout(SAFE_INPUT_CHANGE_TIMEOUT_MS)
-
-    await expect(await page.locator('#no-record')).toContainText(
-      'No records require processing',
-      {
-        timeout: SAFE_OUTBOX_TIMEOUT_MS
-      }
-    )
 
     await page.getByRole('button', { name: 'Recent' }).click()
     await expect(

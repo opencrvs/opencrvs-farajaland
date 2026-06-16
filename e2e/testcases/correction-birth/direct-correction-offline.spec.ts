@@ -6,7 +6,7 @@ import {
   Declaration as DeclarationV2
 } from '../test-data/birth-declaration-with-mother-father'
 import { format, subDays, subYears } from 'date-fns'
-import { CREDENTIALS, SAFE_OUTBOX_TIMEOUT_MS } from '../../constants'
+import { CREDENTIALS } from '../../constants'
 import { formatV2ChildName } from '../birth/helpers'
 import { ensureAssignedToUser, expectInUrl, selectAction } from '../../utils'
 
@@ -160,16 +160,16 @@ test.describe.serial('Direct correction offline', () => {
   })
 
   test('Go back online', async () => {
+    const correctionResponse = page.waitForResponse(
+      (res) =>
+        res.url().includes('event.actions.correction.approve') && res.ok()
+    )
+
     // Go back online
     await page.context().setOffline(false)
 
-    await expect(page.getByText('Offline')).not.toBeVisible()
+    await correctionResponse
 
-    await expect(await page.locator('#no-record')).toContainText(
-      'No records require processing',
-      {
-        timeout: SAFE_OUTBOX_TIMEOUT_MS
-      }
-    )
+    await expect(page.getByText('Offline')).not.toBeVisible()
   })
 })

@@ -1,7 +1,7 @@
 import { expect, test, type Page } from '@playwright/test'
 
 import { login, getToken } from '../../helpers'
-import { CREDENTIALS, SAFE_WORKQUEUE_TIMEOUT_MS } from '../../constants'
+import { CREDENTIALS } from '../../constants'
 import { createDeclaration, Declaration } from '../test-data/birth-declaration'
 import { formatV2ChildName } from '../birth/helpers'
 import { ensureAssignedToUser, expectInUrl, selectAction } from '../../utils'
@@ -30,7 +30,6 @@ test.describe.serial('6 Validate "Pending certification"-workqueue', () => {
   })
 
   test('6.1 Go to "Pending certification"-workqueue', async () => {
-    await page.waitForTimeout(SAFE_WORKQUEUE_TIMEOUT_MS) // wait for the event to be in the workqueue.
     await page.getByText('Pending certification').click()
     await expect(
       page.getByRole('button', { name: formatV2ChildName(declaration) })

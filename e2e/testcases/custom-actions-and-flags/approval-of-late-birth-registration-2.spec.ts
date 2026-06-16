@@ -176,7 +176,7 @@ test.describe
 
     test('Go to record', async () => {
       await page.getByText('Recent').click()
-      await page.getByRole('button', { name: childNameFormatted }).click()
+      await openRecordByTitle(page, childNameFormatted)
     })
 
     test("Event should not have the 'Approval required for late registration' -flag", async () => {

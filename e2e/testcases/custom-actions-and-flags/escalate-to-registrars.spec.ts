@@ -8,11 +8,7 @@ import {
 } from '../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../constants'
-import {
-  ensureAssignedToUser,
-  ensureOutboxIsEmpty,
-  selectAction
-} from '../../utils'
+import { ensureAssignedToUser, selectAction } from '../../utils'
 import { createDeclaration } from '../test-data/birth-declaration-with-father-brother'
 import { openRecordByTitle } from '../print-certificate/birth/helpers'
 
@@ -95,9 +91,15 @@ test.describe.serial('Escalation of birth registration by Registrar', () => {
         'Escalating this case to Provincial Registrar for further review.'
       )
 
+      const escalateResponse = page.waitForResponse(
+        (response) =>
+          response.url().includes('event.actions.custom') &&
+          response.status() === 200
+      )
+
       await expect(confirmButton).toBeEnabled()
       await confirmButton.click()
-      await ensureOutboxIsEmpty(page)
+      await escalateResponse
     })
   })
 
@@ -129,9 +131,15 @@ test.describe.serial('Escalation of birth registration by Registrar', () => {
         'Escalating this case to Registrar General for further review.'
       )
 
+      const escalateResponse = page.waitForResponse(
+        (response) =>
+          response.url().includes('event.actions.custom') && response.ok()
+      )
+
       await expect(confirmButton).toBeEnabled()
       await confirmButton.click()
-      await ensureOutboxIsEmpty(page)
+
+      await escalateResponse
     })
   })
 
@@ -159,6 +167,10 @@ test.describe.serial('Escalation of birth registration by Registrar', () => {
     test('Registrar general should have the action Registrar General feedback', async () => {
       await selectAction(page, 'Registrar general feedback')
 
+      const feedbackResponse = page.waitForResponse(
+        (response) =>
+          response.url().includes('event.actions.custom') && response.ok()
+      )
       const confirmButton = page.getByRole('button', { name: 'Confirm' })
       await expect(confirmButton).toBeDisabled()
 
@@ -167,7 +179,8 @@ test.describe.serial('Escalation of birth registration by Registrar', () => {
 
       await expect(confirmButton).toBeEnabled()
       await confirmButton.click()
-      await ensureOutboxIsEmpty(page)
+
+      await feedbackResponse
     })
   })
 
@@ -201,8 +214,15 @@ test.describe.serial('Escalation of birth registration by Registrar', () => {
       await notesField.fill('Approving after verifying record - by PR.')
 
       await expect(confirmButton).toBeEnabled()
+
+      const feedbackResponse = page.waitForResponse(
+        (response) =>
+          response.url().includes('event.actions.custom') && response.ok()
+      )
+
       await confirmButton.click()
-      await ensureOutboxIsEmpty(page)
+
+      await feedbackResponse
     })
   })
 

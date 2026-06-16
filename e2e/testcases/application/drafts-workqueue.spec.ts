@@ -4,7 +4,6 @@ import { formatName, login, selectDeclarationAction } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
 import { faker } from '@faker-js/faker'
 import { getRowByTitle } from '../print-certificate/birth/helpers'
-import { ensureOutboxIsEmpty } from '../../utils'
 
 test.describe.serial('1: Validate my draft tab', () => {
   let page: Page
@@ -40,13 +39,16 @@ test.describe.serial('1: Validate my draft tab', () => {
     await page.locator('#firstname').fill(name.firstNames)
     await page.locator('#surname').fill(name.familyName)
 
+    const draftResponse = page.waitForResponse(
+      (res) => res.url().includes('event.draft.create') && res.ok()
+    )
     await page.getByRole('button', { name: 'Save & Exit' }).click()
     await page.getByRole('button', { name: 'Confirm' }).click()
+
+    await draftResponse
   })
 
   test('1.3 Record appears in draft', async () => {
-    await ensureOutboxIsEmpty(page)
-
     await page.getByRole('button', { name: 'Drafts' }).click()
 
     await expect(page.getByTestId('search-result')).toContainText(formattedName)

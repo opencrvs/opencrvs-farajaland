@@ -10,12 +10,8 @@ import {
   validateActionMenuButton
 } from '../../helpers'
 import { faker } from '@faker-js/faker'
-import { CREDENTIALS, SAFE_OUTBOX_TIMEOUT_MS } from '../../constants'
-import {
-  ensureAssignedToUser,
-  ensureOutboxIsEmpty,
-  selectAction
-} from '../../utils'
+import { CREDENTIALS } from '../../constants'
+import { ensureAssignedToUser, selectAction } from '../../utils'
 import { selectDeclarationAction } from '../../helpers'
 import { format, subDays } from 'date-fns'
 import { openRecordByTitle } from '../print-certificate/birth/helpers'
@@ -175,17 +171,27 @@ test.describe.serial('Approval of late birth registration', () => {
     test('Navigate to the declaration review page', async () => {
       await login(page, CREDENTIALS.REGISTRAR)
       await page.getByText('Pending approval').click()
-      await page.getByRole('button', { name: childNameFormatted }).click()
+
+      await openRecordByTitle(page, childNameFormatted)
     })
 
     test('Unassign', async () => {
       await page.getByRole('button', { name: 'Action', exact: true }).click()
       await page.getByText('Unassign', { exact: true }).click()
+
+      const unassignResponse = page.waitForResponse(
+        (response) =>
+          response.url().includes('event.actions.assignment.unassign') &&
+          response.ok()
+      )
+
       await page.getByRole('button', { name: 'Unassign', exact: true }).click()
+
+      await unassignResponse
 
       await expect(
         page.getByTestId('assignedTo-value').locator('span')
-      ).toContainText('Not assigned', { timeout: SAFE_OUTBOX_TIMEOUT_MS })
+      ).toContainText('Not assigned')
     })
 
     test('LR should not have the option to Approve', async () => {
@@ -231,12 +237,17 @@ test.describe.serial('Approval of late birth registration', () => {
         'Approving after verifying all late submission details.'
       )
 
+      const approveResponse = page.waitForResponse(
+        (response) =>
+          response.url().includes('event.actions.custom') && response.ok()
+      )
+
       await expect(confirmButton).toBeEnabled()
       await confirmButton.click()
+      await approveResponse
     })
 
     test("Validate that the 'Approval required for late registration' -flag is removed after approval", async () => {
-      await ensureOutboxIsEmpty(page)
       await searchFromSearchBar(page, childNameFormatted)
 
       await expect(
@@ -387,7 +398,8 @@ test.describe('Birth with non-late registration will not have flag or Approve-ac
 
     test('Navigate to the record', async () => {
       await page.getByText('Recent').click()
-      await page.getByRole('button', { name: childNameFormatted }).click()
+
+      await openRecordByTitle(page, childNameFormatted)
     })
 
     test("Record should not have the 'Approval required for late registration' -flag", async () => {

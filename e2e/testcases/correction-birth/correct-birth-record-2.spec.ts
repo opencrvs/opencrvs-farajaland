@@ -20,6 +20,7 @@ import {
 } from '../../utils'
 import {
   navigateToCertificatePrintAction,
+  openRecordByTitle,
   selectCertificationType,
   selectRequesterType
 } from '../print-certificate/birth/helpers'
@@ -256,10 +257,16 @@ test.describe.serial('Correct record - 2', () => {
       page.getByText('Relationship to child' + 'Mother' + 'Brother')
     ).toBeVisible()
 
+    const correctionRequest = page.waitForResponse(
+      (res) =>
+        res.url().includes('event.actions.correction.request') && res.ok()
+    )
+
     await page
       .getByRole('button', { name: 'Submit correction request' })
       .click()
     await page.getByRole('button', { name: 'Confirm' }).click()
+    await correctionRequest
 
     await expectInUrl(page, `/workqueue/pending-certification`)
   })
@@ -278,9 +285,8 @@ test.describe.serial('Correct record - 2', () => {
 
       await type(page, '#searchText', trackingId)
       await page.locator('#searchIconButton').click()
-      await page
-        .getByRole('button', { name: formatV2ChildName(declaration) })
-        .click()
+
+      await openRecordByTitle(page, formatV2ChildName(declaration))
     })
 
     test('2.8.2 Correction review page', async () => {
@@ -351,7 +357,14 @@ test.describe.serial('Correct record - 2', () => {
       ).toBeDisabled()
 
       await page.locator('#reject-correction-reason').fill('No legal proof')
+
+      const correctionResponse = page.waitForResponse(
+        (res) =>
+          res.url().includes('event.actions.correction.reject') && res.ok()
+      )
       await page.getByRole('button', { name: 'Confirm', exact: true }).click()
+
+      await correctionResponse
 
       await expectInUrl(page, `/events/${eventId}`)
     })

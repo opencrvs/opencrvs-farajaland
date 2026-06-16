@@ -1,7 +1,7 @@
 import { expect, test, type Page } from '@playwright/test'
 
 import { login, getToken, selectDeclarationAction } from '../../helpers'
-import { CREDENTIALS, SAFE_WORKQUEUE_TIMEOUT_MS } from '../../constants'
+import { CREDENTIALS } from '../../constants'
 import { createDeclaration, Declaration } from '../test-data/birth-declaration'
 import { ActionType } from '@opencrvs/toolkit/events'
 import { formatV2ChildName } from '../birth/helpers'
@@ -55,7 +55,7 @@ test.describe.serial('4(b) Validate "Pending updates"-workqueue for RO', () => {
 
   test('4.1 Go to "Pending updates"-workqueue', async () => {
     await login(page, CREDENTIALS.REGISTRATION_OFFICER)
-    await page.waitForTimeout(SAFE_WORKQUEUE_TIMEOUT_MS) // wait for the event to be in the workqueue.
+
     await page.getByText('Pending updates').click()
     await expect(
       page.getByRole('button', { name: formatV2ChildName(declaration) })
@@ -88,9 +88,7 @@ test.describe.serial('4(b) Validate "Pending updates"-workqueue for RO', () => {
   })
 
   test('4.3 Click a name', async () => {
-    await page
-      .getByRole('button', { name: formatV2ChildName(declaration) })
-      .click()
+    await openRecordByTitle(page, formatV2ChildName(declaration))
 
     // User should navigate to record audit page
     await expectInUrl(
@@ -121,9 +119,7 @@ test.describe.serial('4(b) Validate "Pending updates"-workqueue for RO', () => {
 
   test('4.6 Assert record has correct flags', async () => {
     await navigateToWorkqueue(page, 'Recent')
-    await page
-      .getByRole('button', { name: formatV2ChildName(declaration) })
-      .click()
+    await openRecordByTitle(page, formatV2ChildName(declaration))
     await expect(page.getByTestId('flags-value')).toHaveText('Validated')
     await expect(page.getByTestId('flags-value')).not.toHaveText(
       'Edit in progress'

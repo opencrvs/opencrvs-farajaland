@@ -15,11 +15,8 @@ test.describe('Informant details resets when relation is changed', () => {
       await page.close()
     })
 
-    test('Login', async () => {
-      await login(page, CREDENTIALS.REGISTRAR_VILLAGE)
-    })
-
     test('Fill in informant details', async () => {
+      await login(page, CREDENTIALS.REGISTRAR_VILLAGE)
       await openBirthDeclaration(page)
 
       await goToSection(page, 'informant')
@@ -96,6 +93,7 @@ test.describe('Informant details resets when relation is changed', () => {
       await expect(page.locator('#informant____email')).toHaveValue('')
     })
   })
+
   test.describe.serial('Death', async () => {
     let page: Page
 
@@ -107,11 +105,8 @@ test.describe('Informant details resets when relation is changed', () => {
       await page.close()
     })
 
-    test('Login', async () => {
-      await login(page)
-    })
-
     test('Fill in informant details', async () => {
+      await login(page)
       await page.click('#header-new-event')
       await page.getByLabel('Death').click()
       await page.getByRole('button', { name: 'Continue' }).click()

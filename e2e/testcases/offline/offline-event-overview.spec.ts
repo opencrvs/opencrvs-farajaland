@@ -6,6 +6,7 @@ import { mockNetworkConditions } from '../../mock-network-conditions'
 import { createDeclaration, Declaration } from '../test-data/birth-declaration'
 import { CREDENTIALS } from '../../constants'
 import { formatV2ChildName } from '../birth/helpers'
+import { openRecordByTitle } from '../print-certificate/birth/helpers'
 
 test.describe.serial('Can view non-downloaded event online', () => {
   let page: Page
@@ -32,7 +33,7 @@ test.describe.serial('Can view non-downloaded event online', () => {
   })
 
   test('Open the event overview page', async () => {
-    await page.getByRole('button', { name: childName, exact: true }).click()
+    await openRecordByTitle(page, childName)
   })
 
   test('Verify user can only see non-secured details', async () => {
@@ -77,7 +78,7 @@ test.describe.serial('Can partially view non-downloaded event offline', () => {
   })
 
   test('Open the event overview page', async () => {
-    await page.getByRole('button', { name: childName, exact: true }).click()
+    await openRecordByTitle(page, childName)
   })
 
   test('Verify user can only see non-secured details', async () => {
@@ -135,7 +136,7 @@ test.describe.serial('Can view downloaded event offline', () => {
   })
 
   test('Open the event overview page', async () => {
-    await page.getByRole('button', { name: childName, exact: true }).click()
+    await openRecordByTitle(page, childName)
   })
 
   test('Verify that user can see secured details', async () => {

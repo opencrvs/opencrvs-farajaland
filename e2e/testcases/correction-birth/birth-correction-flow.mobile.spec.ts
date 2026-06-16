@@ -8,7 +8,6 @@ import {
 } from '../test-data/birth-declaration-with-mother-father'
 import {
   ensureAssignedToUser,
-  ensureOutboxIsEmpty,
   expectInUrl,
   navigateToWorkqueue,
   selectAction,
@@ -16,6 +15,7 @@ import {
 } from '../../utils'
 import { formatV2ChildName } from '../birth/helpers'
 import { setMobileViewport } from '../../mobile-helpers'
+import { openRecordByTitle } from '../print-certificate/birth/helpers'
 
 test.describe.serial('Birth correction flow - Mobile', () => {
   let declaration: Declaration
@@ -43,9 +43,7 @@ test.describe.serial('Birth correction flow - Mobile', () => {
 
   test('Navigate to the correction form', async () => {
     await navigateToWorkqueue(page, 'Pending certification')
-    await page
-      .getByRole('button', { name: formatV2ChildName(declaration) })
-      .click()
+    await openRecordByTitle(page, formatV2ChildName(declaration))
 
     await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
     await selectAction(page, 'Correct')
@@ -131,10 +129,16 @@ test.describe.serial('Birth correction flow - Mobile', () => {
       .getByRole('button', { name: 'Submit correction request' })
       .click()
 
+    const correctionResponse = page.waitForResponse(
+      (res) =>
+        res.url().includes('event.actions.correction.request') && res.ok()
+    )
+
     await expect(page.getByText('Request record correction?')).toBeVisible()
     await page.getByRole('button', { name: 'Confirm', exact: true }).click()
+
+    await correctionResponse
     await expectInUrl(page, `/workqueue/pending-certification`)
-    await ensureOutboxIsEmpty(page)
   })
 
   test('Logout', async () => {
@@ -149,9 +153,7 @@ test.describe.serial('Birth correction flow - Mobile', () => {
     test("Find the event in the 'Pending corrections' workflow", async () => {
       await navigateToWorkqueue(page, 'Pending corrections')
 
-      await page
-        .getByRole('button', { name: formatV2ChildName(declaration) })
-        .click()
+      await openRecordByTitle(page, formatV2ChildName(declaration))
     })
 
     test('Navigate to correction review', async () => {
@@ -205,35 +207,28 @@ test.describe.serial('Birth correction flow - Mobile', () => {
     })
 
     test('Approve correction request', async () => {
+      const correctionResponse = page.waitForResponse(
+        (res) =>
+          res.url().includes('event.actions.correction.approve') && res.ok()
+      )
+
       await page.getByRole('button', { name: 'Approve', exact: true }).click()
       await page.getByRole('button', { name: 'Confirm', exact: true }).click()
+      await correctionResponse
 
       await expectInUrl(page, `/workqueue/correction-requested`)
-      await ensureOutboxIsEmpty(page)
-      await navigateToWorkqueue(page, 'Pending certification')
-      await page
-        .getByRole('button', {
-          name: formatV2ChildName({
-            'child.name': {
-              firstname: newFirstName,
-              surname: declaration['child.name'].surname
-            }
-          })
-        })
-        .click()
 
-      await expect(
-        page.getByRole('heading', {
-          name: formatV2ChildName({
-            'child.name': {
-              firstname: newFirstName,
-              surname: declaration['child.name'].surname
-            }
-          })
+      await navigateToWorkqueue(page, 'Pending certification')
+
+      await openRecordByTitle(
+        page,
+        formatV2ChildName({
+          'child.name': {
+            firstname: newFirstName,
+            surname: declaration['child.name'].surname
+          }
         })
-      ).toBeVisible({
-        timeout: 60_000
-      })
+      )
     })
   })
 })

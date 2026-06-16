@@ -11,6 +11,7 @@ import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../../constants'
 import { REQUIRED_VALIDATION_ERROR } from '../helpers'
 import { selectDeclarationAction } from '../../../helpers'
+import { openRecordByTitle } from '../../print-certificate/birth/helpers'
 
 test.describe.serial('10. Birth declaration case - 10', () => {
   let page: Page
@@ -195,13 +196,8 @@ test.describe.serial('10. Birth declaration case - 10', () => {
 
       await page.getByText('Notifications').click()
 
-      await page
-        .getByRole('button', {
-          name: formatName(declaration.child.name),
-          exact: true
-        })
-        .click()
-      await page.getByRole('button', { name: 'Action', exact: true }).click()
+      await openRecordByTitle(page, formatName(declaration.child.name))
+
       await switchEventTab(page, 'Record')
     })
 

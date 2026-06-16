@@ -6,7 +6,7 @@ import {
   selectDeclarationAction,
   formatName
 } from '../../helpers'
-import { CREDENTIALS, SAFE_WORKQUEUE_TIMEOUT_MS } from '../../constants'
+import { CREDENTIALS } from '../../constants'
 import { createDeclaration, Declaration } from '../test-data/birth-declaration'
 import { ActionType } from '@opencrvs/toolkit/events'
 import { formatV2ChildName } from '../birth/helpers'
@@ -62,12 +62,17 @@ test.describe.serial('4(a) Validate "Pending updates"-workqueue for HO', () => {
 
     await page.getByTestId('reject-reason').fill(faker.lorem.sentence())
 
+    const rejectResponse = page.waitForResponse(
+      (res) => res.url().includes('event.actions.reject.request') && res.ok()
+    )
+
     await page.getByRole('button', { name: 'Send For Update' }).click()
+    await rejectResponse
   })
 
   test('4.1 Go to "Pending updates"-workqueue', async () => {
     await login(page, CREDENTIALS.HOSPITAL_OFFICIAL)
-    await page.waitForTimeout(SAFE_WORKQUEUE_TIMEOUT_MS) // wait for the event to be in the workqueue.
+
     await page.getByText('Pending updates').click()
     await expect(
       page.getByRole('button', { name: formattedChildName })
@@ -100,7 +105,7 @@ test.describe.serial('4(a) Validate "Pending updates"-workqueue for HO', () => {
   })
 
   test('4.4 Click a name', async () => {
-    await page.getByRole('button', { name: formattedChildName }).click()
+    await openRecordByTitle(page, formattedChildName)
 
     // User should navigate to record audit page
     await expectInUrl(
@@ -138,7 +143,7 @@ test.describe.serial('4(a) Validate "Pending updates"-workqueue for HO', () => {
 
   test('4.6 Assert record does not have "Edit in progress" flag', async () => {
     await navigateToWorkqueue(page, 'Recent')
-    await page.getByRole('button', { name: formattedChildName }).click()
+    await openRecordByTitle(page, formattedChildName)
     await expect(page.getByText('Edit in progress')).not.toBeVisible()
   })
 })

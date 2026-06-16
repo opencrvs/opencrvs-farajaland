@@ -3,7 +3,6 @@ import { CREDENTIALS } from '../../constants'
 import { getToken, login, searchFromSearchBar } from '../../helpers'
 import {
   ensureAssignedToUser,
-  ensureOutboxIsEmpty,
   navigateToWorkqueue,
   selectAction
 } from '../../utils'
@@ -97,8 +96,13 @@ test.describe.serial('Issue verifiable credential', () => {
     await acceptedOfferCheckbox.check()
     await expect(confirmButton).toBeEnabled()
 
+    const verifiableCredentialResponse = page.waitForResponse(
+      (response) =>
+        response.url().includes('event.actions.custom') && response.ok()
+    )
+
     await confirmButton.click()
-    await ensureOutboxIsEmpty(page)
+    await verifiableCredentialResponse
   })
 
   test('Requester dropdown spec: non-parent informant shows available parent(s) plus informant relation', async () => {
@@ -130,8 +134,13 @@ test.describe.serial('Issue verifiable credential', () => {
     await expect(acceptedOfferCheckbox).toBeVisible()
     await acceptedOfferCheckbox.check()
 
+    const verifiableCredentialResponse = page.waitForResponse(
+      (response) =>
+        response.url().includes('event.actions.custom') && response.ok()
+    )
+
     await page.getByRole('button', { name: 'Confirm' }).click()
-    await ensureOutboxIsEmpty(page)
+    await verifiableCredentialResponse
   })
 
   test('Show verifiable credential QR code in Birth Certificate', async () => {

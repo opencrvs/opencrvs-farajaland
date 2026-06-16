@@ -6,7 +6,7 @@ import {
   getToken,
   goBackToReview,
   login,
-  logout,
+  searchFromSearchBar,
   uploadImage
 } from '../../helpers'
 import { faker } from '@faker-js/faker'
@@ -16,14 +16,9 @@ import {
   createDeclaration,
   Declaration
 } from '../test-data/birth-declaration-with-mother-father'
-import {
-  ensureAssignedToUser,
-  ensureOutboxIsEmpty,
-  expectInUrl,
-  selectAction,
-  type
-} from '../../utils'
+import { ensureAssignedToUser, expectInUrl, selectAction } from '../../utils'
 import { formatV2ChildName } from '../birth/helpers'
+import { openRecordByTitle } from '../print-certificate/birth/helpers'
 
 test('1. Correct record', async ({ page }) => {
   const updatedChildDetails = {
@@ -63,23 +58,12 @@ test('1. Correct record', async ({ page }) => {
   await test.step('Login as Registration Officer and open the record', async () => {
     await login(page, CREDENTIALS.REGISTRATION_OFFICER)
     await page.getByRole('button', { name: 'Pending certification' }).click()
-    await page
-      .getByRole('button', { name: formatV2ChildName(declaration) })
-      .click()
-
+    await openRecordByTitle(page, formatV2ChildName(declaration))
     await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
   })
 
   // 1.1 Validate verbiage on the request-correction onboarding pages.
   await test.step('1.1.1 Validate record audit page', async () => {
-    await expect(page.locator('#content-name')).toHaveText(
-      formatV2ChildName(declaration),
-      { timeout: 60_000 }
-    )
-    await expect(
-      page.getByRole('button', { name: 'Action' }).first()
-    ).toBeVisible()
-
     await expectInUrl(page, `/events/${eventId}`)
 
     await expect(page.getByText(`StatusRegistered`)).toBeVisible()
@@ -469,20 +453,21 @@ test('1. Correct record', async ({ page }) => {
     await page
       .getByRole('button', { name: 'Submit correction request' })
       .click()
+
+    const correctionResponse = page.waitForResponse(
+      (res) =>
+        res.url().includes('event.actions.correction.request') && res.ok()
+    )
+
     await page.getByRole('button', { name: 'Confirm' }).click()
 
-    await expectInUrl(page, `/workqueue/pending-certification`)
+    await correctionResponse
 
-    await page.getByText('Recent').click()
-    await ensureOutboxIsEmpty(page)
-    await expect(
-      page.getByRole('button', { name: formatV2ChildName(declaration) })
-    ).toBeVisible()
+    await expectInUrl(page, `/workqueue/pending-certification`)
   })
 
   // 1.2.6 Correction Approval — performed by a Registrar.
   await test.step('Log in as Registrar to review the correction request', async () => {
-    await logout(page)
     await login(page, CREDENTIALS.REGISTRAR)
   })
 
@@ -491,15 +476,11 @@ test('1. Correct record', async ({ page }) => {
       throw new Error('Tracking ID is required')
     }
 
-    await type(page, '#searchText', trackingId)
-    await page.locator('#searchIconButton').click()
-    await page
-      .getByRole('button', { name: formatV2ChildName(declaration) })
-      .click()
+    await searchFromSearchBar(page, formatV2ChildName(declaration))
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
   })
 
   await test.step('1.2.6.2 Correction review', async () => {
-    await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
     await selectAction(page, 'Review correction request')
 
     await expect(
@@ -533,14 +514,20 @@ test('1. Correct record', async ({ page }) => {
 
   await test.step('1.2.6.3 Approve correction', async () => {
     await page.getByRole('button', { name: 'Approve', exact: true }).click()
+    const correctionResponse = page.waitForResponse(
+      (res) =>
+        res.url().includes('event.actions.correction.approve') && res.ok()
+    )
+
+    const searchCacheRefetchResponse = page.waitForResponse(
+      (res) => res.url().includes(`event.search?batch=1`) && res.ok()
+    )
+
     await page.getByRole('button', { name: 'Confirm', exact: true }).click()
+    await correctionResponse
+    await searchCacheRefetchResponse
 
     await expectInUrl(page, `/events/${eventId}`)
-
-    // Wait until the actions have finished, which unassigns user
-    await expect(
-      page.getByRole('button', { name: 'Assign record' })
-    ).toBeVisible()
   })
 
   // 1.2.6.4 Validate history in record audit.

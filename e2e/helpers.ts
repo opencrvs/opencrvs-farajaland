@@ -6,7 +6,6 @@ import {
   GATEWAY_HOST,
   LOGIN_URL,
   SAFE_INPUT_CHANGE_TIMEOUT_MS,
-  SAFE_OUTBOX_TIMEOUT_MS,
   TEST_USER_PASSWORD
 } from './constants'
 import { format, parseISO } from 'date-fns'
@@ -16,6 +15,7 @@ import { isMobile } from './mobile-helpers'
 import { createClient } from '@opencrvs/toolkit/api'
 import { UUID } from 'crypto'
 import { faker } from '@faker-js/faker'
+import { openRecordByTitle } from './testcases/print-certificate/birth/helpers'
 
 export async function createPIN(page: Page) {
   await page.click('#pin-input')
@@ -364,7 +364,7 @@ export async function expectRowValue(
 ) {
   await expect(page.getByTestId(`row-value-${fieldName}`)).toContainText(
     assertionText,
-    { timeout: SAFE_OUTBOX_TIMEOUT_MS }
+    { timeout: 30_000 }
   )
 }
 
@@ -413,6 +413,7 @@ const actionTitleToApiCallMap = {
   Notify: ['event.actions.notify'],
   Declare: ['event.actions.declare'],
   Register: ['event.actions.register'],
+  Validate: ['event.actions.custom'],
   'Delete declaration': ['event.delete'],
   'Save & Exit': ['event.draft.create'],
   'Declare with edits': ['event.actions.edit', 'event.actions.declare'],
@@ -429,6 +430,7 @@ export async function selectDeclarationAction(
     | 'Notify'
     | 'Declare'
     | 'Register'
+    | 'Validate'
     | 'Delete declaration'
     | 'Save & Exit'
     | 'Declare with edits'
@@ -466,8 +468,9 @@ export async function searchFromSearchBar(
   await page.locator('#searchIconButton').click()
   const searchResult = await page.locator('#content-name').textContent()
   expect(searchResult).toMatch(searchResultRegex)
+
   if (expectToBeFound) {
-    await page.getByRole('button', { name: searchText, exact: true }).click()
+    await openRecordByTitle(page, searchText)
   } else {
     await expect(
       page.getByRole('button', { name: searchText, exact: true })

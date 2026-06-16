@@ -1,10 +1,5 @@
 import { Locator, Page, expect } from '@playwright/test'
-import {
-  CLIENT_URL,
-  SAFE_IN_EXTERNAL_VALIDATION_MS,
-  SAFE_INPUT_CHANGE_TIMEOUT_MS,
-  SAFE_OUTBOX_TIMEOUT_MS
-} from './constants'
+import { CLIENT_URL } from './constants'
 import { isMobile } from './mobile-helpers'
 
 type Workqueue =
@@ -134,46 +129,13 @@ export async function ensureAssignedToUser(
 
   await expect(
     page.getByTestId('assignedTo-value').locator('span')
-  ).toContainText(userFullName, { timeout: SAFE_OUTBOX_TIMEOUT_MS })
+  ).toContainText(userFullName)
 }
 
 export async function expectInUrl(page: Page, assertionString: string) {
   await expect(page).toHaveURL((url) =>
     decodeURIComponent(url.toString()).includes(assertionString)
   )
-}
-
-/**
- * Checks if user has pending item visible in outbox sidebar.
- * @deprecated This will make every test flaky. Outbox is user dependent. When running tests in parallel, there will be interference between tests and they will fail.
- *
- * Consider using `await page.waitForResponse((response) => response.url() === 'https://example.com' && response.status() === 200)` if you cannot find another UI element to wait for.
- */
-export async function ensureOutboxIsEmpty(page: Page) {
-  await page.waitForTimeout(SAFE_INPUT_CHANGE_TIMEOUT_MS)
-
-  await expect(page.locator('#navigation_workqueue_outbox')).toHaveText(
-    'Outbox',
-    {
-      timeout: SAFE_OUTBOX_TIMEOUT_MS
-    }
-  )
-}
-
-/**
- * Checks if user has pending item visible in external validation sidebar.
- * @deprecated This will make every test flaky. External validation is user dependent. When running tests in parallel, there will be interference between tests and they will fail.
- *
- * Consider using `await page.waitForResponse((response) => response.url() === 'https://example.com' && response.status() === 200)` if you cannot find another UI element to wait for.
- */
-export async function ensureInExternalValidationIsEmpty(page: Page) {
-  await page.waitForTimeout(SAFE_INPUT_CHANGE_TIMEOUT_MS)
-
-  await expect(
-    page.locator('#navigation_workqueue_in-external-validation')
-  ).toHaveText('Pending external validation', {
-    timeout: SAFE_IN_EXTERNAL_VALIDATION_MS
-  })
 }
 
 export async function selectLocationOption(page: Page, locationName: string) {

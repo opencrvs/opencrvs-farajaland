@@ -1,9 +1,10 @@
 import { expect, test, type Page } from '@playwright/test'
 
 import { login, getToken } from '../../helpers'
-import { CREDENTIALS, SAFE_WORKQUEUE_TIMEOUT_MS } from '../../constants'
+import { CREDENTIALS } from '../../constants'
 import { createDeclaration, Declaration } from '../test-data/birth-declaration'
 import { ensureAssignedToUser, selectAction } from '../../utils'
+import { openRecordByTitle } from '../print-certificate/birth/helpers'
 
 test.describe.serial('Assign & Unassign', () => {
   let page: Page
@@ -17,7 +18,7 @@ test.describe.serial('Assign & Unassign', () => {
   })
 
   test.afterAll(async () => {
-    await page.close()
+    await page?.close()
   })
 
   test('Login', async () => {
@@ -25,11 +26,10 @@ test.describe.serial('Assign & Unassign', () => {
   })
 
   test('Click on "Assign" from action menu', async () => {
-    await page.waitForTimeout(SAFE_WORKQUEUE_TIMEOUT_MS) // wait for the event to be in the workqueue.
     await page.getByText('Pending certification').click()
 
     const childName = `${declaration['child.name'].firstname} ${declaration['child.name'].surname}`
-    await page.getByRole('button', { name: childName }).click()
+    await openRecordByTitle(page, childName)
     await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
   })
 
