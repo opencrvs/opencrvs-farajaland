@@ -113,7 +113,10 @@ export const father = defineFormPage({
           },
           validator: or(
             field('child.dob').isFalsy(),
-            field('father.dob').isBefore().date(field('child.dob'))
+            and(
+              field('father.dob').isBefore().date(field('child.dob')),
+              not(field('father.dob').isEqualTo(field('child.dob')))
+            )
           )
         }
       ]

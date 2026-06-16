@@ -221,7 +221,10 @@ export const informant = defineFormPage({
               "This is the error message for a birth date after child's birth date",
             id: 'event.birth.action.declare.form.section.person.dob.afterChild'
           },
-          validator: field('informant.dob').isBefore().date(field('child.dob'))
+          validator: and(
+            field('informant.dob').isBefore().date(field('child.dob')),
+            not(field('informant.dob').isEqualTo(field('child.dob')))
+          )
         }
       ]
     }),
