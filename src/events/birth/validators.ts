@@ -8,8 +8,8 @@
  *
  * Copyright (C) The OpenCRVS Authors located at https://github.com/opencrvs/opencrvs-core/blob/master/AUTHORS.
  */
-import { and, field } from '@opencrvs/toolkit/events'
-import { defineFormConditional } from '@opencrvs/toolkit/conditionals'
+import { and, or, field } from '@opencrvs/toolkit/events'
+import { defineFormConditional, not } from '@opencrvs/toolkit/conditionals'
 
 export const MAX_NAME_LENGTH = 32
 
@@ -48,8 +48,7 @@ export const nationalIdValidator = (fieldId: string) => ({
 
 export const passportValidator = (fieldId: string) => ({
   message: {
-    defaultMessage:
-      'The passport can only be numeric',
+    defaultMessage: 'The passport can only be numeric',
     description: 'This is the error message for an invalid passport',
     id: 'error.invalidPassport'
   },
@@ -63,6 +62,22 @@ export const passportValidator = (fieldId: string) => ({
       }
     }
   })
+})
+
+export const dobBeforeChildDobValidator = (prefix: string) => ({
+  message: {
+    defaultMessage: "Birth date must be before child's birth date",
+    description:
+      "This is the error message for a birth date after child's birth date",
+    id: 'event.birth.action.declare.form.section.person.dob.afterChild'
+  },
+  validator: or(
+    field('child.dob').isFalsy(),
+    and(
+      field(`${prefix}.dob`).isBefore().date(field('child.dob')),
+      not(field(`${prefix}.dob`).isEqualTo(field('child.dob')))
+    )
+  )
 })
 
 export const farajalandNameConfig = {

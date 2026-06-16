@@ -31,6 +31,7 @@ import {
   getNestedFieldValidators,
   getIdentityFields
 } from '@countryconfig/events/utils'
+import { dobBeforeChildDobValidator } from '@countryconfig/events/birth/validators'
 
 export const requireFatherDetails = or(
   field('father.detailsNotAvailable').isFalsy(),
@@ -103,23 +104,7 @@ export const father = defineFormPage({
       prefix: 'father',
       showConditional: requireFatherDetails,
       uniqueNidAgainst: ['mother.nid', 'informant.nid'],
-      dobValidation: [
-        {
-          message: {
-            defaultMessage: "Birth date must be before child's birth date",
-            description:
-              "This is the error message for a birth date after child's birth date",
-            id: 'event.birth.action.declare.form.section.person.dob.afterChild'
-          },
-          validator: or(
-            field('child.dob').isFalsy(),
-            and(
-              field('father.dob').isBefore().date(field('child.dob')),
-              not(field('father.dob').isEqualTo(field('child.dob')))
-            )
-          )
-        }
-      ]
+      dobValidation: [dobBeforeChildDobValidator('father')]
     }),
     {
       id: 'father.addressDivider',
