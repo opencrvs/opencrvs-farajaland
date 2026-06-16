@@ -327,7 +327,7 @@ test.describe.serial('Change informant on review', () => {
     })
 
     test('Register with edits', async () => {
-      await triggerDeclarationAction(page, 'Register with edits', true)
+      await triggerDeclarationAction(page, 'Register with edits')
     })
 
     test('Assert event is registered', async () => {

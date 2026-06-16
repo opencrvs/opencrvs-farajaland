@@ -62,7 +62,7 @@ test.describe('Save and delete drafts', () => {
       await openRecordByTitle(page, childName)
 
       await selectAction(page, 'Update')
-      await triggerDeclarationAction(page, 'Delete declaration', true)
+      await triggerDeclarationAction(page, 'Delete declaration')
 
       await expect(
         page.getByRole('button', { name: childName, exact: true })

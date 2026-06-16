@@ -407,7 +407,7 @@ test.describe('1. Death event declaration', () => {
       })
 
       test('1.9.3 Click Confirm', async () => {
-        await triggerDeclarationAction(page, 'Save & Exit', true)
+        await triggerDeclarationAction(page, 'Save & Exit')
 
         /*
          * Expected result: should

@@ -51,7 +51,7 @@ test.describe('Form state', () => {
       await page.getByRole('button', { name: 'Apply' }).click()
 
       // Save & Exit draft
-      await triggerDeclarationAction(page, 'Save & Exit', true)
+      await triggerDeclarationAction(page, 'Save & Exit')
     })
 
     test('Form states and annotations are not persisted', async () => {
@@ -117,7 +117,7 @@ test.describe('Form state', () => {
       await page.getByRole('button', { name: 'Apply' }).click()
 
       // Save & Exit draft
-      await triggerDeclarationAction(page, 'Save & Exit', true)
+      await triggerDeclarationAction(page, 'Save & Exit')
     })
 
     test('Form states and annotations are not persisted', async () => {

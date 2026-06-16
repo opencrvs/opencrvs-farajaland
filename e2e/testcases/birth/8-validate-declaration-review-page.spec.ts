@@ -849,7 +849,7 @@ test.describe.serial('8. Validate declaration review page', () => {
     })
 
     test('8.1.7 Declare', async () => {
-      await triggerDeclarationAction(page, 'Declare', true)
+      await triggerDeclarationAction(page, 'Declare')
     })
   })
 
