@@ -145,6 +145,7 @@ test.describe.serial('5. Workqueue flow - 5', () => {
       const rejectResponse = page.waitForResponse(
         (res) => res.url().includes('event.actions.reject') && res.ok()
       )
+
       await page.getByRole('button', { name: 'Send For Update' }).click()
 
       await rejectResponse
@@ -381,6 +382,10 @@ test.describe.serial('5. Workqueue flow - 5', () => {
     test('5.5.2 Go to edit', async () => {
       await page.getByText('Pending updates').click()
       await openRecordByTitle(page, childName)
+
+      await expect(
+        page.getByTestId('status-value').locator('span')
+      ).toContainText('Declared')
 
       await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
       await selectAction(page, 'Edit')
