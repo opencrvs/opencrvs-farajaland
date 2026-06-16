@@ -5,7 +5,7 @@ import {
   drawSignature,
   getToken,
   goToSection,
-  selectDeclarationAction
+  triggerDeclarationAction
 } from '../../helpers'
 import { faker } from '@faker-js/faker'
 import { fillChildDetails, openBirthDeclaration } from '../birth/helpers'
@@ -51,7 +51,7 @@ test.describe('Form state', () => {
       await page.getByRole('button', { name: 'Apply' }).click()
 
       // Save & Exit draft
-      await selectDeclarationAction(page, 'Save & Exit', true)
+      await triggerDeclarationAction(page, 'Save & Exit', true)
     })
 
     test('Form states and annotations are not persisted', async () => {
@@ -117,7 +117,7 @@ test.describe('Form state', () => {
       await page.getByRole('button', { name: 'Apply' }).click()
 
       // Save & Exit draft
-      await selectDeclarationAction(page, 'Save & Exit', true)
+      await triggerDeclarationAction(page, 'Save & Exit', true)
     })
 
     test('Form states and annotations are not persisted', async () => {

@@ -12,7 +12,7 @@ import {
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../constants'
 import { ensureAssignedToUser, selectAction } from '../../utils'
-import { selectDeclarationAction } from '../../helpers'
+import { triggerDeclarationAction } from '../../helpers'
 import { format, subDays } from 'date-fns'
 import { openRecordByTitle } from '../print-certificate/birth/helpers'
 
@@ -140,7 +140,7 @@ test.describe.serial('Approval of late birth registration', () => {
     })
 
     test('Declare', async () => {
-      await selectDeclarationAction(page, 'Declare')
+      await triggerDeclarationAction(page, 'Declare')
 
       await page.getByText('Recent').click()
     })
@@ -393,7 +393,7 @@ test.describe('Birth with non-late registration will not have flag or Approve-ac
     })
 
     test('Declare', async () => {
-      await selectDeclarationAction(page, 'Declare')
+      await triggerDeclarationAction(page, 'Declare')
     })
 
     test('Navigate to the record', async () => {

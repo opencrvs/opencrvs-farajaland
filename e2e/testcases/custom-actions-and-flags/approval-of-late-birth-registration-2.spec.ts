@@ -12,7 +12,7 @@ import {
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../constants'
 import { ensureAssignedToUser, selectAction } from '../../utils'
-import { selectDeclarationAction } from '../../helpers'
+import { triggerDeclarationAction } from '../../helpers'
 import { format, subDays } from 'date-fns'
 import { openRecordByTitle } from '../print-certificate/birth/helpers'
 
@@ -132,7 +132,7 @@ test.describe
     })
 
     test('Declare', async () => {
-      await selectDeclarationAction(page, 'Declare')
+      await triggerDeclarationAction(page, 'Declare')
       await page.getByText('Recent').click()
     })
   })
@@ -171,7 +171,7 @@ test.describe
     })
 
     test('Declare with edits', async () => {
-      await selectDeclarationAction(page, 'Declare with edits')
+      await triggerDeclarationAction(page, 'Declare with edits')
     })
 
     test('Go to record', async () => {
@@ -306,7 +306,7 @@ test.describe
     })
 
     test('Declare', async () => {
-      await selectDeclarationAction(page, 'Declare')
+      await triggerDeclarationAction(page, 'Declare')
 
       await page.getByText('Recent').click()
     })
@@ -351,7 +351,7 @@ test.describe
     })
 
     test('Declare with edits', async () => {
-      await selectDeclarationAction(page, 'Declare with edits')
+      await triggerDeclarationAction(page, 'Declare with edits')
     })
 
     test('Go to record', async () => {

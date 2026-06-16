@@ -6,7 +6,7 @@ import {
   goToSection,
   login,
   logout,
-  selectDeclarationAction,
+  triggerDeclarationAction,
   switchEventTab
 } from '../../../helpers'
 import { CREDENTIALS } from '../../../constants'
@@ -260,7 +260,7 @@ test.describe.serial('8. Birth declaration case - 8', () => {
     })
 
     test('8.1.8 Notify', async () => {
-      await selectDeclarationAction(page, 'Notify')
+      await triggerDeclarationAction(page, 'Notify')
 
       await page.getByText('Recent').click()
 

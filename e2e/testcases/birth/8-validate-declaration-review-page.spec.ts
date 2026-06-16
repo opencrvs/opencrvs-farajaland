@@ -13,7 +13,7 @@ import {
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../constants'
 import { fillDate } from './helpers'
-import { selectDeclarationAction } from '../../helpers'
+import { triggerDeclarationAction } from '../../helpers'
 import { ensureAssignedToUser, selectAction } from '../../utils'
 import { openRecordByTitle } from '../print-certificate/birth/helpers'
 
@@ -849,7 +849,7 @@ test.describe.serial('8. Validate declaration review page', () => {
     })
 
     test('8.1.7 Declare', async () => {
-      await selectDeclarationAction(page, 'Declare', true)
+      await triggerDeclarationAction(page, 'Declare', true)
     })
   })
 
@@ -864,7 +864,7 @@ test.describe.serial('8. Validate declaration review page', () => {
     test('8.2.2 Validate', async () => {
       await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
 
-      await selectDeclarationAction(page, 'Validate')
+      await triggerDeclarationAction(page, 'Validate')
     })
 
     test('8.2.3 Confirm the declaration is in Recent-workqueue', async () => {
@@ -1119,7 +1119,7 @@ test.describe.serial('8. Validate declaration review page', () => {
     })
 
     test('8.3.1.3 Register', async () => {
-      await selectDeclarationAction(page, 'Register')
+      await triggerDeclarationAction(page, 'Register')
     })
 
     test('8.3.8 Confirm the declaration is in "Pending certification" -workqueue', async () => {

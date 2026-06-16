@@ -1,6 +1,6 @@
 import { expect, test, type Page } from '@playwright/test'
 
-import { login, getToken, selectDeclarationAction } from '../../helpers'
+import { login, getToken, triggerDeclarationAction } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
 import { createDeclaration, Declaration } from '../test-data/birth-declaration'
 import { ActionType } from '@opencrvs/toolkit/events'
@@ -107,7 +107,7 @@ test.describe.serial('4(b) Validate "Pending updates"-workqueue for RO', () => {
     await page.getByTestId('number__child____weightAtBirth').fill('2.6')
     await page.getByRole('button', { name: 'Go to review' }).click()
 
-    await selectDeclarationAction(page, 'Declare with edits')
+    await triggerDeclarationAction(page, 'Declare with edits')
 
     // Should redirect back to "Pending updates"-workqueue
     await expect(page.locator('#content-name')).toHaveText('Pending updates')

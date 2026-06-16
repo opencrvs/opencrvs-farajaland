@@ -3,7 +3,7 @@ import { expect, test, type Page } from '@playwright/test'
 import {
   login,
   getToken,
-  selectDeclarationAction,
+  triggerDeclarationAction,
   formatName
 } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
@@ -135,7 +135,7 @@ test.describe.serial('4(a) Validate "Pending updates"-workqueue for HO', () => {
 
     await page.getByRole('button', { name: 'Go to review' }).click()
 
-    await selectDeclarationAction(page, 'Declare with edits')
+    await triggerDeclarationAction(page, 'Declare with edits')
 
     // Should redirect back to "Pending updates"-workqueue
     await expect(page.locator('#content-name')).toHaveText('Pending updates')

@@ -8,7 +8,7 @@ import {
   goToSection,
   login,
   logout,
-  selectDeclarationAction,
+  triggerDeclarationAction,
   switchEventTab
 } from '../../../helpers'
 import { faker } from '@faker-js/faker'
@@ -634,7 +634,7 @@ test.describe.serial('4. Birth declaration case - 4', () => {
       await expect(page.getByRole('dialog')).not.toBeVisible()
     })
     test('4.1.8 Declare', async () => {
-      await selectDeclarationAction(page, 'Declare')
+      await triggerDeclarationAction(page, 'Declare')
 
       await page.getByText('Recent').click()
 

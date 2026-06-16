@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test'
-import { login, selectDeclarationAction } from '../../helpers'
+import { login, triggerDeclarationAction } from '../../helpers'
 import { faker } from '@faker-js/faker'
 import { expectInUrl, type } from '../../utils'
 const deceased = {
@@ -407,7 +407,7 @@ test.describe('1. Death event declaration', () => {
       })
 
       test('1.9.3 Click Confirm', async () => {
-        await selectDeclarationAction(page, 'Save & Exit', true)
+        await triggerDeclarationAction(page, 'Save & Exit', true)
 
         /*
          * Expected result: should

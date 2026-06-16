@@ -1,6 +1,6 @@
 import { expect, test, type Page } from '@playwright/test'
 
-import { formatName, login, selectDeclarationAction } from '../../helpers'
+import { formatName, login, triggerDeclarationAction } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
 import { faker } from '@faker-js/faker'
 import { getRowByTitle } from '../print-certificate/birth/helpers'
@@ -91,7 +91,7 @@ test.describe.serial('1: Validate my draft tab', () => {
       })
       .click()
 
-    await selectDeclarationAction(page, 'Notify')
+    await triggerDeclarationAction(page, 'Notify')
 
     await expect(page.getByTestId('search-result')).toContainText('Drafts')
     await expect(page.getByTestId('search-result')).not.toContainText(

@@ -5,7 +5,7 @@ import {
   goToSection,
   login,
   logout,
-  selectDeclarationAction
+  triggerDeclarationAction
 } from '../../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../../constants'
@@ -92,7 +92,7 @@ test('Community leader notifies a birth after deleting a previously persisted si
   })
 
   await test.step('Notify', async () => {
-    await selectDeclarationAction(page, 'Notify')
+    await triggerDeclarationAction(page, 'Notify')
   })
 
   await test.step('Open record', async () => {

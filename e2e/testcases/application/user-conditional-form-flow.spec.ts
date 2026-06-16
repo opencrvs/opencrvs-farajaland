@@ -4,7 +4,7 @@ import {
   formatName,
   getRandomDate,
   login,
-  selectDeclarationAction
+  triggerDeclarationAction
 } from '../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../constants'
@@ -104,7 +104,7 @@ test.describe.serial('1. User conditional form flow', () => {
     })
 
     test('1.1.5 Declare', async () => {
-      await selectDeclarationAction(page, 'Declare')
+      await triggerDeclarationAction(page, 'Declare')
     })
   })
 
