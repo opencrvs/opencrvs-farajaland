@@ -24,7 +24,8 @@ import {
 import { not } from '@opencrvs/toolkit/conditionals'
 import {
   farajalandNameConfig,
-  invalidNameValidator
+  invalidNameValidator,
+  dobBeforeChildDobValidator
 } from '@countryconfig/events/birth/validators'
 
 import {
@@ -213,17 +214,7 @@ export const informant = defineFormPage({
       showConditional: informantOtherThanParent,
       parent: field('informant.relation'),
       uniqueNidAgainst: ['father.nid', 'mother.nid'],
-      dobValidation: [
-        {
-          message: {
-            defaultMessage: "Birth date must be before child's birth date",
-            description:
-              "This is the error message for a birth date after child's birth date",
-            id: 'event.birth.action.declare.form.section.person.dob.afterChild'
-          },
-          validator: field('informant.dob').isBefore().date(field('child.dob'))
-        }
-      ]
+      dobValidation: [dobBeforeChildDobValidator('informant')]
     }),
     {
       id: 'informant.addressDivider1',
