@@ -3,7 +3,8 @@ import { goToSection, login, logout } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
 import { fillChildDetails, openBirthDeclaration } from './helpers'
 import { selectDeclarationAction } from '../../helpers'
-import { ensureOutboxIsEmpty, selectAction } from '../../utils'
+import { selectAction } from '../../utils'
+import { openRecordByTitle } from '../print-certificate/birth/helpers'
 
 /**
  * Skipping tests until the outbox workqueue is implemented.
@@ -28,12 +29,15 @@ test.describe('Save and delete drafts', () => {
         )
       ).toBeVisible()
 
+      const draftResponse = page.waitForResponse(
+        (res) => res.url().includes('event.draft.create') && res.ok()
+      )
       await page.getByRole('button', { name: 'Confirm' }).click()
+      await draftResponse
 
-      await ensureOutboxIsEmpty(page)
       await page.getByRole('button', { name: 'Drafts' }).click()
+      await openRecordByTitle(page, childName)
 
-      await page.getByRole('button', { name: childName, exact: true }).click()
       await expect(page.locator('#content-name')).toHaveText(childName)
     })
 
@@ -55,16 +59,10 @@ test.describe('Save and delete drafts', () => {
 
     test('Delete saved draft', async () => {
       await page.getByRole('button', { name: 'Drafts' }).click()
-      await page.getByRole('button', { name: childName, exact: true }).click()
-      await selectAction(page, 'Update')
-      await selectDeclarationAction(page, 'Delete declaration', false)
-      await expect(
-        page.getByText('Are you sure you want to delete this declaration?')
-      ).toBeVisible()
-      await page.getByRole('button', { name: 'Confirm' }).click()
+      await openRecordByTitle(page, childName)
 
-      await ensureOutboxIsEmpty(page)
-      await page.getByText('Drafts').click()
+      await selectAction(page, 'Update')
+      await selectDeclarationAction(page, 'Delete declaration', true)
 
       await expect(
         page.getByRole('button', { name: childName, exact: true })
@@ -92,7 +90,6 @@ test.describe('Save and delete drafts', () => {
 
       await page.getByRole('button', { name: 'Confirm', exact: true }).click()
 
-      await ensureOutboxIsEmpty(page)
       await page.getByRole('button', { name: 'Assigned to you' }).click()
 
       await expect(

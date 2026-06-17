@@ -8,7 +8,6 @@ import {
 } from '../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../constants'
-import { ensureOutboxIsEmpty } from '../../utils'
 
 test.describe.serial('1. User conditional form flow', () => {
   let page: Page
@@ -106,8 +105,6 @@ test.describe.serial('1. User conditional form flow', () => {
 
     test('1.1.5 Declare', async () => {
       await selectDeclarationAction(page, 'Declare')
-
-      await ensureOutboxIsEmpty(page)
     })
   })
 

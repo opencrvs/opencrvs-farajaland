@@ -10,13 +10,12 @@ import {
   selectDeclarationAction
 } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
-import {
-  ensureAssignedToUser,
-  ensureOutboxIsEmpty,
-  selectAction
-} from '../../utils'
+import { ensureAssignedToUser, selectAction } from '../../utils'
 import { assertRecordInWorkqueue, fillDate } from '../birth/helpers'
-import { getRowByTitle } from '../print-certificate/birth/helpers'
+import {
+  getRowByTitle,
+  openRecordByTitle
+} from '../print-certificate/birth/helpers'
 
 // HO Notifies => RO Validates => Registrar Registers => Registrar Prints
 test.describe.serial('1. Workqueue flow - 1', () => {
@@ -125,7 +124,6 @@ test.describe.serial('1. Workqueue flow - 1', () => {
 
     test('1.1.4 Notify', async () => {
       await selectDeclarationAction(page, 'Notify')
-      await ensureOutboxIsEmpty(page)
     })
 
     test('1.1.5 Verify workqueue', async () => {
@@ -164,11 +162,7 @@ test.describe.serial('1. Workqueue flow - 1', () => {
 
     test('1.2.2 Go to Edit', async () => {
       await page.getByText('Notifications').click()
-      await page
-        .getByRole('button', {
-          name: formatName(declaration.child.name)
-        })
-        .click()
+      await openRecordByTitle(page, formatName(declaration.child.name))
 
       await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
       await selectAction(page, 'Edit')
@@ -256,13 +250,11 @@ test.describe.serial('1. Workqueue flow - 1', () => {
         .click()
 
       await page.locator('#father____addressSameAs_YES').click()
-      await page.getByRole('button', { name: 'Back to review' }).click()
+      await page.getByRole('button', { name: 'Go to review' }).click()
     })
 
     test('1.2.6 Declare with edits', async () => {
       await selectDeclarationAction(page, 'Declare with edits')
-
-      await ensureOutboxIsEmpty(page)
 
       await assertRecordInWorkqueue({
         page,
@@ -324,11 +316,7 @@ test.describe.serial('1. Workqueue flow - 1', () => {
 
     test('1.4.2 Register', async () => {
       await page.getByText('Pending registration').click()
-      await page
-        .getByRole('button', {
-          name: formatName(declaration.child.name)
-        })
-        .click()
+      await openRecordByTitle(page, formatName(declaration.child.name))
 
       await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
       await selectAction(page, 'Register')

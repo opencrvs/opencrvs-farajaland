@@ -1,11 +1,7 @@
 import { expect, test } from '@playwright/test'
 import { getToken, login, searchFromSearchBar } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
-import {
-  ensureAssignedToUser,
-  ensureOutboxIsEmpty,
-  selectAction
-} from '../../utils'
+import { ensureAssignedToUser, selectAction } from '../../utils'
 import { createDeclaration, Declaration } from '../test-data/birth-declaration'
 import { formatV2ChildName } from '../birth/helpers'
 
@@ -36,8 +32,13 @@ test('Revoke and reinstate record', async ({ browser }) => {
 
     await page.locator('#reason').fill('Revoking record for testing purposes.')
 
+    const revokeResponse = page.waitForResponse(
+      (response) =>
+        response.url().includes('event.actions.custom') && response.ok()
+    )
+
     await page.getByRole('button', { name: 'Confirm' }).click()
-    await ensureOutboxIsEmpty(page)
+    await revokeResponse
   })
 
   await test.step('Assert "Revoked" -flag is present', async () => {
@@ -54,8 +55,12 @@ test('Revoke and reinstate record', async ({ browser }) => {
       .locator('#reason')
       .fill('Reinstating record for testing purposes.')
 
-    await page.getByRole('button', { name: 'Confirm' }).click()
+    const reinstateResponse = page.waitForResponse(
+      (response) =>
+        response.url().includes('event.actions.custom') && response.ok()
+    )
 
-    await ensureOutboxIsEmpty(page)
+    await page.getByRole('button', { name: 'Confirm' }).click()
+    await reinstateResponse
   })
 })

@@ -13,12 +13,9 @@ import {
 } from '../../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../../constants'
-import {
-  ensureAssignedToUser,
-  ensureOutboxIsEmpty,
-  selectAction
-} from '../../../utils'
+import { ensureAssignedToUser, selectAction } from '../../../utils'
 import { REQUIRED_VALIDATION_ERROR } from '../helpers'
+import { openRecordByTitle } from '../../print-certificate/birth/helpers'
 
 test.describe.serial('Change informant on review', () => {
   let page: Page
@@ -246,7 +243,6 @@ test.describe.serial('Change informant on review', () => {
 
     test('Declare', async () => {
       await selectDeclarationAction(page, 'Declare')
-      await ensureOutboxIsEmpty(page)
 
       await page.getByText('Recent').click()
 
@@ -265,11 +261,7 @@ test.describe.serial('Change informant on review', () => {
 
       await page.getByText('Pending registration').click()
 
-      await page
-        .getByRole('button', {
-          name: formatName(declaration.child.name)
-        })
-        .click()
+      await openRecordByTitle(page, formatName(declaration.child.name))
 
       await expect(page.getByTestId('status-value')).toHaveText('Declared')
 
@@ -291,7 +283,7 @@ test.describe.serial('Change informant on review', () => {
     })
 
     test('Go back to review, expect to see validation errors for father information', async () => {
-      await page.getByRole('button', { name: 'Back to review' }).click()
+      await page.getByRole('button', { name: 'Go to review' }).click()
 
       await expect(page.getByTestId('row-value-father.name')).toContainText(
         REQUIRED_VALIDATION_ERROR
@@ -326,28 +318,19 @@ test.describe.serial('Change informant on review', () => {
     })
 
     test('Go back to review, expect to not see any validation errors', async () => {
-      await page.getByRole('button', { name: 'Back to review' }).click()
+      await page.getByRole('button', { name: 'Go to review' }).click()
       await expect(page.getByText(REQUIRED_VALIDATION_ERROR)).not.toBeVisible()
       await validateActionMenuButton(page, 'Register with edits')
       await validateActionMenuButton(page, 'Declare with edits')
     })
 
     test('Register with edits', async () => {
-      await selectDeclarationAction(page, 'Register with edits', false)
-      await expect(
-        page.getByText(
-          'You are about to register this birth event with your edits. Registering this event will create an official civil registration record.'
-        )
-      ).toBeVisible()
-      await page.getByRole('button', { name: 'Confirm' }).click()
+      await selectDeclarationAction(page, 'Register with edits', true)
     })
 
     test('Assert event is registered', async () => {
-      await ensureOutboxIsEmpty(page)
       await page.getByText('Pending certification').click()
-      await page
-        .getByRole('button', { name: formatName(declaration.child.name) })
-        .click()
+      await openRecordByTitle(page, formatName(declaration.child.name))
       await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR_VILLAGE)
       await expect(page.getByTestId('status-value')).toHaveText('Registered')
     })

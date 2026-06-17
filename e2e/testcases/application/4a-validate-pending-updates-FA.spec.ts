@@ -6,7 +6,7 @@ import {
   selectDeclarationAction,
   formatName
 } from '../../helpers'
-import { CREDENTIALS, SAFE_WORKQUEUE_TIMEOUT_MS } from '../../constants'
+import { CREDENTIALS } from '../../constants'
 import { createDeclaration, Declaration } from '../test-data/birth-declaration'
 import { ActionType } from '@opencrvs/toolkit/events'
 import { formatV2ChildName } from '../birth/helpers'
@@ -16,7 +16,10 @@ import {
   navigateToWorkqueue,
   selectAction
 } from '../../utils'
-import { getRowByTitle } from '../print-certificate/birth/helpers'
+import {
+  getRowByTitle,
+  openRecordByTitle
+} from '../print-certificate/birth/helpers'
 import { faker } from '@faker-js/faker'
 
 test.describe.serial('4(a) Validate "Pending updates"-workqueue for HO', () => {
@@ -50,7 +53,7 @@ test.describe.serial('4(a) Validate "Pending updates"-workqueue for HO', () => {
   test('4.0.2 Navigate to record audit', async () => {
     await page.getByText('Pending validation').click()
 
-    await page.getByRole('button', { name: formattedChildName }).click()
+    await openRecordByTitle(page, formattedChildName)
   })
 
   test('4.0.3 Reject a declaration', async () => {
@@ -59,12 +62,17 @@ test.describe.serial('4(a) Validate "Pending updates"-workqueue for HO', () => {
 
     await page.getByTestId('reject-reason').fill(faker.lorem.sentence())
 
+    const rejectResponse = page.waitForResponse(
+      (res) => res.url().includes('event.actions.reject.request') && res.ok()
+    )
+
     await page.getByRole('button', { name: 'Send For Update' }).click()
+    await rejectResponse
   })
 
   test('4.1 Go to "Pending updates"-workqueue', async () => {
     await login(page, CREDENTIALS.HOSPITAL_OFFICIAL)
-    await page.waitForTimeout(SAFE_WORKQUEUE_TIMEOUT_MS) // wait for the event to be in the workqueue.
+
     await page.getByText('Pending updates').click()
     await expect(
       page.getByRole('button', { name: formattedChildName })
@@ -97,10 +105,13 @@ test.describe.serial('4(a) Validate "Pending updates"-workqueue for HO', () => {
   })
 
   test('4.4 Click a name', async () => {
-    await page.getByRole('button', { name: formattedChildName }).click()
+    await openRecordByTitle(page, formattedChildName)
 
     // User should navigate to record audit page
-    await expectInUrl(page, `events/${eventId}?workqueue=pending-updates`)
+    await expectInUrl(
+      page,
+      `events/${eventId}?backTo=/workqueue/pending-updates`
+    )
   })
 
   test('4.5 Acting directly from workqueue should redirect to the same workqueue', async () => {
@@ -122,7 +133,7 @@ test.describe.serial('4(a) Validate "Pending updates"-workqueue for HO', () => {
       familyName: newSurname
     })
 
-    await page.getByRole('button', { name: 'Back to review' }).click()
+    await page.getByRole('button', { name: 'Go to review' }).click()
 
     await selectDeclarationAction(page, 'Declare with edits')
 
@@ -132,7 +143,7 @@ test.describe.serial('4(a) Validate "Pending updates"-workqueue for HO', () => {
 
   test('4.6 Assert record does not have "Edit in progress" flag', async () => {
     await navigateToWorkqueue(page, 'Recent')
-    await page.getByRole('button', { name: formattedChildName }).click()
+    await openRecordByTitle(page, formattedChildName)
     await expect(page.getByText('Edit in progress')).not.toBeVisible()
   })
 })

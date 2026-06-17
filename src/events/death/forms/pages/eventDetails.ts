@@ -15,6 +15,7 @@ import {
   defineFormPage,
   field,
   FieldType,
+  never,
   not,
   or,
   PageTypes,
@@ -25,7 +26,8 @@ import {
   defaultStreetAddressConfiguration,
   getNestedFieldValidators,
   DEATH_REGISTRATION_TARGET_DAYS,
-  createSelectOptions
+  createSelectOptions,
+  emptyMessage
 } from '@countryconfig/events/utils'
 
 const MannerDeathType = {
@@ -200,6 +202,34 @@ export const eventDetails = defineFormPage({
           )
         }
       ]
+    },
+    {
+      id: 'eventDetails.divider1',
+      type: FieldType.DIVIDER,
+      label: emptyMessage
+    },
+    {
+      id: 'eventDetails.addressHelper',
+      type: FieldType.HEADING,
+      label: {
+        defaultMessage: 'Place of death',
+        description: 'This is the label for the field',
+        id: 'event.death.action.declare.form.section.event.field.addressHelper.label'
+      },
+      configuration: {
+        styles: { fontVariant: 'h3' }
+      },
+      conditionals: [
+        {
+          type: ConditionalType.DISPLAY_ON_REVIEW,
+          conditional: never()
+        }
+      ]
+    },
+    {
+      id: 'eventDetails.divider2',
+      type: FieldType.DIVIDER,
+      label: emptyMessage
     },
     {
       id: 'eventDetails.placeOfDeath',

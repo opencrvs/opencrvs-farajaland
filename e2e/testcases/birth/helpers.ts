@@ -2,9 +2,6 @@ import { expect, type Page } from '@playwright/test'
 import { omit } from 'lodash'
 import { formatName, joinValuesWith } from '../../helpers'
 import { faker } from '@faker-js/faker'
-import { ensureOutboxIsEmpty } from '../../utils'
-import { getRowByTitle } from '../print-certificate/birth/helpers'
-import { SAFE_OUTBOX_TIMEOUT_MS } from '../../constants'
 import { GATEWAY_HOST } from '../../constants'
 import { createClient } from '@opencrvs/toolkit/api'
 
@@ -62,7 +59,7 @@ export const formatV2ChildName = (obj: {
   ])
 }
 
-export const assertRecordInWorkqueue = async ({
+export async function assertRecordInWorkqueue({
   page,
   name,
   workqueues
@@ -70,48 +67,41 @@ export const assertRecordInWorkqueue = async ({
   page: Page
   name: string
   workqueues: { title: string; exists: boolean }[]
-}) => {
-  await page.getByRole('button', { name: 'Outbox' }).click()
-  await ensureOutboxIsEmpty(page)
+}) {
+  const record = page.getByRole('button', { name, exact: true })
 
-  for (const { title, exists } of workqueues) {
-    await page
-      .getByRole('button', {
-        name: title
-      })
-      .click()
+  // if positive checks are done first, absence should be visible immediately.
+  const ordered = [...workqueues].sort(
+    (a, b) => Number(b.exists) - Number(a.exists)
+  )
 
-    await expect(page.getByTestId('search-result')).toContainText(title, {
-      timeout: SAFE_OUTBOX_TIMEOUT_MS
-    })
+  const openWorkqueue = async (title: string) => {
+    await page.getByRole('button', { name: title }).click()
+    await expect(page.getByTestId('search-result')).toContainText(title)
+  }
+
+  let settled = false
+
+  for (const { title, exists } of ordered) {
+    if (exists && !settled) {
+      // Re-click the queue to force a refetch
+      // instead of waiting for the next poll cycle
+      await expect(async () => {
+        await openWorkqueue(title)
+        await expect(record).toBeVisible({ timeout: 1_500 })
+      }).toPass({ timeout: 30_000 })
+      settled = true
+      continue
+    }
+
+    await openWorkqueue(title)
 
     if (exists) {
-      await expect(page.getByRole('button', { name })).toBeVisible()
+      await expect(record).toBeVisible()
     } else {
-      await expect(page.getByRole('button', { name })).toBeHidden()
+      await expect(record).toBeHidden()
     }
   }
-}
-
-export const ensureAssignedFromWorkqueue = async (page: Page, name: string) => {
-  const assignButton = await getRowByTitle(page, name).getByRole('button', {
-    name: 'Assign record'
-  })
-
-  if (!(await assignButton.isVisible())) {
-    return
-  }
-
-  await assignButton.click()
-  await page.getByRole('button', { name: 'Assign', exact: true }).click()
-
-  await expect(
-    getRowByTitle(page, name)
-      .getByRole('button', { name: 'User avatar' })
-      .locator('img')
-  ).toBeVisible({
-    timeout: SAFE_OUTBOX_TIMEOUT_MS
-  })
 }
 
 export async function getLocations(

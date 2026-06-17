@@ -8,7 +8,7 @@ export const LOGIN_URL =
 export const AUTH_URL =
   process.env.NODE_ENV === 'development'
     ? 'http://localhost:4040'
-    : SCHEME + '://auth.' + DOMAIN
+    : SCHEME + '://gateway.' + DOMAIN + '/auth'
 
 export const CLIENT_URL =
   process.env.NODE_ENV === 'development'
@@ -27,14 +27,6 @@ export const GATEWAY_HOST =
  */
 export const SAFE_INPUT_CHANGE_TIMEOUT_MS = 500
 
-/*
- * This timeout ensures that
- * the declaration in outbox is sent to backend
- * and outbox is now empty
- */
-export const SAFE_OUTBOX_TIMEOUT_MS = 30 * 1000
-export const SAFE_IN_EXTERNAL_VALIDATION_MS = 30 * 1000
-export const SAFE_WORKQUEUE_TIMEOUT_MS = 5 * 1000
 export const TEST_USER_PASSWORD = 'test'
 
 export const CREDENTIALS = {

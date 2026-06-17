@@ -12,7 +12,6 @@ import {
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../../constants'
 import { validateAddress } from '../helpers'
-import { ensureOutboxIsEmpty } from '../../../utils'
 
 test.describe.serial('5. Birth declaration case - 5', () => {
   let page: Page
@@ -513,7 +512,6 @@ test.describe.serial('5. Birth declaration case - 5', () => {
 
     test('5.1.8 Register', async () => {
       await selectDeclarationAction(page, 'Register')
-      await ensureOutboxIsEmpty(page)
 
       await page.getByText('Pending certification').click()
 

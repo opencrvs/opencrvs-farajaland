@@ -6,6 +6,7 @@ import { CREDENTIALS } from '../../../constants'
 import { getToken } from '../../../helpers'
 import {
   navigateToCertificatePrintAction,
+  openRecordByTitle,
   selectRequesterType
 } from './helpers'
 import { selectCertificationType } from './helpers'
@@ -62,14 +63,9 @@ test.describe
       .fill(formatV2ChildName(declaration))
 
     await page.getByRole('button', { name: 'Search' }).click()
-    await page
-      .getByRole('button', {
-        name: formatV2ChildName(declaration),
-        exact: true
-      })
-      .click()
-
+    await openRecordByTitle(page, formatV2ChildName(declaration))
     await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
+
     await selectAction(page, 'Print')
     await selectCertificationType(page, 'Birth Certificate Certified Copy')
     await selectRequesterType(page, 'Print and issue to Informant (Mother)')

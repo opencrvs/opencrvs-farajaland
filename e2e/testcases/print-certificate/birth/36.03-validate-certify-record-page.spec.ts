@@ -9,7 +9,8 @@ import {
   printAndExpectPopup,
   navigateToCertificatePrintAction,
   selectCertificationType,
-  selectRequesterType
+  selectRequesterType,
+  openRecordByTitle
 } from './helpers'
 import { ensureAssignedToUser, expectInUrl, type } from '../../../utils'
 import { formatV2ChildName } from '../../birth/helpers'
@@ -144,9 +145,7 @@ test.describe.serial('3.0 Validate "Certify record" page', () => {
     }
     await type(page, '#searchText', trackingId)
     await page.locator('#searchIconButton').click()
-    await page
-      .getByRole('button', { name: formatV2ChildName(declaration) })
-      .click()
+    await openRecordByTitle(page, formatV2ChildName(declaration))
     await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
 
     await page.getByRole('button', { name: 'Audit' }).click()

@@ -2,18 +2,20 @@ import { expect, test } from '@playwright/test'
 import { v4 as uuidv4 } from 'uuid'
 import { createClient } from '@opencrvs/toolkit/api'
 import { ActionType } from '@opencrvs/toolkit/events'
-import {
-  CREDENTIALS,
-  GATEWAY_HOST,
-  SAFE_OUTBOX_TIMEOUT_MS
-} from '../../constants'
+import { CREDENTIALS, GATEWAY_HOST } from '../../constants'
 import { getToken, login } from '../../helpers'
-import { ensureAssignedToUser, selectAction, type } from '../../utils'
+import {
+  ensureAssignedToUser,
+  expectInUrl,
+  selectAction,
+  type
+} from '../../utils'
 import {
   createDeclaration,
   type Declaration
 } from '../test-data/birth-declaration'
 import { formatV2ChildName } from '../birth/helpers'
+import { openRecordByTitle } from '../print-certificate/birth/helpers'
 
 test('Escalating a rejected record preserves the Rejected flag', async ({
   page
@@ -70,11 +72,9 @@ test('Escalating a rejected record preserves the Rejected flag', async ({
   await test.step('Find the rejected record by tracking ID', async () => {
     await type(page, '#searchText', trackingId)
     await page.locator('#searchIconButton').click()
-    await page
-      .getByRole('button', { name: formatV2ChildName(declaration) })
-      .click()
+    await openRecordByTitle(page, formatV2ChildName(declaration))
 
-    expect(page.url().includes(`events/${eventId}`)).toBeTruthy()
+    await expectInUrl(page, `events/${eventId}`)
 
     await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
   })
@@ -97,22 +97,21 @@ test('Escalating a rejected record preserves the Rejected flag', async ({
 
     await page.locator('#reason').fill(escalationReason)
 
+    const escalateResponse = page.waitForResponse(
+      (response) =>
+        response.url().includes('event.actions.custom') && response.ok()
+    )
+
     await expect(confirmButton).toBeEnabled()
     await confirmButton.click()
 
-    await page.getByRole('button', { name: 'Outbox' }).click()
-    await expect(page.locator('#no-record')).toContainText(
-      'No records require processing',
-      { timeout: SAFE_OUTBOX_TIMEOUT_MS }
-    )
+    await escalateResponse
   })
 
   await test.step('Rejected flag is still present after escalation', async () => {
     await type(page, '#searchText', trackingId)
     await page.locator('#searchIconButton').click()
-    await page
-      .getByRole('button', { name: formatV2ChildName(declaration) })
-      .click()
+    await openRecordByTitle(page, formatV2ChildName(declaration))
 
     await expect(page.getByTestId('flags-value')).toContainText('Rejected')
     await expect(page.getByTestId('flags-value')).toContainText(

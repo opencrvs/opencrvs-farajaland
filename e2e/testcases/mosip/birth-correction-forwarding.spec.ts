@@ -22,7 +22,7 @@ import {
 
 async function getEventById(eventId: string, token: string) {
   const client = createClient(`${GATEWAY_HOST}/events`, `Bearer ${token}`)
-  return client.event.get.query({ eventId, waitFor: false })
+  return client.event.get.query({ eventId })
 }
 
 test.describe.serial('Birth correction trigger eligibility checks', () => {

@@ -11,7 +11,8 @@ import {
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../../constants'
 import { REQUIRED_VALIDATION_ERROR } from '../helpers'
-import { ensureAssignedToUser, ensureOutboxIsEmpty } from '../../../utils'
+import { ensureAssignedToUser } from '../../../utils'
+import { openRecordByTitle } from '../../print-certificate/birth/helpers'
 
 test.describe.serial('9. Birth declaration case - 9', () => {
   let page: Page
@@ -181,7 +182,6 @@ test.describe.serial('9. Birth declaration case - 9', () => {
     test('9.1.8 Notify', async () => {
       await selectDeclarationAction(page, 'Notify')
 
-      await ensureOutboxIsEmpty(page)
       await page.getByText('Recent').click()
 
       await expect(
@@ -198,11 +198,7 @@ test.describe.serial('9. Birth declaration case - 9', () => {
 
       await page.getByText('Notifications').click()
 
-      await page
-        .getByRole('button', {
-          name: formatName(declaration.child.name)
-        })
-        .click()
+      await openRecordByTitle(page, formatName(declaration.child.name))
       await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
       await switchEventTab(page, 'Record')
     })

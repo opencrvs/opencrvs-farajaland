@@ -8,12 +8,12 @@ import {
 } from '../test-data/birth-declaration-with-mother-father'
 import {
   ensureAssignedToUser,
-  ensureOutboxIsEmpty,
   expectInUrl,
   selectAction,
   type
 } from '../../utils'
 import { formatV2ChildName, REQUIRED_VALIDATION_ERROR } from '../birth/helpers'
+import { openRecordByTitle } from '../print-certificate/birth/helpers'
 
 test.describe.serial('Birth correction flow', () => {
   let declaration: Declaration
@@ -37,9 +37,7 @@ test.describe.serial('Birth correction flow', () => {
 
   test('Navigate to the correction form', async () => {
     await page.getByRole('button', { name: 'Pending certification' }).click()
-    await page
-      .getByRole('button', { name: formatV2ChildName(declaration) })
-      .click()
+    await openRecordByTitle(page, formatV2ChildName(declaration))
     await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
     await selectAction(page, 'Correct')
   })
@@ -108,22 +106,22 @@ test.describe.serial('Birth correction flow', () => {
       .click()
 
     await expect(
-      page.getByRole('button', { name: 'Back to review' })
+      page.getByRole('button', { name: 'Go to review' })
     ).toBeEnabled()
 
     await page.getByRole('button', { name: 'Continue' }).click()
     await expect(
-      page.getByRole('button', { name: 'Back to review' })
+      page.getByRole('button', { name: 'Go to review' })
     ).toBeEnabled()
 
     await page.getByRole('button', { name: 'Continue' }).click()
     await expect(
-      page.getByRole('button', { name: 'Back to review' })
+      page.getByRole('button', { name: 'Go to review' })
     ).toBeEnabled()
 
     await page.getByRole('button', { name: 'Continue' }).click()
     await expect(
-      page.getByRole('button', { name: 'Back to review' })
+      page.getByRole('button', { name: 'Go to review' })
     ).toBeEnabled()
 
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -141,7 +139,7 @@ test.describe.serial('Birth correction flow', () => {
       .getByTestId('text__informant____email')
       .fill(faker.internet.email())
 
-    await page.getByRole('button', { name: 'Back to review' }).click()
+    await page.getByRole('button', { name: 'Go to review' }).click()
     await expect(page.getByRole('button', { name: 'Continue' })).toBeEnabled()
   })
 
@@ -152,7 +150,7 @@ test.describe.serial('Birth correction flow', () => {
       .getByTestId('text__informant____email')
       .fill(declaration['informant.email'])
 
-    await page.getByRole('button', { name: 'Back to review' }).click()
+    await page.getByRole('button', { name: 'Go to review' }).click()
     await expect(page.getByRole('button', { name: 'Continue' })).toBeDisabled()
   })
 
@@ -160,7 +158,7 @@ test.describe.serial('Birth correction flow', () => {
     await page.getByTestId('change-button-child.dob').click()
     // Future date
     await page.getByTestId('child____dob-yyyy').fill('2045')
-    await page.getByRole('button', { name: 'Back to review' }).click()
+    await page.getByRole('button', { name: 'Go to review' }).click()
     await expect(page.getByRole('button', { name: 'Continue' })).toBeDisabled()
     await expect(page.getByText('Must be a valid birth date')).toBeVisible()
   })
@@ -178,7 +176,7 @@ test.describe.serial('Birth correction flow', () => {
       .fill(reasonForDelayedRegistration)
 
     await type(page, '#firstname', newFirstName)
-    await page.getByRole('button', { name: 'Back to review' }).click()
+    await page.getByRole('button', { name: 'Go to review' }).click()
     await expect(page.getByRole('button', { name: 'Continue' })).toBeEnabled()
   })
 
@@ -186,7 +184,7 @@ test.describe.serial('Birth correction flow', () => {
     await page.getByRole('button', { name: 'Continue' }).click()
     await expectInUrl(page, `/events/request-correction/${eventId}/summary`)
     await expect(
-      page.getByRole('button', { name: 'Back to review' })
+      page.getByRole('button', { name: 'Go to review' })
     ).toBeEnabled()
     await expect(
       page.getByRole('button', { name: 'Submit correction request' })
@@ -224,11 +222,17 @@ test.describe.serial('Birth correction flow', () => {
       .getByRole('button', { name: 'Submit correction request' })
       .click()
 
+    const correctionResponse = page.waitForResponse(
+      (res) =>
+        res.url().includes('event.actions.correction.request') && res.ok()
+    )
+
     await expect(page.getByText('Request record correction?')).toBeVisible()
 
     await page.getByRole('button', { name: 'Confirm', exact: true }).click()
+
+    await correctionResponse
     await expectInUrl(page, `/workqueue/pending-certification`)
-    await ensureOutboxIsEmpty(page)
   })
 
   test("Event appears in 'Recent' workqueue", async () => {
@@ -248,9 +252,7 @@ test.describe.serial('Birth correction flow', () => {
     test("Find the event in the 'Pending corrections' workflow", async () => {
       await page.getByRole('button', { name: 'Pending corrections' }).click()
 
-      await page
-        .getByRole('button', { name: formatV2ChildName(declaration) })
-        .click()
+      await openRecordByTitle(page, formatV2ChildName(declaration))
     })
 
     test('Correction request action appears in audit history', async () => {
@@ -299,32 +301,25 @@ test.describe.serial('Birth correction flow', () => {
     })
 
     test('Approve correction request', async () => {
+      const correctionResponse = page.waitForResponse(
+        (res) =>
+          res.url().includes('event.actions.correction.approve') && res.ok()
+      )
+
       await page.getByRole('button', { name: 'Approve', exact: true }).click()
       await page.getByRole('button', { name: 'Confirm', exact: true }).click()
 
+      await correctionResponse
       await expectInUrl(page, `/workqueue/correction-requested`)
-      await ensureOutboxIsEmpty(page)
-      await page.getByRole('button', { name: 'Pending certification' }).click()
-      await page
-        .getByRole('button', {
-          name: formatV2ChildName({
-            'child.name': {
-              firstname: newFirstName,
-              surname: declaration['child.name'].surname
-            }
-          })
-        })
-        .click()
 
-      await expect(page.locator('#content-name')).toHaveText(
-        formatV2ChildName({
-          'child.name': {
-            firstname: newFirstName,
-            surname: declaration['child.name'].surname
-          }
-        }),
-        { timeout: 60_000 }
-      )
+      await page.getByRole('button', { name: 'Pending certification' }).click()
+      const childName = formatV2ChildName({
+        'child.name': {
+          firstname: newFirstName,
+          surname: declaration['child.name'].surname
+        }
+      })
+      await openRecordByTitle(page, childName)
     })
 
     test('Correction approved action appears in audit history', async () => {

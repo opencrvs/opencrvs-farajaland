@@ -13,11 +13,8 @@ import {
 } from '../../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../../constants'
-import {
-  ensureAssignedToUser,
-  ensureOutboxIsEmpty,
-  selectAction
-} from '../../../utils'
+import { ensureAssignedToUser, expectInUrl } from '../../../utils'
+import { openRecordByTitle } from '../../print-certificate/birth/helpers'
 
 test.describe.serial('4. Death declaration case - 4', () => {
   let page: Page
@@ -798,13 +795,13 @@ test.describe.serial('4. Death declaration case - 4', () => {
 
     test('4.1.9 Declare and validate', async () => {
       await selectDeclarationAction(page, 'Declare')
-      await ensureOutboxIsEmpty(page)
+
       await expect(page.getByText('Farajaland CRS')).toBeVisible()
 
       /*
        * Expected result: should redirect to assigned to you workqueue
        */
-      expect(page.url().includes('assigned-to-you')).toBeTruthy()
+      await expectInUrl(page, 'assigned-to-you')
 
       await page.getByText('Recent').click()
 
@@ -825,17 +822,14 @@ test.describe.serial('4. Death declaration case - 4', () => {
     test('4.2.1 Navigate to the declaration "Record" -tab', async () => {
       await login(page, CREDENTIALS.REGISTRAR)
 
-      await ensureOutboxIsEmpty(page)
       await page.getByText('Pending registration').click()
 
-      await page
-        .getByRole('button', {
-          name:
-            declaration.deceased.name.firstname +
-            ' ' +
-            declaration.deceased.name.surname
-        })
-        .click()
+      await openRecordByTitle(
+        page,
+        declaration.deceased.name.firstname +
+          ' ' +
+          declaration.deceased.name.surname
+      )
 
       await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
       await switchEventTab(page, 'Record')
@@ -1121,10 +1115,7 @@ test.describe.serial('4. Death declaration case - 4', () => {
     })
 
     test('4.2.3 Register', async () => {
-      await selectAction(page, 'Register')
-      await page.getByRole('button', { name: 'Confirm' }).click()
-
-      await ensureOutboxIsEmpty(page)
+      await selectDeclarationAction(page, 'Register')
 
       await page.getByText('Pending certification').click()
       await expect(

@@ -14,6 +14,7 @@ import { createDeclaration, Declaration } from '../test-data/birth-declaration'
 import { selectAction, type } from '../../utils'
 import {
   navigateToCertificatePrintAction,
+  openRecordByTitle,
   selectRequesterType
 } from '../print-certificate/birth/helpers'
 import { REQUIRED_VALIDATION_ERROR } from '../birth/helpers'
@@ -50,8 +51,7 @@ test.describe('Form state', () => {
       await page.getByRole('button', { name: 'Apply' }).click()
 
       // Save & Exit draft
-      await selectDeclarationAction(page, 'Save & Exit', false)
-      await page.getByRole('button', { name: 'Confirm' }).click()
+      await selectDeclarationAction(page, 'Save & Exit', true)
     })
 
     test('Form states and annotations are not persisted', async () => {
@@ -117,15 +117,13 @@ test.describe('Form state', () => {
       await page.getByRole('button', { name: 'Apply' }).click()
 
       // Save & Exit draft
-      await selectDeclarationAction(page, 'Save & Exit', false)
-      await page.getByRole('button', { name: 'Confirm' }).click()
+      await selectDeclarationAction(page, 'Save & Exit', true)
     })
 
     test('Form states and annotations are not persisted', async () => {
       await page.getByRole('button', { name: 'Drafts' }).click()
-      await page
-        .getByRole('button', { name: actionableEventChildName, exact: true })
-        .click()
+
+      await openRecordByTitle(page, actionableEventChildName)
 
       await selectAction(page, 'Update')
 
