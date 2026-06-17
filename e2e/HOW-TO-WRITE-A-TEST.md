@@ -34,3 +34,9 @@ TL;DR:
 
     await searchCacheRefetchResponse
 ```
+
+## Why we need these
+
+1. We have only few users in parallel tests. We cannot check "if outbox is empty" since the test run cannot guarantee it.
+2. We constantly poll workqueues. This is a good thing for the actual application. With our setup, we might select the right row, but UI changes underneath us and we end up in wrong event.
+3. We cannot await the queries due to offline requirements. Fire & forget, but tests need to wait for responses.
