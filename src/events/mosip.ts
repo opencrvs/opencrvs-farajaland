@@ -101,7 +101,8 @@ export const getMOSIPIntegrationFields = (
   {
     existingConditionals,
     esignet = true,
-    helperText
+    helperText,
+    resetParent
   }: {
     existingConditionals: {
       status: FieldConditional[]
@@ -109,6 +110,7 @@ export const getMOSIPIntegrationFields = (
     }
     esignet?: boolean
     helperText?: TranslationConfig
+    resetParent?: FieldReference | FieldReference[]
   }
 ): FieldConfigInput[] => {
   const existingShowConditional = existingConditionals.idReader.find(
@@ -123,7 +125,12 @@ export const getMOSIPIntegrationFields = (
       type: FieldType.VERIFICATION_STATUS,
       parent: [
         field(`${page}.verify-nid-http-fetch`),
-        field(`${page}.id-reader`)
+        field(`${page}.id-reader`),
+        ...(resetParent
+          ? Array.isArray(resetParent)
+            ? resetParent
+            : [resetParent]
+          : [])
       ],
       label: {
         id: `${page}.verified.status`,
