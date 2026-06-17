@@ -8,7 +8,7 @@ import {
   goToSection,
   login,
   logout,
-  selectDeclarationAction
+  triggerDeclarationAction
 } from '../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../constants'
@@ -261,7 +261,7 @@ test.describe.serial('Basic Archival flow', () => {
   })
 
   test('Declare', async () => {
-    await selectDeclarationAction(page, 'Declare')
+    await triggerDeclarationAction(page, 'Declare')
   })
 
   test('Archival is not available for HO', async () => {
@@ -347,7 +347,7 @@ test.describe.serial('Archival of declaration pending validation', () => {
   test('Validate the declaration', async () => {
     await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
 
-    await selectDeclarationAction(page, 'Validate')
+    await triggerDeclarationAction(page, 'Validate')
   })
 
   test('Confirm the declaration is in "Pending registration" -workqueue', async () => {

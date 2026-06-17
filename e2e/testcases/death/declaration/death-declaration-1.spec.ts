@@ -9,7 +9,7 @@ import {
   login,
   switchEventTab,
   expectRowValue,
-  selectDeclarationAction
+  triggerDeclarationAction
 } from '../../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../../constants'
@@ -559,7 +559,7 @@ test.describe.serial('1. Death declaration case - 1', () => {
     })
 
     test('1.1.9 Declare', async () => {
-      await selectDeclarationAction(page, 'Declare')
+      await triggerDeclarationAction(page, 'Declare')
 
       await expect(page.getByText('Farajaland CRS')).toBeVisible()
 

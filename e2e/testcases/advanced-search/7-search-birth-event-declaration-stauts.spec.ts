@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test'
-import { joinValuesWith, login, selectDeclarationAction } from '../../helpers'
+import { joinValuesWith, login, triggerDeclarationAction } from '../../helpers'
 import { faker } from '@faker-js/faker'
 import { expectInUrl, type } from '../../utils'
 

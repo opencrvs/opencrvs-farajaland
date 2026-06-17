@@ -9,7 +9,7 @@ import {
   switchEventTab,
   uploadImageToSection,
   expectRowValue,
-  selectDeclarationAction
+  triggerDeclarationAction
 } from '../../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../../constants'
@@ -794,7 +794,7 @@ test.describe.serial('4. Death declaration case - 4', () => {
     })
 
     test('4.1.9 Declare and validate', async () => {
-      await selectDeclarationAction(page, 'Declare')
+      await triggerDeclarationAction(page, 'Declare')
 
       await expect(page.getByText('Farajaland CRS')).toBeVisible()
 
@@ -1115,7 +1115,7 @@ test.describe.serial('4. Death declaration case - 4', () => {
     })
 
     test('4.2.3 Register', async () => {
-      await selectDeclarationAction(page, 'Register')
+      await triggerDeclarationAction(page, 'Register')
 
       await page.getByText('Pending certification').click()
       await expect(

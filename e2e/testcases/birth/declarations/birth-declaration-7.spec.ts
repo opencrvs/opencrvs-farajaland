@@ -6,7 +6,7 @@ import {
   goToSection,
   login,
   logout,
-  selectDeclarationAction,
+  triggerDeclarationAction,
   switchEventTab,
   uploadImage,
   uploadImageToSection
@@ -230,7 +230,7 @@ test.describe.serial('7. Birth declaration case - 7', () => {
     })
 
     test('7.1.9 Notify', async () => {
-      await selectDeclarationAction(page, 'Notify')
+      await triggerDeclarationAction(page, 'Notify')
 
       await page.getByText('Recent').click()
 

@@ -10,7 +10,7 @@ import {
 } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
 import { ensureAssignedToUser, selectAction } from '../../utils'
-import { selectDeclarationAction } from '../../helpers'
+import { triggerDeclarationAction } from '../../helpers'
 import { assertRecordInWorkqueue, fillDate } from '../birth/helpers'
 import { openRecordByTitle } from '../print-certificate/birth/helpers'
 
@@ -121,7 +121,7 @@ test.describe.serial('2. Workqueue flow - 2', () => {
     })
 
     test('2.1.4 Notify', async () => {
-      await selectDeclarationAction(page, 'Notify')
+      await triggerDeclarationAction(page, 'Notify')
     })
 
     test('2.1.5 Verify workqueue', async () => {
@@ -257,7 +257,7 @@ test.describe.serial('2. Workqueue flow - 2', () => {
 
     test('2.2.6 Register with edits', async () => {
       await goToSection(page, 'review')
-      await selectDeclarationAction(page, 'Register with edits')
+      await triggerDeclarationAction(page, 'Register with edits')
 
       await assertRecordInWorkqueue({
         page,

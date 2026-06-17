@@ -7,7 +7,7 @@ import {
   getRandomDate,
   goToSection,
   login,
-  selectDeclarationAction,
+  triggerDeclarationAction,
   switchEventTab
 } from '../../../helpers'
 import { faker } from '@faker-js/faker'
@@ -534,7 +534,7 @@ test.describe.serial('7. Death declaration case - 7', () => {
     })
 
     test('7.1.8 Register', async () => {
-      await selectDeclarationAction(page, 'Register')
+      await triggerDeclarationAction(page, 'Register')
 
       await expect(page.getByText('Farajaland CRS')).toBeVisible()
 

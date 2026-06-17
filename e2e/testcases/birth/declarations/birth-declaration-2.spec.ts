@@ -14,7 +14,7 @@ import {
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../../constants'
 import { validateAddress } from '../helpers'
-import { selectDeclarationAction } from '../../../helpers'
+import { triggerDeclarationAction } from '../../../helpers'
 import { openRecordByTitle } from '../../print-certificate/birth/helpers'
 
 test.describe.serial('2. Birth declaration case - 2', () => {
@@ -518,7 +518,7 @@ test.describe.serial('2. Birth declaration case - 2', () => {
     })
 
     test('2.1.8 Declare', async () => {
-      await selectDeclarationAction(page, 'Declare')
+      await triggerDeclarationAction(page, 'Declare')
 
       await page.getByText('Recent').click()
 

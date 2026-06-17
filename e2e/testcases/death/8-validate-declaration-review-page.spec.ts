@@ -10,7 +10,7 @@ import {
   expectRowValue,
   expectRowValueWithChangeButton,
   switchEventTab,
-  selectDeclarationAction
+  triggerDeclarationAction
 } from '../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../constants'
@@ -679,7 +679,7 @@ test.describe.serial('8. Validate declaration review page', () => {
     })
 
     test('8.1.7 Notify', async () => {
-      await selectDeclarationAction(page, 'Notify')
+      await triggerDeclarationAction(page, 'Notify')
     })
 
     test('8.1.8 Validate that declaration is available on "Recent"', async () => {
@@ -1138,7 +1138,7 @@ test.describe.serial('8. Validate declaration review page', () => {
     })
 
     test('8.2.6 Declare and validate', async () => {
-      await selectDeclarationAction(page, 'Declare with edits')
+      await triggerDeclarationAction(page, 'Declare with edits')
     })
 
     test('8.2.7 Confirm the declaration to send for approval', async () => {
@@ -1598,7 +1598,7 @@ test.describe.serial('8. Validate declaration review page', () => {
     })
 
     test('8.3.6 Register with edits', async () => {
-      await selectDeclarationAction(page, 'Register with edits')
+      await triggerDeclarationAction(page, 'Register with edits')
     })
 
     test('8.3.7 Confirm the declaration to "Pending certification"-workqueue', async () => {

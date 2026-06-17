@@ -10,7 +10,7 @@ import {
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../../constants'
 import { REQUIRED_VALIDATION_ERROR } from '../helpers'
-import { selectDeclarationAction } from '../../../helpers'
+import { triggerDeclarationAction } from '../../../helpers'
 import { openRecordByTitle } from '../../print-certificate/birth/helpers'
 
 test.describe.serial('10. Birth declaration case - 10', () => {
@@ -178,7 +178,7 @@ test.describe.serial('10. Birth declaration case - 10', () => {
     })
 
     test('10.1.8 Notify', async () => {
-      await selectDeclarationAction(page, 'Notify')
+      await triggerDeclarationAction(page, 'Notify')
 
       await page.getByText('Recent').click()
 

@@ -4,7 +4,7 @@ import {
   formatName,
   goToSection,
   login,
-  selectDeclarationAction
+  triggerDeclarationAction
 } from '../../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../../constants'
@@ -54,7 +54,7 @@ test('Community leader notifies birth', async ({ page }) => {
   })
 
   await test.step('Notify', async () => {
-    await selectDeclarationAction(page, 'Notify')
+    await triggerDeclarationAction(page, 'Notify')
   })
 
   await test.step('Open record', async () => {

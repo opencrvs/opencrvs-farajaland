@@ -7,7 +7,7 @@ import {
   getRandomDate,
   goToSection,
   login,
-  selectDeclarationAction
+  triggerDeclarationAction
 } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
 import { ensureAssignedToUser } from '../../utils'
@@ -202,7 +202,7 @@ test.describe.serial('4. Workqueue flow - 4', () => {
     })
 
     test('4.1.7 Declare', async () => {
-      await selectDeclarationAction(page, 'Declare')
+      await triggerDeclarationAction(page, 'Declare')
     })
 
     test('4.1.8 Verify workqueue', async () => {
@@ -271,7 +271,7 @@ test.describe.serial('4. Workqueue flow - 4', () => {
 
       await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
 
-      await selectDeclarationAction(page, 'Validate')
+      await triggerDeclarationAction(page, 'Validate')
 
       await assertRecordInWorkqueue({
         page,
@@ -337,7 +337,7 @@ test.describe.serial('4. Workqueue flow - 4', () => {
       await openRecordByTitle(page, formatName(declaration.child.name))
       await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
 
-      await selectDeclarationAction(page, 'Register')
+      await triggerDeclarationAction(page, 'Register')
 
       await assertRecordInWorkqueue({
         page,

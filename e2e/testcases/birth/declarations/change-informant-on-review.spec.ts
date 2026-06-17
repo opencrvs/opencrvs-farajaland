@@ -7,14 +7,14 @@ import {
   goToSection,
   login,
   logout,
-  selectDeclarationAction,
+  triggerDeclarationAction,
   switchEventTab,
   validateActionMenuButton
 } from '../../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../../constants'
 import { ensureAssignedToUser, selectAction } from '../../../utils'
-import { REQUIRED_VALIDATION_ERROR } from '../helpers'
+import { assertRecordInWorkqueue, REQUIRED_VALIDATION_ERROR } from '../helpers'
 import { openRecordByTitle } from '../../print-certificate/birth/helpers'
 
 test.describe.serial('Change informant on review', () => {
@@ -242,24 +242,26 @@ test.describe.serial('Change informant on review', () => {
     })
 
     test('Declare', async () => {
-      await selectDeclarationAction(page, 'Declare')
+      await triggerDeclarationAction(page, 'Declare')
 
-      await page.getByText('Recent').click()
-
-      await expect(
-        page.getByRole('button', {
-          name: formatName(declaration.child.name)
-        })
-      ).toBeVisible()
+      await assertRecordInWorkqueue({
+        page,
+        name: formatName(declaration.child.name),
+        workqueues: [
+          {
+            title: 'Recent',
+            exists: true
+          }
+        ]
+      })
     })
   })
 
   test.describe('Declaration Review by Registrar', async () => {
     test('Navigate to the declaration Edit-action', async () => {
-      await logout(page)
       await login(page, CREDENTIALS.REGISTRAR_VILLAGE)
 
-      await page.getByText('Pending registration').click()
+      await page.getByRole('button', { name: 'Pending registration' }).click()
 
       await openRecordByTitle(page, formatName(declaration.child.name))
 
@@ -325,11 +327,12 @@ test.describe.serial('Change informant on review', () => {
     })
 
     test('Register with edits', async () => {
-      await selectDeclarationAction(page, 'Register with edits', true)
+      await triggerDeclarationAction(page, 'Register with edits')
     })
 
     test('Assert event is registered', async () => {
-      await page.getByText('Pending certification').click()
+      await page.getByRole('button', { name: 'Pending certification' }).click()
+
       await openRecordByTitle(page, formatName(declaration.child.name))
       await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR_VILLAGE)
       await expect(page.getByTestId('status-value')).toHaveText('Registered')

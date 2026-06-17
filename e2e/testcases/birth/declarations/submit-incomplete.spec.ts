@@ -3,7 +3,7 @@ import {
   formatName,
   goToSection,
   login,
-  selectDeclarationAction
+  triggerDeclarationAction
 } from '../../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../../constants'
@@ -52,7 +52,7 @@ test.describe.serial('Submit and verify incomplete birth declaration', () => {
 
     test('Go to review and send for review', async () => {
       await goToSection(page, 'review')
-      await selectDeclarationAction(page, 'Notify')
+      await triggerDeclarationAction(page, 'Notify')
     })
 
     test('Verify summary page', async () => {

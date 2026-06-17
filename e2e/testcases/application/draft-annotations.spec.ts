@@ -14,7 +14,7 @@ import {
   formatName,
   goToSection,
   login,
-  selectDeclarationAction,
+  triggerDeclarationAction,
   switchEventTab
 } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
@@ -57,7 +57,7 @@ test.describe.serial('2: Annotations on draft records', () => {
   test('2.2 Fill annotation comment and Save & Exit', async () => {
     await page.locator('#review____comment').fill(ANNOTATION_COMMENT)
 
-    await selectDeclarationAction(page, 'Save & Exit', true)
+    await triggerDeclarationAction(page, 'Save & Exit')
   })
 
   test('2.3 Re-open draft — annotation comment is visible in Annotations section', async () => {

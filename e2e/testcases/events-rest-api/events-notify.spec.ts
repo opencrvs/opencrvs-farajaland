@@ -8,7 +8,7 @@ import {
   fetchUserLocationHierarchy,
   formatName,
   login,
-  selectDeclarationAction,
+  triggerDeclarationAction,
   switchEventTab,
   validateActionMenuButton
 } from '../../helpers'
@@ -682,7 +682,7 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
     })
 
     test('Register event', async () => {
-      await selectDeclarationAction(page, 'Register with edits')
+      await triggerDeclarationAction(page, 'Register with edits')
     })
 
     test("Navigate to event via 'Pending certification' -workqueue", async () => {

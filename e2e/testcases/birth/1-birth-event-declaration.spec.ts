@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test'
-import { login, selectDeclarationAction } from '../../helpers'
+import { login, triggerDeclarationAction } from '../../helpers'
 import path from 'path'
 import { faker } from '@faker-js/faker'
 import { expectInUrl, selectAction } from '../../utils'
@@ -431,7 +431,7 @@ test.describe.serial('1. Birth event declaration', () => {
       })
 
       test('1.9.3 Click Confirm', async () => {
-        await selectDeclarationAction(page, 'Save & Exit')
+        await triggerDeclarationAction(page, 'Save & Exit')
 
         /*
          * Expected result: should

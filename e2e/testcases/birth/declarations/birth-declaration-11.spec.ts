@@ -15,7 +15,7 @@ import {
   formatName,
   goToSection,
   login,
-  selectDeclarationAction
+  triggerDeclarationAction
 } from '../../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../../constants'
@@ -60,7 +60,7 @@ test.describe.serial('11. Birth declaration case - 11', () => {
     })
 
     test('11.1.3 Notify', async () => {
-      await selectDeclarationAction(page, 'Notify')
+      await triggerDeclarationAction(page, 'Notify')
 
       await page.getByText('Recent').click()
 

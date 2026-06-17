@@ -2,7 +2,7 @@ import { expect, Page, test } from '@playwright/test'
 import { goToSection, login, logout } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
 import { fillChildDetails, openBirthDeclaration } from './helpers'
-import { selectDeclarationAction } from '../../helpers'
+import { triggerDeclarationAction } from '../../helpers'
 import { selectAction } from '../../utils'
 import { openRecordByTitle } from '../print-certificate/birth/helpers'
 
@@ -62,7 +62,7 @@ test.describe('Save and delete drafts', () => {
       await openRecordByTitle(page, childName)
 
       await selectAction(page, 'Update')
-      await selectDeclarationAction(page, 'Delete declaration', true)
+      await triggerDeclarationAction(page, 'Delete declaration')
 
       await expect(
         page.getByRole('button', { name: childName, exact: true })

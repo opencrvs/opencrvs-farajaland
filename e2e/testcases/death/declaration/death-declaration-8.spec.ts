@@ -5,7 +5,7 @@ import {
   expectRowValueWithChangeButton,
   goToSection,
   login,
-  selectDeclarationAction
+  triggerDeclarationAction
 } from '../../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../../constants'
@@ -258,7 +258,7 @@ test.describe.serial('8. Death declaration case - 8', () => {
     })
 
     test('8.1.7 Notify', async () => {
-      await selectDeclarationAction(page, 'Notify')
+      await triggerDeclarationAction(page, 'Notify')
 
       await expect(page.getByText('Farajaland CRS')).toBeVisible()
 

@@ -424,7 +424,14 @@ const actionTitleToApiCallMap = {
     'event.actions.register'
   ]
 }
-export async function selectDeclarationAction(
+
+/**
+ * Triggers and confirms an action from the action menu and waits for the expected API calls to respond before completing.
+ * Offline requirement forces us to not await for the responses in client, so we are by design flaky.
+ * @param page
+ * @param action - action button text from the action menu
+ */
+export async function triggerDeclarationAction(
   page: Page,
   action:
     | 'Notify'
@@ -435,26 +442,27 @@ export async function selectDeclarationAction(
     | 'Save & Exit'
     | 'Declare with edits'
     | 'Notify with edits'
-    | 'Register with edits',
-  confirm = true
+    | 'Register with edits'
 ) {
+  // 1. Open action menu and click the action
   await page.getByRole('button', { name: 'Action', exact: true }).click()
   await page.getByText(action, { exact: true }).click()
 
+  // 2. Get the expected API calls that the action triggers to wait for.
   const responses = actionTitleToApiCallMap[action].map((url) =>
     page.waitForResponse((res) => res.url().includes(url) && res.ok())
   )
 
-  if (confirm) {
-    const confirmBtn = page.getByRole('button', { name: 'Confirm' })
+  // 3. Confirm the action and trigger the api calls.
+  const confirmBtn = page.getByRole('button', { name: 'Confirm' })
 
-    if ((await confirmBtn.count()) > 0) {
-      await confirmBtn.click()
-    } else {
-      await page.getByRole('button', { name: action, exact: true }).click()
-    }
+  if ((await confirmBtn.count()) > 0) {
+    await confirmBtn.click()
+  } else {
+    await page.getByRole('button', { name: action, exact: true }).click()
   }
 
+  // 4. Complete only once all the API calls have returned.
   await Promise.all(responses)
 }
 
