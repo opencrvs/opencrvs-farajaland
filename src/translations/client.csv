@@ -1985,7 +1985,6 @@ review.rejection.form.commentLabel,,Comments,Commentaires ou instructions à l'i
 review.rejection.form.instruction,Rejection form instruction,Please describe the updates required to this record for follow up action.,Veuillez décrire les mises à jour nécessaires à cet enregistrement pour le suivi de l'action.
 review.rejection.form.reasons,Rejection reasons checkbox label,Reason(s) for rejection:,Raison(s) du rejet :
 review.rejection.form.reasons.duplicate,Label for rejection option duplicate,Duplicate declaration,Déclaration en double
-review.rejection.form.reasons.markDuplicate,Label for rejection option duplicate,Mark as a duplicate,Marquer comme duplicata
 review.rejection.form.reasons.misspelling,Label for rejection option misspelling,Misspelling,Mauvaise orthographe
 review.rejection.form.reasons.other,Label for rejection option other,Other,Autre
 review.rejection.form.submitButton,Rejection form submit button,Submit rejection,Soumettre le rejet
