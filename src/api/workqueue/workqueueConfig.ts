@@ -322,6 +322,24 @@ export const Workqueues = defineWorkqueues([
     }
   },
   {
+    slug: 'ready-for-attestation',
+    icon: 'Stamp',
+    name: {
+      id: 'workqueues.readyForAttestation.title',
+      defaultMessage: 'Ready for attestation',
+      description: 'Title of ready for attestation workqueue'
+    },
+    query: {
+      flags: { anyOf: ['attestation-required'] }
+    },
+    action: { type: ActionType.READ },
+    emptyMessage: {
+      id: 'workqueues.readyForAttestation.emptyMessage',
+      defaultMessage: 'No records pending attestation',
+      description: 'Empty message for ready for attestation workqueue'
+    }
+  },
+  {
     slug: 'correction-requested',
     icon: 'FilePlus',
     name: {

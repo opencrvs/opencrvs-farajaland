@@ -89,8 +89,8 @@ export const roles: Role[] = [
     scopes: [
       ...defineScopes([
         { type: 'organisation.read-locations', options: { accessLevel: 'administrativeArea' } },
-        { type: 'user.create', options: { accessLevel: 'administrativeArea', role: ['HOSPITAL_CLERK', 'COMMUNITY_LEADER', 'REGISTRATION_AGENT', 'LOCAL_REGISTRAR', 'PROVINCIAL_REGISTRAR'] } },
-        { type: 'user.edit', options: { accessLevel: 'administrativeArea', role: ['HOSPITAL_CLERK', 'COMMUNITY_LEADER', 'REGISTRATION_AGENT', 'LOCAL_REGISTRAR', 'PROVINCIAL_REGISTRAR'] } },
+        { type: 'user.create', options: { accessLevel: 'administrativeArea', role: ['HOSPITAL_CLERK', 'COMMUNITY_LEADER', 'REGISTRATION_AGENT', 'LOCAL_REGISTRAR', 'PROVINCIAL_REGISTRAR', 'HEALTH_ADMINISTRATOR'] } },
+        { type: 'user.edit', options: { accessLevel: 'administrativeArea', role: ['HOSPITAL_CLERK', 'COMMUNITY_LEADER', 'REGISTRATION_AGENT', 'LOCAL_REGISTRAR', 'PROVINCIAL_REGISTRAR', 'HEALTH_ADMINISTRATOR'] } },
         { type: 'user.read', options: { accessLevel: 'administrativeArea' } },
         { type: 'user.search', options: { accessLevel: 'administrativeArea' } }
       ])
@@ -107,8 +107,14 @@ export const roles: Role[] = [
       ...defineScopes([
         { type: 'config.update-all' },
         { type: 'organisation.read-locations' },
-        { type: 'user.create', options: { role: ['HOSPITAL_CLERK', 'COMMUNITY_LEADER', 'REGISTRATION_AGENT', 'LOCAL_REGISTRAR', 'NATIONAL_REGISTRAR', 'LOCAL_SYSTEM_ADMIN', 'NATIONAL_SYSTEM_ADMIN', 'PERFORMANCE_MANAGER', 'PROVINCIAL_REGISTRAR', 'EMBASSY_OFFICIAL'] } },
-        { type: 'user.edit', options: { role: ['HOSPITAL_CLERK', 'COMMUNITY_LEADER', 'REGISTRATION_AGENT', 'LOCAL_REGISTRAR', 'NATIONAL_REGISTRAR', 'LOCAL_SYSTEM_ADMIN', 'NATIONAL_SYSTEM_ADMIN', 'PERFORMANCE_MANAGER', 'PROVINCIAL_REGISTRAR', 'EMBASSY_OFFICIAL'] } },
+        {
+          type: 'user.create',
+          options: { role: ['HOSPITAL_CLERK', 'COMMUNITY_LEADER', 'REGISTRATION_AGENT', 'LOCAL_REGISTRAR', 'NATIONAL_REGISTRAR', 'LOCAL_SYSTEM_ADMIN', 'NATIONAL_SYSTEM_ADMIN', 'PERFORMANCE_MANAGER', 'PROVINCIAL_REGISTRAR', 'EMBASSY_OFFICIAL', 'HEALTH_ADMINISTRATOR'] }
+        },
+        {
+          type: 'user.edit',
+          options: { role: ['HOSPITAL_CLERK', 'COMMUNITY_LEADER', 'REGISTRATION_AGENT', 'LOCAL_REGISTRAR', 'NATIONAL_REGISTRAR', 'LOCAL_SYSTEM_ADMIN', 'NATIONAL_SYSTEM_ADMIN', 'PERFORMANCE_MANAGER', 'PROVINCIAL_REGISTRAR', 'EMBASSY_OFFICIAL', 'HEALTH_ADMINISTRATOR'] }
+        },
         { type: 'user.read' },
         { type: 'user.search' },
         { type: 'performance.read' },
@@ -207,8 +213,9 @@ export const roles: Role[] = [
       { type: 'record.search', options: { placeOfEvent: 'location' } },
       { type: 'workqueue', options: { ids: ['assigned-to-you', 'recent', 'pending-updates'] } },
       { type: 'record.create', options: { placeOfEvent: 'location' } },
+      { type: 'record.declare', options: { placeOfEvent: 'location', event: ['death'] } },
       { type: 'record.read', options: { placeOfEvent: 'location' } },
-      { type: 'record.notify', options: { placeOfEvent: 'location' } },
+      { type: 'record.notify', options: { placeOfEvent: 'location', event: ['birth'] } },
       // The edit scope should have the notifiedBy: 'user' option after its implemented on
       // https://github.com/opencrvs/opencrvs-core/issues/11875
       { type: 'record.edit', options: { placeOfEvent: 'location' } },
@@ -231,6 +238,22 @@ export const roles: Role[] = [
       { type: 'record.edit', options: { placeOfEvent: 'administrativeArea' } },
       { type: 'record.notify', options: { placeOfEvent: 'administrativeArea' } },
       { type: 'record.declare', options: { placeOfEvent: 'administrativeArea' } }
+    ])
+  },
+  {
+    id: 'HEALTH_ADMINISTRATOR',
+    label: {
+      defaultMessage: 'Health Administrator',
+      description: 'Name for user role Health Administrator',
+      id: 'userRole.healthAdministrator'
+    },
+    scopes: defineScopes([
+      { type: 'user.read-only-my-audit' },
+      { type: 'record.search', options: { placeOfEvent: 'location', event: ['death'] } },
+      { type: 'workqueue', options: { ids: ['assigned-to-you', 'recent', 'ready-for-attestation'] } },
+      { type: 'record.read', options: { placeOfEvent: 'location', event: ['death'] } },
+      { type: 'record.reject', options: { placeOfEvent: 'location', event: ['death'] } },
+      { type: 'record.custom-action', options: { event: ['death'], customActionTypes: ['ATTEST'] } }
     ])
   },
   {

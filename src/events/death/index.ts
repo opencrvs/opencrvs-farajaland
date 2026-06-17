@@ -189,6 +189,15 @@ export const deathEvent = defineConfig({
         description: 'Flag label for first certificate issuance'
       },
       requiresAction: true
+    },
+    {
+      id: 'attestation-required',
+      label: {
+        id: 'event.death.flag.attestation-required',
+        defaultMessage: 'Attestation required',
+        description: 'Flag label for attestation required'
+      },
+      requiresAction: true
     }
   ],
   actionOrder: [
@@ -196,6 +205,7 @@ export const deathEvent = defineConfig({
     ActionType.REGISTER,
     ActionType.DECLARE,
     ActionType.EDIT,
+    'ATTEST',
     'VALIDATE_DECLARATION',
     ActionType.MARK_AS_DUPLICATE,
     ActionType.REJECT,
@@ -244,6 +254,11 @@ export const deathEvent = defineConfig({
             user.hasRole('LOCAL_REGISTRAR'),
             user.hasRole('EMBASSY_OFFICIAL')
           )
+        },
+        {
+          id: 'attestation-required',
+          operation: 'add',
+          conditional: user.hasRole('HOSPITAL_CLERK')
         }
       ]
     },
@@ -279,6 +294,47 @@ export const deathEvent = defineConfig({
     },
     {
       type: ActionType.CUSTOM,
+      customActionType: 'ATTEST',
+      icon: 'Stamp',
+      label: {
+        defaultMessage: 'Attest',
+        description:
+          'This is shown as the action name anywhere the user can trigger the action from',
+        id: 'event.death.custom.action.attest.label'
+      },
+      supportingCopy: {
+        defaultMessage:
+          'Attesting this declaration confirms it has been reviewed and clears the attestation requirement.',
+        description: 'Supporting copy for the Attest action',
+        id: 'event.death.custom.action.attest.supportingCopy'
+      },
+      conditionals: [
+        {
+          type: ConditionalType.SHOW,
+          conditional: flag('attestation-required')
+        }
+      ],
+      flags: [{ id: 'attestation-required', operation: 'remove' }],
+      form: [
+        {
+          id: 'comments',
+          type: 'TEXTAREA',
+          label: {
+            defaultMessage: 'Comments',
+            description:
+              'This is the label for the comments field for the attest action',
+            id: 'event.death.custom.action.attest.field.comments.label'
+          }
+        }
+      ],
+      auditHistoryLabel: {
+        defaultMessage: 'Attested',
+        description: 'Audit history label for the attest action',
+        id: 'event.death.custom.action.attest.audit-history-label'
+      }
+    },
+    {
+      type: ActionType.CUSTOM,
       customActionType: 'VALIDATE_DECLARATION',
       icon: 'Stamp',
       label: {
@@ -301,7 +357,10 @@ export const deathEvent = defineConfig({
         },
         {
           type: ConditionalType.ENABLE,
-          conditional: not(flag(InherentFlags.POTENTIAL_DUPLICATE))
+          conditional: and(
+            not(flag(InherentFlags.POTENTIAL_DUPLICATE)),
+            not(flag('attestation-required'))
+          )
         }
       ],
       flags: [{ id: 'validated', operation: 'add' }],
