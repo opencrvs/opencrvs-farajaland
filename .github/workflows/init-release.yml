@@ -12,18 +12,20 @@
 # Triggered by opencrvs-core's init-release workflow (or manually) with a
 # semver version string (e.g. 1.7.2).
 #
-# What this workflow does, in order:
+# Farajaland is a mirror of opencrvs-countryconfig with farajaland-specific
+# modifications on top. Version bumps and CHANGELOG entries live in
+# countryconfig; farajaland inherits them by merging countryconfig's release
+# branch. What this workflow does, in order:
 #   1. Derives the base branch:
-#        - patch release (z > 0)  → release/<x>.<y>.<z-1>
+#        - patch release (z > 0)  → release/<x>.<y>.<z-1>  (must already exist)
 #        - minor/major (z = 0)    → develop
-#   2. Creates a release branch (release/<version>) from the base branch.
-#   3. Bumps package.json and prepends a CHANGELOG section, then pushes
-#      both commits to the release branch.
-#   4. Opens two PRs — both PRs already contain the version-bump commits:
-#        a. release/<version> → master   (the release PR)
-#        b. release/<version> → develop  (merge-back PR, keeps develop in sync)
-#   5. Creates a draft GitHub release and immediately deletes the backing tag
-#      (the tag will be re-created by the publish workflow after the PR merges).
+#   2. Waits for countryconfig's release/<version> branch to appear (both
+#      workflows are triggered in parallel by core's init-release).
+#   3. Creates a release branch from the farajaland base branch, then merges
+#      countryconfig's release branch in to inherit version-bump commits.
+#   4. Opens two PRs:
+#        a. release/<version> → master                          (the release PR)
+#        b. merge-back/release-<version>-to-develop → develop  (merge-back PR)
 name: Release - Start a new release
 on:
   workflow_dispatch:
@@ -37,8 +39,18 @@ jobs:
   release_workflow:
     runs-on: ubuntu-latest
     steps:
+      # Full history is needed for git operations below.
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
       # Derive base_branch and target_branch from the version number.
       #   - patch (z > 0): base = release/<x>.<y>.<z-1>, target = master
+      #     The previous release branch must already exist; if not, the step
+      #     fails early with a clear message rather than branching from an
+      #     unexpected point.
       #   - minor/major (z = 0): base = develop, target = master
       - name: Determine the Base Branch
         id: get_base_branch
@@ -57,17 +69,13 @@ jobs:
           else
             previous_version="$((x)).$((y)).$((z-1))"
             base_branch="release/$previous_version"
+            if ! git ls-remote --exit-code --heads origin "$base_branch"; then
+              echo "The branch $base_branch does not exist. Please create it before starting a new patch release." >> "$GITHUB_STEP_SUMMARY"
+              exit 1
+            fi
           fi
           echo "target_branch=master" >> $GITHUB_OUTPUT
           echo "base_branch=$base_branch" >> $GITHUB_OUTPUT
-
-      # Full history is required so yarn can traverse the commit graph.
-      - name: Checkout ${{ steps.get_base_branch.outputs.base_branch }}
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ steps.get_base_branch.outputs.base_branch }}
-          fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Check if release branch already exists
         id: check_branch
@@ -79,39 +87,46 @@ jobs:
             echo "exists=false" >> $GITHUB_OUTPUT
           fi
 
-      # Create the release branch, bump package.json, and update the
-      # CHANGELOG — then push. The PRs are opened only after these commits
-      # exist on the remote, so both PRs immediately include the version-bump
-      # commits.
+      # Poll for countryconfig's release branch before creating farajaland's.
+      # Both workflows are triggered at the same time by core's init-release,
+      # so countryconfig may not have pushed its branch yet.
+      # Skipped if the farajaland release branch was already created by a
+      # previous run (countryconfig's branch must exist at that point already).
+      - name: Wait for countryconfig release branch
+        if: steps.check_branch.outputs.exists == 'false'
+        run: |
+          RELEASE_BRANCH="release/${{ inputs.version }}"
+          for i in $(seq 1 20); do
+            if git ls-remote --exit-code --heads \
+                https://github.com/opencrvs/opencrvs-countryconfig.git \
+                "$RELEASE_BRANCH" > /dev/null 2>&1; then
+              echo "countryconfig/$RELEASE_BRANCH is available."
+              exit 0
+            fi
+            if [ "$i" -eq 20 ]; then
+              echo "Timed out waiting for countryconfig/$RELEASE_BRANCH." >&2
+              exit 1
+            fi
+            echo "Attempt $i/20: waiting 30s for countryconfig/$RELEASE_BRANCH..."
+            sleep 30
+          done
+
+      # Create farajaland's release branch from its own base, then merge
+      # countryconfig's release branch in. This brings version-bump commits
+      # into farajaland so PRs have a real diff.
       # Skipped if the release branch was already created by a previous run.
-      - name: Create release branch and update version numbers and CHANGELOG
+      - name: Create release branch
         if: steps.check_branch.outputs.exists == 'false'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
+          git checkout "${{ steps.get_base_branch.outputs.base_branch }}"
           git checkout -b "release/${{ inputs.version }}"
 
-          # Bump package.json without creating a git tag.
-          yarn version --new-version ${{ inputs.version }} --no-git-tag-version
-          git add .
-          git commit -m "chore: update version to ${{ inputs.version }}"
-
-          # Prepend a new "Release Candidate" section to the top of CHANGELOG.md.
-          # sed removes the existing "# Changelog" header (lines 1-2) so we can
-          # rewrite it with the new section underneath.
-          sed -i '1,2d' CHANGELOG.md
-          cp CHANGELOG.md COPY_CHANGELOG.md
-          {
-            echo "# Changelog"
-            echo ""
-            echo "## ${{ inputs.version }} Release Candidate"
-            echo ""
-            cat COPY_CHANGELOG.md
-          } > CHANGELOG.md
-          rm COPY_CHANGELOG.md
-          git add CHANGELOG.md
-          git commit -m "docs: update changelog for ${{ inputs.version }} release candidate"
+          git remote add countryconfig https://github.com/opencrvs/opencrvs-countryconfig.git
+          git fetch countryconfig "release/${{ inputs.version }}"
+          git merge --no-edit "countryconfig/release/${{ inputs.version }}"
 
           git push origin "release/${{ inputs.version }}"
 
@@ -137,8 +152,9 @@ jobs:
       #   PR 2 — merge-back/release-<version>-to-develop → develop
       #     Uses a dedicated branch so conflict-resolution commits stay off
       #     the release branch.
-      #       - z=0 (base is develop): carries only the two bump commits, clean diff.
-      #       - z>0 (base is a prior release branch): also backports any patch fixes.
+      #       - z=0 (base is develop): initially an empty diff; useful once
+      #         release-branch fixes are cherry-picked.
+      #       - z>0 (base is a prior release branch): backports patch fixes.
       # Each PR is checked individually — one may already exist while the other
       # does not, so both are always evaluated.
       - name: Create Pull Requests
@@ -171,41 +187,9 @@ jobs:
               --base "develop" \
               --head "$MERGEBACK_BRANCH" \
               --title "chore: merge release v${{ inputs.version }} back to develop" \
-              --body "Merge release branch back to develop to include version bump and changelog updates."
+              --body "Merge release branch back to develop to keep develop in sync with any release-branch fixes."
           else
             echo "PR $MERGEBACK_BRANCH → develop already exists (#$EXISTING_DEVELOP_PR), skipping."
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # Create a draft release so the release notes page exists immediately.
-      # The tag is deleted right after: the publish workflow re-creates it when
-      # the release PR is merged into master, which is the canonical tag point.
-      # Skipped if a release for this version already exists from a previous run.
-      - name: Create a draft release
-        run: |
-          TAG_NAME="v${{ inputs.version }}"
-          if gh release view "$TAG_NAME" > /dev/null 2>&1; then
-            echo "Release $TAG_NAME already exists, skipping."
-          else
-            TITLE="OpenCRVS - $TAG_NAME"
-            NOTES="Release notes for version ${{ inputs.version }}"
-            git tag "$TAG_NAME"
-            git push origin "$TAG_NAME"
-            gh release create "$TAG_NAME" \
-              --title "$TITLE" \
-              --notes "$NOTES" \
-              --draft
-          fi
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Delete the tag
-        run: |
-          TAG_NAME="v${{ inputs.version }}"
-          if git ls-remote --exit-code --tags origin "$TAG_NAME" > /dev/null 2>&1; then
-            git tag -d "$TAG_NAME" 2>/dev/null || true
-            git push origin ":refs/tags/$TAG_NAME"
-          else
-            echo "Tag $TAG_NAME does not exist on remote, skipping."
-          fi
