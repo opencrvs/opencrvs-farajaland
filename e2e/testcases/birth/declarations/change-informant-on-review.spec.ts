@@ -244,7 +244,7 @@ test.describe.serial('Change informant on review', () => {
     test('Declare', async () => {
       await triggerDeclarationAction(page, 'Declare')
 
-      assertRecordInWorkqueue({
+      await assertRecordInWorkqueue({
         page,
         name: formatName(declaration.child.name),
         workqueues: [
