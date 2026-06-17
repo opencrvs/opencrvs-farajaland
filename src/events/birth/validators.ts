@@ -11,7 +11,11 @@
 import { and, or, field } from '@opencrvs/toolkit/events'
 import { defineFormConditional, not } from '@opencrvs/toolkit/conditionals'
 
-export const MAX_NAME_LENGTH = 32
+// Derived from the tightest SVG certificate clip area (202px, 8px Noto Sans).
+// Worst-case character: W ≈ 6.9px → 2N × 6.9 + 2 (space) ≤ 202 → N ≤ 14.
+// Set to 13 for an additional safety margin (~181px used of 202px available).
+// Increase only if all certificate clip paths are widened accordingly.
+export const MAX_NAME_LENGTH = 13
 
 export const invalidNameValidator = (fieldName: string) => ({
   message: {
