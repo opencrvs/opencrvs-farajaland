@@ -16,6 +16,7 @@ export const roles: Role[] = [
       id: 'userRole.registrationOfficer'
     },
     scopes: defineScopes([
+      { type: 'profile.electronic-signature' },
       { type: 'performance.read' },
       { type: 'organisation.read-locations', options: { accessLevel: 'location' } },
       { type: 'user.read-only-my-audit' },
