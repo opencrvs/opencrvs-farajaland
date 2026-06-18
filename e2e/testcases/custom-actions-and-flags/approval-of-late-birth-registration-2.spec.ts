@@ -356,9 +356,7 @@ test.describe
 
     test('Go to record', async () => {
       await page.getByText('Recent').click()
-
       await openRecordByTitle(page, childNameFormatted)
-      await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
     })
 
     test("Event should have the 'Approval required for late registration' -flag", async () => {
@@ -369,6 +367,8 @@ test.describe
       await expect(page.getByTestId('flags-value')).not.toHaveText(
         'Edit in progress'
       )
+
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
     })
 
     test('Assert audit trail', async () => {
