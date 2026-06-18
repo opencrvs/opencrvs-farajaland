@@ -5,7 +5,8 @@ import { createPIN, getToken } from '../../helpers'
 import { mockNetworkConditions } from '../../mock-network-conditions'
 
 test('Reconnect during application loading', async ({ browser }) => {
-  const page = await browser.newPage()
+  const context = await browser.newContext()
+  const page = await context.newPage()
 
   await test.step('Prepare login', async () => {
     const token = await getToken(CREDENTIALS.REGISTRAR)
@@ -17,6 +18,7 @@ test('Reconnect during application loading', async ({ browser }) => {
   await test.step('Begin loading application in offline mode', async () => {
     await mockNetworkConditions(page, 'offline')
     await page.goto(CLIENT_URL)
+    await expect(page.getByText('Installing application...')).toBeVisible()
   })
 
   await test.step('Reconnect to network', async () => {
