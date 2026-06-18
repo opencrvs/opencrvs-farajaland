@@ -16,6 +16,7 @@ export const roles: Role[] = [
       id: 'userRole.registrationOfficer'
     },
     scopes: defineScopes([
+      { type: 'profile.electronic-signature' },
       { type: 'performance.read' },
       { type: 'organisation.read-locations', options: { accessLevel: 'location' } },
       { type: 'user.read-only-my-audit' },
@@ -218,8 +219,7 @@ export const roles: Role[] = [
       { type: 'record.notify', options: { placeOfEvent: 'location', event: ['birth'] } },
       // The edit scope should have the notifiedBy: 'user' option after its implemented on
       // https://github.com/opencrvs/opencrvs-core/issues/11875
-      { type: 'record.edit', options: { placeOfEvent: 'location' } },
-      { type: 'record.print-certified-copies', options: { registeredIn: 'location' } }
+      { type: 'record.edit', options: { placeOfEvent: 'location' } }
     ])
   },
   {
@@ -264,6 +264,7 @@ export const roles: Role[] = [
       id: 'userRole.embassyOffical'
     },
     scopes: defineScopes([
+      { type: 'profile.electronic-signature' },
       { type: 'user.read-only-my-audit' },
       { type: 'workqueue', options: { ids: ['assigned-to-you', 'recent', 'escalated', 'pending-updates', 'pending-certification', 'potential-duplicate'] } },
       { type: 'record.search', options: { placeOfEvent: 'location' } },
