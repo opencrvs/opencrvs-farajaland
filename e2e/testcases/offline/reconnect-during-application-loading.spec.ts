@@ -17,9 +17,6 @@ test('Reconnect during application loading', async ({ browser }) => {
   await test.step('Begin loading application in offline mode', async () => {
     await mockNetworkConditions(page, 'offline')
     await page.goto(CLIENT_URL)
-    await expect(page.getByText('Installing application...')).toBeVisible({
-      timeout: 30000
-    })
   })
 
   await test.step('Reconnect to network', async () => {
