@@ -1,4 +1,4 @@
-FROM node:22-alpine AS deps
+FROM node:22.22.3-alpine as deps
 WORKDIR /usr/src/app
 ENV NPM_CONFIG_LOGLEVEL=warn
 
