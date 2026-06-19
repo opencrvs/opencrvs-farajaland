@@ -1,4 +1,6 @@
 import { test, expect, type Page } from '@playwright/test'
+import { v4 as uuidv4 } from 'uuid'
+import { createClient } from '@opencrvs/toolkit/api'
 import {
   continueForm,
   drawSignature,
@@ -8,10 +10,11 @@ import {
   goToSection,
   login,
   logout,
-  triggerDeclarationAction
+  triggerDeclarationAction,
+  searchFromSearchBar
 } from '../../helpers'
 import { faker } from '@faker-js/faker'
-import { CREDENTIALS } from '../../constants'
+import { CREDENTIALS, GATEWAY_HOST } from '../../constants'
 import { fillDate, formatV2ChildName } from '../birth/helpers'
 import { ensureAssignedToUser, selectAction } from '../../utils'
 import { ActionType } from '@opencrvs/toolkit/events'
@@ -312,12 +315,16 @@ test.describe.serial('Basic Archival flow', () => {
   })
 
   test('Archived declaration can be found via search', async () => {
-    await page.locator('#searchText').fill(formatName(declaration.child.name))
-    await page.locator('#searchIconButton').click()
-
-    await openRecordByTitle(page, formatName(declaration.child.name))
-
+    await searchFromSearchBar(page, formatName(declaration.child.name))
     await expect(page.getByTestId('status-value')).toHaveText('Archived')
+  })
+
+  test('Assert available actions', async () => {
+    await page.getByRole('button', { name: 'Action', exact: true }).click()
+    const options = await page
+      .locator('#action-Dropdown-Content li')
+      .allTextContents()
+    expect(options).toStrictEqual(['Assign', 'Escalate'])
   })
 })
 
@@ -381,5 +388,77 @@ test.describe.serial('Archival of declaration pending validation', () => {
     await expect(
       page.getByRole('button', { name: formatV2ChildName(declaration) })
     ).not.toBeVisible()
+  })
+})
+
+test('Archival of rejected declaration', async ({ page }) => {
+  let declaration: Declaration
+  let eventId: string
+
+  const rejectionReason = 'Mother NID is missing. Please update and resubmit.'
+
+  await test.step('Initialise a rejected birth record via API', async () => {
+    const registrarToken = await getToken(CREDENTIALS.REGISTRAR)
+
+    const declareRes = await createDeclaration(
+      registrarToken,
+      undefined,
+      ActionType.DECLARE
+    )
+    declaration = declareRes.declaration
+    eventId = declareRes.eventId
+
+    const client = createClient(
+      GATEWAY_HOST + '/events',
+      `Bearer ${registrarToken}`
+    )
+
+    const registrarUserId = JSON.parse(
+      Buffer.from(registrarToken.split('.')[1], 'base64').toString()
+    ).sub
+
+    await client.event.actions.assignment.assign.mutate({
+      eventId,
+      transactionId: uuidv4(),
+      type: ActionType.ASSIGN,
+      assignedTo: registrarUserId
+    })
+
+    await client.event.actions.reject.request.mutate({
+      eventId,
+      transactionId: uuidv4(),
+      declaration: {},
+      annotation: {},
+      content: { reason: rejectionReason }
+    })
+  })
+
+  await test.step('Login as Registrar', async () => {
+    await login(page, CREDENTIALS.REGISTRAR)
+  })
+
+  await test.step('Archive the rejected declaration', async () => {
+    await searchFromSearchBar(page, formatV2ChildName(declaration))
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
+
+    await expect(page.getByTestId('flags-value')).toContainText('Rejected')
+
+    await selectAction(page, 'Archive')
+
+    const archiveResponse = page.waitForResponse(
+      (res) => res.url().includes('event.actions.archive') && res.ok()
+    )
+    await page.getByRole('button', { name: 'Archive', exact: true }).click()
+    await archiveResponse
+  })
+
+  await test.step('Archived rejected record cannot be edited', async () => {
+    await searchFromSearchBar(page, formatV2ChildName(declaration))
+    await expect(page.getByTestId('status-value')).toHaveText('Archived')
+    await page.getByRole('button', { name: 'Action', exact: true }).click()
+    const options = await page
+      .locator('#action-Dropdown-Content li')
+      .allTextContents()
+    expect(options).toStrictEqual(['Assign', 'Escalate'])
   })
 })
