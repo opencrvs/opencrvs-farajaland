@@ -15,19 +15,19 @@ import {
   deepMerge,
   EventDocument,
   FieldUpdateValue,
-  getPendingAction
+  getPendingAction,
+  type Location
 } from '@opencrvs/toolkit/events'
 import { applicationConfig } from '../application/application-config'
 import { COUNTRY_LOGO_URL } from './constant'
 import { GATEWAY_URL } from '@countryconfig/constants'
 import { createClient } from '@opencrvs/toolkit/api'
-import { Event } from '@countryconfig/form/types/types'
-import { InformantType as BirthInformantType } from '@countryconfig/form/v2/birth/forms/pages/informant'
+
+import { InformantType as BirthInformantType } from '@countryconfig/events/birth/forms/pages/informant'
 import { InformantTemplateType } from './sms-service'
 import { generateFailureLog, NotificationParams, notify } from './handler'
-import { InformantType as DeathInformantType } from '@countryconfig/form/v2/death/forms/pages/informant'
-import { birthEvent } from '@countryconfig/form/v2/birth'
-import { deathEvent } from '@countryconfig/form/v2/death'
+import { InformantType as DeathInformantType } from '@countryconfig/events/death/forms/pages/informant'
+import { Event } from '@countryconfig/events/utils'
 
 const resolveName = (name: FieldUpdateValue) => {
   const nameObj = {
@@ -53,7 +53,7 @@ const resolveName = (name: FieldUpdateValue) => {
   }
 }
 
-async function getLocations(token: string) {
+async function getLocations(token: string): Promise<Location[]> {
   const url = new URL('events', GATEWAY_URL).toString()
   const client = createClient(url, `Bearer ${token}`)
   return client.locations.list.query()
@@ -77,23 +77,11 @@ function getInformant(eventType: string, declaration: Record<string, any>) {
   throw new Error('Invalid event type')
 }
 
-function getEventConfig(eventType: string) {
-  if (eventType === Event.Birth) {
-    return birthEvent
-  }
-
-  if (eventType === Event.Death) {
-    return deathEvent
-  }
-
-  throw new Error('Invalid event type')
-}
-
 async function getNotificationParams(
   event: EventDocument,
   token: string,
   registrationNumber?: string
-): Promise<NotificationParams> {
+): Promise<NotificationParams | undefined> {
   const pendingAction = getPendingAction(event.actions)
   const locations = await getLocations(token)
 
@@ -197,7 +185,7 @@ async function getNotificationParams(
     }
   }
 
-  throw new Error(`Invalid action type "${pendingAction.type}"`)
+  return
 }
 
 export async function sendInformantNotification({
@@ -216,8 +204,13 @@ export async function sendInformantNotification({
       registrationNumber
     )
 
+    if (!notificationParams) {
+      return
+    }
+
     await notify(notificationParams)
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.log(error)
   }
 }

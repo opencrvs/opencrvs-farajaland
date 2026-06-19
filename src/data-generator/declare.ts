@@ -159,7 +159,7 @@ export async function sendBirthNotification(
   return getIDFromResponse(response)
 }
 
-export function createBirthDeclarationData(
+function createBirthDeclarationData(
   sex: 'male' | 'female' | undefined,
   birthDate: Date,
   declarationTime: Date,

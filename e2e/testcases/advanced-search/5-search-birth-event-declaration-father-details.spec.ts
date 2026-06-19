@@ -7,7 +7,7 @@ import {
 import { CREDENTIALS } from '../../constants'
 import { faker } from '@faker-js/faker'
 import { getMonthFormatted } from './helper'
-import { assertTexts, type } from '../../utils'
+import { assertTexts, expectInUrl, type } from '../../utils'
 
 test.describe
   .serial("Advanced Search - Birth Event Declaration - Father's details", () => {
@@ -17,10 +17,7 @@ test.describe
 
   test.beforeAll(async ({ browser }) => {
     page = await browser.newPage()
-    const token = await getToken(
-      CREDENTIALS.LOCAL_REGISTRAR.USERNAME,
-      CREDENTIALS.LOCAL_REGISTRAR.PASSWORD
-    )
+    const token = await getToken(CREDENTIALS.REGISTRAR)
     record = await createDeclaration(token, {}, 'REGISTER', 'HEALTH_FACILITY')
     ;[yyyy, mm, dd] = (record.declaration['father.dob'] ?? '').split('-')
   })
@@ -32,7 +29,7 @@ test.describe
   test('2.1 - Validate log in and load search page', async () => {
     await login(page)
     await page.click('#searchType')
-    await expect(page).toHaveURL(/.*\/advanced-search/)
+    await expectInUrl(page, 'advanced-search')
     await page.getByText('Birth').click()
   })
 
@@ -78,11 +75,13 @@ test.describe
           `Father's Name: ${record.declaration['father.name'].firstname ?? faker.person.firstName} ${record.declaration['father.name'].surname}`
         ]
       })
-      await expect(page.getByRole('button', { name: 'Edit' })).toBeVisible()
+      await expect(
+        page.getByRole('button', { name: 'Edit', exact: true })
+      ).toBeVisible()
     })
 
     test('2.5.3 - Validate clicking on the search edit button', async () => {
-      await page.getByRole('button', { name: 'Edit' }).click()
+      await page.getByRole('button', { name: 'Edit', exact: true }).click()
       await expect(page).toHaveURL(/.*\/advanced-search/)
       expect(page.url()).toContain(`father.dob=${yyyy}-${mm}-${dd}`)
 

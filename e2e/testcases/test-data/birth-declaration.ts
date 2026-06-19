@@ -1,7 +1,11 @@
 import { v4 as uuidv4 } from 'uuid'
 import { GATEWAY_HOST } from '../../constants'
 import { faker } from '@faker-js/faker'
-import { getAllLocations, getLocationIdByName } from '../birth/helpers'
+import {
+  getLocations,
+  getIdByName,
+  getAdministrativeAreas
+} from '../birth/helpers'
 import { createClient } from '@opencrvs/toolkit/api'
 import {
   ActionDocument,
@@ -10,12 +14,13 @@ import {
   AddressType
 } from '@opencrvs/toolkit/events'
 import { getSignatureFile, uploadFile } from './utils'
+import { dateToIsoDateString, randomPastDate } from '../../helpers'
 
 type InformantRelation = 'MOTHER' | 'BROTHER'
 
 function getInformantDetails(
   informantRelation: InformantRelation,
-  district?: string
+  village?: string
 ) {
   if (informantRelation === 'MOTHER') {
     return {
@@ -33,7 +38,7 @@ function getInformantDetails(
     },
     'informant.address': {
       country: 'FAR',
-      administrativeArea: district,
+      administrativeArea: village,
       addressType: AddressType.DOMESTIC
     },
     'informant.dob': '2008-09-12',
@@ -44,37 +49,34 @@ function getInformantDetails(
 }
 
 export async function getPlaceOfBirth(
-  type: 'PRIVATE_HOME' | 'HEALTH_FACILITY'
+  type: 'PRIVATE_HOME' | 'HEALTH_FACILITY',
+  token: string,
+  name?: string
 ) {
   if (type === 'HEALTH_FACILITY') {
-    const locations = await getAllLocations('HEALTH_FACILITY')
-    const locationId = getLocationIdByName(
-      locations,
-      'Ibombo Rural Health Centre'
-    )
+    const locations = await getLocations('HEALTH_FACILITY', token)
+    const locationId = getIdByName(locations, name ?? 'Klow Village Hospital')
 
     return {
       'child.placeOfBirth': 'HEALTH_FACILITY',
-      'child.birthLocation': locationId
+      'child.birthLocation': locationId,
+      'child.birthLocationId': locationId
     }
   }
 
   if (type === 'PRIVATE_HOME') {
-    const locations = await getAllLocations('ADMIN_STRUCTURE')
-    const province = getLocationIdByName(locations, 'Central')
-    const district = getLocationIdByName(locations, 'Ibombo')
+    const administrativeAreas = await getAdministrativeAreas(token)
 
-    if (!province || !district) {
-      throw new Error('Province or district not found')
-    }
+    const village = getIdByName(administrativeAreas, 'Klow')
 
     return {
       'child.placeOfBirth': 'PRIVATE_HOME',
       'child.birthLocation.privateHome': {
         country: 'FAR',
         addressType: AddressType.DOMESTIC,
-        administrativeArea: district
-      }
+        administrativeArea: village
+      },
+      'child.birthLocationId': village
     }
   }
 
@@ -84,20 +86,21 @@ export async function getPlaceOfBirth(
 export async function getDeclaration({
   informantRelation = 'MOTHER',
   partialDeclaration = {},
-  placeOfBirthType = 'PRIVATE_HOME'
+  placeOfBirthType = 'PRIVATE_HOME',
+  token
 }: {
   informantRelation?: InformantRelation
   partialDeclaration?: Record<string, any>
   placeOfBirthType?: 'PRIVATE_HOME' | 'HEALTH_FACILITY'
+  token: string
 }) {
-  const locations = await getAllLocations('ADMIN_STRUCTURE')
-  const province = getLocationIdByName(locations, 'Central')
-  const district = getLocationIdByName(locations, 'Ibombo')
+  const administrativeAreas = await getAdministrativeAreas(token)
 
-  if (!province || !district) {
-    throw new Error('Province or district not found')
-  }
+  const village = getIdByName(administrativeAreas, 'Klow')
 
+  /**
+   * NOTE: This will inevitably result to duplicate detected, unless we introduce more randomness.
+   */
   const mockDeclaration = {
     'father.detailsNotAvailable': true,
     // Only include 'father.reason' if partialDeclaration doesn't have 'father.detailsNotAvailable'
@@ -108,25 +111,28 @@ export async function getDeclaration({
       firstname: faker.person.firstName(),
       surname: faker.person.lastName()
     },
-    'mother.dob': '1995-09-12',
+    'mother.dob': dateToIsoDateString(
+      faker.date
+        // DOB must be at least 18 years after mother.dob to pass validation
+        // Upper bound ensures the record appears on the first page of search results
+        .between({ from: '1995-09-12', to: '2000-11-28' })
+    ),
     'mother.nationality': 'FAR',
     'mother.idType': 'NATIONAL_ID',
     'mother.nid': faker.string.numeric(10),
     'mother.address': {
       country: 'FAR',
       addressType: AddressType.DOMESTIC,
-      administrativeArea: district
+      administrativeArea: village
     },
     'child.name': {
       firstname: faker.person.firstName(),
       surname: faker.person.lastName()
     },
     'child.gender': 'female',
-    'child.dob': new Date(Date.now() - 60 * 60 * 24 * 1000)
-      .toISOString()
-      .split('T')[0], // yesterday
-    ...(await getPlaceOfBirth(placeOfBirthType)),
-    ...getInformantDetails(informantRelation, district)
+    'child.dob': randomPastDate(14),
+    ...(await getPlaceOfBirth(placeOfBirthType, token)),
+    ...getInformantDetails(informantRelation, village)
   }
 
   // 💡 Merge overriden fields
@@ -154,7 +160,13 @@ export async function createDeclaration(
   const declaration =
     dec ??
     (await getDeclaration({
-      placeOfBirthType
+      placeOfBirthType,
+      token,
+      partialDeclaration:
+        action === ActionType.NOTIFY
+          ? // Drop arbitrary fields not needed for notify action
+            { 'mother.nid': null, 'mother.dob': null }
+          : undefined
     }))
 
   const client = createClient(GATEWAY_HOST + '/events', `Bearer ${token}`)
@@ -173,17 +185,16 @@ export async function createDeclaration(
     'review.signature': filename
   }
 
-  const declareRes = await client.event.actions.declare.request.mutate({
-    eventId: eventId,
-    transactionId: uuidv4(),
-    declaration,
-    annotation,
-    keepAssignment: action !== ActionType.DECLARE
-  })
+  if (action === ActionType.NOTIFY) {
+    const notifyRes = await client.event.actions.notify.request.mutate({
+      eventId: eventId,
+      transactionId: uuidv4(),
+      declaration,
+      annotation
+    })
 
-  if (action === ActionType.DECLARE) {
-    const declareAction = declareRes.actions.find(
-      (action: ActionDocument) => action.type === 'DECLARE'
+    const declareAction = notifyRes.actions.find(
+      (action: ActionDocument) => action.type === ActionType.NOTIFY
     )
 
     if (!declareAction || !('declaration' in declareAction)) {
@@ -196,35 +207,39 @@ export async function createDeclaration(
     }
   }
 
-  const validateRes = await client.event.actions.validate.request.mutate({
-    eventId: eventId,
+  const declareRes = await client.event.actions.declare.request.mutate({
+    eventId,
     transactionId: uuidv4(),
     declaration,
     annotation,
-    duplicates: [],
-    keepAssignment: true
+    keepAssignment: action !== ActionType.DECLARE
   })
 
-  if (action === ActionType.VALIDATE) {
-    const validateAction = validateRes.actions.find(
-      (action: ActionDocument) => action.type === 'VALIDATE'
+  if (action === ActionType.DECLARE) {
+    const declareAction = declareRes.actions.find(
+      (action: ActionDocument) => action.type === ActionType.DECLARE
     )
+
+    if (!declareAction || !('declaration' in declareAction)) {
+      throw new Error('Declaration info not found in action')
+    }
 
     return {
       eventId,
-      declaration: validateAction?.declaration as Declaration
+      declaration: declareAction?.declaration as Declaration,
+      trackingId: declareRes.trackingId
     }
   }
 
   const registerRes = await client.event.actions.register.request.mutate({
-    eventId: eventId,
+    eventId,
     transactionId: uuidv4(),
     declaration,
     annotation
   })
 
   const registerAction = registerRes.actions.find(
-    (action: ActionDocument) => action.type === 'REGISTER'
+    (action: ActionDocument) => action.type === ActionType.REGISTER
   )
 
   const trackingId = registerRes?.trackingId as string
@@ -236,20 +251,4 @@ export async function createDeclaration(
     trackingId,
     registrationNumber
   }
-}
-
-export async function rejectDeclaration(
-  token: string,
-  eventId: string
-): Promise<any> {
-  const client = createClient(GATEWAY_HOST + '/events', `Bearer ${token}`)
-
-  const rejectResponse = await client.event.actions.reject.request.mutate({
-    eventId,
-    declaration: {},
-    transactionId: uuidv4(),
-    reason: { message: 'For test' }
-  })
-
-  return rejectResponse
 }

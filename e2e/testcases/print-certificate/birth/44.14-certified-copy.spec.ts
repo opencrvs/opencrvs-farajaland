@@ -7,9 +7,10 @@ import { CREDENTIALS } from '../../../constants'
 import { login } from '../../../helpers'
 import {
   navigateToCertificatePrintAction,
+  openRecordByTitle,
   selectRequesterType
 } from './helpers'
-import { selectAction } from '../../../utils'
+import { ensureAssignedToUser, selectAction } from '../../../utils'
 import { formatV2ChildName } from '../../birth/helpers'
 
 test.describe.serial('44.14.0 Validate "Certified copy" option', () => {
@@ -17,10 +18,7 @@ test.describe.serial('44.14.0 Validate "Certified copy" option', () => {
   let page: Page
 
   test.beforeAll(async ({ browser }) => {
-    const token = await getToken(
-      CREDENTIALS.LOCAL_REGISTRAR.USERNAME,
-      CREDENTIALS.LOCAL_REGISTRAR.PASSWORD
-    )
+    const token = await getToken(CREDENTIALS.REGISTRAR)
     const res = await createDeclaration(token)
     declaration = res.declaration
     page = await browser.newPage()
@@ -35,8 +33,12 @@ test.describe.serial('44.14.0 Validate "Certified copy" option', () => {
   })
 
   test('44.14.0.1 Navigate to certificate print action', async () => {
-    await page.getByRole('button', { name: 'Ready to print' }).click()
-    await navigateToCertificatePrintAction(page, declaration)
+    await page.getByRole('button', { name: 'Pending certification' }).click()
+    await navigateToCertificatePrintAction(
+      page,
+      declaration,
+      CREDENTIALS.REGISTRAR
+    )
   })
 
   test('44.14.1 "Certified Copy" is not available in certificate types', async () => {
@@ -63,17 +65,12 @@ test.describe.serial('44.14.0 Validate "Certified copy" option', () => {
 
   test('44.14.3 "Certified Copy" is now available in certificate types', async () => {
     await page
-      .getByRole('textbox', { name: 'Search for a tracking ID' })
+      .getByRole('textbox', { name: 'Search for a record' })
       .fill(formatV2ChildName(declaration))
 
     await page.getByRole('button', { name: 'Search' }).click()
-    await page
-      .getByRole('button', {
-        name: formatV2ChildName(declaration),
-        exact: true
-      })
-      .click()
-
+    await openRecordByTitle(page, formatV2ChildName(declaration))
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
     await selectAction(page, 'Print')
     await page.locator('#certificateTemplateId svg').click()
     await expect(

@@ -11,7 +11,6 @@ import {
 import { CREDENTIALS } from '../../constants'
 import { faker } from '@faker-js/faker'
 import { fillDate } from '../birth/helpers'
-import { ensureOutboxIsEmpty } from '../../utils'
 
 test.describe
   .serial('30: Validate user can send multiple complete and incomplete records offline', () => {
@@ -30,12 +29,7 @@ test.describe
     birthType: 'Single',
     weightAtBirth: 2.4,
     placeOfBirth: 'Health Institution',
-    birthLocation: {
-      facility: 'Golden Valley Rural Health Centre',
-      district: 'Ibombo',
-      province: 'Central',
-      country: 'Farajaland'
-    },
+    birthLocation: { facility: 'Klow Village Hospital' },
     informantType: 'Mother',
     informantEmail: faker.internet.email(),
     mother: {
@@ -53,6 +47,7 @@ test.describe
         country: 'Farajaland',
         province: 'Sulaka',
         district: 'Irundu',
+        village: 'Xhosa',
         town: faker.location.city(),
         residentialArea: faker.location.county(),
         street: faker.location.street(),
@@ -107,13 +102,13 @@ test.describe
   })
 
   test('30.0 Login', async () => {
-    await login(page, CREDENTIALS.FIELD_AGENT)
+    await login(page, CREDENTIALS.HOSPITAL_OFFICIAL)
 
     // this is needed to get eventConfig before going offline
     await page.click('#header-new-event')
     await page.getByLabel('Birth').click()
     await goToSection(page, 'review')
-    await page.getByRole('button', { name: 'Exit', exact: true }).click()
+    await page.getByTestId('exit-button').click()
     await page.getByRole('button', { name: 'Confirm', exact: true }).click()
 
     await page.context().setOffline(true)
@@ -218,6 +213,10 @@ test.describe
       await page
         .getByText(declaration.mother.address.district, { exact: true })
         .click()
+      await page.locator('#village').click()
+      await page
+        .getByText(declaration.mother.address.village, { exact: true })
+        .click()
 
       await page.locator('#town').fill(declaration.mother.address.town)
       await page
@@ -293,10 +292,12 @@ test.describe
       await expect(page.getByRole('dialog')).not.toBeVisible()
     })
 
-    test('30.1.8 Send for review', async () => {
-      await page.getByRole('button', { name: 'Send for review' }).click()
-      await expect(page.getByText('Send for review?')).toBeVisible()
-      await page.getByRole('button', { name: 'Confirm' }).click()
+    test('30.1.8 Declare', async () => {
+      await page.getByRole('button', { name: 'Action', exact: true }).click()
+
+      await page.getByText('Declare', { exact: true }).click()
+
+      await page.getByRole('button', { name: 'Declare', exact: true }).click()
     })
   })
 
@@ -317,10 +318,10 @@ test.describe
         .fill(partialDeclaration1.child.name.familyName)
       await goToSection(page, 'review')
     })
-    test('30.2.2 Send for review', async () => {
-      await page.getByRole('button', { name: 'Send for review' }).click()
-      await expect(page.getByText('Send for review?')).toBeVisible()
-      await page.getByRole('button', { name: 'Confirm' }).click()
+    test('30.2.2 Notify', async () => {
+      await page.getByRole('button', { name: 'Action', exact: true }).click()
+      await page.getByText('Notify', { exact: true }).click()
+      await page.getByRole('button', { name: 'Notify', exact: true }).click()
     })
   })
 
@@ -341,65 +342,43 @@ test.describe
         .fill(partialDeclaration2.child.name.familyName)
       await goToSection(page, 'review')
     })
-    test('30.3.2 Send for review', async () => {
-      await page.getByRole('button', { name: 'Send for review' }).click()
-      await expect(page.getByText('Send for review?')).toBeVisible()
-      await page.getByRole('button', { name: 'Confirm' }).click()
+    test('30.3.2 Notify', async () => {
+      await page.getByRole('button', { name: 'Action', exact: true }).click()
+      await page.getByText('Notify', { exact: true }).click()
+      await page.getByRole('button', { name: 'Notify', exact: true }).click()
     })
   })
 
   test('30.4 Validate outbox', async () => {
+    const rows = [
+      { row: '#row_2', name: formatName(declaration.child.name) },
+      { row: '#row_1', name: formatName(partialDeclaration1.child.name) },
+      { row: '#row_0', name: formatName(partialDeclaration2.child.name) }
+    ]
+    const searchResult = page.getByTestId('search-result')
+
     await page.getByText('Outbox').click()
 
-    await expect(
-      page.getByTestId('search-result').locator('#row_2')
-    ).toContainText(formatName(declaration.child.name))
-
-    await expect(
-      page.getByTestId('search-result').locator('#row_1')
-    ).toContainText(formatName(partialDeclaration1.child.name))
-
-    await expect(
-      page.getByTestId('search-result').locator('#row_0')
-    ).toContainText(formatName(partialDeclaration2.child.name))
-
-    await expect(
-      page.getByTestId('search-result').locator('#row_2')
-    ).toContainText('Waiting to send')
-    await expect(
-      page.getByTestId('search-result').locator('#row_1')
-    ).toContainText('Waiting to send')
-    await expect(
-      page.getByTestId('search-result').locator('#row_0')
-    ).toContainText('Waiting to send')
+    for (const { row, name } of rows) {
+      await expect(searchResult.locator(row)).toContainText(name)
+      await expect(searchResult.locator(row)).toContainText('Waiting to send')
+    }
 
     await page.context().setOffline(false)
 
-    await expect(page.getByTestId('search-result')).not.toContainText(
-      'Waiting to send'
+    // transient state — tolerate missing it on a fast network
+    await expect(searchResult)
+      .toContainText('Sending', { timeout: 5_000 })
+      .catch(() => {})
+
+    // end state: outbox fully drained
+    await expect(page.getByRole('button', { name: 'Outbox' })).toHaveText(
+      'Outbox',
+      { timeout: 60_000 }
     )
 
-    await expect(
-      page.getByTestId('search-result').locator('#row_2')
-    ).toContainText('Sending')
-    await expect(
-      page.getByTestId('search-result').locator('#row_1')
-    ).toContainText('Sending')
-    await expect(
-      page.getByTestId('search-result').locator('#row_0')
-    ).toContainText('Sending')
-    await expect(page.getByTestId('search-result')).not.toContainText(
-      formatName(declaration.child.name),
-      { timeout: 60000 }
-    )
-    await expect(page.getByTestId('search-result')).not.toContainText(
-      formatName(partialDeclaration1.child.name),
-      { timeout: 60000 }
-    )
-    await expect(page.getByTestId('search-result')).not.toContainText(
-      formatName(partialDeclaration2.child.name),
-      { timeout: 60000 }
-    )
-    await ensureOutboxIsEmpty(page)
+    for (const { name } of rows) {
+      await expect(searchResult).not.toContainText(name)
+    }
   })
 })

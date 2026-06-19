@@ -13,10 +13,11 @@ import {
   getPlaceOfBirth
 } from '../test-data/birth-declaration'
 import { CREDENTIALS } from '../../constants'
-import { formatV2ChildName } from '../birth/helpers'
-import { ensureAssigned, selectAction } from '../../utils'
-import { getAllLocations, getLocationIdByName } from '../birth/helpers'
+import { formatV2ChildName, getAdministrativeAreas } from '../birth/helpers'
+import { ensureAssignedToUser, expectInUrl, selectAction } from '../../utils'
+import { getIdByName } from '../birth/helpers'
 import { AddressType } from '@opencrvs/toolkit/events'
+import { openRecordByTitle } from '../print-certificate/birth/helpers'
 
 test.describe.serial('Correct record - Change ages', () => {
   let declaration: Declaration
@@ -37,17 +38,15 @@ test.describe.serial('Correct record - Change ages', () => {
   const informantAgeAfter = '22'
 
   test('Shortcut declaration', async () => {
-    let token = await getToken(
-      CREDENTIALS.NATIONAL_REGISTRAR.USERNAME,
-      CREDENTIALS.NATIONAL_REGISTRAR.PASSWORD
-    )
+    let token = await getToken(CREDENTIALS.REGISTRAR)
 
-    const locations = await getAllLocations('ADMIN_STRUCTURE')
-    const province = getLocationIdByName(locations, 'Central')
-    const district = getLocationIdByName(locations, 'Ibombo')
+    const administrativeAreas = await getAdministrativeAreas(token)
+    const province = getIdByName(administrativeAreas, 'Central')
+    const district = getIdByName(administrativeAreas, 'Ibombo')
+    const village = getIdByName(administrativeAreas, 'Klow')
 
-    if (!province || !district) {
-      throw new Error('Province or district not found')
+    if (!province || !district || !village) {
+      throw new Error('Province, district or village not found')
     }
 
     const childDob = new Date(Date.now() - 60 * 60 * 24 * 1000)
@@ -71,7 +70,7 @@ test.describe.serial('Correct record - Change ages', () => {
       'informant.nid': faker.string.numeric(10),
       'informant.address': {
         country: 'FAR',
-        administrativeArea: district,
+        administrativeArea: village,
         addressType: AddressType.DOMESTIC
       },
       'father.detailsNotAvailable': true,
@@ -81,7 +80,7 @@ test.describe.serial('Correct record - Change ages', () => {
         age: Number.parseInt(motherAgeBefore),
         asOfDateRef: 'child.dob'
       },
-      ...(await getPlaceOfBirth('PRIVATE_HOME')),
+      ...(await getPlaceOfBirth('PRIVATE_HOME', token)),
       'mother.name': {
         firstname: faker.person.firstName(),
         surname: faker.person.lastName()
@@ -92,7 +91,7 @@ test.describe.serial('Correct record - Change ages', () => {
       'mother.address': {
         country: 'FAR',
         addressType: AddressType.DOMESTIC,
-        administrativeArea: district
+        administrativeArea: village
       },
       'child.name': {
         firstname: faker.person.firstName(),
@@ -110,12 +109,12 @@ test.describe.serial('Correct record - Change ages', () => {
       })
     )
     trackingId = res.trackingId!
-    token = await getToken('k.mweene', 'test')
+    token = await getToken(CREDENTIALS.REGISTRAR)
     declaration = res.declaration
   })
 
-  test('Login as Registration Agent', async () => {
-    await login(page, CREDENTIALS.REGISTRATION_AGENT)
+  test('Login as Registration Officer', async () => {
+    await login(page, CREDENTIALS.REGISTRATION_OFFICER)
   })
 
   test('Ready to correct record > record audit', async () => {
@@ -124,15 +123,9 @@ test.describe.serial('Correct record - Change ages', () => {
       name: formatV2ChildName(declaration),
       trackingId
     })
-    await ensureAssigned(page)
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
 
-    await page.getByRole('button', { name: 'Action', exact: true }).click()
-
-    await expect(
-      page.getByText('Correct record', { exact: true })
-    ).toBeVisible()
-
-    await page.getByText('Correct record', { exact: true }).click()
+    await selectAction(page, 'Correct')
   })
 
   test('Correction requester: legal guardian', async () => {
@@ -152,9 +145,8 @@ test.describe.serial('Correct record - Change ages', () => {
   })
 
   test('Upload supporting documents', async () => {
-    expect(page.url().includes('correction')).toBeTruthy()
-
-    expect(page.url().includes('onboarding/documents')).toBeTruthy()
+    await expectInUrl(page, 'correction')
+    await expectInUrl(page, 'onboarding/documents')
 
     await expect(page.getByRole('button', { name: 'Continue' })).toBeEnabled()
 
@@ -179,8 +171,8 @@ test.describe.serial('Correct record - Change ages', () => {
 
     await page.getByRole('button', { name: 'Continue' }).click()
 
-    expect(page.url().includes('correction')).toBeTruthy()
-    expect(page.url().includes('review')).toBeTruthy()
+    await expectInUrl(page, 'correction')
+    await expectInUrl(page, 'review')
   })
 
   test('Change informant age', async () => {
@@ -229,7 +221,7 @@ test.describe.serial('Correct record - Change ages', () => {
       .click()
 
     await expect(page.getByTestId('row-value-mother.address')).toHaveText(
-      'FarajalandCentralIbomboEthiopiaOromiaWoreda'
+      'FarajalandCentralIbomboKlowEthiopiaOromiaWoreda'
     )
   })
 
@@ -254,8 +246,8 @@ test.describe.serial('Correct record - Change ages', () => {
   test('Correction summary', async () => {
     await page.getByRole('button', { name: 'Continue', exact: true }).click()
 
-    expect(page.url().includes('correction')).toBeTruthy()
-    expect(page.url().includes('summary')).toBeTruthy()
+    await expectInUrl(page, 'correction')
+    await expectInUrl(page, 'summary')
 
     await expect(page.getByText("Father's details")).not.toBeVisible()
     await expect(page.getByText("Child's details")).not.toBeVisible()
@@ -273,7 +265,7 @@ test.describe.serial('Correct record - Change ages', () => {
 
     await expect(
       page.getByText(
-        'Usual place of residenceFarajalandCentralIbomboEthiopiaOromiaWoreda'
+        'Usual place of residenceFarajalandCentralIbomboKlowEthiopiaOromiaWoreda'
       )
     ).toBeVisible()
 
@@ -299,20 +291,19 @@ test.describe.serial('Correct record - Change ages', () => {
     await logout(page)
   })
 
-  test('Login as Local Registrar', async () => {
-    await login(page, CREDENTIALS.LOCAL_REGISTRAR)
+  test('Login as Registrar', async () => {
+    await login(page, CREDENTIALS.REGISTRAR)
   })
 
-  test('Find the event in the "Ready for review" workflow', async () => {
-    await page.getByRole('button', { name: 'Ready for review' }).click()
+  test('Find the event in the "Pending corrections" workqueue', async () => {
+    await page.getByRole('button', { name: 'Pending corrections' }).click()
 
-    await page
-      .getByRole('button', { name: formatV2ChildName(declaration) })
-      .click()
+    await openRecordByTitle(page, formatV2ChildName(declaration))
   })
 
   test('Approve correction request', async () => {
-    await selectAction(page, 'Review')
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
+    await selectAction(page, 'Review correction request')
     await page.getByRole('button', { name: 'Approve', exact: true }).click()
     await page.getByRole('button', { name: 'Confirm', exact: true }).click()
   })
@@ -324,9 +315,9 @@ test.describe.serial('Correct record - Change ages', () => {
       trackingId
     })
 
-    await ensureAssigned(page)
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
 
-    await selectAction(page, 'View')
+    await page.getByRole('button', { name: 'Record', exact: true }).click()
 
     await expect(
       page.getByTestId('row-value-informant.age').getByText(informantAgeAfter)

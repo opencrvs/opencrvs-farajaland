@@ -1,6 +1,7 @@
 import { Page, expect } from '@playwright/test'
-import { Declaration } from '../../test-data/birth-declaration'
-import { selectAction } from '../../../utils'
+import { ensureAssignedToUser, selectAction } from '../../../utils'
+import { formatV2ChildName } from '../../birth/helpers'
+import { CREDENTIALS } from '../../../constants'
 
 export async function selectCertificationType(page: Page, type: string) {
   await page.locator('#certificateTemplateId svg').click()
@@ -17,21 +18,56 @@ export async function selectRequesterType(page: Page, type: string) {
 
 export async function navigateToCertificatePrintAction(
   page: Page,
-  declaration: Declaration
+  declaration: {
+    'child.name': {
+      firstname: string
+      surname: string
+    }
+    [key: string]: any
+  },
+  username: (typeof CREDENTIALS)[keyof typeof CREDENTIALS]
 ) {
-  const childName = `${declaration['child.name'].firstname} ${declaration['child.name'].surname}`
-  await page.getByRole('button', { name: childName }).click()
+  const childName = formatV2ChildName(declaration)
+
+  await openRecordByTitle(page, childName)
+
+  await ensureAssignedToUser(page, username)
   await selectAction(page, 'Print')
 }
 
 export function getRowByTitle(page: Page, title: string) {
-  const button = page.getByRole('button', {
-    name: title
+  return page
+    .locator('[id^="row_"]')
+    .filter({ has: page.getByRole('button', { name: title }) })
+}
+
+/**
+ * Opens a record from a workqueue list by its title (e.g. formatted child name) and **verifies it**
+ *
+ * NOTE:
+ * Application polls continuously for updates. E2E tests are run in parallel.
+ * It is likely that the same workqueue will get updated, and **during** the time we select a row, and click it, it actually has diffrent user and the test fails down the line.
+ *
+ */
+export async function openRecordByTitle(page: Page, title: string) {
+  await expect(async () => {
+    await getRowByTitle(page, title)
+      .getByRole('button', { name: title })
+      .click()
+    try {
+      // target the event overview title to make sure this is the right one.
+      await expect(
+        page.getByRole('heading', { name: title, level: 1 })
+      ).toBeVisible({ timeout: 3_000 })
+    } catch (error) {
+      await page.goBack()
+      // This triggers toPass retry loop if the updated happened and we picked wrong one.
+      throw error
+    }
+  }).toPass({
+    timeout: 60_000,
+    intervals: [...Array(5).fill(1_000), ...Array(5).fill(2_000), 5_000]
   })
-  const parentRow = button.locator(
-    'xpath=ancestor::*[starts-with(@id, "row_")]'
-  )
-  return parentRow
 }
 
 export async function printAndExpectPopup(page: Page) {

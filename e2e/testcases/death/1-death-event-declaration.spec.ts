@@ -1,7 +1,7 @@
 import { expect, test, type Page } from '@playwright/test'
-import { login } from '../../helpers'
+import { login, triggerDeclarationAction } from '../../helpers'
 import { faker } from '@faker-js/faker'
-import { ensureOutboxIsEmpty, type } from '../../utils'
+import { expectInUrl, type } from '../../utils'
 const deceased = {
   name: {
     firstname: faker.person.firstName('male')
@@ -364,21 +364,14 @@ test.describe('1. Death event declaration', () => {
 
       test('1.8.3 click continue', async () => {
         await page.getByRole('button', { name: 'Continue' }).click()
-
-        /*
-         * Expected result: should navigate to "Review" page
-         */
-        await expect(
-          page
-            .getByRole('button', { name: 'Send for review' })
-            .or(page.getByRole('button', { name: 'Register' }))
-        ).toBeVisible()
+        await expectInUrl(page, `/review`)
       })
     })
 
     test.describe('1.9 Validate "Save & Exit" Button  ', async () => {
       test('1.9.1 Click the "Save & Exit" button from any page', async () => {
-        await page.getByRole('button', { name: 'Save & Exit' }).click()
+        await page.getByRole('button', { name: 'Action', exact: true }).click()
+        await page.getByText('Save & Exit', { exact: true }).click()
 
         /*
          * Expected result: should open modal with:
@@ -414,8 +407,7 @@ test.describe('1. Death event declaration', () => {
       })
 
       test('1.9.3 Click Confirm', async () => {
-        await page.getByRole('button', { name: 'Save & Exit' }).click()
-        await page.getByRole('button', { name: 'Confirm' }).click()
+        await triggerDeclarationAction(page, 'Save & Exit')
 
         /*
          * Expected result: should
@@ -423,11 +415,9 @@ test.describe('1. Death event declaration', () => {
          * - find the declared death event record on this page list with saved data
          */
         //@todo: The user should be navigated to "my-drafts" tab by default
-        await page.getByText('My drafts').click()
+        await page.getByText('Drafts').click()
 
-        await expect(page.locator('#content-name')).toHaveText('My drafts')
-
-        await ensureOutboxIsEmpty(page)
+        await expect(page.locator('#content-name')).toHaveText('Drafts')
 
         await expect(
           page.getByText(deceased.name.firstname, { exact: true })
@@ -485,8 +475,6 @@ test.describe('1. Death event declaration', () => {
 
       await expect(page.locator('#content-name')).toHaveText('Assigned to you')
 
-      await ensureOutboxIsEmpty(page)
-
       await expect(
         page.getByText(deceased.name.firstname, { exact: true })
       ).toBeHidden()
@@ -540,15 +528,17 @@ test.describe('1. Death event declaration', () => {
     })
 
     test('1.11.3 Click Confirm', async ({ page }) => {
+      const deleteResponse = page.waitForResponse(
+        (response) => response.url().includes('event.delete') && response.ok()
+      )
       await page.getByRole('button', { name: 'Confirm' }).click()
+      await deleteResponse
 
       /*
        * Expected result: should be navigated to "my-drafts" tab but no draft will be saved
        */
 
       await expect(page.locator('#content-name')).toHaveText('Assigned to you')
-
-      await ensureOutboxIsEmpty(page)
 
       await expect(
         page.getByText(deceased.name.firstname, { exact: true })

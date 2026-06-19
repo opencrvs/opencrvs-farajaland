@@ -6,19 +6,18 @@ import {
 } from '../test-data/birth-declaration-with-father-brother'
 import { CREDENTIALS } from '../../constants'
 import { faker } from '@faker-js/faker'
-import { ensureAssigned } from '../../utils'
+import { ensureAssignedToUser } from '../../utils'
+import { openRecordByTitle } from '../print-certificate/birth/helpers'
+import { formatV2ChildName } from '../birth/helpers'
 
 test.describe
-  .serial("Qucik Search - Birth Event Declaration - Child's details", () => {
+  .serial("Quick Search - Birth Event Declaration - Child's details", () => {
   let page: Page
   let record: Awaited<ReturnType<typeof createDeclaration>>
   let recordWithDefaultEmail: Awaited<ReturnType<typeof createDeclaration>>
   test.beforeAll(async ({ browser }) => {
     page = await browser.newPage()
-    const token = await getToken(
-      CREDENTIALS.LOCAL_REGISTRAR.USERNAME,
-      CREDENTIALS.LOCAL_REGISTRAR.PASSWORD
-    )
+    const token = await getToken(CREDENTIALS.REGISTRAR)
 
     recordWithDefaultEmail = await createDeclaration(
       token,
@@ -58,21 +57,22 @@ test.describe
   })
 
   test('1.2 Should display informant email correctly in record details', async () => {
-    await page
-      .getByRole('button', {
-        name: getChildNameFromRecord(recordWithDefaultEmail)
-      })
-      .click()
-    await ensureAssigned(page)
+    await openRecordByTitle(
+      page,
+      getChildNameFromRecord(recordWithDefaultEmail)
+    )
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
     await expect(page.getByTestId('assignedTo-value')).toHaveText(
       'Kennedy Mweene'
     )
+
     await expect(page.getByTestId('informant.contact-value')).toContainText(
       recordWithDefaultEmail.declaration['informant.email']
     )
   })
 
   test('1.3 Should perform case-insensitive email search from workqueue and display matching record', async () => {
+    await page.getByTestId('exit-event').click()
     await page.locator('#navigation_workqueue_assigned-to-you').click()
     await expect(page.locator('#searchText')).toHaveValue('')
 
@@ -92,7 +92,7 @@ test.describe
         name: getChildNameFromRecord(recordWithDefaultEmail)
       })
       .click()
-    await ensureAssigned(page)
+
     await expect(page.getByTestId('assignedTo-value')).toHaveText(
       'Kennedy Mweene'
     )
@@ -102,6 +102,7 @@ test.describe
   })
 
   test('1.4 Should search from workqueue using a different email and return the correct record', async () => {
+    await page.getByTestId('exit-event').click()
     await page.locator('#navigation_workqueue_assigned-to-you').click()
     await expect(page.locator('#searchText')).toHaveValue('')
 
@@ -113,12 +114,10 @@ test.describe
     const searchResult = await page.locator('#content-name').textContent()
     await expect(searchResult).toMatch(searchResultRegex)
     await expect(page.getByText(getChildNameFromRecord(record))).toBeVisible()
-    await page
-      .getByRole('button', {
-        name: getChildNameFromRecord(record)
-      })
-      .click()
-    await ensureAssigned(page)
+
+    await openRecordByTitle(page, getChildNameFromRecord(record))
+
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
     await expect(page.getByTestId('assignedTo-value')).toHaveText(
       'Kennedy Mweene'
     )
@@ -128,6 +127,7 @@ test.describe
   })
 
   test('1.5 Should search from workqueue using informant phone number and return the correct record', async () => {
+    await page.getByTestId('exit-event').click()
     await page.locator('#navigation_workqueue_assigned-to-you').click()
     await expect(page.locator('#searchText')).toHaveValue('')
     await page
@@ -144,7 +144,7 @@ test.describe
         name: getChildNameFromRecord(record)
       })
       .click()
-    await ensureAssigned(page)
+
     await expect(page.getByTestId('assignedTo-value')).toHaveText(
       'Kennedy Mweene'
     )
@@ -154,6 +154,7 @@ test.describe
   })
 
   test('1.6 Should search from workqueue using informant national ID and return the correct record', async () => {
+    await page.getByTestId('exit-event').click()
     await page.locator('#navigation_workqueue_assigned-to-you').click()
     await expect(page.locator('#searchText')).toHaveValue('')
     await page.locator('#searchText').fill(record.declaration['informant.nid']) // search by id
@@ -179,7 +180,7 @@ test.describe
         name: getChildNameFromRecord(record)
       })
       .click()
-    await ensureAssigned(page)
+
     await expect(page.getByTestId('assignedTo-value')).toHaveText(
       'Kennedy Mweene'
     )

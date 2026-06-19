@@ -1,9 +1,8 @@
 import { expect, test, type Page } from '@playwright/test'
-import { login } from '../../helpers'
+import { login, triggerDeclarationAction } from '../../helpers'
 import path from 'path'
 import { faker } from '@faker-js/faker'
-import { ensureOutboxIsEmpty, selectAction } from '../../utils'
-import { REQUIRED_VALIDATION_ERROR } from './helpers'
+import { expectInUrl, selectAction } from '../../utils'
 import { trackAndDeleteCreatedEvents } from '../test-data/eventDeletion'
 
 const child = {
@@ -228,18 +227,6 @@ test.describe.serial('1. Birth event declaration', () => {
         ).toBeVisible()
       })
 
-      // @TODO: This kind of login is not implemented in V2 events yet
-      test.skip('1.5.2 Click the "continue" button without selecting any relationship to child', async () => {
-        await page.getByRole('button', { name: 'Continue' }).click()
-
-        /*
-         * Expected result: should throw error:
-         * - Required
-         */
-        await expect(page.getByText("Informant's details")).toBeVisible()
-        await expect(page.getByText(REQUIRED_VALIDATION_ERROR)).toBeVisible()
-      })
-
       test('1.5.3 Select any option in relationship to child and click the "continue" button', async () => {
         await page.getByText('Select').click()
         await page.getByText('Mother', { exact: true }).click()
@@ -399,21 +386,14 @@ test.describe.serial('1. Birth event declaration', () => {
 
       test('1.8.3 click continue', async () => {
         await page.getByRole('button', { name: 'Continue' }).click()
-
-        /*
-         * Expected result: should navigate to "Review" page
-         */
-        await expect(
-          page
-            .getByRole('button', { name: 'Send for review' })
-            .or(page.getByRole('button', { name: 'Register' }))
-        ).toBeVisible()
+        await expectInUrl(page, `/review`)
       })
     })
 
-    test.describe('1.9 Validate "Save & Exit" Button  ', async () => {
-      test('1.9.1 Click the "Save & Exit" button from any page', async () => {
-        await page.getByRole('button', { name: 'Save & Exit' }).click()
+    test.describe('1.9 Validate "Save & Exit" Button', () => {
+      test('1.9.1 Click the "Save & Exit" button from review page', async () => {
+        await page.getByRole('button', { name: 'Action' }).click()
+        await page.getByText('Save & Exit', { exact: true }).click()
 
         /*
          * Expected result: should open modal with:
@@ -451,8 +431,7 @@ test.describe.serial('1. Birth event declaration', () => {
       })
 
       test('1.9.3 Click Confirm', async () => {
-        await page.getByRole('button', { name: 'Save & Exit' }).click()
-        await page.getByRole('button', { name: 'Confirm' }).click()
+        await triggerDeclarationAction(page, 'Save & Exit')
 
         /*
          * Expected result: should
@@ -460,11 +439,9 @@ test.describe.serial('1. Birth event declaration', () => {
          * - find the declared birth event record on this page list with saved data
          */
         //@todo: The user should be navigated to "my-drafts" tab by default
-        await page.getByText('My drafts').click()
+        await page.getByText('Drafts').click()
 
-        await expect(page.locator('#content-name')).toHaveText('My drafts')
-
-        await ensureOutboxIsEmpty(page)
+        await expect(page.locator('#content-name')).toHaveText('Drafts')
 
         await expect(page.getByText(child.name.firstNames)).toBeVisible()
       })
@@ -476,7 +453,7 @@ test.describe.serial('1. Birth event declaration', () => {
           })
           .click()
 
-        await selectAction(page, 'Declare')
+        await selectAction(page, 'Update')
 
         await expect(page.locator('#select_document')).toContainText(
           "Proof of mother's ID (Birth Certificate)"
@@ -487,6 +464,7 @@ test.describe.serial('1. Birth event declaration', () => {
       })
     })
   })
+
   test.describe('1.10 Validate "Exit" Button', async () => {
     test.beforeEach(async ({ page }) => {
       await login(page)
@@ -531,15 +509,6 @@ test.describe.serial('1. Birth event declaration', () => {
 
     test('1.10.3 Click Confirm', async ({ page }) => {
       await page.getByRole('button', { name: 'Confirm' }).click()
-      /*
-       * Expected result: should be navigated to "my-drafts" tab but no draft will be saved
-       */
-
-      // @TODO: My drafts page is not available yet in V2 events
-      // await expect(
-      //   page.locator('#content-name', { hasText: 'My drafts' })
-      // ).toBeVisible()
-      // await expect(page.getByText(/seconds ago/)).toBeHidden()
 
       await expect(
         page
@@ -597,16 +566,6 @@ test.describe.serial('1. Birth event declaration', () => {
 
     test('1.11.3 Click Confirm', async ({ page }) => {
       await page.getByRole('button', { name: 'Confirm' }).click()
-
-      /*
-       * Expected result: should be navigated to "my-drafts" tab but no draft will be saved
-       */
-
-      // @TODO: My drafts page is not available yet in V2 events
-      // await expect(
-      //   page.locator('#content-name', { hasText: 'My drafts' })
-      // ).toBeVisible()
-      // await expect(page.getByText(/seconds ago/)).toBeHidden()
 
       await expect(
         page.getByTestId('search-result').getByText('Assigned to you')

@@ -9,23 +9,17 @@
  * Copyright (C) The OpenCRVS Authors located at https://github.com/opencrvs/opencrvs-core/blob/master/AUTHORS.
  */
 
-import fetch from 'node-fetch'
-import { APPLICATION_CONFIG_URL, FHIR_URL } from '@countryconfig/constants'
 import { callingCountries } from 'country-data'
 import csv2json from 'csv2json'
 import { createReadStream } from 'fs'
 import fs from 'fs'
 import { PhoneNumberFormat, PhoneNumberUtil } from 'google-libphonenumber'
-import { URL } from 'url'
 import { build } from 'esbuild'
 import { memoize } from 'lodash'
-export const GENERATE_TYPE_RN = 'registrationNumber'
-export const CHILD_CODE = 'child-details'
-export const DECEASED_CODE = 'deceased-details'
-export const OPENCRVS_SPECIFICATION_URL = 'http://opencrvs.org/specs/'
 import { join } from 'path'
 import { stringify } from 'csv-stringify/sync'
-import { promisify } from 'util'
+
+export const OPENCRVS_SPECIFICATION_URL = 'http://opencrvs.org/specs/'
 
 export interface ILocation {
   id?: string
@@ -63,18 +57,6 @@ export interface IApplicationConfigResponse {
   config: IApplicationConfig
 }
 
-export function getCompositionId(resBody: fhir.Bundle) {
-  const id = resBody.entry
-    ?.map((e) => e.resource)
-    .find((res) => res?.resourceType === 'Composition')?.id
-
-  if (!id) {
-    throw new Error('Could not find composition id in FHIR Bundle')
-  }
-
-  return id
-}
-
 export function getTaskResource(
   bundle: fhir.Bundle & fhir.BundleEntry
 ): fhir.Task | undefined {
@@ -95,6 +77,18 @@ export function getTaskResource(
   } else {
     throw new Error('Unable to find Task Bundle from the provided data')
   }
+}
+
+export function getCompositionId(resBody: fhir.Bundle) {
+  const id = resBody.entry
+    ?.map((e) => e.resource)
+    .find((res) => res?.resourceType === 'Composition')?.id
+
+  if (!id) {
+    throw new Error('Could not find composition id in FHIR Bundle')
+  }
+
+  return id
 }
 
 export function getTaskResourceFromFhirBundle(fhirBundle: fhir.Bundle) {
@@ -130,42 +124,6 @@ export function getTrackingIdFromTaskResource(taskResource: fhir.Task) {
   return trackingIdentifier.value
 }
 
-export const getFromFhir = (suffix: string) => {
-  return fetch(`${FHIR_URL}${suffix.startsWith('/') ? '' : '/'}${suffix}`, {
-    headers: {
-      'Content-Type': 'application/json+fhir'
-    }
-  })
-    .then((response) => {
-      return response.json()
-    })
-    .catch((error) => {
-      return Promise.reject(new Error(`FHIR request failed: ${error.message}`))
-    })
-}
-
-export async function updateResourceInHearth(resource: fhir.ResourceBase) {
-  const res = await fetch(
-    `${FHIR_URL}/${resource.resourceType}/${resource.id}`,
-    {
-      method: 'PUT',
-      body: JSON.stringify(resource),
-      headers: {
-        'Content-Type': 'application/fhir+json'
-      }
-    }
-  )
-  if (!res.ok) {
-    throw new Error(
-      `FHIR update to ${resource.resourceType} failed with [${
-        res.status
-      }] body: ${await res.text()}`
-    )
-  }
-
-  return res.text()
-}
-
 export const convertToMSISDN = (phone: string, countryAlpha3: string) => {
   const countryCode = callingCountries[countryAlpha3.toUpperCase()].alpha2
 
@@ -180,7 +138,6 @@ export const convertToMSISDN = (phone: string, countryAlpha3: string) => {
       .replace(/[\s-]/g, '')
   )
 }
-
 export async function writeJSONToCSV(
   filename: string,
   data: Array<Record<string, any>>
@@ -209,23 +166,10 @@ export async function readCSVToJSON<T>(filename: string) {
   })
 }
 
-export async function getApplicationConfig() {
-  const configURL = new URL('publicConfig', APPLICATION_CONFIG_URL).toString()
-  const res = await fetch(configURL, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  })
-  const configData = (await res.json()) as IApplicationConfigResponse
-  return configData.config
-}
-
 export const buildTypeScriptToJavaScript = memoize(async (path: string) => {
   const result = await build({
     entryPoints: [path],
     write: false,
-    loader: { '.ts': 'ts' },
     format: 'esm',
     platform: 'browser'
   })
@@ -264,7 +208,7 @@ export async function getStatistics(path?: string) {
       years: Object.keys(yearKeys)
         .map((key) => key.split('_').pop())
         .map(Number)
-        .filter((value, index, list) => list.indexOf(value) == index)
+        .filter((value, index, list) => list.indexOf(value) === index)
         .map((year) => ({
           year,
           male_population: parseFloat(yearKeys[`male_population_${year}`]),
@@ -300,4 +244,51 @@ export function createCustomFieldHandlebarName(fieldId: string) {
 
 export function uppercaseFirstLetter(str: string) {
   return str.charAt(0).toUpperCase() + str.slice(1)
+}
+
+function generateRegistrationNumber(trackingId: string): string {
+  /* adding current year */
+  let brn = new Date().getFullYear().toString()
+
+  /* appending tracking id */
+  brn = brn.concat(trackingId)
+
+  return brn
+}
+
+export function createUniqueRegistrationNumberFromBundle(bundle: fhir.Bundle) {
+  const taskResource = getTaskResource(bundle)
+
+  if (!taskResource || !taskResource.extension) {
+    throw new Error(
+      'Failed to validate registration: could not find task resource in bundle or task resource had no extensions'
+    )
+  }
+
+  const trackingId = getTrackingIdFromTaskResource(taskResource)
+  const compositionId = getCompositionId(bundle)
+
+  return {
+    trackingId,
+    compositionId,
+    registrationNumber: generateRegistrationNumber(trackingId),
+    ...(taskResource.code?.coding?.[0].code === 'BIRTH' && {
+      // Some countries desire to create multiple identifiers for citizens at the point of birth registration using external systems.
+      // OpenCRVS supports up to 3 additional, custom identifiers that can be created
+      childIdentifiers: [
+        {
+          type: 'BIRTH_CONFIGURABLE_IDENTIFIER_1',
+          value: ''
+        },
+        {
+          type: 'BIRTH_CONFIGURABLE_IDENTIFIER_2',
+          value: ''
+        },
+        {
+          type: 'BIRTH_CONFIGURABLE_IDENTIFIER_3',
+          value: ''
+        }
+      ]
+    })
+  }
 }

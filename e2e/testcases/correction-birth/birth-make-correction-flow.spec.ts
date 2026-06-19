@@ -6,8 +6,9 @@ import {
   createDeclaration,
   Declaration
 } from '../test-data/birth-declaration-with-mother-father'
-import { ensureAssigned, expectInUrl, selectAction } from '../../utils'
+import { ensureAssignedToUser, expectInUrl, selectAction } from '../../utils'
 import { formatV2ChildName, REQUIRED_VALIDATION_ERROR } from '../birth/helpers'
+import { openRecordByTitle } from '../print-certificate/birth/helpers'
 
 test.describe.serial('Birth Record correction flow', () => {
   let declaration: Declaration
@@ -15,10 +16,7 @@ test.describe.serial('Birth Record correction flow', () => {
   let page: Page
 
   test.beforeAll(async ({ browser }) => {
-    const token = await getToken(
-      CREDENTIALS.LOCAL_REGISTRAR.USERNAME,
-      CREDENTIALS.LOCAL_REGISTRAR.PASSWORD
-    )
+    const token = await getToken(CREDENTIALS.REGISTRAR)
     const res = await createDeclaration(
       token,
       undefined,
@@ -29,16 +27,14 @@ test.describe.serial('Birth Record correction flow', () => {
     eventId = res.eventId
 
     page = await browser.newPage()
-    await login(page, CREDENTIALS.LOCAL_REGISTRAR)
+    await login(page, CREDENTIALS.REGISTRAR)
   })
 
   test('Navigate to the correction form', async () => {
-    await page.getByRole('button', { name: 'Ready to print' }).click()
-    await page
-      .getByRole('button', { name: formatV2ChildName(declaration) })
-      .click()
-    await ensureAssigned(page)
-    await selectAction(page, 'Correct record')
+    await page.getByRole('button', { name: 'Pending certification' }).click()
+    await openRecordByTitle(page, formatV2ChildName(declaration))
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
+    await selectAction(page, 'Correct')
   })
 
   test('Try to continue without filling in required fields', async () => {
@@ -68,7 +64,7 @@ test.describe.serial('Birth Record correction flow', () => {
 
   test('Fill in the supporting documents form', async () => {
     const path = require('path')
-    const attachmentPath = path.resolve(__dirname, './image.png')
+    const attachmentPath = path.join(__dirname, '../test-data/image.png')
     const inputFile = await page.locator(
       'input[name="documents____supportingDocs"][type="file"]'
     )
@@ -182,9 +178,7 @@ test.describe.serial('Birth Record correction flow', () => {
     await expect(
       page.getByRole('button', { name: 'Go to review' })
     ).toBeEnabled()
-    await expect(
-      page.getByRole('button', { name: 'Correct record' })
-    ).toBeEnabled()
+    await expect(page.getByRole('button', { name: 'Correct' })).toBeEnabled()
   })
 
   test('Press Fees change link and change the fee amount', async () => {
@@ -214,40 +208,33 @@ test.describe.serial('Birth Record correction flow', () => {
   })
 
   test('Record correction', async () => {
-    await page.getByRole('button', { name: 'Correct record' }).click()
+    await page.getByRole('button', { name: 'Correct' }).click()
 
     await expect(page.getByText('Correct record?')).toBeVisible()
-    await expect(
-      page.getByText(
-        'The informant will be notified of this correction and a record of this decision will be recorded'
-      )
-    ).toBeVisible()
+
+    const correctionResponse = page.waitForResponse(
+      (response) =>
+        response
+          .url()
+          .includes('/api/events/event.actions.correction.approve.request') &&
+        response.ok()
+    )
 
     await page.getByRole('button', { name: 'Confirm', exact: true }).click()
 
-    await expectInUrl(page, `/workqueue/ready-to-print`)
-
-    await page.waitForResponse((response) =>
-      response
-        .url()
-        .includes('/api/events/event.actions.correction.approve.request')
-    )
+    await correctionResponse
+    await expectInUrl(page, `/workqueue/pending-certification`)
   })
 
-  test('Record correction action appears in audit history', async () => {
-    await page
-      .getByRole('button', { name: formatV2ChildName(declaration) })
-      .click()
-    await ensureAssigned(page)
+  test('Assign', async () => {
+    await openRecordByTitle(page, formatV2ChildName(declaration))
 
-    // Go to second page of audit history list
-    await page.getByRole('button', { name: 'Next page' }).click()
-    await expect(
-      page.getByRole('button', { name: 'Record corrected', exact: true })
-    ).toBeVisible()
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
   })
 
   test('Record Correction audit history modal opens when action is clicked', async () => {
+    await page.getByRole('button', { name: 'Audit' }).click()
+
     await page
       .getByRole('button', { name: 'Record corrected', exact: true })
       .click()

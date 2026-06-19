@@ -11,10 +11,11 @@ import {
   createDeclaration as createDeclarationV2,
   Declaration as DeclarationV2
 } from '../test-data/birth-declaration-with-mother-father'
-import { format, subYears } from 'date-fns'
+import { format, subDays, subYears } from 'date-fns'
 import { CREDENTIALS } from '../../constants'
 import { formatV2ChildName } from '../birth/helpers'
-import { ensureAssigned, selectAction } from '../../utils'
+import { ensureAssignedToUser, expectInUrl, selectAction } from '../../utils'
+import { openRecordByTitle } from '../print-certificate/birth/helpers'
 
 test.describe.serial("Correct record - Change father's ID number", () => {
   let declaration: DeclarationV2
@@ -33,10 +34,7 @@ test.describe.serial("Correct record - Change father's ID number", () => {
   const newIdNumber = faker.string.numeric(10)
 
   test('Shortcut declaration', async () => {
-    let token = await getToken(
-      CREDENTIALS.NATIONAL_REGISTRAR.USERNAME,
-      CREDENTIALS.NATIONAL_REGISTRAR.PASSWORD
-    )
+    let token = await getToken(CREDENTIALS.REGISTRAR)
     const res = await createDeclarationV2(
       token,
       {
@@ -45,8 +43,7 @@ test.describe.serial("Correct record - Change father's ID number", () => {
           surname: faker.person.lastName()
         },
         'child.gender': 'male',
-        'child.dob': format(subYears(new Date(), 1), 'yyyy-MM-dd'),
-        'child.reason': 'Late',
+        'child.dob': format(subDays(new Date(), 2), 'yyyy-MM-dd'),
         'child.placeOfBirth': 'PRIVATE_HOME',
         'child.attendantAtBirth': 'PHYSICIAN',
         'child.birthType': 'SINGLE',
@@ -88,12 +85,12 @@ test.describe.serial("Correct record - Change father's ID number", () => {
       })
     )
     trackingId = res.trackingId!
-    token = await getToken('k.mweene', 'test')
+    token = await getToken(CREDENTIALS.REGISTRAR)
     declaration = res.declaration
   })
 
-  test('Login as Registration Agent', async () => {
-    await login(page, CREDENTIALS.REGISTRATION_AGENT)
+  test('Login as RO', async () => {
+    await login(page, CREDENTIALS.REGISTRATION_OFFICER)
   })
 
   test('Ready to correct record > record audit', async () => {
@@ -102,15 +99,9 @@ test.describe.serial("Correct record - Change father's ID number", () => {
       name: formatV2ChildName(declaration),
       trackingId
     })
-    await ensureAssigned(page)
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
 
-    await page.getByRole('button', { name: 'Action', exact: true }).click()
-
-    await expect(
-      page.getByText('Correct record', { exact: true })
-    ).toBeVisible()
-
-    await page.getByText('Correct record', { exact: true }).click()
+    await selectAction(page, 'Correct')
   })
 
   test('Correction requester: legal guardian', async () => {
@@ -130,9 +121,8 @@ test.describe.serial("Correct record - Change father's ID number", () => {
   })
 
   test('Upload supporting documents', async () => {
-    expect(page.url().includes('correction')).toBeTruthy()
-
-    expect(page.url().includes('onboarding/documents')).toBeTruthy()
+    await expectInUrl(page, 'correction')
+    await expectInUrl(page, 'onboarding/documents')
 
     await expect(page.getByRole('button', { name: 'Continue' })).toBeEnabled()
 
@@ -157,8 +147,8 @@ test.describe.serial("Correct record - Change father's ID number", () => {
 
     await page.getByRole('button', { name: 'Continue' }).click()
 
-    expect(page.url().includes('correction')).toBeTruthy()
-    expect(page.url().includes('review')).toBeTruthy()
+    await expectInUrl(page, 'correction')
+    await expectInUrl(page, 'review')
   })
 
   test('Change father id number', async () => {
@@ -182,8 +172,8 @@ test.describe.serial("Correct record - Change father's ID number", () => {
   test('Correction summary', async () => {
     await page.getByRole('button', { name: 'Continue', exact: true }).click()
 
-    expect(page.url().includes('correction')).toBeTruthy()
-    expect(page.url().includes('summary')).toBeTruthy()
+    await expectInUrl(page, 'correction')
+    await expectInUrl(page, 'summary')
 
     await expect(page.getByText("Child's details")).not.toBeVisible()
     await expect(page.getByText("Mother's details")).not.toBeVisible()
@@ -205,20 +195,19 @@ test.describe.serial("Correct record - Change father's ID number", () => {
     await logout(page)
   })
 
-  test('Login as Local Registrar', async () => {
-    await login(page, CREDENTIALS.LOCAL_REGISTRAR)
+  test('Login as Registrar', async () => {
+    await login(page, CREDENTIALS.REGISTRAR)
   })
 
-  test('Find the event in the "Ready for review" workflow', async () => {
-    await page.getByRole('button', { name: 'Ready for review' }).click()
+  test('Find the event in the "Pending corrections" workqueue', async () => {
+    await page.getByRole('button', { name: 'Pending corrections' }).click()
 
-    await page
-      .getByRole('button', { name: formatV2ChildName(declaration) })
-      .click()
+    await openRecordByTitle(page, formatV2ChildName(declaration))
   })
 
   test('Approve correction request', async () => {
-    await selectAction(page, 'Review')
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
+    await selectAction(page, 'Review correction request')
     await page.getByRole('button', { name: 'Approve', exact: true }).click()
     await page.getByRole('button', { name: 'Confirm', exact: true }).click()
   })
@@ -230,9 +219,9 @@ test.describe.serial("Correct record - Change father's ID number", () => {
       trackingId
     })
 
-    await ensureAssigned(page)
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
 
-    await selectAction(page, 'View')
+    await page.getByRole('button', { name: 'Record', exact: true }).click()
 
     await expect(
       page.getByTestId('row-value-father.nid').getByText(newIdNumber)

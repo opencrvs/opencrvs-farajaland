@@ -9,14 +9,12 @@ import {
   login
 } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
-import {
-  ensureInExternalValidationIsEmpty,
-  ensureOutboxIsEmpty,
-  selectAction
-} from '../../utils'
+import { ensureAssignedToUser, selectAction } from '../../utils'
+import { triggerDeclarationAction } from '../../helpers'
 import { assertRecordInWorkqueue, fillDate } from '../birth/helpers'
+import { openRecordByTitle } from '../print-certificate/birth/helpers'
 
-// FA Notifies => LR Registers
+// HO Notifies => Registrar Registers
 
 test.describe.serial('2. Workqueue flow - 2', () => {
   let page: Page
@@ -30,12 +28,7 @@ test.describe.serial('2. Workqueue flow - 2', () => {
       birthDate: getRandomDate(0, 200)
     },
     placeOfBirth: 'Health Institution',
-    birthLocation: {
-      facility: 'Golden Valley Rural Health Centre',
-      district: 'Ibombo',
-      province: 'Central',
-      country: 'Farajaland'
-    },
+    birthLocation: { facility: 'Klow Village Hospital' },
     informantType: 'Mother',
     informantEmail: faker.internet.email(),
     mother: {
@@ -52,7 +45,8 @@ test.describe.serial('2. Workqueue flow - 2', () => {
       address: {
         country: 'Farajaland',
         province: 'Sulaka',
-        district: 'Irundu'
+        district: 'Irundu',
+        village: 'Xhosa'
       }
     },
     father: {
@@ -79,9 +73,9 @@ test.describe.serial('2. Workqueue flow - 2', () => {
     await page.close()
   })
 
-  test.describe('2.1 Notify by FA', async () => {
+  test.describe('2.1 Notify by HO', async () => {
     test.beforeAll(async () => {
-      await login(page, CREDENTIALS.FIELD_AGENT)
+      await login(page, CREDENTIALS.HOSPITAL_OFFICIAL)
       await page.click('#header-new-event')
       await page.getByLabel('Birth').click()
       await page.getByRole('button', { name: 'Continue' }).click()
@@ -126,12 +120,8 @@ test.describe.serial('2. Workqueue flow - 2', () => {
       await expect(page.getByRole('dialog')).not.toBeVisible()
     })
 
-    test('2.1.4 Send for review', async () => {
-      await page.getByRole('button', { name: 'Send for review' }).click()
-      await expect(page.getByText('Send for review?')).toBeVisible()
-      await page.getByRole('button', { name: 'Confirm' }).click()
-
-      await ensureOutboxIsEmpty(page)
+    test('2.1.4 Notify', async () => {
+      await triggerDeclarationAction(page, 'Notify')
     })
 
     test('2.1.5 Verify workqueue', async () => {
@@ -141,49 +131,50 @@ test.describe.serial('2. Workqueue flow - 2', () => {
         workqueues: [
           { title: 'Assigned to you', exists: false },
           { title: 'Recent', exists: true },
-          { title: 'Sent for review', exists: true },
-          { title: 'Requires updates', exists: false }
+          { title: 'Pending updates', exists: false }
         ]
       })
     })
   })
 
-  test.describe('2.2 Register by LR', async () => {
+  test.describe('2.2 Register by Registrar', async () => {
     test('2.2.1 Verify workqueue', async () => {
-      await login(page, CREDENTIALS.LOCAL_REGISTRAR)
+      await login(page, CREDENTIALS.REGISTRAR)
 
       await assertRecordInWorkqueue({
         page,
         name: formatName(declaration.child.name),
         workqueues: [
+          { title: 'Outbox', exists: false },
+          { title: 'Drafts', exists: false },
           { title: 'Assigned to you', exists: false },
           { title: 'Recent', exists: false },
           { title: 'Notifications', exists: true },
-          { title: 'Ready for review', exists: false },
-          { title: 'Requires updates', exists: false },
-          { title: 'In external validation', exists: false },
-          { title: 'Ready to print', exists: false }
+          { title: 'Potential duplicate', exists: false },
+          { title: 'Pending updates', exists: false },
+          { title: 'Pending approval', exists: false },
+          { title: 'Pending registration', exists: false },
+          { title: 'Escalated', exists: false },
+          { title: 'Pending external validation', exists: false },
+          { title: 'Pending certification', exists: false },
+          { title: 'Pending issuance', exists: false }
         ]
       })
     })
 
-    test('2.2.2 Review', async () => {
+    test('2.2.2 Go to Edit', async () => {
       await page.getByText('Notifications').click()
-      await page
-        .getByRole('button', {
-          name: formatName(declaration.child.name)
-        })
-        .click()
+      await openRecordByTitle(page, formatName(declaration.child.name))
 
-      await selectAction(page, 'Review')
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
+      await selectAction(page, 'Edit')
 
       await page
         .getByTestId('accordion-Accordion_informant')
         .getByRole('button', { name: 'Change all' })
         .click()
-
-      await page.getByRole('button', { name: 'Continue' }).click()
     })
+
     test('2.2.3 Fill informant details', async () => {
       await page.locator('#informant____relation').click()
       await page
@@ -233,6 +224,10 @@ test.describe.serial('2. Workqueue flow - 2', () => {
       await page
         .getByText(declaration.mother.address.district, { exact: true })
         .click()
+      await page.locator('#village').click()
+      await page
+        .getByText(declaration.mother.address.village, { exact: true })
+        .click()
 
       await continueForm(page)
     })
@@ -260,33 +255,34 @@ test.describe.serial('2. Workqueue flow - 2', () => {
       await page.locator('#father____addressSameAs_YES').click()
     })
 
-    test('2.2.6 Register', async () => {
+    test('2.2.6 Register with edits', async () => {
       await goToSection(page, 'review')
-
-      await page.getByRole('button', { name: 'Register' }).click()
-      await page.locator('#confirm_Declare').click()
-
-      await ensureOutboxIsEmpty(page)
-      await ensureInExternalValidationIsEmpty(page)
+      await triggerDeclarationAction(page, 'Register with edits')
 
       await assertRecordInWorkqueue({
         page,
         name: formatName(declaration.child.name),
         workqueues: [
+          { title: 'Outbox', exists: false },
+          { title: 'Drafts', exists: false },
           { title: 'Assigned to you', exists: false },
           { title: 'Recent', exists: true },
           { title: 'Notifications', exists: false },
-          { title: 'Ready for review', exists: false },
-          { title: 'Requires updates', exists: false },
-          { title: 'In external validation', exists: false },
-          { title: 'Ready to print', exists: true }
+          { title: 'Potential duplicate', exists: false },
+          { title: 'Pending updates', exists: false },
+          { title: 'Pending approval', exists: false },
+          { title: 'Pending registration', exists: false },
+          { title: 'Escalated', exists: false },
+          { title: 'Pending external validation', exists: false },
+          { title: 'Pending certification', exists: true },
+          { title: 'Pending issuance', exists: false }
         ]
       })
     })
   })
 
-  test('2.3 FA can see the record', async () => {
-    await login(page, CREDENTIALS.FIELD_AGENT, true)
+  test('2.3 HO can not see the registered record', async () => {
+    await login(page, CREDENTIALS.HOSPITAL_OFFICIAL, true)
 
     await assertRecordInWorkqueue({
       page,
@@ -294,14 +290,13 @@ test.describe.serial('2. Workqueue flow - 2', () => {
       workqueues: [
         { title: 'Assigned to you', exists: false },
         { title: 'Recent', exists: false },
-        { title: 'Sent for review', exists: true },
-        { title: 'Requires updates', exists: false }
+        { title: 'Pending updates', exists: false }
       ]
     })
   })
 
-  test('2.4 RA can see the record in ready to print', async () => {
-    await login(page, CREDENTIALS.REGISTRATION_AGENT)
+  test('2.4 Registration Officer can see the record in Pending certification', async () => {
+    await login(page, CREDENTIALS.REGISTRATION_OFFICER)
 
     await assertRecordInWorkqueue({
       page,
@@ -310,11 +305,13 @@ test.describe.serial('2. Workqueue flow - 2', () => {
         { title: 'Assigned to you', exists: false },
         { title: 'Recent', exists: false },
         { title: 'Notifications', exists: false },
-        { title: 'Ready for review', exists: false },
-        { title: 'Requires updates', exists: false },
-        { title: 'Sent for approval', exists: false },
-        { title: 'In external validation', exists: false },
-        { title: 'Ready to print', exists: true }
+        { title: 'Pending validation', exists: false },
+        { title: 'Pending updates', exists: false },
+        { title: 'Pending approval', exists: false },
+        { title: 'Escalated', exists: false },
+        { title: 'Pending external validation', exists: false },
+        { title: 'Pending certification', exists: true },
+        { title: 'Pending issuance', exists: false }
       ]
     })
   })
