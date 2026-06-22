@@ -112,6 +112,7 @@ buttons.finish,The label for finish printing certificate button,Finish,Terminer
 buttons.forgotPassword,The label for forgot password button,Forgot password,Mot de passe oublié
 buttons.forgottenPIN,The label for forgotten pin button,Forgotten pin,Code d'accès oublié
 buttons.goToHomePage,Label for Go to Homepage button,Back to home,Retour à la page d'accueil
+buttons.goToReview,Go to review button text,Go to review,Aller à la révision
 buttons.issue,Button for issuing,Issue,Délivrer
 buttons.login,Login button on session expire modal,Login,Connexion
 buttons.logout,logout title,Logout,Déconnexion
@@ -213,8 +214,8 @@ config.emailAllUsers.subtitle,Subtitle for email all users,This email will be se
 config.emailAllUsers.title,Title for email all users,Email all users,Envoyer un e-mail à tous les utilisateurs
 config.userRoles.language,Language name,"{language, select, en {English} fr {French} other {{language}}}","{language, select, en {Anglais} fr {Français} other {{language}}}"
 configuration.dateFormat,Default format for date values,d MMMM y,d MMMM y
+configuration.timeField.outputFormat,Default output format for time fields,hh:mm a,hh:mm a
 configuration.timeFormat,Default time format for timestamps,"MMMM dd, yyyy · hh.mm a","MMMM dd, yyyy · hh.mm a"
-configuration.timeField.outputFormat,Default output format for time fields,"hh:mm a","hh:mm a"
 conflicts.modal.assign.description,Description for modal when assign,Please note you will have sole access to this record. Please make any updates promptly otherwise unassign the record.,"Veuillez noter que vous aurez un accès exclusif à cet enregistrement. Veuillez effectuer rapidement les mises à jour éventuelles, sinon vous désassignez l'enregistrement."
 conflicts.modal.assign.title,Title for modal when assign,Assign record?,Attribuer un enregistrement ?
 conflicts.modal.assigned.description,Description for modal when record already assigned,{name} at {officeName} has sole editable access to this record,{name} à {officeName} a un accès unique et modifiable à cet enregistrement.
@@ -301,6 +302,7 @@ constants.healthcareWorker,The description for Healthcare Worker type,Healthcare
 constants.history,History heading,History,Histoire
 constants.history,History heading,History,Histoire
 constants.humanName,Formatted full name,{firstName} {middleName} {lastName},{firstName} {middleName} {lastName}
+constants.retryInSeconds,Button label showing remaining seconds before retry is allowed,Retry in {seconds}s,Réessayer dans {seconds}s
 constants.id,ID Label,ID,ID
 constants.idCheckWithoutVerify,Issuance without the confirmation of proof,Continue without proof of ID?,Continuer sans preuve d'identité?
 constants.inReview.status,A label for In Review,In review,En cours de révision
@@ -781,13 +783,13 @@ duplicates.warning,The warning message shown when a declaration has potential du
 email.label.confirmation,Confirmation email address message,A verification code has been sent to {email},Un code de vérification a été envoyé à {email}
 error.child.weightAtBirth.invalidNumberRange,This is the error message for invalid number range,Must be within 0 and 6,Doit être compris entre 0 et 6
 error.code,Error code,401,401
-error.pdf,PDF load Error,Failed to load PDF,Échec du chargement du PDF
 error.draftFailed,Tips for failed declarations,This is some messaging on advicing the user on what to do... in the event of a failed declaration.,Il s'agit d'un message indiquant à l'utilisateur ce qu'il doit faire... en cas d'échec de la déclaration.
 error.invalidInput,Error message when generic field is invalid,Invalid input,Entrée invalide
 error.invalidName,This is the error message for invalid name,"Input contains invalid characters. Please use only letters (a-z, A-Z), numbers (0-9), hyphens (-) and apostrophes(')","L'entrée contient des caractères non valides. Veuillez n'utiliser que des lettres (a-z, A-Z), des chiffres (0-9), des traits d'union (-) et des apostrophes (')"
 error.occurred,The error message that displays if we want the user to try the action again,An error occurred. Please try again.,Une erreur s'est produite. Veuillez réessayer.
 error.page.load.failed,Error message when page failed to load,"Sorry, we couldn't load the content for this page","Désolé, nous n'avons pas pu charger le contenu de cette page."
 error.passwordSubmissionError,Error message when password verification fails,Sorry that password did not work,Désolé que le mot de passe n'ait pas fonctionné
+error.pdf,PDF load Error,Failed to load PDF,Échec du chargement du PDF
 error.required.password,New password required,New password is not valid,Le nouveau mot de passe n'est pas valide
 error.search,The error message shown when a search query fails,An error occurred while searching,Une erreur s'est produite lors de la recherche
 error.searchParamCountError,Error message when the search parameters are less than two,You must select a minimum of 2 search criteria,Vous devez sélectionner un minimum de 2 critères de recherche
@@ -1461,6 +1463,8 @@ home.header.teamTitle,Team title,Team,Équipe
 home.header.typeName,Search menu name type,Name,Nom
 home.header.typePhone,Search menu phone no type,Phone no.,N° de téléphone
 home.header.typeRN,Search menu brn drn type,Registration no.,N ° d'enregistrement.
+imageEditorModal.description,Description for the image editor modal,Resize and position the chosen image,Redimensionner et positionner l'image choisie
+imageEditorModal.title,Title for the image editor modal,Crop & resize image,Recadrer et redimensionner l'image
 imageUploadOption.upload.documentType,Show error message if the document type is not selected,Please select the type of document first,Veuillez d'abord sélectionner le type de document
 imageUploadOption.upload.error,Show error messages while uploading,File format not supported. Please upload a .png or .jpg (max {maxSize}mb),"Format de fichier non pris en charge. Veuillez joindre un png, jpg (max {maxSize}mb)"
 imageUploadOption.upload.imageFormat,Show error message if the selected image type is not supported,File format not supported. Please upload a .png or .jpg (max {maxSize}mb),Le format d'image n'est pas supporté. Veuillez joindre un png ou un jpg (max {maxSize}mb)
@@ -1891,6 +1895,7 @@ register.selectInformant.newMarriageRegistration,The title that appears for new 
 register.selectInformant.parents,The description that appears when selecting the parent as informant,Mother & Father,Mère et père
 register.selectVitalEvent.backToReviewButton,,Back to review,Retour à l'examen
 register.selectVitalEvent.errorMessage,Error Message to show when no event is being selected,Please select the type of event,Veuillez sélectionner le type d'événement
+register.selectVitalEvent.goToReviewButton,,Go to review,Aller à la révision
 register.selectVitalEvent.registerNewEventHeader,The section heading on the page,What type of event do you want to declare?,What type of event do you want to declare?
 register.selectVitalEvent.registerNewEventHeading,The section heading on the page,Event type,Quel type d'événement voulez-vous déclarer ?
 register.selectVitalEvent.registerNewEventTitle,The title that appears on the select vital event page,New declaration,Nouvelle déclaration
@@ -1901,6 +1906,7 @@ rejectModal.markAsDuplicate,The label for mark as duplicate checkbox of reject m
 rejectModal.sendForUpdate,The label for send For Update button of reject modal,Send For Update,Envoyer pour mise à jour
 rejectModal.title,The title for reject modal,Reason for rejection?,Quelle mise à jour la déclaration nécessite-t-elle ?
 reloadmodal.body,Body of reload modal,There’s a new version of {app_name} available. Please update to continue.,Une nouvelle version de {app_name} est disponible. Veuillez effectuer la mise à jour pour continuer.
+reloadmodal.button.loginAgain,Label of log in again button after version update,Log in again,Se reconnecter
 reloadmodal.button.update,Label of update button,Update,Mise à jour
 reloadmodal.title,Title when update is available,Update available,Mise à jour disponible
 review.actions.desc.regConfComp,,"By clicking register, you confirm that the information entered is correct and the vital event can be registered.","En cliquant sur Enregistrer, vous confirmez que les informations sont correctes et ont été vérifiées par l'informateur. L'informateur comprend qu'elles seront utilisées pour enregistrer la naissance et à des fins de planification. En enregistrant cette naissance, un certificat de naissance sera généré avec votre signature pour être délivré."
@@ -2090,6 +2096,7 @@ system.user.duplicateMobileError,This error messege shows when user try to input
 system.user.newUser,This text will show to create new user button,New user,Nouvel utilisateur
 system.user.pending,Pill label for pending user,Pending,En attente
 system.user.queryError,The text when error ocurred loading system users,An error occurred while loading system users,Une erreur s'est produite lors du chargement des utilisateurs du système
+system.user.queryRateLimitError,Error text shown when the user list query is rate limited (HTTP 429),Too many requests. Please wait before retrying.,Trop de requêtes. Veuillez patienter avant de réessayer.
 system.user.settings.avatarUpdated,Profile image change message on success,Profile image successfully updated,L'image du profil a été mise à jour avec succès
 system.user.settings.avatarUpdating,Profile image message when uploading,Updating profile image,Mise à jour de l'image du profil
 system.user.settings.emailAddressUpdated,Email change message on success,Email address updated,Adresse e-mail mise à jour
@@ -2305,5 +2312,3 @@ wq.noRecords.readyToPrint,No records messages for ready to print tab,No records 
 wq.noRecords.requiresUpdate,No records messages for require updates tab,No records require updates,Aucun document ne nécessite de mise à jour
 wq.noRecords.sentForApproval,No records messages for sent for approval tab,No records sent for approval,Aucun document envoyé pour approbation
 wq.noRecords.sentForReview,No records messages for sent for review tab,No records sent for review,Aucun document envoyé pour examen
-imageEditorModal.title,Title for the image editor modal,Crop & resize image,Recadrer et redimensionner l'image
-imageEditorModal.description,Description for the image editor modal,Resize and position the chosen image,Redimensionner et positionner l'image choisie

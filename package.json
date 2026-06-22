@@ -1,6 +1,6 @@
 {
   "name": "@opencrvs/countryconfig",
-  "version": "1.9.14",
+  "version": "1.9.15",
   "description": "OpenCRVS country configuration for reference data",
   "os": [
     "darwin",
@@ -85,7 +85,7 @@
     "@hapi/hapi": "^20.0.1",
     "@hapi/inert": "^6.0.3",
     "@opencrvs/mosip": "1.9.0",
-    "@opencrvs/toolkit": "1.9.13",
+    "@opencrvs/toolkit": "1.9.15",
     "@types/chalk": "^2.2.0",
     "@types/code": "^4.0.3",
     "@types/csv2json": "^1.4.0",
@@ -110,6 +110,7 @@
     "csv2json": "^1.4.2",
     "date-fns": "^2.28.0",
     "dotenv": "^16.4.5",
+    "elastic-apm-node": "^3.29.0",
     "envalid": "^8.0.0",
     "esbuild": "^0.18.9",
     "google-libphonenumber": "^3.2.32",
@@ -131,6 +132,7 @@
     "p-queue": "^6.6.2",
     "pg": "^8.16.3",
     "pino": "^7.0.0",
+    "pkg-up": "^3.1.0",
     "prompts": "^2.4.2",
     "regex-to-strings": "^2.1.0",
     "short-uid": "^0.1.0",
