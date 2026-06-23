@@ -90,8 +90,8 @@ test('Cleared field values are removed after editing and re-notifying a declarat
     // The name was cleared, so the record can no longer be found by its title;
     // reopen it directly via the URL captured earlier.
     await page.goto(recordUrl)
-    await page.waitForLoadState('networkidle')
-    await page.getByText("You've been unassigned from the event")
+
+    await expect(page.getByLabel('Assign record')).toBeVisible()
     await ensureAssignedToUser(page, CREDENTIALS.COMMUNITY_LEADER)
     await switchEventTab(page, 'Record')
 
