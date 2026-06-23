@@ -380,22 +380,23 @@ test.describe.serial('Correct record - 2', () => {
     })
   })
 
-  test.describe('2.9 Validate history in record audit', async () => {
-    test('2.9.0 Login', async ({ browser }) => {
+  test('2.9 Validate history in record audit', async ({ browser }) => {
+    const page = await browser.newPage()
+    test.step('2.9.0 Login', async () => {
       const page = await browser.newPage()
       await login(page, CREDENTIALS.REGISTRAR)
       await searchFromSearchBar(page, formatV2ChildName(declaration))
     })
 
-    test('2.9.1 Assign', async () => {
+    test.step('2.9.1 Assign', async () => {
       await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
     })
 
-    test('2.9.2 Navigate to record audit', async () => {
+    test.step('2.9.2 Navigate to record audit', async () => {
       await page.getByRole('button', { name: 'Audit' }).click()
     })
 
-    test('2.9.3 Validate correction requested modal', async () => {
+    test.step('2.9.3 Validate correction requested modal', async () => {
       await page
         .getByRole('button', { name: 'Correction requested', exact: true })
         .click()
@@ -431,7 +432,7 @@ test.describe.serial('Correct record - 2', () => {
       await page.getByRole('button', { name: 'Next page' }).click()
     })
 
-    test('2.9.4 Validate correction rejected modal', async () => {
+    test.step('2.9.4 Validate correction rejected modal', async () => {
       await page
         .getByRole('button', { name: 'Correction rejected', exact: true })
         .click()
