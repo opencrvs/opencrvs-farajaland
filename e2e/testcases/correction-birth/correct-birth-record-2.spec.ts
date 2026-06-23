@@ -368,6 +368,15 @@ test.describe.serial('Correct record - 2', () => {
 
       await expectInUrl(page, `/events/${eventId}`)
     })
+
+    test("2.8.4 Rejected correction appears in the Registrar's 'Recent' workqueue", async () => {
+      await page.getByTestId('exit-event').click()
+      await page.getByText('Recent').click()
+
+      await expect(
+        page.getByRole('button', { name: formatV2ChildName(declaration) })
+      ).toBeVisible()
+    })
   })
 
   test.describe('2.9 Validate history in record audit', async () => {
