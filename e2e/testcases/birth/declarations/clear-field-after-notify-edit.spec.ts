@@ -22,6 +22,8 @@ test('Cleared field values are removed after editing and re-notifying a declarat
   const formattedChildName = formatName(childName)
   const childDob = { dd: '12', mm: '03', yyyy: '2015' }
   let dobValueBefore = ''
+  let nameValueBefore = ''
+  let recordUrl = ''
 
   await test.step('Login as Community Leader', async () => {
     await login(page, CREDENTIALS.COMMUNITY_LEADER)
@@ -45,23 +47,37 @@ test('Cleared field values are removed after editing and re-notifying a declarat
     await triggerDeclarationAction(page, 'Notify')
   })
 
-  await test.step('Open the notified record and capture the date of birth shown', async () => {
+  await test.step('Open the notified record and capture the values shown', async () => {
     await page.getByText('Recent').click()
     await openRecordByTitle(page, formattedChildName)
     await expect(page.getByTestId('status-value')).toHaveText('Notified')
-    await ensureAssignedToUser(page, CREDENTIALS.COMMUNITY_LEADER)
+    // Capture the record URL so it can be reopened after the name (used as the workqueue row title) has been cleared.
+    recordUrl = page.url()
 
+    await ensureAssignedToUser(page, CREDENTIALS.COMMUNITY_LEADER)
     await switchEventTab(page, 'Record')
+
     const dob = page.getByTestId('row-value-child.dob')
     await expect(dob).toContainText(childDob.yyyy)
     dobValueBefore = (await dob.innerText()).trim()
+
+    const name = page.getByTestId('row-value-child.name')
+    await expect(name).toContainText(childName.familyName)
+    nameValueBefore = (await name.innerText()).trim()
   })
 
-  await test.step('Edit the notification and clear the date of birth', async () => {
+  await test.step('Edit the notification and clear the date of birth and the (complex) name field', async () => {
     await selectAction(page, 'Edit')
 
     await page.getByTestId('change-button-child.dob').click()
+
+    // Clear the date of birth ...
     await fillDate(page, { dd: '', mm: '', yyyy: '' })
+
+    // ... and clear the child's name, a complex (multi-part) field, on the
+    // same page.
+    await page.locator('#firstname').fill('')
+    await page.locator('#surname').fill('')
 
     await page.getByRole('button', { name: 'Go to review' }).click()
   })
@@ -70,14 +86,22 @@ test('Cleared field values are removed after editing and re-notifying a declarat
     await triggerDeclarationAction(page, 'Notify with edits')
   })
 
-  await test.step('Record no longer shows the previously entered date of birth', async () => {
-    await openRecordByTitle(page, formattedChildName)
+  await test.step('Record no longer shows the previously entered date of birth or name', async () => {
+    // The name was cleared, so the record can no longer be found by its title;
+    // reopen it directly via the URL captured earlier.
+    await page.goto(recordUrl)
+    await page.waitForLoadState('networkidle')
+    await page.getByText("You've been unassigned from the event")
     await ensureAssignedToUser(page, CREDENTIALS.COMMUNITY_LEADER)
     await switchEventTab(page, 'Record')
 
-    // The cleared value must not persist: the date of birth row must no longer display the value entered before the edit.
+    // The cleared values must not persist: neither the date of birth nor the
+    // name row may still display the value entered before the edit.
     await expect(page.getByTestId('row-value-child.dob')).not.toHaveText(
       dobValueBefore
+    )
+    await expect(page.getByTestId('row-value-child.name')).not.toHaveText(
+      nameValueBefore
     )
   })
 })
