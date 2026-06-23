@@ -4,6 +4,7 @@ import {
   formatName,
   getToken,
   login,
+  searchFromSearchBar,
   uploadImage
 } from '../../helpers'
 import { faker } from '@faker-js/faker'
@@ -383,6 +384,7 @@ test.describe.serial('Correct record - 2', () => {
     test('2.9.0 Login', async ({ browser }) => {
       const page = await browser.newPage()
       await login(page, CREDENTIALS.REGISTRAR)
+      await searchFromSearchBar(page, formatV2ChildName(declaration))
     })
 
     test('2.9.1 Assign', async () => {
