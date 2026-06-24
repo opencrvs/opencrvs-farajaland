@@ -383,7 +383,6 @@ test.describe.serial('Correct record - 2', () => {
   test('2.9 Validate history in record audit', async ({ browser }) => {
     const page = await browser.newPage()
     test.step('2.9.0 Login', async () => {
-      const page = await browser.newPage()
       await login(page, CREDENTIALS.REGISTRAR)
       await searchFromSearchBar(page, formatV2ChildName(declaration))
     })
