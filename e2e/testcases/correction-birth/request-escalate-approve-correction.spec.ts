@@ -311,4 +311,15 @@ test.describe
       page.getByRole('button', { name: 'Correction approved', exact: true })
     ).toBeVisible()
   })
+
+  test("Approved correction appears in the Registrar's 'Recent' workqueue", async () => {
+    await page.getByTestId('exit-event').click()
+    await page.getByText('Recent').click()
+
+    await expect(
+      page.getByRole('button', {
+        name: formatV2ChildName({ 'child.name': updatedChildDetails })
+      })
+    ).toBeVisible()
+  })
 })
