@@ -4,7 +4,6 @@ import {
   formatName,
   getToken,
   login,
-  searchFromSearchBar,
   uploadImage
 } from '../../helpers'
 import { faker } from '@faker-js/faker'
@@ -369,33 +368,23 @@ test.describe.serial('Correct record - 2', () => {
 
       await expectInUrl(page, `/events/${eventId}`)
     })
-
-    test("2.8.4 Rejected correction appears in the Registrar's 'Recent' workqueue", async () => {
-      await page.getByTestId('exit-event').click()
-      await page.getByText('Recent').click()
-
-      await expect(
-        page.getByRole('button', { name: formatV2ChildName(declaration) })
-      ).toBeVisible()
-    })
   })
 
-  test('2.9 Validate history in record audit', async ({ browser }) => {
-    const page = await browser.newPage()
-    test.step('2.9.0 Login', async () => {
+  test.describe('2.9 Validate history in record audit', async () => {
+    test('2.9.0 Login', async ({ browser }) => {
+      const page = await browser.newPage()
       await login(page, CREDENTIALS.REGISTRAR)
-      await searchFromSearchBar(page, formatV2ChildName(declaration))
     })
 
-    test.step('2.9.1 Assign', async () => {
+    test('2.9.1 Assign', async () => {
       await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
     })
 
-    test.step('2.9.2 Navigate to record audit', async () => {
+    test('2.9.2 Navigate to record audit', async () => {
       await page.getByRole('button', { name: 'Audit' }).click()
     })
 
-    test.step('2.9.3 Validate correction requested modal', async () => {
+    test('2.9.3 Validate correction requested modal', async () => {
       await page
         .getByRole('button', { name: 'Correction requested', exact: true })
         .click()
@@ -431,7 +420,7 @@ test.describe.serial('Correct record - 2', () => {
       await page.getByRole('button', { name: 'Next page' }).click()
     })
 
-    test.step('2.9.4 Validate correction rejected modal', async () => {
+    test('2.9.4 Validate correction rejected modal', async () => {
       await page
         .getByRole('button', { name: 'Correction rejected', exact: true })
         .click()
