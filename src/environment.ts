@@ -22,9 +22,6 @@ export const env = cleanEnv(process.env, {
   SENTRY_DSN: str({ default: undefined }),
   ESIGNET_REDIRECT_URL: url({ devDefault: 'http://localhost:20260/authorize' }),
   OPENID_PROVIDER_CLIENT_ID: str({ devDefault: 'mock-client_id' }),
-  OPENID_PROVIDER_CLAIMS: str({
-    devDefault: 'name,family_name,given_name,middle_name,birthdate,address'
-  }),
   MOSIP_API_USERINFO_URL: url({
     devDefault: 'http://localhost:2024/esignet/get-oidp-user-info'
   }),
