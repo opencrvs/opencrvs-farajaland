@@ -47,7 +47,6 @@ test('Validating a rejected declaration clears the Rejected flag', async ({
   await test.step('Open the record and perform the Validate action', async () => {
     await openRecordByTitle(page, childName)
     await expect(page.getByTestId('flags-value')).toContainText('Rejected')
-    await openRecordByTitle(page, childName)
     await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
     await triggerDeclarationAction(page, 'Validate')
   })
