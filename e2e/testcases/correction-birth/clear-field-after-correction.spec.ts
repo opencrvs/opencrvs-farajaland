@@ -122,6 +122,13 @@ test('Cleared field values are removed after correcting a registered birth recor
     await page.getByRole('button', { name: 'Go to review' }).click()
   })
 
+  await test.step('Correction review shows the cleared weight as deleted', async () => {
+    const weightRow = page.getByTestId('row-value-child.weightAtBirth')
+    await expect(weightRow.locator('del')).toContainText(
+      weightAtBirth.toString()
+    )
+  })
+
   await test.step('Submit the correction', async () => {
     await page.getByRole('button', { name: 'Continue' }).click()
     await expectInUrl(page, `/events/request-correction/${eventId}/summary`)

@@ -21,6 +21,7 @@ test('Cleared field values are removed after editing and re-notifying a declarat
   }
   const formattedChildName = formatName(childName)
   const childDob = { dd: '12', mm: '03', yyyy: '2015' }
+  const childWeight = '3.5'
   let dobValueBefore = ''
   let nameValueBefore = ''
   let recordUrl = ''
@@ -36,10 +37,12 @@ test('Cleared field values are removed after editing and re-notifying a declarat
     await page.getByRole('button', { name: 'Continue' }).click()
   })
 
-  await test.step("Fill child's name and date of birth", async () => {
+  await test.step("Fill child's name, date of birth and weight at birth", async () => {
     await page.locator('#firstname').fill(childName.firstNames)
     await page.locator('#surname').fill(childName.familyName)
     await fillDate(page, childDob)
+    // A non-mandatory field that we will later clear during edit.
+    await page.locator('#child____weightAtBirth').fill(childWeight)
   })
 
   await test.step('Continue to review and Notify', async () => {
@@ -66,7 +69,7 @@ test('Cleared field values are removed after editing and re-notifying a declarat
     nameValueBefore = (await name.innerText()).trim()
   })
 
-  await test.step('Edit the notification and clear the date of birth and the (complex) name field', async () => {
+  await test.step('Edit the notification and clear the date of birth, the name and the weight', async () => {
     await selectAction(page, 'Edit')
 
     await page.getByTestId('change-button-child.dob').click()
@@ -74,12 +77,23 @@ test('Cleared field values are removed after editing and re-notifying a declarat
     // Clear the date of birth ...
     await fillDate(page, { dd: '', mm: '', yyyy: '' })
 
-    // ... and clear the child's name, a complex (multi-part) field, on the
-    // same page.
+    // ... clear the child's name, a complex (multi-part) field, on the same
+    // page ...
     await page.locator('#firstname').fill('')
     await page.locator('#surname').fill('')
 
+    // ... and clear the weight at birth, a non-mandatory field on the same
+    // page.
+    await page.locator('#child____weightAtBirth').fill('')
+
     await page.getByRole('button', { name: 'Go to review' }).click()
+  })
+
+  await test.step('Review page during edit shows the cleared weight as deleted', async () => {
+    const weightRow = page.getByTestId('row-value-child.weightAtBirth')
+
+    // The previous value is shown as deleted
+    await expect(weightRow.locator('del')).toContainText(childWeight)
   })
 
   await test.step('Notify again with the cleared field', async () => {
@@ -103,5 +117,8 @@ test('Cleared field values are removed after editing and re-notifying a declarat
     await expect(page.getByTestId('row-value-child.name')).not.toHaveText(
       nameValueBefore
     )
+    await expect(
+      page.getByTestId('row-value-child.weightAtBirth')
+    ).not.toContainText(childWeight)
   })
 })
