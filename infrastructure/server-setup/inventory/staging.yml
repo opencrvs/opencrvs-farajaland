@@ -82,6 +82,11 @@ all:
           - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICw4vvV33xxrTzxAiPoRhuwyWUzmgrP5NPo2n4bmKx7P
         state: present
         sudoer: true
+      - name: jamil
+        ssh_keys:
+          - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINMSNTIIsM0C3uJg3V/Fqh2gi4lvl2y6nenrb2Ft1JlX jamil31415926@gmail.com
+        state: present
+        sudoer: true
 docker-manager-first:
   hosts:
     farajaland-staging:

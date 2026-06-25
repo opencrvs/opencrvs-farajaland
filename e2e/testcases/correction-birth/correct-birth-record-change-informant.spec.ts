@@ -10,20 +10,17 @@ import {
   createDeclaration as createDeclarationV2,
   Declaration as DeclarationV2
 } from '../test-data/birth-declaration-with-mother-father'
-import { format, subYears } from 'date-fns'
-import {
-  CREDENTIALS,
-  SAFE_INPUT_CHANGE_TIMEOUT_MS,
-  SAFE_OUTBOX_TIMEOUT_MS
-} from '../../constants'
-import { IdType } from '@countryconfig/form/v2/person'
+import { format, subDays, subYears } from 'date-fns'
+import { CREDENTIALS } from '../../constants'
+import { IdType } from '@countryconfig/events/utils'
 import { random } from 'lodash'
 import { formatV2ChildName, REQUIRED_VALIDATION_ERROR } from '../birth/helpers'
-import { ensureAssigned } from '../../utils'
+import { ensureAssignedToUser, expectInUrl, selectAction } from '../../utils'
 
 test.describe.serial('Correct record - change informant type', () => {
   let declaration: DeclarationV2
   let trackingId = ''
+
   let eventId: string
   let page: Page
 
@@ -41,6 +38,7 @@ test.describe.serial('Correct record - change informant type', () => {
       country: 'Farajaland',
       province: 'Sulaka',
       district: 'Irundu',
+      village: 'Xhosa',
       town: faker.location.city(),
       residentialArea: faker.location.county(),
       street: faker.location.street(),
@@ -73,10 +71,7 @@ test.describe.serial('Correct record - change informant type', () => {
   })
 
   test('Shortcut declaration', async () => {
-    let token = await getToken(
-      CREDENTIALS.NATIONAL_REGISTRAR.USERNAME,
-      CREDENTIALS.NATIONAL_REGISTRAR.PASSWORD
-    )
+    let token = await getToken(CREDENTIALS.REGISTRAR)
     const res = await createDeclarationV2(
       token,
       {
@@ -85,8 +80,7 @@ test.describe.serial('Correct record - change informant type', () => {
           surname: faker.person.lastName()
         },
         'child.gender': 'male',
-        'child.dob': format(subYears(new Date(), 1), 'yyyy-MM-dd'),
-        'child.reason': 'Late',
+        'child.dob': format(subDays(new Date(), 2), 'yyyy-MM-dd'),
         'child.placeOfBirth': 'PRIVATE_HOME',
         'child.attendantAtBirth': 'PHYSICIAN',
         'child.birthType': 'SINGLE',
@@ -112,22 +106,21 @@ test.describe.serial('Correct record - change informant type', () => {
 
     trackingId = res.trackingId!
     eventId = res.eventId
-    token = await getToken('k.mweene', 'test')
+    token = await getToken(CREDENTIALS.REGISTRAR)
     declaration = res.declaration
   })
 
   test('Ready to correct record > record audit', async () => {
-    await login(page, CREDENTIALS.LOCAL_REGISTRAR)
+    await login(page, CREDENTIALS.REGISTRAR)
 
     await auditRecord({
       page,
       name: formatV2ChildName(declaration),
       trackingId
     })
-    await ensureAssigned(page)
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
 
-    await page.getByRole('button', { name: 'Action', exact: true }).click()
-    await page.getByText('Correct record', { exact: true }).click()
+    await selectAction(page, 'Correct')
   })
 
   test('Correction requester: legal guardian', async () => {
@@ -216,6 +209,15 @@ test.describe.serial('Correct record - change informant type', () => {
       await page
         .locator('#father____address-form-input')
         .getByText(updatedFatherDetails.address.district)
+        .click()
+
+      await page
+        .locator('#father____address-form-input')
+        .locator('#village')
+        .click()
+      await page
+        .locator('#father____address-form-input')
+        .getByText(updatedFatherDetails.address.village)
         .click()
 
       await page
@@ -311,19 +313,23 @@ test.describe.serial('Correct record - change informant type', () => {
     )
 
     await page.getByRole('button', { name: 'Correct record' }).click()
-    await page.getByRole('button', { name: 'Confirm' }).click()
-
-    expect(page.url().includes(`events/overview/${eventId}`)).toBeTruthy()
-    await page.getByRole('button', { name: 'Outbox' }).click()
-
-    await page.waitForTimeout(SAFE_INPUT_CHANGE_TIMEOUT_MS)
-
-    await expect(await page.locator('#no-record')).toContainText(
-      'No records require processing',
-      {
-        timeout: SAFE_OUTBOX_TIMEOUT_MS
-      }
+    const correctionResponse = page.waitForResponse(
+      (res) =>
+        res.url().includes('event.actions.correction.approve') && res.ok()
     )
+
+    const searchCacheRefetchResponse = page.waitForResponse(
+      (res) => res.url().includes(`event.search?batch=1`) && res.ok()
+    )
+
+    await page.getByRole('button', { name: 'Confirm', exact: true }).click()
+
+    await correctionResponse
+    await searchCacheRefetchResponse
+
+    await expectInUrl(page, `/events/${eventId}`)
+
+    await page.getByTestId('exit-event').click()
   })
 
   test('Validate history in record audit', async () => {
@@ -333,7 +339,8 @@ test.describe.serial('Correct record - change informant type', () => {
       trackingId
     })
 
-    await ensureAssigned(page)
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
+    await page.getByRole('button', { name: 'Audit' }).click()
 
     await expect(
       page

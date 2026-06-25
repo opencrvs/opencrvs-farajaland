@@ -6,11 +6,14 @@ import {
   formatDateObjectTo_dMMMMyyyy,
   getRandomDate,
   goToSection,
-  login
+  login,
+  triggerDeclarationAction,
+  switchEventTab
 } from '../../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../../constants'
-import { ensureOutboxIsEmpty } from '../../../utils'
+import { ensureAssignedToUser, expectInUrl } from '../../../utils'
+import { openRecordByTitle } from '../../print-certificate/birth/helpers'
 
 test.describe.serial('7. Death declaration case - 7', () => {
   let page: Page
@@ -100,7 +103,7 @@ test.describe.serial('7. Death declaration case - 7', () => {
 
   test.describe('7.1 Declaration started by National Registrar', async () => {
     test.beforeAll(async () => {
-      await login(page, CREDENTIALS.NATIONAL_REGISTRAR)
+      await login(page, CREDENTIALS.REGISTRAR)
 
       await page.click('#header-new-event')
       await page.getByLabel('Death').click()
@@ -531,22 +534,17 @@ test.describe.serial('7. Death declaration case - 7', () => {
     })
 
     test('7.1.8 Register', async () => {
-      await page.getByRole('button', { name: 'Register' }).click()
-      await expect(page.getByText('Register the death?')).toBeVisible()
-      await page.locator('#confirm_Declare').click()
-      await ensureOutboxIsEmpty(page)
+      await triggerDeclarationAction(page, 'Register')
+
       await expect(page.getByText('Farajaland CRS')).toBeVisible()
 
       /*
        * Expected result: should redirect to assigned to you workqueue
        */
-      expect(page.url().includes('assigned-to-you')).toBeTruthy()
+      await expectInUrl(page, 'assigned-to-you')
 
-      await page.getByText('Ready to print').click()
+      await page.getByText('Pending certification').click()
 
-      /*
-       * Expected result: The declaration should be in sent for review
-       */
       await expect(
         page.getByRole('button', {
           name:
@@ -556,18 +554,16 @@ test.describe.serial('7. Death declaration case - 7', () => {
         })
       ).toBeVisible()
     })
-    test('7.1.8 Verify information on view page', async () => {
-      await page
-        .getByRole('button', {
-          name:
-            declaration.deceased.name.firstname +
-            ' ' +
-            declaration.deceased.name.surname
-        })
-        .click()
+    test('7.1.8 Verify information on "Record" tab', async () => {
+      await openRecordByTitle(
+        page,
+        declaration.deceased.name.firstname +
+          ' ' +
+          declaration.deceased.name.surname
+      )
 
-      await page.getByRole('button', { name: 'Action', exact: true }).click()
-      await page.getByText('View', { exact: true }).click()
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
+      await switchEventTab(page, 'Record')
 
       /*
        * Expected result: should include

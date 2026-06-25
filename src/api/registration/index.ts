@@ -12,7 +12,6 @@ import * as Hapi from '@hapi/hapi'
 import { generateRegistrationNumber } from './registrationNumber'
 import { createClient } from '@opencrvs/toolkit/api'
 import {
-  ActionInput,
   aggregateActionDeclarations,
   EventDocument,
   getPendingAction,
@@ -25,8 +24,11 @@ import { logger } from '@countryconfig/logger'
 import { createMosipInteropClient } from '@opencrvs/mosip/api'
 import {
   shouldForwardBirthRegistrationToMosip,
-  shouldForwardDeathRegistrationToMosip
-} from '@countryconfig/form/v2/mosip'
+  shouldForwardDeathRegistrationToMosip,
+  getBirthInformantSection,
+  getInformantPsut
+} from '@countryconfig/events/mosip'
+import { InformantType as DeathInformantType } from '@countryconfig/events/death/forms/pages/informant'
 
 export interface ActionConfirmationRequest extends Hapi.Request {
   payload: EventDocument
@@ -107,25 +109,25 @@ export async function onRegisterHandler(
  * For registration actions specifically, you must provide a registration number when accepting.
  * See the Action Confirmation documentation for more details on asynchronous confirmation flows.
  */
-async function acceptRequestedRegistration(
-  token: string,
-  eventId: string,
-  actionId: string,
-  action: Extract<ActionInput, { type?: 'REGISTER' }>
-) {
-  const url = new URL('events', GATEWAY_URL).toString()
-  const client = createClient(url, `Bearer ${token}`)
+// async function acceptRequestedRegistration(
+//   token: string,
+//   eventId: string,
+//   actionId: string,
+//   action: Extract<ActionInput, { type?: 'REGISTER' }>
+// ) {
+//   const url = new URL('events', GATEWAY_URL).toString()
+//   const client = createClient(url, `Bearer ${token}`)
 
-  const event = await client.event.actions.register.accept.mutate({
-    ...action,
-    transactionId: uuidv4(),
-    eventId,
-    actionId,
-    registrationNumber: generateRegistrationNumber()
-  })
+//   const event = await client.event.actions.register.accept.mutate({
+//     ...action,
+//     transactionId: uuidv4(),
+//     eventId,
+//     actionId,
+//     registrationNumber: generateRegistrationNumber()
+//   })
 
-  return event
-}
+//   return event
+// }
 
 /**
  * Example function for asynchronously rejecting a registration action.
@@ -182,8 +184,12 @@ export async function onMosipBirthRegisterHandler(
     )
     const childName = declaration['child.name'] as NameFieldValue | undefined
 
-    // @TODO: Check whether this might crash country-config if MOSIP doesn't respond
-    mosipInteropClient.register({
+    const birthInformantSection = getBirthInformantSection(
+      declaration['informant.relation'] as string
+    )
+    const informantPsut = getInformantPsut(declaration, birthInformantSection)
+
+    await mosipInteropClient.register({
       trackingId: event.trackingId,
       requestFields: {
         birthCertificateNumber: registrationNumber,
@@ -202,7 +208,7 @@ export async function onMosipBirthRegisterHandler(
         recipientFullName: '@TODO',
         recipientPhone: '@TODO'
       },
-      metaInfo: {},
+      metaInfo: { informantPsut },
       audit: {}
     })
 
@@ -247,8 +253,13 @@ export async function onMosipDeathRegisterHandler(
       | NameFieldValue
       | undefined
 
-    // @TODO: Check whether this might crash country-config if MOSIP doesn't respond
-    mosipInteropClient.register({
+    const deathInformantSection =
+      declaration['informant.relation'] === DeathInformantType.SPOUSE
+        ? 'spouse'
+        : 'informant'
+    const informantPsut = getInformantPsut(declaration, deathInformantSection)
+
+    await mosipInteropClient.register({
       trackingId: event.trackingId,
       requestFields: {
         deathCertificateNumber: registrationNumber,
@@ -268,11 +279,11 @@ export async function onMosipDeathRegisterHandler(
         recipientFullName: '@TODO',
         recipientPhone: '@TODO'
       },
-      metaInfo: {},
+      metaInfo: { informantPsut },
       audit: {}
     })
 
-    return h.response().code(202)
+    return h.response({ registrationNumber }).code(200)
   } catch (error) {
     return h
       .response({

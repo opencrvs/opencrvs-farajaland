@@ -6,10 +6,11 @@ import { CREDENTIALS } from '../../../constants'
 import { getToken } from '../../../helpers'
 import {
   navigateToCertificatePrintAction,
+  openRecordByTitle,
   selectRequesterType
 } from './helpers'
 import { selectCertificationType } from './helpers'
-import { selectAction } from '../../../utils'
+import { ensureAssignedToUser, selectAction } from '../../../utils'
 import { formatV2ChildName } from '../../birth/helpers'
 
 test.describe
@@ -18,10 +19,7 @@ test.describe
   let page: Page
 
   test.beforeAll(async ({ browser }) => {
-    const token = await getToken(
-      CREDENTIALS.LOCAL_REGISTRAR.USERNAME,
-      CREDENTIALS.LOCAL_REGISTRAR.PASSWORD
-    )
+    const token = await getToken(CREDENTIALS.REGISTRAR)
 
     // Create a declaration with a health facility place of birth
     const res = await createDeclaration(
@@ -44,8 +42,12 @@ test.describe
   })
 
   test('Print birth certificate once', async () => {
-    await page.getByRole('button', { name: 'Ready to print' }).click()
-    await navigateToCertificatePrintAction(page, declaration)
+    await page.getByRole('button', { name: 'Pending certification' }).click()
+    await navigateToCertificatePrintAction(
+      page,
+      declaration,
+      CREDENTIALS.REGISTRAR
+    )
     await selectCertificationType(page, 'Birth Certificate')
     await selectRequesterType(page, 'Print and issue to Informant (Mother)')
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -57,16 +59,13 @@ test.describe
 
   test('Go to review', async () => {
     await page
-      .getByRole('textbox', { name: 'Search for a tracking ID' })
+      .getByRole('textbox', { name: 'Search for a record' })
       .fill(formatV2ChildName(declaration))
 
     await page.getByRole('button', { name: 'Search' }).click()
-    await page
-      .getByRole('button', {
-        name: formatV2ChildName(declaration),
-        exact: true
-      })
-      .click()
+    await openRecordByTitle(page, formatV2ChildName(declaration))
+    await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
+
     await selectAction(page, 'Print')
     await selectCertificationType(page, 'Birth Certificate Certified Copy')
     await selectRequesterType(page, 'Print and issue to Informant (Mother)')
@@ -76,9 +75,7 @@ test.describe
   })
 
   test('Validate child place of birth', async () => {
-    await expect(page.locator('#print')).toContainText(
-      'Ibombo Rural Health Centre'
-    )
+    await expect(page.locator('#print')).toContainText('Klow Village Hospital')
     await expect(page.locator('#print')).toContainText(
       'Ibombo, Central, Farajaland'
     )
@@ -90,10 +87,7 @@ test.describe.serial("Validate 'Birth Certificate' PDF details", () => {
   let page: Page
 
   test.beforeAll(async ({ browser }) => {
-    const token = await getToken(
-      CREDENTIALS.LOCAL_REGISTRAR.USERNAME,
-      CREDENTIALS.LOCAL_REGISTRAR.PASSWORD
-    )
+    const token = await getToken(CREDENTIALS.REGISTRAR)
 
     // Create a declaration
     const res = await createDeclaration(
@@ -116,8 +110,12 @@ test.describe.serial("Validate 'Birth Certificate' PDF details", () => {
   })
 
   test('Go to review', async () => {
-    await page.getByRole('button', { name: 'Ready to print' }).click()
-    await navigateToCertificatePrintAction(page, declaration)
+    await page.getByRole('button', { name: 'Pending certification' }).click()
+    await navigateToCertificatePrintAction(
+      page,
+      declaration,
+      CREDENTIALS.REGISTRAR
+    )
     await selectCertificationType(page, 'Birth Certificate')
     await selectRequesterType(page, 'Print and issue to Informant (Mother)')
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -126,9 +124,7 @@ test.describe.serial("Validate 'Birth Certificate' PDF details", () => {
   })
 
   test('Validate child place of birth', async () => {
-    await expect(page.locator('#print')).toContainText(
-      'Ibombo Rural Health Centre'
-    )
+    await expect(page.locator('#print')).toContainText('Klow Village Hospital')
     await expect(page.locator('#print')).toContainText(
       'Ibombo, Central, Farajaland'
     )

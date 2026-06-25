@@ -6,12 +6,16 @@ import {
   getRandomDate,
   goToSection,
   login,
-  logout
+  logout,
+  switchEventTab,
+  validateActionMenuButton
 } from '../../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../../constants'
-import { ensureOutboxIsEmpty, selectAction } from '../../../utils'
+import { ensureAssignedToUser, selectAction } from '../../../utils'
 import { REQUIRED_VALIDATION_ERROR } from '../helpers'
+import { triggerDeclarationAction } from '../../../helpers'
+import { openRecordByTitle } from '../../print-certificate/birth/helpers'
 
 test.describe.serial('Add mother details on review', () => {
   let page: Page
@@ -29,8 +33,8 @@ test.describe.serial('Add mother details on review', () => {
     placeOfBirth: 'Other',
     birthLocation: {
       country: 'Farajaland',
-      province: 'Pualula',
-      district: 'Funabuli',
+      province: 'Central',
+      district: 'Ibombo',
       town: faker.location.city(),
       residentialArea: faker.location.county(),
       street: faker.location.street(),
@@ -93,9 +97,9 @@ test.describe.serial('Add mother details on review', () => {
     await page.close()
   })
 
-  test.describe('Declaration started by FA', async () => {
-    test('Login as FA', async () => {
-      await login(page, CREDENTIALS.FIELD_AGENT)
+  test.describe('Declaration started by RO', async () => {
+    test('Login as RO', async () => {
+      await login(page, CREDENTIALS.REGISTRATION_OFFICER_VILLAGE)
     })
 
     test('Initiate birth declaration', async () => {
@@ -122,19 +126,14 @@ test.describe.serial('Add mother details on review', () => {
         })
         .click()
 
-      await page.locator('#province').click()
-      await page
-        .getByText(declaration.birthLocation.province, {
-          exact: true
-        })
-        .click()
+      // Province and district are disabled because the user jurisdiction is limited to user's administrative area
+      await expect(
+        page.locator('#child____birthLocation____other-form-input #province')
+      ).toBeDisabled()
 
-      await page.locator('#district').click()
-      await page
-        .getByText(declaration.birthLocation.district, {
-          exact: true
-        })
-        .click()
+      await expect(
+        page.locator('#child____birthLocation____other-form-input #district')
+      ).toBeDisabled()
 
       await page.locator('#town').fill(declaration.birthLocation.town)
       await page
@@ -218,42 +217,42 @@ test.describe.serial('Add mother details on review', () => {
       await expect(page.getByRole('dialog')).not.toBeVisible()
     })
 
-    test('Send for review', async () => {
-      await page.getByRole('button', { name: 'Send for review' }).click()
-      await page.getByRole('button', { name: 'Confirm' }).click()
+    test('Declare', async () => {
+      await triggerDeclarationAction(page, 'Declare')
 
-      await ensureOutboxIsEmpty(page)
+      await page.getByText('Recent').click()
 
-      await page.getByText('Sent for review').click()
-
-      await expect(
-        page.getByRole('button', {
-          name: formatName(declaration.child.name)
-        })
-      ).toBeVisible()
+      await openRecordByTitle(page, formatName(declaration.child.name))
     })
   })
 
-  test.describe('Declaration Review by Local Registrar', async () => {
-    test('Navigate to the declaration review page', async () => {
+  test.describe('Declaration Review by Registrar', async () => {
+    test('Navigate to the declaration Edit-action', async () => {
       await logout(page)
-      await login(page, CREDENTIALS.LOCAL_REGISTRAR)
+      await login(page, CREDENTIALS.REGISTRAR_VILLAGE)
 
-      await page.getByText('Ready for review').click()
+      await page.getByText('Pending registration').click()
 
-      await page
-        .getByRole('button', {
-          name: formatName(declaration.child.name)
-        })
-        .click()
+      await openRecordByTitle(page, formatName(declaration.child.name))
 
-      await selectAction(page, 'Review')
+      await expect(page.getByTestId('status-value')).toHaveText('Declared')
+
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR_VILLAGE)
+      await selectAction(page, 'Edit')
+      await expect(
+        page.getByText(
+          /You are editing a record declared by Velix Katongo \(Registration Officer at Klow Village Hospital\)/
+        )
+      ).toBeVisible()
+    })
+
+    test('Actions should be disabled with no edits made', async () => {
+      await validateActionMenuButton(page, 'Declare with edits', false)
+      await validateActionMenuButton(page, 'Register with edits', false)
     })
 
     test('Add mothers details', async () => {
       await page.getByTestId('change-button-mother.detailsNotAvailable').click()
-      await page.getByRole('button', { name: 'Continue' }).click()
-
       await page.getByText("Mother's details are not available").click()
 
       await page.locator('#firstname').fill(declaration.mother.name.firstNames)
@@ -271,7 +270,92 @@ test.describe.serial('Add mother details on review', () => {
     test('Go back to review, expect to not see any validation errors', async () => {
       await page.getByRole('button', { name: 'Go to review' }).click()
       await expect(page.getByText(REQUIRED_VALIDATION_ERROR)).not.toBeVisible()
-      await expect(page.getByRole('button', { name: 'Register' })).toBeEnabled()
+    })
+
+    test('Actions should be enabled with edits made', async () => {
+      await validateActionMenuButton(page, 'Declare with edits')
+      await validateActionMenuButton(page, 'Register with edits')
+    })
+
+    const comment = 'Mamas info added yo'
+
+    test('Register with edits', async () => {
+      await page.getByRole('button', { name: 'Action', exact: true }).click()
+      await page.getByText('Register with edits', { exact: true }).click()
+
+      const responses = [
+        'event.actions.edit',
+        'event.actions.declare',
+        'event.actions.register'
+      ].map((url) =>
+        page.waitForResponse((res) => res.url().includes(url) && res.ok())
+      )
+
+      await page.getByTestId('edit-comment').fill(comment)
+
+      await page.getByRole('button', { name: 'Confirm' }).click()
+
+      await Promise.all(responses)
+    })
+
+    test('Assert event is registered', async () => {
+      await page.getByText('Pending certification').click()
+      await openRecordByTitle(page, formatName(declaration.child.name))
+      await expect(page.getByTestId('status-value')).toHaveText('Registered')
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR_VILLAGE)
+    })
+
+    test('Assert record form', async () => {
+      await switchEventTab(page, 'Record')
+
+      await expect(page.getByTestId('row-value-mother.name')).toHaveText(
+        declaration.mother.name.firstNames +
+          ' ' +
+          declaration.mother.name.familyName
+      )
+      await expect(page.getByTestId('row-value-mother.age')).toHaveText(
+        declaration.mother.age.toString()
+      )
+      await expect(page.getByTestId('row-value-mother.idType')).toHaveText(
+        'None'
+      )
+    })
+
+    test('Assert audit trail', async () => {
+      await switchEventTab(page, 'Summary')
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR_VILLAGE)
+      await switchEventTab(page, 'Audit')
+      await page.getByRole('button', { name: 'Edited', exact: true }).click()
+
+      await expect(page.getByText('Comments: ' + comment)).toBeVisible()
+
+      await expect(
+        page.getByText(
+          "Mother's name" + '-' + formatName(declaration.mother.name)
+        )
+      ).toBeVisible()
+
+      await expect(
+        page.getByText(
+          'Age of mother (at the time of event)' +
+            '-' +
+            declaration.mother.age.toString()
+        )
+      ).toBeVisible()
+
+      await expect(
+        page.getByText('Nationality' + '-' + 'Farajaland')
+      ).toBeVisible()
+
+      await expect(page.getByText('Type of ID' + '-' + 'None')).toBeVisible()
+
+      await page.locator('#close-btn').click()
+
+      await page
+        .getByRole('button', { name: 'Registered', exact: true })
+        .click()
+
+      await page.locator('#close-btn').click()
     })
   })
 })

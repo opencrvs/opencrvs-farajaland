@@ -4,12 +4,16 @@ import {
   drawSignature,
   formatName,
   goToSection,
-  login
+  login,
+  triggerDeclarationAction,
+  switchEventTab
 } from '../../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../../constants'
-import { REQUIRED_VALIDATION_ERROR } from '../helpers'
-import { ensureOutboxIsEmpty } from '../../../utils'
+import { assertRecordInWorkqueue, REQUIRED_VALIDATION_ERROR } from '../helpers'
+import { ensureAssignedToUser } from '../../../utils'
+import { openRecordByTitle } from '../../print-certificate/birth/helpers'
+import { title } from 'process'
 
 test.describe.serial('9. Birth declaration case - 9', () => {
   let page: Page
@@ -36,9 +40,9 @@ test.describe.serial('9. Birth declaration case - 9', () => {
     await page.close()
   })
 
-  test.describe('9.1 Declaration started by FA', async () => {
+  test.describe('9.1 Declaration started by HO', async () => {
     test.beforeAll(async () => {
-      await login(page, CREDENTIALS.FIELD_AGENT)
+      await login(page, CREDENTIALS.HOSPITAL_OFFICIAL)
       await page.click('#header-new-event')
       await page.getByLabel('Birth').click()
       await page.getByRole('button', { name: 'Continue' }).click()
@@ -176,35 +180,33 @@ test.describe.serial('9. Birth declaration case - 9', () => {
       await expect(page.getByRole('dialog')).not.toBeVisible()
     })
 
-    test('9.1.8 Send for review', async () => {
-      await page.getByRole('button', { name: 'Send for review' }).click()
-      await expect(page.getByText('Send for review?')).toBeVisible()
-      await page.getByRole('button', { name: 'Confirm' }).click()
+    test('9.1.8 Notify', async () => {
+      await triggerDeclarationAction(page, 'Notify')
 
-      await ensureOutboxIsEmpty(page)
-      await page.getByText('Sent for review').click()
-
-      await expect(
-        page.getByRole('button', {
-          name: formatName(declaration.child.name)
-        })
-      ).toBeVisible()
+      await assertRecordInWorkqueue({
+        page,
+        name: formatName(declaration.child.name),
+        workqueues: [
+          {
+            title: 'Recent',
+            exists: true
+          }
+        ]
+      })
     })
   })
 
-  test.describe('9.2 Declaration Review by RA', async () => {
+  test.describe('9.2 Declaration Review by RO', async () => {
+    test('9.2.0 Login', async () => {
+      await login(page, CREDENTIALS.REGISTRATION_OFFICER)
+    })
+
     test('9.2.1 Navigate to the declaration review page', async () => {
-      await login(page, CREDENTIALS.REGISTRATION_AGENT)
+      await page.getByRole('button', { name: 'Notifications' }).click()
+      await openRecordByTitle(page, formatName(declaration.child.name))
 
-      await page.getByText('Notifications').click()
-
-      await page
-        .getByRole('button', {
-          name: formatName(declaration.child.name)
-        })
-        .click()
-      await page.getByRole('button', { name: 'Action', exact: true }).click()
-      await page.getByText('View', { exact: true }).click()
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
+      await switchEventTab(page, 'Record')
     })
 
     test('9.2.2 Verify information on preview page', async () => {

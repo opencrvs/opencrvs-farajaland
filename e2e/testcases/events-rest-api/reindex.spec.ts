@@ -10,7 +10,12 @@
  */
 
 import { expect, test } from '@playwright/test'
-import { CREDENTIALS, GATEWAY_HOST } from '../../constants'
+import {
+  AUTH_URL,
+  CREDENTIALS,
+  GATEWAY_HOST,
+  TEST_USER_PASSWORD
+} from '../../constants'
 import { getToken } from '../../helpers'
 
 const EVENTS_URL = `${GATEWAY_HOST}/events/events`
@@ -30,11 +35,11 @@ async function triggerReindex(token: string): Promise<void> {
     headers: {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json'
-    }
+    },
+    body: JSON.stringify({ waitForCompletion: false })
   })
 
-  // The trigger may return 200 immediately or eventually —
-  // either way, we track progress via the GET endpoint.
+  // The trigger returns immediately; progress is tracked via polling the GET endpoint.
   expect(res.status).toBeLessThan(500)
 }
 
@@ -89,8 +94,8 @@ test.describe('Events reindex API', () => {
 
   test.beforeAll(async () => {
     token = await getToken(
-      CREDENTIALS.NATIONAL_SYSTEM_ADMIN.USERNAME,
-      CREDENTIALS.NATIONAL_SYSTEM_ADMIN.PASSWORD
+      CREDENTIALS.NATIONAL_SYSTEM_ADMIN,
+      TEST_USER_PASSWORD
     )
   })
 

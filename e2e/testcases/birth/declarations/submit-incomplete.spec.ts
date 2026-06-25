@@ -1,8 +1,13 @@
 import { test, expect, type Page } from '@playwright/test'
-import { formatName, goToSection, login } from '../../../helpers'
+import {
+  formatName,
+  goToSection,
+  login,
+  triggerDeclarationAction
+} from '../../../helpers'
 import { faker } from '@faker-js/faker'
-import { CREDENTIALS, SAFE_WORKQUEUE_TIMEOUT_MS } from '../../../constants'
-import { ensureOutboxIsEmpty } from '../../../utils'
+import { CREDENTIALS } from '../../../constants'
+import { openRecordByTitle } from '../../print-certificate/birth/helpers'
 
 test.describe.serial('Submit and verify incomplete birth declaration', () => {
   let page: Page
@@ -24,9 +29,9 @@ test.describe.serial('Submit and verify incomplete birth declaration', () => {
     await page.close()
   })
 
-  test.describe('Declaration started by FA', async () => {
+  test.describe('Declaration started by HO', async () => {
     test.beforeAll(async () => {
-      await login(page, CREDENTIALS.FIELD_AGENT)
+      await login(page, CREDENTIALS.HOSPITAL_OFFICIAL)
       await page.click('#header-new-event')
       await page.getByLabel('Birth').click()
       await page.getByRole('button', { name: 'Continue' }).click()
@@ -47,22 +52,13 @@ test.describe.serial('Submit and verify incomplete birth declaration', () => {
 
     test('Go to review and send for review', async () => {
       await goToSection(page, 'review')
-      await page
-        .getByRole('button', { name: 'Send for review', exact: true })
-        .click()
-      await page.getByRole('button', { name: 'Confirm', exact: true }).click()
+      await triggerDeclarationAction(page, 'Notify')
     })
 
     test('Verify summary page', async () => {
-      await ensureOutboxIsEmpty(page)
-      await page.getByText('Sent for review').click()
+      await page.getByText('Recent').click()
 
-      await page
-        .getByRole('button', {
-          name: formatName(declaration.child.name),
-          exact: true
-        })
-        .click()
+      await openRecordByTitle(page, formatName(declaration.child.name))
 
       await expect(page.getByText('Notified', { exact: true })).toBeVisible()
       await expect(page.locator('#content-name')).toContainText(

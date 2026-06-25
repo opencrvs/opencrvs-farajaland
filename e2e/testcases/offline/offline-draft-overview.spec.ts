@@ -3,7 +3,7 @@ import { expect, Page, test } from '@playwright/test'
 import { formatName, login } from '../../helpers'
 import { mockNetworkConditions } from '../../mock-network-conditions'
 import { faker } from '@faker-js/faker'
-import { ensureOutboxIsEmpty } from '../../utils'
+import { openRecordByTitle } from '../print-certificate/birth/helpers'
 
 test.describe.serial('Can Open Draft offline', () => {
   let page: Page
@@ -36,17 +36,22 @@ test.describe.serial('Can Open Draft offline', () => {
     await page.locator('#firstname').fill(name.firstNames)
     await page.locator('#surname').fill(name.familyName)
 
+    const draftResponse = page.waitForResponse(
+      (res) => res.url().includes('event.draft.create') && res.ok()
+    )
     await page.getByRole('button', { name: 'Save & Exit' }).click()
     await page.getByRole('button', { name: 'Confirm' }).click()
 
-    await ensureOutboxIsEmpty(page)
+    await draftResponse
   })
 
   test('Open the draft offline', async () => {
     await mockNetworkConditions(page, 'offline')
-    await page.getByRole('button', { name: 'My drafts' }).click()
-    await expect(page.locator('#content-name')).toHaveText('My drafts')
-    await page.getByRole('button', { name: formatName(name) }).click()
+    await page.getByRole('button', { name: 'Drafts' }).click()
+    await expect(page.locator('#content-name')).toHaveText('Drafts')
+
+    await openRecordByTitle(page, formatName(name))
+
     await expect(page.locator('#content-name')).toHaveText(formatName(name))
   })
 })

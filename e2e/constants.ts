@@ -8,7 +8,7 @@ export const LOGIN_URL =
 export const AUTH_URL =
   process.env.NODE_ENV === 'development'
     ? 'http://localhost:4040'
-    : SCHEME + '://auth.' + DOMAIN
+    : SCHEME + '://gateway.' + DOMAIN + '/auth'
 
 export const CLIENT_URL =
   process.env.NODE_ENV === 'development'
@@ -27,47 +27,21 @@ export const GATEWAY_HOST =
  */
 export const SAFE_INPUT_CHANGE_TIMEOUT_MS = 500
 
-/*
- * This timeout ensures that
- * the declaration in outbox is sent to backend
- * and outbox is now empty
- */
-export const SAFE_OUTBOX_TIMEOUT_MS = 30 * 1000
-export const SAFE_IN_EXTERNAL_VALIDATION_MS = 30 * 1000
-export const SAFE_WORKQUEUE_TIMEOUT_MS = 5 * 1000
-const TEST_USER_PASSWORD = 'test'
+export const TEST_USER_PASSWORD = 'test'
 
 export const CREDENTIALS = {
-  FIELD_AGENT: {
-    USERNAME: 'k.bwalya',
-    PASSWORD: TEST_USER_PASSWORD
-  },
-  ANOTHER_FIELD_AGENT: {
-    USERNAME: 'p.gondwe',
-    PASSWORD: TEST_USER_PASSWORD
-  },
-  REGISTRATION_AGENT: {
-    USERNAME: 'f.katongo',
-    PASSWORD: TEST_USER_PASSWORD
-  },
-  LOCAL_REGISTRAR: {
-    USERNAME: 'k.mweene',
-    PASSWORD: TEST_USER_PASSWORD
-  },
-  NATIONAL_REGISTRAR: {
-    USERNAME: 'j.musonda',
-    PASSWORD: TEST_USER_PASSWORD
-  },
-  NATIONAL_SYSTEM_ADMIN: {
-    USERNAME: 'j.campbell',
-    PASSWORD: TEST_USER_PASSWORD
-  },
-  LOCAL_SYSTEM_ADMIN: {
-    USERNAME: 'e.mayuka',
-    PASSWORD: TEST_USER_PASSWORD
-  },
-  PERFORMANCE_MANAGER: {
-    USERNAME: 'e.kazembe',
-    PASSWORD: TEST_USER_PASSWORD
-  }
-}
+  HOSPITAL_OFFICIAL: 'k.cwalya',
+  COMMUNITY_LEADER: 'g.phiri',
+  REGISTRATION_OFFICER: 'f.katongo',
+  REGISTRATION_OFFICER_PUALULA: 'm.simbaya',
+  REGISTRATION_OFFICER_VILLAGE: 'v.katongo',
+  REGISTRAR: 'k.mweene',
+  REGISTRAR_VILLAGE: 'v.mweene',
+  REGISTRAR_PUALULA: 'n.siame',
+  REGISTRAR_GENERAL: 'c.lungu',
+  NATIONAL_SYSTEM_ADMIN: 'j.campbell',
+  LOCAL_SYSTEM_ADMIN: 'e.mayuka',
+  PERFORMANCE_MANAGER: 'm.musonda',
+  PROVINCIAL_REGISTRAR: 'm.owen',
+  EMBASSY_OFFICIAL: 't.mwila'
+} as const
