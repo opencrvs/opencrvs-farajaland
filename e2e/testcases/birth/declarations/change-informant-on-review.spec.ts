@@ -334,11 +334,11 @@ test.describe.serial('Change informant on review', () => {
       await page.getByRole('button', { name: 'Pending certification' }).click()
 
       await openRecordByTitle(page, formatName(declaration.child.name))
-      await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR_VILLAGE)
       await expect(page.getByTestId('status-value')).toHaveText('Registered')
     })
 
     test('Assert record form', async () => {
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR_VILLAGE)
       await switchEventTab(page, 'Record')
       await expect(page.getByTestId('row-value-father.name')).toHaveText(
         declaration.father.name.firstNames +
@@ -348,6 +348,7 @@ test.describe.serial('Change informant on review', () => {
     })
 
     test('Assert audit trail', async () => {
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR_VILLAGE)
       await switchEventTab(page, 'Audit')
       await page.getByRole('button', { name: 'Edited', exact: true }).click()
 

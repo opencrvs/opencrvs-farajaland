@@ -301,10 +301,8 @@ test.describe.serial('Add mother details on review', () => {
     test('Assert event is registered', async () => {
       await page.getByText('Pending certification').click()
       await openRecordByTitle(page, formatName(declaration.child.name))
-
-      await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR_VILLAGE)
-
       await expect(page.getByTestId('status-value')).toHaveText('Registered')
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR_VILLAGE)
     })
 
     test('Assert record form', async () => {
@@ -324,6 +322,7 @@ test.describe.serial('Add mother details on review', () => {
     })
 
     test('Assert audit trail', async () => {
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR_VILLAGE)
       await switchEventTab(page, 'Audit')
       await page.getByRole('button', { name: 'Edited', exact: true }).click()
 
