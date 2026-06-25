@@ -348,6 +348,7 @@ test.describe.serial('Change informant on review', () => {
     })
 
     test('Assert audit trail', async () => {
+      await switchEventTab(page, 'Summary')
       await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR_VILLAGE)
       await switchEventTab(page, 'Audit')
       await page.getByRole('button', { name: 'Edited', exact: true }).click()

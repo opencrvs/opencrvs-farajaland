@@ -380,7 +380,10 @@ export async function expectRowValueWithChangeButton(
   await expect(page.getByTestId(`change-button-${fieldName}`)).toBeVisible()
 }
 
-export async function switchEventTab(page: Page, tab: 'Audit' | 'Record') {
+export async function switchEventTab(
+  page: Page,
+  tab: 'Audit' | 'Record' | 'Summary'
+) {
   await page.getByRole('button', { name: tab, exact: true }).click()
 }
 
