@@ -8,6 +8,10 @@
 
 `NODE_TLS_REJECT_UNAUTHORIZED=0 DOMAIN=<your-env>.opencrvs.dev yarn e2e`
 
+## How to write a test
+
+[See how to write a test that is not flaky](./HOW-TO-WRITE-A-TEST.md)
+
 ## How to debug E2E tests on CI
 
 1. Go to E2E repository https://github.com/opencrvs/e2e

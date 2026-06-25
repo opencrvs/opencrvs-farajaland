@@ -5,7 +5,7 @@ import {
   drawSignature,
   goToSection,
   login,
-  selectDeclarationAction
+  triggerDeclarationAction
 } from '../../helpers'
 import { CREDENTIALS, GATEWAY_HOST } from '../../constants'
 import { openBirthDeclaration } from '../birth/helpers'
@@ -126,14 +126,16 @@ test.describe('E-Signet PSUT persistence', () => {
     await drawSignature(page, 'review____signature_canvas_element', false)
     await page.getByRole('button', { name: 'Apply' }).click()
 
-    await selectDeclarationAction(page, 'Declare')
+    await triggerDeclarationAction(page, 'Declare')
 
     const client = createClient(GATEWAY_HOST + '/events', `Bearer ${token}`)
 
     await expect
       .poll(
         async () => {
-          const eventDocument = await client.event.get.query({ eventId })
+          const eventDocument = await client.event.get.query({
+            eventId
+          })
           const declareAction = eventDocument.actions.find(
             (action) =>
               action.type === 'DECLARE' && action.status === 'Requested'

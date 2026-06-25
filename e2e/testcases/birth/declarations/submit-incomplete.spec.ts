@@ -3,11 +3,11 @@ import {
   formatName,
   goToSection,
   login,
-  selectDeclarationAction
+  triggerDeclarationAction
 } from '../../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../../constants'
-import { ensureOutboxIsEmpty } from '../../../utils'
+import { openRecordByTitle } from '../../print-certificate/birth/helpers'
 
 test.describe.serial('Submit and verify incomplete birth declaration', () => {
   let page: Page
@@ -52,19 +52,13 @@ test.describe.serial('Submit and verify incomplete birth declaration', () => {
 
     test('Go to review and send for review', async () => {
       await goToSection(page, 'review')
-      await selectDeclarationAction(page, 'Notify')
+      await triggerDeclarationAction(page, 'Notify')
     })
 
     test('Verify summary page', async () => {
-      await ensureOutboxIsEmpty(page)
       await page.getByText('Recent').click()
 
-      await page
-        .getByRole('button', {
-          name: formatName(declaration.child.name),
-          exact: true
-        })
-        .click()
+      await openRecordByTitle(page, formatName(declaration.child.name))
 
       await expect(page.getByText('Notified', { exact: true })).toBeVisible()
       await expect(page.locator('#content-name')).toContainText(

@@ -7,16 +7,12 @@ import {
   getRandomDate,
   goToSection,
   login,
-  selectDeclarationAction
+  triggerDeclarationAction
 } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
-import {
-  ensureAssignedToUser,
-  ensureInExternalValidationIsEmpty,
-  ensureOutboxIsEmpty,
-  selectAction
-} from '../../utils'
+import { ensureAssignedToUser } from '../../utils'
 import { assertRecordInWorkqueue, fillDate } from '../birth/helpers'
+import { openRecordByTitle } from '../print-certificate/birth/helpers'
 
 // HO Declares => RO Validates => Registrar Registers
 test.describe.serial('4. Workqueue flow - 4', () => {
@@ -206,8 +202,7 @@ test.describe.serial('4. Workqueue flow - 4', () => {
     })
 
     test('4.1.7 Declare', async () => {
-      await selectDeclarationAction(page, 'Declare')
-      await ensureOutboxIsEmpty(page)
+      await triggerDeclarationAction(page, 'Declare')
     })
 
     test('4.1.8 Verify workqueue', async () => {
@@ -271,18 +266,12 @@ test.describe.serial('4. Workqueue flow - 4', () => {
 
     test('4.3.2 Validate', async () => {
       await page.getByText('Pending validation').click()
-      await page
-        .getByRole('button', {
-          name: formatName(declaration.child.name)
-        })
-        .click()
+
+      await openRecordByTitle(page, formatName(declaration.child.name))
 
       await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
-      await selectAction(page, 'Validate')
 
-      await page.getByRole('button', { name: 'Confirm' }).click()
-
-      await ensureOutboxIsEmpty(page)
+      await triggerDeclarationAction(page, 'Validate')
 
       await assertRecordInWorkqueue({
         page,
@@ -344,18 +333,11 @@ test.describe.serial('4. Workqueue flow - 4', () => {
 
     test('4.5.2 Register', async () => {
       await page.getByText('Pending registration').click()
-      await page
-        .getByRole('button', {
-          name: formatName(declaration.child.name)
-        })
-        .click()
 
+      await openRecordByTitle(page, formatName(declaration.child.name))
       await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
-      await selectAction(page, 'Register')
-      await page.getByRole('button', { name: 'Confirm' }).click()
 
-      await ensureOutboxIsEmpty(page)
-      await ensureInExternalValidationIsEmpty(page)
+      await triggerDeclarationAction(page, 'Register')
 
       await assertRecordInWorkqueue({
         page,

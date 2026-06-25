@@ -146,7 +146,7 @@ test.describe
         })
         .click()
       await page.locator('#informant____email').fill(faker.internet.email())
-      await page.getByRole('button', { name: 'Back to review' }).click()
+      await page.getByRole('button', { name: 'Go to review' }).click()
     })
 
     test('Submit correction', async () => {

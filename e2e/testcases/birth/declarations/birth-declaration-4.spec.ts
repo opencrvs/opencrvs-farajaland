@@ -8,13 +8,13 @@ import {
   goToSection,
   login,
   logout,
-  selectDeclarationAction,
+  triggerDeclarationAction,
   switchEventTab
 } from '../../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../../constants'
 import { fillDate, validateAddress } from '../helpers'
-import { ensureOutboxIsEmpty } from '../../../utils'
+import { openRecordByTitle } from '../../print-certificate/birth/helpers'
 
 test.describe.serial('4. Birth declaration case - 4', () => {
   let page: Page
@@ -634,9 +634,7 @@ test.describe.serial('4. Birth declaration case - 4', () => {
       await expect(page.getByRole('dialog')).not.toBeVisible()
     })
     test('4.1.8 Declare', async () => {
-      await selectDeclarationAction(page, 'Declare')
-
-      await ensureOutboxIsEmpty(page)
+      await triggerDeclarationAction(page, 'Declare')
 
       await page.getByText('Recent').click()
 
@@ -655,11 +653,7 @@ test.describe.serial('4. Birth declaration case - 4', () => {
 
       await page.getByText('Pending registration').click()
 
-      await page
-        .getByRole('button', {
-          name: formatName(declaration.child.name)
-        })
-        .click()
+      await openRecordByTitle(page, formatName(declaration.child.name))
 
       await switchEventTab(page, 'Record')
     })

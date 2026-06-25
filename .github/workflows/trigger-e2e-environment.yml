@@ -65,11 +65,26 @@ jobs:
           fi
           echo "CORE_COMMIT_HASH=${COMMIT_HASH}" >> $GITHUB_ENV
 
+      - name: Get chart branch
+        run: |
+          chart_repo_url="https://github.com/opencrvs/opencrvs-helm-charts.git"
+          BASE_BRANCH="${{ github.base_ref || 'develop' }}"
+          if [ -n "$(git ls-remote --heads "$chart_repo_url" "refs/heads/${{ env.BRANCH_NAME }}")" ]; then
+            CHART_BRANCH="${{ env.BRANCH_NAME }}"
+          elif [ -n "$(git ls-remote --heads "$chart_repo_url" "refs/heads/${BASE_BRANCH}")" ]; then
+            CHART_BRANCH="${BASE_BRANCH}"
+          else
+            CHART_BRANCH="develop"
+          fi
+          echo "Chart branch: ${CHART_BRANCH}"
+          echo "CHART_BRANCH=${CHART_BRANCH}" >> $GITHUB_ENV
+
       - name: Output Variables
         run: |
           echo "PR Branch: ${{ env.BRANCH_NAME }}"
           echo "PR Head Commit Hash: ${{ env.HEAD_COMMIT_HASH }}"
           echo "Core Commit Hash: ${{ env.CORE_COMMIT_HASH }}"
+          echo "Chart Branch: ${{ env.CHART_BRANCH }}"
 
       - name: Trigger E2E Workflow
         id: dispatch_e2e
@@ -95,30 +110,51 @@ jobs:
                 actor: '${{ github.actor }}',
                 'core-image-tag': '${{ env.CORE_COMMIT_HASH }}',
                 'countryconfig-image-tag': '${{ env.HEAD_COMMIT_HASH }}',
-                'reset': 'true',
-                stack: slugify('${{ env.BRANCH_NAME }}')
+                reset: 'true',
+                stack: slugify('${{ env.BRANCH_NAME }}'),
+                'chart-branch': '${{ env.CHART_BRANCH }}'
               }
             });
 
             console.log(result);
-            await new Promise(resolve => setTimeout(resolve, 10000));
 
-            const runs = await github.rest.actions.listWorkflowRunsForRepo({
-              owner: 'opencrvs',
-              repo: 'e2e',
-              event: 'repository_dispatch',
-              per_page: 1
-            });
+            // Record the time just before dispatching so we can ignore any
+            // pre-existing runs when polling below.
+            const dispatchedAt = new Date();
 
-            if (runs.data.workflow_runs.length > 0) {
-              const runId = runs.data.workflow_runs[0].id;
-              console.log(`Captured runId: ${runId}`);
+            // GitHub Actions can take variable time to register a newly dispatched
+            // run in the API. Poll every 5 seconds for up to 60 seconds, and only
+            // accept a run whose created_at is >= dispatchedAt to avoid picking up
+            // a stale run from a previous dispatch (e.g. one triggered by opencrvs-core).
+            let runId;
+            for (let i = 0; i < 12; i++) {
+              await new Promise(resolve => setTimeout(resolve, 5000));
 
-              // Set the runId as an output
-              core.setOutput('runId', runId);
-            } else {
-              throw new Error('No workflow run found.');
+              const runs = await github.rest.actions.listWorkflowRunsForRepo({
+                owner: 'opencrvs',
+                repo: 'e2e',
+                event: 'repository_dispatch',
+                per_page: 5
+              });
+
+              const newRun = runs.data.workflow_runs.find(
+                r => new Date(r.created_at) >= dispatchedAt
+              );
+
+              if (newRun) {
+                runId = newRun.id;
+                console.log(`Captured runId: ${runId} (created at ${newRun.created_at})`);
+                break;
+              }
+
+              console.log(`Run not visible yet, retrying... (attempt ${i + 1}/12)`);
             }
+
+            if (!runId) {
+              throw new Error('No workflow run found after 60 seconds.');
+            }
+
+            core.setOutput('runId', runId);
 
       - name: Print link to E2E workflow run
         id: print-links

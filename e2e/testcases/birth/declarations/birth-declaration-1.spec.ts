@@ -13,8 +13,9 @@ import {
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../../constants'
 import { fillDate, validateAddress } from '../helpers'
-import { selectDeclarationAction } from '../../../helpers'
-import { ensureAssignedToUser, ensureOutboxIsEmpty } from '../../../utils'
+import { triggerDeclarationAction } from '../../../helpers'
+import { ensureAssignedToUser } from '../../../utils'
+import { openRecordByTitle } from '../../print-certificate/birth/helpers'
 
 test.describe.serial('1. Birth declaration case - 1', () => {
   let page: Page
@@ -476,11 +477,10 @@ test.describe.serial('1. Birth declaration case - 1', () => {
     })
 
     test('1.1.8 Declare', async () => {
-      await selectDeclarationAction(page, 'Declare')
-
-      await ensureOutboxIsEmpty(page)
+      await triggerDeclarationAction(page, 'Declare')
 
       await page.getByText('Recent').click()
+
       await expect(
         page.getByRole('button', {
           name: formatName(declaration.child.name)
@@ -493,11 +493,8 @@ test.describe.serial('1. Birth declaration case - 1', () => {
     test('1.2.1 Navigate to the declaration review page', async () => {
       await login(page, CREDENTIALS.REGISTRATION_OFFICER)
       await page.getByText('Pending validation').click()
-      await page
-        .getByRole('button', {
-          name: formatName(declaration.child.name)
-        })
-        .click()
+
+      await openRecordByTitle(page, formatName(declaration.child.name))
 
       await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
 

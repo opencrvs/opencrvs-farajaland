@@ -14,8 +14,8 @@ import {
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../../constants'
 import { validateAddress } from '../helpers'
-import { selectDeclarationAction } from '../../../helpers'
-import { ensureOutboxIsEmpty } from '../../../utils'
+import { triggerDeclarationAction } from '../../../helpers'
+import { openRecordByTitle } from '../../print-certificate/birth/helpers'
 
 test.describe.serial('2. Birth declaration case - 2', () => {
   let page: Page
@@ -518,9 +518,7 @@ test.describe.serial('2. Birth declaration case - 2', () => {
     })
 
     test('2.1.8 Declare', async () => {
-      await selectDeclarationAction(page, 'Declare')
-
-      await ensureOutboxIsEmpty(page)
+      await triggerDeclarationAction(page, 'Declare')
 
       await page.getByText('Recent').click()
 
@@ -536,11 +534,8 @@ test.describe.serial('2. Birth declaration case - 2', () => {
     test('2.2.1 Navigate to the declaration "Record" -tab', async () => {
       await login(page, CREDENTIALS.REGISTRATION_OFFICER)
       await page.getByText('Pending validation').click()
-      await page
-        .getByRole('button', {
-          name: formatName(declaration.child.name)
-        })
-        .click()
+
+      await openRecordByTitle(page, formatName(declaration.child.name))
 
       await switchEventTab(page, 'Record')
     })

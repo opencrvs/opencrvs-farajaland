@@ -2,6 +2,7 @@ import { Page } from '@playwright/test'
 import { Declaration } from '../../test-data/death-declaration'
 import { ensureAssignedToUser, selectAction } from '../../../utils'
 import { CREDENTIALS } from '../../../constants'
+import { openRecordByTitle } from '../birth/helpers'
 
 export async function selectCertificationType(page: Page, type: string) {
   await page.locator('#certificateTemplateId svg').click()
@@ -22,7 +23,7 @@ export async function navigateToCertificatePrintAction(
   username: (typeof CREDENTIALS)[keyof typeof CREDENTIALS]
 ) {
   const deceasedName = `${declaration['deceased.name'].firstname} ${declaration['deceased.name'].surname}`
-  await page.getByRole('button', { name: deceasedName }).click()
+  await openRecordByTitle(page, deceasedName)
 
   await ensureAssignedToUser(page, username)
   await selectAction(page, 'Print')

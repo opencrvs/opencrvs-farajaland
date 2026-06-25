@@ -5,13 +5,15 @@ import {
   formatName,
   goToSection,
   login,
-  selectDeclarationAction,
+  triggerDeclarationAction,
   switchEventTab
 } from '../../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../../constants'
-import { REQUIRED_VALIDATION_ERROR } from '../helpers'
-import { ensureAssignedToUser, ensureOutboxIsEmpty } from '../../../utils'
+import { assertRecordInWorkqueue, REQUIRED_VALIDATION_ERROR } from '../helpers'
+import { ensureAssignedToUser } from '../../../utils'
+import { openRecordByTitle } from '../../print-certificate/birth/helpers'
+import { title } from 'process'
 
 test.describe.serial('9. Birth declaration case - 9', () => {
   let page: Page
@@ -179,30 +181,30 @@ test.describe.serial('9. Birth declaration case - 9', () => {
     })
 
     test('9.1.8 Notify', async () => {
-      await selectDeclarationAction(page, 'Notify')
+      await triggerDeclarationAction(page, 'Notify')
 
-      await ensureOutboxIsEmpty(page)
-      await page.getByText('Recent').click()
-
-      await expect(
-        page.getByRole('button', {
-          name: formatName(declaration.child.name)
-        })
-      ).toBeVisible()
+      await assertRecordInWorkqueue({
+        page,
+        name: formatName(declaration.child.name),
+        workqueues: [
+          {
+            title: 'Recent',
+            exists: true
+          }
+        ]
+      })
     })
   })
 
   test.describe('9.2 Declaration Review by RO', async () => {
-    test('9.2.1 Navigate to the declaration review page', async () => {
+    test('9.2.0 Login', async () => {
       await login(page, CREDENTIALS.REGISTRATION_OFFICER)
+    })
 
-      await page.getByText('Notifications').click()
+    test('9.2.1 Navigate to the declaration review page', async () => {
+      await page.getByRole('button', { name: 'Notifications' }).click()
+      await openRecordByTitle(page, formatName(declaration.child.name))
 
-      await page
-        .getByRole('button', {
-          name: formatName(declaration.child.name)
-        })
-        .click()
       await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
       await switchEventTab(page, 'Record')
     })

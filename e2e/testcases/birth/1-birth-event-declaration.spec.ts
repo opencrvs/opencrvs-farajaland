@@ -1,8 +1,8 @@
 import { expect, test, type Page } from '@playwright/test'
-import { login } from '../../helpers'
+import { login, triggerDeclarationAction } from '../../helpers'
 import path from 'path'
 import { faker } from '@faker-js/faker'
-import { ensureOutboxIsEmpty, expectInUrl, selectAction } from '../../utils'
+import { expectInUrl, selectAction } from '../../utils'
 import { trackAndDeleteCreatedEvents } from '../test-data/eventDeletion'
 
 const child = {
@@ -431,10 +431,7 @@ test.describe.serial('1. Birth event declaration', () => {
       })
 
       test('1.9.3 Click Confirm', async () => {
-        await page.getByRole('button', { name: 'Action' }).click()
-        await page.getByText('Save & Exit', { exact: true }).click()
-
-        await page.getByRole('button', { name: 'Confirm' }).click()
+        await triggerDeclarationAction(page, 'Save & Exit')
 
         /*
          * Expected result: should
@@ -445,8 +442,6 @@ test.describe.serial('1. Birth event declaration', () => {
         await page.getByText('Drafts').click()
 
         await expect(page.locator('#content-name')).toHaveText('Drafts')
-
-        await ensureOutboxIsEmpty(page)
 
         await expect(page.getByText(child.name.firstNames)).toBeVisible()
       })

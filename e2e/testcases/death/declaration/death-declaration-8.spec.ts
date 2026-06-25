@@ -5,16 +5,13 @@ import {
   expectRowValueWithChangeButton,
   goToSection,
   login,
-  selectDeclarationAction
+  triggerDeclarationAction
 } from '../../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../../constants'
-import {
-  ensureAssignedToUser,
-  ensureOutboxIsEmpty,
-  selectAction
-} from '../../../utils'
+import { ensureAssignedToUser, expectInUrl, selectAction } from '../../../utils'
 import { REQUIRED_VALIDATION_ERROR } from '../../birth/helpers'
+import { openRecordByTitle } from '../../print-certificate/birth/helpers'
 
 test.describe.serial('8. Death declaration case - 8', () => {
   let page: Page
@@ -261,14 +258,14 @@ test.describe.serial('8. Death declaration case - 8', () => {
     })
 
     test('8.1.7 Notify', async () => {
-      await selectDeclarationAction(page, 'Notify')
-      await ensureOutboxIsEmpty(page)
+      await triggerDeclarationAction(page, 'Notify')
+
       await expect(page.getByText('Farajaland CRS')).toBeVisible()
 
       /*
        * Expected result: should redirect to assigned to you workqueue
        */
-      expect(page.url().includes('assigned-to-you')).toBeTruthy()
+      await expectInUrl(page, 'assigned-to-you')
 
       await page.getByText('Recent').click()
 
@@ -287,17 +284,14 @@ test.describe.serial('8. Death declaration case - 8', () => {
     test('8.2.1 Navigate to the declaration Edit-action', async () => {
       await login(page, CREDENTIALS.REGISTRATION_OFFICER)
 
-      await ensureOutboxIsEmpty(page)
       await page.getByText('Notifications').click()
 
-      await page
-        .getByRole('button', {
-          name:
-            declaration.deceased.name.firstname +
-            ' ' +
-            declaration.deceased.name.surname
-        })
-        .click()
+      await openRecordByTitle(
+        page,
+        declaration.deceased.name.firstname +
+          ' ' +
+          declaration.deceased.name.surname
+      )
 
       await ensureAssignedToUser(page, CREDENTIALS.REGISTRATION_OFFICER)
       await selectAction(page, 'Edit')

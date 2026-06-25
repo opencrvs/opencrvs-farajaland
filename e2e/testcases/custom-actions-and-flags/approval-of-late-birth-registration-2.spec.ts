@@ -11,13 +11,10 @@ import {
 } from '../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../constants'
-import {
-  ensureAssignedToUser,
-  ensureOutboxIsEmpty,
-  selectAction
-} from '../../utils'
-import { selectDeclarationAction } from '../../helpers'
+import { ensureAssignedToUser, selectAction } from '../../utils'
+import { triggerDeclarationAction } from '../../helpers'
 import { format, subDays } from 'date-fns'
+import { openRecordByTitle } from '../print-certificate/birth/helpers'
 
 const recentDate = subDays(new Date(), 2)
 const recentDay = format(recentDate, 'dd')
@@ -135,8 +132,7 @@ test.describe
     })
 
     test('Declare', async () => {
-      await selectDeclarationAction(page, 'Declare')
-      await ensureOutboxIsEmpty(page)
+      await triggerDeclarationAction(page, 'Declare')
       await page.getByText('Recent').click()
     })
   })
@@ -145,7 +141,7 @@ test.describe
     test('Navigate to the declaration review page', async () => {
       await login(page, CREDENTIALS.REGISTRATION_OFFICER)
       await page.getByText('Pending approval').click()
-      await page.getByRole('button', { name: childNameFormatted }).click()
+      await openRecordByTitle(page, childNameFormatted)
     })
 
     test('Assign', async () => {
@@ -171,17 +167,16 @@ test.describe
     })
 
     test('Go back to review', async () => {
-      await page.getByRole('button', { name: 'Back to review' }).click()
+      await page.getByRole('button', { name: 'Go to review' }).click()
     })
 
     test('Declare with edits', async () => {
-      await selectDeclarationAction(page, 'Declare with edits')
-      await ensureOutboxIsEmpty(page)
+      await triggerDeclarationAction(page, 'Declare with edits')
     })
 
     test('Go to record', async () => {
       await page.getByText('Recent').click()
-      await page.getByRole('button', { name: childNameFormatted }).click()
+      await openRecordByTitle(page, childNameFormatted)
     })
 
     test("Event should not have the 'Approval required for late registration' -flag", async () => {
@@ -311,8 +306,8 @@ test.describe
     })
 
     test('Declare', async () => {
-      await selectDeclarationAction(page, 'Declare')
-      await ensureOutboxIsEmpty(page)
+      await triggerDeclarationAction(page, 'Declare')
+
       await page.getByText('Recent').click()
     })
   })
@@ -321,7 +316,7 @@ test.describe
     test('Navigate to the declaration review page', async () => {
       await login(page, CREDENTIALS.REGISTRAR)
       await page.getByText('Pending registration').click()
-      await page.getByRole('button', { name: childNameFormatted }).click()
+      await openRecordByTitle(page, childNameFormatted)
     })
 
     test('Assign', async () => {
@@ -348,7 +343,7 @@ test.describe
     })
 
     test('Go back to review', async () => {
-      await page.getByRole('button', { name: 'Back to review' }).click()
+      await page.getByRole('button', { name: 'Go to review' }).click()
     })
 
     test('Register with edits should be unavailable', async () => {
@@ -356,13 +351,13 @@ test.describe
     })
 
     test('Declare with edits', async () => {
-      await selectDeclarationAction(page, 'Declare with edits')
-      await ensureOutboxIsEmpty(page)
+      await triggerDeclarationAction(page, 'Declare with edits')
     })
 
     test('Go to record', async () => {
       await page.getByText('Recent').click()
-      await page.getByRole('button', { name: childNameFormatted }).click()
+
+      await openRecordByTitle(page, childNameFormatted)
       await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
     })
 

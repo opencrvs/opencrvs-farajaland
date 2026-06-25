@@ -11,19 +11,16 @@ import {
   Declaration as DeclarationV2
 } from '../test-data/birth-declaration-with-mother-father'
 import { format, subDays, subYears } from 'date-fns'
-import {
-  CREDENTIALS,
-  SAFE_INPUT_CHANGE_TIMEOUT_MS,
-  SAFE_OUTBOX_TIMEOUT_MS
-} from '../../constants'
+import { CREDENTIALS } from '../../constants'
 import { IdType } from '@countryconfig/events/utils'
 import { random } from 'lodash'
 import { formatV2ChildName, REQUIRED_VALIDATION_ERROR } from '../birth/helpers'
-import { ensureAssignedToUser, selectAction } from '../../utils'
+import { ensureAssignedToUser, expectInUrl, selectAction } from '../../utils'
 
 test.describe.serial('Correct record - change informant type', () => {
   let declaration: DeclarationV2
   let trackingId = ''
+
   let eventId: string
   let page: Page
 
@@ -251,7 +248,7 @@ test.describe.serial('Correct record - change informant type', () => {
   })
 
   test('Go back to review, expect to not see any validation errors', async () => {
-    await page.getByRole('button', { name: 'Back to review' }).click()
+    await page.getByRole('button', { name: 'Go to review' }).click()
     await expect(page.getByText(REQUIRED_VALIDATION_ERROR)).not.toBeVisible()
   })
 
@@ -316,20 +313,23 @@ test.describe.serial('Correct record - change informant type', () => {
     )
 
     await page.getByRole('button', { name: 'Correct record' }).click()
-    await page.getByRole('button', { name: 'Confirm' }).click()
-
-    await expect(page.url().includes(`events/${eventId}`)).toBeTruthy()
-    await page.getByTestId('exit-event').click()
-    await page.getByRole('button', { name: 'Outbox' }).click()
-
-    await page.waitForTimeout(SAFE_INPUT_CHANGE_TIMEOUT_MS)
-
-    await expect(await page.locator('#no-record')).toContainText(
-      'No records require processing',
-      {
-        timeout: SAFE_OUTBOX_TIMEOUT_MS
-      }
+    const correctionResponse = page.waitForResponse(
+      (res) =>
+        res.url().includes('event.actions.correction.approve') && res.ok()
     )
+
+    const searchCacheRefetchResponse = page.waitForResponse(
+      (res) => res.url().includes(`event.search?batch=1`) && res.ok()
+    )
+
+    await page.getByRole('button', { name: 'Confirm', exact: true }).click()
+
+    await correctionResponse
+    await searchCacheRefetchResponse
+
+    await expectInUrl(page, `/events/${eventId}`)
+
+    await page.getByTestId('exit-event').click()
   })
 
   test('Validate history in record audit', async () => {

@@ -15,8 +15,8 @@ import {
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../../constants'
 import { fillDate, validateAddress } from '../helpers'
-import { selectDeclarationAction } from '../../../helpers'
-import { ensureOutboxIsEmpty } from '../../../utils'
+import { triggerDeclarationAction } from '../../../helpers'
+import { openRecordByTitle } from '../../print-certificate/birth/helpers'
 
 test.describe.serial('3. Birth declaration case - 3', () => {
   let page: Page
@@ -728,8 +728,7 @@ test.describe.serial('3. Birth declaration case - 3', () => {
     })
 
     test('3.1.9 Declare', async () => {
-      await selectDeclarationAction(page, 'Declare')
-      await ensureOutboxIsEmpty(page)
+      await triggerDeclarationAction(page, 'Declare')
 
       await page.getByText('Recent').click()
 
@@ -742,18 +741,22 @@ test.describe.serial('3. Birth declaration case - 3', () => {
   })
 
   test.describe('3.2 Declaration Review by Registrar', async () => {
-    test('3.2.1 Navigate to the declaration "Record" -tab', async () => {
+    test.beforeAll(async () => {
       await logout(page)
       await login(page, CREDENTIALS.REGISTRAR)
+    })
+
+    test('3.2.1 Navigate to the declaration "Record" -tab', async () => {
       await page.getByText('Pending registration').click()
 
-      await page
-        .getByRole('button', {
-          name: formatName(declaration.child.name)
-        })
-        .click()
+      await openRecordByTitle(page, formatName(declaration.child.name))
 
       await switchEventTab(page, 'Record')
+
+      await page.waitForResponse(
+        (resp) =>
+          resp.url().includes('/api/events/event.get') && resp.status() === 200
+      )
     })
 
     test('3.2.2 Verify information on "Record" -tab', async () => {

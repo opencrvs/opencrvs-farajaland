@@ -9,14 +9,10 @@ import {
   login
 } from '../../helpers'
 import { CREDENTIALS } from '../../constants'
-import {
-  ensureAssignedToUser,
-  ensureInExternalValidationIsEmpty,
-  ensureOutboxIsEmpty,
-  selectAction
-} from '../../utils'
-import { selectDeclarationAction } from '../../helpers'
+import { ensureAssignedToUser, selectAction } from '../../utils'
+import { triggerDeclarationAction } from '../../helpers'
 import { assertRecordInWorkqueue, fillDate } from '../birth/helpers'
+import { openRecordByTitle } from '../print-certificate/birth/helpers'
 
 // HO Notifies => Registrar Registers
 
@@ -125,8 +121,7 @@ test.describe.serial('2. Workqueue flow - 2', () => {
     })
 
     test('2.1.4 Notify', async () => {
-      await selectDeclarationAction(page, 'Notify')
-      await ensureOutboxIsEmpty(page)
+      await triggerDeclarationAction(page, 'Notify')
     })
 
     test('2.1.5 Verify workqueue', async () => {
@@ -169,11 +164,7 @@ test.describe.serial('2. Workqueue flow - 2', () => {
 
     test('2.2.2 Go to Edit', async () => {
       await page.getByText('Notifications').click()
-      await page
-        .getByRole('button', {
-          name: formatName(declaration.child.name)
-        })
-        .click()
+      await openRecordByTitle(page, formatName(declaration.child.name))
 
       await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
       await selectAction(page, 'Edit')
@@ -266,10 +257,7 @@ test.describe.serial('2. Workqueue flow - 2', () => {
 
     test('2.2.6 Register with edits', async () => {
       await goToSection(page, 'review')
-      await selectDeclarationAction(page, 'Register with edits')
-
-      await ensureOutboxIsEmpty(page)
-      await ensureInExternalValidationIsEmpty(page)
+      await triggerDeclarationAction(page, 'Register with edits')
 
       await assertRecordInWorkqueue({
         page,

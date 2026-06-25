@@ -5,14 +5,10 @@ import {
   expectRowValueWithChangeButton,
   goToSection,
   login,
-  selectDeclarationAction
+  triggerDeclarationAction
 } from '../../../helpers'
 import { CREDENTIALS } from '../../../constants'
-import {
-  ensureAssignedToUser,
-  ensureOutboxIsEmpty,
-  selectAction
-} from '../../../utils'
+import { ensureAssignedToUser, expectInUrl, selectAction } from '../../../utils'
 import { REQUIRED_VALIDATION_ERROR } from '../../birth/helpers'
 
 test.describe.serial('10. Death declaration case - 10', () => {
@@ -246,14 +242,14 @@ test.describe.serial('10. Death declaration case - 10', () => {
     })
 
     test('10.1.7 Notify', async () => {
-      await selectDeclarationAction(page, 'Notify')
-      await ensureOutboxIsEmpty(page)
+      await triggerDeclarationAction(page, 'Notify')
+
       await expect(page.getByText('Farajaland CRS')).toBeVisible()
 
       /*
        * Expected result: should redirect to assigned to you workqueue
        */
-      expect(page.url().includes('assigned-to-you')).toBeTruthy()
+      await expectInUrl(page, 'assigned-to-you')
 
       await page.getByText('Recent').click()
 
@@ -271,7 +267,6 @@ test.describe.serial('10. Death declaration case - 10', () => {
     test('10.2.1 Navigate to the declaration Edit-action', async () => {
       await login(page, CREDENTIALS.REGISTRATION_OFFICER)
 
-      await ensureOutboxIsEmpty(page)
       await page.getByText('Notifications').click()
 
       await page

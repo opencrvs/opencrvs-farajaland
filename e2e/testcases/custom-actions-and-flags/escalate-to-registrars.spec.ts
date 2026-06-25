@@ -8,12 +8,9 @@ import {
 } from '../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../constants'
-import {
-  ensureAssignedToUser,
-  ensureOutboxIsEmpty,
-  selectAction
-} from '../../utils'
+import { ensureAssignedToUser, selectAction } from '../../utils'
 import { createDeclaration } from '../test-data/birth-declaration-with-father-brother'
+import { openRecordByTitle } from '../print-certificate/birth/helpers'
 
 test.describe.serial('Escalation of birth registration by Registrar', () => {
   let page: Page
@@ -65,9 +62,7 @@ test.describe.serial('Escalation of birth registration by Registrar', () => {
   test.describe('Escalate to Provincial Registrar', async () => {
     test('Registrar assigns birth registration', async () => {
       await page.getByText('Pending certification').click()
-      await page
-        .getByRole('button', { name: childNameForProvincialFormatted })
-        .click()
+      await openRecordByTitle(page, childNameForProvincialFormatted)
       await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
     })
 
@@ -96,17 +91,21 @@ test.describe.serial('Escalation of birth registration by Registrar', () => {
         'Escalating this case to Provincial Registrar for further review.'
       )
 
+      const escalateResponse = page.waitForResponse(
+        (response) =>
+          response.url().includes('event.actions.custom') &&
+          response.status() === 200
+      )
+
       await expect(confirmButton).toBeEnabled()
       await confirmButton.click()
-      await ensureOutboxIsEmpty(page)
+      await escalateResponse
     })
   })
 
   test.describe('Escalate to Registrar General', () => {
     test('Registrar assigns birth registration', async () => {
-      await page
-        .getByRole('button', { name: childNameForRegGeneralFormatted })
-        .click()
+      await openRecordByTitle(page, childNameForRegGeneralFormatted)
       await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
     })
 
@@ -132,9 +131,15 @@ test.describe.serial('Escalation of birth registration by Registrar', () => {
         'Escalating this case to Registrar General for further review.'
       )
 
+      const escalateResponse = page.waitForResponse(
+        (response) =>
+          response.url().includes('event.actions.custom') && response.ok()
+      )
+
       await expect(confirmButton).toBeEnabled()
       await confirmButton.click()
-      await ensureOutboxIsEmpty(page)
+
+      await escalateResponse
     })
   })
 
@@ -142,9 +147,8 @@ test.describe.serial('Escalation of birth registration by Registrar', () => {
     test('Verify Registrar General Escalated Status', async () => {
       await login(page, CREDENTIALS.REGISTRAR_GENERAL)
       await page.getByText('Pending feedback').click()
-      await page
-        .getByRole('button', { name: childNameForRegGeneralFormatted })
-        .click()
+
+      await openRecordByTitle(page, childNameForRegGeneralFormatted)
     })
 
     test('Assign', async () => {
@@ -163,6 +167,10 @@ test.describe.serial('Escalation of birth registration by Registrar', () => {
     test('Registrar general should have the action Registrar General feedback', async () => {
       await selectAction(page, 'Registrar general feedback')
 
+      const feedbackResponse = page.waitForResponse(
+        (response) =>
+          response.url().includes('event.actions.custom') && response.ok()
+      )
       const confirmButton = page.getByRole('button', { name: 'Confirm' })
       await expect(confirmButton).toBeDisabled()
 
@@ -171,7 +179,8 @@ test.describe.serial('Escalation of birth registration by Registrar', () => {
 
       await expect(confirmButton).toBeEnabled()
       await confirmButton.click()
-      await ensureOutboxIsEmpty(page)
+
+      await feedbackResponse
     })
   })
 
@@ -179,9 +188,7 @@ test.describe.serial('Escalation of birth registration by Registrar', () => {
     test('Verify Provincial Registrar Escalated Status', async () => {
       await login(page, CREDENTIALS.PROVINCIAL_REGISTRAR)
       await page.getByText('Pending feedback').click()
-      await page
-        .getByRole('button', { name: childNameForProvincialFormatted })
-        .click()
+      await openRecordByTitle(page, childNameForProvincialFormatted)
     })
 
     test('Assign', async () => {
@@ -207,8 +214,15 @@ test.describe.serial('Escalation of birth registration by Registrar', () => {
       await notesField.fill('Approving after verifying record - by PR.')
 
       await expect(confirmButton).toBeEnabled()
+
+      const feedbackResponse = page.waitForResponse(
+        (response) =>
+          response.url().includes('event.actions.custom') && response.ok()
+      )
+
       await confirmButton.click()
-      await ensureOutboxIsEmpty(page)
+
+      await feedbackResponse
     })
   })
 

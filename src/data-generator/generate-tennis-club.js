@@ -211,11 +211,11 @@ function generateUUID() {
   })
 }
 
-const AUTH_URL = 'https://auth.farajaland-dev.opencrvs.dev'
+const GATEWAY_URL = 'https://gateway.farajaland-dev.opencrvs.dev'
 const CLIENT_URL = 'https://register.farajaland-dev.opencrvs.dev'
 
-const authUrl = `${AUTH_URL}/authenticate`
-const verifyUrl = `${AUTH_URL}/verifyCode`
+const authUrl = `${GATEWAY_URL}/auth/authenticate`
+const verifyUrl = `${GATEWAY_URL}/auth/verifyCode`
 
 const authResponse = await fetch(authUrl, {
   method: 'POST',

@@ -14,7 +14,8 @@ import {
 import { format, subDays, subYears } from 'date-fns'
 import { CREDENTIALS } from '../../constants'
 import { formatV2ChildName } from '../birth/helpers'
-import { ensureAssignedToUser, selectAction } from '../../utils'
+import { ensureAssignedToUser, expectInUrl, selectAction } from '../../utils'
+import { openRecordByTitle } from '../print-certificate/birth/helpers'
 
 test.describe.serial("Correct record - Change father's ID number", () => {
   let declaration: DeclarationV2
@@ -120,9 +121,8 @@ test.describe.serial("Correct record - Change father's ID number", () => {
   })
 
   test('Upload supporting documents', async () => {
-    expect(page.url().includes('correction')).toBeTruthy()
-
-    expect(page.url().includes('onboarding/documents')).toBeTruthy()
+    await expectInUrl(page, 'correction')
+    await expectInUrl(page, 'onboarding/documents')
 
     await expect(page.getByRole('button', { name: 'Continue' })).toBeEnabled()
 
@@ -147,8 +147,8 @@ test.describe.serial("Correct record - Change father's ID number", () => {
 
     await page.getByRole('button', { name: 'Continue' }).click()
 
-    expect(page.url().includes('correction')).toBeTruthy()
-    expect(page.url().includes('review')).toBeTruthy()
+    await expectInUrl(page, 'correction')
+    await expectInUrl(page, 'review')
   })
 
   test('Change father id number', async () => {
@@ -157,7 +157,7 @@ test.describe.serial("Correct record - Change father's ID number", () => {
     await page.getByTestId('text__father____nid').fill(newIdNumber)
 
     await page
-      .getByRole('button', { name: 'Back to review', exact: true })
+      .getByRole('button', { name: 'Go to review', exact: true })
       .click()
 
     await expect(
@@ -172,8 +172,8 @@ test.describe.serial("Correct record - Change father's ID number", () => {
   test('Correction summary', async () => {
     await page.getByRole('button', { name: 'Continue', exact: true }).click()
 
-    expect(page.url().includes('correction')).toBeTruthy()
-    expect(page.url().includes('summary')).toBeTruthy()
+    await expectInUrl(page, 'correction')
+    await expectInUrl(page, 'summary')
 
     await expect(page.getByText("Child's details")).not.toBeVisible()
     await expect(page.getByText("Mother's details")).not.toBeVisible()
@@ -202,9 +202,7 @@ test.describe.serial("Correct record - Change father's ID number", () => {
   test('Find the event in the "Pending corrections" workqueue', async () => {
     await page.getByRole('button', { name: 'Pending corrections' }).click()
 
-    await page
-      .getByRole('button', { name: formatV2ChildName(declaration) })
-      .click()
+    await openRecordByTitle(page, formatV2ChildName(declaration))
   })
 
   test('Approve correction request', async () => {

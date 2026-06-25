@@ -6,6 +6,7 @@ import { mockNetworkConditions } from '../../mock-network-conditions'
 import { createDeclaration, Declaration } from '../test-data/birth-declaration'
 import { CREDENTIALS } from '../../constants'
 import { formatV2ChildName } from '../birth/helpers'
+import { openRecordByTitle } from '../print-certificate/birth/helpers'
 
 test.describe.serial('Can view non-downloaded event online', () => {
   let page: Page
@@ -32,7 +33,7 @@ test.describe.serial('Can view non-downloaded event online', () => {
   })
 
   test('Open the event overview page', async () => {
-    await page.getByRole('button', { name: childName, exact: true }).click()
+    await openRecordByTitle(page, childName)
   })
 
   test('Verify user can only see non-secured details', async () => {
@@ -77,7 +78,7 @@ test.describe.serial('Can partially view non-downloaded event offline', () => {
   })
 
   test('Open the event overview page', async () => {
-    await page.getByRole('button', { name: childName, exact: true }).click()
+    await openRecordByTitle(page, childName)
   })
 
   test('Verify user can only see non-secured details', async () => {
@@ -87,8 +88,9 @@ test.describe.serial('Can partially view non-downloaded event offline', () => {
     )
   })
 
-  test('Verify user can not access "Record"-tab details', async () => {
+  test('Verify user sees offline message on "Record"-tab', async () => {
     await page.getByRole('button', { name: 'Record', exact: true }).click()
+    await expect(page.getByTestId('record-offline-message')).toBeVisible()
     await expect(page.getByTestId('row-value-child.name')).not.toBeVisible()
   })
 })
@@ -134,7 +136,7 @@ test.describe.serial('Can view downloaded event offline', () => {
   })
 
   test('Open the event overview page', async () => {
-    await page.getByRole('button', { name: childName, exact: true }).click()
+    await openRecordByTitle(page, childName)
   })
 
   test('Verify that user can see secured details', async () => {
@@ -147,5 +149,47 @@ test.describe.serial('Can view downloaded event offline', () => {
   test('Verify that user can see details on "Record"-tab', async () => {
     await page.getByRole('button', { name: 'Record', exact: true }).click()
     await expect(page.getByTestId('row-value-child.name')).toHaveText(childName)
+  })
+})
+
+test('Spinner switches to offline icon when network drops mid-assign', async ({
+  browser
+}) => {
+  const page = await browser.newPage()
+  const token = await getToken(CREDENTIALS.REGISTRATION_OFFICER)
+  const { declaration } = await createDeclaration(
+    token,
+    undefined,
+    ActionType.DECLARE
+  )
+  const childName = formatV2ChildName(declaration)
+
+  await test.step('Login and open the workqueue', async () => {
+    await login(page, CREDENTIALS.REGISTRAR)
+    await page.getByRole('button', { name: 'Pending registration' }).click()
+  })
+
+  await test.step('Spinner swaps to offline icon on network drop', async () => {
+    await page.route(/event\.actions\.assignment\.assign/, () => {
+      // Intentionally never resolve.
+    })
+
+    const row = page.getByTestId('row-item').filter({ hasText: childName })
+
+    await row
+      .getByRole('button', { name: 'Assign record', exact: true })
+      .click()
+    await page.getByRole('button', { name: 'Assign', exact: true }).click()
+
+    // Spinner appears while the assign mutation is pending.
+    await expect(row.getByTestId('download-loading-icon')).toBeVisible()
+
+    // Go offline
+    await mockNetworkConditions(page, 'offline')
+
+    await expect(row.getByTestId('no-connection-icon')).toBeVisible()
+    await expect(row.getByTestId('download-loading-icon')).not.toBeVisible()
+
+    await page.unroute(/event\.actions\.assignment\.assign/)
   })
 })

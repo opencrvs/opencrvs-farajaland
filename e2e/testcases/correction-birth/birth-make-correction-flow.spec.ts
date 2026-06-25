@@ -8,6 +8,7 @@ import {
 } from '../test-data/birth-declaration-with-mother-father'
 import { ensureAssignedToUser, expectInUrl, selectAction } from '../../utils'
 import { formatV2ChildName, REQUIRED_VALIDATION_ERROR } from '../birth/helpers'
+import { openRecordByTitle } from '../print-certificate/birth/helpers'
 
 test.describe.serial('Birth Record correction flow', () => {
   let declaration: Declaration
@@ -31,9 +32,7 @@ test.describe.serial('Birth Record correction flow', () => {
 
   test('Navigate to the correction form', async () => {
     await page.getByRole('button', { name: 'Pending certification' }).click()
-    await page
-      .getByRole('button', { name: formatV2ChildName(declaration) })
-      .click()
+    await openRecordByTitle(page, formatV2ChildName(declaration))
     await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
     await selectAction(page, 'Correct')
   })
@@ -65,7 +64,7 @@ test.describe.serial('Birth Record correction flow', () => {
 
   test('Fill in the supporting documents form', async () => {
     const path = require('path')
-    const attachmentPath = path.resolve(__dirname, './image.png')
+    const attachmentPath = path.join(__dirname, '../test-data/image.png')
     const inputFile = await page.locator(
       'input[name="documents____supportingDocs"][type="file"]'
     )
@@ -102,22 +101,22 @@ test.describe.serial('Birth Record correction flow', () => {
       .click()
 
     await expect(
-      page.getByRole('button', { name: 'Back to review' })
+      page.getByRole('button', { name: 'Go to review' })
     ).toBeEnabled()
 
     await page.getByRole('button', { name: 'Continue' }).click()
     await expect(
-      page.getByRole('button', { name: 'Back to review' })
+      page.getByRole('button', { name: 'Go to review' })
     ).toBeEnabled()
 
     await page.getByRole('button', { name: 'Continue' }).click()
     await expect(
-      page.getByRole('button', { name: 'Back to review' })
+      page.getByRole('button', { name: 'Go to review' })
     ).toBeEnabled()
 
     await page.getByRole('button', { name: 'Continue' }).click()
     await expect(
-      page.getByRole('button', { name: 'Back to review' })
+      page.getByRole('button', { name: 'Go to review' })
     ).toBeEnabled()
 
     await page.getByRole('button', { name: 'Continue' }).click()
@@ -135,7 +134,7 @@ test.describe.serial('Birth Record correction flow', () => {
       .getByTestId('text__informant____email')
       .fill(faker.internet.email())
 
-    await page.getByRole('button', { name: 'Back to review' }).click()
+    await page.getByRole('button', { name: 'Go to review' }).click()
     await expect(page.getByRole('button', { name: 'Continue' })).toBeEnabled()
   })
 
@@ -146,7 +145,7 @@ test.describe.serial('Birth Record correction flow', () => {
       .getByTestId('text__informant____email')
       .fill(declaration['informant.email'])
 
-    await page.getByRole('button', { name: 'Back to review' }).click()
+    await page.getByRole('button', { name: 'Go to review' }).click()
     await expect(page.getByRole('button', { name: 'Continue' })).toBeDisabled()
   })
 
@@ -154,7 +153,7 @@ test.describe.serial('Birth Record correction flow', () => {
     await page.getByTestId('change-button-child.dob').click()
     // Future date
     await page.getByTestId('child____dob-yyyy').fill('2045')
-    await page.getByRole('button', { name: 'Back to review' }).click()
+    await page.getByRole('button', { name: 'Go to review' }).click()
     await expect(page.getByRole('button', { name: 'Continue' })).toBeDisabled()
     await expect(page.getByText('Must be a valid birth date')).toBeVisible()
   })
@@ -169,7 +168,7 @@ test.describe.serial('Birth Record correction flow', () => {
     await page
       .getByTestId('text__child____reason')
       .fill(reasonForDelayedRegistration)
-    await page.getByRole('button', { name: 'Back to review' }).click()
+    await page.getByRole('button', { name: 'Go to review' }).click()
     await expect(page.getByRole('button', { name: 'Continue' })).toBeEnabled()
   })
 
@@ -177,7 +176,7 @@ test.describe.serial('Birth Record correction flow', () => {
     await page.getByRole('button', { name: 'Continue' }).click()
     await expectInUrl(page, `/events/request-correction/${eventId}/summary`)
     await expect(
-      page.getByRole('button', { name: 'Back to review' })
+      page.getByRole('button', { name: 'Go to review' })
     ).toBeEnabled()
     await expect(page.getByRole('button', { name: 'Correct' })).toBeEnabled()
   })
@@ -213,21 +212,22 @@ test.describe.serial('Birth Record correction flow', () => {
 
     await expect(page.getByText('Correct record?')).toBeVisible()
 
+    const correctionResponse = page.waitForResponse(
+      (response) =>
+        response
+          .url()
+          .includes('/api/events/event.actions.correction.approve.request') &&
+        response.ok()
+    )
+
     await page.getByRole('button', { name: 'Confirm', exact: true }).click()
 
+    await correctionResponse
     await expectInUrl(page, `/workqueue/pending-certification`)
-
-    await page.waitForResponse((response) =>
-      response
-        .url()
-        .includes('/api/events/event.actions.correction.approve.request')
-    )
   })
 
   test('Assign', async () => {
-    await page
-      .getByRole('button', { name: formatV2ChildName(declaration) })
-      .click()
+    await openRecordByTitle(page, formatV2ChildName(declaration))
 
     await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
   })

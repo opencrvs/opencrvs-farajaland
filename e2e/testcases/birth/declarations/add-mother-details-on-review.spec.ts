@@ -12,13 +12,10 @@ import {
 } from '../../../helpers'
 import { faker } from '@faker-js/faker'
 import { CREDENTIALS } from '../../../constants'
-import {
-  ensureAssignedToUser,
-  ensureOutboxIsEmpty,
-  selectAction
-} from '../../../utils'
+import { ensureAssignedToUser, selectAction } from '../../../utils'
 import { REQUIRED_VALIDATION_ERROR } from '../helpers'
-import { selectDeclarationAction } from '../../../helpers'
+import { triggerDeclarationAction } from '../../../helpers'
+import { openRecordByTitle } from '../../print-certificate/birth/helpers'
 
 test.describe.serial('Add mother details on review', () => {
   let page: Page
@@ -221,17 +218,11 @@ test.describe.serial('Add mother details on review', () => {
     })
 
     test('Declare', async () => {
-      await selectDeclarationAction(page, 'Declare')
-
-      await ensureOutboxIsEmpty(page)
+      await triggerDeclarationAction(page, 'Declare')
 
       await page.getByText('Recent').click()
 
-      await expect(
-        page.getByRole('button', {
-          name: formatName(declaration.child.name)
-        })
-      ).toBeVisible()
+      await openRecordByTitle(page, formatName(declaration.child.name))
     })
   })
 
@@ -242,11 +233,7 @@ test.describe.serial('Add mother details on review', () => {
 
       await page.getByText('Pending registration').click()
 
-      await page
-        .getByRole('button', {
-          name: formatName(declaration.child.name)
-        })
-        .click()
+      await openRecordByTitle(page, formatName(declaration.child.name))
 
       await expect(page.getByTestId('status-value')).toHaveText('Declared')
 
@@ -281,7 +268,7 @@ test.describe.serial('Add mother details on review', () => {
     })
 
     test('Go back to review, expect to not see any validation errors', async () => {
-      await page.getByRole('button', { name: 'Back to review' }).click()
+      await page.getByRole('button', { name: 'Go to review' }).click()
       await expect(page.getByText(REQUIRED_VALIDATION_ERROR)).not.toBeVisible()
     })
 
@@ -293,28 +280,29 @@ test.describe.serial('Add mother details on review', () => {
     const comment = 'Mamas info added yo'
 
     test('Register with edits', async () => {
-      await selectDeclarationAction(page, 'Register with edits', false)
-      await expect(
-        page.getByText(
-          'You are about to register this birth event with your edits. Registering this event will create an official civil registration record.'
-        )
-      ).toBeVisible()
+      await page.getByRole('button', { name: 'Action', exact: true }).click()
+      await page.getByText('Register with edits', { exact: true }).click()
+
+      const responses = [
+        'event.actions.edit',
+        'event.actions.declare',
+        'event.actions.register'
+      ].map((url) =>
+        page.waitForResponse((res) => res.url().includes(url) && res.ok())
+      )
 
       await page.getByTestId('edit-comment').fill(comment)
 
       await page.getByRole('button', { name: 'Confirm' }).click()
+
+      await Promise.all(responses)
     })
 
     test('Assert event is registered', async () => {
-      await ensureOutboxIsEmpty(page)
       await page.getByText('Pending certification').click()
-      await page
-        .getByRole('button', { name: formatName(declaration.child.name) })
-        .click()
-
-      await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR_VILLAGE)
-
+      await openRecordByTitle(page, formatName(declaration.child.name))
       await expect(page.getByTestId('status-value')).toHaveText('Registered')
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR_VILLAGE)
     })
 
     test('Assert record form', async () => {
@@ -334,6 +322,8 @@ test.describe.serial('Add mother details on review', () => {
     })
 
     test('Assert audit trail', async () => {
+      await switchEventTab(page, 'Summary')
+      await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR_VILLAGE)
       await switchEventTab(page, 'Audit')
       await page.getByRole('button', { name: 'Edited', exact: true }).click()
 

@@ -1,17 +1,15 @@
 import { expect, test, type Page } from '@playwright/test'
 
 import { login, getToken } from '../../helpers'
-import { CREDENTIALS, SAFE_WORKQUEUE_TIMEOUT_MS } from '../../constants'
+import { CREDENTIALS } from '../../constants'
 import { createDeclaration, Declaration } from '../test-data/birth-declaration'
 import { ActionType } from '@opencrvs/toolkit/events'
 import { formatV2ChildName } from '../birth/helpers'
+import { ensureAssignedToUser, expectInUrl, selectAction } from '../../utils'
 import {
-  ensureAssignedToUser,
-  ensureOutboxIsEmpty,
-  expectInUrl,
-  selectAction
-} from '../../utils'
-import { getRowByTitle } from '../print-certificate/birth/helpers'
+  getRowByTitle,
+  openRecordByTitle
+} from '../print-certificate/birth/helpers'
 
 test.describe
   .serial('5(a) Validate "Pending validation"-workqueue for RO', () => {
@@ -37,7 +35,6 @@ test.describe
   })
 
   test('5.1 Go to "Pending validation"-workqueue', async () => {
-    await page.waitForTimeout(SAFE_WORKQUEUE_TIMEOUT_MS) // wait for the event to be in the workqueue.
     await page.getByText('Pending validation').click()
     await expect(
       page.getByRole('button', { name: formatV2ChildName(declaration) })
@@ -69,11 +66,12 @@ test.describe
   })
 
   test('5.3 Click a name', async () => {
-    await page
-      .getByRole('button', { name: formatV2ChildName(declaration) })
-      .click()
+    await openRecordByTitle(page, formatV2ChildName(declaration))
 
-    await expectInUrl(page, `events/${eventId}?workqueue=pending-validation`)
+    await expectInUrl(
+      page,
+      `events/${eventId}?backTo=/workqueue/pending-validation`
+    )
   })
 
   test('5.4 Click "Validate"-action', async () => {
@@ -92,12 +90,17 @@ test.describe
   })
 
   test('5.5 Complete validate action', async () => {
+    const validateResponse = page.waitForResponse(
+      (res) =>
+        res.url().includes('event.actions.custom') && res.status() === 200
+    )
+
     await page.getByRole('button', { name: 'Confirm' }).click()
+
+    await validateResponse
 
     // Should redirect back to "Pending validation"-workqueue
     await expect(page.locator('#content-name')).toHaveText('Pending validation')
-
-    await ensureOutboxIsEmpty(page)
 
     await expect(
       page.getByRole('button', { name: formatV2ChildName(declaration) })
