@@ -429,6 +429,30 @@ const actionTitleToApiCallMap = {
 }
 
 /**
+ * Attaches response listeners for the given URL fragments, fires the trigger that
+ * causes those API calls, then resolves once all of them have returned successfully.
+ *
+ * The client intentionally does not await action responses (offline requirement), so
+ * tests must wait on the network themselves to avoid racing downstream steps. The
+ * callback shape enforces that listeners are attached *before* the trigger fires.
+ *
+ * @param page
+ * @param urls - URL fragments to match (substring) on successful responses
+ * @param trigger - action that fires the API calls (e.g. clicking "Confirm")
+ */
+export async function waitForActionResponses(
+  page: Page,
+  urls: string[],
+  trigger: () => Promise<void>
+) {
+  const responses = urls.map((url) =>
+    page.waitForResponse((res) => res.url().includes(url) && res.ok())
+  )
+  await trigger()
+  await Promise.all(responses)
+}
+
+/**
  * Triggers and confirms an action from the action menu and waits for the expected API calls to respond before completing.
  * Offline requirement forces us to not await for the responses in client, so we are by design flaky.
  * @param page
@@ -451,22 +475,20 @@ export async function triggerDeclarationAction(
   await page.getByRole('button', { name: 'Action', exact: true }).click()
   await page.getByText(action, { exact: true }).click()
 
-  // 2. Get the expected API calls that the action triggers to wait for.
-  const responses = actionTitleToApiCallMap[action].map((url) =>
-    page.waitForResponse((res) => res.url().includes(url) && res.ok())
+  // 2. Confirm the action, then wait for all the API calls it triggers to return.
+  await waitForActionResponses(
+    page,
+    actionTitleToApiCallMap[action],
+    async () => {
+      const confirmBtn = page.getByRole('button', { name: 'Confirm' })
+
+      if ((await confirmBtn.count()) > 0) {
+        await confirmBtn.click()
+      } else {
+        await page.getByRole('button', { name: action, exact: true }).click()
+      }
+    }
   )
-
-  // 3. Confirm the action and trigger the api calls.
-  const confirmBtn = page.getByRole('button', { name: 'Confirm' })
-
-  if ((await confirmBtn.count()) > 0) {
-    await confirmBtn.click()
-  } else {
-    await page.getByRole('button', { name: action, exact: true }).click()
-  }
-
-  // 4. Complete only once all the API calls have returned.
-  await Promise.all(responses)
 }
 
 export async function searchFromSearchBar(

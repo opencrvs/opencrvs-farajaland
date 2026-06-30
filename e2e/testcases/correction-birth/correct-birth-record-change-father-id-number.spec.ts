@@ -14,7 +14,12 @@ import {
 import { format, subDays, subYears } from 'date-fns'
 import { CREDENTIALS } from '../../constants'
 import { formatV2ChildName } from '../birth/helpers'
-import { ensureAssignedToUser, expectInUrl, selectAction } from '../../utils'
+import {
+  ensureAssignedToUser,
+  expectInUrl,
+  selectAction,
+  waitForCorrectionAction
+} from '../../utils'
 import { openRecordByTitle } from '../print-certificate/birth/helpers'
 
 test.describe.serial("Correct record - Change father's ID number", () => {
@@ -208,8 +213,15 @@ test.describe.serial("Correct record - Change father's ID number", () => {
   test('Approve correction request', async () => {
     await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
     await selectAction(page, 'Review correction request')
-    await page.getByRole('button', { name: 'Approve', exact: true }).click()
-    await page.getByRole('button', { name: 'Confirm', exact: true }).click()
+    await waitForCorrectionAction(
+      page,
+      'Approve',
+      async () => {
+        await page.getByRole('button', { name: 'Approve', exact: true }).click()
+        await page.getByRole('button', { name: 'Confirm', exact: true }).click()
+      },
+      true
+    )
   })
 
   test('View record', async () => {

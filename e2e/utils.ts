@@ -1,6 +1,50 @@
 import { Locator, Page, expect } from '@playwright/test'
 import { CLIENT_URL } from './constants'
 import { isMobile } from './mobile-helpers'
+import { waitForActionResponses } from './helpers'
+
+// tRPC route fragments fired when confirming a correction action. The same
+// approve endpoint backs both "approve a request" and "make a direct correction".
+const CORRECTION_ACTION_URL = {
+  Approve: 'event.actions.correction.approve',
+  'Correct record': 'event.actions.correction.approve',
+  Reject: 'event.actions.correction.reject'
+} as const
+
+/* Correction actions auto unassign the user and invalidates workqueue
+ * cache on success. The assignment data is read from the workqueue cache, so
+ * if the next step is to req-assign on the record, we must wait for the workqueue
+ * refetch to succeed before proceeding. Otherwise, the next step might read
+ * stale data and find the record is still assigned to the user.
+ */
+const SEARCH_REFETCH_URL = 'event.search?batch=1'
+
+/**
+ * Waits for the API responses a correction action fires, and nothing else. The
+ * caller drives all the UI (open button, reason fields, "Confirm" click) inside
+ * `confirmAction`; this helper only knows which responses to expect.
+ *
+ * Listeners attach before `confirmAction` runs, so every click can live in the
+ * callback - only the final confirm hits the awaited endpoints.
+ *
+ * @param actionType selects the endpoint to wait for. Mirrors the button text.
+ * @param confirmAction fires the action (e.g. clicks the open button then "Confirm").
+ * @param waitForUnassign also wait for the auto-unassign to settle (via the
+ *   search-cache refetch). Set when the flow re-assigns the record right after.
+ */
+export async function waitForCorrectionAction(
+  page: Page,
+  actionType: keyof typeof CORRECTION_ACTION_URL,
+  confirmAction: () => Promise<void>,
+  waitForUnassign: boolean
+) {
+  const urls = [CORRECTION_ACTION_URL[actionType]]
+  if (waitForUnassign) {
+    urls.push(SEARCH_REFETCH_URL)
+  }
+
+  await waitForActionResponses(page, urls, confirmAction)
+}
 
 type Workqueue =
   | 'Outbox'
