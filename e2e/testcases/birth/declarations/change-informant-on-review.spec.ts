@@ -353,7 +353,7 @@ test.describe.serial('Change informant on review', () => {
       await switchEventTab(page, 'Audit')
       await page.getByRole('button', { name: 'Edited', exact: true }).click()
 
-      await page.locator('#close-btn').click()
+      await page.locator('#close-dialog').click()
 
       await page
         .getByRole('button', { name: 'Registered', exact: true })

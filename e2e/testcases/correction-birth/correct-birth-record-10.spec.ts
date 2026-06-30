@@ -695,7 +695,7 @@ test.describe('10. Correct record', () => {
             .getByRole('button', { name: 'Correction approved', exact: true })
             .click()
 
-          await page.locator('#close-btn').click()
+          await page.locator('#close-dialog').click()
         })
       })
     })
