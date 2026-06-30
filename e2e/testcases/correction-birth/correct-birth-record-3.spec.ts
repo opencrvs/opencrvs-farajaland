@@ -1102,13 +1102,12 @@ test.describe.serial(' Correct record - 3', () => {
     })
 
     test('3.8.3 Approve correction', async () => {
+      await page.getByRole('button', { name: 'Approve', exact: true }).click()
+
       await waitForCorrectionAction(
         page,
-        'Approve',
+        'approve',
         async () => {
-          await page
-            .getByRole('button', { name: 'Approve', exact: true })
-            .click()
           await page
             .getByRole('button', { name: 'Confirm', exact: true })
             .click()

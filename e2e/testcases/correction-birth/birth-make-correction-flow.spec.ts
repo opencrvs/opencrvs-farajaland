@@ -213,13 +213,14 @@ test.describe.serial('Birth Record correction flow', () => {
   })
 
   test('Record correction', async () => {
+    await page.getByRole('button', { name: 'Correct', exact: true }).click()
+
+    await expect(page.getByText('Correct record?')).toBeVisible()
+
     await waitForCorrectionAction(
       page,
-      'Correct record',
+      'approve',
       async () => {
-        await page
-          .getByRole('button', { name: 'Correct record', exact: true })
-          .click()
         await page.getByRole('button', { name: 'Confirm', exact: true }).click()
       },
       true

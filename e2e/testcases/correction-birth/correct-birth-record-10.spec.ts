@@ -628,13 +628,12 @@ test.describe('10. Correct record', () => {
       })
 
       test('10.1.6.3 Approve correction', async () => {
+        await page.getByRole('button', { name: 'Approve', exact: true }).click()
+
         await waitForCorrectionAction(
           page,
-          'Approve',
+          'approve',
           async () => {
-            await page
-              .getByRole('button', { name: 'Approve', exact: true })
-              .click()
             await page
               .getByRole('button', { name: 'Confirm', exact: true })
               .click()

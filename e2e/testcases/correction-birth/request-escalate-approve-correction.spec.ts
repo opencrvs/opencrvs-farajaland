@@ -273,11 +273,12 @@ test.describe
   })
 
   test('Approve the correction', async () => {
+    await page.getByRole('button', { name: 'Approve', exact: true }).click()
+
     await waitForCorrectionAction(
       page,
-      'Approve',
+      'approve',
       async () => {
-        await page.getByRole('button', { name: 'Approve', exact: true }).click()
         await page.getByRole('button', { name: 'Confirm', exact: true }).click()
       },
       true

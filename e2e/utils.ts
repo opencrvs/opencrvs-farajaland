@@ -6,9 +6,8 @@ import { waitForActionResponses } from './helpers'
 // tRPC route fragments fired when confirming a correction action. The same
 // approve endpoint backs both "approve a request" and "make a direct correction".
 const CORRECTION_ACTION_URL = {
-  Approve: 'event.actions.correction.approve',
-  'Correct record': 'event.actions.correction.approve',
-  Reject: 'event.actions.correction.reject'
+  approve: 'event.actions.correction.approve',
+  reject: 'event.actions.correction.reject'
 } as const
 
 /* Correction actions auto unassign the user and invalidates workqueue
@@ -27,7 +26,8 @@ const SEARCH_REFETCH_URL = 'event.search?batch=1'
  * Listeners attach before `confirmAction` runs, so every click can live in the
  * callback - only the final confirm hits the awaited endpoints.
  *
- * @param actionType selects the endpoint to wait for. Mirrors the button text.
+ * @param actionType selects the endpoint to wait for ('approve' backs both
+ *   approving a request and making a direct correction).
  * @param confirmAction fires the action (e.g. clicks the open button then "Confirm").
  * @param waitForUnassign also wait for the auto-unassign to settle (via the
  *   search-cache refetch). Set when the flow re-assigns the record right after.
@@ -38,7 +38,7 @@ export async function waitForCorrectionAction(
   confirmAction: () => Promise<void>,
   waitForUnassign: boolean
 ) {
-  const urls = [CORRECTION_ACTION_URL[actionType]]
+  const urls: string[] = [CORRECTION_ACTION_URL[actionType]]
   if (waitForUnassign) {
     urls.push(SEARCH_REFETCH_URL)
   }

@@ -302,13 +302,11 @@ test.describe.serial('Birth correction flow', () => {
     })
 
     test('Approve correction request', async () => {
+      await page.getByRole('button', { name: 'Approve', exact: true }).click()
       await waitForCorrectionAction(
         page,
-        'Approve',
+        'approve',
         async () => {
-          await page
-            .getByRole('button', { name: 'Approve', exact: true })
-            .click()
           await page
             .getByRole('button', { name: 'Confirm', exact: true })
             .click()

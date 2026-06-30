@@ -138,13 +138,12 @@ test('Cleared field values are removed after correcting a registered birth recor
     await page.getByRole('button', { name: 'Continue' }).click()
     await expectInUrl(page, `/events/request-correction/${eventId}/summary`)
 
+    await page.getByRole('button', { name: 'Correct' }).click()
+
     await waitForCorrectionAction(
       page,
-      'Correct record',
+      'approve',
       async () => {
-        await page
-          .getByRole('button', { name: 'Correct record', exact: true })
-          .click()
         await page.getByRole('button', { name: 'Confirm', exact: true }).click()
       },
       true

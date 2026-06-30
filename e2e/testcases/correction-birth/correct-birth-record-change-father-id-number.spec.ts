@@ -213,11 +213,12 @@ test.describe.serial("Correct record - Change father's ID number", () => {
   test('Approve correction request', async () => {
     await ensureAssignedToUser(page, CREDENTIALS.REGISTRAR)
     await selectAction(page, 'Review correction request')
+    await page.getByRole('button', { name: 'Approve', exact: true }).click()
+
     await waitForCorrectionAction(
       page,
-      'Approve',
+      'approve',
       async () => {
-        await page.getByRole('button', { name: 'Approve', exact: true }).click()
         await page.getByRole('button', { name: 'Confirm', exact: true }).click()
       },
       true

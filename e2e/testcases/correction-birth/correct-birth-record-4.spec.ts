@@ -867,13 +867,12 @@ test.describe.serial('Correct record - 4', () => {
      * Expected result: should enable the Correct record button
      */
 
+    await page.getByRole('button', { name: 'Correct record' }).click()
+
     await waitForCorrectionAction(
       page,
-      'Correct record',
+      'approve',
       async () => {
-        await page
-          .getByRole('button', { name: 'Correct record', exact: true })
-          .click()
         await page.getByRole('button', { name: 'Confirm', exact: true }).click()
       },
       true

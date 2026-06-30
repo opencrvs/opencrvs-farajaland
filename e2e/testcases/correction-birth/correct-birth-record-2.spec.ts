@@ -352,19 +352,17 @@ test.describe.serial('Correct record - 2', () => {
     })
 
     test('2.8.3 Reject correction', async () => {
+      await page.getByRole('button', { name: 'Reject', exact: true }).click()
+      await expect(
+        page.getByRole('button', { name: 'Confirm', exact: true })
+      ).toBeDisabled()
+
+      await page.locator('#reject-correction-reason').fill('No legal proof')
+
       await waitForCorrectionAction(
         page,
-        'Reject',
+        'reject',
         async () => {
-          await page
-            .getByRole('button', { name: 'Reject', exact: true })
-            .click()
-          await expect(
-            page.getByRole('button', { name: 'Confirm', exact: true })
-          ).toBeDisabled()
-
-          await page.locator('#reject-correction-reason').fill('No legal proof')
-
           await page
             .getByRole('button', { name: 'Confirm', exact: true })
             .click()
