@@ -208,6 +208,7 @@ export const roles: Role[] = [
       { type: 'workqueue', options: { ids: ['assigned-to-you', 'recent', 'pending-updates'] } },
       { type: 'record.create', options: { placeOfEvent: 'location' } },
       { type: 'record.read', options: { placeOfEvent: 'location' } },
+      { type: 'record.declare', options: { placeOfEvent: 'location' } },
       { type: 'record.notify', options: { placeOfEvent: 'location' } },
       { type: 'record.edit', options: { placeOfEvent: 'location', declaredBy: 'user' } },
       { type: 'record.print-certified-copies', options: { templates: ['v2.tennis-club-membership-certificate-alpha'], registeredIn: 'location' } }
