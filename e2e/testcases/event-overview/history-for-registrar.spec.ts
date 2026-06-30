@@ -59,7 +59,7 @@ test.describe
       const modal = page.getByTestId('event-history-modal')
 
       await expect(modal.getByRole('heading')).toHaveText(expectedActions[i])
-      await modal.locator('#close-btn').click()
+      await modal.locator('#close-dialog').click()
     }
   })
 })

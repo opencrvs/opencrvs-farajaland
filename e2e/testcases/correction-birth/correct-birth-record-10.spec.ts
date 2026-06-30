@@ -686,7 +686,7 @@ test.describe('10. Correct record', () => {
 
           await expect(page.getByText('Type of birth-Twin')).toBeVisible()
 
-          await page.locator('#close-btn').click()
+          await page.locator('#close-dialog').click()
         })
 
         test('10.1.6.4.2 Validate correction approved modal', async () => {

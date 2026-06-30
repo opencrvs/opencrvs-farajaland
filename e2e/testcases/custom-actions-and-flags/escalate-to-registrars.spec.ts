@@ -266,7 +266,7 @@ test.describe.serial('Escalation of birth registration by Registrar', () => {
           )
         ).toBeVisible()
 
-        await page.locator('#close-btn').click()
+        await page.locator('#close-dialog').click()
       })
 
       test('Validate that action and form field value appearing in audit trail', async () => {
@@ -280,7 +280,7 @@ test.describe.serial('Escalation of birth registration by Registrar', () => {
       })
 
       test('Exit to workqueue', async () => {
-        await page.locator('#close-btn').click()
+        await page.locator('#close-dialog').click()
         await page.getByTestId('exit-event').click()
       })
     })
@@ -323,7 +323,7 @@ test.describe.serial('Escalation of birth registration by Registrar', () => {
           )
         ).toBeVisible()
 
-        await page.locator('#close-btn').click()
+        await page.locator('#close-dialog').click()
       })
 
       test('Validate that action and form field value appearing in audit trail', async () => {

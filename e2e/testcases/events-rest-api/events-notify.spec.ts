@@ -486,7 +486,7 @@ test.describe('POST /api/events/events/{eventId}/notify', () => {
     await expect(modal).toContainText('Notified')
     await expect(modal).toContainText(clientName)
 
-    await page.locator('#close-btn').click()
+    await page.locator('#close-dialog').click()
 
     await page.getByRole('button', { name: 'Record', exact: true }).click()
     await expect(page.getByTestId('row-value-child.name')).toHaveText(

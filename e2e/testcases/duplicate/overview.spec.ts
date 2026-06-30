@@ -77,7 +77,7 @@ test('Duplicate overview', async ({ page }) => {
     await expect(
       page.locator('#event-history-modal').getByText(trackingId)
     ).toBeVisible()
-    await page.locator('#close-btn').click()
+    await page.locator('#close-dialog').click()
   })
 
   await test.step('Mark as duplicate', async () => {
