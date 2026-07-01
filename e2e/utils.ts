@@ -10,14 +10,6 @@ const CORRECTION_ACTION_URL = {
   reject: 'event.actions.correction.reject'
 } as const
 
-/* Correction actions auto unassign the user and invalidates workqueue
- * cache on success. The assignment data is read from the workqueue cache, so
- * if the next step is to req-assign on the record, we must wait for the workqueue
- * refetch to succeed before proceeding. Otherwise, the next step might read
- * stale data and find the record is still assigned to the user.
- */
-const SEARCH_REFETCH_URL = 'event.search?batch=1'
-
 /**
  * Waits for the API responses a correction action fires, and nothing else. The
  * caller drives all the UI (open button, reason fields, "Confirm" click) inside
@@ -40,7 +32,7 @@ export async function waitForCorrectionAction(
 ) {
   const urls: string[] = [CORRECTION_ACTION_URL[actionType]]
   if (waitForUnassign) {
-    urls.push(SEARCH_REFETCH_URL)
+    urls.push('event.search')
   }
 
   await waitForActionResponses(page, urls, confirmAction)

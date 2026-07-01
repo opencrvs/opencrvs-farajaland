@@ -457,6 +457,7 @@ export async function waitForActionResponses(
  * Offline requirement forces us to not await for the responses in client, so we are by design flaky.
  * @param page
  * @param action - action button text from the action menu
+ * @param waitForUnassign - whether to wait for the auto-unassign to settle (via the search-cache refetch). Set when the flow re-assigns the record right after.
  */
 export async function triggerDeclarationAction(
   page: Page,
@@ -469,26 +470,29 @@ export async function triggerDeclarationAction(
     | 'Save & Exit'
     | 'Declare with edits'
     | 'Notify with edits'
-    | 'Register with edits'
+    | 'Register with edits',
+  waitForUnassign: boolean = false
 ) {
   // 1. Open action menu and click the action
   await page.getByRole('button', { name: 'Action', exact: true }).click()
   await page.getByText(action, { exact: true }).click()
 
-  // 2. Confirm the action, then wait for all the API calls it triggers to return.
-  await waitForActionResponses(
-    page,
-    actionTitleToApiCallMap[action],
-    async () => {
-      const confirmBtn = page.getByRole('button', { name: 'Confirm' })
+  const urls = actionTitleToApiCallMap[action]
 
-      if ((await confirmBtn.count()) > 0) {
-        await confirmBtn.click()
-      } else {
-        await page.getByRole('button', { name: action, exact: true }).click()
-      }
+  if (waitForUnassign) {
+    urls.push('event.search')
+  }
+
+  // 2. Confirm the action, then wait for all the API calls it triggers to return.
+  await waitForActionResponses(page, urls, async () => {
+    const confirmBtn = page.getByRole('button', { name: 'Confirm' })
+
+    if ((await confirmBtn.count()) > 0) {
+      await confirmBtn.click()
+    } else {
+      await page.getByRole('button', { name: action, exact: true }).click()
     }
-  )
+  })
 }
 
 export async function searchFromSearchBar(

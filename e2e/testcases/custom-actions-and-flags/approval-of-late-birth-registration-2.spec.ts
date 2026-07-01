@@ -351,7 +351,7 @@ test.describe
     })
 
     test('Declare with edits', async () => {
-      await triggerDeclarationAction(page, 'Declare with edits')
+      await triggerDeclarationAction(page, 'Declare with edits', true)
     })
 
     test('Go to record', async () => {
