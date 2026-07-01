@@ -124,32 +124,9 @@ jobs:
           git checkout "${{ steps.get_base_branch.outputs.base_branch }}"
           git checkout -b "release/${{ inputs.version }}"
 
-          # Bump package.json without creating a git tag.
-          yarn version --new-version ${{ inputs.version }} --no-git-tag-version
-          # Bump Tiltfile version
-          VERSION=${{ inputs.version }}
-          sed -i -E \
-            -e 's|(core_images_tag = os.getenv\("OPENCRVS_CORE_IMAGE_TAG", )"[^"]+"|\1"v'"$VERSION"'"|' \
-            -e 's|(core_ref = os.getenv\("OPENCRVS_CORE_REF", )"[^"]+"|\1"release/'"$VERSION"'"|' \
-            Tiltfile
-          git add .
-          git commit -m "chore: update version to ${{ inputs.version }}"
-
-          # Prepend a new "Release Candidate" section to the top of CHANGELOG.md.
-          # sed removes the existing "# Changelog" header (lines 1-2) so we can
-          # rewrite it with the new section underneath.
-          sed -i '1,2d' CHANGELOG.md
-          cp CHANGELOG.md COPY_CHANGELOG.md
-          {
-            echo "# Changelog"
-            echo ""
-            echo "## ${{ inputs.version }} Release Candidate"
-            echo ""
-            cat COPY_CHANGELOG.md
-          } > CHANGELOG.md
-          rm COPY_CHANGELOG.md
-          git add CHANGELOG.md
-          git commit -m "docs: update changelog for ${{ inputs.version }} release candidate"
+          git remote add countryconfig https://github.com/opencrvs/opencrvs-countryconfig.git
+          git fetch countryconfig "release/${{ inputs.version }}"
+          git merge --no-edit "countryconfig/release/${{ inputs.version }}"
 
           git push origin "release/${{ inputs.version }}"
 
