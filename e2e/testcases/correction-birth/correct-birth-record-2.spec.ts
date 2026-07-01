@@ -416,7 +416,7 @@ test.describe.serial('Correct record - 2', () => {
         )
       ).toBeVisible()
 
-      await page.locator('#close-btn').click()
+      await page.locator('#close-dialog').click()
       await page.getByRole('button', { name: 'Next page' }).click()
     })
 
@@ -427,7 +427,7 @@ test.describe.serial('Correct record - 2', () => {
 
       await expect(page.getByText('Reason' + 'No legal proof')).toBeVisible()
 
-      await page.locator('#close-btn').click()
+      await page.locator('#close-dialog').click()
     })
   })
 })

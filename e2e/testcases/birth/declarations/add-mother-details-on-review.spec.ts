@@ -349,13 +349,13 @@ test.describe.serial('Add mother details on review', () => {
 
       await expect(page.getByText('Type of ID' + '-' + 'None')).toBeVisible()
 
-      await page.locator('#close-btn').click()
+      await page.locator('#close-dialog').click()
 
       await page
         .getByRole('button', { name: 'Registered', exact: true })
         .click()
 
-      await page.locator('#close-btn').click()
+      await page.locator('#close-dialog').click()
     })
   })
 })

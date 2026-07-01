@@ -282,7 +282,7 @@ test.describe.serial('Birth correction flow', () => {
         )
       ).toBeVisible()
 
-      await page.locator('#close-btn').click()
+      await page.locator('#close-dialog').click()
     })
 
     test('Navigate to correction review', async () => {

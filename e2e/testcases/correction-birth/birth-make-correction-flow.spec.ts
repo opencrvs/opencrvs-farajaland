@@ -251,6 +251,6 @@ test.describe.serial('Birth Record correction flow', () => {
     await expect(page.getByText("Child's details")).toBeVisible()
     await expect(page.getByText(reasonForDelayedRegistration)).toBeVisible()
 
-    await page.locator('#close-btn').click()
+    await page.locator('#close-dialog').click()
   })
 })
