@@ -189,6 +189,15 @@ export const deathEvent = defineConfig({
         description: 'Flag label for first certificate issuance'
       },
       requiresAction: true
+    },
+    {
+      id: 'attestation-required',
+      label: {
+        id: 'event.death.flag.attestation-required',
+        defaultMessage: 'Attestation required',
+        description: 'Flag label for attestation required'
+      },
+      requiresAction: true
     }
   ],
   actionOrder: [
@@ -215,6 +224,22 @@ export const deathEvent = defineConfig({
         id: 'event.death.action.Read.label'
       },
       review: DEATH_DECLARATION_REVIEW
+    },
+    {
+      type: ActionType.NOTIFY,
+      label: {
+        defaultMessage: 'Notify',
+        description:
+          'This is shown as the action name anywhere the user can trigger the action from',
+        id: 'event.death.action.notify.label'
+      },
+      flags: [
+        {
+          id: 'attestation-required',
+          operation: 'add',
+          conditional: user.hasRole('HOSPITAL_CLERK')
+        }
+      ]
     },
     {
       type: ActionType.DECLARE,
