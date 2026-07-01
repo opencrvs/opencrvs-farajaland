@@ -1063,10 +1063,5 @@ test.describe.serial('Correct record - 4', () => {
       'No schooling',
       'Primary'
     )
-
-    await page
-      .getByRole('heading', { name: 'Record corrected' })
-      .locator('xpath=following-sibling::*[1]')
-      .click()
   })
 })
