@@ -571,7 +571,13 @@ export const informant = defineFormPage({
       configuration: {
         maxLength: 255
       },
-      parent: field('informant.relation')
+      parent: field('informant.relation'),
+      conditionals: [
+        {
+          type: ConditionalType.SHOW,
+          conditional: not(user.hasRole('HOSPITAL_CLERK'))
+        }
+      ]
     }
   ]
 })
