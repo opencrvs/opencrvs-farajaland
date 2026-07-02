@@ -223,7 +223,7 @@ test.describe.serial('Birth Record correction flow', () => {
       async () => {
         await page.getByRole('button', { name: 'Confirm', exact: true }).click()
       },
-      true
+      { waitForUnassign: true, eventId }
     )
     await expectInUrl(page, `/workqueue/pending-certification`)
   })

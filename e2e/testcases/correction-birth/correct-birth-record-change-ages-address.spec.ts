@@ -27,6 +27,7 @@ import { openRecordByTitle } from '../print-certificate/birth/helpers'
 test.describe.serial('Correct record - Change ages', () => {
   let declaration: Declaration
   let trackingId = ''
+  let eventId = ''
   let page: Page
 
   test.beforeAll(async ({ browser }) => {
@@ -114,6 +115,7 @@ test.describe.serial('Correct record - Change ages', () => {
       })
     )
     trackingId = res.trackingId!
+    eventId = res.eventId
     token = await getToken(CREDENTIALS.REGISTRAR)
     declaration = res.declaration
   })
@@ -317,7 +319,7 @@ test.describe.serial('Correct record - Change ages', () => {
       async () => {
         await page.getByRole('button', { name: 'Confirm', exact: true }).click()
       },
-      true
+      { waitForUnassign: true, eventId }
     )
   })
 

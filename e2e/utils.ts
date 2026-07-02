@@ -1,7 +1,7 @@
 import { Locator, Page, expect } from '@playwright/test'
 import { CLIENT_URL } from './constants'
 import { isMobile } from './mobile-helpers'
-import { waitForActionResponses } from './helpers'
+import { UnassignWait, waitForActionResponses } from './helpers'
 
 // tRPC route fragments fired when confirming a correction action. The same
 // approve endpoint backs both "approve a request" and "make a direct correction".
@@ -11,31 +11,28 @@ const CORRECTION_ACTION_URL = {
 } as const
 
 /**
- * Waits for the API responses a correction action fires, and nothing else. The
- * caller drives all the UI (open button, reason fields, "Confirm" click) inside
- * `confirmAction`; this helper only knows which responses to expect.
- *
- * Listeners attach before `confirmAction` runs, so every click can live in the
- * callback - only the final confirm hits the awaited endpoints.
+ * Waits for the API responses a correction action fires. The `confirmAction`
+ * callback should contain the interaction that fires the action. By default,
+ * this **does not** wait for the auto-unassign to settle, `opts` can be used
+ * to wait for that as well.
  *
  * @param actionType selects the endpoint to wait for ('approve' backs both
  *   approving a request and making a direct correction).
- * @param confirmAction fires the action (e.g. clicks the open button then "Confirm").
- * @param waitForUnassign also wait for the auto-unassign to settle (via the
- *   search-cache refetch). Set when the flow re-assigns the record right after.
+ * @param confirmAction fires the action (e.g. clicks the "Confirm" button).
+ * @param opts when `{ waitForUnassign: true, eventId }`, also wait for the
+ *   auto-unassign to settle (via the search-cache refetch). Set when the flow
+ *   re-assigns the record right after.
  */
 export async function waitForCorrectionAction(
   page: Page,
   actionType: keyof typeof CORRECTION_ACTION_URL,
   confirmAction: () => Promise<void>,
-  waitForUnassign: boolean
+  opts: UnassignWait = {}
 ) {
   const urls: string[] = [CORRECTION_ACTION_URL[actionType]]
-  if (waitForUnassign) {
-    urls.push('event.search')
-  }
+  const eventId = opts.waitForUnassign ? opts.eventId : undefined
 
-  await waitForActionResponses(page, urls, confirmAction)
+  await waitForActionResponses(page, urls, confirmAction, eventId)
 }
 
 type Workqueue =

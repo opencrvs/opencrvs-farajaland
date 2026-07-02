@@ -638,7 +638,7 @@ test.describe('10. Correct record', () => {
               .getByRole('button', { name: 'Confirm', exact: true })
               .click()
           },
-          true
+          { waitForUnassign: true, eventId }
         )
 
         await expectInUrl(page, `/events/${eventId}`)

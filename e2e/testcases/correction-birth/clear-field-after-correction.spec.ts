@@ -146,7 +146,7 @@ test('Cleared field values are removed after correcting a registered birth recor
       async () => {
         await page.getByRole('button', { name: 'Confirm', exact: true }).click()
       },
-      true
+      { waitForUnassign: true, eventId }
     )
   })
 

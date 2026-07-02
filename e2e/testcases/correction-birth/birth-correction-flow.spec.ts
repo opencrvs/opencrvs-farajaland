@@ -311,7 +311,7 @@ test.describe.serial('Birth correction flow', () => {
             .getByRole('button', { name: 'Confirm', exact: true })
             .click()
         },
-        true
+        { waitForUnassign: true, eventId }
       )
       await expectInUrl(page, `/workqueue/correction-requested`)
 

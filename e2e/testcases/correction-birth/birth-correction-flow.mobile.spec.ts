@@ -210,16 +210,9 @@ test.describe.serial('Birth correction flow - Mobile', () => {
     test('Approve correction request', async () => {
       await page.getByRole('button', { name: 'Approve', exact: true }).click()
 
-      await waitForCorrectionAction(
-        page,
-        'approve',
-        async () => {
-          await page
-            .getByRole('button', { name: 'Confirm', exact: true })
-            .click()
-        },
-        false
-      )
+      await waitForCorrectionAction(page, 'approve', async () => {
+        await page.getByRole('button', { name: 'Confirm', exact: true }).click()
+      })
 
       await expectInUrl(page, `/workqueue/correction-requested`)
 

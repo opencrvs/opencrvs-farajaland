@@ -325,7 +325,7 @@ test.describe.serial('Correct record - change informant type', () => {
       async () => {
         await page.getByRole('button', { name: 'Confirm', exact: true }).click()
       },
-      true
+      { waitForUnassign: true, eventId }
     )
 
     await expectInUrl(page, `/events/${eventId}`)
