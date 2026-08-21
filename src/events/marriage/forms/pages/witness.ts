@@ -16,20 +16,11 @@ import {
   field,
   not,
   user,
-  never,
-  AddressType
+  never
 } from '@opencrvs/toolkit/events'
 import { or } from '@opencrvs/toolkit/conditionals'
-
 import { InformantType } from './informant'
-
-import {
-  marriageIdTypeOptions,
-  MarriageIdType,
-  emptyMessage,
-  getNestedFieldValidators,
-  defaultStreetAddressConfiguration
-} from '@countryconfig/events/utils'
+import { emptyMessage } from '@countryconfig/events/utils'
 import {
   farajalandNameConfig,
   invalidNameValidator

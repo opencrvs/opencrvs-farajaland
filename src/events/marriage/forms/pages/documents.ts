@@ -89,7 +89,7 @@ export const documents = defineFormPage({
     {
       id: 'documents.proofOfBride',
       type: FieldType.FILE_WITH_OPTIONS,
-      required: false,
+      required: true,
       uncorrectable: true,
       label: {
         defaultMessage: "Proof of bride's ID",
@@ -111,7 +111,7 @@ export const documents = defineFormPage({
     {
       id: 'documents.proofOfGroom',
       type: FieldType.FILE_WITH_OPTIONS,
-      required: false,
+      required: true,
       uncorrectable: true,
       label: {
         defaultMessage: "Proof of groom's ID",

@@ -31,7 +31,7 @@ export const MARRIAGE_DECLARATION_REVIEW = {
   title: {
     id: 'event.marriage.action.declare.form.review.title',
     defaultMessage:
-      '{groom.name.firstname, select, __EMPTY__ {Marriage declaration} other {{bride.name.surname, select, __EMPTY__ {Marriage declaration for {bride.name.firstname}} other {Marriage declaration for {bride.name.firstname} {bride.name.surname}}}}}',
+      '{groom.name.firstname, select, __EMPTY__ {Marriage declaration} other {{groom.name.firstname, select, __EMPTY__ {Marriage declaration for {groom.name.surname}} other {Marriage declaration for {groom.name.firstname} {groom.name.surname} and {bride.name.firstname} {bride.name.surname}}}}}',
     description: 'Title of the form to show in review page'
   },
   fields: [

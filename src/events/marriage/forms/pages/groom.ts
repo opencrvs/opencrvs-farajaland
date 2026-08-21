@@ -82,7 +82,7 @@ export const groom = defineFormPage({
       label: {
         defaultMessage: 'Place of residence',
         description: 'This is the label for the field',
-        id: 'event.marriage.form.groom.address.label'
+        id: 'event.marriage.action.declare.form.section.person.field.address.label'
       },
       conditionals: [
         {
