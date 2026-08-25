@@ -9,136 +9,49 @@
  * Copyright (C) The OpenCRVS Authors located at https://github.com/opencrvs/opencrvs-core/blob/master/AUTHORS.
  */
 
-import { AdvancedSearchConfig, event } from '@opencrvs/toolkit/events'
-
-const childPrefix = {
-  id: 'birth.search.criteria.label.prefix.child',
-  defaultMessage: "Child's",
-  description: 'Child prefix'
-}
-const motherPrefix = {
-  id: 'birth.search.criteria.label.prefix.mother',
-  defaultMessage: "Mother's",
-  description: 'Mother prefix'
-}
-const fatherPrefix = {
-  id: 'birth.search.criteria.label.prefix.father',
-  defaultMessage: "Father's",
-  description: 'Father prefix'
-}
-const informantPrefix = {
-  id: 'birth.search.criteria.label.prefix.informant',
-  defaultMessage: "Informant's",
-  description: 'Informant prefix'
-}
+import { AdvancedSearchConfig, event, field } from '@opencrvs/toolkit/events'
 
 export const advancedSearchBirth = [
   {
     title: {
-      defaultMessage: 'Registration details',
-      description: 'The title of Registration details accordion',
-      id: 'advancedSearch.form.registrationDetails'
+      defaultMessage: 'Marriage details',
+      description: 'The title of Marriage details accordion',
+      id: 'advancedSearch.form.marriageDetails'
     },
     fields: [
       event('legalStatuses.REGISTERED.createdAtLocation').within(),
-      event('legalStatuses.REGISTERED.acceptedAt').range(),
+      event('legalStatuses.REGISTERED.registrationNumber').exact(),
+      field('marriageDetails.dateOfMarriage').range(),
+      field('marriageDetails.placeOfMarriage').exact(),
       event('status').exact(),
       event('updatedAt').range()
     ]
   },
   {
     title: {
-      defaultMessage: 'Child details',
-      description: 'The title of Child details accordion',
-      id: 'advancedSearch.form.childDetails'
+      defaultMessage: "Groom's details",
+      description: 'Groom details search section',
+      id: 'advancedSearch.form.groomDetails'
     },
-    fields: [
-      // field('child.dob', {
-      //   searchCriteriaLabelPrefix: childPrefix
-      // }).range(),
-      // field('child.name', {
-      //   validations: [],
-      //   conditionals: []
-      // }).fuzzy(),
-      // field('child.gender', {
-      //   searchCriteriaLabelPrefix: childPrefix
-      // }).exact()
-    ]
+    fields: [field('groom.name').fuzzy()]
   },
   {
     title: {
-      defaultMessage: 'Event details',
-      description: 'The title of Event details accordion',
-      id: 'advancedSearch.form.eventDetails'
+      defaultMessage: "Bride's details",
+      description: 'Bride details search section',
+      id: 'advancedSearch.form.brideDetails'
     },
-    fields: [
-      // field('child.placeOfBirth').exact(),
-      // field('child.birthLocation', {
-      //   searchCriteriaLabelPrefix: childPrefix,
-      //   conditionals: [
-      //     {
-      //       type: ConditionalType.SHOW,
-      //       conditional: field('child.placeOfBirth').isEqualTo(
-      //         PlaceOfBirth.HEALTH_FACILITY
-      //       )
-      //     }
-      //   ],
-      //   allowedLocations: user.jurisdiction(
-      //     user.scope('record.search').attribute('placeOfEvent')
-      //   )
-      // }).exact(),
-      // field('child.birthLocation.privateHome').exact(),
-      // field('child.birthLocation.other').exact()
-    ]
-  },
-  {
-    title: {
-      defaultMessage: 'Mother details',
-      description: 'The title of Mother details accordion',
-      id: 'advancedSearch.form.motherDetails'
-    },
-    fields: [
-      // field('mother.dob', {
-      //   searchCriteriaLabelPrefix: motherPrefix
-      // }).range(),
-      // field('mother.name', {
-      //   validations: [],
-      //   conditionals: []
-      // }).fuzzy()
-    ]
-  },
-  {
-    title: {
-      defaultMessage: 'Father details',
-      description: 'The title of Father details accordion',
-      id: 'advancedSearch.form.fatherDetails'
-    },
-    fields: [
-      // field('father.dob', {
-      //   searchCriteriaLabelPrefix: fatherPrefix
-      // }).range(),
-      // field('father.name', {
-      //   validations: [],
-      //   conditionals: []
-      // }).fuzzy()
-    ]
+    fields: [field('bride.name').fuzzy()]
   },
   {
     title: {
       defaultMessage: 'Informant details',
-      description: 'The title of Informant details accordion',
+      description: 'Informant details search section',
       id: 'advancedSearch.form.informantDetails'
     },
     fields: [
-      // TODO: FIXME: to be removed
-      // field('informant.dob', {
-      //   conditionals: [],
-      //   searchCriteriaLabelPrefix: informantPrefix
-      // }).range(),
-      // field('informant.name', {
-      //   conditionals: [],
-      //   validations: []
-      // }).fuzzy()
+      field('informant.phoneNo').fuzzy(),
+      field('informant.email').fuzzy()
     ]
   }
 ] satisfies AdvancedSearchConfig[]
