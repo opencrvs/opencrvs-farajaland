@@ -15,6 +15,7 @@ import { createSelectOptions } from './select-options'
 export const BIRTH_REGISTRATION_TARGET_DAYS = 30
 export const BIRTH_LATE_REGISTRATION_TARGET_DAYS = 365
 export const DEATH_REGISTRATION_TARGET_DAYS = 45
+export const MARRIAGE_REGISTRATION_TARGET_DAYS = 30
 
 export const MarriageIdType = {
   NATIONAL_ID: 'NATIONAL_ID',

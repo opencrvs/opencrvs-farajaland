@@ -22,7 +22,7 @@ import { InformantType } from '../pages/informant'
 
 export const printCertificateCollectorIdentityVerify: FieldConfig[] = [
   {
-    id: 'collector.identity.verify.data.mother',
+    id: 'collector.identity.verify.data.bride',
     type: FieldType.DATA,
     conditionals: [
       {
@@ -43,17 +43,17 @@ export const printCertificateCollectorIdentityVerify: FieldConfig[] = [
     },
     configuration: {
       data: [
-        { fieldId: 'mother.idType' },
-        { fieldId: 'mother.nid' },
-        { fieldId: 'mother.passport' },
-        { fieldId: 'mother.name' },
-        { fieldId: 'mother.dob' },
-        { fieldId: 'mother.nationality' }
+        { fieldId: 'bride.idType' },
+        { fieldId: 'bride.nid' },
+        { fieldId: 'bride.passport' },
+        { fieldId: 'bride.name' },
+        { fieldId: 'bride.dob' },
+        { fieldId: 'bride.nationality' }
       ]
     }
   },
   {
-    id: 'collector.identity.verify.data.father',
+    id: 'collector.identity.verify.data.groom',
     type: FieldType.DATA,
     conditionals: [
       {
@@ -74,12 +74,12 @@ export const printCertificateCollectorIdentityVerify: FieldConfig[] = [
     },
     configuration: {
       data: [
-        { fieldId: 'father.idType' },
-        { fieldId: 'father.nid' },
-        { fieldId: 'father.passport' },
-        { fieldId: 'father.name' },
-        { fieldId: 'father.dob' },
-        { fieldId: 'father.nationality' }
+        { fieldId: 'groom.idType' },
+        { fieldId: 'groom.nid' },
+        { fieldId: 'groom.passport' },
+        { fieldId: 'groom.name' },
+        { fieldId: 'groom.dob' },
+        { fieldId: 'groom.nationality' }
       ]
     }
   },
@@ -103,13 +103,17 @@ export const printCertificateCollectorIdentityVerify: FieldConfig[] = [
     },
     configuration: {
       data: [
-        { fieldId: 'informant.relation' },
-        { fieldId: 'informant.idType' },
-        { fieldId: 'informant.nid' },
-        { fieldId: 'informant.passport' },
-        { fieldId: 'informant.name' },
+        { fieldId: 'collector.OTHER.idType' },
+        { fieldId: 'collector.PASSPORT.details' },
+        { fieldId: 'collector.nid' },
+        { fieldId: 'collector.DRIVING-LICENCE.details' },
+        { fieldId: 'collector.brn' },
+        { fieldId: 'collector.REFUGEE-NUMBER.details' },
+        { fieldId: 'collector.ALIEN-NUMBER.details' },
+        { fieldId: 'collector.OTHER.name' },
         { fieldId: 'informant.dob' },
-        { fieldId: 'informant.nationality' }
+        { fieldId: 'informant.nationality' },
+        { fieldId: 'collector.OTHER.relationshipToBrideOrGroom' }
       ]
     }
   }

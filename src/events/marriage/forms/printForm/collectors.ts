@@ -9,152 +9,30 @@
  * Copyright (C) The OpenCRVS Authors located at https://github.com/opencrvs/opencrvs-core/blob/master/AUTHORS.
  */
 
-import {
-  and,
-  ConditionalType,
-  field,
-  FieldConfig,
-  FieldType,
-  not
-} from '@opencrvs/toolkit/events'
-import { InformantType, InformantTypeKey } from '../pages/informant'
-import { informantMessageDescriptors } from '@countryconfig/events/utils'
+import { FieldConfig, FieldType } from '@opencrvs/toolkit/events'
+import { InformantType } from '../pages/informant'
 
-const onlyMotherExist = (informantType: InformantTypeKey) => {
-  return {
-    type: ConditionalType.SHOW,
-    conditional: and(
-      field('informant.relation').isEqualTo(informantType),
-      not(field('mother.name').isFalsy()),
-      field('father.name').isFalsy()
-    )
-  }
-}
-
-const onlyFatherExist = (informantType: InformantTypeKey) => {
-  return {
-    type: ConditionalType.SHOW,
-    conditional: and(
-      field('informant.relation').isEqualTo(informantType),
-      not(field('father.name').isFalsy()),
-      field('mother.name').isFalsy()
-    )
-  }
-}
-
-const fatherMotherBothExist = (informantType: InformantTypeKey) => {
-  return {
-    type: ConditionalType.SHOW,
-    conditional: and(
-      field('informant.relation').isEqualTo(informantType),
-      not(field('father.name').isFalsy()),
-      not(field('mother.name').isFalsy())
-    )
-  }
-}
-
-const fatherMotherBothDoesNotExist = (informantType: InformantTypeKey) => {
-  return {
-    type: ConditionalType.SHOW,
-    conditional: and(
-      field('informant.relation').isEqualTo(informantType),
-      field('father.name').isFalsy(),
-      field('mother.name').isFalsy()
-    )
-  }
-}
-
-const printInAdvanceOption = {
+const groomOption = {
   label: {
-    id: 'event.birth.action.certificate.form.section.requester.printInAdvance.label',
-    defaultMessage: 'Print in advance of issuance',
-    description: 'This is the label for the print-in-advance of issuance field'
-  },
-  value: 'PRINT_IN_ADVANCE'
-}
-
-const getFieldConfigForInformant = (informantType: InformantTypeKey) => {
-  return [
-    {
-      ...commonConfigs,
-      conditionals: [onlyMotherExist(informantType)],
-      options: [
-        getInformantOption(informantType),
-        motherOption,
-        otherOption,
-        printInAdvanceOption
-      ]
-    },
-    {
-      ...commonConfigs,
-      conditionals: [onlyFatherExist(informantType)],
-      options: [
-        getInformantOption(informantType),
-        fatherOption,
-        otherOption,
-        printInAdvanceOption
-      ]
-    },
-    {
-      ...commonConfigs,
-      conditionals: [fatherMotherBothExist(informantType)],
-      options: [
-        getInformantOption(informantType),
-        fatherOption,
-        motherOption,
-        otherOption,
-        printInAdvanceOption
-      ]
-    },
-    {
-      ...commonConfigs,
-      conditionals: [fatherMotherBothDoesNotExist(informantType)],
-      options: [
-        getInformantOption(informantType),
-        otherOption,
-        printInAdvanceOption
-      ]
-    }
-  ]
-}
-
-const getInformantOption = (informantType: InformantTypeKey) => {
-  const defaultMessage =
-    informantType === InformantType.GROOM
-      ? `Print and issue to Informant`
-      : `Print and issue to Informant (${informantMessageDescriptors[informantType].defaultMessage})`
-
-  return {
-    label: {
-      id: `v2.event.birth.action.certificate.form.section.requester.informant.${informantType.toLowerCase()}.label`,
-      defaultMessage,
-      description: 'This is the label for the field'
-    },
-    value: 'INFORMANT'
-  }
-}
-
-const fatherOption = {
-  label: {
-    id: 'event.birth.action.certificate.form.section.requester.father.label',
-    defaultMessage: 'Print and issue to Father',
-    description: 'This is the label for the field'
-  },
-  value: InformantType.BRIDE
-}
-
-const motherOption = {
-  label: {
-    id: 'event.birth.action.certificate.form.section.requester.mother.label',
-    defaultMessage: 'Print and issue to Mother',
+    id: 'event.marriage.action.certificate.form.section.requester.groom.label',
+    defaultMessage: 'Print and issue to Groom',
     description: 'This is the label for the field'
   },
   value: InformantType.GROOM
 }
 
+const brideOption = {
+  label: {
+    id: 'event.marriage.action.certificate.form.section.requester.bride.label',
+    defaultMessage: 'Print and issue to Bride',
+    description: 'This is the label for the field'
+  },
+  value: InformantType.BRIDE
+}
+
 const otherOption = {
   label: {
-    id: 'event.birth.action.certificate.form.section.requester.other.label',
+    id: 'event.marriage.action.certificate.form.section.requester.other.label',
     defaultMessage: 'Print and issue to someone else',
     description: 'This is the label for the field'
   },
@@ -164,7 +42,7 @@ const otherOption = {
 const requesterLabel = {
   defaultMessage: 'Requester',
   description: 'This is the label for the field',
-  id: 'event.birth.action.certificate.form.section.requester.label'
+  id: 'event.marriage.action.certificate.form.section.requester.label'
 }
 
 const commonConfigs = {
@@ -177,42 +55,7 @@ const commonConfigs = {
 export const printCertificateCollectors: FieldConfig[] = [
   {
     ...commonConfigs,
-    conditionals: [onlyMotherExist(InformantType.GROOM)],
-    options: [
-      getInformantOption(InformantType.GROOM),
-      otherOption,
-      printInAdvanceOption
-    ]
-  },
-  {
-    ...commonConfigs,
-    conditionals: [fatherMotherBothExist(InformantType.GROOM)],
-    options: [
-      getInformantOption(InformantType.GROOM),
-      fatherOption,
-      otherOption,
-      printInAdvanceOption
-    ]
-  },
-  {
-    ...commonConfigs,
-    conditionals: [onlyFatherExist(InformantType.BRIDE)],
-    options: [
-      getInformantOption(InformantType.BRIDE),
-      otherOption,
-      printInAdvanceOption
-    ]
-  },
-  {
-    ...commonConfigs,
-    conditionals: [fatherMotherBothExist(InformantType.BRIDE)],
-    options: [
-      getInformantOption(InformantType.BRIDE),
-      motherOption,
-      otherOption,
-      printInAdvanceOption
-    ]
-  },
-  ...getFieldConfigForInformant(InformantType.BRIDE),
-  ...getFieldConfigForInformant(InformantType.GROOM)
+
+    options: [groomOption, brideOption, otherOption]
+  }
 ]
