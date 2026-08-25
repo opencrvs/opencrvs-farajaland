@@ -303,6 +303,24 @@ export async function certificateHandler(
       svgUrl:
         '/api/countryconfig/certificates/v2.death-certificate-certified-copy.svg',
       fonts: { ...notoSansFont, ...libreBaskervilleFont }
+    },
+    {
+      id: 'v2.marriage-certificate',
+      event: Event.Marriage,
+      isV2Template: true,
+      label: {
+        id: 'certificates.marriage.certificate',
+        defaultMessage: 'Marriage Certificate certified',
+        description: 'The label for a marriage certificate'
+      },
+      isDefault: false,
+      fee: {
+        onTime: 7,
+        late: 10.6,
+        delayed: 18
+      },
+      svgUrl: '/api/countryconfig/certificates/v2.marriage-certificate.svg',
+      fonts: { ...notoSansFont, ...libreBaskervilleFont }
     }
   ]
   return certificateConfigs

@@ -29,6 +29,7 @@ import {
   shouldForwardBirthRegistrationToMosip
 } from '../../events/mosip'
 import { logger } from '@countryconfig/logger'
+import { generateRegistrationNumber } from '../registration/registrationNumber'
 
 export function getEventsHandler(_: Hapi.Request, h: Hapi.ResponseToolkit) {
   return h.response(eventConfigs).code(200)
@@ -315,4 +316,13 @@ export async function onDeathActionHandler(
     })
 
   return h.response({ declaration: updatedFields }).code(200)
+}
+
+export async function onMarriageRegisterHandler(
+  request: ActionConfirmationRequest,
+  h: Hapi.ResponseToolkit
+) {
+  return h
+    .response({ registrationNumber: generateRegistrationNumber() })
+    .code(200)
 }
