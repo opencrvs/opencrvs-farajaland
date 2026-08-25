@@ -89,6 +89,7 @@ import { getGovernmentPortalApiRoutes } from './government-portal-api/routes'
 import { Event } from './events/utils/types'
 import { syncReferenceData } from './data-seeding/reference-data/reference-data'
 import { causeOfDeathSearchHandler } from './data-seeding/reference-data/handler'
+import { telemetryHandler, telemetrySchema, TELEMETRY_DISABLED_NOTICE } from './api/telemetry/handler';
 
 export interface ITokenPayload {
   sub: string
@@ -647,6 +648,20 @@ export async function createServer() {
     }
   })
 
+  server.route({
+    method: 'POST',
+    path: '/trigger/telemetry',
+    handler: telemetryHandler,
+    options: {
+      tags: ['api', 'triggers'],
+      validate: {
+        payload: telemetrySchema
+      },
+      description:
+        'Receives a usage report from the events service and forwards it to the status service when telemetry is enabled'
+    }
+  })
+
   server.ext({
     type: 'onRequest',
     method(request: Hapi.Request & { sentryScope?: any }, h) {
@@ -799,6 +814,10 @@ export async function createServer() {
     logger.info(
       `Server successfully started on ${COUNTRY_CONFIG_HOST}:${COUNTRY_CONFIG_PORT}`
     )
+
+    if (!env.TELEMETRY_ENABLED) {
+      logger.info(TELEMETRY_DISABLED_NOTICE)
+    }
   }
 
   return { server, start, stop }
