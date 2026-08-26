@@ -17,3 +17,9 @@
  * Add custom helpers here as named exports, e.g.:
  *   export function myHelper(...args) { ... }
  */
+
+export function logger(): Handlebars.HelperDelegate {
+  return function (this: any, data: any) {
+    console.log('Logging ....... ', data)
+  }
+}
