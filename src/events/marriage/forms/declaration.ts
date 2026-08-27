@@ -68,7 +68,7 @@ export const MARRIAGE_DECLARATION_REVIEW = {
     },
     {
       type: FieldType.SIGNATURE,
-      id: 'groom.signature',
+      id: 'groomSignature',
       required: true,
       label: {
         defaultMessage: 'Signature of groom',
@@ -83,7 +83,7 @@ export const MARRIAGE_DECLARATION_REVIEW = {
     },
     {
       type: FieldType.SIGNATURE,
-      id: 'bride.signature',
+      id: 'brideSignature',
       required: true,
       label: {
         defaultMessage: 'Signature of bride',
@@ -98,7 +98,7 @@ export const MARRIAGE_DECLARATION_REVIEW = {
     },
     {
       type: FieldType.SIGNATURE,
-      id: 'witness1.signature',
+      id: 'witness1Signature',
       required: true,
       label: {
         defaultMessage: 'Signature of witness 1',
@@ -113,7 +113,7 @@ export const MARRIAGE_DECLARATION_REVIEW = {
     },
     {
       type: FieldType.SIGNATURE,
-      id: 'witness2.signature',
+      id: 'witness2Signature',
       required: true,
       label: {
         defaultMessage: 'Signature of witness 2',

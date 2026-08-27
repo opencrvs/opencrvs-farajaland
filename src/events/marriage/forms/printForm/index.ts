@@ -94,11 +94,16 @@ export const BIRTH_CERTIFICATE_COLLECTOR_FORM = defineActionForm({
       requireCompletionToContinue: true,
       title: {
         id: 'event.marriage.action.print.collectPayment',
-        defaultMessage: 'Collect Payment',
+        defaultMessage: 'Collect fees',
         description: 'This is the title of the section'
       },
-      conditional: not(
-        field('collector.requesterId').isEqualTo('PRINT_IN_ADVANCE')
+      conditional: and(
+        not(field('collector.requesterId').isEqualTo('PRINT_IN_ADVANCE')),
+        not(
+          field('certificateTemplateId').isEqualTo(
+            'v2.marriage-certified-certificate'
+          )
+        )
       ),
       fields: [
         {
@@ -149,6 +154,87 @@ export const BIRTH_CERTIFICATE_COLLECTOR_FORM = defineActionForm({
                 value: '$5.00'
               }
             ]
+          }
+        },
+        {
+          id: 'collector.collect.payment.data.receipt',
+          type: FieldType.TEXT,
+          label: {
+            defaultMessage: 'Receipt Number',
+            description: 'Title for the data entry',
+            id: 'event.marriage.action.certificate.form.section.collectPayment.receiptNumber.label'
+          }
+        }
+      ]
+    },
+    {
+      id: 'collector.collect.payment',
+      type: PageTypes.enum.FORM,
+      requireCompletionToContinue: true,
+      title: {
+        id: 'event.marriage.action.print.collectPayment',
+        defaultMessage: 'Collect fees',
+        description: 'This is the title of the section'
+      },
+      conditional: field('certificateTemplateId').isEqualTo(
+        'v2.marriage-certified-certificate'
+      ),
+      fields: [
+        {
+          id: 'collector.collect.payment.data.inBetweenRegistrationTargets',
+          type: FieldType.DATA,
+          analytics: true,
+          label: {
+            defaultMessage: 'Payment details',
+            description: 'Title for the data section',
+            id: 'event.marriage.action.certificate.form.section.collectPayment.data.label'
+          },
+          conditionals: [
+            {
+              type: ConditionalType.SHOW,
+              conditional: and(
+                field('marriageDetails.dateOfMarriage')
+                  .isAfter()
+                  .days(MARRIAGE_REGISTRATION_TARGET_DAYS)
+                  .inPast(),
+                field('marriageDetails.dateOfMarriage').isBefore().now()
+              )
+            }
+          ],
+          configuration: {
+            data: [
+              {
+                id: 'service',
+                label: {
+                  defaultMessage: 'Service',
+                  description: 'Title for the data entry',
+                  id: 'event.marriage.action.certificate.form.section.collectPayment.service.label'
+                },
+                value: {
+                  defaultMessage: 'Certified copy of marriage record',
+                  description: 'Certified copy of marriage record message',
+                  id: 'event.marriage.action.certificate.form.section.collectPayment.service.label.certifiedCopyOfMarriageRecord'
+                }
+              },
+              {
+                id: 'fee',
+                label: {
+                  defaultMessage: 'Fee',
+                  description: 'Title for the data entry',
+                  id: 'event.marriage.action.certificate.form.section.collectPayment.fee.label'
+                },
+                value: '$10.00'
+              }
+            ]
+          }
+        },
+        {
+          id: 'collector.collect.payment.data.receipt',
+          type: FieldType.TEXT,
+          label: {
+            defaultMessage: 'Receipt Number',
+            description: 'Title for the data entry',
+            id: 'event.marriage.action.certificate.form.section.collectPayment.receiptNumber.label'
           }
         }
       ]
