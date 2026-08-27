@@ -33,55 +33,31 @@ const commonConfigs = {
   label: {
     defaultMessage: 'Requester',
     description: 'This is the label for the field',
-    id: 'event.birth.action.correction.form.section.requester.label'
+    id: 'event.marriage.action.correction.form.section.requester.label'
   }
 }
 
 const commonOptions = [
   {
-    value: 'CHILD',
+    value: 'GROOM',
     label: {
-      id: 'event.birth.action.correction.form.requester.type.child',
-      defaultMessage: 'Child',
+      id: 'event.marriage.action.correction.form.requester.type.groom',
+      defaultMessage: 'Groom',
       description: 'This is the label for the correction requester field'
     }
   },
   {
-    value: 'LEGAL_GUARDIAN',
+    value: 'BRIDE',
     label: {
-      id: 'event.birth.action.correction.form.requester.type.legalGuardian',
-      defaultMessage: 'Legal Guardian',
-      description: 'This is the label for the correction requester field'
-    }
-  },
-  {
-    value: 'ANOTHER_AGENT',
-    label: {
-      id: 'event.birth.action.correction.form.requester.type.anotherAgent',
-      defaultMessage: 'Another registration agent or field agent',
-      description: 'This is the label for the correction requester field'
-    }
-  },
-  {
-    value: 'ME',
-    label: {
-      id: 'event.birth.action.correction.form.requester.type.me',
-      defaultMessage: 'Me',
-      description: 'This is the label for the correction requester field'
-    }
-  },
-  {
-    value: 'COURT',
-    label: {
-      id: 'event.birth.action.correction.form.requester.type.court',
-      defaultMessage: 'Court',
+      id: 'event.marriage.action.correction.form.requester.type.bride',
+      defaultMessage: 'Bride',
       description: 'This is the label for the correction requester field'
     }
   },
   {
     value: 'SOMEONE_ELSE',
     label: {
-      id: 'event.birth.action.correction.form.requester.type.someoneElse',
+      id: 'event.marriage.action.correction.form.requester.type.someoneElse',
       defaultMessage: 'Someone else',
       description: 'This is the label for the correction requester field'
     }
@@ -178,7 +154,7 @@ const getInformantOption = (informantType: InformantTypeKey) => {
 
   return {
     label: {
-      id: `v2.event.birth.action.correction.form.section.requester.informant.${informantType.toLowerCase()}.label`,
+      id: `v2.event.marriage.action.correction.form.section.requester.informant.${informantType.toLowerCase()}.label`,
       defaultMessage,
       description: 'This is the label for the field'
     },
@@ -188,7 +164,7 @@ const getInformantOption = (informantType: InformantTypeKey) => {
 
 const fatherOption = {
   label: {
-    id: 'event.birth.action.correction.form.section.requester.father.label',
+    id: 'event.marriage.action.correction.form.section.requester.father.label',
     defaultMessage: 'Father',
     description: 'This is the label for the field'
   },
@@ -197,7 +173,7 @@ const fatherOption = {
 
 const motherOption = {
   label: {
-    id: 'event.birth.action.correction.form.section.requester.mother.label',
+    id: 'event.marriage.action.correction.form.section.requester.mother.label',
     defaultMessage: 'Mother',
     description: 'This is the label for the field'
   },
@@ -241,7 +217,7 @@ export const correctionFormRequesters: FieldConfig[] = [
     label: {
       defaultMessage: 'Form of ID',
       description: 'This is the label for the field',
-      id: 'event.birth.action.correction.form.section.requester.idType.label'
+      id: 'event.marriage.action.correction.form.section.requester.idType.label'
     },
     options: idTypeOptions,
     conditionals: [
@@ -258,7 +234,7 @@ export const correctionFormRequesters: FieldConfig[] = [
     label: {
       defaultMessage: 'ID Number',
       description: 'This is the label for the field',
-      id: 'event.birth.action.correction.form.section.requester.nid.label'
+      id: 'event.marriage.action.correction.form.section.requester.nid.label'
     },
     conditionals: [
       {
@@ -278,7 +254,7 @@ export const correctionFormRequesters: FieldConfig[] = [
     label: {
       defaultMessage: 'ID Number',
       description: 'This is the label for the field',
-      id: 'event.birth.action.correction.form.section.requester.passport.label'
+      id: 'event.marriage.action.correction.form.section.requester.passport.label'
     },
     conditionals: [
       {
@@ -297,7 +273,7 @@ export const correctionFormRequesters: FieldConfig[] = [
     required: true,
     hideLabel: true,
     label: {
-      id: 'event.birth.action.correction.form.section.requester.name.label',
+      id: 'event.marriage.action.correction.form.section.requester.name.label',
       defaultMessage: 'Name',
       description: 'This is the label for the field'
     },
@@ -313,14 +289,14 @@ export const correctionFormRequesters: FieldConfig[] = [
     type: 'TEXT',
     required: true,
     label: {
-      id: 'event.birth.action.correction.form.section.requester.relationship.label',
+      id: 'event.marriage.action.correction.form.section.requester.relationship.label',
       defaultMessage: 'Informant type',
       description: 'This is the label for the field'
     },
     placeholder: {
       defaultMessage: 'eg. Grandmother',
       description: 'This is the placeholder for the field',
-      id: 'event.birth.action.correction.form.section.requester.relationship.placeholder'
+      id: 'event.marriage.action.correction.form.section.requester.relationship.placeholder'
     },
     conditionals: [
       {

@@ -17,6 +17,7 @@ import {
   FieldType,
   flag,
   InherentFlags,
+  never,
   not,
   or,
   status,
@@ -846,9 +847,7 @@ export const marriageEvent = defineConfig({
           '{groom.name.firstname, select, __EMPTY__ {Marriage declaration} other {{groom.name.firstname, select, __EMPTY__ {Marriage declaration for {groom.name.surname}} other {Marriage declaration for {groom.name.firstname} {groom.name.surname} and {bride.name.firstname} {bride.name.surname}}}}}',
         description: 'Title of the form to show in review page'
       },
-      conditionals: [
-        { type: ConditionalType.SHOW, conditional: not(flag('revoked')) }
-      ],
+      conditionals: [{ type: ConditionalType.SHOW, conditional: never() }],
       correctionForm: CORRECTION_FORM
     },
     {

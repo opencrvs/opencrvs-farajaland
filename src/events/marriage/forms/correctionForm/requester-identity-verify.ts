@@ -33,7 +33,7 @@ export const correctionRequesterIdentityVerify: FieldConfig[] = [
     label: {
       defaultMessage: '',
       description: 'Title for the data section',
-      id: 'event.birth.action.correction.form.section.verifyIdentity.data.label'
+      id: 'event.marriage.action.correction.form.section.verifyIdentity.data.label'
     },
     configuration: {
       data: [{ fieldId: 'groom.name' }, { fieldId: 'groom.dob' }]
@@ -57,7 +57,7 @@ export const correctionRequesterIdentityVerify: FieldConfig[] = [
     label: {
       defaultMessage: '',
       description: 'Title for the data section',
-      id: 'event.birth.action.correction.form.section.verifyIdentity.data.label'
+      id: 'event.marriage.action.correction.form.section.verifyIdentity.data.label'
     },
     configuration: {
       data: [
@@ -88,7 +88,7 @@ export const correctionRequesterIdentityVerify: FieldConfig[] = [
     label: {
       defaultMessage: '',
       description: 'Title for the data section',
-      id: 'event.birth.action.correction.form.section.verifyIdentity.data.label'
+      id: 'event.marriage.action.correction.form.section.verifyIdentity.data.label'
     },
     configuration: {
       data: [
@@ -117,7 +117,7 @@ export const correctionRequesterIdentityVerify: FieldConfig[] = [
     label: {
       defaultMessage: '',
       description: 'Title for the data section',
-      id: 'event.birth.action.correction.form.section.verifyIdentity.data.label'
+      id: 'event.marriage.action.correction.form.section.verifyIdentity.data.label'
     },
     configuration: {
       data: [
