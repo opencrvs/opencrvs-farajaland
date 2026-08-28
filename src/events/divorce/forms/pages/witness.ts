@@ -18,7 +18,10 @@ import {
   never
 } from '@opencrvs/toolkit/events'
 import { emptyMessage } from '@countryconfig/events/utils'
-import { farajalandNameConfig, invalidNameValidator } from '../../validators'
+import {
+  farajalandNameConfig,
+  invalidNameValidator
+} from '@countryconfig/events/birth/validators'
 
 export const witness = defineFormPage({
   id: 'witness',
