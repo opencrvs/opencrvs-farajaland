@@ -21,10 +21,7 @@ import {
 import { or } from '@opencrvs/toolkit/conditionals'
 import { InformantType } from './informant'
 import { emptyMessage } from '@countryconfig/events/utils'
-import {
-  farajalandNameConfig,
-  invalidNameValidator
-} from '@countryconfig/events/birth/validators'
+import { farajalandNameConfig, invalidNameValidator } from '../../validators'
 
 export const requireFatherDetails = or(
   field('father.detailsNotAvailable').isFalsy(),

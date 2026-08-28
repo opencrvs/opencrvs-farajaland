@@ -39,7 +39,7 @@ export const printCertificateCollectorIdentityVerify: FieldConfig[] = [
     label: {
       defaultMessage: 'Identity details',
       description: 'Title for the data section',
-      id: 'event.birth.action.certificate.form.section.verifyIdentity.data.label'
+      id: 'event.marriage.action.certificate.form.section.verifyIdentity.data.label'
     },
     configuration: {
       data: [
@@ -70,7 +70,7 @@ export const printCertificateCollectorIdentityVerify: FieldConfig[] = [
     label: {
       defaultMessage: 'Identity details',
       description: 'Title for the data section',
-      id: 'event.birth.action.certificate.form.section.verifyIdentity.data.label'
+      id: 'event.marriage.action.certificate.form.section.verifyIdentity.data.label'
     },
     configuration: {
       data: [
@@ -99,7 +99,7 @@ export const printCertificateCollectorIdentityVerify: FieldConfig[] = [
     label: {
       defaultMessage: 'Identity details',
       description: 'Title for the data section',
-      id: 'event.birth.action.certificate.form.section.verifyIdentity.data.label'
+      id: 'event.marriage.action.certificate.form.section.verifyIdentity.data.label'
     },
     configuration: {
       data: [
