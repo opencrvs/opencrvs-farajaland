@@ -28,7 +28,7 @@ import {
   MARRIAGE_DECLARATION_REVIEW
 } from './forms/declaration'
 import { advancedSearchBirth } from './advancedSearch'
-import { BIRTH_CERTIFICATE_COLLECTOR_FORM } from './forms/printForm'
+import { MARRIAGE_CERTIFICATE_COLLECTOR_FORM } from './forms/printForm'
 import { CORRECTION_FORM } from './forms/correctionForm'
 import { dedupConfig } from './dedupConfig'
 import * as verifiableCredentialActions from '@countryconfig/verifiable-credentials/issue-birth-credential-action'
@@ -837,7 +837,7 @@ export const marriageEvent = defineConfig({
         },
         { id: 'pending-first-certificate-issuance', operation: 'remove' }
       ],
-      printForm: BIRTH_CERTIFICATE_COLLECTOR_FORM
+      printForm: MARRIAGE_CERTIFICATE_COLLECTOR_FORM
     },
     {
       type: ActionType.REQUEST_CORRECTION,
