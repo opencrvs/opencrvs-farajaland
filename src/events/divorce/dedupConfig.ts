@@ -10,7 +10,12 @@
  */
 import { field, and, or } from '@opencrvs/toolkit/events/deduplication'
 
-const similarNamedGroom = field('groom.name').fuzzyMatches()
-const similarNamedBride = field('bride.name').fuzzyMatches()
+const similarFirstNamedHusband = field('husband.firstname').fuzzyMatches()
+const similarLastNamedHusband = field('husband.surname').fuzzyMatches()
+const similarFirstNamedWife = field('wife.firstname').fuzzyMatches()
+const similarLastNamedWife = field('wife.surname').fuzzyMatches()
 
-export const dedupConfig = or(and(similarNamedGroom, similarNamedBride))
+export const dedupConfig = or(
+  and(similarFirstNamedHusband, similarLastNamedHusband),
+  and(similarFirstNamedWife, similarLastNamedWife)
+)

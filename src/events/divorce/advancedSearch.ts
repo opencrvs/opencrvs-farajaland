@@ -14,34 +14,37 @@ import { AdvancedSearchConfig, event, field } from '@opencrvs/toolkit/events'
 export const advancedSearchBirth = [
   {
     title: {
-      defaultMessage: 'Marriage details',
-      description: 'The title of Marriage details accordion',
-      id: 'advancedSearch.form.marriageDetails'
+      defaultMessage: 'Divorce details',
+      description: 'The title of Divorce details accordion',
+      id: 'advancedSearch.form.divorceDetails'
     },
     fields: [
       event('legalStatuses.REGISTERED.createdAtLocation').within(),
       event('legalStatuses.REGISTERED.registrationNumber').exact(),
-      field('marriageDetails.dateOfMarriage').range(),
-      field('marriageDetails.placeOfMarriage').exact(),
+      field('divorce.dateOfDivorce').range(),
+      field('court.name').exact(),
       event('status').exact(),
       event('updatedAt').range()
     ]
   },
   {
     title: {
-      defaultMessage: "Groom's details",
-      description: 'Groom details search section',
-      id: 'advancedSearch.form.groomDetails'
+      defaultMessage: "Husband's details",
+      description: 'Husband details search section',
+      id: 'advancedSearch.form.husbandDetails'
     },
-    fields: [field('groom.name').fuzzy()]
+    fields: [
+      field('husband.firstname').fuzzy(),
+      field('husband.surname').fuzzy()
+    ]
   },
   {
     title: {
-      defaultMessage: "Bride's details",
-      description: 'Bride details search section',
-      id: 'advancedSearch.form.brideDetails'
+      defaultMessage: "Wife's details",
+      description: 'Wife details search section',
+      id: 'advancedSearch.form.wifeDetails'
     },
-    fields: [field('bride.name').fuzzy()]
+    fields: [field('wife.firstname').fuzzy(), field('wife.surname').fuzzy()]
   },
   {
     title: {
