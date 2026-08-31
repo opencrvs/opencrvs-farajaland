@@ -58,7 +58,8 @@ import {
   onBirthCorrectionActionHandler,
   onDeathActionHandler,
   onCustomActionHandler,
-  onMarriageRegisterHandler
+  onMarriageRegisterHandler,
+  onDivorceRegisterHandler
 } from '@countryconfig/api/events/handler'
 import {
   ActionDocument,
@@ -634,6 +635,16 @@ export async function createServer() {
     method: 'POST',
     path: `/trigger/events/${Event.Marriage}/actions/${ActionType.REGISTER}`,
     handler: onMarriageRegisterHandler,
+    options: {
+      tags: ['api', 'events'],
+      description: 'Receives notifications on event actions'
+    }
+  })
+
+  server.route({
+    method: 'POST',
+    path: `/trigger/events/${Event.Divorce}/actions/${ActionType.REGISTER}`,
+    handler: onDivorceRegisterHandler,
     options: {
       tags: ['api', 'events'],
       description: 'Receives notifications on event actions'

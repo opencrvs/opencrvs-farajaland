@@ -23,10 +23,10 @@ import { printCertificateCollectors } from './collectors'
 import { printCertificateCollectorOther } from './collector-other'
 import { printCertificateCollectorIdentityVerify } from './collector-identity-verify'
 
-export const BIRTH_CERTIFICATE_COLLECTOR_FORM = defineActionForm({
+export const DIVORCE_CERTIFICATE_COLLECTOR_FORM = defineActionForm({
   label: {
-    id: 'event.marriage.action.certificate.form.label',
-    defaultMessage: 'Marriage certificate collector',
+    id: 'event.divorce.action.certificate.form.label',
+    defaultMessage: 'Divorce certificate collector',
     description: 'This is what this form is referred as in the system'
   },
   pages: [

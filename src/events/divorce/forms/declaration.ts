@@ -22,16 +22,14 @@ import {
 } from '@opencrvs/toolkit/events'
 import { marriageDetails } from './pages/marriageDetails'
 import { informant } from './pages/informant'
-import { bride } from './pages/bride'
-import { groom } from './pages/groom'
 import { documents } from './pages/documents'
-import { witness } from './pages/witness'
+import { divorceDetails } from './pages/divorceDetails'
 
-export const MARRIAGE_DECLARATION_REVIEW = {
+export const DIVORCE_DECLARATION_REVIEW = {
   title: {
-    id: 'event.marriage.action.declare.form.review.title',
+    id: 'event.divorce.action.declare.form.review.title',
     defaultMessage:
-      '{groom.name.firstname, select, __EMPTY__ {Marriage declaration} other {{groom.name.firstname, select, __EMPTY__ {Marriage declaration for {groom.name.surname}} other {Marriage declaration for {groom.name.firstname} {groom.name.surname} and {bride.name.firstname} {bride.name.surname}}}}}',
+      '{husband.firstname, select, __EMPTY__ {Divorce declaration} other {{husband.firstname, select, __EMPTY__ {Divorce declaration for {husband.surname}} other {Divorce declaration for {husband.firstname} {husband.surname} and {wife.firstname} {wife.surname}}}}}',
     description: 'Title of the form to show in review page'
   },
   fields: [
@@ -40,15 +38,15 @@ export const MARRIAGE_DECLARATION_REVIEW = {
       type: FieldType.ALPHA_PRINT_BUTTON,
       label: {
         defaultMessage: 'Print certificate in advance of registration',
-        id: 'event.marriage.action.declare.form.review.print.label',
+        id: 'event.divorce.action.declare.form.review.print.label',
         description: 'Label for the print button in the review section'
       },
       configuration: {
-        template: 'v2.marriage-certified-certificate',
+        template: 'v2.divorce-certified-certificate',
         buttonLabel: {
           defaultMessage: 'Print certificate in advance of registration',
           description: "Print button's label",
-          id: 'event.marriage.action.declare.form.review.print.label'
+          id: 'event.divorce.action.declare.form.review.print.label'
         }
       },
       conditionals: [
@@ -68,11 +66,11 @@ export const MARRIAGE_DECLARATION_REVIEW = {
     },
     {
       type: FieldType.SIGNATURE,
-      id: 'groomSignature',
-      required: true,
+      id: 'husbandSignature',
+      required: false,
       label: {
-        defaultMessage: 'Signature of groom',
-        id: 'event.marriage.action.declare.form.review.groom.signature.label',
+        defaultMessage: 'Signature of husband',
+        id: 'event.divorce.action.declare.form.review.husband.signature.label',
         description: 'Label for the signature field in the review section'
       },
       signaturePromptLabel: {
@@ -83,41 +81,11 @@ export const MARRIAGE_DECLARATION_REVIEW = {
     },
     {
       type: FieldType.SIGNATURE,
-      id: 'brideSignature',
-      required: true,
+      id: 'wifeSignature',
+      required: false,
       label: {
-        defaultMessage: 'Signature of bride',
-        id: 'event.marriage.action.declare.form.review.bride.signature.label',
-        description: 'Label for the signature field in the review section'
-      },
-      signaturePromptLabel: {
-        id: 'signature.upload.modal.title',
-        defaultMessage: 'Draw signature',
-        description: 'Title for the modal to draw signature'
-      }
-    },
-    {
-      type: FieldType.SIGNATURE,
-      id: 'witness1Signature',
-      required: true,
-      label: {
-        defaultMessage: 'Signature of witness 1',
-        id: 'event.marriage.action.declare.form.review.witness1.signature.label',
-        description: 'Label for the signature field in the review section'
-      },
-      signaturePromptLabel: {
-        id: 'signature.upload.modal.title',
-        defaultMessage: 'Draw signature',
-        description: 'Title for the modal to draw signature'
-      }
-    },
-    {
-      type: FieldType.SIGNATURE,
-      id: 'witness2Signature',
-      required: true,
-      label: {
-        defaultMessage: 'Signature of witness 2',
-        id: 'event.marriage.action.declare.form.review.witness2.signature.label',
+        defaultMessage: 'Signature of wife',
+        id: 'event.divorce.action.declare.form.review.wife.signature.label',
         description: 'Label for the signature field in the review section'
       },
       signaturePromptLabel: {
@@ -129,12 +97,12 @@ export const MARRIAGE_DECLARATION_REVIEW = {
   ]
 }
 
-export const MARRIAGE_DECLARATION_FORM = defineDeclarationForm({
+export const DIVORCE_DECLARATION_FORM = defineDeclarationForm({
   label: {
-    defaultMessage: 'Marriage declaration form',
-    id: 'event.marriage.action.declare.form.label',
+    defaultMessage: 'Divorce declaration form',
+    id: 'event.divorce.action.declare.form.label',
     description: 'This is what this form is referred as in the system'
   },
 
-  pages: [informant, marriageDetails, bride, groom, witness, documents]
+  pages: [informant, marriageDetails, divorceDetails, documents]
 })

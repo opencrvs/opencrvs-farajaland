@@ -326,3 +326,12 @@ export async function onMarriageRegisterHandler(
     .response({ registrationNumber: generateRegistrationNumber() })
     .code(200)
 }
+
+export async function onDivorceRegisterHandler(
+  request: ActionConfirmationRequest,
+  h: Hapi.ResponseToolkit
+) {
+  return h
+    .response({ registrationNumber: generateRegistrationNumber() })
+    .code(200)
+}

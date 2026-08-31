@@ -24,11 +24,11 @@ import {
   user
 } from '@opencrvs/toolkit/events'
 import {
-  MARRIAGE_DECLARATION_FORM,
-  MARRIAGE_DECLARATION_REVIEW
+  DIVORCE_DECLARATION_FORM,
+  DIVORCE_DECLARATION_REVIEW
 } from './forms/declaration'
 import { advancedSearchBirth } from './advancedSearch'
-import { BIRTH_CERTIFICATE_COLLECTOR_FORM } from './forms/printForm'
+import { DIVORCE_CERTIFICATE_COLLECTOR_FORM } from './forms/printForm'
 import { CORRECTION_FORM } from './forms/correctionForm'
 import { dedupConfig } from './dedupConfig'
 import * as verifiableCredentialActions from '@countryconfig/verifiable-credentials/issue-birth-credential-action'
@@ -36,16 +36,17 @@ import { Event } from '@countryconfig/events/utils'
 
 export const divorceEvent = defineConfig({
   id: Event.Divorce,
-  declaration: MARRIAGE_DECLARATION_FORM,
+  declaration: DIVORCE_DECLARATION_FORM,
   label: {
     defaultMessage: 'Divorce',
     description: 'This is what this event is referred as in the system',
     id: 'event.divorce.label'
   },
-  dateOfEvent: field('marriageDetails.dateOfMarriage'),
-  placeOfEvent: field('marriageDetails.placeOfMarriage'),
+  dateOfEvent: field('divorce.dateOfDivorce'),
+  placeOfEvent: field('court.name'),
   title: {
-    defaultMessage: '{groom.name.surname} AND {bride.name.surname}',
+    defaultMessage:
+      '{husband.firstname} {husband.surname} AND {wife.firstname} {wife.surname}',
     description: 'This is the title of the summary',
     id: 'event.divorce.title'
   },
@@ -201,7 +202,7 @@ export const divorceEvent = defineConfig({
           'This is shown as the action name anywhere the user can trigger the action from',
         id: 'event.divorce.action.Read.label'
       },
-      review: MARRIAGE_DECLARATION_REVIEW
+      review: DIVORCE_DECLARATION_REVIEW
     },
     {
       type: ActionType.DECLARE,
@@ -211,7 +212,7 @@ export const divorceEvent = defineConfig({
           'This is shown as the action name anywhere the user can trigger the action from',
         id: 'event.divorce.action.declare.label'
       },
-      review: MARRIAGE_DECLARATION_REVIEW,
+      review: DIVORCE_DECLARATION_REVIEW,
       deduplication: {
         id: 'divorce-deduplication',
         label: {
@@ -416,19 +417,19 @@ export const divorceEvent = defineConfig({
           options: [
             {
               label: {
-                defaultMessage: 'Bride',
-                id: 'form.field.label.app.whoContDet.bride',
-                description: 'Label for bride'
+                defaultMessage: 'Wife',
+                id: 'form.field.label.app.whoContDet.wife',
+                description: 'Label for wife'
               },
-              value: 'BRIDE'
+              value: 'WIFE'
             },
             {
               label: {
-                defaultMessage: 'Groom',
-                id: 'form.field.label.informantRelation.groom',
-                description: 'Label for groom'
+                defaultMessage: 'Husband',
+                id: 'form.field.label.informantRelation.husband',
+                description: 'Label for husband'
               },
-              value: 'GROOM'
+              value: 'HUSBAND'
             },
             {
               label: {
@@ -837,14 +838,14 @@ export const divorceEvent = defineConfig({
         },
         { id: 'pending-first-certificate-issuance', operation: 'remove' }
       ],
-      printForm: BIRTH_CERTIFICATE_COLLECTOR_FORM
+      printForm: DIVORCE_CERTIFICATE_COLLECTOR_FORM
     },
     {
       type: ActionType.REQUEST_CORRECTION,
       label: {
         id: 'event.divorce.action.declare.form.review.title',
         defaultMessage:
-          '{groom.name.firstname, select, __EMPTY__ {Marriage declaration} other {{groom.name.firstname, select, __EMPTY__ {Marriage declaration for {groom.name.surname}} other {Marriage declaration for {groom.name.firstname} {groom.name.surname} and {bride.name.firstname} {bride.name.surname}}}}}',
+          '{husband.firstname, select, __EMPTY__ {Divorce declaration} other {{husband.firstname, select, __EMPTY__ {Divorce declaration for {husband.surname}} other {Divorce declaration for {husband.firstname} {husband.surname} and {wife.firstname} {wife.surname}}}}}',
         description: 'Title of the form to show in review page'
       },
       conditionals: [{ type: ConditionalType.SHOW, conditional: never() }],

@@ -65,7 +65,7 @@ export const documents = defineFormPage({
   conditional: not(user.hasRole('HOSPITAL_CLERK')),
   fields: [
     {
-      id: 'documents.intentionToMarry',
+      id: 'documents.courtOrder',
       type: FieldType.FILE,
       required: false,
       uncorrectable: true,
@@ -75,60 +75,29 @@ export const documents = defineFormPage({
           width: 'full'
         },
         fileName: {
-          defaultMessage: 'Intention to marry',
+          defaultMessage: 'Court order',
           description: 'This is the label for the file name',
-          id: 'form.field.label.intentionToMarry.fileName'
+          id: 'form.field.label.courtOrder.fileName'
         }
       },
       label: {
         defaultMessage: 'Intention to marry',
         description: 'This is the label for the field',
-        id: 'event.marriage.action.declare.form.section.documents.field.intentionToMarry.label'
+        id: 'event.divorce.action.declare.form.section.documents.field.intentionToMarry.label'
       }
     },
     {
-      id: 'documents.proofOfBride',
+      id: 'documents.proofOfInformantID',
       type: FieldType.FILE_WITH_OPTIONS,
       required: true,
       uncorrectable: true,
       label: {
-        defaultMessage: "Proof of bride's ID",
+        defaultMessage: "Proof of informant's ID",
         description: 'This is the label for the field',
-        id: 'event.marriage.action.declare.form.section.documents.field.proofOfBride.label'
+        id: 'event.divorce.action.declare.form.section.documents.field.proofOfInformantID.label'
       },
       configuration: DEFAULT_FILE_CONFIGURATION,
-      options: idTypeOptions,
-      conditionals: [
-        {
-          type: ConditionalType.SHOW,
-          conditional: and(
-            not(field('bride.verified').isEqualTo('authenticated')),
-            not(field('bride.idType').isEqualTo('NONE'))
-          )
-        }
-      ]
-    },
-    {
-      id: 'documents.proofOfGroom',
-      type: FieldType.FILE_WITH_OPTIONS,
-      required: true,
-      uncorrectable: true,
-      label: {
-        defaultMessage: "Proof of groom's ID",
-        description: 'This is the label for the field',
-        id: 'event.marriage.action.declare.form.section.documents.field.proofOfGroom.label'
-      },
-      configuration: DEFAULT_FILE_CONFIGURATION,
-      options: idTypeOptions,
-      conditionals: [
-        {
-          type: ConditionalType.SHOW,
-          conditional: and(
-            not(field('groom.verified').isEqualTo('authenticated')),
-            not(field('groom.idType').isEqualTo('NONE'))
-          )
-        }
-      ]
+      options: idTypeOptions
     }
   ]
 })
