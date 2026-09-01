@@ -177,7 +177,7 @@
             font-size="9.7" font-weight="bold" letter-spacing="0px"><tspan x="104.679" y="414.264">Date of marriage</tspan><tspan x="104.679" y="429.264">Date du mariage</tspan></text>
         <g clip-path="url(#clip8_2238_1329)">
             <text fill="#222222" style="white-space: pre" xml:space="preserve"
-                font-family="Noto Sans" font-size="9.7" letter-spacing="0px"><tspan x="289.949" y="421.764">{{ $lookup $declaration 'divorce.dateOfMarriage'}} </tspan></text>
+                font-family="Noto Sans" font-size="9.7" letter-spacing="0px"><tspan x="289.949" y="421.764">{{ $lookup $declaration 'divorce.dateOfMarriage' }} </tspan></text>
         </g>
         <line x1="81.3994" y1="438.335" x2="512.079" y2="438.335" stroke="#ECECEC"
             stroke-width="0.97" />
