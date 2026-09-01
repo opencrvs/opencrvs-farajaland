@@ -18,10 +18,9 @@ import {
   not,
   PageTypes
 } from '@opencrvs/toolkit/events'
-import { MARRIAGE_REGISTRATION_TARGET_DAYS } from '@countryconfig/events/utils'
+import { DIVORCE_REGISTRATION_TARGET_DAYS } from '@countryconfig/events/utils'
 import { printCertificateCollectors } from './collectors'
 import { printCertificateCollectorOther } from './collector-other'
-import { printCertificateCollectorIdentityVerify } from './collector-identity-verify'
 
 export const DIVORCE_CERTIFICATE_COLLECTOR_FORM = defineActionForm({
   label: {
@@ -35,65 +34,18 @@ export const DIVORCE_CERTIFICATE_COLLECTOR_FORM = defineActionForm({
       type: PageTypes.enum.FORM,
       requireCompletionToContinue: true,
       title: {
-        id: 'event.marriage.action.certificate.form.section.who.title',
+        id: 'event.divorce.action.certificate.form.section.who.title',
         defaultMessage: 'Certify record',
         description: 'This is the title of the section'
       },
       fields: [...printCertificateCollectors, ...printCertificateCollectorOther]
     },
     {
-      id: 'collector.identity.verify',
-      type: PageTypes.enum.VERIFICATION,
-      requireCompletionToContinue: true,
-      title: {
-        id: 'event.marriage.action.print.verifyIdentity',
-        defaultMessage: 'Verify their identity',
-        description: 'This is the title of the section'
-      },
-      conditional: and(
-        not(field('collector.requesterId').isEqualTo('SOMEONE_ELSE')),
-        not(field('collector.requesterId').isEqualTo('PRINT_IN_ADVANCE'))
-      ),
-      fields: printCertificateCollectorIdentityVerify,
-      actions: {
-        verify: {
-          label: {
-            defaultMessage: 'Verified',
-            description: 'This is the label for the verification button',
-            id: 'event.marriage.action.certificate.form.verify'
-          }
-        },
-        cancel: {
-          label: {
-            defaultMessage: 'Identity does not match',
-            description:
-              'This is the label for the verification cancellation button',
-            id: 'event.marriage.action.certificate.form.cancel'
-          },
-          confirmation: {
-            title: {
-              defaultMessage: 'Print without proof of ID?',
-              description:
-                'This is the title for the verification cancellation modal',
-              id: 'event.marriage.action.certificate.form.cancel.confirmation.title'
-            },
-            body: {
-              defaultMessage:
-                'Please be aware that if you proceed, you will be responsible for issuing a certificate without the necessary proof of ID from the collector',
-              description:
-                'This is the body for the verification cancellation modal',
-              id: 'event.marriage.action.certificate.form.cancel.confirmation.body'
-            }
-          }
-        }
-      }
-    },
-    {
       id: 'collector.collect.payment',
       type: PageTypes.enum.FORM,
       requireCompletionToContinue: true,
       title: {
-        id: 'event.marriage.action.print.collectPayment',
+        id: 'event.divorce.action.print.collectPayment',
         defaultMessage: 'Collect fees',
         description: 'This is the title of the section'
       },
@@ -101,7 +53,7 @@ export const DIVORCE_CERTIFICATE_COLLECTOR_FORM = defineActionForm({
         not(field('collector.requesterId').isEqualTo('PRINT_IN_ADVANCE')),
         not(
           field('certificateTemplateId').isEqualTo(
-            'v2.marriage-certified-certificate'
+            'v2.divorce-certified-certificate'
           )
         )
       ),
@@ -113,17 +65,17 @@ export const DIVORCE_CERTIFICATE_COLLECTOR_FORM = defineActionForm({
           label: {
             defaultMessage: 'Payment details',
             description: 'Title for the data section',
-            id: 'event.marriage.action.certificate.form.section.collectPayment.data.label'
+            id: 'event.divorce.action.certificate.form.section.collectPayment.data.label'
           },
           conditionals: [
             {
               type: ConditionalType.SHOW,
               conditional: and(
-                field('marriageDetails.dateOfMarriage')
+                field('divorce.dateOfDivorce')
                   .isAfter()
-                  .days(MARRIAGE_REGISTRATION_TARGET_DAYS)
+                  .days(DIVORCE_REGISTRATION_TARGET_DAYS)
                   .inPast(),
-                field('marriageDetails.dateOfMarriage').isBefore().now()
+                field('divorce.dateOfDivorce').isBefore().now()
               )
             }
           ],
@@ -134,14 +86,14 @@ export const DIVORCE_CERTIFICATE_COLLECTOR_FORM = defineActionForm({
                 label: {
                   defaultMessage: 'Service',
                   description: 'Title for the data entry',
-                  id: 'event.marriage.action.certificate.form.section.collectPayment.service.label'
+                  id: 'event.divorce.action.certificate.form.section.collectPayment.service.label'
                 },
                 value: {
                   defaultMessage:
-                    'Marriage registration within 30 days of date of marriage',
+                    'Divorce registration within 30 days of date of divorce',
                   description:
-                    'Marriage registration within 30 days of date of marriage message',
-                  id: 'event.marriage.action.certificate.form.section.collectPayment.service.label.inBetweenRegistrationTargets'
+                    'Divorce registration within 30 days of date of divorce message',
+                  id: 'event.divorce.action.certificate.form.section.collectPayment.service.label.inBetweenRegistrationTargets'
                 }
               },
               {
@@ -149,20 +101,11 @@ export const DIVORCE_CERTIFICATE_COLLECTOR_FORM = defineActionForm({
                 label: {
                   defaultMessage: 'Fee',
                   description: 'Title for the data entry',
-                  id: 'event.marriage.action.certificate.form.section.collectPayment.fee.label'
+                  id: 'event.divorce.action.certificate.form.section.collectPayment.fee.label'
                 },
-                value: '$5.00'
+                value: '$0.00'
               }
             ]
-          }
-        },
-        {
-          id: 'collector.collect.payment.data.receipt',
-          type: FieldType.TEXT,
-          label: {
-            defaultMessage: 'Receipt Number',
-            description: 'Title for the data entry',
-            id: 'event.marriage.action.certificate.form.section.collectPayment.receiptNumber.label'
           }
         }
       ]
@@ -172,12 +115,12 @@ export const DIVORCE_CERTIFICATE_COLLECTOR_FORM = defineActionForm({
       type: PageTypes.enum.FORM,
       requireCompletionToContinue: true,
       title: {
-        id: 'event.marriage.action.print.collectPayment',
+        id: 'event.divorce.action.print.collectPayment',
         defaultMessage: 'Collect fees',
         description: 'This is the title of the section'
       },
       conditional: field('certificateTemplateId').isEqualTo(
-        'v2.marriage-certified-certificate'
+        'v2.divorce-certified-certificate'
       ),
       fields: [
         {
@@ -187,20 +130,8 @@ export const DIVORCE_CERTIFICATE_COLLECTOR_FORM = defineActionForm({
           label: {
             defaultMessage: 'Payment details',
             description: 'Title for the data section',
-            id: 'event.marriage.action.certificate.form.section.collectPayment.data.label'
+            id: 'event.divorce.action.certificate.form.section.collectPayment.data.label'
           },
-          conditionals: [
-            {
-              type: ConditionalType.SHOW,
-              conditional: and(
-                field('marriageDetails.dateOfMarriage')
-                  .isAfter()
-                  .days(MARRIAGE_REGISTRATION_TARGET_DAYS)
-                  .inPast(),
-                field('marriageDetails.dateOfMarriage').isBefore().now()
-              )
-            }
-          ],
           configuration: {
             data: [
               {
@@ -208,12 +139,12 @@ export const DIVORCE_CERTIFICATE_COLLECTOR_FORM = defineActionForm({
                 label: {
                   defaultMessage: 'Service',
                   description: 'Title for the data entry',
-                  id: 'event.marriage.action.certificate.form.section.collectPayment.service.label'
+                  id: 'event.divorce.action.certificate.form.section.collectPayment.service.label'
                 },
                 value: {
-                  defaultMessage: 'Certified copy of marriage record',
-                  description: 'Certified copy of marriage record message',
-                  id: 'event.marriage.action.certificate.form.section.collectPayment.service.label.certifiedCopyOfMarriageRecord'
+                  defaultMessage: 'Certified copy of divorce record',
+                  description: 'Certified copy of divorce record message',
+                  id: 'event.divorce.action.certificate.form.section.collectPayment.service.label.certifiedCopyOfDivorceRecord'
                 }
               },
               {
@@ -221,7 +152,7 @@ export const DIVORCE_CERTIFICATE_COLLECTOR_FORM = defineActionForm({
                 label: {
                   defaultMessage: 'Fee',
                   description: 'Title for the data entry',
-                  id: 'event.marriage.action.certificate.form.section.collectPayment.fee.label'
+                  id: 'event.divorce.action.certificate.form.section.collectPayment.fee.label'
                 },
                 value: '$10.00'
               }
@@ -234,7 +165,7 @@ export const DIVORCE_CERTIFICATE_COLLECTOR_FORM = defineActionForm({
           label: {
             defaultMessage: 'Receipt Number',
             description: 'Title for the data entry',
-            id: 'event.marriage.action.certificate.form.section.collectPayment.receiptNumber.label'
+            id: 'event.divorce.action.certificate.form.section.collectPayment.receiptNumber.label'
           }
         }
       ]

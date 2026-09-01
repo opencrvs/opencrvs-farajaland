@@ -67,7 +67,7 @@ export const documents = defineFormPage({
     {
       id: 'documents.courtOrder',
       type: FieldType.FILE,
-      required: false,
+      required: true,
       uncorrectable: true,
       configuration: {
         ...DEFAULT_FILE_CONFIGURATION,

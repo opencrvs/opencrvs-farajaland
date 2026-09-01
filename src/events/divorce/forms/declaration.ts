@@ -29,7 +29,7 @@ export const DIVORCE_DECLARATION_REVIEW = {
   title: {
     id: 'event.divorce.action.declare.form.review.title',
     defaultMessage:
-      '{husband.firstname, select, __EMPTY__ {Divorce declaration} other {{husband.firstname, select, __EMPTY__ {Divorce declaration for {husband.surname}} other {Divorce declaration for {husband.firstname} {husband.surname} and {wife.firstname} {wife.surname}}}}}',
+      '{husband.name.firstname, select, __EMPTY__ {Divorce declaration} other {{husband.name.firstname, select, __EMPTY__ {Divorce declaration for {husband.name.surname}} other {Divorce declaration for {husband.name.firstname} {husband.name.surname} and {wife.name.firstname} {wife.name.surname}}}}}',
     description: 'Title of the form to show in review page'
   },
   fields: [

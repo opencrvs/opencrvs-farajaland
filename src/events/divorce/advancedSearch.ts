@@ -33,10 +33,7 @@ export const advancedSearchBirth = [
       description: 'Husband details search section',
       id: 'advancedSearch.form.husbandDetails'
     },
-    fields: [
-      field('husband.firstname').fuzzy(),
-      field('husband.surname').fuzzy()
-    ]
+    fields: [field('husband.name').fuzzy()]
   },
   {
     title: {
@@ -44,7 +41,7 @@ export const advancedSearchBirth = [
       description: 'Wife details search section',
       id: 'advancedSearch.form.wifeDetails'
     },
-    fields: [field('wife.firstname').fuzzy(), field('wife.surname').fuzzy()]
+    fields: [field('wife.name').fuzzy()]
   },
   {
     title: {

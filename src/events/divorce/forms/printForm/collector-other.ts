@@ -36,7 +36,7 @@ export const printCertificateCollectorOther: FieldConfig[] = [
     label: {
       defaultMessage: 'Form of ID',
       description: 'This is the label for selecting the Form of ID',
-      id: 'event.marriage.action.form.section.idType.label'
+      id: 'event.divorce.action.form.section.idType.label'
     },
     conditionals: [
       {
@@ -47,7 +47,7 @@ export const printCertificateCollectorOther: FieldConfig[] = [
     options: [
       {
         label: {
-          id: 'event.marriage.action.form.section.idType.passport.label',
+          id: 'event.divorce.action.form.section.idType.passport.label',
           defaultMessage: 'Passport',
           description: 'Option for selecting Passport as the ID type'
         },
@@ -55,7 +55,7 @@ export const printCertificateCollectorOther: FieldConfig[] = [
       },
       {
         label: {
-          id: 'event.marriage.action.form.section.idType.nid.label',
+          id: 'event.divorce.action.form.section.idType.nid.label',
           defaultMessage: 'National ID',
           description: 'Option for selecting National ID as the ID type'
         },
@@ -63,7 +63,7 @@ export const printCertificateCollectorOther: FieldConfig[] = [
       },
       {
         label: {
-          id: 'event.marriage.action.form.section.idType.drivingLicense.label',
+          id: 'event.divorce.action.form.section.idType.drivingLicense.label',
           defaultMessage: 'Drivers License',
           description: 'Option for selecting Driving License as the ID type'
         },
@@ -71,7 +71,7 @@ export const printCertificateCollectorOther: FieldConfig[] = [
       },
       {
         label: {
-          id: 'event.marriage.action.form.section.idType.brn.label',
+          id: 'event.divorce.action.form.section.idType.brn.label',
           defaultMessage: 'Birth Registration Number',
           description:
             'Option for selecting Birth Registration Number as the ID type'
@@ -80,7 +80,7 @@ export const printCertificateCollectorOther: FieldConfig[] = [
       },
       {
         label: {
-          id: 'event.marriage.action.form.section.idType.refugeeNumber.label',
+          id: 'event.divorce.action.form.section.idType.refugeeNumber.label',
           defaultMessage: 'Refugee Number',
           description: 'Option for selecting Refugee Number as the ID type'
         },
@@ -88,7 +88,7 @@ export const printCertificateCollectorOther: FieldConfig[] = [
       },
       {
         label: {
-          id: 'event.marriage.action.form.section.idType.alienNumber.label',
+          id: 'event.divorce.action.form.section.idType.alienNumber.label',
           defaultMessage: 'Alien Number',
           description: 'Option for selecting Alien Number as the ID type'
         },
@@ -96,7 +96,7 @@ export const printCertificateCollectorOther: FieldConfig[] = [
       },
       {
         label: {
-          id: 'event.marriage.action.form.section.idType.other.label',
+          id: 'event.divorce.action.form.section.idType.other.label',
           defaultMessage: 'Other',
           description: 'Option for selecting Other as the ID type'
         },
@@ -104,7 +104,7 @@ export const printCertificateCollectorOther: FieldConfig[] = [
       },
       {
         label: {
-          id: 'event.marriage.action.form.section.idType.noId.label',
+          id: 'event.divorce.action.form.section.idType.noId.label',
           defaultMessage: 'No ID available',
           description: 'Option for selecting No ID as the ID type'
         },
@@ -119,7 +119,7 @@ export const printCertificateCollectorOther: FieldConfig[] = [
     label: {
       defaultMessage: 'Passport',
       description: 'Field for entering Passport details',
-      id: 'event.marriage.action.form.section.passportDetails.label'
+      id: 'event.divorce.action.form.section.passportDetails.label'
     },
     conditionals: [
       {
@@ -138,7 +138,7 @@ export const printCertificateCollectorOther: FieldConfig[] = [
     label: {
       defaultMessage: 'National ID',
       description: 'Field for entering ID Number',
-      id: 'event.marriage.action.form.section.nid.label'
+      id: 'event.divorce.action.form.section.nid.label'
     },
     conditionals: [
       {
@@ -158,7 +158,7 @@ export const printCertificateCollectorOther: FieldConfig[] = [
     label: {
       defaultMessage: 'Drivers License',
       description: 'Field for entering Driving License details',
-      id: 'event.marriage.action.form.section.drivingLicenseDetails.label'
+      id: 'event.divorce.action.form.section.drivingLicenseDetails.label'
     },
     conditionals: [
       {
@@ -177,7 +177,7 @@ export const printCertificateCollectorOther: FieldConfig[] = [
     label: {
       defaultMessage: 'Birth Registration Number',
       description: 'Field for entering Birth Registration Number',
-      id: 'event.marriage.action.form.section.brn.label'
+      id: 'event.divorce.action.form.section.brn.label'
     },
     conditionals: [
       {
@@ -198,7 +198,7 @@ export const printCertificateCollectorOther: FieldConfig[] = [
     label: {
       defaultMessage: 'Refugee Number',
       description: 'Field for entering Refugee Number details',
-      id: 'event.marriage.action.form.section.refugeeNumberDetails.label'
+      id: 'event.divorce.action.form.section.refugeeNumberDetails.label'
     },
     conditionals: [
       {
@@ -217,7 +217,7 @@ export const printCertificateCollectorOther: FieldConfig[] = [
     label: {
       defaultMessage: 'Alien Number',
       description: 'Field for entering Alien Number details',
-      id: 'event.marriage.action.form.section.alienNumberDetails.label'
+      id: 'event.divorce.action.form.section.alienNumberDetails.label'
     },
     conditionals: [
       {
@@ -236,7 +236,7 @@ export const printCertificateCollectorOther: FieldConfig[] = [
     label: {
       defaultMessage: 'Other Form of ID',
       description: 'Field for entering ID type if "Other" is selected',
-      id: 'event.marriage.action.form.section.idTypeOther.label'
+      id: 'event.divorce.action.form.section.idTypeOther.label'
     },
     conditionals: [
       {
@@ -255,7 +255,7 @@ export const printCertificateCollectorOther: FieldConfig[] = [
     label: {
       defaultMessage: 'ID Number',
       description: 'Field for entering ID Number if "Other" is selected',
-      id: 'event.marriage.action.form.section.idNumberOther.label'
+      id: 'event.divorce.action.form.section.idNumberOther.label'
     },
     conditionals: [
       {
@@ -276,7 +276,7 @@ export const printCertificateCollectorOther: FieldConfig[] = [
     label: {
       defaultMessage: "Collector's name",
       description: 'This is the label for the name field of OTHER collector',
-      id: 'event.marriage.action.form.section.collector.other.field.name.label'
+      id: 'event.divorce.action.form.section.collector.other.field.name.label'
     },
     conditionals: [
       {
@@ -286,13 +286,13 @@ export const printCertificateCollectorOther: FieldConfig[] = [
     ]
   },
   {
-    id: 'collector.OTHER.relationshipToBrideOrGroom',
+    id: 'collector.OTHER.relationshipToCouple',
     type: FieldType.TEXT,
     required: true,
     label: {
-      defaultMessage: 'Relationship to Bride or Groom',
+      defaultMessage: 'Relationship to the couple',
       description: 'This is the label for the relationship field',
-      id: 'event.marriage.action.form.section.relationshipToBrideOrGroom.label'
+      id: 'event.divorce.action.form.section.relationshipToCouple.label'
     },
     conditionals: [
       {

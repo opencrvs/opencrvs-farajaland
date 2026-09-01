@@ -8,14 +8,9 @@
  *
  * Copyright (C) The OpenCRVS Authors located at https://github.com/opencrvs/opencrvs-core/blob/master/AUTHORS.
  */
-import { field, and, or } from '@opencrvs/toolkit/events/deduplication'
+import { field, or } from '@opencrvs/toolkit/events/deduplication'
 
-const similarFirstNamedHusband = field('husband.firstname').fuzzyMatches()
-const similarLastNamedHusband = field('husband.surname').fuzzyMatches()
-const similarFirstNamedWife = field('wife.firstname').fuzzyMatches()
-const similarLastNamedWife = field('wife.surname').fuzzyMatches()
+const similarNamedHusband = field('husband.name').fuzzyMatches()
+const similarNamedWife = field('wife.name').fuzzyMatches()
 
-export const dedupConfig = or(
-  and(similarFirstNamedHusband, similarLastNamedHusband),
-  and(similarFirstNamedWife, similarLastNamedWife)
-)
+export const dedupConfig = or(similarNamedHusband, similarNamedWife)

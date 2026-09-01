@@ -151,7 +151,14 @@ export const marriageDetails = defineFormPage({
       },
       configuration: {
         streetAddressForm: defaultStreetAddressConfiguration
-      }
+      },
+      parent: field('divorce.marriageRegistrationNumberSearch'),
+      value: field('divorce.marriageRegistrationNumberSearch').getByPath([
+        'data',
+        'firstResult',
+        'declaration',
+        'marriageDetails.placeOfMarriage'
+      ])
     },
     {
       id: 'divorce.husbandDivider',
@@ -187,47 +194,21 @@ export const marriageDetails = defineFormPage({
       ]
     },
     {
-      id: 'husband.firstname',
-      type: FieldType.TEXT,
+      id: 'husband.name',
+      type: FieldType.NAME,
       required: true,
+      hideLabel: true,
       label: {
-        defaultMessage: 'First name',
+        defaultMessage: 'Name',
         description: 'This is the label for the field',
-        id: 'event.divorce.action.declare.form.section.person.field.husbandFirstname.label'
+        id: 'event.divorce.action.declare.form.section.person.field.husbandName.label'
       },
       parent: field('divorce.marriageRegistrationNumberSearch'),
       value: field('divorce.marriageRegistrationNumberSearch').getByPath([
         'data',
         'firstResult',
         'declaration',
-        'groom.name',
-        'firstname'
-      ]),
-      conditionals: [
-        {
-          type: ConditionalType.ENABLE,
-          conditional: field('divorce.marriageRegistrationNumberSearch')
-            .getByPath(['data', 'input'])
-            .isFalsy()
-        }
-      ]
-    },
-    {
-      id: 'husband.surname',
-      type: FieldType.TEXT,
-      required: true,
-      label: {
-        id: 'event.divorce.action.declare.form.section.person.field.husbandName.label',
-        defaultMessage: 'Last name',
-        description: 'This is the label for the field'
-      },
-      parent: field('divorce.marriageRegistrationNumberSearch'),
-      value: field('divorce.marriageRegistrationNumberSearch').getByPath([
-        'data',
-        'firstResult',
-        'declaration',
-        'groom.name',
-        'surname'
+        'groom.name'
       ]),
       conditionals: [
         {
@@ -272,47 +253,21 @@ export const marriageDetails = defineFormPage({
       ]
     },
     {
-      id: 'wife.firstname',
-      type: FieldType.TEXT,
+      id: 'wife.name',
+      type: FieldType.NAME,
       required: true,
+      hideLabel: true,
       label: {
         defaultMessage: 'First name',
         description: 'This is the label for the field',
-        id: 'event.divorce.action.declare.form.section.person.field.wifeFirstname.label'
+        id: 'event.divorce.action.declare.form.section.person.field.wifeName.label'
       },
       parent: field('divorce.marriageRegistrationNumberSearch'),
       value: field('divorce.marriageRegistrationNumberSearch').getByPath([
         'data',
         'firstResult',
         'declaration',
-        'bride.name',
-        'firstname'
-      ]),
-      conditionals: [
-        {
-          type: ConditionalType.ENABLE,
-          conditional: field('divorce.marriageRegistrationNumberSearch')
-            .getByPath(['data', 'input'])
-            .isFalsy()
-        }
-      ]
-    },
-    {
-      id: 'wife.surname',
-      type: FieldType.TEXT,
-      required: true,
-      label: {
-        id: 'event.divorce.action.declare.form.section.person.field.wifeName.label',
-        defaultMessage: 'Last name',
-        description: 'This is the label for the field'
-      },
-      parent: field('divorce.marriageRegistrationNumberSearch'),
-      value: field('divorce.marriageRegistrationNumberSearch').getByPath([
-        'data',
-        'firstResult',
-        'declaration',
-        'bride.name',
-        'surname'
+        'bride.name'
       ]),
       conditionals: [
         {

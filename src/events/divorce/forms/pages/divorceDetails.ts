@@ -9,11 +9,16 @@
  * Copyright (C) The OpenCRVS Authors located at https://github.com/opencrvs/opencrvs-core/blob/master/AUTHORS.
  */
 
+import { emptyMessage } from '@countryconfig/events/utils'
 import {
   defineFormPage,
   FieldType,
   PageTypes,
-  field
+  field,
+  ConditionalType,
+  user,
+  not,
+  never
 } from '@opencrvs/toolkit/events'
 
 export const divorceDetails = defineFormPage({
@@ -67,10 +72,43 @@ export const divorceDetails = defineFormPage({
       }
     },
     {
+      id: 'divorce.judgeDivider',
+      type: FieldType.DIVIDER,
+      label: emptyMessage,
+      conditionals: [
+        {
+          type: ConditionalType.SHOW,
+          conditional: not(user.hasRole('HOSPITAL_CLERK'))
+        }
+      ]
+    },
+    {
+      id: 'divorce.judgeHelper',
+      type: FieldType.HEADING,
+      label: {
+        defaultMessage: "Court Judge's details",
+        description: 'This is the label for the field',
+        id: 'event.divorce.action.declare.form.section.person.field.judgeHelper.label'
+      },
+      configuration: {
+        styles: { fontVariant: 'h3' }
+      },
+      conditionals: [
+        {
+          type: ConditionalType.DISPLAY_ON_REVIEW,
+          conditional: never()
+        },
+        {
+          type: ConditionalType.SHOW,
+          conditional: not(user.hasRole('HOSPITAL_CLERK'))
+        }
+      ]
+    },
+    {
       id: 'judge.name',
       type: FieldType.NAME,
       required: true,
-      hideLabel: false,
+      hideLabel: true,
       label: {
         id: 'event.divorce.action.declare.form.section.person.field.judgeName.label',
         defaultMessage: 'Court judge',
