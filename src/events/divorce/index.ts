@@ -142,7 +142,7 @@ export const divorceEvent = defineConfig({
         }
       },
       {
-        fieldId: 'divorce.dateOfMarriage',
+        fieldId: 'divorce.dateOfDivorce',
         label: {
           defaultMessage: 'Date of divorce',
           description: 'Label for date of divorce in summary',

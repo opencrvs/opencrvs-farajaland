@@ -14,7 +14,7 @@ import { InformantType } from '../pages/informant'
 
 const husbandOption = {
   label: {
-    id: 'event.marriage.action.certificate.form.section.requester.husband.label',
+    id: 'event.divorce.action.certificate.form.section.requester.husband.label',
     defaultMessage: 'Print and issue to Husband',
     description: 'This is the label for the field'
   },
@@ -23,7 +23,7 @@ const husbandOption = {
 
 const wifeOption = {
   label: {
-    id: 'event.marriage.action.certificate.form.section.requester.wife.label',
+    id: 'event.divorce.action.certificate.form.section.requester.wife.label',
     defaultMessage: 'Print and issue to Wife',
     description: 'This is the label for the field'
   },
@@ -32,7 +32,7 @@ const wifeOption = {
 
 const otherOption = {
   label: {
-    id: 'event.marriage.action.certificate.form.section.requester.other.label',
+    id: 'event.divorce.action.certificate.form.section.requester.other.label',
     defaultMessage: 'Print and issue to someone else',
     description: 'This is the label for the field'
   },
@@ -42,7 +42,7 @@ const otherOption = {
 const requesterLabel = {
   defaultMessage: 'Requester',
   description: 'This is the label for the field',
-  id: 'event.marriage.action.certificate.form.section.requester.label'
+  id: 'event.divorce.action.certificate.form.section.requester.label'
 }
 
 const commonConfigs = {

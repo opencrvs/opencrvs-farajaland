@@ -39,17 +39,10 @@ export const printCertificateCollectorIdentityVerify: FieldConfig[] = [
     label: {
       defaultMessage: 'Identity details',
       description: 'Title for the data section',
-      id: 'event.birth.action.certificate.form.section.verifyIdentity.data.label'
+      id: 'event.divorce.action.certificate.form.section.verifyIdentity.data.label'
     },
     configuration: {
-      data: [
-        { fieldId: 'wife.idType' },
-        { fieldId: 'wife.nid' },
-        { fieldId: 'wife.passport' },
-        { fieldId: 'wife.name' },
-        { fieldId: 'wife.dob' },
-        { fieldId: 'wife.nationality' }
-      ]
+      data: [{ fieldId: 'wife.name' }]
     }
   },
   {
@@ -70,17 +63,10 @@ export const printCertificateCollectorIdentityVerify: FieldConfig[] = [
     label: {
       defaultMessage: 'Identity details',
       description: 'Title for the data section',
-      id: 'event.birth.action.certificate.form.section.verifyIdentity.data.label'
+      id: 'event.divorce.action.certificate.form.section.verifyIdentity.data.label'
     },
     configuration: {
-      data: [
-        { fieldId: 'husband.idType' },
-        { fieldId: 'husband.nid' },
-        { fieldId: 'husband.passport' },
-        { fieldId: 'husband.name' },
-        { fieldId: 'husband.dob' },
-        { fieldId: 'husband.nationality' }
-      ]
+      data: [{ fieldId: 'husband.name' }]
     }
   },
   {
@@ -99,7 +85,7 @@ export const printCertificateCollectorIdentityVerify: FieldConfig[] = [
     label: {
       defaultMessage: 'Identity details',
       description: 'Title for the data section',
-      id: 'event.birth.action.certificate.form.section.verifyIdentity.data.label'
+      id: 'event.divorce.action.certificate.form.section.verifyIdentity.data.label'
     },
     configuration: {
       data: [

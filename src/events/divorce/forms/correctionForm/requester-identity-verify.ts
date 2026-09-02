@@ -33,7 +33,7 @@ export const correctionRequesterIdentityVerify: FieldConfig[] = [
     label: {
       defaultMessage: '',
       description: 'Title for the data section',
-      id: 'event.marriage.action.correction.form.section.verifyIdentity.data.label'
+      id: 'event.divorce.action.correction.form.section.verifyIdentity.data.label'
     },
     configuration: {
       data: [{ fieldId: 'husband.name' }, { fieldId: 'husband.dob' }]
@@ -57,17 +57,10 @@ export const correctionRequesterIdentityVerify: FieldConfig[] = [
     label: {
       defaultMessage: '',
       description: 'Title for the data section',
-      id: 'event.marriage.action.correction.form.section.verifyIdentity.data.label'
+      id: 'event.divorce.action.correction.form.section.verifyIdentity.data.label'
     },
     configuration: {
-      data: [
-        { fieldId: 'wife.idType' },
-        { fieldId: 'wife.nid' },
-        { fieldId: 'wife.passport' },
-        { fieldId: 'wife.name' },
-        { fieldId: 'wife.dob' },
-        { fieldId: 'wife.nationality' }
-      ]
+      data: [{ fieldId: 'wife.name' }]
     }
   },
   {
@@ -88,17 +81,10 @@ export const correctionRequesterIdentityVerify: FieldConfig[] = [
     label: {
       defaultMessage: '',
       description: 'Title for the data section',
-      id: 'event.marriage.action.correction.form.section.verifyIdentity.data.label'
+      id: 'event.divorce.action.correction.form.section.verifyIdentity.data.label'
     },
     configuration: {
-      data: [
-        { fieldId: 'husband.idType' },
-        { fieldId: 'husband.nid' },
-        { fieldId: 'husband.passport' },
-        { fieldId: 'husband.name' },
-        { fieldId: 'husband.dob' },
-        { fieldId: 'husband.nationality' }
-      ]
+      data: [{ fieldId: 'husband.name' }]
     }
   },
   {
@@ -117,17 +103,12 @@ export const correctionRequesterIdentityVerify: FieldConfig[] = [
     label: {
       defaultMessage: '',
       description: 'Title for the data section',
-      id: 'event.marriage.action.correction.form.section.verifyIdentity.data.label'
+      id: 'event.divorce.action.correction.form.section.verifyIdentity.data.label'
     },
     configuration: {
       data: [
-        { fieldId: 'informant.idType' },
-        { fieldId: 'informant.nid' },
-        { fieldId: 'informant.passport' },
         { fieldId: 'informant.name' },
-        { fieldId: 'informant.dob' },
-        { fieldId: 'informant.other.relation' },
-        { fieldId: 'informant.nationality' }
+        { fieldId: 'informant.other.relation' }
       ]
     }
   }
