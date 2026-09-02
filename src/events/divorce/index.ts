@@ -134,19 +134,19 @@ export const divorceEvent = defineConfig({
   summary: {
     fields: [
       {
-        fieldId: 'marriageDetails.placeOfMarriage',
+        fieldId: 'court.name',
         label: {
-          defaultMessage: 'Place of divorce',
+          defaultMessage: 'Name of the court',
           description: 'Label for place of divorce in summary',
-          id: 'event.divorce.summary.placeOfMarriage.label'
+          id: 'event.divorce.summary.nameOfTheCourt.label'
         }
       },
       {
-        fieldId: 'marriageDetails.dateOfMarriage',
+        fieldId: 'divorce.dateOfMarriage',
         label: {
           defaultMessage: 'Date of divorce',
           description: 'Label for date of divorce in summary',
-          id: 'event.divorce.summary.dateOfMarriage.label'
+          id: 'event.divorce.summary.dateOfDivorce.label'
         }
       },
       // Render the 'fallback value' when selection has not been made.
