@@ -36,7 +36,7 @@
     </g>
     <path d="M62 761.59V762.075H533.42V761.59V761.105H62V761.59Z" fill="#ECECEC" />
     <text fill="#222222" style="white-space: pre" xml:space="preserve" font-family="Noto Sans"
-        font-size="8" letter-spacing="0px"><tspan x="81.0002" y="665.177">{{$lookup $metadata "updatedAt"}}</tspan></text>
+        font-size="8" letter-spacing="0px"><tspan x="81.0002" y="665.177">{{ $lookup $metadata "createdAt" }}</tspan></text>
     <text fill="#222222" style="white-space: pre" xml:space="preserve" font-family="Noto Sans"
         font-size="8" letter-spacing="0px"><tspan x="234.289" y="652.377">&#x2028;</tspan></text>
     <text fill="#222222" style="white-space: pre" xml:space="preserve" font-family="Noto Sans"
@@ -52,92 +52,84 @@
     <text fill="#222222" style="white-space: pre" xml:space="preserve" font-family="Noto Sans"
         font-size="8" font-weight="600" letter-spacing="0px"><tspan x="355.799" y="723.89">Registrar / L&#39;Officier de l&#39;&#xc9;tat Civil</tspan></text>
     <text fill="#222222" style="white-space: pre" xml:space="preserve" font-family="Noto Sans"
-        font-size="8" letter-spacing="0px"><tspan x="385.201" y="736.5">{{ $lookup $metadata 'legalStatuses.REGISTERED.createdBy.name' }}</tspan></text>
+        font-size="8" letter-spacing="0px"><tspan x="385.201" y="736.5">{{$lookup $metadata 'legalStatuses.REGISTERED.createdBy.name'}}</tspan></text>
     <text fill="#222222" style="white-space: pre" xml:space="preserve" font-family="Noto Sans"
         font-size="8" letter-spacing="0px"><tspan x="81.4001" y="604.698">I certify that this certificate is a true copy of the civil registry and is issued by the mandated authority in pursuance </tspan><tspan x="81.4001" y="617.698">of civil registration law / Je certifie que le pr&#xe9;sent certificat est une copie conforme du registre d&#39;&#xe9;tat civil et qu&#39;il </tspan><tspan x="81.4001" y="630.698">est d&#xe9;livr&#xe9; par l&#39;autorit&#xe9; mandat&#xe9;e conform&#xe9;ment &#xe0; la loi sur l&#39;&#xe9;tat civil.</tspan></text>
     <g clip-path="url(#clip2_2516_2652)">
         <text fill="#222222" style="white-space: pre" xml:space="preserve" font-family="Noto Sans"
             font-size="9.7" letter-spacing="0px"><tspan x="74.3994" y="177.764">We hereby certify that /  Nous certifions par la pr&#xe9;sente que:</tspan></text>
         <text fill="#222222" style="white-space: pre" xml:space="preserve" font-family="Noto Sans"
-            font-size="9.7" font-weight="bold" letter-spacing="0px"><tspan x="81.6024" y="199.083">1.</tspan></text>
+            font-size="9.7" font-weight="bold" letter-spacing="0px"><tspan x="81.6024" y="200.684">1.</tspan></text>
         <text fill="#222222" style="white-space: pre" xml:space="preserve" font-family="Noto Sans"
-            font-size="9.7" font-weight="bold" letter-spacing="0px"><tspan x="97.6794" y="199.083">Husband&#x2019;s full name /&#x2028;</tspan><tspan x="97.6794" y="214.083">Nom complet du mari&#xe9;</tspan></text>
+            font-size="9.7" font-weight="bold" letter-spacing="0px"><tspan x="97.6794" y="200.684">Husband&#x2019;s full name /&#x2028;</tspan><tspan x="97.6794" y="215.684">Nom complet du mari&#xe9;</tspan></text>
         <g clip-path="url(#clip3_2516_2652)">
             <text fill="#222222" style="white-space: pre" xml:space="preserve"
-                font-family="Noto Sans" font-size="9.7" letter-spacing="0px"><tspan x="282.949" y="206.583">{{ $lookup $declaration 'husband.name.fullname' }}</tspan></text>
+                font-family="Noto Sans" font-size="9.7" letter-spacing="0px"><tspan x="282.949" y="208.184">{{ $lookup $declaration 'husband.name.fullname' }}</tspan></text>
         </g>
         <text fill="#222222" style="white-space: pre" xml:space="preserve" font-family="Noto Sans"
-            font-size="9.7" letter-spacing="0px"><tspan x="74.3994" y="235.404">and / et</tspan></text>
+            font-size="9.7" letter-spacing="0px"><tspan x="74.3994" y="238.603">and / et</tspan></text>
         <text fill="#222222" style="white-space: pre" xml:space="preserve" font-family="Noto Sans"
-            font-size="9.7" font-weight="bold" letter-spacing="0px"><tspan x="81.6024" y="256.724">2.</tspan></text>
+            font-size="9.7" font-weight="bold" letter-spacing="0px"><tspan x="81.6024" y="261.523">2.</tspan></text>
         <text fill="#222222" style="white-space: pre" xml:space="preserve" font-family="Noto Sans"
-            font-size="9.7" font-weight="bold" letter-spacing="0px"><tspan x="97.6794" y="256.724">Wife&#x2019;s full name /&#x2028;</tspan><tspan x="97.6794" y="271.724">Nom complet de la mari&#xe9;e</tspan></text>
+            font-size="9.7" font-weight="bold" letter-spacing="0px"><tspan x="97.6794" y="261.523">Wife&#x2019;s full name /&#x2028;</tspan><tspan x="97.6794" y="276.523">Nom complet de la mari&#xe9;e</tspan></text>
         <g clip-path="url(#clip4_2516_2652)">
             <text fill="#222222" style="white-space: pre" xml:space="preserve"
-                font-family="Noto Sans" font-size="9.7" letter-spacing="0px"><tspan x="282.949" y="264.224">{{ $lookup $declaration 'wife.name.fullname' }}</tspan></text>
+                font-family="Noto Sans" font-size="9.7" letter-spacing="0px"><tspan x="282.949" y="269.023">{{ $lookup $declaration 'wife.name.fullname' }}</tspan></text>
         </g>
-        <line x1="74.3994" y1="280.795" x2="505.079" y2="280.795" stroke="#ECECEC"
+        <line x1="74.3994" y1="293.375" x2="505.079" y2="293.375" stroke="#ECECEC"
             stroke-width="0.97" />
         <text fill="#222222" style="white-space: pre" xml:space="preserve" font-family="Noto Sans"
-            font-size="9.7" letter-spacing="0px"><tspan x="74.3994" y="299.043">Who were married / Qui se sont mari&#xe9;s:</tspan></text>
+            font-size="9.7" letter-spacing="0px"><tspan x="74.3994" y="318.224">Who were married / Qui se sont mari&#xe9;s:</tspan></text>
         <text fill="#222222" style="white-space: pre" xml:space="preserve" font-family="Noto Sans"
-            font-size="9.7" font-weight="bold" letter-spacing="0px"><tspan x="81.6024" y="320.363">3.</tspan></text>
+            font-size="9.7" font-weight="bold" letter-spacing="0px"><tspan x="81.6024" y="341.143">3.</tspan></text>
         <text fill="#222222" style="white-space: pre" xml:space="preserve" font-family="Noto Sans"
-            font-size="9.7" font-weight="bold" letter-spacing="0px"><tspan x="182.962" y="320.363"> /&#x2028;</tspan></text>
+            font-size="9.7" font-weight="bold" letter-spacing="0px"><tspan x="182.962" y="341.143"> /&#x2028;</tspan></text>
         <text fill="#222222" style="white-space: pre" xml:space="preserve" font-family="Noto Sans"
-            font-size="9.7" font-weight="bold" letter-spacing="0px"><tspan x="97.6794" y="320.363">Place of marriage</tspan><tspan x="97.6794" y="335.363">Lieu du mariage</tspan></text>
+            font-size="9.7" font-weight="bold" letter-spacing="0px"><tspan x="97.6794" y="341.143">Place of marriage</tspan><tspan x="97.6794" y="356.143">Lieu du mariage</tspan></text>
         <g clip-path="url(#clip5_2516_2652)">
             <text fill="#222222" style="white-space: pre" xml:space="preserve"
-                font-family="Noto Sans" font-size="9.7" letter-spacing="0px"><tspan x="282.949" y="320.363">{{ $lookup $declaration 'divorce.placeOfMarriage.district' }}&#10;</tspan><tspan x="282.949" y="335.363">{{$lookup $declaration 'divorce.placeOfMarriage.province'}}, {{$lookup $declaration 'divorce.placeOfMarriage.country'}}</tspan></text>
+                font-family="Noto Sans" font-size="9.7" letter-spacing="0px"><tspan x="282.949" y="341.143">{{ $lookup $declaration 'divorce.placeOfMarriage.district' }}&#10;</tspan><tspan x="282.949" y="356.143">{{$lookup $declaration 'divorce.placeOfMarriage.province'}}, {{$lookup $declaration 'divorce.placeOfMarriage.country'}}</tspan></text>
         </g>
         <text fill="#222222" style="white-space: pre" xml:space="preserve" font-family="Noto Sans"
-            font-size="9.7" letter-spacing="0px"><tspan x="74.3994" y="356.684">on / le</tspan></text>
+            font-size="9.7" letter-spacing="0px"><tspan x="74.3994" y="379.063">on / le</tspan></text>
         <text fill="#222222" style="white-space: pre" xml:space="preserve" font-family="Noto Sans"
-            font-size="9.7" font-weight="bold" letter-spacing="0px"><tspan x="81.6024" y="378.003">4.</tspan></text>
+            font-size="9.7" font-weight="bold" letter-spacing="0px"><tspan x="81.6024" y="401.983">4.</tspan></text>
         <text fill="#222222" style="white-space: pre" xml:space="preserve" font-family="Noto Sans"
-            font-size="9.7" font-weight="bold" letter-spacing="0px"><tspan x="180.319" y="378.003"> /&#x2028;</tspan></text>
+            font-size="9.7" font-weight="bold" letter-spacing="0px"><tspan x="180.319" y="401.983"> /&#x2028;</tspan></text>
         <text fill="#222222" style="white-space: pre" xml:space="preserve" font-family="Noto Sans"
-            font-size="9.7" font-weight="bold" letter-spacing="0px"><tspan x="97.6794" y="378.003">Date of marriage</tspan><tspan x="97.6794" y="393.003">Date du mariage</tspan></text>
+            font-size="9.7" font-weight="bold" letter-spacing="0px"><tspan x="97.6794" y="401.983">Date of marriage</tspan><tspan x="97.6794" y="416.983">Date du mariage</tspan></text>
         <g clip-path="url(#clip6_2516_2652)">
             <text fill="#222222" style="white-space: pre" xml:space="preserve"
-                font-family="Noto Sans" font-size="9.7" letter-spacing="0px"><tspan x="282.949" y="385.503">{{ $lookup $declaration 'divorce.dateOfMarriage' }} </tspan></text>
+                font-family="Noto Sans" font-size="9.7" letter-spacing="0px"><tspan x="282.949" y="409.483">{{ $lookup $declaration 'divorce.dateOfMarriage' }} </tspan></text>
         </g>
-        <line x1="74.3994" y1="402.075" x2="505.079" y2="402.075" stroke="#ECECEC"
+        <line x1="74.3994" y1="433.835" x2="505.079" y2="433.835" stroke="#ECECEC"
             stroke-width="0.97" />
         <text fill="#222222" style="white-space: pre" xml:space="preserve" font-family="Noto Sans"
-            font-size="9.7" letter-spacing="0px"><tspan x="74.3994" y="420.324">Their divorce took place accordingly / Leur divorce a eu lieu en cons&#xe9;quence:</tspan></text>
+            font-size="9.7" letter-spacing="0px"><tspan x="74.3994" y="458.684">Their divorce took place accordingly / Leur divorce a eu lieu en cons&#xe9;quence:</tspan></text>
         <text fill="#222222" style="white-space: pre" xml:space="preserve" font-family="Noto Sans"
-            font-size="9.7" font-weight="bold" letter-spacing="0px"><tspan x="81.6024" y="441.643">5.</tspan></text>
+            font-size="9.7" font-weight="bold" letter-spacing="0px"><tspan x="81.6024" y="481.603">5.</tspan></text>
         <text fill="#222222" style="white-space: pre" xml:space="preserve" font-family="Noto Sans"
-            font-size="9.7" font-weight="bold" letter-spacing="0px"><tspan x="139.549" y="441.643"> / Lieu</tspan></text>
+            font-size="9.7" font-weight="bold" letter-spacing="0px"><tspan x="139.549" y="481.603"> / Lieu</tspan></text>
         <text fill="#222222" style="white-space: pre" xml:space="preserve" font-family="Noto Sans"
-            font-size="9.7" font-weight="bold" letter-spacing="0px"><tspan x="97.6794" y="441.643">Location</tspan></text>
+            font-size="9.7" font-weight="bold" letter-spacing="0px"><tspan x="97.6794" y="481.603">Location</tspan></text>
         <g clip-path="url(#clip7_2516_2652)">
             <text fill="#222222" style="white-space: pre" xml:space="preserve"
-                font-family="Noto Sans" font-size="9.7" letter-spacing="0px"><tspan x="282.949" y="441.643">{{ $lookup $declaration 'court.name' }} </tspan></text>
+                font-family="Noto Sans" font-size="9.7" letter-spacing="0px"><tspan x="282.949" y="481.603">{{ $lookup $declaration 'court.name' }} </tspan></text>
         </g>
         <text fill="#222222" style="white-space: pre" xml:space="preserve" font-family="Noto Sans"
-            font-size="9.7" letter-spacing="0px"><tspan x="74.3994" y="462.964">on / le</tspan></text>
+            font-size="9.7" letter-spacing="0px"><tspan x="74.3994" y="504.523">on / le</tspan></text>
         <text fill="#222222" style="white-space: pre" xml:space="preserve" font-family="Noto Sans"
-            font-size="9.7" font-weight="bold" letter-spacing="0px"><tspan x="81.6024" y="484.284">6.</tspan></text>
+            font-size="9.7" font-weight="bold" letter-spacing="0px"><tspan x="81.6024" y="527.443">6.</tspan></text>
         <text fill="#222222" style="white-space: pre" xml:space="preserve" font-family="Noto Sans"
-            font-size="9.7" font-weight="bold" letter-spacing="0px"><tspan x="174.56" y="484.284"> / &#x2028;</tspan><tspan x="97.6794" y="499.284">Date du divorce</tspan></text>
+            font-size="9.7" font-weight="bold" letter-spacing="0px"><tspan x="174.56" y="527.443"> / &#x2028;</tspan><tspan x="97.6794" y="542.443">Date du divorce</tspan></text>
         <text fill="#222222" style="white-space: pre" xml:space="preserve" font-family="Noto Sans"
-            font-size="9.7" font-weight="bold" letter-spacing="0px"><tspan x="97.6794" y="484.284">Date of Divorce </tspan></text>
+            font-size="9.7" font-weight="bold" letter-spacing="0px"><tspan x="97.6794" y="527.443">Date of Divorce </tspan></text>
         <g clip-path="url(#clip8_2516_2652)">
             <text fill="#222222" style="white-space: pre" xml:space="preserve"
-                font-family="Noto Sans" font-size="9.7" letter-spacing="0px"><tspan x="282.949" y="491.784">{{$lookup $declaration 'divorce.dateOfDivorce'}} </tspan></text>
-        </g>
-        <text fill="#222222" style="white-space: pre" xml:space="preserve" font-family="Noto Sans"
-            font-size="9.7" font-weight="bold" letter-spacing="0px"><tspan x="81.6024" y="525.923">7.</tspan></text>
-        <text fill="#222222" style="white-space: pre" xml:space="preserve" font-family="Noto Sans"
-            font-size="9.7" font-weight="bold" letter-spacing="0px"><tspan x="97.6794" y="525.923">Witnesses / &#10;</tspan><tspan x="97.6794" y="540.923">Les t&#xe9;moins</tspan></text>
-        <g clip-path="url(#clip9_2516_2652)">
-            <text fill="#222222" style="white-space: pre" xml:space="preserve"
-                font-family="Noto Sans" font-size="9.7" letter-spacing="0px"><tspan x="282.949" y="526.443">{{Witness1FirstName}} {{Witness1LastName}}&#x2028;</tspan><tspan x="282.949" y="541.443">{{Witness2FirstName}} {{Witness2LastName}}</tspan></text>
+                font-family="Noto Sans" font-size="9.7" letter-spacing="0px"><tspan x="282.949" y="534.943">{{ $lookup $declaration 'divorce.dateOfDivorce' }} </tspan></text>
         </g>
     </g>
-    <g clip-path="url(#clip10_2516_2652)">
+    <g clip-path="url(#clip9_2516_2652)">
         <path
             d="M105.071 68.643C105.074 75.9092 105.064 83.1777 105.076 90.4439C105.081 90.7635 104.982 91.0667 104.817 91.3228C104.665 91.5578 104.453 91.7505 104.201 91.8798L85.314 102.779C85.053 102.927 84.7756 103 84.5052 103C84.2277 103 83.9479 102.922 83.6987 102.779L64.8208 91.8892C64.5621 91.7599 64.3435 91.5649 64.1883 91.3275C64.0214 91.0667 63.9226 90.7635 63.9226 90.4416L63.9297 90.2959L63.925 68.5584C63.9203 68.267 64.0002 67.9921 64.1366 67.7547L64.1413 67.75C64.2823 67.5056 64.4869 67.3035 64.7314 67.1601L83.687 56.2209C83.9479 56.0728 84.2277 56 84.4958 56C84.7732 56 85.0554 56.0775 85.3022 56.2209L104.265 67.1625C104.531 67.3152 104.735 67.5361 104.874 67.7876L104.878 67.7923C105.017 68.0508 105.085 68.3469 105.071 68.643Z"
             fill="#EFCFA4" />
@@ -209,7 +201,7 @@
     </g>
     <path d="M55.2095 116H539.209" stroke="#1447B9" stroke-linecap="round" />
     <text fill="#1447B9" style="white-space: pre" xml:space="preserve" font-family="Noto Sans"
-        font-size="10" font-weight="bold" letter-spacing="4px"><tspan x="182.605" y="129.88">No. {{$lookup $metadata 'legalStatuses.REGISTERED.registrationNumber'}}</tspan></text>
+        font-size="10" font-weight="bold" letter-spacing="4px"><tspan x="182.605" y="129.88">No. {{ $lookup $metadata 'legalStatuses.REGISTERED.registrationNumber' }}</tspan></text>
     <path d="M55.2095 137H539.209" stroke="#1447B9" stroke-linecap="round" />
     <path d="M53 40.0537H538" stroke="#DDDDDD" stroke-linecap="round" />
     <path d="M62.2749 576.473H532.725" stroke="#1447B9" stroke-linecap="round" />
@@ -224,27 +216,24 @@
             <rect x="54.9995" y="154" width="469.48" height="410.31" rx="1.94" fill="white" />
         </clipPath>
         <clipPath id="clip3_2516_2652">
-            <rect width="222.13" height="30" fill="white" transform="translate(282.949 187.82)" />
+            <rect width="222.13" height="30" fill="white" transform="translate(282.949 189.42)" />
         </clipPath>
         <clipPath id="clip4_2516_2652">
-            <rect width="222.13" height="30" fill="white" transform="translate(282.949 245.46)" />
+            <rect width="222.13" height="30" fill="white" transform="translate(282.949 250.26)" />
         </clipPath>
         <clipPath id="clip5_2516_2652">
-            <rect width="222.13" height="30" fill="white" transform="translate(282.949 309.1)" />
+            <rect width="222.13" height="30" fill="white" transform="translate(282.949 329.88)" />
         </clipPath>
         <clipPath id="clip6_2516_2652">
-            <rect width="222.13" height="30" fill="white" transform="translate(282.949 366.74)" />
+            <rect width="222.13" height="30" fill="white" transform="translate(282.949 390.72)" />
         </clipPath>
         <clipPath id="clip7_2516_2652">
-            <rect width="222.13" height="15" fill="white" transform="translate(282.949 430.38)" />
+            <rect width="222.13" height="15" fill="white" transform="translate(282.949 470.34)" />
         </clipPath>
         <clipPath id="clip8_2516_2652">
-            <rect width="222.13" height="30" fill="white" transform="translate(282.949 473.02)" />
+            <rect width="222.13" height="30" fill="white" transform="translate(282.949 516.18)" />
         </clipPath>
         <clipPath id="clip9_2516_2652">
-            <rect width="222.13" height="31.04" fill="white" transform="translate(282.949 514.66)" />
-        </clipPath>
-        <clipPath id="clip10_2516_2652">
             <rect width="484" height="47" fill="white" transform="translate(57.0002 56)" />
         </clipPath>
     </defs>
