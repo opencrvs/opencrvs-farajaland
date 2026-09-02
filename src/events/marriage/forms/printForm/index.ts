@@ -23,7 +23,7 @@ import { printCertificateCollectors } from './collectors'
 import { printCertificateCollectorOther } from './collector-other'
 import { printCertificateCollectorIdentityVerify } from './collector-identity-verify'
 
-export const BIRTH_CERTIFICATE_COLLECTOR_FORM = defineActionForm({
+export const MARRIAGE_CERTIFICATE_COLLECTOR_FORM = defineActionForm({
   label: {
     id: 'event.marriage.action.certificate.form.label',
     defaultMessage: 'Marriage certificate collector',
@@ -88,6 +88,7 @@ export const BIRTH_CERTIFICATE_COLLECTOR_FORM = defineActionForm({
         }
       }
     },
+    // Marriage certificate in between registration targets
     {
       id: 'collector.collect.payment',
       type: PageTypes.enum.FORM,
@@ -103,6 +104,13 @@ export const BIRTH_CERTIFICATE_COLLECTOR_FORM = defineActionForm({
           field('certificateTemplateId').isEqualTo(
             'v2.marriage-certified-certificate'
           )
+        ),
+        and(
+          field('marriageDetails.dateOfMarriage')
+            .isAfter()
+            .days(MARRIAGE_REGISTRATION_TARGET_DAYS)
+            .inPast(),
+          field('marriageDetails.dateOfMarriage').isBefore().now()
         )
       ),
       fields: [
@@ -163,10 +171,23 @@ export const BIRTH_CERTIFICATE_COLLECTOR_FORM = defineActionForm({
             defaultMessage: 'Receipt Number',
             description: 'Title for the data entry',
             id: 'event.marriage.action.certificate.form.section.collectPayment.receiptNumber.label'
-          }
+          },
+          conditionals: [
+            {
+              type: ConditionalType.SHOW,
+              conditional: and(
+                field('marriageDetails.dateOfMarriage')
+                  .isAfter()
+                  .days(MARRIAGE_REGISTRATION_TARGET_DAYS)
+                  .inPast(),
+                field('marriageDetails.dateOfMarriage').isBefore().now()
+              )
+            }
+          ]
         }
       ]
     },
+    // Marriage certificate certified copy
     {
       id: 'collector.collect.payment',
       type: PageTypes.enum.FORM,
@@ -189,18 +210,6 @@ export const BIRTH_CERTIFICATE_COLLECTOR_FORM = defineActionForm({
             description: 'Title for the data section',
             id: 'event.marriage.action.certificate.form.section.collectPayment.data.label'
           },
-          conditionals: [
-            {
-              type: ConditionalType.SHOW,
-              conditional: and(
-                field('marriageDetails.dateOfMarriage')
-                  .isAfter()
-                  .days(MARRIAGE_REGISTRATION_TARGET_DAYS)
-                  .inPast(),
-                field('marriageDetails.dateOfMarriage').isBefore().now()
-              )
-            }
-          ],
           configuration: {
             data: [
               {

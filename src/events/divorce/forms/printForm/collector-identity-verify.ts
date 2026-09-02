@@ -28,10 +28,10 @@ export const printCertificateCollectorIdentityVerify: FieldConfig[] = [
       {
         type: ConditionalType.SHOW,
         conditional: or(
-          field('collector.requesterId').isEqualTo(InformantType.BRIDE),
+          field('collector.requesterId').isEqualTo(InformantType.WIFE),
           and(
             field('collector.requesterId').isEqualTo('INFORMANT'),
-            field('informant.relation').isEqualTo(InformantType.BRIDE)
+            field('informant.relation').isEqualTo(InformantType.WIFE)
           )
         )
       }
@@ -39,16 +39,16 @@ export const printCertificateCollectorIdentityVerify: FieldConfig[] = [
     label: {
       defaultMessage: 'Identity details',
       description: 'Title for the data section',
-      id: 'event.marriage.action.certificate.form.section.verifyIdentity.data.label'
+      id: 'event.birth.action.certificate.form.section.verifyIdentity.data.label'
     },
     configuration: {
       data: [
-        { fieldId: 'bride.idType' },
-        { fieldId: 'bride.nid' },
-        { fieldId: 'bride.passport' },
-        { fieldId: 'bride.name' },
-        { fieldId: 'bride.dob' },
-        { fieldId: 'bride.nationality' }
+        { fieldId: 'wife.idType' },
+        { fieldId: 'wife.nid' },
+        { fieldId: 'wife.passport' },
+        { fieldId: 'wife.name' },
+        { fieldId: 'wife.dob' },
+        { fieldId: 'wife.nationality' }
       ]
     }
   },
@@ -59,10 +59,10 @@ export const printCertificateCollectorIdentityVerify: FieldConfig[] = [
       {
         type: ConditionalType.SHOW,
         conditional: or(
-          field('collector.requesterId').isEqualTo(InformantType.GROOM),
+          field('collector.requesterId').isEqualTo(InformantType.HUSBAND),
           and(
             field('collector.requesterId').isEqualTo('INFORMANT'),
-            field('informant.relation').isEqualTo(InformantType.GROOM)
+            field('informant.relation').isEqualTo(InformantType.HUSBAND)
           )
         )
       }
@@ -70,16 +70,16 @@ export const printCertificateCollectorIdentityVerify: FieldConfig[] = [
     label: {
       defaultMessage: 'Identity details',
       description: 'Title for the data section',
-      id: 'event.marriage.action.certificate.form.section.verifyIdentity.data.label'
+      id: 'event.birth.action.certificate.form.section.verifyIdentity.data.label'
     },
     configuration: {
       data: [
-        { fieldId: 'groom.idType' },
-        { fieldId: 'groom.nid' },
-        { fieldId: 'groom.passport' },
-        { fieldId: 'groom.name' },
-        { fieldId: 'groom.dob' },
-        { fieldId: 'groom.nationality' }
+        { fieldId: 'husband.idType' },
+        { fieldId: 'husband.nid' },
+        { fieldId: 'husband.passport' },
+        { fieldId: 'husband.name' },
+        { fieldId: 'husband.dob' },
+        { fieldId: 'husband.nationality' }
       ]
     }
   },
@@ -91,15 +91,15 @@ export const printCertificateCollectorIdentityVerify: FieldConfig[] = [
         type: ConditionalType.SHOW,
         conditional: and(
           field('collector.requesterId').isEqualTo('INFORMANT'),
-          not(field('informant.relation').isEqualTo(InformantType.GROOM)),
-          not(field('informant.relation').isEqualTo(InformantType.BRIDE))
+          not(field('informant.relation').isEqualTo(InformantType.HUSBAND)),
+          not(field('informant.relation').isEqualTo(InformantType.WIFE))
         )
       }
     ],
     label: {
       defaultMessage: 'Identity details',
       description: 'Title for the data section',
-      id: 'event.marriage.action.certificate.form.section.verifyIdentity.data.label'
+      id: 'event.birth.action.certificate.form.section.verifyIdentity.data.label'
     },
     configuration: {
       data: [

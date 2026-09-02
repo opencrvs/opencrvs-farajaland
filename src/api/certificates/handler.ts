@@ -340,6 +340,43 @@ export async function certificateHandler(
       svgUrl:
         '/api/countryconfig/certificates/v2.marriage-certificate-certified-copy.svg',
       fonts: { ...notoSansFont, ...libreBaskervilleFont }
+    },
+    {
+      id: 'v2.divorce-certificate',
+      event: Event.Divorce,
+      isV2Template: true,
+      label: {
+        id: 'certificates.divorce.certificate',
+        defaultMessage: 'Divorce Certificate certified',
+        description: 'The label for a divorce certificate'
+      },
+      isDefault: false,
+      fee: {
+        onTime: 7,
+        late: 10.6,
+        delayed: 18
+      },
+      svgUrl: '/api/countryconfig/certificates/v2.divorce-certificate.svg',
+      fonts: { ...notoSansFont, ...libreBaskervilleFont }
+    },
+    {
+      id: 'v2.divorce-certified-certificate',
+      event: Event.Divorce,
+      isV2Template: true,
+      label: {
+        id: 'certificates.divorce.certificate.copy',
+        defaultMessage: 'Divorce Certificate certified copy',
+        description: 'The label for a divorce certificate'
+      },
+      isDefault: false,
+      fee: {
+        onTime: 7,
+        late: 10.6,
+        delayed: 18
+      },
+      svgUrl:
+        '/api/countryconfig/certificates/v2.divorce-certificate-certified-copy.svg',
+      fonts: { ...notoSansFont, ...libreBaskervilleFont }
     }
   ]
   return certificateConfigs

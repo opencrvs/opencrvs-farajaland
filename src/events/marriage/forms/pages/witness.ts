@@ -13,23 +13,12 @@ import {
   ConditionalType,
   defineFormPage,
   FieldType,
-  field,
   not,
   user,
   never
 } from '@opencrvs/toolkit/events'
-import { or } from '@opencrvs/toolkit/conditionals'
-import { InformantType } from './informant'
 import { emptyMessage } from '@countryconfig/events/utils'
-import {
-  farajalandNameConfig,
-  invalidNameValidator
-} from '@countryconfig/events/birth/validators'
-
-export const requireFatherDetails = or(
-  field('father.detailsNotAvailable').isFalsy(),
-  field('informant.relation').isEqualTo(InformantType.GROOM)
-)
+import { farajalandNameConfig, invalidNameValidator } from '../../validators'
 
 export const witness = defineFormPage({
   id: 'witness',

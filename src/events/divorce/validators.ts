@@ -64,6 +64,22 @@ export const passportValidator = (fieldId: string) => ({
   })
 })
 
+export const dobBeforeChildDobValidator = (prefix: string) => ({
+  message: {
+    defaultMessage: "Birth date must be before child's birth date",
+    description:
+      "This is the error message for a birth date after child's birth date",
+    id: 'event.birth.action.declare.form.section.person.dob.afterChild'
+  },
+  validator: or(
+    field('child.dob').isFalsy(),
+    and(
+      field(`${prefix}.dob`).isBefore().date(field('child.dob')),
+      not(field(`${prefix}.dob`).isEqualTo(field('child.dob')))
+    )
+  )
+})
+
 export const farajalandNameConfig = {
   name: {
     firstname: { required: true },

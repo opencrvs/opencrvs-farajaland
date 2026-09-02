@@ -23,32 +23,32 @@ import { not } from '@opencrvs/toolkit/conditionals'
 import { createSelectOptions, emptyMessage } from '@countryconfig/events/utils'
 
 export const InformantType = {
-  BRIDE: 'BRIDE',
-  GROOM: 'GROOM'
+  HUSBAND: 'HUSBAND',
+  WIFE: 'WIFE'
 } as const
 export type InformantTypeKey = keyof typeof InformantType
 
 const PHONE_NUMBER_REGEX = '^0(7|9)[0-9]{8}$'
 const informantMessageDescriptors = {
-  BRIDE: {
-    defaultMessage: 'Bride',
-    description: 'Label for option Bride',
-    id: 'form.field.label.informantRelation.bride'
+  HUSBAND: {
+    defaultMessage: 'Husband',
+    description: 'Label for option Husband',
+    id: 'form.field.label.informantRelation.husband'
   },
-  GROOM: {
-    defaultMessage: 'Groom',
-    description: 'Label for option Groom',
-    id: 'form.field.label.informantRelation.groom'
+  WIFE: {
+    defaultMessage: 'Wife',
+    description: 'Label for option Wife',
+    id: 'form.field.label.informantRelation.wife'
   }
 } satisfies Record<keyof typeof InformantType, TranslationConfig>
 
-const marriageInformantTypeOptions = createSelectOptions(
+const birthInformantTypeOptions = createSelectOptions(
   InformantType,
   informantMessageDescriptors
 )
 
 export const idReaderHelperText = {
-  id: 'event.marriage.id-reader.helper-text',
+  id: 'event.birth.id-reader.helper-text',
   defaultMessage:
     "Authentication isn't required to register. To issue a UIN for the child, at least one parent must be authenticated",
   description: 'Helper text'
@@ -70,9 +70,9 @@ export const informant = defineFormPage({
       label: {
         defaultMessage: 'Informant type',
         description: 'This is the label for the field',
-        id: 'event.marriage.action.declare.form.section.informant.field.relation.label'
+        id: 'event.birth.action.declare.form.section.informant.field.relation.label'
       },
-      options: marriageInformantTypeOptions,
+      options: birthInformantTypeOptions,
       conditionals: [
         {
           type: ConditionalType.SHOW,
@@ -91,7 +91,7 @@ export const informant = defineFormPage({
       label: {
         defaultMessage: 'Point of contact',
         description: 'This is the label for the field',
-        id: 'event.marriage.action.declare.form.section.informant.field.contactPointHelper.label'
+        id: 'event.birth.action.declare.form.section.informant.field.contactPointHelper.label'
       },
       configuration: {
         styles: { fontVariant: 'h3' }
@@ -111,7 +111,7 @@ export const informant = defineFormPage({
       label: {
         defaultMessage: 'Phone number',
         description: 'This is the label for the field',
-        id: 'event.marriage.action.declare.form.section.informant.field.phoneNo.label'
+        id: 'event.birth.action.declare.form.section.informant.field.phoneNo.label'
       },
       validation: [
         {
@@ -120,7 +120,7 @@ export const informant = defineFormPage({
               'Must be a valid 10 digit number that starts with 0(7|9)',
             description:
               'The error message that appears on phone numbers where the first two characters must be 07 or 09, and length must be 10',
-            id: 'event.marriage.action.declare.form.section.informant.field.phoneNo.error'
+            id: 'event.birth.action.declare.form.section.informant.field.phoneNo.error'
           },
           validator: or(
             field('informant.phoneNo').matches(PHONE_NUMBER_REGEX),
@@ -137,7 +137,7 @@ export const informant = defineFormPage({
       label: {
         defaultMessage: 'Email',
         description: 'This is the label for the field',
-        id: 'event.marriage.action.declare.form.section.informant.field.email.label'
+        id: 'event.birth.action.declare.form.section.informant.field.email.label'
       },
       configuration: {
         maxLength: 255

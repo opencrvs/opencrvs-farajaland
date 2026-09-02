@@ -24,33 +24,34 @@ import {
   user
 } from '@opencrvs/toolkit/events'
 import {
-  MARRIAGE_DECLARATION_FORM,
-  MARRIAGE_DECLARATION_REVIEW
+  DIVORCE_DECLARATION_FORM,
+  DIVORCE_DECLARATION_REVIEW
 } from './forms/declaration'
 import { advancedSearchBirth } from './advancedSearch'
-import { MARRIAGE_CERTIFICATE_COLLECTOR_FORM } from './forms/printForm'
+import { DIVORCE_CERTIFICATE_COLLECTOR_FORM } from './forms/printForm'
 import { CORRECTION_FORM } from './forms/correctionForm'
 import { dedupConfig } from './dedupConfig'
 import * as verifiableCredentialActions from '@countryconfig/verifiable-credentials/issue-birth-credential-action'
 import { Event } from '@countryconfig/events/utils'
 
-export const marriageEvent = defineConfig({
-  id: Event.Marriage,
-  declaration: MARRIAGE_DECLARATION_FORM,
+export const divorceEvent = defineConfig({
+  id: Event.Divorce,
+  declaration: DIVORCE_DECLARATION_FORM,
   label: {
-    defaultMessage: 'Marriage',
+    defaultMessage: 'Divorce',
     description: 'This is what this event is referred as in the system',
-    id: 'event.marriage.label'
+    id: 'event.divorce.label'
   },
-  dateOfEvent: field('marriageDetails.dateOfMarriage'),
-  placeOfEvent: field('marriageDetails.placeOfMarriage'),
+  dateOfEvent: field('divorce.dateOfDivorce'),
+  placeOfEvent: field('court.name'),
   title: {
-    defaultMessage: '{groom.name.surname} AND {bride.name.surname}',
+    defaultMessage:
+      '{husband.name.firstname} {husband.name.surname} AND {wife.name.firstname} {wife.name.surname}',
     description: 'This is the title of the summary',
-    id: 'event.marriage.title'
+    id: 'event.divorce.title'
   },
   fallbackTitle: {
-    id: 'event.marriage.fallbackTitle',
+    id: 'event.divorce.fallbackTitle',
     defaultMessage: 'No name provided',
     description:
       'This is a fallback title if actual title resolves to empty string'
@@ -59,7 +60,7 @@ export const marriageEvent = defineConfig({
     {
       id: 'approval-required-for-late-registration',
       label: {
-        id: 'event.marriage.flag.approval-required-for-late-registration',
+        id: 'event.divorce.flag.approval-required-for-late-registration',
         defaultMessage: 'Approval required for late registration',
         description: 'Flag label for approval required for late registration'
       },
@@ -68,7 +69,7 @@ export const marriageEvent = defineConfig({
     {
       id: 'escalated-to-provincial-registrar',
       label: {
-        id: 'event.marriage.flag.escalated-to-provincial-registrar',
+        id: 'event.divorce.flag.escalated-to-provincial-registrar',
         defaultMessage: 'Escalated to Provincial Registrar',
         description: 'Flag label for escalated to provincial registrar'
       },
@@ -77,7 +78,7 @@ export const marriageEvent = defineConfig({
     {
       id: 'escalated-to-registrar-general',
       label: {
-        id: 'event.marriage.flag.escalated-to-registrar-general',
+        id: 'event.divorce.flag.escalated-to-registrar-general',
         defaultMessage: 'Escalated to Registrar General',
         description: 'Flag label for escalated to registrar general'
       },
@@ -86,7 +87,7 @@ export const marriageEvent = defineConfig({
     {
       id: 'validated',
       label: {
-        id: 'event.marriage.flag.validated',
+        id: 'event.divorce.flag.validated',
         defaultMessage: 'Validated',
         description: 'Flag label for validated'
       },
@@ -95,7 +96,7 @@ export const marriageEvent = defineConfig({
     {
       id: 'pending-first-certificate-issuance',
       label: {
-        id: 'event.marriage.flag.pending-first-certificate-issuance',
+        id: 'event.divorce.flag.pending-first-certificate-issuance',
         defaultMessage: 'Pending first certificate issuance',
         description: 'Flag label for first certificate issuance'
       },
@@ -104,7 +105,7 @@ export const marriageEvent = defineConfig({
     {
       id: 'certified-copy-printed-in-advance-of-issuance',
       label: {
-        id: 'event.marriage.flag.certified-copy-printed-in-advance-of-issuance',
+        id: 'event.divorce.flag.certified-copy-printed-in-advance-of-issuance',
         defaultMessage: 'Certified copy printed in advance of issuance',
         description:
           'Flag label for certified copy printed in advance of issuance'
@@ -114,7 +115,7 @@ export const marriageEvent = defineConfig({
     {
       id: 'revoked',
       label: {
-        id: 'event.marriage.flag.revoked',
+        id: 'event.divorce.flag.revoked',
         defaultMessage: 'Revoked',
         description: 'Flag label for revoked'
       },
@@ -125,7 +126,7 @@ export const marriageEvent = defineConfig({
       label: {
         defaultMessage: 'Verifiable Credential issued',
         description: 'Flag label for verifiable credential issued',
-        id: 'event.marriage.flag.vc-issued'
+        id: 'event.divorce.flag.vc-issued'
       },
       requiresAction: false
     }
@@ -135,17 +136,17 @@ export const marriageEvent = defineConfig({
       {
         fieldId: 'marriageDetails.placeOfMarriage',
         label: {
-          defaultMessage: 'Place of marriage',
-          description: 'Label for place of marriage in summary',
-          id: 'event.marriage.summary.placeOfMarriage.label'
+          defaultMessage: 'Place of divorce',
+          description: 'Label for place of divorce in summary',
+          id: 'event.divorce.summary.placeOfMarriage.label'
         }
       },
       {
         fieldId: 'marriageDetails.dateOfMarriage',
         label: {
-          defaultMessage: 'Date of marriage',
-          description: 'Label for date of marriage in summary',
-          id: 'event.marriage.summary.dateOfMarriage.label'
+          defaultMessage: 'Date of divorce',
+          description: 'Label for date of divorce in summary',
+          id: 'event.divorce.summary.dateOfMarriage.label'
         }
       },
       // Render the 'fallback value' when selection has not been made.
@@ -155,17 +156,17 @@ export const marriageEvent = defineConfig({
         emptyValueMessage: {
           defaultMessage: 'No contact details provided',
           description: 'This is shown when there is no informant information',
-          id: 'event.marriage.summary.informant.contact.empty'
+          id: 'event.divorce.summary.informant.contact.empty'
         },
         label: {
           defaultMessage: 'Contact',
           description: 'This is the label for the informant information',
-          id: 'event.marriage.summary.informant.contact.label'
+          id: 'event.divorce.summary.informant.contact.label'
         },
         value: {
           defaultMessage: '{informant.phoneNo} {informant.email}',
           description: 'This is the contact value of the informant',
-          id: 'event.marriage.summary.informant.contact.value'
+          id: 'event.divorce.summary.informant.contact.value'
         }
       }
     ]
@@ -199,9 +200,9 @@ export const marriageEvent = defineConfig({
         defaultMessage: 'Read',
         description:
           'This is shown as the action name anywhere the user can trigger the action from',
-        id: 'event.marriage.action.Read.label'
+        id: 'event.divorce.action.Read.label'
       },
-      review: MARRIAGE_DECLARATION_REVIEW
+      review: DIVORCE_DECLARATION_REVIEW
     },
     {
       type: ActionType.DECLARE,
@@ -209,16 +210,16 @@ export const marriageEvent = defineConfig({
         defaultMessage: 'Declare',
         description:
           'This is shown as the action name anywhere the user can trigger the action from',
-        id: 'event.marriage.action.declare.label'
+        id: 'event.divorce.action.declare.label'
       },
-      review: MARRIAGE_DECLARATION_REVIEW,
+      review: DIVORCE_DECLARATION_REVIEW,
       deduplication: {
-        id: 'marriage-deduplication',
+        id: 'divorce-deduplication',
         label: {
           defaultMessage: 'Detect duplicate',
           description:
             'This is shown as the action name anywhere the user can trigger the action from',
-          id: 'event.marriage.action.detect-duplicate.label'
+          id: 'event.divorce.action.detect-duplicate.label'
         },
         query: dedupConfig
       },
@@ -235,19 +236,19 @@ export const marriageEvent = defineConfig({
       ],
       dialogCopy: {
         notify: {
-          id: 'event.marriage.action.declare.notify.copy',
+          id: 'event.divorce.action.declare.notify.copy',
           defaultMessage:
-            'You are about to formally notify the relevant Registration Office that a new marriage event has occurred. Please confirm that the information provided is accurate before proceeding.',
+            'You are about to formally notify the relevant Registration Office that a new divorce event has occurred. Please confirm that the information provided is accurate before proceeding.',
           description: 'Confirmation text for the notify action'
         },
         declare: {
-          id: 'event.marriage.action.declare.declare.copy',
+          id: 'event.divorce.action.declare.declare.copy',
           defaultMessage:
-            'You are about to formally declare this marriage event. Once declared, the record will enter the verification and approval process.',
+            'You are about to formally declare this divorce event. Once declared, the record will enter the verification and approval process.',
           description: 'Confirmation text for the declare action'
         },
         register: {
-          id: 'event.marriage.action.declare.register.copy',
+          id: 'event.divorce.action.declare.register.copy',
           defaultMessage:
             '<strong>WARNING!</strong>: By clicking "Register", you confirm that you have reviewed the record alongside supporting documentation in the Record tab. The record will proceed to be <strong>legally registered</strong> via the outbox. Further amends after registration can only be made via a legal correction process.',
           description: 'Confirmation text for the register action'
@@ -269,21 +270,21 @@ export const marriageEvent = defineConfig({
       ],
       dialogCopy: {
         notify: {
-          id: 'event.marriage.action.edit.notify.copy',
+          id: 'event.divorce.action.edit.notify.copy',
           defaultMessage:
             'Are you sure you want to notify this event with these edits?',
           description: 'Confirmation text for the notify with edits action'
         },
         declare: {
-          id: 'event.marriage.action.edit.declare.copy',
+          id: 'event.divorce.action.edit.declare.copy',
           defaultMessage:
             'Are you sure you want to edit this declaration? By confirming you are redeclaring this event and override past changes.',
           description: 'Confirmation text for the declare with edits action'
         },
         register: {
-          id: 'event.marriage.action.edit.register.copy',
+          id: 'event.divorce.action.edit.register.copy',
           defaultMessage:
-            'You are about to register this marriage event with your edits. Please ensure all details are correct before proceeding.<br></br><br></br><strong>WARNING!</strong>: By continuing, you confirm that you have reviewed the record alongside supporting documentation. The record will proceed to be <strong>legally registered</strong> via the outbox. Further amends after registration can only be made via a legal correction process.',
+            'You are about to register this divorce event with your edits. Please ensure all details are correct before proceeding.<br></br><br></br><strong>WARNING!</strong>: By continuing, you confirm that you have reviewed the record alongside supporting documentation. The record will proceed to be <strong>legally registered</strong> via the outbox. Further amends after registration can only be made via a legal correction process.',
           description: 'Confirmation text for the register with edits action'
         }
       }
@@ -296,14 +297,14 @@ export const marriageEvent = defineConfig({
         defaultMessage: 'Validate',
         description:
           'This is shown as the action name anywhere the user can trigger the action from',
-        id: 'event.marriage.custom.action.validate-declaration.label'
+        id: 'event.divorce.custom.action.validate-declaration.label'
       },
       supportingCopy: {
         defaultMessage:
           'Validating this declaration confirms it meets all requirements and is eligible for registration.',
         description:
           'This is the supporting copy for the Validate declaration -action',
-        id: 'event.marriage.custom.action.validate-declaration.supportingCopy'
+        id: 'event.divorce.custom.action.validate-declaration.supportingCopy'
       },
       conditionals: [
         {
@@ -327,7 +328,7 @@ export const marriageEvent = defineConfig({
             defaultMessage: 'Comments',
             description:
               'This is the label for the comments field for the validate declaration action',
-            id: 'event.marriage.custom.action.validate-declaration.field.comments.label'
+            id: 'event.divorce.custom.action.validate-declaration.field.comments.label'
           }
         }
       ],
@@ -335,7 +336,7 @@ export const marriageEvent = defineConfig({
         defaultMessage: 'Validated',
         description:
           'The label to show in audit history for the validate action',
-        id: 'event.marriage.custom.action.validate-declaration.audit-history-label'
+        id: 'event.divorce.custom.action.validate-declaration.audit-history-label'
       }
     },
     {
@@ -346,7 +347,7 @@ export const marriageEvent = defineConfig({
         defaultMessage: 'Approve',
         description:
           'This is shown as the action name anywhere the user can trigger the action from',
-        id: 'event.marriage.action.approve.label'
+        id: 'event.divorce.action.approve.label'
       },
       form: [
         {
@@ -355,7 +356,7 @@ export const marriageEvent = defineConfig({
           label: {
             defaultMessage: 'Comments',
             description: 'This is the label for the field for a custom action',
-            id: 'event.marriage.custom.action.approve.field.notes.label'
+            id: 'event.divorce.custom.action.approve.field.notes.label'
           }
         }
       ],
@@ -377,13 +378,13 @@ export const marriageEvent = defineConfig({
         defaultMessage: 'Approved',
         description:
           'The label to show in audit history for the approve action',
-        id: 'event.marriage.action.approve.audit-history-label'
+        id: 'event.divorce.action.approve.audit-history-label'
       },
       supportingCopy: {
         defaultMessage:
           'Approving this declaration confirms it as legally accepted and eligible for registration.',
         description: 'This is the confirmation text for the approve action',
-        id: 'event.marriage.action.approve.confirmationText'
+        id: 'event.divorce.action.approve.confirmationText'
       }
     },
     {
@@ -394,14 +395,14 @@ export const marriageEvent = defineConfig({
         defaultMessage: 'Issue certified copy',
         description:
           'This is shown as the action name anywhere the user can trigger the action from',
-        id: 'event.marriage.action.issue-certified-copy.label'
+        id: 'event.divorce.action.issue-certified-copy.label'
       },
       supportingCopy: {
         defaultMessage:
           'Issuing a certified copy confirms that an official document is being released.',
         description:
           'This is the confirmation text for the issue certified copy action',
-        id: 'event.marriage.action.issue-certified-copy.supportingCopy'
+        id: 'event.divorce.action.issue-certified-copy.supportingCopy'
       },
       form: [
         {
@@ -410,25 +411,25 @@ export const marriageEvent = defineConfig({
           label: {
             defaultMessage: 'Collector',
             description: 'Label for collector field',
-            id: 'event.marriage.custom.action.approve.field.collector.label'
+            id: 'event.divorce.custom.action.approve.field.collector.label'
           },
           required: true,
           options: [
             {
               label: {
-                defaultMessage: 'Bride',
-                id: 'form.field.label.app.whoContDet.bride',
-                description: 'Label for bride'
+                defaultMessage: 'Wife',
+                id: 'form.field.label.app.whoContDet.wife',
+                description: 'Label for wife'
               },
-              value: 'BRIDE'
+              value: 'WIFE'
             },
             {
               label: {
-                defaultMessage: 'Groom',
-                id: 'form.field.label.informantRelation.groom',
-                description: 'Label for groom'
+                defaultMessage: 'Husband',
+                id: 'form.field.label.informantRelation.husband',
+                description: 'Label for husband'
               },
-              value: 'GROOM'
+              value: 'HUSBAND'
             },
             {
               label: {
@@ -461,7 +462,7 @@ export const marriageEvent = defineConfig({
       auditHistoryLabel: {
         defaultMessage: 'Issued',
         description: 'The label to show in audit history for the issued action',
-        id: 'event.marriage.action.issued.audit-history-label'
+        id: 'event.divorce.action.issued.audit-history-label'
       }
     },
     {
@@ -472,13 +473,13 @@ export const marriageEvent = defineConfig({
         defaultMessage: 'Escalate',
         description:
           'This is shown when the escalate action can be triggered from the action from',
-        id: 'event.marriage.action.escalate.label'
+        id: 'event.divorce.action.escalate.label'
       },
       supportingCopy: {
         defaultMessage:
           'Escalating this declaration will forward it to the chosen authority for further review and decision.',
         description: 'This is the confirmation text for the escalate action',
-        id: 'event.marriage.action.escalate.supportingCopy'
+        id: 'event.divorce.action.escalate.supportingCopy'
       },
       conditionals: [
         {
@@ -502,12 +503,12 @@ export const marriageEvent = defineConfig({
           label: {
             defaultMessage: 'Escalate to',
             description: 'This is the label for escalate to field',
-            id: 'event.marriage.custom.action.escalate.field.escalate-to.label'
+            id: 'event.divorce.custom.action.escalate.field.escalate-to.label'
           },
           options: [
             {
               label: {
-                id: 'event.marriage.custom.action.escalate.field.escalate-to.option.officer-in-charge.label',
+                id: 'event.divorce.custom.action.escalate.field.escalate-to.option.officer-in-charge.label',
                 defaultMessage: 'My state provincial registrar',
                 description:
                   'Option label for provincial registrar in escalate to field'
@@ -516,7 +517,7 @@ export const marriageEvent = defineConfig({
             },
             {
               label: {
-                id: 'event.marriage.custom.action.escalate.field.escalate-to.option.registrar-general.label',
+                id: 'event.divorce.custom.action.escalate.field.escalate-to.option.registrar-general.label',
                 defaultMessage: 'Registrar General',
                 description:
                   'Option label for registrar general in escalate to field'
@@ -552,7 +553,7 @@ export const marriageEvent = defineConfig({
         defaultMessage: 'Escalated',
         description:
           'The label to show in audit history for the escalate action',
-        id: 'event.marriage.action.escalate.audit-history-label'
+        id: 'event.divorce.action.escalate.audit-history-label'
       }
     },
     {
@@ -564,13 +565,13 @@ export const marriageEvent = defineConfig({
           'Your feedback will be recorded and shared with relevant officers to guide further action on this declaration.',
         description:
           'This is the confirmation text for the provincial registrar feedback action',
-        id: 'event.marriage.action.provincial-registrar-feedback.supportingCopy'
+        id: 'event.divorce.action.provincial-registrar-feedback.supportingCopy'
       },
       label: {
         defaultMessage: 'Provincial registrar feedback',
         description:
           'This is shown when the provincial registrar feedback can be triggered from the action from',
-        id: 'event.marriage.action.provincial-registrar-feedback.label'
+        id: 'event.divorce.action.provincial-registrar-feedback.label'
       },
       form: [
         {
@@ -580,7 +581,7 @@ export const marriageEvent = defineConfig({
           label: {
             defaultMessage: 'Comments',
             description: 'This is the label for the field for a custom action',
-            id: 'event.marriage.custom.action.approve.field.notes.label'
+            id: 'event.divorce.custom.action.approve.field.notes.label'
           }
         }
       ],
@@ -600,7 +601,7 @@ export const marriageEvent = defineConfig({
         defaultMessage: 'Escalation feedback',
         description:
           'The label to show in audit history for the registrar feedback sent action',
-        id: 'event.marriage.action.registrar-feedback.audit-history-label'
+        id: 'event.divorce.action.registrar-feedback.audit-history-label'
       }
     },
     {
@@ -611,14 +612,14 @@ export const marriageEvent = defineConfig({
         defaultMessage: 'Registrar general feedback',
         description:
           'This is shown when the registrar general feedback can be triggered from the action from',
-        id: 'event.marriage.action.registrar-general-feedback.label'
+        id: 'event.divorce.action.registrar-general-feedback.label'
       },
       supportingCopy: {
         defaultMessage:
           'Your feedback will be officially recorded and may influence the final decision on the declaration.',
         description:
           'This is the confirmation text for the registrar general feedback action',
-        id: 'event.marriage.action.registrar-general-feedback.supportingCopy'
+        id: 'event.divorce.action.registrar-general-feedback.supportingCopy'
       },
       form: [
         {
@@ -628,7 +629,7 @@ export const marriageEvent = defineConfig({
           label: {
             defaultMessage: 'Comments',
             description: 'This is the label for the field for a custom action',
-            id: 'event.marriage.custom.action.approve.field.notes.label'
+            id: 'event.divorce.custom.action.approve.field.notes.label'
           }
         }
       ],
@@ -648,7 +649,7 @@ export const marriageEvent = defineConfig({
         defaultMessage: 'Escalation feedback',
         description:
           'The label to show in audit history for the registrar feedback sent action',
-        id: 'event.marriage.action.registrar-feedback.audit-history-label'
+        id: 'event.divorce.action.registrar-feedback.audit-history-label'
       }
     },
     {
@@ -658,7 +659,7 @@ export const marriageEvent = defineConfig({
         defaultMessage: 'Revoke registration',
         description:
           'This is shown as the action name anywhere the user can trigger the action from',
-        id: 'event.marriage.action.revoke-registration.label'
+        id: 'event.divorce.action.revoke-registration.label'
       },
       icon: 'Briefcase',
       supportingCopy: {
@@ -666,13 +667,13 @@ export const marriageEvent = defineConfig({
           'Revoking this registration will invalidate the record and prevent its use for official purposes. This action should only be taken under lawful authority.',
         description:
           'This is the confirmation text for the revoke registration action',
-        id: 'event.marriage.action.revoke-registration.supportingCopy'
+        id: 'event.divorce.action.revoke-registration.supportingCopy'
       },
       auditHistoryLabel: {
         defaultMessage: 'Revoked',
         description:
           'The label to show in audit history for the revoke registration action',
-        id: 'event.marriage.action.revoke-registration.audit-history-label'
+        id: 'event.divorce.action.revoke-registration.audit-history-label'
       },
       flags: [
         { id: 'revoked', operation: 'add' },
@@ -703,7 +704,7 @@ export const marriageEvent = defineConfig({
             defaultMessage: 'Reason',
             description:
               'This is the label for the reason field for revoke registration action',
-            id: 'event.marriage.custom.action.revoke-registration.field.reason.label'
+            id: 'event.divorce.custom.action.revoke-registration.field.reason.label'
           }
         }
       ]
@@ -715,7 +716,7 @@ export const marriageEvent = defineConfig({
         defaultMessage: 'Reinstate registration',
         description:
           'This is shown as the action name anywhere the user can trigger the action from',
-        id: 'event.marriage.action.revoke-registration.label'
+        id: 'event.divorce.action.revoke-registration.label'
       },
       icon: 'ArchiveTray',
       supportingCopy: {
@@ -723,13 +724,13 @@ export const marriageEvent = defineConfig({
           'This will restore a previously revoked registration to active status.',
         description:
           'This is the confirmation text for the reinstate revoke registration action',
-        id: 'event.marriage.action.revoke-registration.supportingCopy'
+        id: 'event.divorce.action.revoke-registration.supportingCopy'
       },
       auditHistoryLabel: {
         defaultMessage: 'Registration reinstated',
         description:
           'The label to show in audit history for the reinstate registration action',
-        id: 'event.marriage.action.reinstate-registration.audit-history-label'
+        id: 'event.divorce.action.reinstate-registration.audit-history-label'
       },
       conditionals: [
         {
@@ -747,7 +748,7 @@ export const marriageEvent = defineConfig({
             defaultMessage: 'Reason',
             description:
               'This is the label for the reason field for revoke registration action',
-            id: 'event.marriage.custom.action.revoke-registration.field.reason.label'
+            id: 'event.divorce.custom.action.revoke-registration.field.reason.label'
           }
         }
       ]
@@ -758,7 +759,7 @@ export const marriageEvent = defineConfig({
         defaultMessage: 'Reject',
         description:
           'This is shown as the action name anywhere the user can trigger the action from',
-        id: 'event.marriage.action.reject.label'
+        id: 'event.divorce.action.reject.label'
       },
       supportingCopy: {
         id: 'rejectModal.description',
@@ -774,13 +775,13 @@ export const marriageEvent = defineConfig({
         defaultMessage: 'Register',
         description:
           'This is shown as the action name anywhere the user can trigger the action from',
-        id: 'event.marriage.action.register.label'
+        id: 'event.divorce.action.register.label'
       },
       supportingCopy: {
-        id: 'event.marriage.action.register.supportingCopy',
+        id: 'event.divorce.action.register.supportingCopy',
         description: 'Confirmation text for the register action',
         defaultMessage:
-          "Registering this marriage event will create an official civil registration record. Please ensure all details are correct before proceeding.<br></br><br></br><strong>WARNING!</strong>: By clicking 'Register', you confirm that you have reviewed the record alongside supporting documentation in the Record tab. The record will proceed to be <strong>legally registered</strong> via the outbox. Further amends after registration can only be made via a legal correction process."
+          "Registering this divorce event will create an official civil registration record. Please ensure all details are correct before proceeding.<br></br><br></br><strong>WARNING!</strong>: By clicking 'Register', you confirm that you have reviewed the record alongside supporting documentation in the Record tab. The record will proceed to be <strong>legally registered</strong> via the outbox. Further amends after registration can only be made via a legal correction process."
       },
       flags: [
         { id: 'validated', operation: 'remove' },
@@ -798,12 +799,12 @@ export const marriageEvent = defineConfig({
         }
       ],
       deduplication: {
-        id: 'marriage-deduplication',
+        id: 'divorce-deduplication',
         label: {
           defaultMessage: 'Detect duplicate',
           description:
             'This is shown as the action name anywhere the user can trigger the action from',
-          id: 'event.marriage.action.detect-duplicate.label'
+          id: 'event.divorce.action.detect-duplicate.label'
         },
         query: dedupConfig
       }
@@ -814,7 +815,7 @@ export const marriageEvent = defineConfig({
         defaultMessage: 'Print',
         description:
           'This is shown as the action name anywhere the user can trigger the action from',
-        id: 'event.marriage.action.collect-certificate.label'
+        id: 'event.divorce.action.collect-certificate.label'
       },
       conditionals: [
         {
@@ -837,14 +838,14 @@ export const marriageEvent = defineConfig({
         },
         { id: 'pending-first-certificate-issuance', operation: 'remove' }
       ],
-      printForm: MARRIAGE_CERTIFICATE_COLLECTOR_FORM
+      printForm: DIVORCE_CERTIFICATE_COLLECTOR_FORM
     },
     {
       type: ActionType.REQUEST_CORRECTION,
       label: {
-        id: 'event.marriage.action.declare.form.review.title',
+        id: 'event.divorce.action.declare.form.review.title',
         defaultMessage:
-          '{groom.name.firstname, select, __EMPTY__ {Marriage declaration} other {{groom.name.firstname, select, __EMPTY__ {Marriage declaration for {groom.name.surname}} other {Marriage declaration for {groom.name.firstname} {groom.name.surname} and {bride.name.firstname} {bride.name.surname}}}}}',
+          '{husband.name.firstname, select, __EMPTY__ {Divorce declaration} other {{husband.name.firstname, select, __EMPTY__ {Divorce declaration for {husband.name.surname}} other {Divorce declaration for {husband.name.firstname} {husband.name.surname} and {wife.name.firstname} {wife.name.surname}}}}}',
         description: 'Title of the form to show in review page'
       },
       conditionals: [{ type: ConditionalType.SHOW, conditional: never() }],
@@ -856,7 +857,7 @@ export const marriageEvent = defineConfig({
         defaultMessage: 'Archive',
         description:
           'This is shown as the action name anywhere the user can trigger the action from',
-        id: 'event.marriage.action.archive.label'
+        id: 'event.divorce.action.archive.label'
       },
       supportingCopy: {
         id: 'recordAudit.archive.confirmation.body',
