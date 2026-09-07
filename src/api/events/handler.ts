@@ -400,7 +400,7 @@ async function dissolveMarriageRecord(
     }
   }
 
-  if (marriageRecord.flags?.includes('sealed')) {
+  if (marriageRecord.flags?.includes('dissolved')) {
     logger.info(
       `Divorce ${divorceEvent.id}: marriage record ${marriageRecord.id} is already dissolved, skipping.`
     )
@@ -408,16 +408,29 @@ async function dissolveMarriageRecord(
   }
 
   try {
-    await client.event.actions.custom.request.mutate({
+    console.log('DISSOLVING THE MARRIAGE -------> ')
+    const dissolutionResult = await client.event.actions.custom.request.mutate({
       eventId: marriageRecord.id,
       transactionId: uuidv4(),
       customActionType: 'DISSOLVE_MARRIAGE',
       annotation: {
-        reason: 'DIVORCE',
-        courtOrderReference: declaration['documents.courtOrder'],
-        proofOfInformant: declaration['documents.proofOfInformantID']
+        reason: 'DIVORCE'
+        // TODO:FIXME: change these field into `.FILE` type and test
+        // courtOrderReference: declaration['documents.courtOrder'],
+        // proofOfInformant: declaration['documents.proofOfInformantID']
       }
     })
+
+    console.log('marriageRecord.id :>> ', marriageRecord.id)
+    console.log(
+      'declaration > documents.courtOrder :>> ',
+      declaration['documents.courtOrder']
+    )
+    console.log(
+      'declaration >> documents.proofOfInformantID :>> ',
+      dissolutionResult
+    )
+    console.log('dissolutionResult :>> ', dissolutionResult)
 
     return { success: true }
   } catch (error) {
@@ -442,9 +455,7 @@ async function findMarriageRecordByMrn(
     return mrnField.data.firstResult
   }
 
-  const mrn = mrnField?.data?.input
-
-  if (!mrn) {
+  if (!mrnField) {
     return undefined
   }
 
@@ -456,7 +467,7 @@ async function findMarriageRecordByMrn(
           eventType: Event.Marriage,
           'legalStatuses.REGISTERED.registrationNumber': {
             type: 'exact',
-            term: mrn
+            term: mrnField
           }
         }
       ]

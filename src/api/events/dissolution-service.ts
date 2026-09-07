@@ -26,7 +26,7 @@ import { logger } from '@countryconfig/logger'
 
 const INTEGRATION_NAME = 'Marriage dissolution service'
 
-// Seeded by default in testland's employee data (data-seeding/employees).
+// Seeded by default in farajaland's employee data (data-seeding/employees).
 const NATIONAL_SYSTEM_ADMIN_USERNAME = 'j.campbell'
 const NATIONAL_SYSTEM_ADMIN_PASSWORD = 'test'
 
@@ -38,7 +38,6 @@ const DISSOLUTION_SERVICE_SCOPES = defineScopes([
   }
 ])
 
-let credentials: { clientId: string; clientSecret: string } | undefined
 let cachedToken: { token: string; expiresAt: number } | undefined
 
 async function authenticateAsNationalSystemAdmin() {
