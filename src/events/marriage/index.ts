@@ -128,6 +128,15 @@ export const marriageEvent = defineConfig({
         id: 'event.marriage.flag.vc-issued'
       },
       requiresAction: false
+    },
+    {
+      id: 'dissolved',
+      label: {
+        defaultMessage: 'Dissolved',
+        description: 'Flag label for dissolved',
+        id: 'event.marriage.flag.dissolved'
+      },
+      requiresAction: false
     }
   ],
   summary: {
@@ -184,13 +193,13 @@ export const marriageEvent = defineConfig({
     ActionType.REJECT,
     ActionType.ARCHIVE,
     ActionType.DELETE,
-    'ISSUE_VERIFIABLE_CREDENTIAL',
     ActionType.PRINT_CERTIFICATE,
     'ISSUE_CERTIFIED_COPY',
     ActionType.REQUEST_CORRECTION,
     'REVOKE_REGISTRATION',
     'REINSTATE_REVOKE_REGISTRATION',
-    ActionType.UNASSIGN
+    ActionType.UNASSIGN,
+    'DISSOLVE_MARRIAGE'
   ],
   actions: [
     {
@@ -866,7 +875,44 @@ export const marriageEvent = defineConfig({
       },
       flags: [{ id: InherentFlags.REJECTED, operation: 'remove' }]
     },
-    verifiableCredentialActions.issueBirthCredentialAction
+    // CUSTOM DISSOLVE MARRIAGE ACTION USED WHEN DECLARING A DIVORCE
+    {
+      type: ActionType.CUSTOM,
+      customActionType: 'DISSOLVE_MARRIAGE',
+      icon: 'Break',
+      label: {
+        defaultMessage: 'Dissolve Marriage',
+        description:
+          'This is shown as the action name anywhere the user can trigger the action from',
+        id: 'event.marriage.custom.action.dissolve.label'
+      },
+      form: [
+        {
+          id: 'courtOrderReference',
+          type: FieldType.FILE,
+          required: false,
+          label: {
+            defaultMessage: 'Court order reference',
+            description:
+              'This is the label for the court order reference field',
+            id: 'event.marriage.custom.action.dissolve.field.courtOrderReference.label'
+          }
+        }
+      ],
+      conditionals: [
+        {
+          type: ConditionalType.SHOW,
+          conditional: and(status('REGISTERED'), not(flag('dissolved')))
+        }
+      ],
+      flags: [{ id: 'dissolved', operation: 'add' }],
+      auditHistoryLabel: {
+        defaultMessage: 'Dissolved',
+        description:
+          'The label to show in audit history for the dissolve action',
+        id: 'event.marriage.custom.action.dissolve.audit-history-label'
+      }
+    }
   ],
   advancedSearch: advancedSearchBirth
 })
