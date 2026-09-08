@@ -341,7 +341,6 @@ export async function onDivorceRegisterHandler(
   h: Hapi.ResponseToolkit
 ) {
   // DISSOLVING MARRIAGE — Flag the linked marriage to be inactive
-  // const token = request.auth.artifacts.token as string
   const event = request.payload
   const declaration = aggregateActionDeclarations(event)
 
