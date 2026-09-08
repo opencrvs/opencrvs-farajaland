@@ -875,7 +875,7 @@ export const marriageEvent = defineConfig({
       },
       flags: [{ id: InherentFlags.REJECTED, operation: 'remove' }]
     },
-    // ADDING DISSOLVE MARRIAGE ACTION
+    // CUSTOM DISSOLVE MARRIAGE ACTION USED WHEN DECLARING A DIVORCE
     {
       type: ActionType.CUSTOM,
       customActionType: 'DISSOLVE_MARRIAGE',
@@ -889,23 +889,13 @@ export const marriageEvent = defineConfig({
       form: [
         {
           id: 'courtOrderReference',
-          type: FieldType.TEXT,
+          type: FieldType.FILE,
           required: false,
           label: {
             defaultMessage: 'Court order reference',
             description:
               'This is the label for the court order reference field',
             id: 'event.marriage.custom.action.dissolve.field.courtOrderReference.label'
-          }
-        },
-        {
-          id: 'proofOfInformant',
-          type: FieldType.TEXT,
-          required: false,
-          label: {
-            defaultMessage: 'Requesting party',
-            description: 'This is the label for the requesting party field',
-            id: 'event.marriage.custom.action.dissolve.field.proofOfInformant.label'
           }
         }
       ],

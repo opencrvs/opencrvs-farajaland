@@ -408,29 +408,15 @@ async function dissolveMarriageRecord(
   }
 
   try {
-    console.log('DISSOLVING THE MARRIAGE -------> ')
-    const dissolutionResult = await client.event.actions.custom.request.mutate({
+    await client.event.actions.custom.request.mutate({
       eventId: marriageRecord.id,
       transactionId: uuidv4(),
       customActionType: 'DISSOLVE_MARRIAGE',
       annotation: {
-        reason: 'DIVORCE'
-        // TODO:FIXME: change these field into `.FILE` type and test
-        // courtOrderReference: declaration['documents.courtOrder'],
-        // proofOfInformant: declaration['documents.proofOfInformantID']
+        reason: 'DIVORCE',
+        courtOrderReference: declaration['documents.courtOrder']
       }
     })
-
-    console.log('marriageRecord.id :>> ', marriageRecord.id)
-    console.log(
-      'declaration > documents.courtOrder :>> ',
-      declaration['documents.courtOrder']
-    )
-    console.log(
-      'declaration >> documents.proofOfInformantID :>> ',
-      dissolutionResult
-    )
-    console.log('dissolutionResult :>> ', dissolutionResult)
 
     return { success: true }
   } catch (error) {
