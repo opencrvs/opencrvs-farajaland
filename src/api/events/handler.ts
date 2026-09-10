@@ -20,15 +20,25 @@ import {
   deepMerge,
   getPendingAction,
   RegisterAction,
-  NameFieldValue
+  NameFieldValue,
+  EventDocument
 } from '@opencrvs/toolkit/events'
-import { MOSIP_INTEROP_URL, NO_MOSIP } from '@countryconfig/constants'
+import { v4 as uuidv4 } from 'uuid'
+import {
+  GATEWAY_URL,
+  MOSIP_INTEROP_URL,
+  NO_MOSIP
+} from '@countryconfig/constants'
 import {
   getBirthInformantSection,
   getInformantPsut,
   shouldForwardBirthRegistrationToMosip
 } from '../../events/mosip'
 import { logger } from '@countryconfig/logger'
+import { generateRegistrationNumber } from '../registration/registrationNumber'
+import { createClient } from '@opencrvs/toolkit/api'
+import { Event } from '@countryconfig/events/utils'
+import { getMarriageDissolutionToken } from './dissolution-service'
 
 export function getEventsHandler(_: Hapi.Request, h: Hapi.ResponseToolkit) {
   return h.response(eventConfigs).code(200)
@@ -315,4 +325,139 @@ export async function onDeathActionHandler(
     })
 
   return h.response({ declaration: updatedFields }).code(200)
+}
+
+export async function onMarriageRegisterHandler(
+  request: ActionConfirmationRequest,
+  h: Hapi.ResponseToolkit
+) {
+  return h
+    .response({ registrationNumber: generateRegistrationNumber() })
+    .code(200)
+}
+
+export async function onDivorceRegisterHandler(
+  request: ActionConfirmationRequest,
+  h: Hapi.ResponseToolkit
+) {
+  // DISSOLVING MARRIAGE — Flag the linked marriage to be inactive
+  const event = request.payload
+  const declaration = aggregateActionDeclarations(event)
+
+  const dissolveResult = await dissolveMarriageRecord(declaration, event)
+
+  if (!dissolveResult.success) {
+    return h.response({ reason: dissolveResult.reason }).code(400)
+  }
+
+  // MARRIAGE DISSOLVED — Return a new registration number for the divorce event
+
+  return h
+    .response({ registrationNumber: generateRegistrationNumber() })
+    .code(200)
+}
+
+type dissolveMarriageResult =
+  | { success: true }
+  | { success: false; reason: string }
+
+type SearchFieldValue = {
+  data?: {
+    input?: string
+    firstResult?: { id: string; flags?: string[] } | null
+  }
+}
+
+async function dissolveMarriageRecord(
+  declaration: ReturnType<typeof aggregateActionDeclarations>,
+  divorceEvent: EventDocument
+): Promise<dissolveMarriageResult> {
+  const dissolutionToken = await getMarriageDissolutionToken()
+
+  if (!dissolutionToken) {
+    return {
+      success: false,
+      reason: 'Unable to authenticate the dissolution service'
+    }
+  }
+
+  const mrnField = declaration['divorce.marriageRegistrationNumber'] as
+    | SearchFieldValue
+    | undefined
+  const url = new URL('events', GATEWAY_URL).toString()
+  const client = createClient(url, `Bearer ${dissolutionToken}`)
+
+  const marriageRecord = await findMarriageRecordByMrn(mrnField, client)
+
+  if (!marriageRecord) {
+    logger.warn(
+      `Divorce ${divorceEvent.id}: no registered marriage record found for the provided registration number ${mrnField?.data?.input}.`
+    )
+    return {
+      success: false,
+      reason: 'No registered marriage record found for the provided MRN'
+    }
+  }
+
+  if (marriageRecord.flags?.includes('dissolved')) {
+    logger.info(
+      `Divorce ${divorceEvent.id}: marriage record ${marriageRecord.id} is already dissolved, skipping.`
+    )
+    return { success: true }
+  }
+
+  try {
+    await client.event.actions.custom.request.mutate({
+      eventId: marriageRecord.id,
+      transactionId: uuidv4(),
+      customActionType: 'DISSOLVE_MARRIAGE',
+      annotation: {
+        reason: 'DIVORCE',
+        courtOrderReference: declaration['documents.courtOrder']
+      }
+    })
+
+    return { success: true }
+  } catch (error) {
+    logger.error(
+      { eventId: marriageRecord.id, err: error },
+      'Failed to dissolve the original marriage record after divorce registration'
+    )
+    return {
+      success: false,
+      reason: 'Failed to dissolve the original marriage record'
+    }
+  }
+}
+
+type MarriageRecord = { id: string; flags?: string[] }
+
+async function findMarriageRecordByMrn(
+  mrnField: SearchFieldValue | string | undefined,
+  client: ReturnType<typeof createClient>
+): Promise<MarriageRecord | undefined> {
+  if (typeof mrnField !== 'string' && mrnField?.data?.firstResult) {
+    return mrnField.data.firstResult
+  }
+
+  if (!mrnField) {
+    return undefined
+  }
+
+  const { results } = await client.event.search.query({
+    query: {
+      type: 'and',
+      clauses: [
+        {
+          eventType: Event.Marriage,
+          'legalStatuses.REGISTERED.registrationNumber': {
+            type: 'exact',
+            term: mrnField
+          }
+        }
+      ]
+    }
+  })
+
+  return results[0]
 }
