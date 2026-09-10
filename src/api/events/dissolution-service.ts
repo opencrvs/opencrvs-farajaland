@@ -127,16 +127,17 @@ export async function getMarriageDissolutionToken(): Promise<
     return cachedToken.token
   }
 
-  const params = new URLSearchParams({
-    client_id: credentials.clientId,
-    client_secret: credentials.clientSecret,
-    grant_type: 'client_credentials'
+  const response = await fetch(new URL('auth/token', GATEWAY_URL).toString(), {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      client_id: credentials.clientId,
+      client_secret: credentials.clientSecret,
+      grant_type: 'client_credentials'
+    })
   })
-
-  const response = await fetch(
-    new URL(`auth/token?${params}`, GATEWAY_URL).toString(),
-    { method: 'POST' }
-  )
 
   if (!response.ok) {
     throw new Error(
