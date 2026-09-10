@@ -433,10 +433,10 @@ async function dissolveMarriageRecord(
 type MarriageRecord = { id: string; flags?: string[] }
 
 async function findMarriageRecordByMrn(
-  mrnField: SearchFieldValue | undefined,
+  mrnField: SearchFieldValue | string | undefined,
   client: ReturnType<typeof createClient>
 ): Promise<MarriageRecord | undefined> {
-  if (mrnField?.data?.firstResult) {
+  if (typeof mrnField !== 'string' && mrnField?.data?.firstResult) {
     return mrnField.data.firstResult
   }
 

@@ -111,11 +111,11 @@ export const DIVORCE_CERTIFICATE_COLLECTOR_FORM = defineActionForm({
       ]
     },
     {
-      id: 'collector.collect.payment',
+      id: 'collector.collect.payment.certified.copy',
       type: PageTypes.enum.FORM,
       requireCompletionToContinue: true,
       title: {
-        id: 'event.divorce.action.print.collectPayment',
+        id: 'event.divorce.action.print.collectPayment.certifiedCopy',
         defaultMessage: 'Collect fees',
         description: 'This is the title of the section'
       },

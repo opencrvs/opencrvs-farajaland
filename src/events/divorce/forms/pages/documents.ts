@@ -78,9 +78,9 @@ export const documents = defineFormPage({
         }
       },
       label: {
-        defaultMessage: 'Intention to marry',
+        defaultMessage: 'Court order',
         description: 'This is the label for the field',
-        id: 'event.divorce.action.declare.form.section.documents.field.intentionToMarry.label'
+        id: 'event.divorce.action.declare.form.section.documents.field.courtOrder.label'
       }
     },
     {

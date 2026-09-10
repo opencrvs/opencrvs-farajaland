@@ -189,11 +189,11 @@ export const MARRIAGE_CERTIFICATE_COLLECTOR_FORM = defineActionForm({
     },
     // Marriage certificate certified copy
     {
-      id: 'collector.collect.payment',
+      id: 'collector.collect.payment.certified.copy',
       type: PageTypes.enum.FORM,
       requireCompletionToContinue: true,
       title: {
-        id: 'event.marriage.action.print.collectPayment',
+        id: 'event.marriage.action.print.collectPayment.certified.copy',
         defaultMessage: 'Collect fees',
         description: 'This is the title of the section'
       },

@@ -126,14 +126,14 @@ export const informantMessageDescriptors = {
     id: 'form.field.label.informantRelation.bride'
   },
   HUSBAND: {
-    defaultMessage: 'Groom',
-    description: 'Label for option groom',
-    id: 'form.field.label.informantRelation.groom'
+    defaultMessage: 'Husband',
+    description: 'Label for option husband',
+    id: 'form.field.label.informantRelation.husband'
   },
   WIFE: {
-    defaultMessage: 'Bride',
-    description: 'Label for option bride',
-    id: 'form.field.label.informantRelation.bride'
+    defaultMessage: 'Wife',
+    description: 'Label for option wife',
+    id: 'form.field.label.informantRelation.wife'
   }
 }
 

@@ -14,15 +14,9 @@ import {
   ConditionalType,
   field,
   FieldConfig,
-  FieldType,
-  not
+  FieldType
 } from '@opencrvs/toolkit/events'
-import { InformantType, InformantTypeKey } from '../pages/informant'
-import {
-  informantMessageDescriptors,
-  IdType,
-  idTypeOptions
-} from '@countryconfig/events/utils'
+import { IdType, idTypeOptions } from '@countryconfig/events/utils'
 
 import { nationalIdValidator } from '../../validators'
 
@@ -64,152 +58,11 @@ const commonOptions = [
   }
 ]
 
-const onlyMotherExist = (informantType: InformantTypeKey) => {
-  return {
-    type: ConditionalType.SHOW,
-    conditional: and(
-      field('informant.relation').isEqualTo(informantType),
-      not(field('mother.name').isFalsy()),
-      field('father.name').isFalsy()
-    )
-  }
-}
-
-const onlyFatherExist = (informantType: InformantTypeKey) => {
-  return {
-    type: ConditionalType.SHOW,
-    conditional: and(
-      field('informant.relation').isEqualTo(informantType),
-      not(field('father.name').isFalsy()),
-      field('mother.name').isFalsy()
-    )
-  }
-}
-
-const fatherMotherBothExist = (informantType: InformantTypeKey) => {
-  return {
-    type: ConditionalType.SHOW,
-    conditional: and(
-      field('informant.relation').isEqualTo(informantType),
-      not(field('father.name').isFalsy()),
-      not(field('mother.name').isFalsy())
-    )
-  }
-}
-
-const fatherMotherBothDoesNotExist = (informantType: InformantTypeKey) => {
-  return {
-    type: ConditionalType.SHOW,
-    conditional: and(
-      field('informant.relation').isEqualTo(informantType),
-      field('father.name').isFalsy(),
-      field('mother.name').isFalsy()
-    )
-  }
-}
-
-const getFieldConfigForInformant = (informantType: InformantTypeKey) => {
-  return [
-    {
-      ...commonConfigs,
-      conditionals: [onlyMotherExist(informantType)],
-      options: [
-        getInformantOption(informantType),
-        motherOption,
-        ...commonOptions
-      ]
-    },
-    {
-      ...commonConfigs,
-      conditionals: [onlyFatherExist(informantType)],
-      options: [
-        getInformantOption(informantType),
-        fatherOption,
-        ...commonOptions
-      ]
-    },
-    {
-      ...commonConfigs,
-      conditionals: [fatherMotherBothExist(informantType)],
-      options: [
-        getInformantOption(informantType),
-        fatherOption,
-        motherOption,
-        ...commonOptions
-      ]
-    },
-    {
-      ...commonConfigs,
-      conditionals: [fatherMotherBothDoesNotExist(informantType)],
-      options: [getInformantOption(informantType), ...commonOptions]
-    }
-  ]
-}
-
-const getInformantOption = (informantType: InformantTypeKey) => {
-  const defaultMessage =
-    informantType === InformantType.GROOM
-      ? `Informant ({informant.other.relation})`
-      : `Informant (${informantMessageDescriptors[informantType].defaultMessage})`
-
-  return {
-    label: {
-      id: `v2.event.marriage.action.correction.form.section.requester.informant.${informantType.toLowerCase()}.label`,
-      defaultMessage,
-      description: 'This is the label for the field'
-    },
-    value: 'INFORMANT'
-  }
-}
-
-const fatherOption = {
-  label: {
-    id: 'event.marriage.action.correction.form.section.requester.father.label',
-    defaultMessage: 'Father',
-    description: 'This is the label for the field'
-  },
-  value: InformantType.GROOM
-}
-
-const motherOption = {
-  label: {
-    id: 'event.marriage.action.correction.form.section.requester.mother.label',
-    defaultMessage: 'Mother',
-    description: 'This is the label for the field'
-  },
-  value: InformantType.BRIDE
-}
-
 export const correctionFormRequesters: FieldConfig[] = [
   {
     ...commonConfigs,
-    conditionals: [onlyMotherExist(InformantType.BRIDE)],
-    options: [getInformantOption(InformantType.BRIDE), ...commonOptions]
+    options: commonOptions
   },
-  {
-    ...commonConfigs,
-    conditionals: [fatherMotherBothExist(InformantType.BRIDE)],
-    options: [
-      getInformantOption(InformantType.BRIDE),
-      fatherOption,
-      ...commonOptions
-    ]
-  },
-  {
-    ...commonConfigs,
-    conditionals: [onlyFatherExist(InformantType.GROOM)],
-    options: [getInformantOption(InformantType.GROOM), ...commonOptions]
-  },
-  {
-    ...commonConfigs,
-    conditionals: [fatherMotherBothExist(InformantType.GROOM)],
-    options: [
-      getInformantOption(InformantType.GROOM),
-      motherOption,
-      ...commonOptions
-    ]
-  },
-  ...getFieldConfigForInformant(InformantType.BRIDE),
   {
     id: 'requester.idType',
     type: FieldType.SELECT,
@@ -294,7 +147,7 @@ export const correctionFormRequesters: FieldConfig[] = [
       description: 'This is the label for the field'
     },
     placeholder: {
-      defaultMessage: 'eg. Grandmother',
+      defaultMessage: 'eg. Witness, Friend, Lawyer, etc.',
       description: 'This is the placeholder for the field',
       id: 'event.marriage.action.correction.form.section.requester.relationship.placeholder'
     },
