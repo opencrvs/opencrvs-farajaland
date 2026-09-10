@@ -31,7 +31,6 @@ import { advancedSearchBirth } from './advancedSearch'
 import { MARRIAGE_CERTIFICATE_COLLECTOR_FORM } from './forms/printForm'
 import { CORRECTION_FORM } from './forms/correctionForm'
 import { dedupConfig } from './dedupConfig'
-import * as verifiableCredentialActions from '@countryconfig/verifiable-credentials/issue-birth-credential-action'
 import { Event } from '@countryconfig/events/utils'
 
 export const marriageEvent = defineConfig({
