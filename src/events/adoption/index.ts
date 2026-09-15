@@ -10,7 +10,6 @@
  */
 import {
   ActionType,
-  always,
   and,
   ConditionalType,
   defineConfig,
@@ -27,6 +26,7 @@ import {
   ADOPTION_DECLARATION_FORM,
   ADOPTION_DECLARATION_REVIEW
 } from './forms/declaration'
+import { advancedSearchAdoption } from './advancedSearch'
 
 export const adoptionEvent = defineConfig({
   id: Event.Adoption,
@@ -154,16 +154,6 @@ export const adoptionEvent = defineConfig({
         id: 'event.adoption.action.declare.label'
       },
       review: ADOPTION_DECLARATION_REVIEW,
-      // deduplication: {
-      //   id: 'adoption-deduplication',
-      //   label: {
-      //     defaultMessage: 'Detect duplicate',
-      //     description:
-      //       'This is shown as the action name anywhere the user can trigger the action from',
-      //     id: 'event.adoption.action.detect-duplicate.label'
-      //   },
-      //   query: dedupConfig
-      // },
       flags: [
         {
           id: 'validated',
@@ -212,23 +202,13 @@ export const adoptionEvent = defineConfig({
       flags: [
         { id: 'validated', operation: 'remove' },
         { id: 'pending-first-certificate-issuance', operation: 'add' }
+      ],
+      conditionals: [
+        {
+          type: ConditionalType.ENABLE,
+          conditional: flag('validated')
+        }
       ]
-      // conditionals: [
-      //   {
-      //     type: ConditionalType.ENABLE,
-      //     conditional: always()
-      //   }
-      // ]
-      // deduplication: {
-      //   id: 'birth-deduplication',
-      //   label: {
-      //     defaultMessage: 'Detect duplicate',
-      //     description:
-      //       'This is shown as the action name anywhere the user can trigger the action from',
-      //     id: 'event.adoption.action.detect-duplicate.label'
-      //   },
-      //   query: dedupConfig
-      // }
     },
     {
       type: ActionType.EDIT,
@@ -326,30 +306,6 @@ export const adoptionEvent = defineConfig({
       },
       flags: [{ id: 'validated', operation: 'remove' }]
     },
-    // {
-    //   type: ActionType.PRINT_CERTIFICATE,
-    //   label: {
-    //     defaultMessage: 'Print',
-    //     description:
-    //       'This is shown as the action name anywhere the user can trigger the action from',
-    //     id: 'event.adoption.action.collect-certificate.label'
-    //   },
-    //   conditionals: [
-    //     {
-    //       type: ConditionalType.SHOW,
-    //       conditional: not(
-    //         or(
-    //           flag('revoked'),
-    //           flag('certified-copy-printed-in-advance-of-issuance')
-    //         )
-    //       )
-    //     }
-    //   ],
-    //   flags: [
-    //     { id: 'pending-first-certificate-issuance', operation: 'remove' }
-    //   ],
-    //   printForm: ADOPTION_CERTIFICATE_COLLECTOR_FORM
-    // },
     {
       type: ActionType.ARCHIVE,
       label: {
@@ -365,5 +321,6 @@ export const adoptionEvent = defineConfig({
         description: 'Confirmation body for archiving a declaration'
       }
     }
-  ]
+  ],
+  advancedSearch: advancedSearchAdoption
 })
