@@ -1,3 +1,4 @@
+import { adoptionEvent } from './adoption'
 import { birthEvent } from './birth'
 import { deathEvent } from './death'
 import { divorceEvent } from './divorce'
@@ -7,5 +8,6 @@ export const eventConfigs = [
   birthEvent,
   deathEvent,
   marriageEvent,
-  divorceEvent
+  divorceEvent,
+  adoptionEvent
 ]

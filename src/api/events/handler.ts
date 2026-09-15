@@ -461,3 +461,12 @@ async function findMarriageRecordByMrn(
 
   return results[0]
 }
+
+export async function onAdoptionRegisterHandler(
+  request: ActionConfirmationRequest,
+  h: Hapi.ResponseToolkit
+) {
+  return h
+    .response({ registrationNumber: generateRegistrationNumber() })
+    .code(200)
+}
