@@ -146,7 +146,13 @@ export const marriageEvent = defineConfig({
           defaultMessage: 'Place of marriage',
           description: 'Label for place of marriage in summary',
           id: 'event.marriage.summary.placeOfMarriage.label'
-        }
+        },
+        conditionals: [
+          {
+            type: ConditionalType.SHOW,
+            conditional: not(flag('dissolved'))
+          }
+        ]
       },
       {
         fieldId: 'marriageDetails.dateOfMarriage',
@@ -154,7 +160,13 @@ export const marriageEvent = defineConfig({
           defaultMessage: 'Date of marriage',
           description: 'Label for date of marriage in summary',
           id: 'event.marriage.summary.dateOfMarriage.label'
-        }
+        },
+        conditionals: [
+          {
+            type: ConditionalType.SHOW,
+            conditional: not(flag('dissolved'))
+          }
+        ]
       },
       // Render the 'fallback value' when selection has not been made.
       // This hides the default values of the field when no selection has been made. (e.g. when address is prefilled with user's details, we don't want to show the address before selecting the option)
@@ -174,7 +186,13 @@ export const marriageEvent = defineConfig({
           defaultMessage: '{informant.phoneNo} {informant.email}',
           description: 'This is the contact value of the informant',
           id: 'event.marriage.summary.informant.contact.value'
-        }
+        },
+        conditionals: [
+          {
+            type: ConditionalType.SHOW,
+            conditional: not(flag('dissolved'))
+          }
+        ]
       }
     ]
   },
