@@ -9,6 +9,40 @@
  * Copyright (C) The OpenCRVS Authors located at https://github.com/opencrvs/opencrvs-core/blob/master/AUTHORS.
  */
 
+import { TranslationConfig } from '@opencrvs/toolkit/events'
+import { createSelectOptions } from './select-options'
+
 export const BIRTH_REGISTRATION_TARGET_DAYS = 30
 export const BIRTH_LATE_REGISTRATION_TARGET_DAYS = 365
 export const DEATH_REGISTRATION_TARGET_DAYS = 45
+export const MARRIAGE_REGISTRATION_TARGET_DAYS = 30
+export const DIVORCE_REGISTRATION_TARGET_DAYS = 30
+
+export const MarriageIdType = {
+  NATIONAL_ID: 'NATIONAL_ID',
+  PASSPORT: 'PASSPORT',
+  NO_ID: 'NO_ID'
+} as const
+
+const marriageIdTypeMessageDescriptors = {
+  NATIONAL_ID: {
+    defaultMessage: 'National ID',
+    description: 'Option for National ID',
+    id: 'form.field.label.marriageIdTypeNationalId'
+  },
+  PASSPORT: {
+    defaultMessage: 'Passport',
+    description: 'Option for Passport',
+    id: 'form.field.label.marriageIdTypePassport'
+  },
+  NO_ID: {
+    defaultMessage: 'No ID',
+    description: 'Option for No ID type',
+    id: 'form.field.label.marriageIdTypeNoId'
+  }
+} satisfies Record<keyof typeof MarriageIdType, TranslationConfig>
+
+export const marriageIdTypeOptions = createSelectOptions(
+  MarriageIdType,
+  marriageIdTypeMessageDescriptors
+)
