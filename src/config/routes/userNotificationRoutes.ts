@@ -19,7 +19,6 @@ export default function getUserNotificationRoutes(): ServerRoute<ReqRefDefaults>
       path: '/triggers/user/user-created',
       handler: makeNotificationHandler('user-created'),
       options: {
-        auth: false,
         tags: ['api'],
         description: 'Handles notification for user creation'
       }
@@ -29,7 +28,6 @@ export default function getUserNotificationRoutes(): ServerRoute<ReqRefDefaults>
       path: '/triggers/user/user-updated',
       handler: makeNotificationHandler('user-updated'),
       options: {
-        auth: false,
         tags: ['api'],
         description: 'Handles notification for user update'
       }
@@ -39,7 +37,6 @@ export default function getUserNotificationRoutes(): ServerRoute<ReqRefDefaults>
       path: '/triggers/user/username-reminder',
       handler: makeNotificationHandler('username-reminder'),
       options: {
-        auth: false,
         tags: ['api'],
         description: 'Handles notification for username reminder'
       }
@@ -49,7 +46,6 @@ export default function getUserNotificationRoutes(): ServerRoute<ReqRefDefaults>
       path: '/triggers/user/reset-password',
       handler: makeNotificationHandler('reset-password'),
       options: {
-        auth: false,
         tags: ['api'],
         description: 'Handles notification for password reset'
       }
@@ -59,7 +55,6 @@ export default function getUserNotificationRoutes(): ServerRoute<ReqRefDefaults>
       path: '/triggers/user/reset-password-by-admin',
       handler: makeNotificationHandler('reset-password-by-admin'),
       options: {
-        auth: false,
         tags: ['api'],
         description: 'Handles notification for admin password reset'
       }
@@ -69,7 +64,6 @@ export default function getUserNotificationRoutes(): ServerRoute<ReqRefDefaults>
       path: '/triggers/user/resend-invite',
       handler: makeNotificationHandler('resend-invite'),
       options: {
-        auth: false,
         tags: ['api'],
         description: 'Handles notification for resent user invite'
       }
@@ -79,7 +73,6 @@ export default function getUserNotificationRoutes(): ServerRoute<ReqRefDefaults>
       path: '/triggers/user/2fa',
       handler: makeNotificationHandler('2fa'),
       options: {
-        auth: false,
         tags: ['api'],
         description: 'Handles notification for two-factor authentication code'
       }
@@ -89,7 +82,6 @@ export default function getUserNotificationRoutes(): ServerRoute<ReqRefDefaults>
       path: '/triggers/user/all-user-notification',
       handler: makeNotificationHandler('all-user-notification'),
       options: {
-        auth: false,
         tags: ['api'],
         description: 'Handles broadcast for all user '
       }
@@ -99,7 +91,6 @@ export default function getUserNotificationRoutes(): ServerRoute<ReqRefDefaults>
       path: '/triggers/user/change-phone-number',
       handler: makeNotificationHandler('change-phone-number'),
       options: {
-        auth: false,
         tags: ['api'],
         description: 'Handles verification for phone number change'
       }
@@ -109,9 +100,26 @@ export default function getUserNotificationRoutes(): ServerRoute<ReqRefDefaults>
       path: '/triggers/user/change-email-address',
       handler: makeNotificationHandler('change-email-address'),
       options: {
-        auth: false,
         tags: ['api'],
         description: 'Handles verification for email address change'
+      }
+    },
+    {
+      method: 'POST',
+      path: '/triggers/user/password-reset-link',
+      handler: makeNotificationHandler('password-reset-link'),
+      options: {
+        tags: ['api'],
+        description: 'Handles notification for password reset recovery link'
+      }
+    },
+    {
+      method: 'POST',
+      path: '/triggers/user/username-reminder-link',
+      handler: makeNotificationHandler('username-reminder-link'),
+      options: {
+        tags: ['api'],
+        description: 'Handles notification for username reminder recovery link'
       }
     }
   ]

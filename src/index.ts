@@ -57,7 +57,9 @@ import {
   onBirthActionHandler,
   onBirthCorrectionActionHandler,
   onDeathActionHandler,
-  onCustomActionHandler
+  onCustomActionHandler,
+  onMarriageRegisterHandler,
+  onDivorceRegisterHandler
 } from '@countryconfig/api/events/handler'
 import {
   ActionDocument,
@@ -67,8 +69,7 @@ import {
 } from '@opencrvs/toolkit/events'
 import {
   onMosipBirthRegisterHandler,
-  onMosipDeathRegisterHandler,
-  onRegisterHandler
+  onMosipDeathRegisterHandler
 } from './api/registration'
 import { env } from './environment'
 
@@ -89,6 +90,7 @@ import { getGovernmentPortalApiRoutes } from './government-portal-api/routes'
 import { Event } from './events/utils/types'
 import { syncReferenceData } from './data-seeding/reference-data/reference-data'
 import { causeOfDeathSearchHandler } from './data-seeding/reference-data/handler'
+import { telemetryHandler, telemetrySchema, TELEMETRY_DISABLED_NOTICE } from './api/telemetry/handler';
 
 export interface ITokenPayload {
   sub: string
@@ -630,6 +632,26 @@ export async function createServer() {
     }
   })
 
+  server.route({
+    method: 'POST',
+    path: `/trigger/events/${Event.Marriage}/actions/${ActionType.REGISTER}`,
+    handler: onMarriageRegisterHandler,
+    options: {
+      tags: ['api', 'events'],
+      description: 'Receives notifications on event actions'
+    }
+  })
+
+  server.route({
+    method: 'POST',
+    path: `/trigger/events/${Event.Divorce}/actions/${ActionType.REGISTER}`,
+    handler: onDivorceRegisterHandler,
+    options: {
+      tags: ['api', 'events'],
+      description: 'Receives notifications on event actions'
+    }
+  })
+
   server.route(getUserNotificationRoutes())
   server.route(getVerifiableCredentialRoutes())
 
@@ -644,6 +666,20 @@ export async function createServer() {
     options: {
       tags: ['api', 'triggers'],
       description: 'System ready endpoint'
+    }
+  })
+
+  server.route({
+    method: 'POST',
+    path: '/trigger/telemetry',
+    handler: telemetryHandler,
+    options: {
+      tags: ['api', 'triggers'],
+      validate: {
+        payload: telemetrySchema
+      },
+      description:
+        'Receives a usage report from the events service and forwards it to the status service when telemetry is enabled'
     }
   })
 
@@ -683,16 +719,16 @@ export async function createServer() {
       actions: event.actions.map((action, index) =>
         index === event.actions.length - 1
           ? {
-            ...action,
-            status: ActionStatus.Accepted,
-            ...(actionType === ActionType.REGISTER && response.source
-              ? {
-                registrationNumber: (
-                  response.source as { registrationNumber: string }
-                ).registrationNumber
-              }
-              : {})
-          }
+              ...action,
+              status: ActionStatus.Accepted,
+              ...(actionType === ActionType.REGISTER && response.source
+                ? {
+                    registrationNumber: (
+                      response.source as { registrationNumber: string }
+                    ).registrationNumber
+                  }
+                : {})
+            }
           : action
       ) as ActionDocument[]
     }
@@ -732,16 +768,16 @@ export async function createServer() {
         actions: event.actions.map((action, index) =>
           index === event.actions.length - 1
             ? {
-              ...action,
-              status: ActionStatus.Accepted,
-              ...(actionType === ActionType.REGISTER
-                ? {
-                  registrationNumber: (
-                    response.source as { registrationNumber: string }
-                  ).registrationNumber
-                }
-                : {})
-            }
+                ...action,
+                status: ActionStatus.Accepted,
+                ...(actionType === ActionType.REGISTER
+                  ? {
+                      registrationNumber: (
+                        response.source as { registrationNumber: string }
+                      ).registrationNumber
+                    }
+                  : {})
+              }
             : action
         ) as ActionDocument[]
       }
@@ -799,6 +835,10 @@ export async function createServer() {
     logger.info(
       `Server successfully started on ${COUNTRY_CONFIG_HOST}:${COUNTRY_CONFIG_PORT}`
     )
+
+    if (!env.TELEMETRY_ENABLED) {
+      logger.info(TELEMETRY_DISABLED_NOTICE)
+    }
   }
 
   return { server, start, stop }
