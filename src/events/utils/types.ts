@@ -3,5 +3,6 @@ export enum Event {
   Death = 'death',
   Divorce = 'divorce',
   Marriage = 'marriage',
-  Adoption = 'adoption'
+  Adoption = 'adoption',
+  NameChange = 'name-change'
 }
