@@ -27,7 +27,7 @@ import {
   MARRIAGE_DECLARATION_FORM,
   MARRIAGE_DECLARATION_REVIEW
 } from './forms/declaration'
-import { advancedSearchBirth } from './advancedSearch'
+import { advancedSearchMarriage } from './advancedSearch'
 import { MARRIAGE_CERTIFICATE_COLLECTOR_FORM } from './forms/printForm'
 import { CORRECTION_FORM } from './forms/correctionForm'
 import { dedupConfig } from './dedupConfig'
@@ -913,5 +913,5 @@ export const marriageEvent = defineConfig({
       }
     }
   ],
-  advancedSearch: advancedSearchBirth
+  advancedSearch: advancedSearchMarriage
 })

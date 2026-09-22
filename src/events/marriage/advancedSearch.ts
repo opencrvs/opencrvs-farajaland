@@ -11,7 +11,7 @@
 
 import { AdvancedSearchConfig, event, field } from '@opencrvs/toolkit/events'
 
-export const advancedSearchBirth = [
+export const advancedSearchMarriage = [
   {
     title: {
       defaultMessage: 'Marriage details',

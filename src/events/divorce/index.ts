@@ -27,7 +27,7 @@ import {
   DIVORCE_DECLARATION_FORM,
   DIVORCE_DECLARATION_REVIEW
 } from './forms/declaration'
-import { advancedSearchBirth } from './advancedSearch'
+import { advancedSearchDivorce } from './advancedSearch'
 import { DIVORCE_CERTIFICATE_COLLECTOR_FORM } from './forms/printForm'
 import { CORRECTION_FORM } from './forms/correctionForm'
 import { dedupConfig } from './dedupConfig'
@@ -869,5 +869,5 @@ export const divorceEvent = defineConfig({
     },
     verifiableCredentialActions.issueBirthCredentialAction
   ],
-  advancedSearch: advancedSearchBirth
+  advancedSearch: advancedSearchDivorce
 })

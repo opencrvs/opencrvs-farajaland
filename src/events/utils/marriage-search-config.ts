@@ -9,7 +9,7 @@ export const mrnSearchConfig = {
   },
   helperText: {
     defaultMessage:
-      'You can search marriage registration numbers created on the Somalia CRS after June 2025.',
+      'You can search marriage registration numbers created after June 2025.',
     description: 'Helper text for marriage registration number search field',
     id: 'form.field.helper.marriageRegistrationNumberSearch'
   },
