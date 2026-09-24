@@ -16,12 +16,10 @@ import * as Hapi from '@hapi/hapi'
 import * as Pino from 'hapi-pino'
 import * as JWT from 'hapi-auth-jwt2'
 import * as inert from '@hapi/inert'
-import * as Sentry from 'hapi-sentry'
 import * as H2o2 from '@hapi/h2o2'
 import fetch from 'node-fetch'
 import {
   GATEWAY_URL,
-  SENTRY_DSN,
   COUNTRY_CONFIG_HOST,
   COUNTRY_CONFIG_PORT,
   AUTH_URL,
@@ -112,20 +110,6 @@ export default function getPlugins() {
       }
     })
   }
-
-  if (SENTRY_DSN) {
-    plugins.push({
-      plugin: Sentry,
-      options: {
-        client: {
-          environment: process.env.NODE_ENV,
-          dsn: SENTRY_DSN
-        },
-        catchLogErrors: true
-      }
-    })
-  }
-
   return plugins
 }
 
@@ -657,7 +641,7 @@ export async function createServer() {
 
   server.route({
     method: 'GET',
-    path: '/triggers/system/ready',
+    path: '/trigger/system/ready',
     handler: (_request, h) => {
       // Not implemented by default
       // You can use this endpoint to for instance set up integration clients
@@ -682,15 +666,6 @@ export async function createServer() {
         'Receives a usage report from the events service and forwards it to the status service when telemetry is enabled'
     }
   })
-
-  server.ext({
-    type: 'onRequest',
-    method(request: Hapi.Request & { sentryScope?: any }, h) {
-      request.sentryScope?.setExtra('payload', request.payload)
-      return h.continue
-    }
-  })
-
   server.ext('onPostHandler', async (request, h) => {
     if (!env.ANALYTICS_DATABASE_URL) {
       logger.warn(
