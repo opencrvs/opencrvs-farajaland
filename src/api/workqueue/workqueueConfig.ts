@@ -117,7 +117,6 @@ export const Workqueues = defineWorkqueues([
     },
     action: { type: ActionType.READ }
   },
-
   {
     slug: 'potential-duplicate',
     icon: 'Files',

@@ -55,7 +55,9 @@ import {
   onBirthActionHandler,
   onBirthCorrectionActionHandler,
   onDeathActionHandler,
-  onCustomActionHandler
+  onCustomActionHandler,
+  onMarriageRegisterHandler,
+  onDivorceRegisterHandler
 } from '@countryconfig/api/events/handler'
 import {
   ActionDocument,
@@ -65,8 +67,7 @@ import {
 } from '@opencrvs/toolkit/events'
 import {
   onMosipBirthRegisterHandler,
-  onMosipDeathRegisterHandler,
-  onRegisterHandler
+  onMosipDeathRegisterHandler
 } from './api/registration'
 import { env } from './environment'
 
@@ -615,6 +616,26 @@ export async function createServer() {
     }
   })
 
+  server.route({
+    method: 'POST',
+    path: `/trigger/events/${Event.Marriage}/actions/${ActionType.REGISTER}`,
+    handler: onMarriageRegisterHandler,
+    options: {
+      tags: ['api', 'events'],
+      description: 'Receives notifications on event actions'
+    }
+  })
+
+  server.route({
+    method: 'POST',
+    path: `/trigger/events/${Event.Divorce}/actions/${ActionType.REGISTER}`,
+    handler: onDivorceRegisterHandler,
+    options: {
+      tags: ['api', 'events'],
+      description: 'Receives notifications on event actions'
+    }
+  })
+
   server.route(getUserNotificationRoutes())
   server.route(getVerifiableCredentialRoutes())
 
@@ -673,16 +694,16 @@ export async function createServer() {
       actions: event.actions.map((action, index) =>
         index === event.actions.length - 1
           ? {
-            ...action,
-            status: ActionStatus.Accepted,
-            ...(actionType === ActionType.REGISTER && response.source
-              ? {
-                registrationNumber: (
-                  response.source as { registrationNumber: string }
-                ).registrationNumber
-              }
-              : {})
-          }
+              ...action,
+              status: ActionStatus.Accepted,
+              ...(actionType === ActionType.REGISTER && response.source
+                ? {
+                    registrationNumber: (
+                      response.source as { registrationNumber: string }
+                    ).registrationNumber
+                  }
+                : {})
+            }
           : action
       ) as ActionDocument[]
     }
@@ -722,16 +743,16 @@ export async function createServer() {
         actions: event.actions.map((action, index) =>
           index === event.actions.length - 1
             ? {
-              ...action,
-              status: ActionStatus.Accepted,
-              ...(actionType === ActionType.REGISTER
-                ? {
-                  registrationNumber: (
-                    response.source as { registrationNumber: string }
-                  ).registrationNumber
-                }
-                : {})
-            }
+                ...action,
+                status: ActionStatus.Accepted,
+                ...(actionType === ActionType.REGISTER
+                  ? {
+                      registrationNumber: (
+                        response.source as { registrationNumber: string }
+                      ).registrationNumber
+                    }
+                  : {})
+              }
             : action
         ) as ActionDocument[]
       }
