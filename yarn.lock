@@ -1878,10 +1878,10 @@
   dependencies:
     zod "^4.1.12"
 
-"@opencrvs/toolkit@2.1.0-beta":
-  version "2.1.0-beta"
-  resolved "https://registry.yarnpkg.com/@opencrvs/toolkit/-/toolkit-2.1.0-beta.tgz#a6fcc48850a16a64f087769f6bb088711b5ffbc0"
-  integrity sha512-rkw4aWMK7Z20Vl+ZcESKz3A0VTnFvsdEEaGdK57DJmkYzJN9f5RRjx+WA+wGIz/85BH/9yPQnKGaDVVAyXvhAg==
+"@opencrvs/toolkit@2.1.0-rc.312fbd1":
+  version "2.1.0-rc.312fbd1"
+  resolved "https://registry.yarnpkg.com/@opencrvs/toolkit/-/toolkit-2.1.0-rc.312fbd1.tgz#95c0a4b5df30fa88256ece2a530160f77ad0d32a"
+  integrity sha512-5rmQ4UQLsGYwLO6mKHQ+SIRpKpAJ1UeFtJ7wM29l4GUF5KjzbDtSawRwUMm4oWIzXohVGSsEIyhqw1dFtMkNtQ==
   dependencies:
     "@inquirer/prompts" "^8.3.0"
     "@octokit/core" "4.2.1"
@@ -1899,6 +1899,7 @@
     libsodium-wrappers "^0.7.13"
     lodash "^4.17.10"
     object-hash "^3.0.0"
+    pino "^7.0.0"
     prompts "^2.4.2"
     qs "6.15.2"
     ssh2 "^1.17.0"

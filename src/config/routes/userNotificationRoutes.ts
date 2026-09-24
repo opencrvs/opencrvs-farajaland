@@ -16,7 +16,7 @@ export default function getUserNotificationRoutes(): ServerRoute<ReqRefDefaults>
   return [
     {
       method: 'POST',
-      path: '/triggers/user/user-created',
+      path: '/trigger/user/user-created',
       handler: makeNotificationHandler('user-created'),
       options: {
         auth: false,
@@ -26,7 +26,7 @@ export default function getUserNotificationRoutes(): ServerRoute<ReqRefDefaults>
     },
     {
       method: 'POST',
-      path: '/triggers/user/user-updated',
+      path: '/trigger/user/user-updated',
       handler: makeNotificationHandler('user-updated'),
       options: {
         auth: false,
@@ -36,7 +36,7 @@ export default function getUserNotificationRoutes(): ServerRoute<ReqRefDefaults>
     },
     {
       method: 'POST',
-      path: '/triggers/user/username-reminder',
+      path: '/trigger/user/username-reminder',
       handler: makeNotificationHandler('username-reminder'),
       options: {
         auth: false,
@@ -46,7 +46,7 @@ export default function getUserNotificationRoutes(): ServerRoute<ReqRefDefaults>
     },
     {
       method: 'POST',
-      path: '/triggers/user/reset-password',
+      path: '/trigger/user/reset-password',
       handler: makeNotificationHandler('reset-password'),
       options: {
         auth: false,
@@ -56,7 +56,7 @@ export default function getUserNotificationRoutes(): ServerRoute<ReqRefDefaults>
     },
     {
       method: 'POST',
-      path: '/triggers/user/reset-password-by-admin',
+      path: '/trigger/user/reset-password-by-admin',
       handler: makeNotificationHandler('reset-password-by-admin'),
       options: {
         auth: false,
@@ -66,7 +66,7 @@ export default function getUserNotificationRoutes(): ServerRoute<ReqRefDefaults>
     },
     {
       method: 'POST',
-      path: '/triggers/user/resend-invite',
+      path: '/trigger/user/resend-invite',
       handler: makeNotificationHandler('resend-invite'),
       options: {
         auth: false,
@@ -76,7 +76,7 @@ export default function getUserNotificationRoutes(): ServerRoute<ReqRefDefaults>
     },
     {
       method: 'POST',
-      path: '/triggers/user/2fa',
+      path: '/trigger/user/2fa',
       handler: makeNotificationHandler('2fa'),
       options: {
         auth: false,
@@ -86,7 +86,7 @@ export default function getUserNotificationRoutes(): ServerRoute<ReqRefDefaults>
     },
     {
       method: 'POST',
-      path: '/triggers/user/all-user-notification',
+      path: '/trigger/user/all-user-notification',
       handler: makeNotificationHandler('all-user-notification'),
       options: {
         auth: false,
@@ -96,7 +96,7 @@ export default function getUserNotificationRoutes(): ServerRoute<ReqRefDefaults>
     },
     {
       method: 'POST',
-      path: '/triggers/user/change-phone-number',
+      path: '/trigger/user/change-phone-number',
       handler: makeNotificationHandler('change-phone-number'),
       options: {
         auth: false,
@@ -106,7 +106,7 @@ export default function getUserNotificationRoutes(): ServerRoute<ReqRefDefaults>
     },
     {
       method: 'POST',
-      path: '/triggers/user/change-email-address',
+      path: '/trigger/user/change-email-address',
       handler: makeNotificationHandler('change-email-address'),
       options: {
         auth: false,
@@ -116,7 +116,7 @@ export default function getUserNotificationRoutes(): ServerRoute<ReqRefDefaults>
     },
     {
       method: 'POST',
-      path: '/triggers/user/password-reset-link',
+      path: '/trigger/user/password-reset-link',
       handler: makeNotificationHandler('password-reset-link'),
       options: {
         auth: false,
@@ -126,7 +126,7 @@ export default function getUserNotificationRoutes(): ServerRoute<ReqRefDefaults>
     },
     {
       method: 'POST',
-      path: '/triggers/user/username-reminder-link',
+      path: '/trigger/user/username-reminder-link',
       handler: makeNotificationHandler('username-reminder-link'),
       options: {
         auth: false,
