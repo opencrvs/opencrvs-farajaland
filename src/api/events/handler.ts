@@ -576,3 +576,12 @@ async function findBirthRecordByBrn(
 }
 
 type SealResult = { success: true } | { success: false; reason: string }
+
+export async function onNameChangeRegisterHandler(
+  request: ActionConfirmationRequest,
+  h: Hapi.ResponseToolkit
+) {
+  return h
+    .response({ registrationNumber: generateRegistrationNumber() })
+    .code(200)
+}
