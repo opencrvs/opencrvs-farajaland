@@ -57,16 +57,15 @@ export const ADOPTION_DECLARATION_REVIEW = {
         id: 'signature.upload.modal.title',
         defaultMessage: 'Draw signature',
         description: 'Title for the modal to draw signature'
-      }
-      //, TODO:FIXME: even after aligning with 2.1 the conditional calculation is not working for annotation fields
-      // conditionals: [
-      //   {
-      //     type: ConditionalType.SHOW,
-      //     conditional: field('adoption.numberOfAdoptiveParents').isEqualTo(
-      //       NumberOfAdoptiveParents.TWO
-      //     )
-      //   }
-      // ]
+      },
+      conditionals: [
+        {
+          type: ConditionalType.SHOW,
+          conditional: field('adoption.numberOfAdoptiveParents').isEqualTo(
+            NumberOfAdoptiveParents.TWO
+          )
+        }
+      ]
     }
   ]
 }
