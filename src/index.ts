@@ -57,7 +57,9 @@ import {
   onDeathActionHandler,
   onCustomActionHandler,
   onMarriageRegisterHandler,
-  onDivorceRegisterHandler
+  onDivorceRegisterHandler,
+  onAdoptionRegisterHandler,
+  onNameChangeRegisterHandler
 } from '@countryconfig/api/events/handler'
 import {
   ActionDocument,
@@ -88,7 +90,11 @@ import { getGovernmentPortalApiRoutes } from './government-portal-api/routes'
 import { Event } from './events/utils/types'
 import { syncReferenceData } from './data-seeding/reference-data/reference-data'
 import { causeOfDeathSearchHandler } from './data-seeding/reference-data/handler'
-import { telemetryHandler, telemetrySchema, TELEMETRY_DISABLED_NOTICE } from './api/telemetry/handler';
+import {
+  telemetryHandler,
+  telemetrySchema,
+  TELEMETRY_DISABLED_NOTICE
+} from './api/telemetry/handler'
 
 export interface ITokenPayload {
   sub: string
@@ -630,6 +636,26 @@ export async function createServer() {
     method: 'POST',
     path: `/trigger/events/${Event.Divorce}/actions/${ActionType.REGISTER}`,
     handler: onDivorceRegisterHandler,
+    options: {
+      tags: ['api', 'events'],
+      description: 'Receives notifications on event actions'
+    }
+  })
+
+  server.route({
+    method: 'POST',
+    path: `/trigger/events/${Event.Adoption}/actions/${ActionType.REGISTER}`,
+    handler: onAdoptionRegisterHandler,
+    options: {
+      tags: ['api', 'events'],
+      description: 'Receives notifications on event actions'
+    }
+  })
+
+  server.route({
+    method: 'POST',
+    path: `/trigger/events/${Event.NameChange}/actions/${ActionType.REGISTER}`,
+    handler: onNameChangeRegisterHandler,
     options: {
       tags: ['api', 'events'],
       description: 'Receives notifications on event actions'

@@ -39,6 +39,7 @@ import { generateRegistrationNumber } from '../registration/registrationNumber'
 import { createClient } from '@opencrvs/toolkit/api'
 import { Event } from '@countryconfig/events/utils'
 import { getMarriageDissolutionToken } from './dissolution-service'
+import { getAdoptionSealingToken } from './sealing-service'
 
 export function getEventsHandler(_: Hapi.Request, h: Hapi.ResponseToolkit) {
   return h.response(eventConfigs).code(200)
@@ -460,4 +461,127 @@ async function findMarriageRecordByMrn(
   })
 
   return results[0]
+}
+
+export async function onAdoptionRegisterHandler(
+  request: ActionConfirmationRequest,
+  h: Hapi.ResponseToolkit
+) {
+  // SEALING BIRTH RECORD — Flag the linked birth record to be sealed
+  const event = request.payload
+  const declaration = aggregateActionDeclarations(event)
+  const sealResult = await sealOriginalBirthRecord(declaration, event)
+
+  if (!sealResult.success) {
+    return h.response({ reason: sealResult.reason }).code(400)
+  }
+
+  return h
+    .response({ registrationNumber: generateRegistrationNumber() })
+    .code(200)
+}
+
+// BIRTH SEALED — Return a new registration number for the adoption event
+
+type BirthRecord = { id: string; flags?: string[] }
+
+async function sealOriginalBirthRecord(
+  declaration: ReturnType<typeof aggregateActionDeclarations>,
+  adoptionEvent: EventDocument
+): Promise<SealResult> {
+  const sealingToken = await getAdoptionSealingToken()
+
+  if (!sealingToken) {
+    return {
+      success: false,
+      reason: 'Unable to authenticate the sealing service'
+    }
+  }
+
+  const brnField = declaration['adoptee.brn'] as SearchFieldValue | undefined
+  const url = new URL('events', GATEWAY_URL).toString()
+  const client = createClient(url, `Bearer ${sealingToken}`)
+
+  const birthRecord = await findBirthRecordByBrn(brnField, client)
+
+  if (!birthRecord) {
+    logger.warn(
+      `Adoption ${adoptionEvent.id}: no registered birth record found for the provided child.brn.`
+    )
+    return {
+      success: false,
+      reason: 'No registered birth record found for the provided BRN'
+    }
+  }
+
+  if (birthRecord.flags?.includes('sealed')) {
+    logger.info(
+      `Adoption ${adoptionEvent.id}: birth record ${birthRecord.id} is already sealed, skipping.`
+    )
+    return { success: true }
+  }
+
+  try {
+    await client.event.actions.custom.request.mutate({
+      eventId: birthRecord.id,
+      transactionId: uuidv4(),
+      customActionType: 'SEAL',
+      annotation: {
+        reason: 'ADOPTION',
+        courtOrderReference: declaration['documents.courtOrder']
+      }
+    })
+
+    return { success: true }
+  } catch (error) {
+    logger.error(
+      { eventId: birthRecord.id, err: error },
+      'Failed to seal the original birth record after adoption registration'
+    )
+    return {
+      success: false,
+      reason: 'Failed to seal the original birth record'
+    }
+  }
+}
+
+async function findBirthRecordByBrn(
+  brnField: SearchFieldValue | undefined,
+  client: ReturnType<typeof createClient>
+): Promise<BirthRecord | undefined> {
+  if (typeof brnField !== 'string' && brnField?.data?.firstResult) {
+    return brnField.data.firstResult
+  }
+
+  if (!brnField) {
+    return undefined
+  }
+
+  const { results } = await client.event.search.query({
+    query: {
+      type: 'and',
+      clauses: [
+        {
+          eventType: Event.Birth,
+          'legalStatuses.REGISTERED.registrationNumber': {
+            type: 'exact',
+            term: brnField
+          }
+        }
+      ]
+    }
+  })
+
+  return results[0]
+}
+
+type SealResult = { success: true } | { success: false; reason: string }
+
+export async function onNameChangeRegisterHandler(
+  request: ActionConfirmationRequest,
+  h: Hapi.ResponseToolkit
+) {
+  return h
+    .response({ registrationNumber: generateRegistrationNumber() })
+    .code(200)
 }
