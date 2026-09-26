@@ -29,7 +29,6 @@ export const NAME_CHANGE_DECLARATION_REVIEW = {
     description: 'Title of the form to show in review page'
   },
   fields: [
-    // TODO:FIXME: even after aligning with 2.1 the conditional calculation is not working for annotation fields
     {
       type: FieldType.SIGNATURE,
       id: 'subjectSignature',
