@@ -21,21 +21,20 @@ import {
 } from './constants'
 
 /**
- * The divorce REGISTER trigger needs to dissolve a *different* record (the
- * original or linked marriage record) than the one it was called for. The token forwarded
+ * The adoption REGISTER trigger needs to seal a *different* record (the
+ * original birth record) than the one it was called for. The token forwarded
  * to a trigger handler is a single-record token bound to the triggering
  * event's id (see @opencrvs/events token-exchange), so it can never be used
  * to act on another record. This module provisions a dedicated system
- * integration - scoped to exactly what dissolution needs - to work around that.
+ * integration - scoped to exactly what sealing needs - to work around that.
  */
 
-const INTEGRATION_NAME = 'Marriage dissolution service'
-
-const DISSOLUTION_SERVICE_SCOPES = defineScopes([
+const INTEGRATION_NAME = 'Adoption sealing service'
+const SEALING_SERVICE_SCOPES = defineScopes([
   { type: 'record.search' },
   {
     type: 'record.custom-action',
-    options: { event: ['marriage'], customActionTypes: ['DISSOLVE_MARRIAGE'] }
+    options: { event: ['birth'], customActionTypes: ['SEAL'] }
   }
 ])
 
@@ -64,13 +63,13 @@ async function authenticateAsNationalSystemAdmin() {
 }
 
 /**
- * Provisions the marriage dissolution integration. Called once at server
+ * Provisions the adoption sealing integration. Called once at server
  * startup. A fresh integration is (re)created every time rather than reused
  * across restarts, because its secret is only ever returned at creation time
  * (the server stores just a hash) - there is nothing for an operator to
  * configure by hand.
  */
-export async function getMarriageDissolutionIntegrationCredentials() {
+export async function getAdoptionSealingIntegrationCredentials() {
   try {
     const adminToken = await authenticateAsNationalSystemAdmin()
     const client = createClient(
@@ -91,10 +90,10 @@ export async function getMarriageDissolutionIntegrationCredentials() {
 
     const created = await client.integrations.create.mutate({
       name: INTEGRATION_NAME,
-      scopes: DISSOLUTION_SERVICE_SCOPES
+      scopes: SEALING_SERVICE_SCOPES
     })
 
-    logger.info('Marriage dissolution integration provisioned.')
+    logger.info('Adoption sealing integration provisioned.')
     return {
       clientId: created.clientId,
       clientSecret: created.clientSecret
@@ -102,24 +101,20 @@ export async function getMarriageDissolutionIntegrationCredentials() {
   } catch (error) {
     logger.error(
       { err: error },
-      'Failed to provision the marriage dissolution integration. Divorce registrations will not be able to dissolve the original marriage record until this is resolved.'
+      'Failed to provision the adoption sealing integration. Adoption registrations will not be able to seal the original birth record until this is resolved.'
     )
     return undefined
   }
 }
 
 /**
- * Returns a bearer token for the marriage dissolution integration, or undefined
+ * Returns a bearer token for the adoption sealing integration, or undefined
  * if it could not be provisioned at startup.
  */
-export async function getMarriageDissolutionToken(): Promise<
-  string | undefined
-> {
-  const credentials = await getMarriageDissolutionIntegrationCredentials()
+export async function getAdoptionSealingToken(): Promise<string | undefined> {
+  const credentials = await getAdoptionSealingIntegrationCredentials()
   if (!credentials) {
-    logger.warn(
-      'Marriage dissolution integration is not available, skipping dissolution.'
-    )
+    logger.warn('Adoption sealing integration is not available, skipping seal.')
     return undefined
   }
 
@@ -128,21 +123,20 @@ export async function getMarriageDissolutionToken(): Promise<
     return cachedToken.token
   }
 
-  const response = await fetch(new URL('auth/token', GATEWAY_URL).toString(), {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      client_id: credentials.clientId,
-      client_secret: credentials.clientSecret,
-      grant_type: 'client_credentials'
-    })
+  const params = new URLSearchParams({
+    client_id: credentials.clientId,
+    client_secret: credentials.clientSecret,
+    grant_type: 'client_credentials'
   })
+
+  const response = await fetch(
+    new URL(`auth/token?${params}`, GATEWAY_URL).toString(),
+    { method: 'POST' }
+  )
 
   if (!response.ok) {
     throw new Error(
-      `Failed to authenticate the marriage dissolution integration: ${response.statusText}`
+      `Failed to authenticate the adoption sealing integration: ${response.statusText}`
     )
   }
 
@@ -155,7 +149,7 @@ export async function getMarriageDissolutionToken(): Promise<
 
   if (!token) {
     throw new Error(
-      'No token received when authenticating the marriage dissolution integration'
+      'No token received when authenticating the adoption sealing integration'
     )
   }
 
@@ -185,7 +179,7 @@ function getTokenExpiry(token: string, expiresInSeconds?: number): number {
   } catch (error) {
     logger.warn(
       { err: error },
-      'Failed to decode marriage dissolution integration token to determine its expiry'
+      'Failed to decode adoption sealing integration token to determine its expiry'
     )
   }
 
