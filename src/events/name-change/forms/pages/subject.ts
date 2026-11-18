@@ -10,7 +10,6 @@
  */
 
 import {
-  and,
   ConditionalType,
   defineConditional,
   defineFormPage,
@@ -27,17 +26,11 @@ import {
 import { createSelectOptions } from '@countryconfig/events/utils'
 
 const IdType = {
-  NATIONAL_ID: 'NATIONAL_ID',
   PASSPORT: 'PASSPORT',
   NONE: 'NONE'
 } as const
 
 const idTypeMessageDescriptors = {
-  NATIONAL_ID: {
-    defaultMessage: 'National ID',
-    description: 'Option for form field: Form of ID',
-    id: 'form.field.label.iDTypeNationalID'
-  },
   PASSPORT: {
     defaultMessage: 'Passport',
     description: 'Option for form field: Form of ID',
@@ -51,11 +44,6 @@ const idTypeMessageDescriptors = {
 } satisfies Record<keyof typeof IdType, TranslationConfig>
 
 const idTypeOptions = createSelectOptions(IdType, idTypeMessageDescriptors)
-
-const isFarajalandNationalId = and(
-  field('subject.nationality').isEqualTo('FAR'),
-  field('subject.idType').isEqualTo(IdType.NATIONAL_ID)
-)
 
 export { IdType as SubjectIdType }
 
@@ -78,18 +66,6 @@ export const subject = defineFormPage({
         id: 'event.name-change.action.declare.form.section.subject.field.nationality.label'
       },
       defaultValue: 'FAR'
-    },
-    {
-      id: 'subject.idType',
-      type: FieldType.SELECT,
-      required: true,
-      label: {
-        defaultMessage: 'Form of ID',
-        description: 'This is the label for the field',
-        id: 'event.name-change.action.declare.form.section.subject.field.idType.label'
-      },
-      options: idTypeOptions,
-      parent: field('subject.nationality')
     },
     {
       id: 'subject.brnSearch',
@@ -153,7 +129,7 @@ export const subject = defineFormPage({
       conditionals: [
         {
           type: ConditionalType.SHOW,
-          conditional: isFarajalandNationalId
+          conditional: field('subject.nationality').isEqualTo('FAR')
         },
         {
           type: ConditionalType.DISPLAY_ON_REVIEW,
@@ -163,28 +139,39 @@ export const subject = defineFormPage({
       parent: [field('subject.nationality'), field('subject.idType')]
     },
     {
-      id: 'subject.nid',
-      type: FieldType.ID,
-      required: true,
+      id: 'subject.brn',
+      type: FieldType.TEXT,
+      parent: field('subject.brnSearch'),
+      value: field('subject.brnSearch').getByPath(['data', 'input']),
       label: {
-        defaultMessage: 'National ID no.',
-        description: 'This is the label for the field',
-        id: 'event.name-change.action.declare.form.section.subject.field.nid.label'
+        defaultMessage: 'Subject Birth registration number',
+        description: 'Birth registration number of the bride',
+        id: 'event.name-change.form.subject.brn.label'
       },
       conditionals: [
         {
           type: ConditionalType.SHOW,
-          conditional: isFarajalandNationalId
+          conditional: field('subject.nationality').isEqualTo('FAR')
         },
         {
           type: ConditionalType.ENABLE,
           conditional: field('subject.brnSearch')
-            .getByPath(['data', 'firstResult'])
+            .getByPath(['data', 'input'])
             .isFalsy()
         }
-      ],
-      parent: [field('subject.nationality'), field('subject.idType')],
-      value: field('subject.brnSearch').getByPath(['data', 'input'])
+      ]
+    },
+    {
+      id: 'subject.idType',
+      type: FieldType.SELECT,
+      required: true,
+      label: {
+        defaultMessage: 'Form of ID',
+        description: 'This is the label for the field',
+        id: 'event.name-change.action.declare.form.section.subject.field.idType.label'
+      },
+      options: idTypeOptions,
+      parent: field('subject.nationality')
     },
     {
       id: 'subject.passport',
