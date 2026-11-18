@@ -164,7 +164,7 @@ export const roles: Role[] = [
       { type: 'record.archive' },
       { type: 'record.review-duplicates' },
       { type: 'record.register' },
-      { type: 'record.print-certified-copies' },
+      { type: 'record.print-certified-copies', options: { event: ['birth', 'death', 'marriage', 'divorce'] } },
       { type: 'record.correct' },
       { type: 'record.custom-action', options: { event: ['birth'], customActionTypes: ['REGISTRAR_GENERAL_FEEDBACK', 'REVOKE_REGISTRATION', 'REINSTATE_REVOKE_REGISTRATION', 'APPROVE_DECLARATION'] } },
       { type: 'record.custom-action', options: { event: ['death'], customActionTypes: ['APPROVE_DECLARATION'] } },
@@ -193,7 +193,7 @@ export const roles: Role[] = [
       { type: 'record.archive', options: { placeOfEvent: 'administrativeArea' } },
       { type: 'record.custom-action', options: { event: ['birth'], customActionTypes: ['PROVINCIAL_REGISTER_FEEDBACK', 'REINSTATE_REVOKE_REGISTRATION', 'ESCALATE', 'ISSUE_VERIFIABLE_CREDENTIAL'], placeOfEvent: 'administrativeArea' } },
       { type: 'record.custom-action', options: { event: ['birth', 'death'], customActionTypes: ['APPROVE_DECLARATION'], declaredIn: 'administrativeArea' } },
-      { type: 'record.print-certified-copies', options: { registeredIn: 'administrativeArea' } },
+      { type: 'record.print-certified-copies', options: { registeredIn: 'administrativeArea', event: ['birth', 'death', 'marriage', 'divorce'] } },
       { type: 'record.correct', options: { registeredIn: 'administrativeArea' } },
       { type: 'record.unassign-others', options: { placeOfEvent: 'administrativeArea' } },
       {
@@ -214,7 +214,7 @@ export const roles: Role[] = [
       { type: 'record.search', options: { placeOfEvent: 'location' } },
       { type: 'workqueue', options: { ids: ['assigned-to-you', 'recent', 'pending-updates'] } },
       { type: 'record.create', options: { placeOfEvent: 'location' } },
-      { type: 'record.declare', options: { placeOfEvent: 'location', event: ['death'] } },
+      { type: 'record.declare', options: { placeOfEvent: 'location', event: ['death', 'marriage', 'divorce', 'adoption', 'name-change'] } },
       { type: 'record.read', options: { placeOfEvent: 'location' } },
       { type: 'record.notify', options: { placeOfEvent: 'location', event: ['birth'] } },
       // The edit scope should have the notifiedBy: 'user' option after its implemented on
