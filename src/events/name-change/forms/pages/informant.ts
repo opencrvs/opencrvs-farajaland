@@ -16,10 +16,16 @@ import {
   FieldType,
   never,
   or,
+  not,
   PageTypes,
-  TranslationConfig
+  TranslationConfig,
+  user
 } from '@opencrvs/toolkit/events'
 import { createSelectOptions, emptyMessage } from '@countryconfig/events/utils'
+import {
+  farajalandNameConfig,
+  invalidNameValidator
+} from '@countryconfig/events/birth/validators'
 
 export const InformantType = {
   SUBJECT: 'SUBJECT',
@@ -55,6 +61,62 @@ export const informant = defineFormPage({
     id: 'form.section.informant.title'
   },
   fields: [
+    {
+      id: 'informant.notifyingOfficialHelper',
+      type: FieldType.HEADING,
+      label: {
+        defaultMessage: 'Notifying Official',
+        description: 'This is the label for the field',
+        id: 'event.name-change.action.declare.form.section.informant.field.notifyingOfficialName.label'
+      },
+      configuration: {
+        styles: { fontVariant: 'h3' }
+      },
+      conditionals: [
+        {
+          type: ConditionalType.DISPLAY_ON_REVIEW,
+          conditional: never()
+        },
+        {
+          type: ConditionalType.SHOW,
+          conditional: or(
+            user.hasRole('HOSPITAL_CLERK'),
+            not(field('informant.notifyingOfficialName').isFalsy())
+          )
+        }
+      ]
+    },
+    {
+      id: 'informant.notifyingOfficialName',
+      type: FieldType.NAME,
+      required: true,
+      configuration: farajalandNameConfig,
+      hideLabel: true,
+      label: {
+        defaultMessage: 'Notifying Official',
+        description: 'This is the label for the field',
+        id: 'event.name-change.action.declare.form.section.informant.field.notifyingOfficialName.label'
+      },
+      conditionals: [
+        {
+          type: ConditionalType.SHOW,
+          conditional: or(
+            user.hasRole('HOSPITAL_CLERK'),
+            not(field('informant.notifyingOfficialName').isFalsy())
+          )
+        },
+        {
+          type: ConditionalType.ENABLE,
+          conditional: user.hasRole('HOSPITAL_CLERK')
+        }
+      ],
+      validation: [invalidNameValidator('informant.notifyingOfficialName')],
+      defaultValue: {
+        firstname: user('firstname'),
+        middlename: user('middlename'),
+        surname: user('surname')
+      }
+    },
     {
       id: 'informant.relation',
       type: FieldType.SELECT,
