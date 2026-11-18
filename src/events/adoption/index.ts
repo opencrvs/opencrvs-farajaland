@@ -39,7 +39,8 @@ export const adoptionEvent = defineConfig({
   dateOfEvent: field('adoptee.dob'),
   placeOfEvent: field('adoption.courtName'),
   title: {
-    defaultMessage: '{adoptee.name.firstname} {adoptee.name.surname}',
+    defaultMessage:
+      '{adoptee.name.firstname, select, __EMPTY__ {{adoptee.name.surname, select, __EMPTY__ {NO_NAME} other {{adoptee.name.surname}}}} other {{adoptee.name.surname, select, __EMPTY__ {{adoptee.name.firstname}} other {{adoptee.name.firstname} {adoptee.name.surname}}}}}',
     description: 'This is the title of the summary',
     id: 'event.adoption.title'
   },

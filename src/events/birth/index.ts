@@ -49,7 +49,8 @@ export const birthEvent = defineConfig({
   dateOfEvent: field('child.dob'),
   placeOfEvent: field('child.birthLocationId'),
   title: {
-    defaultMessage: '{child.name.firstname} {child.name.surname}',
+    defaultMessage:
+      '{child.name.firstname, select, __EMPTY__ {{child.name.surname, select, __EMPTY__ {NO_NAME} other {{child.name.surname}}}} other {{child.name.surname, select, __EMPTY__ {{child.name.firstname}} other {{child.name.firstname} {child.name.surname}}}}}',
     description: 'This is the title of the summary',
     id: 'event.birth.title'
   },
@@ -990,7 +991,7 @@ export const birthEvent = defineConfig({
       label: {
         id: 'event.birth.action.declare.form.review.title',
         defaultMessage:
-          '{child.name.firstname, select, __EMPTY__ {Birth declaration} other {{child.name.surname, select, __EMPTY__ {Birth declaration for {child.name.firstname}} other {Birth declaration for {child.name.firstname} {child.name.surname}}}}}',
+          'Birth declaration for {child.name.firstname, select, __EMPTY__ {{child.name.surname, select, __EMPTY__ {NO_NAME} other {{child.name.surname}}}} other {{child.name.surname, select, __EMPTY__ {{child.name.firstname}} other {{child.name.firstname} {child.name.surname}}}}}',
         description: 'Title of the form to show in review page'
       },
       conditionals: [
@@ -998,28 +999,28 @@ export const birthEvent = defineConfig({
       ],
       correctionForm: CORRECTION_FORM
     },
-      {
-        type: ActionType.APPROVE_CORRECTION,
-        label: {
-          id: 'v2.events.correction.approve.label',
-          defaultMessage: 'Approve correction',
-          description: 'Label for the approve correction action'
-        },
-        conditionals: [
-              { type: ConditionalType.SHOW, conditional: not(flag('revoked')) }
-            ]
+    {
+      type: ActionType.APPROVE_CORRECTION,
+      label: {
+        id: 'v2.events.correction.approve.label',
+        defaultMessage: 'Approve correction',
+        description: 'Label for the approve correction action'
       },
-      {
-        type: ActionType.REJECT_CORRECTION,
-        label: {
-          id: 'v2.events.correction.reject.label',
-          defaultMessage: 'Reject correction',
-          description: 'Label for the reject correction action'
-        },
-        conditionals: [
-              { type: ConditionalType.SHOW, conditional: not(flag('revoked')) }
-            ]
+      conditionals: [
+        { type: ConditionalType.SHOW, conditional: not(flag('revoked')) }
+      ]
+    },
+    {
+      type: ActionType.REJECT_CORRECTION,
+      label: {
+        id: 'v2.events.correction.reject.label',
+        defaultMessage: 'Reject correction',
+        description: 'Label for the reject correction action'
       },
+      conditionals: [
+        { type: ConditionalType.SHOW, conditional: not(flag('revoked')) }
+      ]
+    },
     {
       type: ActionType.ARCHIVE,
       label: {

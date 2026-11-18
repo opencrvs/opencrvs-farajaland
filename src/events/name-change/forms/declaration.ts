@@ -25,7 +25,7 @@ export const NAME_CHANGE_DECLARATION_REVIEW = {
   title: {
     id: 'event.name-change.action.declare.form.review.title',
     defaultMessage:
-      '{subject.nameAtBirth.firstname, select, __EMPTY__ {Name change declaration} other {{subject.nameAtBirth.surname, select, __EMPTY__ {Name change declaration for {subject.nameAtBirth.firstname}} other {Name change declaration for {subject.nameAtBirth.firstname} {subject.nameAtBirth.surname}}}}}',
+      'Name change declaration for {subject.nameAtBirth.firstname, select, __EMPTY__ {{subject.nameAtBirth.surname, select, __EMPTY__ {NO_NAME} other {{subject.nameAtBirth.surname}}}} other {{subject.nameAtBirth.surname, select, __EMPTY__ {{subject.nameAtBirth.firstname}} other {{subject.nameAtBirth.firstname} {subject.nameAtBirth.surname}}}}}',
     description: 'Title of the form to show in review page'
   },
   fields: [
