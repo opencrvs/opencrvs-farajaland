@@ -849,7 +849,8 @@ export const marriageEvent = defineConfig({
           conditional: not(
             or(
               flag('revoked'),
-              flag('certified-copy-printed-in-advance-of-issuance')
+              flag('certified-copy-printed-in-advance-of-issuance'),
+              flag('dissolved')
             )
           )
         }
