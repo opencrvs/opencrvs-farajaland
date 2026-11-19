@@ -20,6 +20,7 @@ import {
   or,
   user
 } from '@opencrvs/toolkit/events'
+import { securePageWhileSealed } from '@countryconfig/events/utils'
 import { child } from './pages/child'
 import { informant } from './pages/informant'
 import { introduction } from './pages/introduction'
@@ -91,5 +92,9 @@ export const BIRTH_DECLARATION_FORM = defineDeclarationForm({
     description: 'This is what this form is referred as in the system'
   },
 
-  pages: [introduction, informant, child, mother, father, documents]
+  // A sealed birth record must not leak declaration data through the search
+  // index - see securePageWhileSealed.
+  pages: [introduction, informant, child, mother, father, documents].map(
+    securePageWhileSealed
+  )
 })
