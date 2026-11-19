@@ -40,7 +40,7 @@ export const nameChangeEvent = defineConfig({
   placeOfEvent: field('nameChange.courtName'),
   title: {
     defaultMessage:
-      '{nameChange.newName.firstname, select, __EMPTY__ {{nameChange.newName.surname, select, __EMPTY__ {NO_NAME} other {{nameChange.newName.surname}}}} other {{nameChange.newName.surname, select, __EMPTY__ {{nameChange.newName.firstname}} other {{nameChange.newName.firstname} {nameChange.newName.surname}}}}}',
+      '{nameChange.newName.firstname, select, __EMPTY__ {{nameChange.newName.surname, select, __EMPTY__ {No name provided} other {{nameChange.newName.surname}}}} other {{nameChange.newName.surname, select, __EMPTY__ {{nameChange.newName.firstname}} other {{nameChange.newName.firstname} {nameChange.newName.surname}}}}}',
     description: 'This is the title of the summary',
     id: 'event.nameChange.title'
   },

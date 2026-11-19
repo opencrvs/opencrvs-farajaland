@@ -50,7 +50,7 @@ export const birthEvent = defineConfig({
   placeOfEvent: field('child.birthLocationId'),
   title: {
     defaultMessage:
-      '{child.name.firstname, select, __EMPTY__ {{child.name.surname, select, __EMPTY__ {NO_NAME} other {{child.name.surname}}}} other {{child.name.surname, select, __EMPTY__ {{child.name.firstname}} other {{child.name.firstname} {child.name.surname}}}}}',
+      '{child.name.firstname, select, __EMPTY__ {{child.name.surname, select, __EMPTY__ {No name provided} other {{child.name.surname}}}} other {{child.name.surname, select, __EMPTY__ {{child.name.firstname}} other {{child.name.firstname} {child.name.surname}}}}}',
     description: 'This is the title of the summary',
     id: 'event.birth.title'
   },
@@ -991,7 +991,7 @@ export const birthEvent = defineConfig({
       label: {
         id: 'event.birth.action.declare.form.review.title',
         defaultMessage:
-          'Birth declaration for {child.name.firstname, select, __EMPTY__ {{child.name.surname, select, __EMPTY__ {NO_NAME} other {{child.name.surname}}}} other {{child.name.surname, select, __EMPTY__ {{child.name.firstname}} other {{child.name.firstname} {child.name.surname}}}}}',
+          'Birth declaration for {child.name.firstname, select, __EMPTY__ {{child.name.surname, select, __EMPTY__ {No name provided} other {{child.name.surname}}}} other {{child.name.surname, select, __EMPTY__ {{child.name.firstname}} other {{child.name.firstname} {child.name.surname}}}}}',
         description: 'Title of the form to show in review page'
       },
       conditionals: [

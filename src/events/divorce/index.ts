@@ -46,7 +46,7 @@ export const divorceEvent = defineConfig({
   placeOfEvent: field('court.name'),
   title: {
     defaultMessage:
-      '{husband.name.firstname, select, __EMPTY__ {{husband.name.surname, select, __EMPTY__ {NO_NAME} other {{husband.name.surname}}}} other {{husband.name.surname, select, __EMPTY__ {{husband.name.firstname}} other {{husband.name.firstname} {husband.name.surname}}}}} AND {wife.name.firstname, select, __EMPTY__ {{wife.name.surname, select, __EMPTY__ {NO_NAME} other {{wife.name.surname}}}} other {{wife.name.surname, select, __EMPTY__ {{wife.name.firstname}} other {{wife.name.firstname} {wife.name.surname}}}}}',
+      '{husband.name.firstname, select, __EMPTY__ {{husband.name.surname, select, __EMPTY__ {No name provided} other {{husband.name.surname}}}} other {{husband.name.surname, select, __EMPTY__ {{husband.name.firstname}} other {{husband.name.firstname} {husband.name.surname}}}}} AND {wife.name.firstname, select, __EMPTY__ {{wife.name.surname, select, __EMPTY__ {No name provided} other {{wife.name.surname}}}} other {{wife.name.surname, select, __EMPTY__ {{wife.name.firstname}} other {{wife.name.firstname} {wife.name.surname}}}}}',
     description: 'This is the title of the summary',
     id: 'event.divorce.title'
   },
@@ -845,7 +845,7 @@ export const divorceEvent = defineConfig({
       label: {
         id: 'event.divorce.action.declare.form.review.title',
         defaultMessage:
-          'Divorce declaration for {husband.name.firstname, select, __EMPTY__ {{husband.name.surname, select, __EMPTY__ {NO_NAME} other {{husband.name.surname}}}} other {{husband.name.surname, select, __EMPTY__ {{husband.name.firstname}} other {{husband.name.firstname} {husband.name.surname}}}}} AND {wife.name.firstname, select, __EMPTY__ {{wife.name.surname, select, __EMPTY__ {NO_NAME} other {{wife.name.surname}}}} other {{wife.name.surname, select, __EMPTY__ {{wife.name.firstname}} other {{wife.name.firstname} {wife.name.surname}}}}}',
+          'Divorce declaration for {husband.name.firstname, select, __EMPTY__ {{husband.name.surname, select, __EMPTY__ {No name provided} other {{husband.name.surname}}}} other {{husband.name.surname, select, __EMPTY__ {{husband.name.firstname}} other {{husband.name.firstname} {husband.name.surname}}}}} AND {wife.name.firstname, select, __EMPTY__ {{wife.name.surname, select, __EMPTY__ {No name provided} other {{wife.name.surname}}}} other {{wife.name.surname, select, __EMPTY__ {{wife.name.firstname}} other {{wife.name.firstname} {wife.name.surname}}}}}',
         description: 'Title of the form to show in review page'
       },
       conditionals: [{ type: ConditionalType.SHOW, conditional: never() }],

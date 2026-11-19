@@ -45,7 +45,7 @@ export const deathEvent = defineConfig({
   placeOfEvent: field('eventDetails.deathLocationId'),
   title: {
     defaultMessage:
-      '{deceased.name.firstname, select, __EMPTY__ {{deceased.name.surname, select, __EMPTY__ {NO_NAME} other {{deceased.name.surname}}}} other {{deceased.name.surname, select, __EMPTY__ {{deceased.name.firstname}} other {{deceased.name.firstname} {deceased.name.surname}}}}}',
+      '{deceased.name.firstname, select, __EMPTY__ {{deceased.name.surname, select, __EMPTY__ {No name provided} other {{deceased.name.surname}}}} other {{deceased.name.surname, select, __EMPTY__ {{deceased.name.firstname}} other {{deceased.name.firstname} {deceased.name.surname}}}}}',
     description: 'This is the title of the summary',
     id: 'event.death.title'
   },

@@ -25,7 +25,7 @@ export const ADOPTION_DECLARATION_REVIEW = {
   title: {
     id: 'event.adoption.action.declare.form.review.title',
     defaultMessage:
-      'Adoption declaration for {adoptee.name.firstname, select, __EMPTY__ {{adoptee.name.surname, select, __EMPTY__ {NO_NAME} other {{adoptee.name.surname}}}} other {{adoptee.name.surname, select, __EMPTY__ {{adoptee.name.firstname}} other {{adoptee.name.firstname} {adoptee.name.surname}}}}}',
+      'Adoption declaration for {adoptee.name.firstname, select, __EMPTY__ {{adoptee.name.surname, select, __EMPTY__ {No name provided} other {{adoptee.name.surname}}}} other {{adoptee.name.surname, select, __EMPTY__ {{adoptee.name.firstname}} other {{adoptee.name.firstname} {adoptee.name.surname}}}}}',
     description: 'Title of the form to show in review page'
   },
   fields: [
