@@ -909,6 +909,8 @@ event.birth.custom.action.validate-declaration.supportingCopy,This is the suppor
 event.birth.flag.pending-first-certificate-issuance,Pending first certificate issuance,Pending first certificate issuance,En attente de la délivrance d'une copie certifiée conforme
 event.birth.id-reader.helper-text,Helper text,"Authentication isn't required to register. To issue a UIN for the child, at least one parent must be authenticated","L'authentification n'est pas requise pour l'enregistrement. Pour délivrer un UIN à l'enfant, au moins un parent doit être authentifié"
 event.birth.label,This is what this event is referred as in the system,Birth,Naissance
+event.birth.summary.banner.sealed.description,Description of the banner shown when a record is sealed,Request to unseal to view this record,Demandez la levée du scellé pour consulter cet enregistrement
+event.birth.summary.banner.sealed.title,Heading of the info box shown when a record is sealed,Record is protected,Enregistrement protégé
 event.birth.summary.child.dob.empty,Label for date of birth not available,No date of birth,Pas de date de naissance
 event.birth.summary.child.placeOfBirth.empty,Label for place of birth not available,No place of birth,Pas de lieu de naissance
 event.birth.summary.child.placeOfBirth.label,Label for place of birth,Place of birth,Lieu de naissance

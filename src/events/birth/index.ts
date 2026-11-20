@@ -145,6 +145,34 @@ export const birthEvent = defineConfig({
     }
   ],
   summary: {
+    banners: [
+      {
+        type: 'negative',
+        icon: 'FileLock',
+        heading: {
+          id: 'event.birth.summary.banner.sealed.title',
+          defaultMessage: 'Record is protected',
+          description: 'Heading of the info box shown when a record is sealed'
+        },
+        description: {
+          id: 'event.birth.summary.banner.sealed.description',
+          defaultMessage: 'Request to unseal to view this record',
+          description: 'Description of the banner shown when a record is sealed'
+        },
+        conditionals: [
+          {
+            type: ConditionalType.SHOW,
+            // Only the National Registrar can read a sealed record (see the
+            // `flags: { noneOf: ['sealed'] }` restrictions in roles.ts), so
+            // everyone else is told the record is protected.
+            conditional: and(
+              flag('sealed'),
+              not(user.hasRole('NATIONAL_REGISTRAR'))
+            )
+          }
+        ]
+      }
+    ],
     fields: [
       {
         fieldId: 'child.nid',
