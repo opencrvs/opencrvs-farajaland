@@ -213,8 +213,8 @@ export const roles: Role[] = [
       { type: 'user.read-only-my-audit' },
       { type: 'record.search', options: { placeOfEvent: 'location' } },
       { type: 'workqueue', options: { ids: ['assigned-to-you', 'recent', 'pending-updates'] } },
-      { type: 'record.create', options: { placeOfEvent: 'location' } },
-      { type: 'record.declare', options: { placeOfEvent: 'location', event: ['death', 'marriage', 'divorce', 'adoption', 'name-change'] } },
+      { type: 'record.create', options: { placeOfEvent: 'location', event: ['birth', 'death'] } },
+      { type: 'record.declare', options: { placeOfEvent: 'location', event: ['birth', 'death'] } },
       { type: 'record.read', options: { placeOfEvent: 'location', flags: { noneOf: ['sealed'] } } },
       { type: 'record.notify', options: { placeOfEvent: 'location', event: ['birth'] } },
       // The edit scope should have the notifiedBy: 'user' option after its implemented on
@@ -233,11 +233,11 @@ export const roles: Role[] = [
       { type: 'user.read-only-my-audit' },
       { type: 'record.search', options: { placeOfEvent: 'administrativeArea' } },
       { type: 'workqueue', options: { ids: ['assigned-to-you', 'recent', 'pending-updates'] } },
-      { type: 'record.create', options: { placeOfEvent: 'administrativeArea' } },
+      { type: 'record.create', options: { placeOfEvent: 'administrativeArea', event: ['birth', 'death'] } },
       { type: 'record.read', options: { placeOfEvent: 'administrativeArea', flags: { noneOf: ['sealed'] } } },
       { type: 'record.edit', options: { placeOfEvent: 'administrativeArea' } },
       { type: 'record.notify', options: { placeOfEvent: 'administrativeArea' } },
-      { type: 'record.declare', options: { placeOfEvent: 'administrativeArea' } }
+      { type: 'record.declare', options: { placeOfEvent: 'administrativeArea', event: ['birth', 'death'] } }
     ])
   },
   {
