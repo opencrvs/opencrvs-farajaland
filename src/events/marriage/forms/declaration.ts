@@ -26,12 +26,12 @@ import { bride } from './pages/bride'
 import { groom } from './pages/groom'
 import { documents } from './pages/documents'
 import { witness } from './pages/witness'
+import { nameOrPlaceholder } from '@countryconfig/events/utils'
 
 export const MARRIAGE_DECLARATION_REVIEW = {
   title: {
     id: 'event.marriage.action.declare.form.review.title',
-    defaultMessage:
-      'Marriage declaration for {groom.name.firstname, select, __EMPTY__ {{groom.name.surname, select, __EMPTY__ {No name provided} other {{groom.name.surname}}}} other {{groom.name.surname, select, __EMPTY__ {{groom.name.firstname}} other {{groom.name.firstname} {groom.name.surname}}}}} AND {bride.name.firstname, select, __EMPTY__ {{bride.name.surname, select, __EMPTY__ {No name provided} other {{bride.name.surname}}}} other {{bride.name.surname, select, __EMPTY__ {{bride.name.firstname}} other {{bride.name.firstname} {bride.name.surname}}}}}',
+    defaultMessage: `Marriage declaration for ${nameOrPlaceholder('groom.name')} and ${nameOrPlaceholder('bride.name')}`,
     description: 'Title of the form to show in review page'
   },
   fields: [

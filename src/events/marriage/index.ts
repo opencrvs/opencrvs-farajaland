@@ -31,7 +31,7 @@ import { advancedSearchMarriage } from './advancedSearch'
 import { MARRIAGE_CERTIFICATE_COLLECTOR_FORM } from './forms/printForm'
 import { CORRECTION_FORM } from './forms/correctionForm'
 import { dedupConfig } from './dedupConfig'
-import { Event } from '@countryconfig/events/utils'
+import { Event, nameOrPlaceholder } from '@countryconfig/events/utils'
 
 export const marriageEvent = defineConfig({
   id: Event.Marriage,
@@ -44,8 +44,7 @@ export const marriageEvent = defineConfig({
   dateOfEvent: field('marriageDetails.dateOfMarriage'),
   placeOfEvent: field('marriageDetails.placeOfMarriage'),
   title: {
-    defaultMessage:
-      '{groom.name.firstname, select, __EMPTY__ {{groom.name.surname, select, __EMPTY__ {No name provided} other {{groom.name.surname}}}} other {{groom.name.surname, select, __EMPTY__ {{groom.name.firstname}} other {{groom.name.firstname} {groom.name.surname}}}}} AND {bride.name.firstname, select, __EMPTY__ {{bride.name.surname, select, __EMPTY__ {No name provided} other {{bride.name.surname}}}} other {{bride.name.surname, select, __EMPTY__ {{bride.name.firstname}} other {{bride.name.firstname} {bride.name.surname}}}}}',
+    defaultMessage: `${nameOrPlaceholder('groom.name')} AND ${nameOrPlaceholder('bride.name')}`,
     description: 'This is the title of the summary',
     id: 'event.marriage.title'
   },
@@ -871,8 +870,7 @@ export const marriageEvent = defineConfig({
       type: ActionType.REQUEST_CORRECTION,
       label: {
         id: 'event.marriage.action.declare.form.review.title',
-        defaultMessage:
-          'Marriage declaration for {groom.name.firstname, select, __EMPTY__ {{groom.name.surname, select, __EMPTY__ {No name provided} other {{groom.name.surname}}}} other {{groom.name.surname, select, __EMPTY__ {{groom.name.firstname}} other {{groom.name.firstname} {groom.name.surname}}}}} AND {bride.name.firstname, select, __EMPTY__ {{bride.name.surname, select, __EMPTY__ {No name provided} other {{bride.name.surname}}}} other {{bride.name.surname, select, __EMPTY__ {{bride.name.firstname}} other {{bride.name.firstname} {bride.name.surname}}}}}',
+        defaultMessage: `Marriage declaration for ${nameOrPlaceholder('groom.name')} and ${nameOrPlaceholder('bride.name')}`,
         description: 'Title of the form to show in review page'
       },
       conditionals: [{ type: ConditionalType.SHOW, conditional: never() }],

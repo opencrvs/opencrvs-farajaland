@@ -20,12 +20,12 @@ import { subject } from './pages/subject'
 import { nameChangeDetails } from './pages/nameChangeDetails'
 import { parent } from './pages/parent'
 import { documents } from './pages/documents'
+import { nameOrPlaceholder } from '@countryconfig/events/utils'
 
 export const NAME_CHANGE_DECLARATION_REVIEW = {
   title: {
     id: 'event.name-change.action.declare.form.review.title',
-    defaultMessage:
-      'Name change declaration for {subject.nameAtBirth.firstname, select, __EMPTY__ {{subject.nameAtBirth.surname, select, __EMPTY__ {No name provided} other {{subject.nameAtBirth.surname}}}} other {{subject.nameAtBirth.surname, select, __EMPTY__ {{subject.nameAtBirth.firstname}} other {{subject.nameAtBirth.firstname} {subject.nameAtBirth.surname}}}}}',
+    defaultMessage: `Name change declaration for ${nameOrPlaceholder('subject.nameAtBirth')}`,
     description: 'Title of the form to show in review page'
   },
   fields: [

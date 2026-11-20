@@ -35,7 +35,8 @@ import { dedupConfig } from './dedupConfig'
 import * as verifiableCredentialActions from '@countryconfig/verifiable-credentials/issue-birth-credential-action'
 import {
   Event,
-  BIRTH_LATE_REGISTRATION_TARGET_DAYS
+  BIRTH_LATE_REGISTRATION_TARGET_DAYS,
+  nameOrPlaceholder
 } from '@countryconfig/events/utils'
 
 export const birthEvent = defineConfig({
@@ -49,8 +50,7 @@ export const birthEvent = defineConfig({
   dateOfEvent: field('child.dob'),
   placeOfEvent: field('child.birthLocationId'),
   title: {
-    defaultMessage:
-      '{child.name.firstname, select, __EMPTY__ {{child.name.surname, select, __EMPTY__ {No name provided} other {{child.name.surname}}}} other {{child.name.surname, select, __EMPTY__ {{child.name.firstname}} other {{child.name.firstname} {child.name.surname}}}}}',
+    defaultMessage: `${nameOrPlaceholder('child.name')}`,
     description: 'This is the title of the summary',
     id: 'event.birth.title'
   },
@@ -1018,8 +1018,7 @@ export const birthEvent = defineConfig({
       type: ActionType.REQUEST_CORRECTION,
       label: {
         id: 'event.birth.action.declare.form.review.title',
-        defaultMessage:
-          'Birth declaration for {child.name.firstname, select, __EMPTY__ {{child.name.surname, select, __EMPTY__ {No name provided} other {{child.name.surname}}}} other {{child.name.surname, select, __EMPTY__ {{child.name.firstname}} other {{child.name.firstname} {child.name.surname}}}}}',
+        defaultMessage: `Birth declaration for ${nameOrPlaceholder('child.name')}`,
         description: 'Title of the form to show in review page'
       },
       conditionals: [

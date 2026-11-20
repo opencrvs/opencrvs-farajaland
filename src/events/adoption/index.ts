@@ -21,7 +21,7 @@ import {
   status,
   user
 } from '@opencrvs/toolkit/events'
-import { Event } from '@countryconfig/events/utils'
+import { Event, nameOrPlaceholder } from '@countryconfig/events/utils'
 import {
   ADOPTION_DECLARATION_FORM,
   ADOPTION_DECLARATION_REVIEW
@@ -39,8 +39,7 @@ export const adoptionEvent = defineConfig({
   dateOfEvent: field('adoptee.dob'),
   placeOfEvent: field('adoption.courtName'),
   title: {
-    defaultMessage:
-      '{adoptee.name.firstname, select, __EMPTY__ {{adoptee.name.surname, select, __EMPTY__ {No name provided} other {{adoptee.name.surname}}}} other {{adoptee.name.surname, select, __EMPTY__ {{adoptee.name.firstname}} other {{adoptee.name.firstname} {adoptee.name.surname}}}}}',
+    defaultMessage: `${nameOrPlaceholder('adoptee.name')}`,
     description: 'This is the title of the summary',
     id: 'event.adoption.title'
   },

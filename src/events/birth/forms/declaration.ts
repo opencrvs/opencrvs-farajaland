@@ -20,7 +20,10 @@ import {
   or,
   user
 } from '@opencrvs/toolkit/events'
-import { securePageWhileSealed } from '@countryconfig/events/utils'
+import {
+  securePageWhileSealed,
+  nameOrPlaceholder
+} from '@countryconfig/events/utils'
 import { child } from './pages/child'
 import { informant } from './pages/informant'
 import { introduction } from './pages/introduction'
@@ -31,8 +34,7 @@ import { documents } from './pages/documents'
 export const BIRTH_DECLARATION_REVIEW = {
   title: {
     id: 'event.birth.action.declare.form.review.title',
-    defaultMessage:
-      'Birth declaration for {child.name.firstname, select, __EMPTY__ {{child.name.surname, select, __EMPTY__ {No name provided} other {{child.name.surname}}}} other {{child.name.surname, select, __EMPTY__ {{child.name.firstname}} other {{child.name.firstname} {child.name.surname}}}}}',
+    defaultMessage: `Birth declaration for ${nameOrPlaceholder('child.name')}`,
     description: 'Title of the form to show in review page'
   },
   fields: [
