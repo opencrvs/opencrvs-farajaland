@@ -20,12 +20,12 @@ import { adoptionDetails } from './pages/adoptionDetails'
 import { adoptiveParent1 } from './pages/adoptiveParent1'
 import { adoptiveParent2 } from './pages/adoptiveParent2'
 import { documents } from './pages/documents'
+import { nameOrPlaceholder } from '@countryconfig/events/utils'
 
 export const ADOPTION_DECLARATION_REVIEW = {
   title: {
     id: 'event.adoption.action.declare.form.review.title',
-    defaultMessage:
-      '{adoptee.name.firstname, select, __EMPTY__ {Adoption declaration} other {{adoptee.name.surname, select, __EMPTY__ {Adoption declaration for {adoptee.name.firstname}} other {Adoption declaration for {adoptee.name.firstname} {adoptee.name.surname}}}}}',
+    defaultMessage: `Adoption declaration for ${nameOrPlaceholder('adoptee.name')}`,
     description: 'Title of the form to show in review page'
   },
   fields: [

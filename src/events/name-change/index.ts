@@ -21,7 +21,7 @@ import {
   status,
   user
 } from '@opencrvs/toolkit/events'
-import { Event } from '@countryconfig/events/utils'
+import { Event, nameOrPlaceholder } from '@countryconfig/events/utils'
 import {
   NAME_CHANGE_DECLARATION_FORM,
   NAME_CHANGE_DECLARATION_REVIEW
@@ -39,8 +39,7 @@ export const nameChangeEvent = defineConfig({
   dateOfEvent: field('nameChange.filingDate'),
   placeOfEvent: field('nameChange.courtName'),
   title: {
-    defaultMessage:
-      '{nameChange.newName.firstname} {nameChange.newName.surname}',
+    defaultMessage: `${nameOrPlaceholder('nameChange.newName')}`,
     description: 'This is the title of the summary',
     id: 'event.nameChange.title'
   },

@@ -10,7 +10,6 @@
  */
 
 import {
-  and,
   ConditionalType,
   defineConditional,
   defineFormPage,
@@ -52,10 +51,15 @@ const idTypeMessageDescriptors = {
 
 const idTypeOptions = createSelectOptions(IdType, idTypeMessageDescriptors)
 
-const isFarajalandNationalId = and(
-  field('subject.nationality').isEqualTo('FAR'),
-  field('subject.idType').isEqualTo(IdType.NATIONAL_ID)
-)
+// The National ID held on the birth record found by the BRN lookup, if any.
+// Birth records usually carry no NID, so this is often empty even after a
+// successful lookup.
+const nidFromBirthRecord = field('subject.brnSearch').getByPath([
+  'data',
+  'firstResult',
+  'declaration',
+  'child.nid'
+])
 
 export { IdType as SubjectIdType }
 
@@ -78,18 +82,6 @@ export const subject = defineFormPage({
         id: 'event.name-change.action.declare.form.section.subject.field.nationality.label'
       },
       defaultValue: 'FAR'
-    },
-    {
-      id: 'subject.idType',
-      type: FieldType.SELECT,
-      required: true,
-      label: {
-        defaultMessage: 'Form of ID',
-        description: 'This is the label for the field',
-        id: 'event.name-change.action.declare.form.section.subject.field.idType.label'
-      },
-      options: idTypeOptions,
-      parent: field('subject.nationality')
     },
     {
       id: 'subject.brnSearch',
@@ -153,14 +145,49 @@ export const subject = defineFormPage({
       conditionals: [
         {
           type: ConditionalType.SHOW,
-          conditional: isFarajalandNationalId
+          conditional: field('subject.nationality').isEqualTo('FAR')
         },
         {
           type: ConditionalType.DISPLAY_ON_REVIEW,
           conditional: never()
         }
       ],
-      parent: [field('subject.nationality'), field('subject.idType')]
+      parent: [field('subject.nationality')]
+    },
+    {
+      id: 'subject.brn',
+      type: FieldType.TEXT,
+      parent: field('subject.brnSearch'),
+      value: field('subject.brnSearch').getByPath(['data', 'input']),
+      label: {
+        defaultMessage: 'Birth registration number',
+        description: 'Birth registration number of the subject',
+        id: 'event.name-change.form.subject.brn.label'
+      },
+      conditionals: [
+        {
+          type: ConditionalType.SHOW,
+          conditional: field('subject.nationality').isEqualTo('FAR')
+        },
+        {
+          type: ConditionalType.ENABLE,
+          conditional: field('subject.brnSearch')
+            .getByPath(['data', 'input'])
+            .isFalsy()
+        }
+      ]
+    },
+    {
+      id: 'subject.idType',
+      type: FieldType.SELECT,
+      required: true,
+      label: {
+        defaultMessage: 'Form of ID',
+        description: 'This is the label for the field',
+        id: 'event.name-change.action.declare.form.section.subject.field.idType.label'
+      },
+      options: idTypeOptions,
+      parent: field('subject.nationality')
     },
     {
       id: 'subject.nid',
@@ -171,20 +198,22 @@ export const subject = defineFormPage({
         description: 'This is the label for the field',
         id: 'event.name-change.action.declare.form.section.subject.field.nid.label'
       },
+      // Pre-filled from the birth record when it has an NID. Only locked when
+      // the lookup actually provided one - otherwise the field must stay
+      // editable, or the required NID could never be entered and Register
+      // stays disabled (opencrvs-core#14449, #14450).
+      value: nidFromBirthRecord,
       conditionals: [
         {
           type: ConditionalType.SHOW,
-          conditional: isFarajalandNationalId
+          conditional: field('subject.idType').isEqualTo(IdType.NATIONAL_ID)
         },
         {
           type: ConditionalType.ENABLE,
-          conditional: field('subject.brnSearch')
-            .getByPath(['data', 'firstResult'])
-            .isFalsy()
+          conditional: nidFromBirthRecord.isFalsy()
         }
       ],
-      parent: [field('subject.nationality'), field('subject.idType')],
-      value: field('subject.brnSearch').getByPath(['data', 'input'])
+      parent: [field('subject.idType'), field('subject.brnSearch')]
     },
     {
       id: 'subject.passport',

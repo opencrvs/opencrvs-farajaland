@@ -142,3 +142,21 @@ export const emptyMessage = {
   description: 'empty string',
   id: 'messages.emptyString'
 }
+
+/**
+ * ICU fragment rendering a person's full name from `<path>.firstname` and
+ * `<path>.surname`, falling back to whichever part is present, or
+ * "No name provided" when both are empty.
+ *
+ * Keep in sync with the copies in src/translations/client.csv, which hold the
+ * expanded string.
+ */
+export function nameOrPlaceholder(path: string) {
+  const first = `{${path}.firstname}`
+  const last = `{${path}.surname}`
+  return (
+    `{${path}.firstname, select, ` +
+    `__EMPTY__ {{${path}.surname, select, __EMPTY__ {No name provided} other {${last}}}} ` +
+    `other {{${path}.surname, select, __EMPTY__ {${first}} other {${first} ${last}}}}}`
+  )
+}

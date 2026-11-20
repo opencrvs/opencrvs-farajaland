@@ -199,7 +199,7 @@ export const marriageDetails = defineFormPage({
       required: true,
       hideLabel: true,
       label: {
-        defaultMessage: 'Name',
+        defaultMessage: "Husband's full name",
         description: 'This is the label for the field',
         id: 'event.divorce.action.declare.form.section.person.field.husbandName.label'
       },
@@ -258,7 +258,7 @@ export const marriageDetails = defineFormPage({
       required: true,
       hideLabel: true,
       label: {
-        defaultMessage: 'First name',
+        defaultMessage: "Wife's full name",
         description: 'This is the label for the field',
         id: 'event.divorce.action.declare.form.section.person.field.wifeName.label'
       },

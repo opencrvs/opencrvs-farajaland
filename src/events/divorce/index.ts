@@ -32,7 +32,7 @@ import { DIVORCE_CERTIFICATE_COLLECTOR_FORM } from './forms/printForm'
 import { CORRECTION_FORM } from './forms/correctionForm'
 import { dedupConfig } from './dedupConfig'
 import * as verifiableCredentialActions from '@countryconfig/verifiable-credentials/issue-birth-credential-action'
-import { Event } from '@countryconfig/events/utils'
+import { Event, nameOrPlaceholder } from '@countryconfig/events/utils'
 
 export const divorceEvent = defineConfig({
   id: Event.Divorce,
@@ -45,8 +45,7 @@ export const divorceEvent = defineConfig({
   dateOfEvent: field('divorce.dateOfDivorce'),
   placeOfEvent: field('court.name'),
   title: {
-    defaultMessage:
-      '{husband.name.firstname} {husband.name.surname} AND {wife.name.firstname} {wife.name.surname}',
+    defaultMessage: `${nameOrPlaceholder('husband.name')} AND ${nameOrPlaceholder('wife.name')}`,
     description: 'This is the title of the summary',
     id: 'event.divorce.title'
   },
@@ -844,8 +843,7 @@ export const divorceEvent = defineConfig({
       type: ActionType.REQUEST_CORRECTION,
       label: {
         id: 'event.divorce.action.declare.form.review.title',
-        defaultMessage:
-          '{husband.name.firstname, select, __EMPTY__ {Divorce declaration} other {{husband.name.firstname, select, __EMPTY__ {Divorce declaration for {husband.name.surname}} other {Divorce declaration for {husband.name.firstname} {husband.name.surname} and {wife.name.firstname} {wife.name.surname}}}}}',
+        defaultMessage: `Divorce declaration for ${nameOrPlaceholder('husband.name')} and ${nameOrPlaceholder('wife.name')}`,
         description: 'Title of the form to show in review page'
       },
       conditionals: [{ type: ConditionalType.SHOW, conditional: never() }],

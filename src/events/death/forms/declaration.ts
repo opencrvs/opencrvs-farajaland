@@ -17,12 +17,12 @@ import { documents } from './pages/documents'
 import { spouse } from './pages/spouse'
 import { eventDetails } from './pages/eventDetails'
 import { causeOfDeathDetails } from './pages/causeOfDeathDetails'
+import { nameOrPlaceholder } from '@countryconfig/events/utils'
 
 export const DEATH_DECLARATION_REVIEW = {
   title: {
     id: 'event.death.action.declare.form.review.title',
-    defaultMessage:
-      '{deceased.name.firstname, select, __EMPTY__ {Death declaration} other {{deceased.name.surname, select, __EMPTY__ {Death declaration for {deceased.name.firstname}} other {Death declaration for {deceased.name.firstname} {deceased.name.surname}}}}}',
+    defaultMessage: `Death declaration for ${nameOrPlaceholder('deceased.name')}`,
     description: 'Title of the form to show in review page'
   },
   fields: [

@@ -24,12 +24,12 @@ import { marriageDetails } from './pages/marriageDetails'
 import { informant } from './pages/informant'
 import { documents } from './pages/documents'
 import { divorceDetails } from './pages/divorceDetails'
+import { nameOrPlaceholder } from '@countryconfig/events/utils'
 
 export const DIVORCE_DECLARATION_REVIEW = {
   title: {
     id: 'event.divorce.action.declare.form.review.title',
-    defaultMessage:
-      '{husband.name.firstname, select, __EMPTY__ {Divorce declaration} other {{husband.name.firstname, select, __EMPTY__ {Divorce declaration for {husband.name.surname}} other {Divorce declaration for {husband.name.firstname} {husband.name.surname} and {wife.name.firstname} {wife.name.surname}}}}}',
+    defaultMessage: `Divorce declaration for ${nameOrPlaceholder('husband.name')} and ${nameOrPlaceholder('wife.name')}`,
     description: 'Title of the form to show in review page'
   },
   fields: [

@@ -20,6 +20,10 @@ import {
   or,
   user
 } from '@opencrvs/toolkit/events'
+import {
+  securePageWhileSealed,
+  nameOrPlaceholder
+} from '@countryconfig/events/utils'
 import { child } from './pages/child'
 import { informant } from './pages/informant'
 import { introduction } from './pages/introduction'
@@ -30,8 +34,7 @@ import { documents } from './pages/documents'
 export const BIRTH_DECLARATION_REVIEW = {
   title: {
     id: 'event.birth.action.declare.form.review.title',
-    defaultMessage:
-      '{child.name.firstname, select, __EMPTY__ {Birth declaration} other {{child.name.surname, select, __EMPTY__ {Birth declaration for {child.name.firstname}} other {Birth declaration for {child.name.firstname} {child.name.surname}}}}}',
+    defaultMessage: `Birth declaration for ${nameOrPlaceholder('child.name')}`,
     description: 'Title of the form to show in review page'
   },
   fields: [
@@ -91,5 +94,9 @@ export const BIRTH_DECLARATION_FORM = defineDeclarationForm({
     description: 'This is what this form is referred as in the system'
   },
 
-  pages: [introduction, informant, child, mother, father, documents]
+  // A sealed birth record must not leak declaration data through the search
+  // index - see securePageWhileSealed.
+  pages: [introduction, informant, child, mother, father, documents].map(
+    securePageWhileSealed
+  )
 })

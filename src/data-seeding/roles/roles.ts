@@ -25,17 +25,17 @@ export const roles: Role[] = [
       { type: 'workqueue', options: { ids: ['assigned-to-you', 'recent', 'requires-completion', 'in-external-validation', 'escalated', 'pending-validation', 'pending-updates', 'pending-approval', 'pending-certification', 'pending-issuance', 'correction-requested'] } },
       { type: 'record.search', options: { placeOfEvent: 'administrativeArea' } },
       { type: 'record.create', options: { placeOfEvent: 'administrativeArea' } },
-      { type: 'record.read', options: { placeOfEvent: 'administrativeArea' } },
+      { type: 'record.read', options: { placeOfEvent: 'administrativeArea', flags: { noneOf: ['sealed'] } } },
       { type: 'record.declare', options: { placeOfEvent: 'administrativeArea' } },
       { type: 'record.edit', options: { placeOfEvent: 'administrativeArea' } },
       { type: 'record.reject', options: { placeOfEvent: 'administrativeArea' } },
       { type: 'record.archive', options: { declaredIn: 'administrativeArea' } },
-      { type: 'record.print-certified-copies', options: { registeredIn: 'administrativeArea', event: ['birth', 'death', 'marriage', 'divorce'] } },
-      { type: 'record.request-correction', options: { registeredIn: 'administrativeArea', event: ['birth', 'death'] } },
-      { type: 'record.custom-action', options: { event: ['birth'], customActionTypes: ['VALIDATE_DECLARATION', 'ESCALATE'] } },
-      { type: 'record.custom-action', options: { event: ['birth'], customActionTypes: ['REINSTATE_REVOKE_REGISTRATION'], placeOfEvent: 'administrativeArea' } },
-      { type: 'record.custom-action', options: { event: ['birth'], customActionTypes: ['ISSUE_CERTIFIED_COPY', 'ISSUE_VERIFIABLE_CREDENTIAL'] } },
-      { type: 'record.custom-action', options: { event: ['death'], customActionTypes: ['VALIDATE_DECLARATION'] } },
+      { type: 'record.print-certified-copies', options: { registeredIn: 'administrativeArea', event: ['birth', 'death', 'marriage', 'divorce'], flags: { noneOf: ['sealed'] } } },
+      { type: 'record.request-correction', options: { registeredIn: 'administrativeArea', event: ['birth', 'death'], flags: { noneOf: ['sealed'] } } },
+      { type: 'record.custom-action', options: { event: ['birth'], customActionTypes: ['VALIDATE_DECLARATION', 'ESCALATE'], flags: { noneOf: ['sealed'] } } },
+      { type: 'record.custom-action', options: { event: ['birth'], customActionTypes: ['REINSTATE_REVOKE_REGISTRATION'], placeOfEvent: 'administrativeArea', flags: { noneOf: ['sealed'] } } },
+      { type: 'record.custom-action', options: { event: ['birth'], customActionTypes: ['ISSUE_CERTIFIED_COPY', 'ISSUE_VERIFIABLE_CREDENTIAL'], flags: { noneOf: ['sealed'] } } },
+      { type: 'record.custom-action', options: { event: ['death'], customActionTypes: ['VALIDATE_DECLARATION'], flags: { noneOf: ['sealed'] } } },
       {
         type: 'dashboard.view',
         options: { ids: ['registrations', 'completeness', 'registry'] }
@@ -62,18 +62,18 @@ export const roles: Role[] = [
       },
       { type: 'record.search', options: { placeOfEvent: 'administrativeArea' } },
       { type: 'record.create', options: { placeOfEvent: 'administrativeArea' } },
-      { type: 'record.read', options: { placeOfEvent: 'administrativeArea' } },
+      { type: 'record.read', options: { placeOfEvent: 'administrativeArea', flags: { noneOf: ['sealed'] } } },
       { type: 'record.declare', options: { placeOfEvent: 'administrativeArea' } },
       { type: 'record.edit', options: { placeOfEvent: 'administrativeArea' } },
       { type: 'record.reject', options: { placeOfEvent: 'administrativeArea' } },
       { type: 'record.archive', options: { declaredIn: 'administrativeArea' } },
-      { type: 'record.review-duplicates', options: { placeOfEvent: 'administrativeArea' } },
+      { type: 'record.review-duplicates', options: { placeOfEvent: 'administrativeArea', flags: { noneOf: ['sealed'] } } },
       { type: 'record.register', options: { placeOfEvent: 'administrativeArea' } },
-      { type: 'record.print-certified-copies', options: { registeredIn: 'administrativeArea', event: ['birth', 'death', 'marriage', 'divorce'] } },
-      { type: 'record.correct', options: { registeredIn: 'administrativeArea', event: ['birth', 'death'] } },
-      { type: 'record.custom-action', options: { event: ['birth'], customActionTypes: ['ESCALATE', 'REINSTATE_REVOKE_REGISTRATION'], placeOfEvent: 'administrativeArea' } },
-      { type: 'record.custom-action', options: { event: ['birth'], customActionTypes: ['ISSUE_CERTIFIED_COPY', 'ISSUE_VERIFIABLE_CREDENTIAL'], registeredIn: 'administrativeArea' } },
-      { type: 'record.unassign-others' },
+      { type: 'record.print-certified-copies', options: { registeredIn: 'administrativeArea', event: ['birth', 'death', 'marriage', 'divorce'], flags: { noneOf: ['sealed'] } } },
+      { type: 'record.correct', options: { registeredIn: 'administrativeArea', event: ['birth', 'death'], flags: { noneOf: ['sealed'] } } },
+      { type: 'record.custom-action', options: { event: ['birth'], customActionTypes: ['ESCALATE', 'REINSTATE_REVOKE_REGISTRATION'], placeOfEvent: 'administrativeArea', flags: { noneOf: ['sealed'] } } },
+      { type: 'record.custom-action', options: { event: ['birth'], customActionTypes: ['ISSUE_CERTIFIED_COPY', 'ISSUE_VERIFIABLE_CREDENTIAL'], registeredIn: 'administrativeArea', flags: { noneOf: ['sealed'] } } },
+      { type: 'record.unassign-others', options: { flags: { noneOf: ['sealed'] } } },
       {
         type: 'dashboard.view',
         options: { ids: ['registrations', 'completeness', 'registry'] }
@@ -164,7 +164,7 @@ export const roles: Role[] = [
       { type: 'record.archive' },
       { type: 'record.review-duplicates' },
       { type: 'record.register' },
-      { type: 'record.print-certified-copies' },
+      { type: 'record.print-certified-copies', options: { event: ['birth', 'death', 'marriage', 'divorce'] } },
       { type: 'record.correct' },
       { type: 'record.custom-action', options: { event: ['birth'], customActionTypes: ['REGISTRAR_GENERAL_FEEDBACK', 'REVOKE_REGISTRATION', 'REINSTATE_REVOKE_REGISTRATION', 'APPROVE_DECLARATION'] } },
       { type: 'record.custom-action', options: { event: ['death'], customActionTypes: ['APPROVE_DECLARATION'] } },
@@ -188,14 +188,14 @@ export const roles: Role[] = [
       { type: 'profile.electronic-signature' },
       { type: 'record.search', options: { placeOfEvent: 'administrativeArea' } },
       { type: 'workqueue', options: { ids: ['assigned-to-you', 'recent', 'pending-feedback-provincinal-registrar', 'pending-approval', 'correction-requested'] } },
-      { type: 'record.read', options: { placeOfEvent: 'administrativeArea' } },
+      { type: 'record.read', options: { placeOfEvent: 'administrativeArea', flags: { noneOf: ['sealed'] } } },
       { type: 'record.reject', options: { placeOfEvent: 'administrativeArea' } },
       { type: 'record.archive', options: { placeOfEvent: 'administrativeArea' } },
-      { type: 'record.custom-action', options: { event: ['birth'], customActionTypes: ['PROVINCIAL_REGISTER_FEEDBACK', 'REINSTATE_REVOKE_REGISTRATION', 'ESCALATE', 'ISSUE_VERIFIABLE_CREDENTIAL'], placeOfEvent: 'administrativeArea' } },
-      { type: 'record.custom-action', options: { event: ['birth', 'death'], customActionTypes: ['APPROVE_DECLARATION'], declaredIn: 'administrativeArea' } },
-      { type: 'record.print-certified-copies', options: { registeredIn: 'administrativeArea' } },
-      { type: 'record.correct', options: { registeredIn: 'administrativeArea' } },
-      { type: 'record.unassign-others', options: { placeOfEvent: 'administrativeArea' } },
+      { type: 'record.custom-action', options: { event: ['birth'], customActionTypes: ['PROVINCIAL_REGISTER_FEEDBACK', 'REINSTATE_REVOKE_REGISTRATION', 'ESCALATE', 'ISSUE_VERIFIABLE_CREDENTIAL'], placeOfEvent: 'administrativeArea', flags: { noneOf: ['sealed'] } } },
+      { type: 'record.custom-action', options: { event: ['birth', 'death'], customActionTypes: ['APPROVE_DECLARATION'], declaredIn: 'administrativeArea', flags: { noneOf: ['sealed'] } } },
+      { type: 'record.print-certified-copies', options: { registeredIn: 'administrativeArea', event: ['birth', 'death', 'marriage', 'divorce'], flags: { noneOf: ['sealed'] } } },
+      { type: 'record.correct', options: { registeredIn: 'administrativeArea', flags: { noneOf: ['sealed'] } } },
+      { type: 'record.unassign-others', options: { placeOfEvent: 'administrativeArea', flags: { noneOf: ['sealed'] } } },
       {
         type: 'dashboard.view',
         options: { ids: ['registrations', 'completeness', 'registry'] }
@@ -213,9 +213,9 @@ export const roles: Role[] = [
       { type: 'user.read-only-my-audit' },
       { type: 'record.search', options: { placeOfEvent: 'location' } },
       { type: 'workqueue', options: { ids: ['assigned-to-you', 'recent', 'pending-updates'] } },
-      { type: 'record.create', options: { placeOfEvent: 'location' } },
-      { type: 'record.declare', options: { placeOfEvent: 'location', event: ['death'] } },
-      { type: 'record.read', options: { placeOfEvent: 'location' } },
+      { type: 'record.create', options: { placeOfEvent: 'location', event: ['birth', 'death'] } },
+      { type: 'record.declare', options: { placeOfEvent: 'location', event: ['birth', 'death'] } },
+      { type: 'record.read', options: { placeOfEvent: 'location', flags: { noneOf: ['sealed'] } } },
       { type: 'record.notify', options: { placeOfEvent: 'location', event: ['birth'] } },
       // The edit scope should have the notifiedBy: 'user' option after its implemented on
       // https://github.com/opencrvs/opencrvs-core/issues/11875
@@ -233,11 +233,11 @@ export const roles: Role[] = [
       { type: 'user.read-only-my-audit' },
       { type: 'record.search', options: { placeOfEvent: 'administrativeArea' } },
       { type: 'workqueue', options: { ids: ['assigned-to-you', 'recent', 'pending-updates'] } },
-      { type: 'record.create', options: { placeOfEvent: 'administrativeArea' } },
-      { type: 'record.read', options: { placeOfEvent: 'administrativeArea' } },
+      { type: 'record.create', options: { placeOfEvent: 'administrativeArea', event: ['birth', 'death'] } },
+      { type: 'record.read', options: { placeOfEvent: 'administrativeArea', flags: { noneOf: ['sealed'] } } },
       { type: 'record.edit', options: { placeOfEvent: 'administrativeArea' } },
       { type: 'record.notify', options: { placeOfEvent: 'administrativeArea' } },
-      { type: 'record.declare', options: { placeOfEvent: 'administrativeArea' } }
+      { type: 'record.declare', options: { placeOfEvent: 'administrativeArea', event: ['birth', 'death'] } }
     ])
   },
   {
@@ -251,9 +251,9 @@ export const roles: Role[] = [
       { type: 'user.read-only-my-audit' },
       { type: 'record.search', options: { placeOfEvent: 'location', event: ['death'] } },
       { type: 'workqueue', options: { ids: ['assigned-to-you', 'recent', 'ready-for-attestation'] } },
-      { type: 'record.read', options: { placeOfEvent: 'location', event: ['death'] } },
+      { type: 'record.read', options: { placeOfEvent: 'location', event: ['death'], flags: { noneOf: ['sealed'] } } },
       { type: 'record.reject', options: { placeOfEvent: 'location', event: ['death'] } },
-      { type: 'record.custom-action', options: { event: ['death'], customActionTypes: ['ATTEST'] } }
+      { type: 'record.custom-action', options: { event: ['death'], customActionTypes: ['ATTEST'], flags: { noneOf: ['sealed'] } } }
     ])
   },
   {
@@ -269,13 +269,13 @@ export const roles: Role[] = [
       { type: 'workqueue', options: { ids: ['assigned-to-you', 'recent', 'escalated', 'pending-updates', 'pending-certification', 'potential-duplicate'] } },
       { type: 'record.search', options: { placeOfEvent: 'location' } },
       { type: 'record.create', options: { placeOfEvent: 'location' } },
-      { type: 'record.read', options: { placeOfEvent: 'location' } },
+      { type: 'record.read', options: { placeOfEvent: 'location', flags: { noneOf: ['sealed'] } } },
       { type: 'record.declare', options: { placeOfEvent: 'location' } },
       { type: 'record.edit', options: { placeOfEvent: 'location' } },
-      { type: 'record.custom-action', options: { event: ['birth'], customActionTypes: ['ESCALATE'], placeOfEvent: 'location' } },
-      { type: 'record.custom-action', options: { event: ['birth'], customActionTypes: ['ISSUE_CERTIFIED_COPY'], placeOfEvent: 'location' } },
-      { type: 'record.print-certified-copies', options: { placeOfEvent: 'location' } },
-      { type: 'record.request-correction', options: { placeOfEvent: 'location' } }
+      { type: 'record.custom-action', options: { event: ['birth'], customActionTypes: ['ESCALATE'], placeOfEvent: 'location', flags: { noneOf: ['sealed'] } } },
+      { type: 'record.custom-action', options: { event: ['birth'], customActionTypes: ['ISSUE_CERTIFIED_COPY'], placeOfEvent: 'location', flags: { noneOf: ['sealed'] } } },
+      { type: 'record.print-certified-copies', options: { placeOfEvent: 'location', flags: { noneOf: ['sealed'] } } },
+      { type: 'record.request-correction', options: { placeOfEvent: 'location', flags: { noneOf: ['sealed'] } } }
     ])
   }
 ]

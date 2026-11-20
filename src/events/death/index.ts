@@ -31,7 +31,7 @@ import { advancedSearchDeath } from './advancedSearch'
 import { PlaceOfDeath } from './forms/pages/eventDetails'
 import { DEATH_CORRECTION_FORM } from './forms/correctionForm'
 import { dedupConfig } from './dedupConfig'
-import { Event } from '@countryconfig/events/utils'
+import { Event, nameOrPlaceholder } from '@countryconfig/events/utils'
 
 export const deathEvent = defineConfig({
   id: Event.Death,
@@ -44,7 +44,7 @@ export const deathEvent = defineConfig({
   dateOfEvent: field('eventDetails.date'),
   placeOfEvent: field('eventDetails.deathLocationId'),
   title: {
-    defaultMessage: '{deceased.name.firstname} {deceased.name.surname}',
+    defaultMessage: `${nameOrPlaceholder('deceased.name')}`,
     description: 'This is the title of the summary',
     id: 'event.death.title'
   },
