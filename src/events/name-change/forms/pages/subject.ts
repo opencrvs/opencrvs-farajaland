@@ -26,11 +26,17 @@ import {
 import { createSelectOptions } from '@countryconfig/events/utils'
 
 const IdType = {
+  NATIONAL_ID: 'NATIONAL_ID',
   PASSPORT: 'PASSPORT',
   NONE: 'NONE'
 } as const
 
 const idTypeMessageDescriptors = {
+  NATIONAL_ID: {
+    defaultMessage: 'National ID',
+    description: 'Option for form field: Form of ID',
+    id: 'form.field.label.iDTypeNationalID'
+  },
   PASSPORT: {
     defaultMessage: 'Passport',
     description: 'Option for form field: Form of ID',
@@ -44,6 +50,16 @@ const idTypeMessageDescriptors = {
 } satisfies Record<keyof typeof IdType, TranslationConfig>
 
 const idTypeOptions = createSelectOptions(IdType, idTypeMessageDescriptors)
+
+// The National ID held on the birth record found by the BRN lookup, if any.
+// Birth records usually carry no NID, so this is often empty even after a
+// successful lookup.
+const nidFromBirthRecord = field('subject.brnSearch').getByPath([
+  'data',
+  'firstResult',
+  'declaration',
+  'child.nid'
+])
 
 export { IdType as SubjectIdType }
 
@@ -136,7 +152,7 @@ export const subject = defineFormPage({
           conditional: never()
         }
       ],
-      parent: [field('subject.nationality'), field('subject.idType')]
+      parent: [field('subject.nationality')]
     },
     {
       id: 'subject.brn',
@@ -144,8 +160,8 @@ export const subject = defineFormPage({
       parent: field('subject.brnSearch'),
       value: field('subject.brnSearch').getByPath(['data', 'input']),
       label: {
-        defaultMessage: 'Subject Birth registration number',
-        description: 'Birth registration number of the bride',
+        defaultMessage: 'Birth registration number',
+        description: 'Birth registration number of the subject',
         id: 'event.name-change.form.subject.brn.label'
       },
       conditionals: [
@@ -172,6 +188,32 @@ export const subject = defineFormPage({
       },
       options: idTypeOptions,
       parent: field('subject.nationality')
+    },
+    {
+      id: 'subject.nid',
+      type: FieldType.ID,
+      required: true,
+      label: {
+        defaultMessage: 'National ID no.',
+        description: 'This is the label for the field',
+        id: 'event.name-change.action.declare.form.section.subject.field.nid.label'
+      },
+      // Pre-filled from the birth record when it has an NID. Only locked when
+      // the lookup actually provided one - otherwise the field must stay
+      // editable, or the required NID could never be entered and Register
+      // stays disabled (opencrvs-core#14449, #14450).
+      value: nidFromBirthRecord,
+      conditionals: [
+        {
+          type: ConditionalType.SHOW,
+          conditional: field('subject.idType').isEqualTo(IdType.NATIONAL_ID)
+        },
+        {
+          type: ConditionalType.ENABLE,
+          conditional: nidFromBirthRecord.isFalsy()
+        }
+      ],
+      parent: [field('subject.idType'), field('subject.brnSearch')]
     },
     {
       id: 'subject.passport',
