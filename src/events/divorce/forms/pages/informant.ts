@@ -21,7 +21,6 @@ import {
 } from '@opencrvs/toolkit/events'
 import { not } from '@opencrvs/toolkit/conditionals'
 import { createSelectOptions, emptyMessage } from '@countryconfig/events/utils'
-import { farajalandNameConfig, invalidNameValidator } from '../../validators'
 
 export const InformantType = {
   HUSBAND: 'HUSBAND',
@@ -50,8 +49,7 @@ const divorceInformantTypeOptions = createSelectOptions(
 
 export const idReaderHelperText = {
   id: 'event.divorce.id-reader.helper-text',
-  defaultMessage:
-    "Authentication isn't required to register. To issue a UIN for the child, at least one parent must be authenticated",
+  defaultMessage: "Authentication isn't required to register.",
   description: 'Helper text'
 }
 
@@ -63,62 +61,6 @@ export const informant = defineFormPage({
     id: 'form.section.informant.title'
   },
   fields: [
-    {
-      id: 'informant.notifyingOfficialHelper',
-      type: FieldType.HEADING,
-      label: {
-        defaultMessage: 'Notifying Official',
-        description: 'This is the label for the field',
-        id: 'event.divorce.action.declare.form.section.informant.field.notifyingOfficialName.label'
-      },
-      configuration: {
-        styles: { fontVariant: 'h3' }
-      },
-      conditionals: [
-        {
-          type: ConditionalType.DISPLAY_ON_REVIEW,
-          conditional: never()
-        },
-        {
-          type: ConditionalType.SHOW,
-          conditional: or(
-            user.hasRole('HOSPITAL_CLERK'),
-            not(field('informant.notifyingOfficialName').isFalsy())
-          )
-        }
-      ]
-    },
-    {
-      id: 'informant.notifyingOfficialName',
-      type: FieldType.NAME,
-      required: true,
-      configuration: farajalandNameConfig,
-      hideLabel: true,
-      label: {
-        defaultMessage: 'Notifying Official',
-        description: 'This is the label for the field',
-        id: 'event.divorce.action.declare.form.section.informant.field.notifyingOfficialName.label'
-      },
-      conditionals: [
-        {
-          type: ConditionalType.SHOW,
-          conditional: or(
-            user.hasRole('HOSPITAL_CLERK'),
-            not(field('informant.notifyingOfficialName').isFalsy())
-          )
-        },
-        {
-          type: ConditionalType.ENABLE,
-          conditional: user.hasRole('HOSPITAL_CLERK')
-        }
-      ],
-      validation: [invalidNameValidator('informant.notifyingOfficialName')],
-      defaultValue: {
-        firstname: user('firstname'),
-        middlename: user('middlename'),
-        surname: user('surname')
-      }
-    },
     {
       id: 'informant.relation',
       type: FieldType.SELECT,
